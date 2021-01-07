@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static is.codion.common.Util.map;
@@ -45,11 +44,12 @@ public interface Entities {
   EntityDefinition getDefinition(EntityType<?> entityType);
 
   /**
-   * Returns an Optional containing the {@link EntityDefinition} for the given entityType name, if found
+   * Returns the {@link EntityDefinition} for the given entityType name
    * @param entityTypeName the name of the entityType
-   * @return the entity definition, if found
+   * @return the entity definition
+   * @throws IllegalArgumentException in case the definition is not found
    */
-  Optional<EntityDefinition> getDefinition(String entityTypeName);
+   EntityDefinition getDefinition(String entityTypeName);
 
   /**
    * @param entityType the entityType

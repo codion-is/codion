@@ -43,9 +43,14 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   @Override
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
-    final EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entityTypeName ->
-            entities.getDefinition(entityTypeName)
-                    .orElseThrow(() -> new IllegalArgumentException("Entity type with name '" + entityTypeName + "' not found")));
+    final EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entityTypeName -> {
+      final EntityDefinition entityDefinition = entities.getDefinition(entityTypeName);
+      if (entityDefinition == null) {
+        throw new IllegalArgumentException("Entity type with name '" + entityTypeName + "' not found");
+      }
+
+      return entityDefinition;
+    });
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
