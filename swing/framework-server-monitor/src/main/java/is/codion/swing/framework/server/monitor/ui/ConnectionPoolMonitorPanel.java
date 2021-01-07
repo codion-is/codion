@@ -150,7 +150,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JSpinner cleanupIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getPoolCleanupIntervalValue()));
     final JSpinner maximumSizeSpinner = new JSpinner(integerValueSpinnerModel(model.getMaximumPoolSizeValue()));
     final JSpinner minimumSizeSpinner = new JSpinner(integerValueSpinnerModel(model.getMinimumPoolSizeValue()));
-    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(integerValueSpinnerModel(model.getMaximumCheckOutTimeValue()));
+    final SpinnerNumberModel maximumCheckOutTimeModel = integerValueSpinnerModel(this.model.getMaximumCheckOutTimeValue());
+    maximumCheckOutTimeModel.setStepSize(100);
+    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(maximumCheckOutTimeModel);
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setColumns(3);

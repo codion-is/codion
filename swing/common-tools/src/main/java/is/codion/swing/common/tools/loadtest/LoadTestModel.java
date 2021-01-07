@@ -133,8 +133,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.applicationBatchSizeValue = Values.value(applicationBatchSize);
     this.minimumThinkTimeValue = Values.value(maximumThinkTime / 2);
     this.maximumThinkTimeValue = Values.value(maximumThinkTime);
-    this.loginDelayFactorValue.addValidator(new PositiveIntegerValidator(1));
-    this.applicationBatchSizeValue.addValidator(new PositiveIntegerValidator(1));
+    this.loginDelayFactorValue.addValidator(new MinimumValidator(1));
+    this.applicationBatchSizeValue.addValidator(new MinimumValidator(1));
     this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
     this.maximumThinkTimeValue.addValidator(new MaximumThinkTimeValidator());
     usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
@@ -649,23 +649,23 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
   }
 
-  private static class PositiveIntegerValidator implements Value.Validator<Integer> {
+  private static class MinimumValidator implements Value.Validator<Integer> {
 
     private final int minimumValue;
 
-    private PositiveIntegerValidator(final int minimumValue) {
+    private MinimumValidator(final int minimumValue) {
       this.minimumValue = minimumValue;
     }
 
     @Override
     public void validate(final Integer value) {
       if (value == null || value < minimumValue) {
-        throw new IllegalArgumentException("Value must be a positive integer");
+        throw new IllegalArgumentException("Value must be larger than: " + minimumValue);
       }
     }
   }
 
-  private final class MinimumThinkTimeValidator extends PositiveIntegerValidator {
+  private final class MinimumThinkTimeValidator extends MinimumValidator {
 
     private MinimumThinkTimeValidator() {
       super(0);
@@ -680,7 +680,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
   }
 
-  private final class MaximumThinkTimeValidator extends PositiveIntegerValidator {
+  private final class MaximumThinkTimeValidator extends MinimumValidator {
 
     private MaximumThinkTimeValidator() {
       super(0);

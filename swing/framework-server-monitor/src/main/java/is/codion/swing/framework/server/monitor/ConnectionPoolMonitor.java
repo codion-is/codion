@@ -76,6 +76,13 @@ public final class ConnectionPoolMonitor {
     this.minimumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
     this.maximumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
     this.maximumCheckoutTimeValue = Values.value(connectionPool.getMaximumCheckOutTime());
+
+    this.pooledConnectionTimeoutValue.addValidator(new MinimumValidator(0));
+    this.pooledCleanupIntervalValue.addValidator(new MinimumValidator(0));
+    this.minimumPoolSizeValue.addValidator(new MinimumPoolSizeValidator());
+    this.maximumPoolSizeValue.addValidator(new MaximumPoolSizeValidator());
+    this.maximumCheckoutTimeValue.addValidator(new MinimumValidator(0));
+
     this.statisticsCollection.addSeries(inPoolSeries);
     this.statisticsCollection.addSeries(inUseSeries);
     this.statisticsCollection.addSeries(poolSizeSeries);
@@ -293,5 +300,51 @@ public final class ConnectionPoolMonitor {
     maximumPoolSizeValue.addDataListener(this::setMaximumPoolSize);
     maximumCheckoutTimeValue.addDataListener(this::setMaximumCheckOutTime);
     collectSnapshotStatisticsState.addDataListener(connectionPool::setCollectSnapshotStatistics);
+  }
+
+  private static class MinimumValidator implements Value.Validator<Integer> {
+
+    private final int minimumValue;
+
+    private MinimumValidator(final int minimumValue) {
+      this.minimumValue = minimumValue;
+    }
+
+    @Override
+    public void validate(final Integer value) {
+      if (value == null || value < minimumValue) {
+        throw new IllegalArgumentException("Value must be larger than: " + minimumValue);
+      }
+    }
+  }
+
+  private final class MinimumPoolSizeValidator extends MinimumValidator {
+
+    private MinimumPoolSizeValidator() {
+      super(0);
+    }
+
+    @Override
+    public void validate(final Integer value) {
+      super.validate(value);
+      if (value > maximumPoolSizeValue.get()) {
+        throw new IllegalArgumentException("Minimum pool sizeequal to or below maximum pool size time");
+      }
+    }
+  }
+
+  private final class MaximumPoolSizeValidator extends MinimumValidator {
+
+    private MaximumPoolSizeValidator() {
+      super(0);
+    }
+
+    @Override
+    public void validate(final Integer value) {
+      super.validate(value);
+      if (value < minimumPoolSizeValue.get()) {
+        throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");
+      }
+    }
   }
 }

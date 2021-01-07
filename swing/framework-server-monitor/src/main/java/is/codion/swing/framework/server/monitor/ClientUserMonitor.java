@@ -71,6 +71,11 @@ public final class ClientUserMonitor {
   public ClientUserMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
     this.connectionTimeoutValue = Values.value(server.getConnectionTimeout() / THOUSAND);
+    this.connectionTimeoutValue.addValidator(value -> {
+      if (value == null || value < 0) {
+        throw new IllegalArgumentException("Connection timeout must be a positive integer");
+      }
+    });
     this.updateScheduler = new TaskScheduler(() -> {
       try {
         userHistoryTableModel.refresh();
