@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DatabaseConnectionsTest {
+public class DatabaseConnectionTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -27,7 +27,7 @@ public class DatabaseConnectionsTest {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(UNIT_TEST_USER);
-      final DatabaseConnection databaseConnection = DatabaseConnections.createConnection(DATABASE, connection);
+      final DatabaseConnection databaseConnection = DatabaseConnection.createConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
       assertNotNull(databaseConnection.getUser());
       assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
@@ -44,7 +44,7 @@ public class DatabaseConnectionsTest {
       try {
         connection = DATABASE.createConnection(UNIT_TEST_USER);
         connection.close();
-        DatabaseConnections.createConnection(DATABASE, connection);
+        DatabaseConnection.createConnection(DATABASE, connection);
       }
       finally {
         Database.closeSilently(connection);
