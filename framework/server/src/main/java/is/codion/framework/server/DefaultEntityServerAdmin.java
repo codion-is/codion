@@ -3,9 +3,9 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.LoggerProxy;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.DefaultServerAdmin;
 import is.codion.framework.domain.entity.EntityType;

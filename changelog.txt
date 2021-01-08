@@ -6622,3 +6622,4 @@
   EntityServerMonitorPanel, use PropertyValue.getOrThrow()
   PropertyStore now interface, moved to properties package
   Util.getSystemProperties() moved to PropertyStore, PropertyWriter moved to properties package and renamed PropertyFormatter
+  LoggerProxy moved to logging package

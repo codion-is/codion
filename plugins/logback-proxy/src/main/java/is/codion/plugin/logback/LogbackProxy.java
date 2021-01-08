@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.logback;
 
-import is.codion.common.LoggerProxy;
+import is.codion.common.logging.LoggerProxy;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

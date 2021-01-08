@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.CredentialsProvider;
-import is.codion.common.LoggerProxy;
 import is.codion.common.Memory;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
@@ -15,6 +14,7 @@ import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.item.Items;
+import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;

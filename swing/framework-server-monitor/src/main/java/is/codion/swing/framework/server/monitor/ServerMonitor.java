@@ -4,10 +4,10 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.DateFormats;
-import is.codion.common.LoggerProxy;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
+import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
