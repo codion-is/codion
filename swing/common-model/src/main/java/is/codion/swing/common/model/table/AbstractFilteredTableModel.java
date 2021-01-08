@@ -6,7 +6,6 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
@@ -50,13 +49,13 @@ import static java.util.stream.Collectors.toList;
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
-  private final Event<?> filterEvent = Events.event();
-  private final Event<?> sortEvent = Events.event();
-  private final Event<?> refreshStartedEvent = Events.event();
-  private final Event<?> refreshDoneEvent = Events.event();
-  private final Event<?> tableDataChangedEvent = Events.event();
-  private final Event<?> tableModelClearedEvent = Events.event();
-  private final Event<List<Integer>> rowsDeletedEvent = Events.event();
+  private final Event<?> filterEvent = Event.event();
+  private final Event<?> sortEvent = Event.event();
+  private final Event<?> refreshStartedEvent = Event.event();
+  private final Event<?> refreshDoneEvent = Event.event();
+  private final Event<?> tableDataChangedEvent = Event.event();
+  private final Event<?> tableModelClearedEvent = Event.event();
+  private final Event<List<Integer>> rowsDeletedEvent = Event.event();
 
   /**
    * Holds visible items

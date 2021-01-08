@@ -8,7 +8,6 @@ import is.codion.common.Memory;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
@@ -70,7 +69,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final Value<Integer> maximumThinkTimeValue;
   private final Value<Integer> minimumThinkTimeValue;
   private final Value<Integer> applicationCountValue = Values.value();
-  private final Event<?> shutdownEvent = Events.event();
+  private final Event<?> shutdownEvent = Event.event();
 
   private User user;
 

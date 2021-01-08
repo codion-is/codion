@@ -7,7 +7,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -46,7 +45,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 
-  private final Event<List<Entity>> selectedEntitiesChangedEvent = Events.event();
+  private final Event<List<Entity>> selectedEntitiesChangedEvent = Event.event();
   private final State searchStringRepresentsSelectedState = State.state(true);
 
   /**

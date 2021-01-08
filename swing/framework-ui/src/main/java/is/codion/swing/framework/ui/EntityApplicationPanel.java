@@ -10,7 +10,6 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.logging.LoggerProxy;
@@ -214,9 +213,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private M applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event<?> applicationStartedEvent = Events.event();
-  private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
-  private final Event<?> onExitEvent = Events.event();
+  private final Event<?> applicationStartedEvent = Event.event();
+  private final Event<Boolean> alwaysOnTopChangedEvent = Event.event();
+  private final Event<?> onExitEvent = Event.event();
 
   private final Map<EntityPanelBuilder, EntityPanel> persistentEntityPanels = new HashMap<>();
 

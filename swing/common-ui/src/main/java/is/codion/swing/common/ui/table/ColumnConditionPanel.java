@@ -7,7 +7,6 @@ import is.codion.common.DateFormats;
 import is.codion.common.db.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -102,7 +101,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
-  private final Event<C> focusGainedEvent = Events.event();
+  private final Event<C> focusGainedEvent = Event.event();
   private final State advancedConditionState = State.state();
 
   private JDialog dialog;

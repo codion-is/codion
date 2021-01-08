@@ -7,7 +7,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 
 final class DefaultStateObserver implements StateObserver {
 
@@ -77,7 +76,7 @@ final class DefaultStateObserver implements StateObserver {
   private EventObserver<Boolean> getEventObserver() {
     synchronized (lock) {
       if (stateChangedEvent == null) {
-        stateChangedEvent = Events.event();
+        stateChangedEvent = Event.event();
       }
 
       return stateChangedEvent.getObserver();

@@ -5,7 +5,6 @@ package is.codion.framework.db;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.entity.Entities;
@@ -26,7 +25,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   protected static final String IS_CONNECTED = "isConnected";
   private final Object lock = new Object();
-  private final Event<EntityConnection> onConnectEvent = Events.event();
+  private final Event<EntityConnection> onConnectEvent = Event.event();
 
   private User user;
   private String domainClassName;

@@ -6,7 +6,6 @@ package is.codion.common.value;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -27,7 +26,7 @@ public abstract class AbstractValue<V> implements Value<V> {
     YES, NO
   }
 
-  private final Event<V> changeEvent = Events.event();
+  private final Event<V> changeEvent = Event.event();
   private final V nullValue;
   private final boolean notifyOnSet;
   private final Set<Validator<V>> validators = new LinkedHashSet<>(0);

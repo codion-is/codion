@@ -6,7 +6,6 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.FilteredTableModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
@@ -27,11 +26,11 @@ import static java.util.stream.Collectors.toList;
  */
 public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R> {
 
-  private final Event<?> selectionChangedEvent = Events.event();
-  private final Event<Integer> selectedIndexChangedEvent = Events.event();
-  private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
-  private final Event<R> selectedItemChangedEvent = Events.event();
-  private final Event<List<R>> selectedItemsChangedEvent = Events.event();
+  private final Event<?> selectionChangedEvent = Event.event();
+  private final Event<Integer> selectedIndexChangedEvent = Event.event();
+  private final Event<List<Integer>> selectedIndexesChangedEvent = Event.event();
+  private final Event<R> selectedItemChangedEvent = Event.event();
+  private final Event<List<R>> selectedItemsChangedEvent = Event.event();
   private final State singleSelectionModeState = State.state(false);
   private final State selectionEmptyState = State.state(true);
   private final State multipleSelectionState = State.state(false);

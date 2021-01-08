@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SortingDirective;
@@ -83,7 +82,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Event notifying that the edit model has been set.
    */
-  private final Event<SwingEntityEditModel> editModelSetEvent = Events.event();
+  private final Event<SwingEntityEditModel> editModelSetEvent = Event.event();
 
   /**
    * The edit model to use when updating/deleting entities
@@ -98,7 +97,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Fired each time this model is refreshed
    */
-  private final Event<?> refreshEvent = Events.event();
+  private final Event<?> refreshEvent = Event.event();
 
   /**
    * If true then querying should be disabled if no condition is specified

@@ -6,7 +6,6 @@ package is.codion.javafx.framework.model;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -30,11 +29,11 @@ import static java.util.Collections.singletonList;
  */
 public final class FXEntityListSelectionModel implements SelectionModel<Entity> {
 
-  private final Event<?> selectionChangedEvent = Events.event();
-  private final Event<Integer> selectedIndexChangedEvent = Events.event();
-  private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
-  private final Event<Entity> selectedItemChangedEvent = Events.event();
-  private final Event<List<Entity>> selectedItemsChangedEvent = Events.event();
+  private final Event<?> selectionChangedEvent = Event.event();
+  private final Event<Integer> selectedIndexChangedEvent = Event.event();
+  private final Event<List<Integer>> selectedIndexesChangedEvent = Event.event();
+  private final Event<Entity> selectedItemChangedEvent = Event.event();
+  private final Event<List<Entity>> selectedItemsChangedEvent = Event.event();
   private final State singleSelectionModeState = State.state(false);
   private final State selectionEmptyState = State.state(true);
   private final State multipleSelectionState = State.state(false);

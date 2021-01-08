@@ -8,7 +8,6 @@ import is.codion.common.db.pool.ConnectionPoolState;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -33,7 +32,7 @@ public final class ConnectionPoolMonitor {
 
   private static final int THOUSAND = 1000;
 
-  private final Event<?> statisticsUpdatedEvent = Events.event();
+  private final Event<?> statisticsUpdatedEvent = Event.event();
 
   private final String username;
   private final ConnectionPool connectionPool;

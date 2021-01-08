@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -36,8 +35,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   private final EntityConnectionProvider connectionProvider;
   private final State connectionValidState = State.state();
-  private final Event<User> loginEvent = Events.event();
-  private final Event<User> logoutEvent = Events.event();
+  private final Event<User> loginEvent = Event.event();
+  private final Event<User> logoutEvent = Event.event();
   private final TaskScheduler validityCheckScheduler = taskScheduler(this::checkConnectionValidity,
           VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
   private final List<M> entityModels = new ArrayList<>();

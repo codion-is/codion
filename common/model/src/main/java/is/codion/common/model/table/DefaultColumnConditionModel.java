@@ -8,7 +8,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -38,8 +37,8 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final Value<T> upperBoundValue = Values.value();
   private final Value<T> lowerBoundValue = Values.value();
   private final Value<Operator> operatorValue = Values.value(Operator.EQUAL);
-  private final Event<?> conditionChangedEvent = Events.event();
-  private final Event<?> conditionModelClearedEvent = Events.event();
+  private final Event<?> conditionChangedEvent = Event.event();
+  private final Event<?> conditionModelClearedEvent = Event.event();
 
   private final State enabledState = State.state();
   private final State lockedState = State.state();

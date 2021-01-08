@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
@@ -27,19 +26,19 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NumericalValuesTest {  private Long longValue;
 
-  private final Event<Long> longValueChangedEvent = Events.event();
+  private final Event<Long> longValueChangedEvent = Event.event();
   private long longPrimitiveValue;
-  private final Event<Long> longPrimitiveValueChangedEvent = Events.event();
+  private final Event<Long> longPrimitiveValueChangedEvent = Event.event();
 
   private Integer integerValue;
-  private final Event<Integer> integerValueChangedEvent = Events.event();
+  private final Event<Integer> integerValueChangedEvent = Event.event();
   private int intValue;
-  private final Event<Integer> intValueChangedEvent = Events.event();
+  private final Event<Integer> intValueChangedEvent = Event.event();
 
   private Double doubleValue;
-  private final Event<Double> doubleValueChangedEvent = Events.event();
+  private final Event<Double> doubleValueChangedEvent = Event.event();
   private double doublePrimitiveValue;
-  private final Event doublePrimitiveValueValueChangedEvent = Events.event();
+  private final Event doublePrimitiveValueValueChangedEvent = Event.event();
 
   public Long getLongValue() {
     return longValue;

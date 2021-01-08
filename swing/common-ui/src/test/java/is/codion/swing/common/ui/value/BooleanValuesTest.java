@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BooleanValuesTest {
 
   private boolean booleanValue;
-  private final Event<Boolean> booleanValueChangedEvent = Events.event();
+  private final Event<Boolean> booleanValueChangedEvent = Event.event();
 
   public boolean isBooleanValue() {
     return booleanValue;

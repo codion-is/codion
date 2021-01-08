@@ -11,7 +11,6 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
@@ -192,8 +191,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 
-  private final Event<Boolean> conditionPanelVisibilityChangedEvent = Events.event();
-  private final Event<Boolean> summaryPanelVisibleChangedEvent = Events.event();
+  private final Event<Boolean> conditionPanelVisibilityChangedEvent = Event.event();
+  private final Event<Boolean> summaryPanelVisibleChangedEvent = Event.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
 

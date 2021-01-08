@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.time;
 
 import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -113,7 +112,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       final JPanel datePanel = new JPanel(Layouts.borderLayout());
       datePanel.add(calendarPanel, BorderLayout.NORTH);
 
-      final Event<?> closeEvent = Events.event();
+      final Event<?> closeEvent = Event.event();
       final State cancel = State.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());

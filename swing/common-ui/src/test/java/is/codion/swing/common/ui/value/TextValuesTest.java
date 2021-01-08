@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TextValuesTest {
 
   private String stringValue;
-  private final Event<String> stringValueChangedEvent = Events.event();
+  private final Event<String> stringValueChangedEvent = Event.event();
 
   public String getStringValue() {
     return stringValue;

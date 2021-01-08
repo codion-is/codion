@@ -5,7 +5,6 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
@@ -33,8 +32,8 @@ public final class HostMonitor {
 
   private static final Logger LOG = LoggerFactory.getLogger(HostMonitor.class);
 
-  private final Event<ServerMonitor> serverAddedEvent = Events.event();
-  private final Event<ServerMonitor> serverRemovedEvent = Events.event();
+  private final Event<ServerMonitor> serverAddedEvent = Event.event();
+  private final Event<ServerMonitor> serverRemovedEvent = Event.event();
 
   private final String hostName;
   private final int registryPort;

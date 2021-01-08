@@ -5,7 +5,6 @@ package is.codion.framework.demos.manual.common;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -23,7 +22,7 @@ public final class EventStateValue {
 
   private static void event() {
     // tag::event[]
-    Event<String> event = Events.event();
+    Event<String> event = Event.event();
 
     // an observer handles the listeners for an Event but can not trigger it
     EventObserver<String> eventObserver = event.getObserver();

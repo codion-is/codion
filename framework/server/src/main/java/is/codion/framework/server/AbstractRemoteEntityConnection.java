@@ -7,7 +7,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.user.User;
@@ -47,7 +46,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * An event notified when this connection is disconnected
    */
-  private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Events.event();
+  private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Event.event();
 
   /**
    * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number

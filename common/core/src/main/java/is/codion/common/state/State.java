@@ -8,7 +8,7 @@ import is.codion.common.Conjunction;
 /**
  * A class encapsulating a boolean state.
  * <pre>
- * State state = States.state();
+ * State state = State.state();
  *
  * StateObserver observer = state.getObserver();
  *

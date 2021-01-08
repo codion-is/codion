@@ -3,9 +3,9 @@
  */
 package is.codion.swing.common.model.table;
 
+import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.common.model.table.RowColumn;
@@ -463,7 +463,7 @@ public final class AbstractFilteredTableModelTest {
   public void selection() {
     final AtomicInteger events = new AtomicInteger();
     final EventListener listener = events::incrementAndGet;
-    final EventDataListener dataListener = Events.dataListener(listener);
+    final EventDataListener dataListener = Event.dataListener(listener);
     final SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);

@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
@@ -177,7 +176,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private Event<?> getRevalidateEvent() {
     if (revalidateEvent == null) {
-      revalidateEvent = Events.event();
+      revalidateEvent = Event.event();
     }
 
     return revalidateEvent;

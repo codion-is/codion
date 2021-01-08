@@ -6628,3 +6628,4 @@
   States removed, methods moved to State
   Users removed, methods moved to User
   Items removed, methods moved to Item
+  Events removed, methods moved to Event

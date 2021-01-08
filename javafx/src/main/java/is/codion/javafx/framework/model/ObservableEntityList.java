@@ -6,7 +6,6 @@ package is.codion.javafx.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.Refreshable;
 import is.codion.common.state.StateObserver;
@@ -47,9 +46,9 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
 
-  private final Event<?> refreshEvent = Events.event();
-  private final Event<?> selectionChangedEvent = Events.event();
-  private final Event<?> filteringDoneEvent = Events.event();
+  private final Event<?> refreshEvent = Event.event();
+  private final Event<?> selectionChangedEvent = Event.event();
+  private final Event<?> filteringDoneEvent = Event.event();
 
   private FXEntityListSelectionModel selectionModel;
 

@@ -2,7 +2,6 @@ package is.codion.swing.common.ui.value;
 
 import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -22,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TemporalValuesTest {
 
-  private final Event<LocalTime> timeValueChangedEvent = Events.event();
-  private final Event<LocalDate> dateValueChangedEvent = Events.event();
-  private final Event<LocalDateTime> timestampValueChangedEvent = Events.event();
+  private final Event<LocalTime> timeValueChangedEvent = Event.event();
+  private final Event<LocalDate> dateValueChangedEvent = Event.event();
+  private final Event<LocalDateTime> timestampValueChangedEvent = Event.event();
 
   private LocalTime timeValue;
   private LocalDate dateValue;

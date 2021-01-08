@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -37,7 +36,7 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
 
   private static final int COLUMNS = 2;
 
-  private final Event<Integer> buttonClickedEvent = Events.event();
+  private final Event<Integer> buttonClickedEvent = Event.event();
   private final ComponentValue<V, C> componentValue;
   private final Action okAction;
   private final Action cancelAction;

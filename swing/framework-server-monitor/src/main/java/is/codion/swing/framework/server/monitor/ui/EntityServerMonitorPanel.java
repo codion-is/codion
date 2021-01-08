@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.rmi.client.Clients;
@@ -59,7 +58,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static String jdkDir = UserPreferences.getUserPreference(JDK_PREFERENCE_KEY, null);
 
-  private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
+  private final Event<Boolean> alwaysOnTopChangedEvent = Event.event();
   private final EntityServerMonitor model;
   private JFrame monitorFrame;
 

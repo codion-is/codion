@@ -5,7 +5,6 @@ package is.codion.common.value;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ValuesTest {
 
-  private final Event<Integer> integerValueChange = Events.event();
+  private final Event<Integer> integerValueChange = Event.event();
   private Integer integerValue = 42;
 
   public Integer getIntegerValue() {

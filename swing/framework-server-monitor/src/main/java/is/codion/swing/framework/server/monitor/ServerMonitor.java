@@ -6,7 +6,6 @@ package is.codion.swing.framework.server.monitor;
 import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerInformation;
@@ -51,7 +50,7 @@ public final class ServerMonitor {
   private static final double THOUSAND = 1000;
   private static final String GC_EVENT_PREFIX = "GC ";
 
-  private final Event<?> serverShutDownEvent = Events.event();
+  private final Event<?> serverShutDownEvent = Event.event();
   private final Value<Object> logLevelValue;
   private final Value<Integer> connectionLimitValue;
 
