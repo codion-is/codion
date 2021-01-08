@@ -3,6 +3,7 @@
  */
 package is.codion.common;
 
+import is.codion.common.properties.PropertyStore;
 import is.codion.common.value.PropertyValue;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public final class Configuration {
       if (configurationFileRequired && !file.exists()) {
         throw new FileNotFoundException(configurationFile);
       }
-      STORE = new PropertyStore(file);
+      STORE = PropertyStore.propertyStore(file);
     }
     catch (final IOException e) {
       throw new RuntimeException("Unable to read configuration file: " + configurationFile, e);

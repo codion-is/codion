@@ -4,7 +4,7 @@
 package is.codion.common.value;
 
 /**
- * A Value bound to a property
+ * A Value associated with a named property.
  * @param <T> the value type
  */
 public interface PropertyValue<T> extends Value<T> {
