@@ -58,6 +58,7 @@ public interface TaskScheduler {
   boolean isRunning();
 
   /**
+   * Adds a listener notified when the interval is set.
    * @param listener a listener notified each time the interval is set
    */
   void addIntervalListener(final EventDataListener<Integer> listener);
