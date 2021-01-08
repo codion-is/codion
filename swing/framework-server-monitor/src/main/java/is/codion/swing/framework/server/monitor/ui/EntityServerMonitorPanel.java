@@ -46,7 +46,6 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 
 /**
@@ -230,12 +229,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static User getAdminUser() {
-    final String adminUser = ServerConfiguration.SERVER_ADMIN_USER.get();
-    if (nullOrEmpty(adminUser)) {
-      throw new IllegalStateException("Required configuration value missing: " + ServerConfiguration.SERVER_ADMIN_USER);
-    }
-
-    return Users.parseUser(adminUser);
+    return Users.parseUser(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
   }
 
   public static void main(final String[] arguments) {
