@@ -9,7 +9,6 @@ import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.common.value.Values;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.ui.value.BooleanValues;
 
@@ -47,13 +46,13 @@ public final class ClientInstanceMonitor {
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
   private final ButtonModel loggingEnabledButtonModel = new JToggleButton.ToggleButtonModel();
-  private final Value<String> searchStringValue = Values.value();
+  private final Value<String> searchStringValue = Value.value();
   private final Highlighter logHighlighter = new DefaultHighlighter();
   private final Highlighter.HighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
   private final Highlighter.HighlightPainter selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
   private final List<MatchPosition> searchTextPositions = new ArrayList<>();
-  private final Value<Integer> currentSearchTextPositionIndex = Values.value();
-  private final Value<Integer> currentSearchTextPosition = Values.value();
+  private final Value<Integer> currentSearchTextPositionIndex = Value.value();
+  private final Value<Integer> currentSearchTextPosition = Value.value();
 
   /**
    * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
@@ -64,7 +63,7 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(final EntityServerAdmin server, final RemoteClient remoteClient) throws RemoteException {
     this.remoteClient = remoteClient;
     this.server = server;
-    this.loggingEnabledValue = Values.value(server.isLoggingEnabled(remoteClient.getClientId()));
+    this.loggingEnabledValue = Value.value(server.isLoggingEnabled(remoteClient.getClientId()));
     BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel).link(loggingEnabledValue);
     bindEvents();
   }
@@ -142,7 +141,7 @@ public final class ClientInstanceMonitor {
   }
 
   public ValueObserver<Integer> getCurrentSearchTextPosition() {
-    return Values.valueObserver(currentSearchTextPosition);
+    return Value.valueObserver(currentSearchTextPosition);
   }
 
   public Document getLogDocument() {

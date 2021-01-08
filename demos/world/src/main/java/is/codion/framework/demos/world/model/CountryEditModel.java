@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
@@ -11,7 +10,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 public final class CountryEditModel extends SwingEntityEditModel {
 
-  private final Value<Double> averageCityPopulationValue = Values.value();
+  private final Value<Double> averageCityPopulationValue = Value.value();
 
   public CountryEditModel(EntityConnectionProvider connectionProvider) {
     super(Country.TYPE, connectionProvider);

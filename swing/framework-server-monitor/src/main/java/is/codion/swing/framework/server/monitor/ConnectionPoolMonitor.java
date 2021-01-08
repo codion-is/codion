@@ -11,7 +11,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -71,11 +70,11 @@ public final class ConnectionPoolMonitor {
   public ConnectionPoolMonitor(final ConnectionPool connectionPool, final int updateRate) {
     this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
-    this.pooledConnectionTimeoutValue = Values.value(connectionPool.getConnectionTimeout() / THOUSAND);
-    this.pooledCleanupIntervalValue = Values.value(connectionPool.getCleanupInterval() / THOUSAND);
-    this.minimumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
-    this.maximumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
-    this.maximumCheckoutTimeValue = Values.value(connectionPool.getMaximumCheckOutTime());
+    this.pooledConnectionTimeoutValue = Value.value(connectionPool.getConnectionTimeout() / THOUSAND);
+    this.pooledCleanupIntervalValue = Value.value(connectionPool.getCleanupInterval() / THOUSAND);
+    this.minimumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize());
+    this.maximumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize());
+    this.maximumCheckoutTimeValue = Value.value(connectionPool.getMaximumCheckOutTime());
     this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
 
     this.pooledConnectionTimeoutValue.addValidator(new MinimumValidator(0));

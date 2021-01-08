@@ -12,7 +12,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
@@ -46,7 +45,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnConditionModel<Entity, Property<?>, ?>> filterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<Entity, ? extends Property<?>, ?>> conditionModels = new HashMap<>();
-  private final Value<String> simpleConditionStringValue = Values.value();
+  private final Value<String> simpleConditionStringValue = Value.value();
   private Condition.Provider additionalConditionProvider;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedCondition = "";

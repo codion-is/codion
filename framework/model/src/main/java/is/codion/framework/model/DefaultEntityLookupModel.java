@@ -10,7 +10,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
@@ -73,9 +72,9 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private final Map<Attribute<String>, LookupSettings> attributeLookupSettings = new HashMap<>();
 
-  private final Value<String> searchStringValue = Values.value("");
-  private final Value<String> multipleItemSeparatorValue = Values.value(",");
-  private final Value<Boolean> multipleSelectionEnabledValue = Values.value(true, false);
+  private final Value<String> searchStringValue = Value.value("");
+  private final Value<String> multipleItemSeparatorValue = Value.value(",");
+  private final Value<Boolean> multipleSelectionEnabledValue = Value.value(true, false);
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Condition.Provider additionalConditionProvider;
@@ -326,9 +325,9 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private static final class DefaultLookupSettings implements LookupSettings {
 
-    private final Value<Boolean> wildcardPrefixValue = Values.value(true, false);
-    private final Value<Boolean> wildcardPostfixValue = Values.value(true, false);
-    private final Value<Boolean> caseSensitiveValue = Values.value(false, false);
+    private final Value<Boolean> wildcardPrefixValue = Value.value(true, false);
+    private final Value<Boolean> wildcardPostfixValue = Value.value(true, false);
+    private final Value<Boolean> caseSensitiveValue = Value.value(false, false);
 
     @Override
     public Value<Boolean> getWildcardPrefixValue() {

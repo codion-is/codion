@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 
@@ -37,7 +36,7 @@ public class BooleanValuesTest {
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
     BooleanValues.booleanButtonModelValue(checkBox.getModel())
-            .link(Values.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
+            .link(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
     assertTrue(checkBox.isSelected());

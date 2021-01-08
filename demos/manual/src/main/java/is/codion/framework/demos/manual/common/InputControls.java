@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.common;
 import is.codion.common.item.Item;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
@@ -46,7 +45,7 @@ public final class InputControls {
     boolean initialValue = true;
     boolean nullValue = false;
 
-    Value<Boolean> booleanValue = Values.value(initialValue, nullValue);
+    Value<Boolean> booleanValue = Value.value(initialValue, nullValue);
 
     JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
 
@@ -60,7 +59,7 @@ public final class InputControls {
   static void nullableCheckBox() {
     // tag::nullableCheckBox[]
     //nullable boolean value
-    Value<Boolean> booleanValue = Values.value();
+    Value<Boolean> booleanValue = Value.value();
 
     NullableToggleButtonModel buttonModel = new NullableToggleButtonModel();
 
@@ -72,7 +71,7 @@ public final class InputControls {
 
   static void booleanComboBox() {
     // tag::booleanComboBox[]
-    Value<Boolean> booleanValue = Values.value();
+    Value<Boolean> booleanValue = Value.value();
 
     JComboBox<Item<Boolean>> comboBox = new JComboBox<>(new BooleanComboBoxModel());
 
@@ -82,7 +81,7 @@ public final class InputControls {
 
   static void textField() {
     // tag::textField[]
-    Value<String> stringValue = Values.value();
+    Value<String> stringValue = Value.value();
 
     JTextField textField = new JTextField();
 
@@ -92,7 +91,7 @@ public final class InputControls {
 
   static void textArea() {
     // tag::textArea[]
-    Value<String> stringValue = Values.value();
+    Value<String> stringValue = Value.value();
 
     JTextArea textArea = new JTextArea();
 
@@ -102,7 +101,7 @@ public final class InputControls {
 
   static void integerField() {
     // tag::integerField[]
-    Value<Integer> integerValue = Values.value();
+    Value<Integer> integerValue = Value.value();
 
     IntegerField integerField = new IntegerField();
 
@@ -112,7 +111,7 @@ public final class InputControls {
 
   static void longField() {
     // tag::longField[]
-    Value<Long> longValue = Values.value();
+    Value<Long> longValue = Value.value();
 
     LongField longField = new LongField();
 
@@ -122,7 +121,7 @@ public final class InputControls {
 
   static void doubleField() {
     // tag::doubleField[]
-    Value<Double> doubleValue = Values.value();
+    Value<Double> doubleValue = Value.value();
 
     DoubleField doubleField = new DoubleField();
 
@@ -132,7 +131,7 @@ public final class InputControls {
 
   static void bigDecimalField() {
     // tag::bigDecimalField[]
-    Value<BigDecimal> bigDecimalValue = Values.value();
+    Value<BigDecimal> bigDecimalValue = Value.value();
 
     BigDecimalField bigDecimalField = new BigDecimalField();
 
@@ -142,7 +141,7 @@ public final class InputControls {
 
   static void localTime() {
     // tag::localTime[]
-    Value<LocalTime> localTimeValue = Values.value();
+    Value<LocalTime> localTimeValue = Value.value();
 
     JFormattedTextField textField = new JFormattedTextField();
 
@@ -152,7 +151,7 @@ public final class InputControls {
 
   static void localDate() {
     // tag::localDate[]
-    Value<LocalDate> localDateValue = Values.value();
+    Value<LocalDate> localDateValue = Value.value();
 
     JFormattedTextField textField = new JFormattedTextField();
 
@@ -162,7 +161,7 @@ public final class InputControls {
 
   static void localDateTime() {
     // tag::localDateTime[]
-    Value<LocalDateTime> localDateTimeValue = Values.value();
+    Value<LocalDateTime> localDateTimeValue = Value.value();
 
     JFormattedTextField textField = new JFormattedTextField();
 
@@ -172,7 +171,7 @@ public final class InputControls {
 
   static void selectionComboBox() {
     // tag::selectionComboBox[]
-    Value<String> stringValue = Values.value();
+    Value<String> stringValue = Value.value();
 
     JComboBox<String> comboBox = new JComboBox<>(new String[] {"one", "two", "three"});
 
@@ -234,7 +233,7 @@ public final class InputControls {
       }
     }
 
-    Value<Person> personValue = Values.value();
+    Value<Person> personValue = Value.value();
 
     PersonPanel personPanel = new PersonPanel();
 
@@ -249,7 +248,7 @@ public final class InputControls {
     IntegerField horizontalAlignmentField = new IntegerField(5);
 
     Value<Integer> horizontalAlignmentValue =
-            Values.propertyValue(horizontalAlignmentField, "horizontalAlignment",
+            Value.propertyValue(horizontalAlignmentField, "horizontalAlignment",
                     int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =

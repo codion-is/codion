@@ -12,7 +12,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
@@ -149,7 +148,7 @@ public class EntityServletServerTest {
 
     final String domainName = new TestDomain().getDomainType().getName();
     final String clientTypeId = "EntityServletServerTest";
-    final Value<UUID> clientIdValue = Values.value(UUID.randomUUID());
+    final Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
     final HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
 
     final CloseableHttpClient client = HttpClientBuilder.create()
@@ -422,7 +421,7 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
-    final Value<UUID> clientIdValue = Values.value(UUID.randomUUID());
+    final Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
     //test with unknown user authentication
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)

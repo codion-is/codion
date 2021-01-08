@@ -8,7 +8,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -88,7 +87,7 @@ public final class EventStateValue {
 
   private static void value() {
     // tag::value[]
-    Value<Integer> value = Values.value();
+    Value<Integer> value = Value.value();
 
     value.addDataListener(System.out::println);
 

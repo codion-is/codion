@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.event.Event;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -97,7 +96,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void testLong() throws Exception {
     final LongField longField = new LongField();
-    final Value<Long> longPropertyValue = Values.propertyValue(this, "longValue",
+    final Value<Long> longPropertyValue = Value.propertyValue(this, "longValue",
             Long.class, longValueChangedEvent);
     NumericalValues.longValue(longField).link(longPropertyValue);
     assertNull(longField.getLong());
@@ -112,7 +111,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void testLongPrimitive() throws Exception {
     final LongField longField = new LongField();
-    final Value<Long> longPrimitivePropertyValue = Values.propertyValue(this, "longPrimitiveValue",
+    final Value<Long> longPrimitivePropertyValue = Value.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
     final ComponentValue<Long, LongField> componentValue = NumericalValues.longValue(longField, Nullable.NO);
     componentValue.link(longPrimitivePropertyValue);
@@ -129,7 +128,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void testInteger() throws Exception {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> integerPropertyValue = Values.propertyValue(this, "integerValue",
+    final Value<Integer> integerPropertyValue = Value.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
     NumericalValues.integerValue(integerField).link(integerPropertyValue);
     assertNull(integerField.getInteger());
@@ -144,7 +143,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void testInt() throws Exception {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> integerPropertyValue = Values.propertyValue(this, "intValue", int.class, intValueChangedEvent);
+    final Value<Integer> integerPropertyValue = Value.propertyValue(this, "intValue", int.class, intValueChangedEvent);
     final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValue(integerField, Nullable.NO);
     componentValue.link(integerPropertyValue);
     assertEquals(0, integerField.getInteger());
@@ -176,7 +175,7 @@ public class NumericalValuesTest {  private Long longValue;
   public void testDouble() throws Exception {
     final DoubleField doubleField = new DoubleField();
     doubleField.setSeparators('.', ',');
-    final Value<Double> doublePropertyValue = Values.propertyValue(this, "doubleValue",
+    final Value<Double> doublePropertyValue = Value.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
     NumericalValues.doubleValue(doubleField).link(doublePropertyValue);
     assertNull(doubleField.getDouble());
@@ -192,7 +191,7 @@ public class NumericalValuesTest {  private Long longValue;
   public void testDoublePrimitive() throws Exception {
     final DoubleField doubleField = new DoubleField();
     doubleField.setSeparators('.', ',');
-    final Value<Double> doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
+    final Value<Double> doublePrimitivePropertyValue = Value.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
     final ComponentValue<Double, DoubleField> componentValue = NumericalValues.doubleValue(doubleField, Nullable.NO);
     componentValue.link(doublePrimitivePropertyValue);

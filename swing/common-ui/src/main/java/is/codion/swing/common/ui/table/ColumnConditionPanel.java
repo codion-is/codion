@@ -10,7 +10,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
@@ -520,7 +519,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
     SelectedValues.selectedValue(comboBox)
-            .link(Values.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver()));
+            .link(Value.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver()));
     comboBox.setRenderer(new OperatorComboBoxRenderer());
 
     return comboBox;

@@ -3,7 +3,6 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.time.LocalDateInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
@@ -62,7 +61,7 @@ public class TemporalValuesTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(format));
-    final Value<LocalTime> timePropertyValue = Values.propertyValue(this, "time",
+    final Value<LocalTime> timePropertyValue = Value.propertyValue(this, "time",
             LocalTime.class, timeValueChangedEvent);
     TemporalValues.localTimeValue(textField, format).link(timePropertyValue);
     assertEquals("__:__", textField.getText());
@@ -82,7 +81,7 @@ public class TemporalValuesTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DOT);
 
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
-    final Value<LocalDate> datePropertyValue = Values.propertyValue(this, "date",
+    final Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
     TemporalValues.localDateValue(textField, DateFormats.SHORT_DOT).link(datePropertyValue);
     assertEquals("__.__.____", textField.getText());
@@ -102,7 +101,7 @@ public class TemporalValuesTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
-    final Value<LocalDateTime> timestampPropertyValue = Values.propertyValue(this, "timestamp",
+    final Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
     TemporalValues.localDateTimeValue(textField, DateFormats.SHORT_TIMESTAMP).link(timestampPropertyValue);
     assertEquals("__-__-__ __:__", textField.getText());

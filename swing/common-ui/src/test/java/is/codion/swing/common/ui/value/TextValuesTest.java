@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class TextValuesTest {
 
   @Test
   public void valueLink() {
-    final Value<String> textValue = Values.value("start");
+    final Value<String> textValue = Value.value("start");
     textValue.addValidator(text -> {
       if (text != null && text.equals("nono")) {
         throw new IllegalArgumentException();
@@ -57,7 +56,7 @@ public class TextValuesTest {
   public void nullInitialValue() throws Exception {
     stringValue = null;
     final JTextField textField = new JTextField();
-    final Value<String> stringPropertyValue = Values.propertyValue(this, "stringValue",
+    final Value<String> stringPropertyValue = Value.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
     TextValues.textValue(textField).link(stringPropertyValue);
     assertNull(this.stringValue);
@@ -72,7 +71,7 @@ public class TextValuesTest {
     final JTextField textField2 = new JTextField();
     this.stringValue = "test";
     TextValues.textValue(textField2)
-            .link(Values.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
+            .link(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
     assertEquals("test", textField2.getText());
   }
 
@@ -81,7 +80,7 @@ public class TextValuesTest {
     stringValue = "name";
     final JTextField textField = new JTextField();
     TextValues.textValue(textField)
-            .link(Values.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
+            .link(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
     assertEquals("name", textField.getText());
     textField.setText("darri");
     assertFalse(getStringValue().isEmpty());

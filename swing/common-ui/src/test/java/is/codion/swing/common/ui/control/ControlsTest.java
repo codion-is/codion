@@ -7,7 +7,6 @@ import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
@@ -80,7 +79,7 @@ public final class ControlsTest {
     setValue(true);
     assertTrue(control.getValue().get());
 
-    final Value<Boolean> nullableValue = Values.value(true);
+    final Value<Boolean> nullableValue = Value.value(true);
     final ToggleControl nullableControl = Controls.toggleControl(nullableValue);
     ButtonModel buttonModel = Controls.buttonModel(nullableControl);
     assertTrue(buttonModel instanceof NullableToggleButtonModel);
@@ -90,7 +89,7 @@ public final class ControlsTest {
     nullableValue.set(null);
     assertNull(((NullableToggleButtonModel) buttonModel).getState());
 
-    final Value<Boolean> nonNullableValue = Values.value(true, false);
+    final Value<Boolean> nonNullableValue = Value.value(true, false);
     final ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
     buttonModel = Controls.buttonModel(nonNullableControl);
     assertFalse(buttonModel instanceof NullableToggleButtonModel);

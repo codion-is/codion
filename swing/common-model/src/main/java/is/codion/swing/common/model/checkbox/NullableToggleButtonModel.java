@@ -5,7 +5,6 @@ package is.codion.swing.common.model.checkbox;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 
 import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;
@@ -41,7 +40,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * @param initialState the initial state
    */
   public NullableToggleButtonModel(final Boolean initialState) {
-    this.buttonState = Values.value(initialState);
+    this.buttonState = Value.value(initialState);
     displayState(initialState);
     bindEvents();
   }
