@@ -150,7 +150,7 @@ public final class Util {
   }
 
   /**
-   * Rounds the given double to {@code places} decimal places, using {@link RoundingMode.HALF_UP}.
+   * Rounds the given double to {@code places} decimal places, using {@link RoundingMode#HALF_UP}.
    * @param d the double to round, null results in a null return value
    * @param places the number of decimal places
    * @return the rounded value or null if the parameter value was null
