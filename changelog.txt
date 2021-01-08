@@ -6616,3 +6616,4 @@
   Property.BIG_DECIMAL_ROUNDING_MODE renamed DECIMAL_ROUNDING_MODE, now used for doubles as well
   String.length() == 0 replaced with isEmpty()
   Util cleanup
+0.17.6
