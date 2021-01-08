@@ -9,9 +9,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -198,5 +202,56 @@ public interface PropertyStore {
     }
 
     return propertiesFromFile;
+  }
+
+  /**
+   * @return a String containing all system properties, one per line
+   */
+  static String getSystemProperties() {
+    return getSystemProperties((property, value) -> value);
+  }
+
+  /**
+   * Returns a String containing all system properties, sorted by name, written by the given {@link PropertyFormatter}.
+   * @param propertyFormatter for specific property formatting or exclusions
+   * @return a String containing all system properties, one per line
+   */
+  static String getSystemProperties(final PropertyFormatter propertyFormatter) {
+    requireNonNull(propertyFormatter, "propertyWriter");
+    try {
+      final SecurityManager manager = System.getSecurityManager();
+      if (manager != null) {
+        manager.checkPropertiesAccess();
+      }
+    }
+    catch (final SecurityException e) {
+      System.err.println(e.getMessage());
+      return "";
+    }
+    final Properties props = System.getProperties();
+    final Enumeration<?> propNames = props.propertyNames();
+    final List<String> propertyNames = new ArrayList<>(props.size());
+    while (propNames.hasMoreElements()) {
+      propertyNames.add((String) propNames.nextElement());
+    }
+
+    Collections.sort(propertyNames);
+
+    return propertyNames.stream().map(key -> key + ": " +
+            propertyFormatter.formatValue(key, props.getProperty(key))).collect(Collectors.joining("\n"));
+  }
+
+  /**
+   * Formats a property value, can f.ex. be used to hide passwords and other sensitive data.
+   */
+  interface PropertyFormatter {
+
+    /**
+     * Formats the given value.
+     * @param property the property
+     * @param value the value
+     * @return the value
+     */
+    String formatValue(String property, String value);
   }
 }

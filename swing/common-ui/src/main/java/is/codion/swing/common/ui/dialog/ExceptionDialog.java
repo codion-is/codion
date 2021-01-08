@@ -4,9 +4,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.Configuration;
-import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
+import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
@@ -261,7 +261,7 @@ final class ExceptionDialog extends JDialog {
     if (DISPLAY_SYSTEM_PROPERTIES.get()) {
       detailsArea.append("\n");
       detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
-      detailsArea.append(Util.getSystemProperties());
+      detailsArea.append(PropertyStore.getSystemProperties());
     }
 
     detailsArea.setCaretPosition(0);

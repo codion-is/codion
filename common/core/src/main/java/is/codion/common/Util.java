@@ -8,15 +8,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -173,56 +169,5 @@ public final class Util {
     catch (final NumberFormatException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * @return a String containing all system properties, one per line
-   */
-  public static String getSystemProperties() {
-    return getSystemProperties((property, value) -> value);
-  }
-
-  /**
-   * Returns a String containing all system properties, written by the given {@link PropertyWriter}.
-   * @param propertyWriter for specific property formatting or exclusions
-   * @return a String containing all system properties, one per line
-   */
-  public static String getSystemProperties(final PropertyWriter propertyWriter) {
-    requireNonNull(propertyWriter, "propertyWriter");
-    try {
-      final SecurityManager manager = System.getSecurityManager();
-      if (manager != null) {
-        manager.checkPropertiesAccess();
-      }
-    }
-    catch (final SecurityException e) {
-      System.err.println(e.getMessage());
-      return "";
-    }
-    final Properties props = System.getProperties();
-    final Enumeration<?> propNames = props.propertyNames();
-    final List<String> propertyNames = new ArrayList<>(props.size());
-    while (propNames.hasMoreElements()) {
-      propertyNames.add((String) propNames.nextElement());
-    }
-
-    Collections.sort(propertyNames);
-
-    return propertyNames.stream().map(key -> key + ": " +
-            propertyWriter.writeValue(key, props.getProperty(key))).collect(Collectors.joining("\n"));
-  }
-
-  /**
-   * Writes a property value
-   */
-  public interface PropertyWriter {
-
-    /**
-     * Writes the given value.
-     * @param property the property
-     * @param value the value
-     * @return the value
-     */
-    String writeValue(String property, String value);
   }
 }

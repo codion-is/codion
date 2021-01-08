@@ -6621,3 +6621,4 @@
   DefaultEntity and DefaultKey, differing serialization versions now prevent deserialization
   EntityServerMonitorPanel, use PropertyValue.getOrThrow()
   PropertyStore now interface, moved to properties package
+  Util.getSystemProperties() moved to PropertyStore, PropertyWriter moved to properties package and renamed PropertyFormatter

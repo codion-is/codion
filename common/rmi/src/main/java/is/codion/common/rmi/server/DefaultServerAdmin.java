@@ -5,6 +5,8 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.Memory;
 import is.codion.common.Util;
+import is.codion.common.properties.PropertyStore;
+import is.codion.common.properties.PropertyStore.PropertyFormatter;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.user.User;
 
@@ -43,7 +45,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   private final transient AbstractServer<?, ? extends ServerAdmin> server;
   private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
-  private final transient Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
+  private final transient PropertyFormatter propertyFormatter = new SystemPropertyFormatter();
 
   public DefaultServerAdmin(final AbstractServer<?, ? extends ServerAdmin> server, final ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerAdminPort(),
@@ -59,7 +61,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   @Override
   public final String getSystemProperties() {
-    return Util.getSystemProperties(propertyWriter);
+    return PropertyStore.getSystemProperties(propertyFormatter);
   }
 
   @Override
@@ -345,10 +347,10 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     }
   }
 
-  private static final class SystemPropertyWriter implements Util.PropertyWriter {
+  private static final class SystemPropertyFormatter implements PropertyFormatter {
 
     @Override
-    public String writeValue(final String property, final String value) {
+    public String formatValue(final String property, final String value) {
       if ("java.class.path".equals(property) && !value.isEmpty()) {
         return "\n" + String.join("\n", value.split(Util.PATH_SEPARATOR));
       }
