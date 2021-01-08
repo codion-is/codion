@@ -237,6 +237,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
+  public int getSerializationVersion() {
+    return entityProperties.serializationVersion;
+  }
+
+  @Override
   public String getTableName() {
     return tableName;
   }
@@ -825,6 +830,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<Entity>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
+    private final int serializationVersion;
+
     private EntityProperties(final EntityType<?> entityType, final List<Property.Builder<?>> propertyBuilders) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
@@ -845,6 +852,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.derivedAttributes = initializeDerivedAttributes();
       this.transientProperties = unmodifiableList(getTransientProperties());
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
+      this.serializationVersion = createSerializationVersion();
     }
 
     private Map<Attribute<?>, Property<?>> initializePropertyMap(final List<Property.Builder<?>> propertyBuilders) {
@@ -1002,6 +1010,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private List<ColumnProperty<?>> getSelectableProperties() {
       return columnProperties.stream().filter(property ->
               !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
+    }
+
+    private int createSerializationVersion() {
+      return propertyMap.values().stream()
+              .filter(property -> !(property instanceof DerivedProperty))
+              .map(Property::getAttribute)
+              .map(attribute -> attribute.getName() + attribute.getTypeClass().getName())
+              .collect(Collectors.joining()).hashCode();
     }
   }
 
