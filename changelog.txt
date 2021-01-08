@@ -6631,3 +6631,4 @@
   Events removed, methods moved to Event
   Values removed, method moved to Value
   DatabaseConnections removed, methods moved to DatabaseConnection
+  Reports removed, methods moved to Report

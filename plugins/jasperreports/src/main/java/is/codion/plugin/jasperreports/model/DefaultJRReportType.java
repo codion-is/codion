@@ -6,7 +6,6 @@ package is.codion.plugin.jasperreports.model;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
-import is.codion.common.db.reports.Reports;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -22,7 +21,7 @@ final class DefaultJRReportType implements JRReportType, Serializable {
   private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;
 
   DefaultJRReportType(final String name) {
-    this.reportType = Reports.reportType(name);
+    this.reportType = ReportType.reportType(name);
   }
 
   @Override

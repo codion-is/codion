@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
-import is.codion.common.db.reports.Reports;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
@@ -90,7 +89,7 @@ public class JasperReportsTest {
   public void fillJdbcReportInvalidReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    final ReportType<Object, Object, Object> nonExisting = Reports.reportType("test");
+    final ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
     assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
   }
 

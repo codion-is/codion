@@ -8,7 +8,6 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.AbstractReport;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
-import is.codion.common.db.reports.Reports;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -33,7 +32,7 @@ public final class TestDomain extends DefaultDomain {
 
   static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
-  public static final ReportType<Object, String, String> REPORT = Reports.reportType("report");
+  public static final ReportType<Object, String, String> REPORT = ReportType.reportType("report");
 
   public TestDomain() {
     super(DOMAIN);
