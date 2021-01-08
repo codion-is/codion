@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Entity object mapper for mapping {@link Entity} and {@link Key} to and from JSON.
  */
@@ -39,7 +41,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param entities the domain model entities
    */
   public EntityObjectMapper(final Entities entities) {
-    this.entities = entities;
+    this.entities = requireNonNull(entities, "entities");
     this.entitySerializer = new EntitySerializer(this);
     this.entityDeserializer = new EntityDeserializer(entities, this);
     final SimpleModule module = new SimpleModule();

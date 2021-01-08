@@ -163,6 +163,7 @@ public final class Util {
    * Rounds the given double to {@code places} decimal places.
    * @param d the double to round, null results in a null return value
    * @param places the number of decimal places
+   * @param roundingMode the rounding mode
    * @return the rounded value or null if the parameter value was null
    */
   public static Double roundDouble(final Double d, final int places, final RoundingMode roundingMode) {
