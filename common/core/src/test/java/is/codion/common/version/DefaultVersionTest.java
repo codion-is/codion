@@ -11,28 +11,28 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class VersionsTest {
+public final class DefaultVersionTest {
 
   @Test
   public void parse() {
-    Version version = Versions.parse("2.12.4 2018.01.02 15:27");
+    Version version = Version.parse("2.12.4 2018.01.02 15:27");
     assertEquals(version.getMajor(), 2);
     assertEquals(version.getMinor(), 12);
     assertEquals(version.getPatch(), 4);
     assertEquals("2018.01.02 15:27", version.getMetadata());
 
-    version = Versions.parse("2.12.4");
+    version = Version.parse("2.12.4");
     assertEquals(version.getMajor(), 2);
     assertEquals(version.getMinor(), 12);
     assertEquals(version.getPatch(), 4);
 
-    version = Versions.parse("0.2-build 23");
+    version = Version.parse("0.2-build 23");
     assertEquals(version.getMajor(), 0);
     assertEquals(version.getMinor(), 2);
     assertEquals(version.getPatch(), 0);
     assertEquals("build 23", version.getMetadata());
 
-    version = Versions.parse("1-RC");
+    version = Version.parse("1-RC");
     assertEquals(version.getMajor(), 1);
     assertEquals(version.getMinor(), 0);
     assertEquals(version.getPatch(), 0);
@@ -41,27 +41,27 @@ public final class VersionsTest {
 
   @Test
   public void parseIllegalNull() {
-    assertThrows(IllegalArgumentException.class, () -> Versions.parse(null));
+    assertThrows(IllegalArgumentException.class, () -> Version.parse(null));
   }
 
   @Test
   public void parseIllegalEmpty() {
-    assertThrows(IllegalArgumentException.class, () -> Versions.parse(""));
+    assertThrows(IllegalArgumentException.class, () -> Version.parse(""));
   }
 
   @Test
   public void constructor() {
-    Version version = Versions.version(1);
+    Version version = Version.version(1);
     assertEquals(version.getMajor(), 1);
     assertEquals(version.getMinor(), 0);
     assertEquals(version.getPatch(), 0);
 
-    version = Versions.version(1, 0, 23);
+    version = Version.version(1, 0, 23);
     assertEquals(version.getMajor(), 1);
     assertEquals(version.getMinor(), 0);
     assertEquals(version.getPatch(), 23);
 
-    version = Versions.version(0, 2, 1);
+    version = Version.version(0, 2, 1);
     assertEquals(version.getMajor(), 0);
     assertEquals(version.getMinor(), 2);
     assertEquals(version.getPatch(), 1);
@@ -69,11 +69,11 @@ public final class VersionsTest {
 
   @Test
   public void compare() {
-    final Version version0 = Versions.version(0, 0, 1);
-    final Version version1 = Versions.version(0, 1, 0);
-    final Version version2 = Versions.version(0, 1, 1);
-    final Version version3 = Versions.version(1, 0, 1);
-    final Version version4 = Versions.version(1, 1, 0);
+    final Version version0 = Version.version(0, 0, 1);
+    final Version version1 = Version.version(0, 1, 0);
+    final Version version2 = Version.version(0, 1, 1);
+    final Version version3 = Version.version(1, 0, 1);
+    final Version version4 = Version.version(1, 1, 0);
 
     final List<Version> versions = asList(version3, version4, version0, version2, version1);
     Collections.sort(versions);
@@ -87,28 +87,28 @@ public final class VersionsTest {
 
   @Test
   public void equalsHashCodeToString() {
-    final Version version0 = Versions.version(2, 1, 5, "RC");
-    final Version version1 = Versions.parse("2.1.5");
+    final Version version0 = Version.version(2, 1, 5, "RC");
+    final Version version1 = Version.parse("2.1.5");
     assertNotEquals(version0, version1);
     assertEquals(version0.hashCode(), version1.hashCode());
     assertEquals("2.1.5-RC", version0.toString());
     assertEquals("2.1.5", version1.toString());
-    assertEquals(version1, Versions.version(2, 1, 5));
-    assertEquals(version0, Versions.version(2, 1, 5, "RC"));
+    assertEquals(version1, Version.version(2, 1, 5));
+    assertEquals(version0, Version.version(2, 1, 5, "RC"));
   }
 
   @Test
   public void constructorIllegalMajor() {
-    assertThrows(IllegalArgumentException.class, () -> Versions.version(-1, 0, 0));
+    assertThrows(IllegalArgumentException.class, () -> Version.version(-1, 0, 0));
   }
 
   @Test
   public void constructorIllegalMinor() {
-    assertThrows(IllegalArgumentException.class, () -> Versions.version(0, -1, 0));
+    assertThrows(IllegalArgumentException.class, () -> Version.version(0, -1, 0));
   }
 
   @Test
   public void constructorIllegalPatch() {
-    assertThrows(IllegalArgumentException.class, () -> Versions.version(0, 0, -1));
+    assertThrows(IllegalArgumentException.class, () -> Version.version(0, 0, -1));
   }
 }

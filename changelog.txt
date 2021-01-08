@@ -6624,3 +6624,4 @@
   Util.getSystemProperties() moved to PropertyStore, PropertyWriter moved to properties package and renamed PropertyFormatter
   LoggerProxy moved to logging package
   CredentialsProvider.getAuthenticationToken(), removed old WebStart backwards compatibility
+  Versions removed, methods moved to Version

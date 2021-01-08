@@ -8,7 +8,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.Users;
 import is.codion.common.version.Version;
-import is.codion.common.version.Versions;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.model.EntityEditModel;
@@ -156,7 +155,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   @Override
   protected Version getClientVersion() {
-    return Versions.version(0, 1, 0);
+    return Version.version(0, 1, 0);
   }
 
   @Override

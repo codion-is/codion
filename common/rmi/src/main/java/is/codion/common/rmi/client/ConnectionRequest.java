@@ -5,7 +5,6 @@ package is.codion.common.rmi.client;
 
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
-import is.codion.common.version.Versions;
 
 import java.util.Map;
 import java.util.UUID;
@@ -80,6 +79,6 @@ public interface ConnectionRequest {
    */
   static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
                                              final Version clientVersion, final Map<String, Object> parameters) {
-    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Versions.getVersion(), parameters);
+    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Version.getVersion(), parameters);
   }
 }

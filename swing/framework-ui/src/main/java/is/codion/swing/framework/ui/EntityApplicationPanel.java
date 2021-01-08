@@ -21,7 +21,6 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
-import is.codion.common.version.Versions;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
@@ -881,7 +880,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    final String versionString = Versions.getVersionAndBuildNumberString();
+    final String versionString = Version.getVersionAndBuildNumberString();
     panel.add(new JLabel(icons().logoTransparent()), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsage() + ")");
     versionMemoryField.setEditable(false);

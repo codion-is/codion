@@ -4,7 +4,6 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.version.Version;
-import is.codion.common.version.Versions;
 
 import java.io.Serializable;
 import java.time.ZoneId;
@@ -21,7 +20,7 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
   private final int serverPort;
   private final ZonedDateTime serverStartTime;
   private final Locale locale = Locale.getDefault();
-  private final Version serverVersion = Versions.getVersion();
+  private final Version serverVersion = Version.getVersion();
 
   DefaultServerInformation(final UUID serverId, final String serverName, final int serverPort,
                            final ZonedDateTime serverStartTime) {
