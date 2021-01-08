@@ -700,6 +700,7 @@ final class DefaultEntity implements Entity, Serializable {
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
+    stream.writeInt(definition.getSerializationVersion());
     final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
     final List<Property<?>> properties = definition.getProperties();
@@ -726,6 +727,9 @@ final class DefaultEntity implements Entity, Serializable {
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
     definition = entities.getDefinition((String) stream.readObject());
+    if (definition.getSerializationVersion() != stream.readInt()) {
+      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' can not be deserialized due to version difference");
+    }
     final boolean isModified = stream.readBoolean();
     values = new HashMap<>();
     final List<Property<?>> properties = definition.getProperties();

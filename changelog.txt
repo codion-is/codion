@@ -6647,3 +6647,5 @@
   String.length() == 0 replaced with isEmpty()
   Util cleanup
 0.17.6
+  EntityDefinition.getSerializationVersion() added, based on property names, types and order
+  DefaultEntity and DefaultKey, differing serialization versions now prevent deserialization

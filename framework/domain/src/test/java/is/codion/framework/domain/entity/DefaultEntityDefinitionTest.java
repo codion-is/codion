@@ -14,6 +14,8 @@ import is.codion.framework.domain.property.Properties;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Locale;
@@ -102,7 +104,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void derivedProperty() {
+  public void testDerivedProperty() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("derivedProperty");
     final Attribute<Integer> name = entityType.integerAttribute("name");
     final Attribute<String> info = entityType.stringAttribute("info");
@@ -423,5 +425,81 @@ public class DefaultEntityDefinitionTest {
 
     Locale.setDefault(new Locale("is", "IS"));
     assertEquals("Prufa", definition.getCaption());
+  }
+
+  private static final DomainType COMPATIBILITY = domainType("compatibility");
+
+  interface Person {
+    EntityType<Entity> TYPE = COMPATIBILITY.entityType("test");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<Double> SALARY = TYPE.doubleAttribute("salary");
+    Attribute<String> SALARY_FORMATTED = TYPE.stringAttribute("salary_formatted");
+    Attribute<Boolean> ENABLED = TYPE.booleanAttribute("enabled");
+  }
+
+  interface PersonDifferentType {
+    EntityType<Entity> TYPE = COMPATIBILITY.entityType("test2");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<BigDecimal> SALARY = TYPE.bigDecimalAttribute("salary");
+    Attribute<String> SALARY_FORMATTED = TYPE.stringAttribute("salary_formatted");
+    Attribute<Boolean> ENABLED = TYPE.booleanAttribute("enabled");
+  }
+
+  @Test
+  public void serializationCompatibility() {
+    final DefaultEntityDefinition definition = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+            Arrays.asList(
+                    primaryKeyProperty(Person.ID),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY),
+                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(Person.SALARY).toString(), Person.SALARY),
+                    columnProperty(Person.ENABLED)
+            ));
+
+    final DefaultEntityDefinition missingProperty = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+            Arrays.asList(
+                    primaryKeyProperty(Person.ID),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY),
+                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(Person.SALARY).toString(), Person.SALARY)
+            ));
+
+    final DefaultEntityDefinition missingDerivedProperty = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+            Arrays.asList(
+                    primaryKeyProperty(Person.ID),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY),
+                    columnProperty(Person.ENABLED)
+            ));
+
+    final DefaultEntityDefinition differentOrder = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+            Arrays.asList(
+                    primaryKeyProperty(Person.ID),
+                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(Person.SALARY).toString(), Person.SALARY),
+                    columnProperty(Person.ENABLED),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY)
+            ));
+
+    final DefaultEntityDefinition differentType = new DefaultEntityDefinition(COMPATIBILITY.getName(), PersonDifferentType.TYPE, Person.TYPE.getName(),
+            Arrays.asList(
+                    primaryKeyProperty(PersonDifferentType.ID),
+                    columnProperty(PersonDifferentType.NAME),
+                    columnProperty(PersonDifferentType.SALARY),
+                    derivedProperty(PersonDifferentType.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(PersonDifferentType.SALARY).toString(), PersonDifferentType.SALARY),
+                    columnProperty(PersonDifferentType.ENABLED)
+            ));
+
+    assertNotEquals(definition.getSerializationVersion(), missingProperty.getSerializationVersion());
+    assertEquals(definition.getSerializationVersion(), missingDerivedProperty.getSerializationVersion());
+    assertNotEquals(definition.getSerializationVersion(), differentOrder.getSerializationVersion());
+    assertNotEquals(missingProperty.getSerializationVersion(), differentOrder.getSerializationVersion());
+    assertNotEquals(definition.getSerializationVersion(), differentType.getSerializationVersion());
   }
 }

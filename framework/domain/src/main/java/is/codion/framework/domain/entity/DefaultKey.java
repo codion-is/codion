@@ -301,6 +301,7 @@ class DefaultKey implements Key, Serializable {
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
+    stream.writeInt(definition.getSerializationVersion());
     stream.writeBoolean(primaryKey);
     stream.writeInt(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
@@ -313,6 +314,9 @@ class DefaultKey implements Key, Serializable {
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
     definition = entities.getDefinition((String) stream.readObject());
+    if (definition.getSerializationVersion() != stream.readInt()) {
+      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' can not be deserialized due to version difference");
+    }
     primaryKey = stream.readBoolean();
     final int attributeCount = stream.readInt();
     values = new HashMap<>(attributeCount);
