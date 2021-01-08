@@ -5,7 +5,6 @@ package is.codion.framework.demos.petstore.testing;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.petstore.domain.Petstore;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
@@ -21,7 +20,7 @@ import static java.util.Collections.singletonList;
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public PetstoreLoadTest() {
     super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {

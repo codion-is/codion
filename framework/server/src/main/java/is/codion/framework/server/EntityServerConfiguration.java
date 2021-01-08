@@ -11,7 +11,6 @@ import is.codion.common.db.database.Databases;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.PropertyValue;
 
 import org.slf4j.Logger;
@@ -197,7 +196,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
     configuration.setStartupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
-            .stream().map(Users::parseUser).collect(toList()));
+            .stream().map(User::parseUser).collect(toList()));
     configuration.setClientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
     configuration.setConnectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
     final Map<String, Integer> timeoutMap = new HashMap<>();
@@ -210,7 +209,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     }
     configuration.setClientSpecificConnectionTimeouts(timeoutMap);
     final String adminUserString = SERVER_ADMIN_USER.get();
-    final User adminUser = nullOrEmpty(adminUserString) ? null : Users.parseUser(adminUserString);
+    final User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
     if (adminUser == null) {
       EntityServerConfiguration.LOG.info("No admin user specified");
     }

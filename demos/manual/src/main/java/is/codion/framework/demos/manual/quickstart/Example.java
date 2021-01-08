@@ -6,7 +6,7 @@ package is.codion.framework.demos.manual.quickstart;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -150,7 +150,7 @@ public final class Example {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"));
+                    .setUser(User.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 
@@ -199,7 +199,7 @@ public final class Example {
     class StoreTest extends EntityTestUnit {
 
       public StoreTest() {
-        super(Store.class.getName(), Users.parseUser("scott:tiger"));
+        super(Store.class.getName(), User.parseUser("scott:tiger"));
       }
 
       @Test
@@ -226,7 +226,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnections.createConnection(
-                    domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
+                    domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
     Entity johnDoe = connection.selectSingle(Customer.LAST_NAME, "Doe");
@@ -251,7 +251,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnections.createConnection(
-                    domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
+                    domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
     Entities entities = domain.getEntities();
 

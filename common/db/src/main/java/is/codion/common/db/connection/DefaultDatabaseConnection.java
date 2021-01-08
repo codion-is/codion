@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -331,7 +330,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   private static User getUser(final Connection connection) throws DatabaseException {
     try {
-      return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), Users::user);
+      return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
     }
     catch (final SQLException e) {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");

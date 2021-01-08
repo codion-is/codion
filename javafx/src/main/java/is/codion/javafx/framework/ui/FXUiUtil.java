@@ -10,7 +10,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -857,7 +856,7 @@ public final class FXUiUtil {
 
     dialog.setResultConverter(dialogButton -> {
       if (dialogButton == loginButtonType) {
-        return Users.user(username.getText(), password.getText().toCharArray());
+        return User.user(username.getText(), password.getText().toCharArray());
       }
 
       return null;

@@ -6,7 +6,6 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LocalEntityConnectionProviderTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   public void test() {

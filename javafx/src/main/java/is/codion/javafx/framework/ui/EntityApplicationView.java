@@ -5,7 +5,6 @@ package is.codion.javafx.framework.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -162,7 +161,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   protected User getDefaultUser() {
     final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
 
-    return Users.user(defaultUserName);
+    return User.user(defaultUserName);
   }
 
   /**

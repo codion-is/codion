@@ -8,7 +8,6 @@ import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AbstractServerTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   public static final int PORT = 1234;
 
   @Test
@@ -129,7 +128,7 @@ public class AbstractServerTest {
     final UUID connectionId = UUID.randomUUID();
     final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
     final ConnectionRequest connectionRequest2 = ConnectionRequest.connectionRequest(
-            Users.user(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
+            User.user(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
 
     server.connect(connectionRequest);
 
@@ -145,7 +144,7 @@ public class AbstractServerTest {
     final UUID connectionId = UUID.randomUUID();
     final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
     final ConnectionRequest connectionRequest2 = ConnectionRequest.connectionRequest(
-            Users.user("test", UNIT_TEST_USER.getPassword()), connectionId, clientTypeId);
+            User.user("test", UNIT_TEST_USER.getPassword()), connectionId, clientTypeId);
 
     server.connect(connectionRequest);
 

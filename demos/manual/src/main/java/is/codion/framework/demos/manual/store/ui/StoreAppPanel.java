@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store.ui;
 
 import is.codion.common.db.reports.Report;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
@@ -70,7 +70,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
     Report.REPORT_PATH.set("http://test.io");
     new StoreAppPanel().startApplication("Store", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 }
 // end::storeAppPanel[]

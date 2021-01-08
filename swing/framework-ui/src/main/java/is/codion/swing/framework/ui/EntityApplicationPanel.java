@@ -18,7 +18,6 @@ import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -1301,7 +1300,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? Users.user(getDefaultUsername()) : defaultUser);
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser);
     final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
     if (nullOrEmpty(user.getUsername())) {
@@ -1401,7 +1400,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logoTransparent();
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("");
+      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : User.user("");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }

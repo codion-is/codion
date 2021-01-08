@@ -4,7 +4,7 @@
 package is.codion.common.db.database;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class DatabaseTest {
   @Test
   public void validateWithQuery() throws DatabaseException, SQLException {
     final Database testDatabase = new TestDatabase();
-    final Connection connection = testDatabase.createConnection(Users.parseUser("scott:tiger"));
+    final Connection connection = testDatabase.createConnection(User.parseUser("scott:tiger"));
     assertTrue(testDatabase.isConnectionValid(connection));
     connection.close();
     assertFalse(testDatabase.isConnectionValid(connection));

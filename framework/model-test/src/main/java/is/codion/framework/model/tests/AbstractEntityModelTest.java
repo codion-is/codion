@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -42,7 +41,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 

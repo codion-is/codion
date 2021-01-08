@@ -6626,3 +6626,4 @@
   CredentialsProvider.getAuthenticationToken(), removed old WebStart backwards compatibility
   Versions removed, methods moved to Version
   States removed, methods moved to State
+  Users removed, methods moved to User

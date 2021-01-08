@@ -5,7 +5,6 @@ package is.codion.swing.common.tools.loadtest;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final UsageScenario<Object> SCENARIO = new AbstractUsageScenario<Object>("test") {
     int counter = 0;
@@ -51,37 +50,37 @@ public class LoadTestModelTest {
 
   @Test
   public void setApplicationBatchSizeNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getApplicationBatchSizeValue().set(-5));
   }
 
   @Test
   public void setUpdateIntervalNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 
   @Test
   public void setLoginDelayFactorNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getLoginDelayFactorValue().set(-1));
   }
 
   @Test
   public void setMinimumThinkTimeNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getMinimumThinkTimeValue().set(-1));
   }
 
   @Test
   public void setMaximumThinkTimeNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getMaximumThinkTimeValue().set(-1));
   }
 
   @Test
   public void getUnknownUsageScenario() {
-    final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getUsageScenario("bla"));
   }
 

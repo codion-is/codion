@@ -5,7 +5,6 @@ package is.codion.dbms.h2database;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -79,7 +78,7 @@ public class H2DatabaseTest {
     final String url1 = "jdbc:h2:mem:test1";
     final String url2 = "jdbc:h2:mem:test2";
 
-    final User user = Users.user("sa");
+    final User user = User.user("sa");
     final H2Database db1 = new H2Database(url1, singletonList(file1.getAbsolutePath()));
     final H2Database db2 = new H2Database(url2, singletonList(file2.getAbsolutePath()));
     final Connection connection1 = db1.createConnection(user);
@@ -103,7 +102,7 @@ public class H2DatabaseTest {
     final H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
     assertTrue(dbFile.exists());
 
-    final User user = Users.parseUser("scott:tiger");
+    final User user = User.parseUser("scott:tiger");
 
     Connection connection = database.createConnection(user);
     connection.prepareStatement("select id from test.test_table").execute();

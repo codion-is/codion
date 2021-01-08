@@ -11,7 +11,6 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.db.condition.AttributeCondition;
@@ -79,10 +78,10 @@ public class EntityServletServerTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
-  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static final String HTTPS = "https";
   private static String HOSTNAME;
   private static HttpHost TARGET_HOST;
@@ -437,7 +436,7 @@ public class EntityServletServerTest {
             .build();
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    context = createHttpContext(Users.user("who", "areu".toCharArray()), TARGET_HOST);
+    context = createHttpContext(User.user("who", "areu".toCharArray()), TARGET_HOST);
     response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
@@ -658,7 +657,7 @@ public class EntityServletServerTest {
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
     configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setAdminUser(User.parseUser("scott:tiger"));
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());
     configuration.setSslEnabled(false);

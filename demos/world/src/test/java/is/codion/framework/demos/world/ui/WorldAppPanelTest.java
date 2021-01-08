@@ -4,7 +4,6 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.swing.framework.ui.test.EntityApplicationPanelTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class WorldAppPanelTest extends EntityApplicationPanelTestUnit {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public WorldAppPanelTest() {
     super(WorldAppPanel.class, UNIT_TEST_USER);

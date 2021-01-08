@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.javafx;
 
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
@@ -71,7 +70,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
 
   @Override
   protected User getDefaultUser() {
-    return Users.parseUser("scott:tiger");
+    return User.parseUser("scott:tiger");
   }
 
   public static void main(final String[] args) {

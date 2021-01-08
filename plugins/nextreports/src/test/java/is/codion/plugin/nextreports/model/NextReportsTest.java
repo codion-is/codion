@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class NextReportsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   public void fillReport() throws ReportException, IOException, DatabaseException {

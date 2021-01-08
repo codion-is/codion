@@ -5,7 +5,7 @@ package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petclinic.domain.api.Owner;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
@@ -98,6 +98,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     new PetclinicAppPanel().startApplication("Petclinic", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
 }

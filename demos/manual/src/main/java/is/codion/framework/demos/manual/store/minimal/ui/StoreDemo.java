@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.store.minimal.ui;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -71,7 +71,7 @@ public class StoreDemo {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(database)
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"));
+                    .setUser(User.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel =
             new SwingEntityModel(Customer.TYPE, connectionProvider);

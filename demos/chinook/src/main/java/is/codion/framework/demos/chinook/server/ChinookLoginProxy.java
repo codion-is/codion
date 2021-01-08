@@ -13,7 +13,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
@@ -46,7 +45,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    * The actual user credentials to return for successfully authenticated users.
    * Also used for user lookup.
    */
-  private final User databaseUser = Users.parseUser("scott:tiger");
+  private final User databaseUser = User.parseUser("scott:tiger");
 
   /**
    * The Domain containing the authentication table.

@@ -8,7 +8,6 @@ import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class EntityConnectionsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   private static final Domain DOMAIN = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
@@ -43,7 +42,7 @@ public class EntityConnectionsTest {
   public static void setUp() {
     try {
       final Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
-      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa"));
+      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, User.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
       DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));

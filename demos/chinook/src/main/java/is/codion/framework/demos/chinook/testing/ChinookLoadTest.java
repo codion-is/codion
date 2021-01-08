@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.testing;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.testing.scenarios.InsertDeleteAlbum;
@@ -30,7 +29,7 @@ import static java.util.Arrays.asList;
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public ChinookLoadTest() {
     super(UNIT_TEST_USER, asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(),

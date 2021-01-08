@@ -4,7 +4,6 @@
 package is.codion.framework.demos.empdept.javafx;
 
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
@@ -26,7 +25,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   @Override
   protected User getDefaultUser() {
-    return Users.parseUser("scott:tiger");
+    return User.parseUser("scott:tiger");
   }
 
   @Override

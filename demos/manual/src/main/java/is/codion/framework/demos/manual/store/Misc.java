@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
@@ -33,7 +33,7 @@ public final class Misc {
    EntityConnectionProvider connectionProvider =
             EntityConnectionProviders.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"))
+                    .setUser(User.parseUser("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
    // tag::jasperReportDataSource[]
@@ -61,7 +61,7 @@ public final class Misc {
     EntityConnectionProvider connectionProvider =
             EntityConnectionProviders.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"))
+                    .setUser(User.parseUser("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
     CustomerEditModel editModel = new CustomerEditModel(connectionProvider);

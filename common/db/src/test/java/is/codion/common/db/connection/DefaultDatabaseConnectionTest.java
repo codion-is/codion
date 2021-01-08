@@ -7,7 +7,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultDatabaseConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private final Database DATABASE = Databases.getInstance();
   private DefaultDatabaseConnection dbConnection;
@@ -60,12 +59,12 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   public void wrongUsername() throws Exception {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, Users.user("foo", "bar".toCharArray())));
+    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user("foo", "bar".toCharArray())));
   }
 
   @Test
   public void wrongPassword() throws Exception {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, Users.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())));
+    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())));
   }
 
   @Test

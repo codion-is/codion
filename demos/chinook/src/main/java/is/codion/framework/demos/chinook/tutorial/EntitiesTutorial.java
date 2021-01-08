@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.tutorial;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.SelectCondition;
@@ -224,7 +224,7 @@ public final class EntitiesTutorial {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(Chinook.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"));
+                    .setUser(User.parseUser("scott:tiger"));
 
     selectingEntities(connectionProvider);
 

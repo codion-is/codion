@@ -4,7 +4,7 @@
 package is.codion.framework.demos.petstore.manual;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
@@ -24,7 +24,7 @@ public final class EntitiesInAction {
     EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
             .setDomainClassName(Petstore.class.getName())
             .setClientTypeId("Manual")
-            .setUser(Users.parseUser("scott:tiger"));
+            .setUser(User.parseUser("scott:tiger"));
 
     Entities store = connectionProvider.getEntities();
 

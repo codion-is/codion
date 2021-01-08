@@ -7,7 +7,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class QueryLoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
           new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectEmployees", "select * from scott.emp where ename not like ?") {

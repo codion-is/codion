@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
@@ -97,7 +97,7 @@ public final class ClientArchitecture {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"));
+                    .setUser(User.parseUser("scott:tiger"));
 
     final EntityPanel artistPanel = artistPanel(connectionProvider);
     // lazy initialization of the UI

@@ -7,7 +7,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DatabaseConnectionsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final Database DATABASE = Databases.getInstance();
 

@@ -13,7 +13,6 @@ import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -38,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class JasperReportsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String REPORT_PATH = "build/resources/test";
 

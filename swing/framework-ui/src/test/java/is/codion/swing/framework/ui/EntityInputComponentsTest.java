@@ -3,7 +3,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.database.Databases;
 import is.codion.common.item.Items;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -32,7 +31,7 @@ public class EntityInputComponentsTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 

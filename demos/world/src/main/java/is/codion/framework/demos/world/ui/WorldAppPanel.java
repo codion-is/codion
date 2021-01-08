@@ -1,7 +1,7 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Continent;
@@ -79,6 +79,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
-            new Dimension(1024, 720), Users.parseUser("scott:tiger"));
+            new Dimension(1024, 720), User.parseUser("scott:tiger"));
   }
 }

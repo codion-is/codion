@@ -10,7 +10,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
@@ -229,7 +228,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static User getAdminUser() {
-    return Users.parseUser(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
+    return User.parseUser(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
   }
 
   public static void main(final String[] arguments) {

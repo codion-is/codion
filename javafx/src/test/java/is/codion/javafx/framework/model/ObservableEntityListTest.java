@@ -7,7 +7,6 @@ import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -28,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ObservableEntityListTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);

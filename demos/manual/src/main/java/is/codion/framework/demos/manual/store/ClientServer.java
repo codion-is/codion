@@ -22,7 +22,7 @@ import is.codion.framework.servlet.EntityServletServerFactory;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.common.user.Users.parseUser;
+import static is.codion.common.user.User.parseUser;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.singletonList;
 

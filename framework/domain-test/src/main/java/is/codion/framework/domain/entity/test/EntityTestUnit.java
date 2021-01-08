@@ -9,7 +9,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.item.Item;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -445,7 +444,7 @@ public class EntityTestUnit {
   }
 
   private static User initializeDefaultUser() {
-    return Users.parseUser(TEST_USER.getOrThrow());
+    return User.parseUser(TEST_USER.getOrThrow());
   }
 
   private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,

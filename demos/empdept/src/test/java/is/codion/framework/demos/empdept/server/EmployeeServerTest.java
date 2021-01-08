@@ -11,7 +11,7 @@ import is.codion.common.rmi.server.Servers;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -41,7 +41,7 @@ public final class EmployeeServerTest {
     configuration.setServerAdminPort(SERVER_ADMIN_PORT);
     configuration.setDatabase(Databases.getInstance());
     configuration.setConnectionTimeout(60_000);
-    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setAdminUser(User.parseUser("scott:tiger"));
     configuration.setSslEnabled(false);
     configuration.setServerName("Employee Server");
 
@@ -52,7 +52,7 @@ public final class EmployeeServerTest {
 
     final UUID clientId = UUID.randomUUID();
     final EmployeeService employeeService = remoteServer.connect(
-            connectionRequest(Users.parseUser("scott:tiger"), clientId, "EmployeeServerTest"));
+            connectionRequest(User.parseUser("scott:tiger"), clientId, "EmployeeServerTest"));
 
     final List<Entity> employees = employeeService.getEmployees();
     assertEquals(16, employees.size());

@@ -5,7 +5,6 @@ package is.codion.swing.common.tools.ui.loadtest;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ public class LoadTestPanelTest {
 
   @Test
   public void test() {
-    final LoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
+    final LoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     final LoadTestPanel panel = new LoadTestPanel(model);
     assertEquals(model, panel.getModel());
     model.shutdown();

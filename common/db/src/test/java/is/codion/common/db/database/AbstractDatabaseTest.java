@@ -4,7 +4,6 @@
 package is.codion.common.db.database;
 
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ public final class AbstractDatabaseTest {
 
   @Test
   public void connectionProvider() throws Exception {
-    final User sa = Users.user("sa");
+    final User sa = User.user("sa");
     final Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {
       @Override
