@@ -113,7 +113,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return LocalEntityConnections.createConnection(getDomain(), getDatabase(), getUser());
+      return LocalEntityConnection.createConnection(getDomain(), getDatabase(), getUser());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

@@ -9,8 +9,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnections;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -225,7 +225,7 @@ public final class Example {
     Store domain = new Store();
 
     EntityConnection connection =
-            LocalEntityConnections.createConnection(
+            LocalEntityConnection.createConnection(
                     domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
@@ -250,7 +250,7 @@ public final class Example {
     Store domain = new Store();
 
     EntityConnection connection =
-            LocalEntityConnections.createConnection(
+            LocalEntityConnection.createConnection(
                     domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
     Entities entities = domain.getEntities();

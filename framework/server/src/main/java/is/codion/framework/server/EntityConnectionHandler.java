@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static is.codion.common.logging.MethodLogger.methodLogger;
-import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.db.local.LocalEntityConnection.createConnection;
 
 final class EntityConnectionHandler implements InvocationHandler {
 

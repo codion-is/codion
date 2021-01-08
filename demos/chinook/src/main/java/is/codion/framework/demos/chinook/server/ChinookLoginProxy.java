@@ -23,7 +23,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.db.local.LocalEntityConnection.createConnection;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
