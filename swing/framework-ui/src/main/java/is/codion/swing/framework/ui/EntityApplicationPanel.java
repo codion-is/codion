@@ -13,7 +13,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.item.Items;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
@@ -407,7 +406,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void selectFontSize() {
     final List<Item<Integer>> values = new ArrayList<>(21);
     for (int i = 100; i <= 200; i += 5) {
-      values.add(Items.item(i, i + "%"));
+      values.add(Item.item(i, i + "%"));
     }
     final ItemComboBoxModel<Integer> comboBoxModel = new ItemComboBoxModel<>(values);
     final Integer defaultFontSize = getDefaultFontSize();

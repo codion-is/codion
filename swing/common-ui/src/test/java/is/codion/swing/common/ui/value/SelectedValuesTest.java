@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JComboBox;
 import java.util.List;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 

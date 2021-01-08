@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.DateFormats;
 import is.codion.common.item.Item;
-import is.codion.common.item.Items;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
@@ -888,8 +887,8 @@ public final class EntityInputComponents {
   private static <T> ItemComboBoxModel<T> createValueListComboBoxModel(final ValueListProperty<T> property, final Sorted sorted) {
     final ItemComboBoxModel<T> model = sorted == Sorted.YES ?
             new ItemComboBoxModel<>(property.getValues()) : new ItemComboBoxModel<>(null, property.getValues());
-    if (property.isNullable() && !model.containsItem(Items.item(null))) {
-      model.addItem(Items.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
+    if (property.isNullable() && !model.containsItem(Item.item(null))) {
+      model.addItem(Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 
     return model;

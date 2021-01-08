@@ -17,7 +17,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import java.time.LocalDate;
 import java.util.List;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;

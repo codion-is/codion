@@ -5,7 +5,7 @@ package is.codion.swing.common.model.combobox;
 
 import is.codion.common.i18n.Messages;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 
 /**

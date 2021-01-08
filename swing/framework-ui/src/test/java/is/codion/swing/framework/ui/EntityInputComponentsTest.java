@@ -1,7 +1,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Databases;
-import is.codion.common.item.Items;
+import is.codion.common.item.Item;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
@@ -144,6 +144,6 @@ public class EntityInputComponentsTest {
     final SteppedComboBox comboBox = EntityInputComponents.createValueListComboBox(property, value);
     final ItemComboBoxModel model = (ItemComboBoxModel) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
-    assertTrue(model.containsItem(Items.item(null)));
+    assertTrue(model.containsItem(Item.item(null)));
   }
 }

@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 
 /**
  * A View for configuring a query condition for a single property
