@@ -6637,3 +6637,4 @@
   LocalEntityConnections removed, methods moved to LocalEntityConnection
   DatabaseConnection.createConnection() renamed databaseConnection(), for consistency
   LocalEntityConnection.createConnection() renamed localEntityConnection(), for consistency
+  EntityTypes removed, methods moved to EntityType

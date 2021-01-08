@@ -8,9 +8,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
+ * A factory for {@link EntityType} instances.
  * @param <T> the entity type
  */
 public interface EntityType<T extends Entity> {
@@ -184,4 +187,48 @@ public interface EntityType<T extends Entity> {
    * @return a new condition type
    */
   ConditionType conditionType(String name);
+
+  /**
+   * @param name the entity type name
+   * @param domainName the name of the domain to associate this entity type with
+   * @param entityClass the entity representation class
+   * @param <T> the entity representation type
+   * @return a {@link EntityType} instance with the given name
+   */
+  static <T extends Entity> EntityType<T> entityType(final String name, final String domainName,
+                                                     final Class<T> entityClass) {
+    String bundleName = null;
+    try {
+      ResourceBundle.getBundle(entityClass.getName());
+      bundleName = entityClass.getName();
+    }
+    catch (final MissingResourceException e) {/* Non-existing bundle */}
+
+    return new DefaultEntityType<>(domainName, name, entityClass, bundleName);
+  }
+
+  /**
+   * @param name the entity type name
+   * @param domainName the name of the domain to associate this entity type with
+   * @param resourceBundleName the name of a resource bundle to use for captions, if any
+   * @param <T> the entity representation type
+   * @return a {@link EntityType} instance with the given name
+   */
+  static <T extends Entity> EntityType<T> entityType(final String name, final String domainName,
+                                                     final String resourceBundleName) {
+    return new DefaultEntityType<>(domainName, name, (Class<T>) Entity.class, resourceBundleName);
+  }
+
+  /**
+   * @param name the entity type name
+   * @param domainName the name of the domain to associate this entity type with
+   * @param entityClass the entity representation class
+   * @param resourceBundleName the name of a resource bundle to use for captions, if any
+   * @param <T> the entity representation type
+   * @return a {@link EntityType} instance with the given name
+   */
+  static <T extends Entity> EntityType<T> entityType(final String name, final String domainName,
+                                                     final Class<T> entityClass, final String resourceBundleName) {
+    return new DefaultEntityType<>(domainName, name, entityClass, resourceBundleName);
+  }
 }
