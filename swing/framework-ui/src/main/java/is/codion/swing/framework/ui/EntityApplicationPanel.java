@@ -10,20 +10,15 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.item.Items;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
-import is.codion.common.version.Versions;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -217,9 +212,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private M applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event<?> applicationStartedEvent = Events.event();
-  private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
-  private final Event<?> onExitEvent = Events.event();
+  private final Event<?> applicationStartedEvent = Event.event();
+  private final Event<Boolean> alwaysOnTopChangedEvent = Event.event();
+  private final Event<?> onExitEvent = Event.event();
 
   private final Map<EntityPanelBuilder, EntityPanel> persistentEntityPanels = new HashMap<>();
 
@@ -409,7 +404,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void selectFontSize() {
     final List<Item<Integer>> values = new ArrayList<>(21);
     for (int i = 100; i <= 200; i += 5) {
-      values.add(Items.item(i, i + "%"));
+      values.add(Item.item(i, i + "%"));
     }
     final ItemComboBoxModel<Integer> comboBoxModel = new ItemComboBoxModel<>(values);
     final Integer defaultFontSize = getDefaultFontSize();
@@ -881,7 +876,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    final String versionString = Versions.getVersionAndBuildNumberString();
+    final String versionString = Version.getVersionAndBuildNumberString();
     panel.add(new JLabel(icons().logoTransparent()), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsage() + ")");
     versionMemoryField.setEditable(false);
@@ -899,7 +894,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+    return EntityConnectionProvider.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
             .setClientTypeId(clientTypeId).setClientVersion(getClientVersion()).setUser(user);
   }
 
@@ -1302,7 +1297,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? Users.user(getDefaultUsername()) : defaultUser);
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser);
     final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
     if (nullOrEmpty(user.getUsername())) {
@@ -1402,7 +1397,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logoTransparent();
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("");
+      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : User.user("");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }

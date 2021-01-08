@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.ui.control.ControlList;
@@ -25,7 +24,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
 
   private final EntityTableConditionModel tableConditionModel;
   private final List<TableColumn> tableColumns;
-  private final State advancedState = States.state();
+  private final State advancedState = State.state();
 
   /**
    * Instantiates a new AbstractEntityTableConditionPanel.

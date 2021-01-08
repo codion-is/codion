@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui;
 
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +14,7 @@ public class LoginPanelTest {
 
   @Test
   public void test() {
-    final User user = Users.user("user", "pass".toCharArray());
+    final User user = User.user("user", "pass".toCharArray());
     final LoginPanel panel = new LoginPanel(user);
     assertEquals(user, panel.getUser());
     assertNotNull(panel.getPasswordField());

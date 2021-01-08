@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.table;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.RowColumn;
@@ -138,7 +137,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * Fired each time the table is double clicked
    */
-  private final Event<MouseEvent> doubleClickedEvent = Events.event();
+  private final Event<MouseEvent> doubleClickedEvent = Event.event();
 
   /**
    * the action performed when the table is double clicked

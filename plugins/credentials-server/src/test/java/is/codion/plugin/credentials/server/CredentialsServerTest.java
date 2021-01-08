@@ -5,7 +5,6 @@ package is.codion.plugin.credentials.server;
 
 import is.codion.common.CredentialsProvider;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +22,7 @@ public final class CredentialsServerTest {
     final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
     System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
-    final User scott = Users.parseUser("scott:tiger");
+    final User scott = User.parseUser("scott:tiger");
     final int registryPort = 2099;
 
     final CredentialsServer server = new CredentialsServer(54321, registryPort, 900, 50);

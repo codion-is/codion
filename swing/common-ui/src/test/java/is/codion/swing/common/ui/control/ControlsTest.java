@@ -4,12 +4,9 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
@@ -27,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlsTest {
 
-  private final State state = States.state();
-  private final Event<Boolean> valueChangeEvent = Events.event();
+  private final State state = State.state();
+  private final Event<Boolean> valueChangeEvent = Event.event();
   private Boolean value = false;
 
   private final ControlList controlList = Controls.controlList(
           Controls.control(() -> {}, "one"), Controls.control(() -> {}, "two"),
-          Controls.toggleControl(this, "booleanValue", "three", Events.event())
+          Controls.toggleControl(this, "booleanValue", "three", Event.event())
   );
   private boolean booleanValue;
   private Object selectedValue;
@@ -82,7 +79,7 @@ public final class ControlsTest {
     setValue(true);
     assertTrue(control.getValue().get());
 
-    final Value<Boolean> nullableValue = Values.value(true);
+    final Value<Boolean> nullableValue = Value.value(true);
     final ToggleControl nullableControl = Controls.toggleControl(nullableValue);
     ButtonModel buttonModel = Controls.buttonModel(nullableControl);
     assertTrue(buttonModel instanceof NullableToggleButtonModel);
@@ -92,7 +89,7 @@ public final class ControlsTest {
     nullableValue.set(null);
     assertNull(((NullableToggleButtonModel) buttonModel).getState());
 
-    final Value<Boolean> nonNullableValue = Values.value(true, false);
+    final Value<Boolean> nonNullableValue = Value.value(true, false);
     final ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
     buttonModel = Controls.buttonModel(nonNullableControl);
     assertFalse(buttonModel instanceof NullableToggleButtonModel);
@@ -110,7 +107,7 @@ public final class ControlsTest {
 
   @Test
   public void stateToggleControl() {
-    final State enabledState = States.state(false);
+    final State enabledState = State.state(false);
     final ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
     final ButtonModel buttonModel = Controls.buttonModel(control);
     assertFalse(control.isEnabled());
@@ -161,7 +158,7 @@ public final class ControlsTest {
 
   @Test
   public void eventControl() {
-    Controls.eventControl(Events.event()).actionPerformed(null);
+    Controls.eventControl(Event.event()).actionPerformed(null);
   }
 
   @Test
@@ -182,7 +179,7 @@ public final class ControlsTest {
 
   @Test
   public void setEnabled() {
-    final State enabledState = States.state();
+    final State enabledState = State.state();
     final Control control = Controls.control(this::doNothing, "control", enabledState.getObserver());
     assertEquals("control", control.getName());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());
@@ -202,14 +199,14 @@ public final class ControlsTest {
   @Test
   public void checkBox() {
     final JCheckBox box = Controls.checkBox(Controls.toggleControl(this, "booleanValue",
-            "Test", Events.event()));
+            "Test", Event.event()));
     assertEquals("Test", box.getText());
   }
 
   @Test
   public void checkBoxMenuItem() {
     final JMenuItem item = Controls.checkBoxMenuItem(Controls.toggleControl(this, "booleanValue",
-            "Test", Events.event()));
+            "Test", Event.event()));
     assertEquals("Test", item.getText());
   }
 

@@ -5,7 +5,6 @@ package is.codion.framework.domain;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.EntityTypes;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,20 +44,20 @@ final class DefaultDomainType implements DomainType, Serializable {
   @Override
   public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass) {
     return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
-            EntityTypes.entityType(entityTypeName, this.domainName, entityClass));
+            EntityType.entityType(entityTypeName, this.domainName, entityClass));
   }
 
   @Override
   public <T extends Entity> EntityType<T> entityType(final String name, final String resourceBundleName) {
     return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
-            EntityTypes.entityType(entityTypeName, this.domainName, resourceBundleName));
+            EntityType.entityType(entityTypeName, this.domainName, resourceBundleName));
   }
 
   @Override
   public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass,
                                                      final String resourceBundleName) {
     return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
-            EntityTypes.entityType(entityTypeName, this.domainName, entityClass, resourceBundleName));
+            EntityType.entityType(entityTypeName, this.domainName, entityClass, resourceBundleName));
   }
 
   @Override

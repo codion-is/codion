@@ -9,7 +9,6 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Servers;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
@@ -35,17 +34,17 @@ public class DefaultRemoteEntityConnectionTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   public void wrongUsername() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(Users.user("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(User.user("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1234));
   }
 
   @Test
   public void wrongPassword() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1235));
   }
 

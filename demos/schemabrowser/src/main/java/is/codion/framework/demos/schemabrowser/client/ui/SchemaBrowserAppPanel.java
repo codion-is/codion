@@ -4,7 +4,7 @@
 package is.codion.framework.demos.schemabrowser.client.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ColumnConstraint;
@@ -46,7 +46,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.5), User.parseUser("scott:tiger"));
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {

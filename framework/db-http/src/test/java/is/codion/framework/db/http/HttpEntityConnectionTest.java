@@ -4,14 +4,13 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import java.util.UUID;
 
 public final class HttpEntityConnectionTest extends AbstractHttpEntityConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public HttpEntityConnectionTest() {
     super(new HttpEntityConnection(TestDomain.DOMAIN.getName(),

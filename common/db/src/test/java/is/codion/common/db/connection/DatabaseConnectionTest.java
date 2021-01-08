@@ -7,19 +7,19 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DatabaseConnectionsTest {
+public class DatabaseConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final Database DATABASE = Databases.getInstance();
 
@@ -28,7 +28,7 @@ public class DatabaseConnectionsTest {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(UNIT_TEST_USER);
-      final DatabaseConnection databaseConnection = DatabaseConnections.createConnection(DATABASE, connection);
+      final DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
       assertNotNull(databaseConnection.getUser());
       assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
@@ -45,7 +45,7 @@ public class DatabaseConnectionsTest {
       try {
         connection = DATABASE.createConnection(UNIT_TEST_USER);
         connection.close();
-        DatabaseConnections.createConnection(DATABASE, connection);
+        databaseConnection(DATABASE, connection);
       }
       finally {
         Database.closeSilently(connection);

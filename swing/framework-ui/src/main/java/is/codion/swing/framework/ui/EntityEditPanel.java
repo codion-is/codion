@@ -9,7 +9,6 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -107,12 +106,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  private final State activeState = States.state(ALL_PANELS_ACTIVE.get());
+  private final State activeState = State.state(ALL_PANELS_ACTIVE.get());
 
   /**
    * The mechanism for restricting a single active EntityEditPanel at a time
    */
-  private static final State.Group ACTIVE_STATE_GROUP = States.group();
+  private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
   /**
    * Indicates whether or not the UI should be cleared after insert has been performed
@@ -271,7 +270,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
-            States.combination(Conjunction.AND,
+            State.combination(Conjunction.AND,
                     activeState,
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()),
@@ -295,7 +294,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.control(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
-            States.combination(Conjunction.AND,
+            State.combination(Conjunction.AND,
                     activeState,
                     getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver(),
@@ -310,7 +309,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.combination(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
+            State.combination(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, frameworkIcons().add());
   }
@@ -321,11 +320,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control getSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    final State insertUpdateState = States.combination(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
-            States.combination(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
+    final State insertUpdateState = State.combination(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
+            State.combination(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getModifiedObserver()));
     return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
-            States.combination(Conjunction.AND, activeState, insertUpdateState),
+            State.combination(Conjunction.AND, activeState, insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, frameworkIcons().add());
   }

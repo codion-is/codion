@@ -7,7 +7,6 @@ import is.codion.common.Text;
 import is.codion.common.db.database.Databases;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class DatabaseExplorerModelTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String ADDRESS_DEF;
   private static final String TAG_ITEM_DEF;

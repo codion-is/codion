@@ -9,7 +9,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -34,7 +33,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.common.value.Values.propertyValue;
+import static is.codion.common.value.Value.propertyValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -258,7 +257,7 @@ public final class Controls {
    */
   public static ToggleControl toggleControl(final State state, final String name, final StateObserver enabledState,
                                             final Icon icon) {
-    return toggleControl(Values.stateValue(state), name, enabledState, icon);
+    return toggleControl(Value.stateValue(state), name, enabledState, icon);
   }
 
   /**

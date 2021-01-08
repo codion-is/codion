@@ -9,7 +9,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.framework.tools.metadata.MetaDataModel;
@@ -26,7 +25,7 @@ public final class DatabaseExplorerModel {
   private final SchemaTableModel schemaTableModel;
   private final DefinitionTableModel definitionTableModel;
   private final Connection connection;
-  private final Value<String> domainSourceValue = Values.value();
+  private final Value<String> domainSourceValue = Value.value();
 
   static {
     EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
@@ -55,7 +54,7 @@ public final class DatabaseExplorerModel {
   }
 
   public ValueObserver<String> getDomainSourceObserver() {
-    return Values.valueObserver(domainSourceValue);
+    return Value.valueObserver(domainSourceValue);
   }
 
   public void close() {

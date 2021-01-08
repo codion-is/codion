@@ -16,50 +16,50 @@ public class UsersTest {
 
   @Test
   public void test() {
-    final User user = Users.parseUser("scott:tiger");
+    final User user = User.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
     user.setPassword("mess".toCharArray());
     assertEquals("mess", String.valueOf(user.getPassword()));
     assertEquals("User: scott", user.toString());
     assertEquals("scott".hashCode(), user.hashCode());
-    assertEquals(Users.user("scott"), user);
+    assertEquals(User.user("scott"), user);
     user.setPassword("test".toCharArray());
     assertEquals("test", String.valueOf(user.getPassword()));
     user.clearPassword();
     assertEquals("", String.valueOf(user.getPassword()));
     assertNotEquals(user, "scott");
-    assertEquals(user, Users.parseUser("scott:blabla"));
+    assertEquals(user, User.parseUser("scott:blabla"));
   }
 
   @Test
   public void parseUser() {
-    User user = Users.parseUser("scott:tiger");
+    User user = User.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
-    user = Users.parseUser(" scott:ti ger");
+    user = User.parseUser(" scott:ti ger");
     assertEquals("scott", user.getUsername());
     assertEquals("ti ger", String.valueOf(user.getPassword()));
-    user = Users.parseUser("pete");
+    user = User.parseUser("pete");
     assertEquals("pete", user.getUsername());
     assertTrue(String.valueOf(user.getPassword()).isEmpty());
-    user = Users.parseUser(" john ");
+    user = User.parseUser(" john ");
     assertEquals("john", user.getUsername());
     assertTrue(String.valueOf(user.getPassword()).isEmpty());
   }
 
   @Test
   public void parseUserNoUsername() {
-    assertThrows(IllegalArgumentException.class, () -> Users.parseUser(":tiger"));
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser(":tiger"));
   }
 
   @Test
   public void parseMultipleDelimiters() {
-    assertThrows(IllegalArgumentException.class, () -> Users.parseUser("scott:tiger:pete"));
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser("scott:tiger:pete"));
   }
 
   @Test
   public void parseUserNoUserInfo() {
-    assertThrows(IllegalArgumentException.class, () -> Users.parseUser(""));
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser(""));
   }
 }

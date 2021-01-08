@@ -16,7 +16,6 @@ import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -46,9 +45,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServerTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
           Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain");
   private static Server<RemoteEntityConnection, EntityServerAdmin> server;
@@ -91,28 +90,28 @@ public class EntityServerTest {
 
   @Test
   public void testWrongPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.connectionRequest(Users.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
+    assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.connectionRequest(User.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
             UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS)));
   }
 
   @Test
   public void getServerAdminEmptyPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test", "".toCharArray())));
   }
 
   @Test
   public void getServerAdminNullPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test")));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test")));
   }
 
   @Test
   public void getServerAdminWrongPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "test".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test", "test".toCharArray())));
   }
 
   @Test
   public void getServerAdminWrongUsername() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "test".toCharArray())));
+    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test", "test".toCharArray())));
   }
 
   @Test
@@ -153,7 +152,7 @@ public class EntityServerTest {
     assertEquals(2, admin.getConnectionCount());
     assertEquals(2, admin.getClients().size());
 
-    Collection<RemoteClient> clients = admin.getClients(Users.user(UNIT_TEST_USER.getUsername()));
+    Collection<RemoteClient> clients = admin.getClients(User.user(UNIT_TEST_USER.getUsername()));
     assertEquals(2, clients.size());
     clients = admin.getClients("ClientTypeID");
     assertEquals(2, clients.size());
@@ -207,12 +206,12 @@ public class EntityServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    final User john = Users.user("john", "hello".toCharArray());
+    final User john = User.user("john", "hello".toCharArray());
     final ConnectionRequest connectionRequestJohn = ConnectionRequest.connectionRequest(john,
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestHelen = ConnectionRequest.connectionRequest(Users.user("helen", "juno".toCharArray()),
+    final ConnectionRequest connectionRequestHelen = ConnectionRequest.connectionRequest(User.user("helen", "juno".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestInvalid = ConnectionRequest.connectionRequest(Users.user("foo", "bar".toCharArray()),
+    final ConnectionRequest connectionRequestInvalid = ConnectionRequest.connectionRequest(User.user("foo", "bar".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     server.connect(connectionRequestJohn);
     final RemoteClient clientJohn = admin.getClients(john).iterator().next();
@@ -313,7 +312,7 @@ public class EntityServerTest {
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(3223, 3221);
     configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setAdminUser(User.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));

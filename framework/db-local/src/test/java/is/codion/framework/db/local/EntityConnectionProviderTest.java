@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.db.EntityConnectionProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Date: 17.4.2010
  * Time: 14:30:18
  */
-public class EntityConnectionProvidersTest {
+public class EntityConnectionProviderTest {
 
   @Test
   public void test() {
-    assertNotNull(EntityConnectionProviders.connectionProvider().setDomainClassName(TestDomain.class.getName()).setClientTypeId("test"));
+    assertNotNull(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName()).setClientTypeId("test"));
   }
 }

@@ -5,7 +5,6 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 
@@ -29,7 +28,7 @@ public final class EntityServerMonitor {
    */
   public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE = Configuration.integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
 
-  private final Event<String> hostAddedEvent = Events.event();
+  private final Event<String> hostAddedEvent = Event.event();
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
 

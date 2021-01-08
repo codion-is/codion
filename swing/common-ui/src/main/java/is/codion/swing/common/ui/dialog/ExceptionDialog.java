@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
@@ -82,7 +81,7 @@ final class ExceptionDialog extends JDialog {
   private JButton saveButton;
   private JButton copyButton;
 
-  private final State showDetailsState = States.state();
+  private final State showDetailsState = State.state();
 
   /**
    * Instantiates a new ExceptionDialog with the given window as parent

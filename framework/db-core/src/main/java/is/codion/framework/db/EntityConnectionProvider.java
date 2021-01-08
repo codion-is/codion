@@ -10,11 +10,13 @@ import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.entity.Entities;
 
+import java.util.ServiceLoader;
 import java.util.UUID;
 
 /**
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
  * {@link #getConnection()} is guaranteed to return a healthy connection or throw an exception.
+ * A factory class for handing out EntityConnectionProviders according to system properties.
  */
 public interface EntityConnectionProvider extends AutoCloseable {
 
@@ -167,4 +169,21 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * @return the client version
    */
   Version getClientVersion();
+
+  /**
+   * @return a unconfigured {@link EntityConnectionProvider} instance,
+   * based on {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
+   * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
+   */
+  static EntityConnectionProvider connectionProvider() {
+    final String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
+    final ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
+    for (final EntityConnectionProvider provider : loader) {
+      if (provider.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
+        return provider;
+      }
+    }
+
+    throw new IllegalArgumentException("No connection provider available for requested client connection type: " + clientConnectionType);
+  }
 }

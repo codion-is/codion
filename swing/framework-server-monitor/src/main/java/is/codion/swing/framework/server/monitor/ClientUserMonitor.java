@@ -8,7 +8,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
@@ -71,7 +70,7 @@ public final class ClientUserMonitor {
    */
   public ClientUserMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
-    this.connectionTimeoutValue = Values.value(server.getConnectionTimeout() / THOUSAND);
+    this.connectionTimeoutValue = Value.value(server.getConnectionTimeout() / THOUSAND);
     this.connectionTimeoutValue.addValidator(value -> {
       if (value == null || value < 0) {
         throw new IllegalArgumentException("Connection timeout must be a positive integer");

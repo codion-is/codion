@@ -6,7 +6,6 @@ package is.codion.plugin.tomcat.pool;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TomcatConnectionPoolFactoryTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   public void test() throws Exception {

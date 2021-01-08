@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.domain.property.Property;
 
 import javax.swing.AbstractCellEditor;
@@ -25,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
 
   private final Property<T> property;
-  private final Value<T> cellValue = Values.value();
+  private final Value<T> cellValue = Value.value();
 
   private JComponent component;
 

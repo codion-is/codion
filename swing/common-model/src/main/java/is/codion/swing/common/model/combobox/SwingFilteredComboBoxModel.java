@@ -7,7 +7,6 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -32,8 +31,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
 
-  private final Event<T> selectionChangedEvent = Events.event();
-  private final Event<?> filteringDoneEvent = Events.event();
+  private final Event<T> selectionChangedEvent = Event.event();
+  private final Event<?> filteringDoneEvent = Event.event();
 
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();

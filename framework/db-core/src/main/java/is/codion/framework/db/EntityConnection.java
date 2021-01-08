@@ -9,6 +9,7 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
@@ -21,9 +22,14 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static is.codion.framework.db.condition.Conditions.condition;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
@@ -32,6 +38,7 @@ import java.util.Map;
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(List)},
  * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Key)} and {@link #delete(List)}
  * perform a commit unless they are run within a transaction.
+ * A static helper class for mass data manipulation.
  * @see #beginTransaction()
  * @see #rollbackTransaction()
  * @see #commitTransaction()
@@ -348,4 +355,81 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    */
   byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
+
+  /**
+   * Specifies whether primary key values should be included when copying entities.
+   */
+  enum IncludePrimaryKeys {
+    /**
+     * Primary key values should be include during a copy operation.
+     */
+    YES,
+    /**
+     * Primary key values should not be include during a copy operation.
+     */
+    NO
+  }
+
+  /**
+   * Copies the given entities from source to destination
+   * @param source the source db
+   * @param destination the destination db
+   * @param batchSize the number of records to copy between commits
+   * @param includePrimaryKeys specifies whether primary key values should be included when copying
+   * @param entityTypes the entity types to copy
+   * @throws DatabaseException in case of a db exception
+   * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
+   */
+  static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
+                           final IncludePrimaryKeys includePrimaryKeys, final EntityType<?>... entityTypes) throws DatabaseException {
+    requireNonNull(source, "source");
+    requireNonNull(destination, "destination");
+    requireNonNull(includePrimaryKeys, "includePrimaryKeys");
+    requireNonNull(entityTypes);
+    for (final EntityType<?> entityType : entityTypes) {
+      final List<Entity> entities = source.select(condition(entityType).select().fetchDepth(0));
+      if (includePrimaryKeys == IncludePrimaryKeys.NO) {
+        entities.forEach(Entity::clearPrimaryKey);
+      }
+      batchInsert(destination, entities.iterator(), batchSize, null, null);
+    }
+  }
+
+  /**
+   * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts,
+   * unless the connection has an open transaction.
+   * @param connection the entity connection to use when inserting
+   * @param entities the entities to insert
+   * @param batchSize the commit batch size
+   * @param progressReporter if specified this will be used to report batch progress
+   * @param onInsertBatchListener notified each time a batch is inserted, providing the inserted keys
+   * @throws DatabaseException in case of an exception
+   * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
+   */
+  static void batchInsert(final EntityConnection connection, final Iterator<Entity> entities, final int batchSize,
+                          final EventDataListener<Integer> progressReporter,
+                          final EventDataListener<List<Key>> onInsertBatchListener)
+          throws DatabaseException {
+    requireNonNull(connection, "connection");
+    requireNonNull(entities, "entities");
+    if (batchSize <= 0) {
+      throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
+    }
+    final List<Entity> batch = new ArrayList<>(batchSize);
+    int progress = 0;
+    while (entities.hasNext()) {
+      while (batch.size() < batchSize && entities.hasNext()) {
+        batch.add(entities.next());
+      }
+      final List<Key> insertedKeys = connection.insert(batch);
+      progress += insertedKeys.size();
+      batch.clear();
+      if (progressReporter != null) {
+        progressReporter.onEvent(progress);
+      }
+      if (onInsertBatchListener != null) {
+        onInsertBatchListener.onEvent(insertedKeys);
+      }
+    }
+  }
 }

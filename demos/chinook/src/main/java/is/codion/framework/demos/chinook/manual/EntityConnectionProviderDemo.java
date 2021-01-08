@@ -7,7 +7,7 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
@@ -32,7 +32,7 @@ public class EntityConnectionProviderDemo {
             new LocalEntityConnectionProvider(Databases.getInstance());
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(Users.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parseUser("scott:tiger"));
 
     LocalEntityConnection entityConnection =
             (LocalEntityConnection) connectionProvider.getConnection();
@@ -53,7 +53,7 @@ public class EntityConnectionProviderDemo {
             new RemoteEntityConnectionProvider("localhost", -1, 1099);
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(Users.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parseUser("scott:tiger"));
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
 
     EntityConnection entityConnection =
@@ -74,7 +74,7 @@ public class EntityConnectionProviderDemo {
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
-    connectionProvider.setUser(Users.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parseUser("scott:tiger"));
 
     EntityConnection entityConnection = connectionProvider.getConnection();
 

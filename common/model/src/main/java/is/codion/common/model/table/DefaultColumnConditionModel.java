@@ -8,13 +8,10 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
-import is.codion.common.value.Values;
 
 import java.text.Format;
 import java.util.Collection;
@@ -35,15 +32,15 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionModel<R, K, T> {
 
-  private final ValueSet<T> equalValues = Values.valueSet();
-  private final Value<T> upperBoundValue = Values.value();
-  private final Value<T> lowerBoundValue = Values.value();
-  private final Value<Operator> operatorValue = Values.value(Operator.EQUAL);
-  private final Event<?> conditionChangedEvent = Events.event();
-  private final Event<?> conditionModelClearedEvent = Events.event();
+  private final ValueSet<T> equalValues = Value.valueSet();
+  private final Value<T> upperBoundValue = Value.value();
+  private final Value<T> lowerBoundValue = Value.value();
+  private final Value<Operator> operatorValue = Value.value(Operator.EQUAL);
+  private final Event<?> conditionChangedEvent = Event.event();
+  private final Event<?> conditionModelClearedEvent = Event.event();
 
-  private final State enabledState = States.state();
-  private final State lockedState = States.state();
+  private final State enabledState = State.state();
+  private final State lockedState = State.state();
 
   private final K columnIdentifier;
   private final Class<T> typeClass;

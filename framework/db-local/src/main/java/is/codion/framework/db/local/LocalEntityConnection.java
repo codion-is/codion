@@ -5,15 +5,19 @@ package is.codion.framework.db.local;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.logging.MethodLogger;
+import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
+
+import java.sql.Connection;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
@@ -28,6 +32,7 @@ import is.codion.framework.domain.entity.Entity;
  *
  * connection.close();
  * </pre>
+ * A factory class for creating LocalEntityConnection instances.
  */
 public interface LocalEntityConnection extends EntityConnection {
 
@@ -109,4 +114,37 @@ public interface LocalEntityConnection extends EntityConnection {
    * @return the underlying domain model
    */
   Domain getDomain();
+
+  /**
+   * Constructs a new LocalEntityConnection instance
+   * @param domain the domain model
+   * @param database the Database instance
+   * @param user the user used for connecting to the database
+   * @return a new LocalEntityConnection instance
+   * @throws DatabaseException in case there is a problem connecting to the database
+   * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
+   */
+  static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
+                                                     final User user) throws DatabaseException {
+    return new DefaultLocalEntityConnection(domain, database, user)
+            .setOptimisticLockingEnabled(USE_OPTIMISTIC_LOCKING.get())
+            .setLimitFetchDepth(LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
+  }
+
+  /**
+   * Constructs a new LocalEntityConnection instance
+   * @param domain the domain model
+   * @param database the Database instance
+   * @param connection the connection object to base the entity connection on, it is assumed to be in a valid state
+   * @return a new LocalEntityConnection instance, wrapping the given connection
+   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
+   * @throws DatabaseException in case a validation statement is required but could not be created
+   * @see Database#supportsIsValid()
+   */
+  static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
+                                                     final Connection connection) throws DatabaseException {
+    return new DefaultLocalEntityConnection(domain, database, connection)
+            .setOptimisticLockingEnabled(USE_OPTIMISTIC_LOCKING.get())
+            .setLimitFetchDepth(LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
+  }
 }

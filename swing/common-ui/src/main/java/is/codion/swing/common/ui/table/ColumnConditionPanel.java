@@ -7,12 +7,9 @@ import is.codion.common.DateFormats;
 import is.codion.common.db.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
@@ -103,8 +100,8 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
-  private final Event<C> focusGainedEvent = Events.event();
-  private final State advancedConditionState = States.state();
+  private final Event<C> focusGainedEvent = Event.event();
+  private final State advancedConditionState = State.state();
 
   private JDialog dialog;
   private Point lastDialogPosition;
@@ -522,7 +519,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
     SelectedValues.selectedValue(comboBox)
-            .link(Values.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver()));
+            .link(Value.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver()));
     comboBox.setRenderer(new OperatorComboBoxRenderer());
 
     return comboBox;

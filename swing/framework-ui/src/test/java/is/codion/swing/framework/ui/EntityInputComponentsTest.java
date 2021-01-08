@@ -1,11 +1,9 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Databases;
-import is.codion.common.item.Items;
+import is.codion.common.item.Item;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
@@ -32,7 +30,7 @@ public class EntityInputComponentsTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
@@ -139,12 +137,12 @@ public class EntityInputComponentsTest {
 
   @Test
   public void valueListComboBox() {
-    final Value value = Values.value();
+    final Value value = Value.value();
     final ValueListProperty property = (ValueListProperty) DOMAIN.getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(
             TestDomain.DETAIL_INT_VALUE_LIST);
     final SteppedComboBox comboBox = EntityInputComponents.createValueListComboBox(property, value);
     final ItemComboBoxModel model = (ItemComboBoxModel) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
-    assertTrue(model.containsItem(Items.item(null)));
+    assertTrue(model.containsItem(Item.item(null)));
   }
 }

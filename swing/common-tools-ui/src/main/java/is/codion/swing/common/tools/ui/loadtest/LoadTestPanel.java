@@ -5,7 +5,6 @@ package is.codion.swing.common.tools.ui.loadtest;
 
 import is.codion.common.Util;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.Nullable;
 import is.codion.swing.common.tools.loadtest.LoadTest;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
@@ -184,7 +183,7 @@ public final class LoadTestPanel<T> extends JPanel {
     usernameField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
     final JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
     passwordField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final ActionListener userInfoListener = e -> loadTestModel.setUser(Users.user(usernameField.getText(), passwordField.getPassword()));
+    final ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
     final FlexibleGridLayout layout = Layouts.flexibleGridLayout(2, 2, FixRowHeights.YES, FixColumnWidths.NO);

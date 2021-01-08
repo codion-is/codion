@@ -6,7 +6,6 @@ package is.codion.swing.framework.server.monitor;
 import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.server.EntityServerAdmin;
 
 import javax.sql.DataSource;
@@ -59,7 +58,7 @@ public final class PoolMonitor {
     private final User user;
 
     private MonitorPool(final String username, final EntityServerAdmin server) {
-      this.user = Users.user(username);
+      this.user = User.user(username);
       this.server = server;
     }
 

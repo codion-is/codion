@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -310,7 +309,7 @@ public final class EntityLookupField extends JTextField {
    * triggers another lookup, resulting in a loop
    */
   private void showEmptyResultMessage() {
-    final Event<?> closeEvent = Events.event();
+    final Event<?> closeEvent = Event.event();
     final JButton okButton = new JButton(Controls.control(closeEvent::onEvent, Messages.get(Messages.OK)));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
             ON_KEY_PRESSED, Controls.control(okButton::doClick));

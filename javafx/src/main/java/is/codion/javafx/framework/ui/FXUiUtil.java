@@ -9,11 +9,8 @@ import is.codion.common.item.Item;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -266,19 +263,19 @@ public final class FXUiUtil {
       return (Value<T>) booleanValue;
     }
     if (attribute.isLocalDate()) {
-      final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
+      final Value<LocalDate> dateValue = Value.value((LocalDate) defaultValue);
       createDateValue((Property<LocalDate>) property, (DatePicker) control).link(dateValue);
 
       return (Value<T>) dateValue;
     }
     if (attribute.isLocalDateTime()) {
-      final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
+      final Value<LocalDateTime> dateTimeValue = Value.value((LocalDateTime) defaultValue);
       createTimestampValue((Property<LocalDateTime>) property, (TextField) control).link(dateTimeValue);
 
       return (Value<T>) dateTimeValue;
     }
     if (attribute.isLocalTime()) {
-      final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
+      final Value<LocalTime> timeValue = Value.value((LocalTime) defaultValue);
       createTimeValue((Property<LocalTime>) property, (TextField) control).link(timeValue);
 
       return (Value<T>) timeValue;
@@ -334,7 +331,7 @@ public final class FXUiUtil {
   public static ToggleButton createToggleButton(final State state) {
     final ToggleButton button = new ToggleButton();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(button.selectedProperty());
-    final Value<Boolean> stateValue = Values.stateValue(state);
+    final Value<Boolean> stateValue = Value.stateValue(state);
     checkBoxValue.link(stateValue);
 
     return button;
@@ -348,7 +345,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(final State state) {
     final CheckBox box = new CheckBox();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(box.selectedProperty());
-    final Value<Boolean> stateValue = Values.stateValue(state);
+    final Value<Boolean> stateValue = Value.stateValue(state);
     checkBoxValue.link(stateValue);
 
     return box;
@@ -858,7 +855,7 @@ public final class FXUiUtil {
 
     dialog.setResultConverter(dialogButton -> {
       if (dialogButton == loginButtonType) {
-        return Users.user(username.getText(), password.getText().toCharArray());
+        return User.user(username.getText(), password.getText().toCharArray());
       }
 
       return null;
@@ -940,7 +937,7 @@ public final class FXUiUtil {
 
     private final Property<?> property;
     private final StringProperty stringProperty;
-    private final State ignoreChange = States.state();
+    private final State ignoreChange = State.state();
 
     private ValidationChangeListener(final Property<?> property, final StringProperty stringProperty) {
       this.property = property;

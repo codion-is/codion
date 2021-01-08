@@ -7,7 +7,6 @@ import is.codion.common.Formats;
 import is.codion.common.event.EventObserver;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -223,7 +222,7 @@ public final class NumericalValues {
   public static SpinnerNumberModel integerValueSpinnerModel(final Object owner, final String propertyName,
                                                             final EventObserver<Integer> valueChangeEvent) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerValue(numberModel).link(Values.propertyValue(owner, propertyName, int.class, valueChangeEvent));
+    integerValue(numberModel).link(Value.propertyValue(owner, propertyName, int.class, valueChangeEvent));
 
     return numberModel;
   }

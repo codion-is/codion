@@ -8,7 +8,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Map;
 public final class EmpDeptLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = Users.parseUser("scott:tiger");
+  private final User databaseUser = User.parseUser("scott:tiger");
 
   public EmpDeptLoginProxy() {
     users.put("scott", "tiger");

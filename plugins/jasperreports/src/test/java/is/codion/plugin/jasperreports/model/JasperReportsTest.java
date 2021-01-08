@@ -8,12 +8,10 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
-import is.codion.common.db.reports.Reports;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
@@ -38,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class JasperReportsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String REPORT_PATH = "build/resources/test";
 
@@ -91,7 +89,7 @@ public class JasperReportsTest {
   public void fillJdbcReportInvalidReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    final ReportType<Object, Object, Object> nonExisting = Reports.reportType("test");
+    final ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
     assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
   }
 

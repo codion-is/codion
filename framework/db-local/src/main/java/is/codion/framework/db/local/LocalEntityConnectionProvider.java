@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -113,7 +114,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return LocalEntityConnections.createConnection(getDomain(), getDatabase(), getUser());
+      return localEntityConnection(getDomain(), getDatabase(), getUser());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

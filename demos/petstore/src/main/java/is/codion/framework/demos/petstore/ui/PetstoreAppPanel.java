@@ -4,7 +4,7 @@
 package is.codion.framework.demos.petstore.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.ui.Windows;
@@ -64,6 +64,6 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
     new PetstoreAppPanel().startApplication("The Pet Store", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.8), Users.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.8), User.parseUser("scott:tiger"));
   }
 }

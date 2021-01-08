@@ -7,7 +7,6 @@ import is.codion.common.rmi.server.LoginProxy;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ import java.util.Map;
 public final class TestLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = Users.parseUser("scott:tiger");
+  private final User databaseUser = User.parseUser("scott:tiger");
 
   public TestLoginProxy() {
     users.put("scott", "tiger");

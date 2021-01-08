@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.time;
 
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 
 import org.junit.jupiter.api.Test;
@@ -67,7 +66,7 @@ public class LocalDateInputPanelTest {
 
   @Test
   public void enabledState() {
-    final State enabledState = States.state();
+    final State enabledState = State.state();
     final JFormattedTextField textField = new JFormattedTextField();
     final LocalDateInputPanel inputPanel = new LocalDateInputPanel(textField, "dd.MM.yyyy", CalendarButton.YES, enabledState.getObserver());
     assertFalse(textField.isEnabled());

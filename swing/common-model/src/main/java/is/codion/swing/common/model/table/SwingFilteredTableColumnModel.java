@@ -5,7 +5,6 @@ package is.codion.swing.common.model.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.FilteredTableColumnModel;
 
@@ -35,8 +34,8 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
-  private final Event<C> columnHiddenEvent = Events.event();
-  private final Event<C> columnShownEvent = Events.event();
+  private final Event<C> columnHiddenEvent = Event.event();
+  private final Event<C> columnShownEvent = Event.event();
 
   /**
    * All columns in this column model, visible and hidden

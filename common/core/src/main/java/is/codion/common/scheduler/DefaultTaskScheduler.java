@@ -5,7 +5,6 @@ package is.codion.common.scheduler;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,7 +20,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
   private final int initialDelay;
   private final TimeUnit timeUnit;
   private final ThreadFactory threadFactory;
-  private final Event<Integer> intervalChangedEvent = Events.event();
+  private final Event<Integer> intervalChangedEvent = Event.event();
 
   private ScheduledExecutorService executorService;
   private int interval;

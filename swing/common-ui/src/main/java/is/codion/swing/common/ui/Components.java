@@ -6,7 +6,6 @@ package is.codion.swing.common.ui;
 import is.codion.common.Memory;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -117,7 +116,7 @@ public final class Components {
   public static <T> EventObserver<T> propertyChangeObserver(final JComponent component, final String property) {
     requireNonNull(component, "component");
     requireNonNull(property, "property");
-    final Event<T> event = Events.event();
+    final Event<T> event = Event.event();
     component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
 
     return event.getObserver();

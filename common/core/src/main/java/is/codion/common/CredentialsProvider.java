@@ -29,14 +29,8 @@ public interface CredentialsProvider {
       return null;
     }
 
-    final UUID token = Arrays.stream(args).filter(CredentialsProvider::isAuthenticationToken).findFirst()
+    return Arrays.stream(args).filter(CredentialsProvider::isAuthenticationToken).findFirst()
             .map(CredentialsProvider::getAuthenticationToken).orElse(null);
-    //keep old WebStart method for backwards compatibility
-    if (token == null && args.length > 1 && "-open".equals(args[0])) {
-      return UUID.fromString(args[1]);
-    }
-
-    return token;
   }
 
   /**

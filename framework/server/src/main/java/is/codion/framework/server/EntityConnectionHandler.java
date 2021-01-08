@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static is.codion.common.logging.MethodLogger.methodLogger;
-import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 
 final class EntityConnectionHandler implements InvocationHandler {
 
@@ -124,11 +124,11 @@ final class EntityConnectionHandler implements InvocationHandler {
     this.userDescription = "Remote user: " + remoteClient.getUser().getUsername() + ", database user: " + remoteClient.getDatabaseUser().getUsername();
     try {
       if (connectionPool == null) {
-        localEntityConnection = createConnection(domain, database, remoteClient.getDatabaseUser());
+        localEntityConnection = localEntityConnection(domain, database, remoteClient.getDatabaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
       }
       else {
-        poolEntityConnection = createConnection(domain, database, connectionPool.getConnection(remoteClient.getDatabaseUser()));
+        poolEntityConnection = localEntityConnection(domain, database, connectionPool.getConnection(remoteClient.getDatabaseUser()));
         returnConnectionToPool();
       }
     }
@@ -254,7 +254,7 @@ final class EntityConnectionHandler implements InvocationHandler {
   private EntityConnection getLocalEntityConnection() throws DatabaseException {
     if (!localEntityConnection.isConnected()) {
       localEntityConnection.close();//just in case
-      localEntityConnection = createConnection(domain, database, remoteClient.getDatabaseUser());
+      localEntityConnection = localEntityConnection(domain, database, remoteClient.getDatabaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }
 

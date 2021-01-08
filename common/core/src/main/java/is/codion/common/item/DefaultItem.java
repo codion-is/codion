@@ -9,6 +9,8 @@ final class DefaultItem<T> extends AbstractItem<T> {
 
   private static final long serialVersionUID = 1;
 
+  static final Item<?> NULL_ITEM = new DefaultItem<>(null, "");
+
   private final String caption;
 
   DefaultItem(final T value, final String caption) {

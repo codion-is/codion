@@ -5,8 +5,7 @@ package is.codion.framework.demos.empdept.testing;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
-import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
@@ -28,7 +27,7 @@ import static java.util.Arrays.asList;
 public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public EmpDeptLoadTest() {
     super(UNIT_TEST_USER, asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
@@ -38,7 +37,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
   @Override
   protected EmpDeptAppPanel.EmpDeptApplicationModel initializeApplication() throws CancelException {
     final EmpDeptAppPanel.EmpDeptApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
-            EntityConnectionProviders.connectionProvider().setDomainClassName(EmpDept.class.getName())
+            EntityConnectionProvider.connectionProvider().setDomainClassName(EmpDept.class.getName())
                     .setClientTypeId(EmpDeptLoadTest.class.getSimpleName())
                     .setUser(getUser()));
 

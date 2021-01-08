@@ -16,24 +16,24 @@ public class ItemsTest {
 
   @Test
   public void item() throws IOException, ClassNotFoundException {
-    final Item<String> item = Items.item("hello", "world");
+    final Item<String> item = Item.item("hello", "world");
     assertEquals("hello", item.getValue());
     assertEquals("world", item.getCaption());
     assertEquals("world", item.toString());
 
-    final Item<String> newItem = Items.item("hello", "bla");
+    final Item<String> newItem = Item.item("hello", "bla");
     assertEquals(item, newItem);
     assertEquals("hello".hashCode(), item.hashCode());
     assertEquals(1, item.compareTo(newItem));
 
-    final Item<String> thirdItem = Items.item("hello");
+    final Item<String> thirdItem = Item.item("hello");
     assertEquals("hello".hashCode(), thirdItem.hashCode());
     assertEquals("hello", thirdItem.getCaption());
 
-    assertEquals(newItem, Items.item("hello"));
+    assertEquals(newItem, Item.item("hello"));
     assertNotEquals(newItem, "hello");
 
-    assertEquals(0, Items.item(null).hashCode());
+    assertEquals(0, Item.item(null).hashCode());
 
     //just make sure its ok post serialization
     final Item<String> deser = Serializer.deserialize(Serializer.serialize(item));
@@ -42,14 +42,14 @@ public class ItemsTest {
 
   @Test
   public void itemI18n() {
-    assertThrows(NullPointerException.class, () -> Items.itemI18n("value", null, "item"));
-    assertThrows(NullPointerException.class, () -> Items.itemI18n("value", ItemsTest.class.getName(), null));
+    assertThrows(NullPointerException.class, () -> Item.itemI18n("value", null, "item"));
+    assertThrows(NullPointerException.class, () -> Item.itemI18n("value", ItemsTest.class.getName(), null));
 
-    Item<String> item = Items.itemI18n("value", ItemsTest.class.getName(), "item");
+    Item<String> item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
     Locale.setDefault(new Locale("is", "IS"));
     assertEquals("Gildi", item.getCaption());
 
-    item = Items.itemI18n("value", ItemsTest.class.getName(), "item");
+    item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
     Locale.setDefault(new Locale("en", "EN"));
     assertEquals("Item", item.getCaption());
   }

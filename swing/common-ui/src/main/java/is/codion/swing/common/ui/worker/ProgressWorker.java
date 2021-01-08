@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.worker;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Windows;
@@ -59,7 +58,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   private static final int MAX_PROGRESS = 100;
 
   private final ProgressDialog progressDialog;
-  private final Event<T> onSuccessEvent = Events.event();
+  private final Event<T> onSuccessEvent = Event.event();
 
   /**
    * Instantiates a 'indeterminate' {@link ProgressWorker}.

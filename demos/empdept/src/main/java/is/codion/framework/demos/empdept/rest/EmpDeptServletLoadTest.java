@@ -6,7 +6,6 @@ package is.codion.framework.demos.empdept.rest;
 import is.codion.common.Text;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept;
@@ -29,7 +28,7 @@ import static java.util.Arrays.asList;
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public EmpDeptServletLoadTest(final User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),

@@ -9,7 +9,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.server.EntityServer;
@@ -28,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServerMonitorTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static Server<?, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -92,7 +91,7 @@ public class EntityServerMonitorTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
     configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setAdminUser(User.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setDomainModelClassNames(Collections.singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());

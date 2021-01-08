@@ -5,7 +5,6 @@ package is.codion.swing.common.tools.ui.randomizer;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
@@ -40,7 +39,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private final ItemRandomizer<T> model;
   private final JPanel configPanel = new JPanel(Layouts.gridLayout(0, 1));
   private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
-  private final Event<List<ItemRandomizer.RandomItem<T>>> selectedItemChangedEvent = Events.event();
+  private final Event<List<ItemRandomizer.RandomItem<T>>> selectedItemChangedEvent = Event.event();
 
   /**
    * Instantiates a new RandomItemPanel.

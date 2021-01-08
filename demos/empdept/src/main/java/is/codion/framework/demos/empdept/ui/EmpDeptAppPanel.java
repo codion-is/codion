@@ -6,7 +6,7 @@ package is.codion.framework.demos.empdept.ui;
 import is.codion.common.Text;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnSummary;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
@@ -88,7 +88,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
+            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
   }
   // end::main[]
 

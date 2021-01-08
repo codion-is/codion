@@ -6,7 +6,6 @@ package is.codion.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 
 import java.util.List;
 
@@ -19,8 +18,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
-  private final Event<Summary> summaryChangedEvent = Events.event();
-  private final Event<?> summaryValueChangedEvent = Events.event();
+  private final Event<Summary> summaryChangedEvent = Event.event();
+  private final Event<?> summaryValueChangedEvent = Event.event();
 
   private final ColumnValueProvider<T> valueProvider;
   private final List<Summary> summaries = asList(ColumnSummary.values());

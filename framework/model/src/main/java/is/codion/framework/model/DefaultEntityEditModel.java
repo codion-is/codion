@@ -9,10 +9,8 @@ import is.codion.common.db.exception.UpdateException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -54,23 +52,23 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private static final String ENTITIES = "entities";
   private static final String PROPERTY = "property";
 
-  private final Event<List<Entity>> beforeInsertEvent = Events.event();
-  private final Event<List<Entity>> afterInsertEvent = Events.event();
-  private final Event<Map<Key, Entity>> beforeUpdateEvent = Events.event();
-  private final Event<Map<Key, Entity>> afterUpdateEvent = Events.event();
-  private final Event<List<Entity>> beforeDeleteEvent = Events.event();
-  private final Event<List<Entity>> afterDeleteEvent = Events.event();
-  private final Event<?> entitiesEditedEvent = Events.event();
-  private final Event<?> beforeRefreshEvent = Events.event();
-  private final Event<?> afterRefreshEvent = Events.event();
-  private final Event<State> confirmSetEntityEvent = Events.event();
+  private final Event<List<Entity>> beforeInsertEvent = Event.event();
+  private final Event<List<Entity>> afterInsertEvent = Event.event();
+  private final Event<Map<Key, Entity>> beforeUpdateEvent = Event.event();
+  private final Event<Map<Key, Entity>> afterUpdateEvent = Event.event();
+  private final Event<List<Entity>> beforeDeleteEvent = Event.event();
+  private final Event<List<Entity>> afterDeleteEvent = Event.event();
+  private final Event<?> entitiesEditedEvent = Event.event();
+  private final Event<?> beforeRefreshEvent = Event.event();
+  private final Event<?> afterRefreshEvent = Event.event();
+  private final Event<State> confirmSetEntityEvent = Event.event();
 
-  private final State entityModifiedState = States.state();
-  private final State primaryKeyNullState = States.state(true);
-  private final State insertEnabledState = States.state(true);
-  private final State updateEnabledState = States.state(true);
-  private final State deleteEnabledState = States.state(true);
-  private final State readOnlyState = States.combination(Conjunction.AND,
+  private final State entityModifiedState = State.state();
+  private final State primaryKeyNullState = State.state(true);
+  private final State insertEnabledState = State.state(true);
+  private final State updateEnabledState = State.state(true);
+  private final State deleteEnabledState = State.state(true);
+  private final State readOnlyState = State.combination(Conjunction.AND,
           insertEnabledState.getReversedObserver(), updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
@@ -102,7 +100,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * Fired when the active entity is set.
    * @see #setEntity(Entity)
    */
-  private final Event<Entity> entitySetEvent = Events.event();
+  private final Event<Entity> entitySetEvent = Event.event();
 
   /**
    * The validator used by this edit model
@@ -112,7 +110,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * A state indicating whether the entity being edited is in a valid state according the validator
    */
-  private final State validState = States.state();
+  private final State validState = State.state();
 
   /**
    * Holds events signaling value changes made via {@link #put(Attribute, Object)} or {@link #remove(Attribute)}
@@ -128,7 +126,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * A state indicating whether the entity being edited is new
    * @see #isEntityNew()
    */
-  private final State entityNewState = States.state(true);
+  private final State entityNewState = State.state(true);
 
   /**
    * Provides the default value for properties when a default entity is created
@@ -934,7 +932,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private boolean isSetEntityAllowed() {
     if (warnAboutUnsavedData && containsUnsavedData()) {
-      final State confirmation = States.state(true);
+      final State confirmation = State.state(true);
       confirmSetEntityEvent.onEvent(confirmation);
 
       return confirmation.get();
@@ -959,11 +957,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> Event<ValueChange<T>> getValueEditEvent(final Attribute<T> attribute) {
-    return (Event<ValueChange<T>>) valueEditEventMap.computeIfAbsent(attribute, k -> Events.event());
+    return (Event<ValueChange<T>>) valueEditEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private <T> Event<ValueChange<T>> getValueChangeEvent(final Attribute<T> attribute) {
-    return (Event<ValueChange<T>>) valueChangeEventMap.computeIfAbsent(attribute, k -> Events.event());
+    return (Event<ValueChange<T>>) valueChangeEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private void initializePersistentValues() {

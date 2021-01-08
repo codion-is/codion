@@ -10,7 +10,6 @@ import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 
@@ -128,7 +127,7 @@ abstract class AbstractEntityService extends Application {
 
     final String basicAuth = basic.get(0);
     if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
-      return Users.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
+      return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
     }
 
     throw new ServerAuthenticationException("Invalid authorization format");

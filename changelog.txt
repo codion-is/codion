@@ -6653,3 +6653,18 @@
   PropertyStore now interface, moved to properties package
   Util.getSystemProperties() moved to PropertyStore, PropertyWriter moved to properties package and renamed PropertyFormatter
   LoggerProxy moved to logging package
+  CredentialsProvider.getAuthenticationToken(), removed old WebStart backwards compatibility
+  Versions removed, methods moved to Version
+  States removed, methods moved to State
+  Users removed, methods moved to User
+  Items removed, methods moved to Item
+  Events removed, methods moved to Event
+  Values removed, method moved to Value
+  DatabaseConnections removed, methods moved to DatabaseConnection
+  Reports removed, methods moved to Report
+  EntityConnections removed, methods moved to EntityConnection
+  EntityConnectionProviders removed, methods moved to EntityConnectionProvider
+  LocalEntityConnections removed, methods moved to LocalEntityConnection
+  DatabaseConnection.createConnection() renamed databaseConnection(), for consistency
+  LocalEntityConnection.createConnection() renamed localEntityConnection(), for consistency
+  EntityTypes removed, methods moved to EntityType

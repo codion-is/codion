@@ -8,14 +8,11 @@ import is.codion.common.Memory;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.common.value.Values;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
 
@@ -61,17 +58,17 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private static final double HUNDRED = 100d;
   private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
-  private final State pausedState = States.state();
-  private final State collectChartDataState = States.state();
+  private final State pausedState = State.state();
+  private final State collectChartDataState = State.state();
   private final State chartUpdateSchedulerEnabledState =
-          States.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
+          State.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
 
   private final Value<Integer> loginDelayFactorValue;
   private final Value<Integer> applicationBatchSizeValue;
   private final Value<Integer> maximumThinkTimeValue;
   private final Value<Integer> minimumThinkTimeValue;
-  private final Value<Integer> applicationCountValue = Values.value();
-  private final Event<?> shutdownEvent = Events.event();
+  private final Value<Integer> applicationCountValue = Value.value();
+  private final Event<?> shutdownEvent = Event.event();
 
   private User user;
 
@@ -130,10 +127,10 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
     this.user = user;
-    this.loginDelayFactorValue = Values.value(loginDelayFactor);
-    this.applicationBatchSizeValue = Values.value(applicationBatchSize);
-    this.minimumThinkTimeValue = Values.value(maximumThinkTime / 2);
-    this.maximumThinkTimeValue = Values.value(maximumThinkTime);
+    this.loginDelayFactorValue = Value.value(loginDelayFactor);
+    this.applicationBatchSizeValue = Value.value(applicationBatchSize);
+    this.minimumThinkTimeValue = Value.value(maximumThinkTime / 2);
+    this.maximumThinkTimeValue = Value.value(maximumThinkTime);
     this.loginDelayFactorValue.addValidator(new MinimumValidator(1));
     this.applicationBatchSizeValue.addValidator(new MinimumValidator(1));
     this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
@@ -344,7 +341,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final ValueObserver<Integer> applicationCountObserver() {
-    return Values.valueObserver(applicationCountValue);
+    return Value.valueObserver(applicationCountValue);
   }
 
   /**

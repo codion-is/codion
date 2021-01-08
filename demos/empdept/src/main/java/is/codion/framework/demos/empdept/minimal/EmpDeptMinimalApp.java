@@ -5,7 +5,7 @@ package is.codion.framework.demos.empdept.minimal;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.rmi.client.Clients;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.DefaultDomain;
@@ -272,6 +272,6 @@ public final class EmpDeptMinimalApp {
 
     //we create an instance of our application panel and start it
     new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, MaximizeFrame.NO,
-            new Dimension(800, 600), Users.parseUser("scott:tiger"));
+            new Dimension(800, 600), User.parseUser("scott:tiger"));
   }
 }

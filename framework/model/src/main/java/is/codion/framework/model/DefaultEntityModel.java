@@ -7,7 +7,6 @@ import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -40,10 +39,10 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
-  private final Event<?> refreshStartedEvent = Events.event();
-  private final Event<?> refreshDoneEvent = Events.event();
-  private final Event<M> linkedDetailModelAddedEvent = Events.event();
-  private final Event<M> linkedDetailModelRemovedEvent = Events.event();
+  private final Event<?> refreshStartedEvent = Event.event();
+  private final Event<?> refreshDoneEvent = Event.event();
+  private final Event<M> linkedDetailModelAddedEvent = Event.event();
+  private final Event<M> linkedDetailModelRemovedEvent = Event.event();
 
   /**
    * The EntityEditModel instance

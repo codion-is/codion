@@ -5,8 +5,7 @@ package is.codion.framework.demos.schemabrowser.testing;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
-import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
@@ -27,7 +26,7 @@ import static java.util.Collections.singletonList;
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final UsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> SCENARIO
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
@@ -49,7 +48,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel initializeApplication() throws CancelException {
     final SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
-                    EntityConnectionProviders.connectionProvider().setDomainClassName(SchemaBrowser.class.getName())
+                    EntityConnectionProvider.connectionProvider().setDomainClassName(SchemaBrowser.class.getName())
                             .setClientTypeId(getClass().getSimpleName()).setUser(getUser()));
     final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
     final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(Table.TYPE);

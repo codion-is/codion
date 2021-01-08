@@ -6,7 +6,6 @@ package is.codion.swing.framework.server.monitor;
 import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerInformation;
@@ -15,7 +14,6 @@ import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.common.value.Values;
 import is.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
@@ -51,7 +49,7 @@ public final class ServerMonitor {
   private static final double THOUSAND = 1000;
   private static final String GC_EVENT_PREFIX = "GC ";
 
-  private final Event<?> serverShutDownEvent = Events.event();
+  private final Event<?> serverShutDownEvent = Event.event();
   private final Value<Object> logLevelValue;
   private final Value<Integer> connectionLimitValue;
 
@@ -71,8 +69,8 @@ public final class ServerMonitor {
 
   private boolean shutdown = false;
 
-  private final Value<Integer> connectionCountValue = Values.value(0);
-  private final Value<String> memoryUsageValue = Values.value("");
+  private final Value<Integer> connectionCountValue = Value.value(0);
+  private final Value<String> memoryUsageValue = Value.value("");
   private final DefaultTableModel domainListModel = new DomainTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -118,13 +116,13 @@ public final class ServerMonitor {
     this.registryPort = registryPort;
     this.serverAdminUser = serverAdminUser;
     this.server = connectServer(serverInformation.getServerName());
-    this.connectionLimitValue = Values.value(this.server.getConnectionLimit());
+    this.connectionLimitValue = Value.value(this.server.getConnectionLimit());
     this.connectionLimitValue.addValidator(value -> {
       if (value == null || value < -1) {
         throw new IllegalArgumentException("Connection limit must be -1 or above");
       }
     });
-    this.logLevelValue = Values.value(this.server.getLogLevel());
+    this.logLevelValue = Value.value(this.server.getLogLevel());
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     this.memoryUsageCollection.addSeries(maxMemorySeries);
     this.memoryUsageCollection.addSeries(allocatedMemorySeries);

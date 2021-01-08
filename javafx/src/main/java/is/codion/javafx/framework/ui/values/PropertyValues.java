@@ -5,7 +5,6 @@ package is.codion.javafx.framework.ui.values;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.item.Item;
-import is.codion.common.item.Items;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
@@ -437,7 +436,7 @@ public final class PropertyValues {
 
     @Override
     protected void doSet(final T value) {
-      selectionModel.select(Items.item(value));
+      selectionModel.select(Item.item(value));
     }
   }
 

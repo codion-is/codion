@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -276,7 +276,7 @@ public final class EntityConnectionDemo {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"));
+                    .setUser(User.parseUser("scott:tiger"));
 
     EntityConnection connection = connectionProvider.getConnection();
     selectConditionDemo(connection);

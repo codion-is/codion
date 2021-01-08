@@ -5,7 +5,6 @@ package is.codion.swing.common.ui;
 
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ public class ComponentsTest {
       @Override
       public void actionPerformed(final ActionEvent e) {}
     };
-    State state = States.state();
+    State state = State.state();
 
     Components.linkToEnabledState(state, action);
     assertFalse(action.isEnabled());
@@ -39,7 +38,7 @@ public class ComponentsTest {
     assertFalse(action.isEnabled());
 
     final JComponent comp = new JTextField();
-    state = States.state();
+    state = State.state();
 
     final State theState = state;
     try {

@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
@@ -45,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
-  private final Event<?> refreshDoneEvent = Events.event();
+  private final Event<?> refreshDoneEvent = Event.event();
 
   /**
    * the id of the underlying entity

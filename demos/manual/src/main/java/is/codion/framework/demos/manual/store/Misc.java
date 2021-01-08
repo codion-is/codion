@@ -5,10 +5,9 @@ package is.codion.framework.demos.manual.store;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.CustomerEditModel;
@@ -31,9 +30,9 @@ public final class Misc {
 
   static void jasperReports() throws DatabaseException, ReportException {
    EntityConnectionProvider connectionProvider =
-            EntityConnectionProviders.connectionProvider()
+            EntityConnectionProvider.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"))
+                    .setUser(User.parseUser("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
    // tag::jasperReportDataSource[]
@@ -59,9 +58,9 @@ public final class Misc {
   public static void main(String[] args) throws DatabaseException, ValidationException {
     // tag::editModel[]
     EntityConnectionProvider connectionProvider =
-            EntityConnectionProviders.connectionProvider()
+            EntityConnectionProvider.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"))
+                    .setUser(User.parseUser("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
     CustomerEditModel editModel = new CustomerEditModel(connectionProvider);

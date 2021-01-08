@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import java.util.List;
 import java.util.Objects;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 
 /**

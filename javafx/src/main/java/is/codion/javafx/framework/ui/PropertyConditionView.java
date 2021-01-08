@@ -7,10 +7,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
-import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -31,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 
 /**
  * A View for configuring a query condition for a single property
@@ -48,7 +46,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   private final Control equalsValueControl;
   private final Control upperBoundControl;
   private final Control lowerBoundControl;
-  private final State advancedCondition = States.state();
+  private final State advancedCondition = State.state();
 
   /**
    * Instantiates a new {@link PropertyConditionView}
@@ -114,7 +112,7 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private CheckBox createEnabledBox() {
     final CheckBox box = new CheckBox();
-    FXUiUtil.createBooleanValue(box).link(Values.propertyValue(model, "enabled", boolean.class, model.getEnabledObserver()));
+    FXUiUtil.createBooleanValue(box).link(Value.propertyValue(model, "enabled", boolean.class, model.getEnabledObserver()));
     FXUiUtil.link(box.disableProperty(), model.getLockedObserver());
 
     return box;
@@ -124,7 +122,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
       final ValueSet<T> valueSet = model.getEqualValueSet();
-      final Value<T> value = Values.value();
+      final Value<T> value = Value.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
       FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null).link(value);

@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -297,7 +296,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createUpdateButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
     button.setOnAction(event -> update(true));
-    final State existingAndModifiedState = States.combination(Conjunction.AND,
+    final State existingAndModifiedState = State.combination(Conjunction.AND,
             editModel.getEntityNewObserver().getReversedObserver(),
             editModel.getModifiedObserver());
     FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());

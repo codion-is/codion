@@ -6,7 +6,6 @@ package is.codion.common.rmi.server;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ConnectionValidationException;
@@ -68,7 +67,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private final ServerConfiguration configuration;
   private final ServerInformation serverInformation;
-  private final Event<?> shutdownEvent = Events.event();
+  private final Event<?> shutdownEvent = Event.event();
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 

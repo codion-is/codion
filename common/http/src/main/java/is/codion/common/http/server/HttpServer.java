@@ -5,7 +5,6 @@ package is.codion.common.http.server;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.Events;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -30,8 +29,8 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
-  private final Event<?> serverStartedEvent = Events.event();
-  private final Event<?> serverStoppedEvent = Events.event();
+  private final Event<?> serverStartedEvent = Event.event();
+  private final Event<?> serverStoppedEvent = Event.event();
 
   private final HandlerList handlers;
   private final int port;

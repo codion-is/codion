@@ -8,9 +8,7 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
@@ -30,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityLoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String CONNECTION_TYPE_BEFORE_TEST = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 
-  private static final User ADMIN_USER = Users.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parseUser("scott:tiger");
   private static Server<?, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -69,7 +67,7 @@ public class EntityLoadTestModelTest {
 
     @Override
     protected DefaultEntityApplicationModel initializeApplication() {
-      return new DefaultEntityApplicationModel(EntityConnectionProviders.connectionProvider().setDomainClassName(TestDomain.class.getName())
+      return new DefaultEntityApplicationModel(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName())
               .setClientTypeId(EntityLoadTestModelTest.class.getSimpleName()).setUser(getUser()));
     }
   }
@@ -134,7 +132,7 @@ public class EntityLoadTestModelTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
     configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(Users.parseUser("scott:tiger"));
+    configuration.setAdminUser(User.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(Collections.singletonList("is.codion.swing.framework.tools.loadtest.TestDomain"));

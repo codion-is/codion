@@ -13,7 +13,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
@@ -24,7 +23,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
@@ -46,7 +45,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    * The actual user credentials to return for successfully authenticated users.
    * Also used for user lookup.
    */
-  private final User databaseUser = Users.parseUser("scott:tiger");
+  private final User databaseUser = User.parseUser("scott:tiger");
 
   /**
    * The Domain containing the authentication table.
@@ -104,7 +103,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private EntityConnection getConnectionFromPool() {
     try {
-      return createConnection(domain, database, connectionPool.getConnection(databaseUser));
+      return localEntityConnection(domain, database, connectionPool.getConnection(databaseUser));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

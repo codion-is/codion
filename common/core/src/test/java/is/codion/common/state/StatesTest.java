@@ -16,7 +16,7 @@ public class StatesTest {
 
   @Test
   public void listeners() {
-    final State state = States.state();
+    final State state = State.state();
     final AtomicInteger stateChangeCounter = new AtomicInteger();
     final EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
     state.addListener(stateChangeListener);
@@ -47,7 +47,7 @@ public class StatesTest {
     final EventListener reversedListener = reversedStateCounter::incrementAndGet;
     final AtomicInteger reversedReversedStateCounter = new AtomicInteger();
     final EventListener reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
-    final State state = States.state();
+    final State state = State.state();
     final StateObserver reversed = state.getReversedObserver();
     final StateObserver reversedReversed = reversed.getReversedObserver();
     state.addListener(listener);
@@ -71,7 +71,7 @@ public class StatesTest {
 
   @Test
   public void test() {
-    final State state = States.state();
+    final State state = State.state();
     assertFalse(state.get(), "State should be inactive when initialized");
     state.set(true);
     assertTrue(state.get(), "State should be active after activation");
@@ -86,10 +86,10 @@ public class StatesTest {
 
   @Test
   public void group() throws Exception {
-    final State stateOne = States.state(true);
-    final State stateTwo = States.state(true);
-    final State stateThree = States.state(true);
-    final State.Group stateGroup = States.group(stateOne);
+    final State stateOne = State.state(true);
+    final State stateTwo = State.state(true);
+    final State stateThree = State.state(true);
+    final State.Group stateGroup = State.group(stateOne);
 
     stateGroup.addState(stateOne);//has no effect
     stateGroup.addState(stateTwo);
@@ -107,21 +107,21 @@ public class StatesTest {
 
   @Test
   public void stateCombinationSetActive() {
-    final State.Combination orState = States.combination(Conjunction.OR);
+    final State.Combination orState = State.combination(Conjunction.OR);
     assertThrows(UnsupportedOperationException.class, () -> orState.set(true));
   }
 
   @Test
   public void stateCombination() {
-    State.Combination orState = States.combination(Conjunction.OR);
-    final State stateOne = States.state();
-    final State stateTwo = States.state();
-    final State stateThree = States.state();
+    State.Combination orState = State.combination(Conjunction.OR);
+    final State stateOne = State.state();
+    final State stateTwo = State.state();
+    final State stateThree = State.state();
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
 
-    State.Combination andState = States.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
+    State.Combination andState = State.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
     assertEquals(Conjunction.AND, andState.getConjunction());
     assertEquals("Combination and false, false, false, false", andState.toString());
 
@@ -154,11 +154,11 @@ public class StatesTest {
     stateOne.set(false);
     stateTwo.set(false);
     stateThree.set(false);
-    orState = States.combination(Conjunction.OR);
+    orState = State.combination(Conjunction.OR);
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
-    andState = States.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
+    andState = State.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
     assertEquals("Combination and false, false, false, false", andState.toString());
 
     assertFalse(orState.get(), "Or state should be inactive");
@@ -197,11 +197,11 @@ public class StatesTest {
 
   @Test
   public void stateCombinationDataListener() {
-    final State one = States.state();
-    final State two = States.state();
-    final State three = States.state();
+    final State one = State.state();
+    final State two = State.state();
+    final State three = State.state();
 
-    final State combinationAnd = States.combination(Conjunction.AND, one, two, three);
+    final State combinationAnd = State.combination(Conjunction.AND, one, two, three);
     combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
     one.set(true);
     two.set(true);
@@ -210,7 +210,7 @@ public class StatesTest {
     two.set(false);
     three.set(false);
 
-    final State combinationOr = States.combination(Conjunction.OR, one, two, three);
+    final State combinationOr = State.combination(Conjunction.OR, one, two, three);
     combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
     one.set(true);
     one.set(false);
@@ -222,9 +222,9 @@ public class StatesTest {
 
   @Test
   public void stateCombinationEvents() {
-    final State stateOne = States.state(false);
-    final State stateTwo = States.state(true);
-    final State.Combination combination = States.combination(Conjunction.OR, stateOne, stateTwo);
+    final State stateOne = State.state(false);
+    final State stateTwo = State.state(true);
+    final State.Combination combination = State.combination(Conjunction.OR, stateOne, stateTwo);
     final AtomicInteger stateChangeEvents = new AtomicInteger();
     combination.addListener(stateChangeEvents::incrementAndGet);
     assertTrue(combination.get());

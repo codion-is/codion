@@ -9,11 +9,9 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.item.Item;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -261,7 +259,7 @@ public class EntityTestUnit {
    * @return the EntityConnectionProvider instance this test case should use
    */
   protected EntityConnectionProvider initializeConnectionProvider() {
-    return EntityConnectionProviders.connectionProvider().setDomainClassName(domainClass)
+    return EntityConnectionProvider.connectionProvider().setDomainClassName(domainClass)
             .setClientTypeId(getClass().getName()).setUser(user);
   }
 
@@ -445,7 +443,7 @@ public class EntityTestUnit {
   }
 
   private static User initializeDefaultUser() {
-    return Users.parseUser(TEST_USER.getOrThrow());
+    return User.parseUser(TEST_USER.getOrThrow());
   }
 
   private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,

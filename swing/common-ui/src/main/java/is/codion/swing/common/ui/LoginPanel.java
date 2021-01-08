@@ -6,7 +6,6 @@ package is.codion.swing.common.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
@@ -63,7 +62,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    */
   public User getUser() {
-    return Users.user(usernameField.getText(), passwordField.getPassword());
+    return User.user(usernameField.getText(), passwordField.getPassword());
   }
 
   /**

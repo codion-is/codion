@@ -4,10 +4,8 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.common.value.Values;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -15,18 +13,18 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JComboBox;
 import java.util.List;
 
-import static is.codion.common.item.Items.item;
+import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectedValuesTest {
 
   private String selectedItem;
-  private final Event<String> selectedItemChangedEvent = Events.event();
+  private final Event<String> selectedItemChangedEvent = Event.event();
 
   @Test
   public void selectedItemValueLinkValidate() throws Exception {
-    final Value<String> originalValue = Values.value("b");
+    final Value<String> originalValue = Value.value("b");
     originalValue.addValidator(value -> {
       if (value != null && value.equals("s")) {
         throw new IllegalArgumentException();
@@ -45,7 +43,7 @@ public class SelectedValuesTest {
   @Test
   public void selectedItemValueLink() throws Exception {
     final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
-    SelectedValues.selectedValue(box).link(Values.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));
+    SelectedValues.selectedValue(box).link(Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));
     assertNull(selectedItem);
     setSelectedItem("s");
     assertEquals("s", box.getSelectedItem());

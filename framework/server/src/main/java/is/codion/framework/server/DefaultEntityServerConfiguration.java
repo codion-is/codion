@@ -6,7 +6,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.version.Versions;
+import is.codion.common.version.Version;
 
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -47,7 +47,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
       }
 
       return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
-              Versions.getVersionString() + "@" + database.getName().toUpperCase();
+              Version.getVersionString() + "@" + database.getName().toUpperCase();
     });
   }
 

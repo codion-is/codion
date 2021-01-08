@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.user.Users;
+import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -165,6 +165,6 @@ public final class ClientTutorial {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     new ApplicationPanel().startApplication("Artists and Albums", null, MaximizeFrame.NO,
-            getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
+            getScreenSizeRatio(0.5), User.parseUser("scott:tiger"));
   }
 }
