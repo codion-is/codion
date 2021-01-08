@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
@@ -741,7 +740,7 @@ public final class Dialogs {
       dialog.dispose();
     }
     else {
-      final State confirmClose = States.state();
+      final State confirmClose = State.state();
       confirmCloseListener.onEvent(confirmClose);
       if (confirmClose.get()) {
         dialog.dispose();

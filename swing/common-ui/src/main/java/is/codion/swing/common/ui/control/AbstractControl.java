@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -50,7 +50,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
    */
   AbstractControl(final String name, final StateObserver enabledObserver, final Icon icon) {
     super(name, icon);
-    this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
+    this.enabledObserver = enabledObserver == null ? State.state(true) : enabledObserver;
     this.enabledObserver.addDataListener(super::setEnabled);
     super.setEnabled(this.enabledObserver.get());
   }

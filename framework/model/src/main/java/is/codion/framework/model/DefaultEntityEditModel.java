@@ -12,7 +12,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -65,12 +64,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<?> afterRefreshEvent = Events.event();
   private final Event<State> confirmSetEntityEvent = Events.event();
 
-  private final State entityModifiedState = States.state();
-  private final State primaryKeyNullState = States.state(true);
-  private final State insertEnabledState = States.state(true);
-  private final State updateEnabledState = States.state(true);
-  private final State deleteEnabledState = States.state(true);
-  private final State readOnlyState = States.combination(Conjunction.AND,
+  private final State entityModifiedState = State.state();
+  private final State primaryKeyNullState = State.state(true);
+  private final State insertEnabledState = State.state(true);
+  private final State updateEnabledState = State.state(true);
+  private final State deleteEnabledState = State.state(true);
+  private final State readOnlyState = State.combination(Conjunction.AND,
           insertEnabledState.getReversedObserver(), updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
@@ -112,7 +111,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * A state indicating whether the entity being edited is in a valid state according the validator
    */
-  private final State validState = States.state();
+  private final State validState = State.state();
 
   /**
    * Holds events signaling value changes made via {@link #put(Attribute, Object)} or {@link #remove(Attribute)}
@@ -128,7 +127,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * A state indicating whether the entity being edited is new
    * @see #isEntityNew()
    */
-  private final State entityNewState = States.state(true);
+  private final State entityNewState = State.state(true);
 
   /**
    * Provides the default value for properties when a default entity is created
@@ -934,7 +933,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private boolean isSetEntityAllowed() {
     if (warnAboutUnsavedData && containsUnsavedData()) {
-      final State confirmation = States.state(true);
+      final State confirmation = State.state(true);
       confirmSetEntityEvent.onEvent(confirmation);
 
       return confirmation.get();

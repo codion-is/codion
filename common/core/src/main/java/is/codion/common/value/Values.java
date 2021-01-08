@@ -5,7 +5,6 @@ package is.codion.common.value;
 
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 
 import java.util.Collections;
 import java.util.Set;
@@ -99,7 +98,7 @@ public final class Values {
    * @return a State linked to the given value
    */
   public static State valueState(final Value<Boolean> booleanValue) {
-    final State state = States.state();
+    final State state = State.state();
     stateValue(state).link(requireNonNull(booleanValue, "booleanValue"));
 
     return state;

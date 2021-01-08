@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Values;
 import is.codion.swing.common.ui.control.Controls;
@@ -83,7 +82,7 @@ public final class ServerMonitorPanel extends JPanel {
           null, true, null, null);
   private final ChartPanel gcEventsChartPanel = new ChartPanel(gcEventsChart);
 
-  private final State synchronizedZoomState = States.state(true);
+  private final State synchronizedZoomState = State.state(true);
 
   /**
    * Instantiates a new ServerMonitorPanel

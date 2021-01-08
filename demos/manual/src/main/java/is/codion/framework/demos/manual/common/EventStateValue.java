@@ -8,7 +8,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.swing.common.ui.Components;
@@ -48,7 +47,7 @@ public final class EventStateValue {
   private static void state() {
     // tag::state[]
     // a boolean state, false by default
-    State state = States.state();
+    State state = State.state();
 
     // an observer handles the listeners for a State but can not change it
     StateObserver stateObserver = state.getObserver();
@@ -72,7 +71,7 @@ public final class EventStateValue {
 
   private static void action() {
     // tag::action[]
-    State state = States.state();
+    State state = State.state();
 
     Action action = new AbstractAction("action") {
       public void actionPerformed(ActionEvent e) {}

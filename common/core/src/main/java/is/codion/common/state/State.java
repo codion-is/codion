@@ -16,6 +16,7 @@ import is.codion.common.Conjunction;
  *
  * state.set(true);
  * </pre>
+ * A factory class for {@link State} objects.
  */
 public interface State extends StateObserver {
 
@@ -70,5 +71,43 @@ public interface State extends StateObserver {
      * @param state the State to add
      */
     void addState(State state);
+  }
+
+  /**
+   * Instantiates a new 'false' State object.
+   * @return a new State
+   */
+  static State state() {
+    return state(false);
+  }
+
+  /**
+   * Instantiates a new State object.
+   * @param value the initial state value
+   * @return a new State
+   */
+  static State state(final boolean value) {
+    return new DefaultState(value);
+  }
+
+  /**
+   * Instantiates a new State.Combination object.
+   * @param conjunction the conjunction to use
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination combination(final Conjunction conjunction, final StateObserver... stateObservers) {
+    return new DefaultStateCombination(conjunction, stateObservers);
+  }
+
+  /**
+   * Instantiates a new State.Group object, which guarantees that only a single
+   * state within the group is active at a time
+   * @param states the states to add to the group initially, not required
+   * @return a new State.Group
+   * @see Group
+   */
+  static Group group(final State... states) {
+    return new DefaultStateGroup(states);
   }
 }

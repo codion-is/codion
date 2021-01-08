@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.event.Event;
 import is.codion.common.event.Events;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlsTest {
 
-  private final State state = States.state();
+  private final State state = State.state();
   private final Event<Boolean> valueChangeEvent = Events.event();
   private Boolean value = false;
 
@@ -110,7 +109,7 @@ public final class ControlsTest {
 
   @Test
   public void stateToggleControl() {
-    final State enabledState = States.state(false);
+    final State enabledState = State.state(false);
     final ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
     final ButtonModel buttonModel = Controls.buttonModel(control);
     assertFalse(control.isEnabled());
@@ -182,7 +181,7 @@ public final class ControlsTest {
 
   @Test
   public void setEnabled() {
-    final State enabledState = States.state();
+    final State enabledState = State.state();
     final Control control = Controls.control(this::doNothing, "control", enabledState.getObserver());
     assertEquals("control", control.getName());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());

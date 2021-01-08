@@ -17,7 +17,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -536,7 +535,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
-    final StateObserver enabled = States.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
+    final StateObserver enabled = State.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.UPDATE),
             (char) 0, enabled, frameworkIcons().edit());
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -570,7 +569,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
     return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
-            States.combination(Conjunction.AND,
+            State.combination(Conjunction.AND,
                     tableModel.getEditModel().getDeleteEnabledObserver(),
                     tableModel.getSelectionModel().getSelectionNotEmptyObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,

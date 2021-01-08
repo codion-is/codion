@@ -9,7 +9,6 @@ import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
@@ -115,7 +114,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       datePanel.add(calendarPanel, BorderLayout.NORTH);
 
       final Event<?> closeEvent = Events.event();
-      final State cancel = States.state();
+      final State cancel = State.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());
       final Control okControl = Controls.control(() -> {

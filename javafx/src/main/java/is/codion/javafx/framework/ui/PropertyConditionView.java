@@ -7,7 +7,6 @@ import is.codion.common.db.Operator;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.common.value.Values;
@@ -48,7 +47,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   private final Control equalsValueControl;
   private final Control upperBoundControl;
   private final Control lowerBoundControl;
-  private final State advancedCondition = States.state();
+  private final State advancedCondition = State.state();
 
   /**
    * Instantiates a new {@link PropertyConditionView}

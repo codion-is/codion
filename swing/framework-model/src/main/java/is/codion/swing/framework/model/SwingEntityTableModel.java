@@ -14,7 +14,6 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -104,7 +103,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * If true then querying should be disabled if no condition is specified
    */
-  private final State queryConditionRequiredState = States.state();
+  private final State queryConditionRequiredState = State.state();
 
   /**
    * The maximum number of rows this table model accepts from a query.

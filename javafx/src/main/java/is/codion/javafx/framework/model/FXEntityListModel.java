@@ -11,7 +11,6 @@ import is.codion.common.event.Events;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -59,7 +58,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
   private final EntityTableConditionModel tableConditionModel;
-  private final State queryConditionRequiredState = States.state();
+  private final State queryConditionRequiredState = State.state();
   private final Event<FXEntityEditModel> editModelSetEvent = Events.event();
 
   private FXEntityEditModel editModel;

@@ -11,7 +11,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 
@@ -78,7 +77,7 @@ public final class ConnectionPoolMonitor {
     this.minimumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
     this.maximumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
     this.maximumCheckoutTimeValue = Values.value(connectionPool.getMaximumCheckOutTime());
-    this.collectSnapshotStatisticsState = States.state(connectionPool.isCollectSnapshotStatistics());
+    this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
 
     this.pooledConnectionTimeoutValue.addValidator(new MinimumValidator(0));
     this.pooledCleanupIntervalValue.addValidator(new MinimumValidator(0));

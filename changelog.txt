@@ -6625,3 +6625,4 @@
   LoggerProxy moved to logging package
   CredentialsProvider.getAuthenticationToken(), removed old WebStart backwards compatibility
   Versions removed, methods moved to Version
+  States removed, methods moved to State

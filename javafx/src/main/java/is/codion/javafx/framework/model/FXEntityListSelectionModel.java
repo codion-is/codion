@@ -10,7 +10,6 @@ import is.codion.common.event.Events;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.framework.domain.entity.Entity;
 
 import javafx.collections.ListChangeListener;
@@ -36,10 +35,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
   private final Event<Entity> selectedItemChangedEvent = Events.event();
   private final Event<List<Entity>> selectedItemsChangedEvent = Events.event();
-  private final State singleSelectionModeState = States.state(false);
-  private final State selectionEmptyState = States.state(true);
-  private final State multipleSelectionState = States.state(false);
-  private final State singleSelectionState = States.state(false);
+  private final State singleSelectionModeState = State.state(false);
+  private final State selectionEmptyState = State.state(true);
+  private final State multipleSelectionState = State.state(false);
+  private final State singleSelectionState = State.state(false);
 
   private final javafx.scene.control.SelectionModel<Entity> selectionModel;
 

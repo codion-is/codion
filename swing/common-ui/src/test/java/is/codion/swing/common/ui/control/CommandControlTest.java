@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.control;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,7 @@ public final class CommandControlTest {
 
   @Test
   public void test() throws Exception {
-    final State enabledState = States.state();
+    final State enabledState = State.state();
     final Control control = Controls.control(this::method, enabledState);
     final JButton button = new JButton(control);
     assertFalse(button.isEnabled());

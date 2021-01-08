@@ -9,7 +9,6 @@ import is.codion.common.item.Item;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.common.value.Value;
@@ -940,7 +939,7 @@ public final class FXUiUtil {
 
     private final Property<?> property;
     private final StringProperty stringProperty;
-    private final State ignoreChange = States.state();
+    private final State ignoreChange = State.state();
 
     private ValidationChangeListener(final Property<?> property, final StringProperty stringProperty) {
       this.property = property;

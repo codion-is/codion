@@ -11,7 +11,6 @@ import is.codion.common.model.table.FilteredTableModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 
 import javax.swing.DefaultListSelectionModel;
 import java.util.Collection;
@@ -33,10 +32,10 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
   private final Event<R> selectedItemChangedEvent = Events.event();
   private final Event<List<R>> selectedItemsChangedEvent = Events.event();
-  private final State singleSelectionModeState = States.state(false);
-  private final State selectionEmptyState = States.state(true);
-  private final State multipleSelectionState = States.state(false);
-  private final State singleSelectionState = States.state(false);
+  private final State singleSelectionModeState = State.state(false);
+  private final State selectionEmptyState = State.state(true);
+  private final State multipleSelectionState = State.state(false);
+  private final State singleSelectionState = State.state(false);
 
   /**
    * Holds the topmost (minimum) selected index

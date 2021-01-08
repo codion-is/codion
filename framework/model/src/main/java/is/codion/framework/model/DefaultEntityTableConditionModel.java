@@ -11,7 +11,6 @@ import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -42,7 +41,7 @@ import static java.util.stream.Collectors.joining;
  */
 public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
-  private final State conditionChangedState = States.state();
+  private final State conditionChangedState = State.state();
   private final EntityType<?> entityType;
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnConditionModel<Entity, Property<?>, ?>> filterModels = new LinkedHashMap<>();

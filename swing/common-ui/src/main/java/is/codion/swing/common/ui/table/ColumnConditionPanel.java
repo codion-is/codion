@@ -10,7 +10,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
@@ -104,7 +103,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private final JComponent lowerBoundField;
 
   private final Event<C> focusGainedEvent = Events.event();
-  private final State advancedConditionState = States.state();
+  private final State advancedConditionState = State.state();
 
   private JDialog dialog;
   private Point lastDialogPosition;

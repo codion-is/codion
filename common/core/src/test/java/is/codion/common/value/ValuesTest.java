@@ -8,7 +8,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 
@@ -195,7 +194,7 @@ public class ValuesTest {
 
   @Test
   public void stateValue() {
-    final State state = States.state(true);
+    final State state = State.state(true);
     final Value<Boolean> stateValue = Values.stateValue(state);
     assertTrue(stateValue.toOptional().isPresent());
     assertTrue(stateValue.get());

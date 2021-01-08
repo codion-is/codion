@@ -11,7 +11,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
-import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -61,10 +60,10 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private static final double HUNDRED = 100d;
   private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
-  private final State pausedState = States.state();
-  private final State collectChartDataState = States.state();
+  private final State pausedState = State.state();
+  private final State collectChartDataState = State.state();
   private final State chartUpdateSchedulerEnabledState =
-          States.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
+          State.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
 
   private final Value<Integer> loginDelayFactorValue;
   private final Value<Integer> applicationBatchSizeValue;

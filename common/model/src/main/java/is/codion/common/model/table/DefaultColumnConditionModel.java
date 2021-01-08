@@ -11,7 +11,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.common.value.Values;
@@ -42,8 +41,8 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final Event<?> conditionChangedEvent = Events.event();
   private final Event<?> conditionModelClearedEvent = Events.event();
 
-  private final State enabledState = States.state();
-  private final State lockedState = States.state();
+  private final State enabledState = State.state();
+  private final State lockedState = State.state();
 
   private final K columnIdentifier;
   private final Class<T> typeClass;
