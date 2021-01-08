@@ -270,7 +270,7 @@ public interface ServerConfiguration {
    */
   static ServerConfiguration fromSystemProperties() {
     final DefaultServerConfiguration configuration =
-            new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()), REGISTRY_PORT.get());
+            new DefaultServerConfiguration(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow());
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
