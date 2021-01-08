@@ -5,6 +5,6 @@ module is.codion.plugin.log4j.proxy {
 
   exports is.codion.plugin.log4j;
 
-  provides is.codion.common.LoggerProxy
+  provides is.codion.common.logging.LoggerProxy
           with is.codion.plugin.log4j.Log4jProxy;
 }

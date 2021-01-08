@@ -5,6 +5,6 @@ module is.codion.plugin.logback.proxy {
 
   exports is.codion.plugin.logback;
 
-  provides is.codion.common.LoggerProxy
+  provides is.codion.common.logging.LoggerProxy
           with is.codion.plugin.logback.LogbackProxy;
 }
