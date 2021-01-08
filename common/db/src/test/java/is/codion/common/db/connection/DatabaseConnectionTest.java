@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseConnectionTest {
@@ -27,7 +28,7 @@ public class DatabaseConnectionTest {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(UNIT_TEST_USER);
-      final DatabaseConnection databaseConnection = DatabaseConnection.createConnection(DATABASE, connection);
+      final DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
       assertNotNull(databaseConnection.getUser());
       assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
@@ -44,7 +45,7 @@ public class DatabaseConnectionTest {
       try {
         connection = DATABASE.createConnection(UNIT_TEST_USER);
         connection.close();
-        DatabaseConnection.createConnection(DATABASE, connection);
+        databaseConnection(DATABASE, connection);
       }
       finally {
         Database.closeSilently(connection);

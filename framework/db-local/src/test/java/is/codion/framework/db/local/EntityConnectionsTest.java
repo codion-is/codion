@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -41,7 +42,7 @@ public class EntityConnectionsTest {
   public static void setUp() {
     try {
       final Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
-      DESTINATION_CONNECTION = LocalEntityConnection.createConnection(DOMAIN, destinationDatabase, User.user("sa"));
+      DESTINATION_CONNECTION = localEntityConnection(DOMAIN, destinationDatabase, User.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
       DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));

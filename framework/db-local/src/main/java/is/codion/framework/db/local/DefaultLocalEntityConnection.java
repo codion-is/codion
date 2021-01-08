@@ -55,6 +55,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.local.Queries.*;
@@ -102,7 +103,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   DefaultLocalEntityConnection(final Domain domain, final Database database, final User user) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
-    this.connection = DatabaseConnection.createConnection(database, user);
+    this.connection = databaseConnection(database, user);
     this.domain.configureConnection(this.connection);
   }
 
@@ -118,7 +119,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
-    this.connection = DatabaseConnection.createConnection(database, connection);
+    this.connection = databaseConnection(database, connection);
     this.domain.configureConnection(this.connection);
   }
 

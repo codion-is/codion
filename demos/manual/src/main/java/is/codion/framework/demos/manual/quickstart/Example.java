@@ -225,7 +225,7 @@ public final class Example {
     Store domain = new Store();
 
     EntityConnection connection =
-            LocalEntityConnection.createConnection(
+            LocalEntityConnection.localEntityConnection(
                     domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
@@ -250,7 +250,7 @@ public final class Example {
     Store domain = new Store();
 
     EntityConnection connection =
-            LocalEntityConnection.createConnection(
+            LocalEntityConnection.localEntityConnection(
                     domain, Databases.getInstance(), User.parseUser("scott:tiger"));
 
     Entities entities = domain.getEntities();

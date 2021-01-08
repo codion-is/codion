@@ -124,8 +124,8 @@ public interface LocalEntityConnection extends EntityConnection {
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
-  static LocalEntityConnection createConnection(final Domain domain, final Database database,
-                                                final User user) throws DatabaseException {
+  static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
+                                                     final User user) throws DatabaseException {
     return new DefaultLocalEntityConnection(domain, database, user)
             .setOptimisticLockingEnabled(USE_OPTIMISTIC_LOCKING.get())
             .setLimitFetchDepth(LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
@@ -141,8 +141,8 @@ public interface LocalEntityConnection extends EntityConnection {
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see Database#supportsIsValid()
    */
-  static LocalEntityConnection createConnection(final Domain domain, final Database database,
-                                                final Connection connection) throws DatabaseException {
+  static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
+                                                     final Connection connection) throws DatabaseException {
     return new DefaultLocalEntityConnection(domain, database, connection)
             .setOptimisticLockingEnabled(USE_OPTIMISTIC_LOCKING.get())
             .setLimitFetchDepth(LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());

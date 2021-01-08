@@ -23,7 +23,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.local.LocalEntityConnection.createConnection;
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
@@ -103,7 +103,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private EntityConnection getConnectionFromPool() {
     try {
-      return createConnection(domain, database, connectionPool.getConnection(databaseUser));
+      return localEntityConnection(domain, database, connectionPool.getConnection(databaseUser));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
