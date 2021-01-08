@@ -5,7 +5,7 @@ package is.codion.framework.demos.schemabrowser.testing;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
@@ -48,7 +48,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel initializeApplication() throws CancelException {
     final SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
-                    EntityConnectionProviders.connectionProvider().setDomainClassName(SchemaBrowser.class.getName())
+                    EntityConnectionProvider.connectionProvider().setDomainClassName(SchemaBrowser.class.getName())
                             .setClientTypeId(getClass().getSimpleName()).setUser(getUser()));
     final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
     final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(Table.TYPE);

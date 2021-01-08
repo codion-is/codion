@@ -10,9 +10,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnection.IncludePrimaryKeys;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnections;
-import is.codion.framework.db.EntityConnections.IncludePrimaryKeys;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
@@ -60,12 +59,12 @@ public class EntityConnectionsTest {
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
-    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.Department.TYPE);
+    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.Department.TYPE);
 
     assertEquals(sourceConnection.rowCount(condition(TestDomain.Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(TestDomain.Department.TYPE)));
 
-    EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_EMP);
+    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_EMP);
     DESTINATION_CONNECTION.select(condition(TestDomain.T_EMP));
 
     DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
@@ -79,17 +78,17 @@ public class EntityConnectionsTest {
     final List<Entity> source = sourceConnection.select(condition(TestDomain.Department.TYPE));
 
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
-    EntityConnections.batchInsert(DESTINATION_CONNECTION, source.iterator(), 2, progressReporter, null);
+    EntityConnection.batchInsert(DESTINATION_CONNECTION, source.iterator(), 2, progressReporter, null);
     assertEquals(sourceConnection.rowCount(condition(TestDomain.Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(TestDomain.Department.TYPE)));
 
-    EntityConnections.batchInsert(DESTINATION_CONNECTION, Collections.emptyIterator(), 10, null, null);
+    EntityConnection.batchInsert(DESTINATION_CONNECTION, Collections.emptyIterator(), 10, null, null);
     DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));
   }
 
   @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(CONNECTION_PROVIDER.getConnection(),
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.batchInsert(CONNECTION_PROVIDER.getConnection(),
             Collections.emptyIterator(), -6, null, null));
   }
 }

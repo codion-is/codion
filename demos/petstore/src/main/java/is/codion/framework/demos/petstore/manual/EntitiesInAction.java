@@ -7,7 +7,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.petstore.domain.Petstore;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -21,7 +20,7 @@ public final class EntitiesInAction {
 
   public static void main(final String[] args) throws DatabaseException {
     // tag::entitiesInAction[]
-    EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
+    EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
             .setDomainClassName(Petstore.class.getName())
             .setClientTypeId("Manual")
             .setUser(User.parseUser("scott:tiger"));

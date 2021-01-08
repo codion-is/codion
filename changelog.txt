@@ -6632,3 +6632,5 @@
   Values removed, method moved to Value
   DatabaseConnections removed, methods moved to DatabaseConnection
   Reports removed, methods moved to Report
+  EntityConnections removed, methods moved to EntityConnection
+  EntityConnectionProviders removed, methods moved to EntityConnectionProvider

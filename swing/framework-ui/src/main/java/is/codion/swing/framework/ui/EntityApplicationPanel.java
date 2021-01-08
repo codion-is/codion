@@ -19,7 +19,6 @@ import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -895,7 +894,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+    return EntityConnectionProvider.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
             .setClientTypeId(clientTypeId).setClientVersion(getClientVersion()).setUser(user);
   }
 

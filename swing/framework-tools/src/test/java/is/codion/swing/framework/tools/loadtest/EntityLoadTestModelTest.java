@@ -9,7 +9,6 @@ import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
@@ -68,7 +67,7 @@ public class EntityLoadTestModelTest {
 
     @Override
     protected DefaultEntityApplicationModel initializeApplication() {
-      return new DefaultEntityApplicationModel(EntityConnectionProviders.connectionProvider().setDomainClassName(TestDomain.class.getName())
+      return new DefaultEntityApplicationModel(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName())
               .setClientTypeId(EntityLoadTestModelTest.class.getSimpleName()).setUser(getUser()));
     }
   }

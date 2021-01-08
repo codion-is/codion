@@ -6,7 +6,6 @@ package is.codion.javafx.framework.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.javafx.framework.model.FXEntityApplicationModel;
@@ -151,7 +150,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return a {@link EntityConnectionProvider} based on the given user and client type
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+    return EntityConnectionProvider.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
             .setClientTypeId(clientTypeId).setUser(user);
   }
 

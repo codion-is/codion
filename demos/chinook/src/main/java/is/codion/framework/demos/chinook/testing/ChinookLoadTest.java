@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.testing;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.testing.scenarios.InsertDeleteAlbum;
 import is.codion.framework.demos.chinook.testing.scenarios.LogoutLogin;
@@ -39,7 +39,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   @Override
   protected ChinookApplicationModel initializeApplication() throws CancelException {
     final ChinookApplicationModel applicationModel = new ChinookApplicationModel(
-            EntityConnectionProviders.connectionProvider().setDomainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
+            EntityConnectionProvider.connectionProvider().setDomainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
                     .setClientTypeId(ChinookAppPanel.class.getName()).setUser(getUser()));
 
     /* Add a Genre model used in the ViewGenre scenario */
