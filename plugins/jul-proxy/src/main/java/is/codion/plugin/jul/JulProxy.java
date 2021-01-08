@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jul;
 
-import is.codion.common.LoggerProxy;
+import is.codion.common.logging.LoggerProxy;
 
 import java.util.List;
 import java.util.logging.Level;

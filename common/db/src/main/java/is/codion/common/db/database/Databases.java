@@ -3,8 +3,6 @@
  */
 package is.codion.common.db.database;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Utility class for {@link Database} implementations and misc. database related things.
  */
@@ -25,7 +23,7 @@ public final class Databases {
       final DatabaseFactory factory = DatabaseFactory.getInstance();
       if (instance == null || !factory.isDatabaseCompatible(instance)) {
         //refresh the instance
-        instance = factory.createDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getPropertyName()));
+        instance = factory.createDatabase(Database.DATABASE_URL.getOrThrow());
       }
 
       return instance;

@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common;
+package is.codion.common.properties;
 
+import is.codion.common.Util;
 import is.codion.common.value.PropertyValue;
 
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class PropertyStoreTest {
+public final class DefaultPropertyStoreTest {
 
   @Test
   public void test() throws IOException {
@@ -34,7 +35,7 @@ public final class PropertyStoreTest {
             .append("double.property=3.14").append(Util.LINE_SEPARATOR)
             .append("boolean.property=true");
     Files.write(configFile.toPath(), singletonList(configBuilder.toString()));
-    final PropertyStore store = new PropertyStore(configFile);
+    final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(configFile));
 
     final AtomicInteger counter = new AtomicInteger();
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
@@ -123,7 +124,7 @@ public final class PropertyStoreTest {
   public void testDefaultValues() throws IOException {
     final File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
     configFile.deleteOnExit();
-    final PropertyStore store = new PropertyStore(configFile);
+    final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(configFile));
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertEquals("value", stringValue.get());
     stringValue.set(null);
@@ -152,7 +153,7 @@ public final class PropertyStoreTest {
 
   @Test
   public void exceptions() throws IOException {
-    final PropertyStore store = new PropertyStore(new File("test.file"));
+    final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(new File("test.file")));
 
     store.propertyValue("test", "test");
     assertThrows(IllegalArgumentException.class, () -> store.propertyValue("test", "test"));
@@ -169,19 +170,19 @@ public final class PropertyStoreTest {
     final Properties properties = new Properties();
     properties.put("property", "properties");
 
-    PropertyStore store = new PropertyStore(properties);
+    DefaultPropertyStore store = new DefaultPropertyStore(properties);
     PropertyValue<String> value = store.propertyValue("property", "def");
     assertEquals("properties", value.get());
 
     System.clearProperty("property");
-    store = new PropertyStore(properties);
+    store = new DefaultPropertyStore(properties);
     value = store.propertyValue("property", "def");
     assertEquals("properties", value.get());
 
     System.clearProperty("property");
     properties.clear();
 
-    store = new PropertyStore(properties);
+    store = new DefaultPropertyStore(properties);
     value = store.propertyValue("property", "def");
     assertEquals("def", value.get());
   }
@@ -190,7 +191,7 @@ public final class PropertyStoreTest {
   public void getOrThrow() {
     final Properties properties = new Properties();
     properties.put("property", "");
-    final PropertyStore store = new PropertyStore(properties);
+    final DefaultPropertyStore store = new DefaultPropertyStore(properties);
     final PropertyValue<String> propertyValue = store.propertyValue("property", "");
     propertyValue.set(null);
     assertThrows(IllegalStateException.class, propertyValue::getOrThrow);

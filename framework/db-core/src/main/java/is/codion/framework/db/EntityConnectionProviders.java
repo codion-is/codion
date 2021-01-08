@@ -18,7 +18,7 @@ public final class EntityConnectionProviders {
    * @see is.codion.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE
    */
   public static EntityConnectionProvider connectionProvider() {
-    final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+    final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.getOrThrow();
     final ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
     for (final EntityConnectionProvider provider : loader) {
       if (provider.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
