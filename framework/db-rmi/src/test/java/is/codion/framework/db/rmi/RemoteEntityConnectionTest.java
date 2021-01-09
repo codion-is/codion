@@ -8,35 +8,34 @@ import is.codion.framework.db.EntityConnection;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemoteEntityConnectionTest {
 
+  /* A sanity check since {@link RemoteEntityConnection} can not extend {@link EntityConnection}. */
   @Test
   public void entityConnectionCompatibility() throws Exception {
-    final Class<RemoteEntityConnection> remoteConnectionClass = RemoteEntityConnection.class;
-    final Class<EntityConnection> connectionClass = EntityConnection.class;
-    if (remoteConnectionClass.getDeclaredMethods().length != connectionClass.getDeclaredMethods().length) {
+    final List<Method> remoteEntityConnectionMethods = Arrays.stream(RemoteEntityConnection.class.getDeclaredMethods())
+            .filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
+    final List<Method> entityConnectionMethods = Arrays.stream(EntityConnection.class.getDeclaredMethods())
+            .filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
+    if (remoteEntityConnectionMethods.size() != entityConnectionMethods.size()) {
       fail("Method count mismatch");
     }
-    for (final Method localDbMethod : connectionClass.getDeclaredMethods()) {
-      final Class[] parameterTypes = localDbMethod.getParameterTypes();
-      boolean found = false;
-      for (final Method remoteDbMethod : remoteConnectionClass.getDeclaredMethods()) {
-        final Collection<Class> exceptionTypes = asList(remoteDbMethod.getExceptionTypes());
-        if (remoteDbMethod.getReturnType().equals(localDbMethod.getReturnType())
-                && remoteDbMethod.getName().equals(localDbMethod.getName())
-                && Arrays.equals(remoteDbMethod.getParameterTypes(), parameterTypes)
-                && exceptionTypes.containsAll(asList(localDbMethod.getExceptionTypes()))) {
-          found = true;
-        }
-      }
-      if (!found) {
-        fail(EntityConnection.class.getSimpleName() + " method " + localDbMethod.getName() + " not found in " + RemoteEntityConnection.class.getSimpleName());
+    for (final Method entityConnectionMethod : entityConnectionMethods) {
+      if (remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
+              remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
+                      && remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())
+                      && Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())
+                      && asList(remoteConnectionMethod.getExceptionTypes()).containsAll(asList(entityConnectionMethod.getExceptionTypes())))) {
+        fail(EntityConnection.class.getSimpleName() + " method " + entityConnectionMethod.getName()
+                + " not found in " + RemoteEntityConnection.class.getSimpleName());
       }
     }
   }
