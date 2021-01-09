@@ -12,10 +12,6 @@ ext {
 }
 
 allprojects {
-    repositories {
-        jcenter()
-    }
-
 //    apply plugin: "com.github.hierynomus.license"
 
     license {
