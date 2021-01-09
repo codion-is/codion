@@ -91,6 +91,7 @@ import static is.codion.swing.common.ui.Components.hideWaitCursor;
 import static is.codion.swing.common.ui.Components.showWaitCursor;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Controls.control;
+import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 
@@ -1130,7 +1131,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the TableCellRenderer for the given property
    */
   protected TableCellRenderer initializeTableCellRenderer(final Property<?> property) {
-    return EntityTableCellRenderers.createTableCellRenderer(tableModel, property);
+    return entityTableCellRenderer(tableModel, property);
   }
 
   /**
