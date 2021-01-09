@@ -6642,3 +6642,4 @@
   EntityTableCellRenderers removed, methods moved DefaultEntityTableCellRenderer and EntityTableCellRenderer, DefaultEntityTableCellRenderer now final
   EntityTableCellRenderers removed, DefaultEntityTableCellRenderer moved up to package level, methods moved to EntityTableCellRenderer
   Databases removed, instance method moved to DatabaseFactory and renamed getDatabase()
+0.17.7
