@@ -81,8 +81,16 @@ public final class EntityInputComponents {
   /**
    * Identifies the completion mode MaximumMatch
    * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
+   * @see Completion#maximumMatch(JComboBox)
    */
   public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
+
+  /**
+   * Identifies the completion mode AutoCompletion
+   * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
+   * @see Completion#autoComplete(JComboBox)
+   */
+  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
 
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
@@ -92,12 +100,6 @@ public final class EntityInputComponents {
    * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
    */
   public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("codion.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
-
-  /**
-   * Identifies the completion mode AutoCompletion
-   * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
-   */
-  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
 
   /**
    * Specifies the default horizontal alignment used in labels<br>
