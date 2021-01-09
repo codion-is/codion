@@ -125,15 +125,10 @@ public interface Version extends Comparable<Version> {
     }
     final String[] versionSplit = version.split("\\.");
 
-    return new DefaultVersion(getIntValue(versionSplit, 0), getIntValue(versionSplit, 1),
-            getIntValue(versionSplit, 2), metadata);
-  }
+    final int major = versionSplit.length > 0 ? Integer.parseInt(versionSplit[0]) : 0;
+    final int minor = versionSplit.length > 1 ? Integer.parseInt(versionSplit[1]) : 0;
+    final int patch = versionSplit.length > 2 ? Integer.parseInt(versionSplit[2]) : 0;
 
-  static int getIntValue(final String[] splits, final int index) {
-    if (splits.length > index) {
-      return Integer.parseInt(splits[index]);
-    }
-
-    return 0;
+    return new DefaultVersion(major, minor, patch, metadata);
   }
 }

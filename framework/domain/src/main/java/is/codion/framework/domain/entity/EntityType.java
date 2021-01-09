@@ -189,6 +189,7 @@ public interface EntityType<T extends Entity> {
   ConditionType conditionType(String name);
 
   /**
+   * Creates a new EntityType instance.
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
    * @param entityClass the entity representation class
@@ -208,6 +209,7 @@ public interface EntityType<T extends Entity> {
   }
 
   /**
+   * Creates a new EntityType instance.
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
@@ -220,6 +222,7 @@ public interface EntityType<T extends Entity> {
   }
 
   /**
+   * Creates a new EntityType instance.
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
    * @param entityClass the entity representation class

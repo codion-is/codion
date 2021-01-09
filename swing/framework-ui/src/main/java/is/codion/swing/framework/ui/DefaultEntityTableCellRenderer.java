@@ -95,6 +95,12 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
   }
 
   @Override
+  public final void setHorizontalAlignment(final int alignment) {
+    //called in constructor, make final
+    super.setHorizontalAlignment(alignment);
+  }
+
+  @Override
   public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
