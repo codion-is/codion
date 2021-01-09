@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
@@ -163,7 +163,7 @@ public final class ClientUI {
     // for supplying a valid connection or throwing an exception
     // in case a connection can not be established
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(Databases.getInstance())
+            new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(ChinookImpl.class.getName())
                     .setUser(User.parseUser("scott:tiger"));
 

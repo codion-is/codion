@@ -3,7 +3,7 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.i18n.Messages;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.client.Clients;
@@ -313,7 +313,7 @@ public class EntityServerTest {
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(3223, 3221);
     configuration.setServerAdminPort(3223);
     configuration.setAdminUser(User.parseUser("scott:tiger"));
-    configuration.setDatabase(Databases.getInstance());
+    configuration.setDatabase(DatabaseFactory.getDatabase());
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("is.codion.framework.server.TestDomain"));

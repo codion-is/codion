@@ -38,8 +38,8 @@ public interface DatabaseFactory {
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of the database driver failed
    */
-  static DatabaseFactory getInstance() throws SQLException {
-    return getInstance(Database.DATABASE_URL.getOrThrow("codion.db.url must be specified before discovering DatabaseFactories"));
+  static DatabaseFactory databaseFactory() throws SQLException {
+    return databaseFactory(Database.DATABASE_URL.getOrThrow("codion.db.url must be specified before discovering DatabaseFactories"));
   }
 
   /**
@@ -48,7 +48,7 @@ public interface DatabaseFactory {
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of database driver failed
    */
-  static DatabaseFactory getInstance(final String jdbcUrl) throws SQLException {
+  static DatabaseFactory databaseFactory(final String jdbcUrl) throws SQLException {
     final String driver = getDriverClassName(jdbcUrl);
     final ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
     for (final DatabaseFactory factory : loader) {
@@ -58,6 +58,32 @@ public interface DatabaseFactory {
     }
 
     throw new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver);
+  }
+
+  /**
+   * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).
+   * Subsequent calls to this method return the same instance, until the JDBC URL changes, then a new instance is created.
+   * @return a Database instance based on the current jdbc url
+   * @see Database#DATABASE_URL
+   * @throws IllegalArgumentException in case an unsupported database type is specified
+   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
+   */
+  static Database getDatabase() {
+    try {
+      final DatabaseFactory factory = databaseFactory();
+      if (AbstractDatabase.instance == null || !AbstractDatabase.instance.getUrl().equals(Database.DATABASE_URL.get())) {
+        //replace the instance
+        AbstractDatabase.instance = factory.createDatabase(Database.DATABASE_URL.get());
+      }
+
+      return AbstractDatabase.instance;
+    }
+    catch (final RuntimeException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**

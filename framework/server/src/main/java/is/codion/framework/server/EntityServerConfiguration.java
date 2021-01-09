@@ -7,7 +7,7 @@ package is.codion.framework.server;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
@@ -193,7 +193,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     }
     configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
-    configuration.setDatabase(Databases.getInstance());
+    configuration.setDatabase(DatabaseFactory.getDatabase());
     configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
     configuration.setStartupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
             .stream().map(User::parseUser).collect(toList()));

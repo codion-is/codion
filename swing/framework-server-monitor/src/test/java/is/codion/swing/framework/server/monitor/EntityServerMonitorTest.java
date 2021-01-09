@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
@@ -94,7 +94,7 @@ public class EntityServerMonitorTest {
     configuration.setAdminUser(User.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setDomainModelClassNames(Collections.singletonList(TestDomain.class.getName()));
-    configuration.setDatabase(Databases.getInstance());
+    configuration.setDatabase(DatabaseFactory.getDatabase());
     configuration.setSslEnabled(false);
 
     return configuration;

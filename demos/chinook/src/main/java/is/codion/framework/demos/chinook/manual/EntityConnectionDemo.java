@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.manual;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.user.User;
@@ -274,7 +274,7 @@ public final class EntityConnectionDemo {
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(Databases.getInstance())
+            new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(ChinookImpl.class.getName())
                     .setUser(User.parseUser("scott:tiger"));
 

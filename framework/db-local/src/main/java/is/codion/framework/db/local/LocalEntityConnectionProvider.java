@@ -5,7 +5,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
@@ -104,7 +104,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   public Database getDatabase() {
     if (database == null) {
-      database = Databases.getInstance();
+      database = DatabaseFactory.getDatabase();
     }
 
     return database;
