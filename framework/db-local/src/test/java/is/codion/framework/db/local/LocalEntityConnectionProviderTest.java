@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -20,7 +20,7 @@ public class LocalEntityConnectionProviderTest {
 
   @Test
   public void test() {
-    final Database database = Databases.getInstance();
+    final Database database = DatabaseFactory.getDatabase();
     final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(database);
     provider.setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 

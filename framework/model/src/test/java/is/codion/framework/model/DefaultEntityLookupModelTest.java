@@ -3,7 +3,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
@@ -34,7 +34,7 @@ public final class DefaultEntityLookupModelTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   private static final Entities ENTITIES = new TestDomain().getEntities();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
+          DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private EntityLookupModel lookupModel;
   private Collection<Attribute<String>> lookupAttributes;

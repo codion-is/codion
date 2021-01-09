@@ -225,7 +225,7 @@ public class StoreDemo {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(database)
                     .setDomainClassName(Store.class.getName())
-                    .setUser(Users.parseUser("scott:tiger"));
+                    .setUser(User.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel =
             new SwingEntityModel(Customer.TYPE, connectionProvider);
@@ -281,7 +281,7 @@ Database database = new H2DatabaseFactory()
 EntityConnectionProvider connectionProvider =
         new LocalEntityConnectionProvider(database)
                 .setDomainClassName(Store.class.getName())
-                .setUser(Users.parseUser("scott:tiger"));
+                .setUser(User.parseUser("scott:tiger"));
 
 EntityConnection connection = connectionProvider.getConnection();
 

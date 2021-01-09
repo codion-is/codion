@@ -5,7 +5,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.DateFormats;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordModifiedException;
@@ -735,7 +735,7 @@ public class DefaultLocalEntityConnectionTest {
   public void testConstructor() throws Exception {
     Connection connection = null;
     try {
-      final Database db = Databases.getInstance();
+      final Database db = DatabaseFactory.getDatabase();
       connection = db.createConnection(UNIT_TEST_USER);
       final EntityConnection conn = new DefaultLocalEntityConnection(DOMAIN, db, connection);
       assertTrue(conn.isConnected());
@@ -755,7 +755,7 @@ public class DefaultLocalEntityConnectionTest {
     assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {
-        final Database db = Databases.getInstance();
+        final Database db = DatabaseFactory.getDatabase();
         connection = db.createConnection(UNIT_TEST_USER);
         connection.close();
         new DefaultLocalEntityConnection(DOMAIN, db, connection);
@@ -903,6 +903,6 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
-    return new DefaultLocalEntityConnection(DOMAIN, Databases.getInstance(), UNIT_TEST_USER);
+    return new DefaultLocalEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), UNIT_TEST_USER);
   }
 }

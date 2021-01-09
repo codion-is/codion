@@ -4,7 +4,7 @@
 package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
@@ -21,7 +21,7 @@ public class DatabaseConnectionTest {
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Database DATABASE = Databases.getInstance();
+  private static final Database DATABASE = DatabaseFactory.getDatabase();
 
   @Test
   public void createConnection() throws Exception {

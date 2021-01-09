@@ -30,6 +30,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractDatabase implements Database {
 
+  static Database instance;
+
   private final Map<String, ConnectionPool> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
   private final QueryCounter queryCounter = new QueryCounter();

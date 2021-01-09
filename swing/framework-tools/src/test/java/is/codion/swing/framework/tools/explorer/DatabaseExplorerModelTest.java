@@ -4,7 +4,7 @@
 package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.Text;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.user.User;
 
@@ -40,7 +40,7 @@ public final class DatabaseExplorerModelTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    model = new DatabaseExplorerModel(Databases.getInstance(), UNIT_TEST_USER);
+    model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
     model.getSchemaModel().refresh();
     model.getSchemaModel().getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
     model.getSchemaModel().getSelectionModel().setSelectedIndex(1);

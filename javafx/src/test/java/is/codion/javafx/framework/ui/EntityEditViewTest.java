@@ -3,7 +3,7 @@
  */
 package is.codion.javafx.framework.ui;
 
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -21,7 +21,7 @@ public final class EntityEditViewTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
+          DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @BeforeAll
   public static void setUp() throws Exception {

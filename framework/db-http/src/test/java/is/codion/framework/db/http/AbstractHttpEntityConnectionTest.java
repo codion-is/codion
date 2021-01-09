@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.reports.Report;
@@ -276,7 +276,7 @@ abstract class AbstractHttpEntityConnectionTest {
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
     configuration.setServerAdminPort(3223);
-    configuration.setDatabase(Databases.getInstance());
+    configuration.setDatabase(DatabaseFactory.getDatabase());
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setSslEnabled(false);
     configuration.setAuxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()));

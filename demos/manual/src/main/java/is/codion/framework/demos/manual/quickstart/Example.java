@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.quickstart;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.database.Databases;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -148,7 +148,7 @@ public final class Example {
     }
 
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(Databases.getInstance())
+            new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(Store.class.getName())
                     .setUser(User.parseUser("scott:tiger"));
 
@@ -226,7 +226,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnection.localEntityConnection(
-                    domain, Databases.getInstance(), User.parseUser("scott:tiger"));
+                    domain, DatabaseFactory.getDatabase(), User.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
     Entity johnDoe = connection.selectSingle(Customer.LAST_NAME, "Doe");
@@ -251,7 +251,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnection.localEntityConnection(
-                    domain, Databases.getInstance(), User.parseUser("scott:tiger"));
+                    domain, DatabaseFactory.getDatabase(), User.parseUser("scott:tiger"));
 
     Entities entities = domain.getEntities();
 
