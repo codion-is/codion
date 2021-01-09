@@ -6643,3 +6643,4 @@
   EntityTableCellRenderers removed, DefaultEntityTableCellRenderer moved up to package level, methods moved to EntityTableCellRenderer
   Databases removed, instance method moved to DatabaseFactory and renamed getDatabase()
 0.17.7
+  DefaultLocalEntityConnection bug fixed, writeBlob() did not performa rollback when UpdateException was thrown

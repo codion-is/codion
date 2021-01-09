@@ -70,7 +70,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName());
-  private static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
+  private static final String RECORD_MODIFIED = "record_modified";
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
@@ -385,7 +385,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         deleteQuery = deleteQuery(entityDefinition.getTableName(), condition.getWhereClause(entityDefinition));
         statement = prepareStatement(deleteQuery);
-        final int deleteCount = executeStatement(statement, deleteQuery, entityDefinition.getColumnProperties(condition.getAttributes()), condition.getValues());
+        final int deleteCount = executeStatement(statement, deleteQuery,
+                entityDefinition.getColumnProperties(condition.getAttributes()), condition.getValues());
         commitIfTransactionIsNotOpen();
 
         return deleteCount;
@@ -467,7 +468,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (entities.size() > 1) {
-      throw new MultipleRecordsFoundException(MESSAGES.getString("many_records_found"));
+      throw new MultipleRecordsFoundException(MESSAGES.getString("multiple_records_found"));
     }
 
     return entities.get(0);
@@ -586,8 +587,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public int rowCount(final Condition condition) throws DatabaseException {
     final EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(condition, CONDITION_PARAM_NAME).getEntityType());
     final Database database = connection.getDatabase();
-    final String subquery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
-            condition, entityDefinition, database);
+    final String subquery = selectQuery(columnsClause(entityDefinition.getPrimaryKeyProperties()), condition, entityDefinition, database);
     final String subqueryAlias = database.subqueryRequiresAlias() ? " as row_count" : "";
     final String selectQuery = selectQuery("(" + subquery + ")" + subqueryAlias, "count(*)");
     PreparedStatement statement = null;
@@ -729,13 +729,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final String updateQuery = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
             WHERE_SPACE_PREFIX_POSTFIX + condition.getWhereClause(entityDefinition);
     final List<Object> statementValues = new ArrayList<>();
-    statementValues.add(null);//the blob value, set explicitly later
+    statementValues.add(null);//the blob value, binary stream set explicitly later
     statementValues.addAll(condition.getValues());
     final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
     statementProperties.add(blobProperty);
     statementProperties.addAll(entityDefinition.getColumnProperties(condition.getAttributes()));
     synchronized (connection) {
-      SQLException exception = null;
+      Exception exception = null;
       PreparedStatement statement = null;
       try {
         logAccess("writeBlob", updateQuery);
@@ -752,6 +752,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, exception), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      catch (final UpdateException e) {
+        exception = e;
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(updateQuery, statementValues, e), e);
+        throw e;
       }
       finally {
         closeSilently(statement);
@@ -872,7 +878,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final Entity original = domainEntities.copyEntity(entity);
           original.revertAll();
 
-          throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
+          throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                   + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
         final List<Attribute<?>> modified = getModifiedColumnAttributes(definition, entity, current);
@@ -975,7 +981,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties() :
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectAttributes());
     try {
-      selectQuery = selectQuery(columnsClause(entityDefinition.getEntityType(),
+      selectQuery = selectQuery(getColumnsClause(entityDefinition.getEntityType(),
               selectCondition.getSelectAttributes(), propertiesToSelect), selectCondition,
               entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
@@ -1131,13 +1137,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     });
   }
 
-  private String columnsClause(final EntityType<?> entityType, final List<Attribute<?>> selectAttributes,
-                               final List<ColumnProperty<?>> propertiesToSelect) {
+  private String getColumnsClause(final EntityType<?> entityType, final List<Attribute<?>> selectAttributes,
+                                  final List<ColumnProperty<?>> propertiesToSelect) {
     if (selectAttributes.isEmpty()) {
-      return allColumnsClauseCache.computeIfAbsent(entityType, type -> Queries.columnsClause(propertiesToSelect));
+      return allColumnsClauseCache.computeIfAbsent(entityType, type -> columnsClause(propertiesToSelect));
     }
 
-    return Queries.columnsClause(propertiesToSelect);
+    return columnsClause(propertiesToSelect);
   }
 
   private DatabaseException translateInsertUpdateSQLException(final SQLException exception) {
@@ -1299,7 +1305,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
                                                        final Collection<Attribute<?>> modifiedAttributes) {
-    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
+    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED))
             .append(", ").append(entity.getEntityType());
     for (final Attribute<?> attribute : modifiedAttributes) {
       builder.append(" \n").append(attribute).append(": ").append(entity.getOriginal(attribute))

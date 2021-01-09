@@ -307,7 +307,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (selected.size() > 1) {
-      throw new MultipleRecordsFoundException(MESSAGES.getString("many_records_found"));
+      throw new MultipleRecordsFoundException(MESSAGES.getString("multiple_records_found"));
     }
 
     return selected.get(0);
