@@ -27,22 +27,22 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   private final String resourceBundleName;
   private final int hashCode;
 
-  DefaultEntityType(final String domainName, final String typeName, final Class<T> entityClass,
+  DefaultEntityType(final String domainName, final String name, final Class<T> entityClass,
                     final String resourceBundleName) {
-    if (nullOrEmpty(typeName)) {
-      throw new IllegalArgumentException("typeName must be a non-empty string");
+    if (nullOrEmpty(name)) {
+      throw new IllegalArgumentException("name must be a non-empty string");
     }
     if (nullOrEmpty(domainName)) {
       throw new IllegalArgumentException("domainName must be a non-empty string");
     }
     this.domainName = domainName;
-    this.name = typeName;
+    this.name = name;
     this.entityClass = requireNonNull(entityClass, "entityClass");
     if (resourceBundleName != null) {
       ResourceBundle.getBundle(resourceBundleName);
     }
     this.resourceBundleName = resourceBundleName;
-    this.hashCode = Objects.hash(typeName, domainName);
+    this.hashCode = Objects.hash(name, domainName);
   }
 
   @Override
