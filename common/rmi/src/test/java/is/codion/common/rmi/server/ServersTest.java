@@ -30,7 +30,7 @@ public class ServersTest {
 
   @BeforeEach
   public void setUp() throws RemoteException {
-    Servers.initializeRegistry(Registry.REGISTRY_PORT);
+    Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
     final ServerConfiguration configuration = ServerConfiguration.configuration(12345);
     configuration.setServerName(SERVER_NAME);
     configuration.setSslEnabled(false);
@@ -58,7 +58,7 @@ public class ServersTest {
   @Test
   public void getServer() throws RemoteException {
     try {
-      final Server<Remote, ServerAdmin> server = Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
+      final Server<Remote, ServerAdmin> server = Server.Locator.locator().getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
       assertNotNull(server);
     }
     catch (final NotBoundException e) {
@@ -68,7 +68,7 @@ public class ServersTest {
 
   @Test
   public void getServerWrongPort() throws RemoteException, NotBoundException {
-    assertThrows(NotBoundException.class, () -> Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
+    assertThrows(NotBoundException.class, () -> Server.Locator.locator().getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
   }
 
   @Test

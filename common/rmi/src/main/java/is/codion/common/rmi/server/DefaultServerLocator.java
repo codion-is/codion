@@ -16,22 +16,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * A utility class for working with Server instances.
- */
-public final class Servers {
+final class DefaultServerLocator implements Server.Locator {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Servers.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultServerLocator.class);
 
-  private Servers() {}
-
-  /**
-   * Initializes a Registry if one is not running
-   * @param port the port on which to look for (or create) a registry
-   * @return the Registry
-   * @throws java.rmi.RemoteException in case of an exception
-   */
-  public static Registry initializeRegistry(final int port) throws RemoteException {
+  @Override
+  public Registry initializeRegistry(final int port) throws RemoteException {
     LOG.info("Initializing registry on port: {}", port);
     final Registry localRegistry = LocateRegistry.getRegistry(port);
     try {
@@ -47,23 +37,11 @@ public final class Servers {
     }
   }
 
-  /**
-   * Retrieves a Server from a registry running on the given host, using the
-   * given server name prefix as a condition. Returns the first server satisfying the condition.
-   * @param serverHostName the name of the host
-   * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
-   * @param registryPort the port on which to lookup the registry
-   * @param requestedServerPort the required server port, -1 for any port
-   * @param <T> the Remote object type served by the server
-   * @param <A> the server admin type supplied by the server
-   * @return the servers having a name with the given prefix
-   * @throws RemoteException in case of a remote exception
-   * @throws NotBoundException in case no such server is found
-   */
-  public static <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(final String serverHostName,
-                                                                                 final String serverNamePrefix,
-                                                                                 final int registryPort,
-                                                                                 final int requestedServerPort)
+  @Override
+  public <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(final String serverHostName,
+                                                                          final String serverNamePrefix,
+                                                                          final int registryPort,
+                                                                          final int requestedServerPort)
           throws RemoteException, NotBoundException {
     final List<Server<T, A>> servers = getServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
     if (!servers.isEmpty()) {

@@ -7,7 +7,6 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.rmi.server.Servers;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
@@ -47,7 +46,7 @@ public final class EmployeeServerTest {
 
     final EmployeeServer employeeServer = new EmployeeServer(configuration);
 
-    final Server<EmployeeService, ?> remoteServer = Servers.getServer("localhost",
+    final Server<EmployeeService, ?> remoteServer = Server.Locator.locator().getServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final UUID clientId = UUID.randomUUID();

@@ -10,8 +10,10 @@ import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.UUID;
 
 /**
@@ -71,4 +73,45 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
    * @throws RemoteException in case of an exception
    */
   boolean connectionsAvailable() throws RemoteException;
+
+  /**
+   * Locates {@link Server}s by name on a registry.
+   */
+  interface Locator {
+
+    /**
+     * Initializes a Registry if one is not running
+     * @param port the port on which to look for (or create) a registry
+     * @return the Registry
+     * @throws java.rmi.RemoteException in case of an exception
+     */
+    Registry initializeRegistry(int port) throws RemoteException;
+
+    /**
+     * Retrieves a Server from a registry running on the given host, using the
+     * given server name prefix as a condition. Returns the first server satisfying the condition.
+     * @param serverHostName the name of the host
+     * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
+     * @param registryPort the port on which to lookup the registry
+     * @param requestedServerPort the required server port, -1 for any port
+     * @param <T> the Remote object type served by the server
+     * @param <A> the server admin type supplied by the server
+     * @return the servers having a name with the given prefix
+     * @throws RemoteException in case of a remote exception
+     * @throws NotBoundException in case no such server is found
+     */
+    <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(final String serverHostName,
+                                                                     final String serverNamePrefix,
+                                                                     final int registryPort,
+                                                                     final int requestedServerPort)
+            throws RemoteException, NotBoundException;
+
+    /**
+     * Returns a {@link Locator} instance.
+     * @return a {@link Locator} instance.
+     */
+    static Locator locator() {
+      return new DefaultServerLocator();
+    }
+  }
 }

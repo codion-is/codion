@@ -6645,3 +6645,4 @@
 0.17.7
   DefaultLocalEntityConnection bug fixed, writeBlob() did not performa rollback when UpdateException was thrown
   Servers.getRegistry() removed, just use LocateRegistry.getRegistry() instead
+  Server.Locator added, DefaultServerLocator implements, Server.Locator.locator() factory method, Servers removed

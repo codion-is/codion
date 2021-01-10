@@ -7,7 +7,7 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.rmi.server.Servers;
+import is.codion.common.rmi.server.Server;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
@@ -71,7 +71,7 @@ public class DefaultRemoteEntityConnectionTest {
       final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
       adapter = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
 
-      Servers.initializeRegistry(Registry.REGISTRY_PORT);
+      Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
 
       registry = LocateRegistry.getRegistry("localhost");
       registry.rebind(serviceName, adapter);

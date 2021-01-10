@@ -4,7 +4,7 @@
 package is.codion.plugin.credentials.server;
 
 import is.codion.common.CredentialsProvider;
-import is.codion.common.rmi.server.Servers;
+import is.codion.common.rmi.server.Server;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 
@@ -79,7 +79,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = taskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
-    this.registry = Servers.initializeRegistry(registryPort);
+    this.registry = Server.Locator.locator().initializeRegistry(registryPort);
     this.registry.bind(CredentialsService.class.getSimpleName(), this);
   }
 
