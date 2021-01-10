@@ -33,7 +33,7 @@ public final class Servers {
    */
   public static Registry initializeRegistry(final int port) throws RemoteException {
     LOG.info("Initializing registry on port: {}", port);
-    final Registry localRegistry = getRegistry(port);
+    final Registry localRegistry = LocateRegistry.getRegistry(port);
     try {
       localRegistry.list();
       LOG.info("Registry listing available on port: {}", port);
@@ -45,15 +45,6 @@ public final class Servers {
       LOG.info("Creating registry on port: {}", port);
       return LocateRegistry.createRegistry(port);
     }
-  }
-
-  /**
-   * @param port the port on which to look for a registry
-   * @return the registry
-   * @throws java.rmi.RemoteException in case of an exception
-   */
-  public static Registry getRegistry(final int port) throws RemoteException {
-    return LocateRegistry.getRegistry(port);
   }
 
   /**

@@ -4,7 +4,6 @@
 package is.codion.plugin.credentials.server;
 
 import is.codion.common.CredentialsProvider;
-import is.codion.common.rmi.server.Servers;
 import is.codion.common.user.User;
 
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
       return null;
     }
     try {
-      final Remote credentialsService = Servers.getRegistry(registryPort).lookup(CredentialsService.class.getSimpleName());
+      final Remote credentialsService = LocateRegistry.getRegistry(registryPort).lookup(CredentialsService.class.getSimpleName());
       LOG.debug("CredentialsService found: " + credentialsService);
 
       return ((CredentialsService) credentialsService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));

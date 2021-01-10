@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -45,13 +46,13 @@ public class ServersTest {
       @Override
       public int getServerLoad() {return 0;}
     };
-    Servers.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
+    LocateRegistry.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
   }
 
   @AfterEach
   public void tearDown() throws RemoteException, NotBoundException {
     server.shutdown();
-    Servers.getRegistry(Registry.REGISTRY_PORT).unbind(SERVER_NAME);
+    LocateRegistry.getRegistry(Registry.REGISTRY_PORT).unbind(SERVER_NAME);
   }
 
   @Test
