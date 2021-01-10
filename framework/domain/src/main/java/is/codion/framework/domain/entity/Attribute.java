@@ -115,4 +115,16 @@ public interface Attribute<T> {
    * @return true if this is a Entity attribute
    */
   boolean isEntity();
+
+  /**
+   * Creates a new {@link Attribute}, associated with the given entityType.
+   * @param entityType the entityType owning this attribute
+   * @param name the attribute name
+   * @param typeClass the class representing the attribute value type
+   * @param <T> the attribute type
+   * @return a new {@link Attribute}
+   */
+  static <T> Attribute<T> attribute(final EntityType<?> entityType, final String name, final Class<T> typeClass) {
+    return new DefaultAttribute<>(name, typeClass, entityType);
+  }
 }
