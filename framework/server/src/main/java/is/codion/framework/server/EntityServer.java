@@ -14,7 +14,6 @@ import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
-import is.codion.common.rmi.server.Servers;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
@@ -30,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -436,7 +436,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
     Clients.resolveTrustStoreFromClasspath(DefaultEntityServerAdmin.class.getSimpleName());
     try {
-      final Registry registry = Servers.getRegistry(registryPort);
+      final Registry registry = LocateRegistry.getRegistry(registryPort);
       final Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);
       final EntityServerAdmin serverAdmin = server.getServerAdmin(adminUser);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
