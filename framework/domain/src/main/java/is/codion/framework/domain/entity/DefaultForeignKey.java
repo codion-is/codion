@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -74,9 +73,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
         throw new IllegalArgumentException("Entity type " + referencedEntityType +
                 " expected, got " + reference.getReferencedAttribute().getEntityType());
       }
-      final Optional<Reference<?>> existing =
-              referenceList.stream().filter(existingReference -> existingReference.getAttribute().equals(reference.getAttribute())).findFirst();
-      if (existing.isPresent()) {
+      if (referenceList.stream().anyMatch(existingReference -> existingReference.getAttribute().equals(reference.getAttribute()))) {
         throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + reference.getAttribute());
       }
 

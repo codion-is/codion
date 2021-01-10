@@ -17,4 +17,14 @@ public interface ConditionType {
    * @return the name
    */
   String getName();
+
+  /**
+   * Instantiates a new {@link ConditionType} for the given entity type
+   * @param entityType the entityType
+   * @param name the name
+   * @return a new condition type
+   */
+  static ConditionType conditionType(final EntityType<?> entityType, final String name) {
+    return new DefaultConditionType(entityType, name);
+  }
 }

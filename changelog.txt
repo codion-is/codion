@@ -6647,3 +6647,4 @@
   Servers.getRegistry() removed, just use LocateRegistry.getRegistry() instead
   Server.Locator added, DefaultServerLocator implements, Server.Locator.locator() factory method, Servers removed
   AuxiliaryServerFactory.getAuxiliaryServerProvider() renamed getAuxiliaryServerFactory()
+  Some cleanup of domain.entity package, creating factory methods in the relevant interface
