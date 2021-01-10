@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.rmi.server.AuxiliaryServerFactory.getAuxiliaryServerProvider;
+import static is.codion.common.rmi.server.AuxiliaryServerFactory.getAuxiliaryServerFactory;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
@@ -388,10 +388,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return clientConnection;
   }
 
-  private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {
+  private void startAuxiliaryServers(final Collection<String> auxiliaryServerFactoryClassNames) {
     try {
-      for (final String auxiliaryServerProviderClassName : auxiliaryServerProviderClassNames) {
-        final AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
+      for (final String auxiliaryServerFactoryClassName : auxiliaryServerFactoryClassNames) {
+        final AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = getAuxiliaryServerFactory(auxiliaryServerFactoryClassName);
         final AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
         final Callable<?> starter = () -> startAuxiliaryServer(auxiliaryServer);
