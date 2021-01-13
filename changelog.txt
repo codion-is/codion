@@ -6679,3 +6679,4 @@
   AuxiliaryServerFactory.getAuxiliaryServerProvider() renamed getAuxiliaryServerFactory()
   Some cleanup of domain.entity package, creating factory methods in the relevant interface
   ParsingDocumentFilter bug fixed, did not handle diacritical marks on Ubuntu, AbstractParsingDocumentFilter extracted, caret magic moved to NumberParsingDocumentFilter, somewhat of a mess still
+  NumberParser added, getCharetOffset() moved there from Parser

@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import static is.codion.swing.common.ui.textfield.Parser.parseResult;
-
 final class DecimalDocument<T extends Number> extends NumberDocument<T> {
 
   static final int MAXIMUM_FRACTION_DIGITS = 340;
@@ -42,12 +40,12 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
     }
 
     @Override
-    public ParseResult<T> parse(final String string) {
+    public NumberParseResult<T> parse(final String string) {
       final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
       if (string.equals(Character.toString(decimalSeparator))) {
         try {
           //use the format for the correct type
-          return parseResult("0" + decimalSeparator, (T) getFormat().parse("0"), 1);
+          return new DefaultNumberParseResult<>("0" + decimalSeparator, (T) getFormat().parse("0"), 1, true);
         }
         catch (final ParseException e) {/*Wont happen*/}
       }
