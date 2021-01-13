@@ -7,15 +7,14 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+import static is.codion.swing.common.ui.textfield.Parser.parseResult;
 
 final class DecimalDocument<T extends Number> extends NumberDocument<T> {
 
   static final int MAXIMUM_FRACTION_DIGITS = 340;
 
   DecimalDocument(final DecimalFormat format, final boolean parseBigDecimal) {
-    super(parsingDocumentFilter(new DecimalDocumentParser<>(format, parseBigDecimal), new NumberRangeValidator<>()));
+    super(new NumberParsingDocumentFilter<>(new DecimalDocumentParser<>(format, parseBigDecimal), new NumberRangeValidator<>()));
     if (parseBigDecimal) {
       format.setParseBigDecimal(true);
     }
@@ -43,7 +42,7 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
     }
 
     @Override
-    public ParsingDocumentFilter.ParseResult<T> parse(final String string) {
+    public ParseResult<T> parse(final String string) {
       final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
       if (string.equals(Character.toString(decimalSeparator))) {
         try {
