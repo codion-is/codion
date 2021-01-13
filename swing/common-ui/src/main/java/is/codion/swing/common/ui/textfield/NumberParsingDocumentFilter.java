@@ -14,7 +14,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
 
   private Caret caret;
 
-  NumberParsingDocumentFilter(final Parser<T> parser, final Value.Validator<T> validator) {
+  NumberParsingDocumentFilter(final NumberParser<T> parser, final Value.Validator<T> validator) {
     super(parser, validator);
   }
 
@@ -35,7 +35,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
     final Document document = filterBypass.getDocument();
     final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, text);
-    final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
+    final NumberParser.NumberParseResult<T> parseResult = ((NumberParser<T>) getParser()).parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         getValidators().forEach(validator -> validator.validate(parseResult.getValue()));

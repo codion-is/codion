@@ -10,7 +10,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
-import static is.codion.swing.common.ui.textfield.Parser.parseResult;
 import static java.util.Objects.requireNonNull;
 
 class NumberParser<T extends Number> implements Parser<T> {
@@ -27,9 +26,9 @@ class NumberParser<T extends Number> implements Parser<T> {
   }
 
   @Override
-  public ParseResult<T> parse(final String string) {
+  public NumberParseResult<T> parse(final String string) {
     if (string.isEmpty() || MINUS_SIGN.equals(string)) {
-      return parseResult(string, null, 0);
+      return new DefaultNumberParseResult<>(string, null);
     }
 
     final T parsedNumber = parseNumber(string);
@@ -49,10 +48,10 @@ class NumberParser<T extends Number> implements Parser<T> {
         }
       }
 
-      return parseResult(formattedNumber, parsedNumber, countAddedGroupingSeparators(string, formattedNumber));
+      return new DefaultNumberParseResult<>(formattedNumber, parsedNumber, countAddedGroupingSeparators(string, formattedNumber), true);
     }
 
-    return parseResult(string, null, 0, false);
+    return new DefaultNumberParseResult<>(string, null, 0, false);
   }
 
   /**
@@ -156,5 +155,34 @@ class NumberParser<T extends Number> implements Parser<T> {
     }
 
     return counter;
+  }
+
+  protected interface NumberParseResult<T extends Number> extends ParseResult<T> {
+
+    /**
+     * @return the number of characters added
+     */
+    int getCharetOffset();
+  }
+
+  protected static final class DefaultNumberParseResult<T extends Number>
+          extends DefaultParseResult<T> implements NumberParseResult<T> {
+
+    private final int charetOffset;
+
+    protected DefaultNumberParseResult(final String text, final T value) {
+      this(text, value, 0, true);
+    }
+
+    protected DefaultNumberParseResult(final String text, final T value, final int charetOffset,
+                                       final boolean successful) {
+      super(text, value, successful);
+      this.charetOffset = charetOffset;
+    }
+
+    @Override
+    public int getCharetOffset() {
+      return charetOffset;
+    }
   }
 }

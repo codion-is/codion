@@ -33,11 +33,6 @@ public interface Parser<T> {
     T getValue();
 
     /**
-     * @return the number of characters added
-     */
-    int getCharetOffset();
-
-    /**
      * @return true if the parsing was successful
      */
     boolean successful();
@@ -51,7 +46,7 @@ public interface Parser<T> {
    * @return a new parse result
    */
   static <T> ParseResult<T> parseResult(final String text, final T value) {
-    return parseResult(text, value, 0);
+    return parseResult(text, value, true);
   }
 
   /**
@@ -59,24 +54,10 @@ public interface Parser<T> {
    * @param <T> the value type
    * @param text the text being parsed
    * @param value the parsed value
-   * @param charetOffset the number of chars to move the cursor
-   * @return a new parse result
-   */
-  static <T> ParseResult<T> parseResult(final String text, final T value, final int charetOffset) {
-    return parseResult(text, value, charetOffset, true);
-  }
-
-  /**
-   * Instantiates a new {@link ParseResult} instance.
-   * @param <T> the value type
-   * @param text the text being parsed
-   * @param value the parsed value
-   * @param charetOffset the number of chars to move the cursor
    * @param successful true if the parsing was successful
    * @return a new parse result
    */
-  static <T> ParseResult<T> parseResult(final String text, final T value, final int charetOffset,
-                                        final boolean successful) {
-    return new DefaultParseResult<>(text, value, charetOffset, successful);
+  static <T> ParseResult<T> parseResult(final String text, final T value, final boolean successful) {
+    return new DefaultParseResult<>(text, value, successful);
   }
 }
