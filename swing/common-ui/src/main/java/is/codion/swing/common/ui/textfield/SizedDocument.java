@@ -7,8 +7,6 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.util.Locale;
 
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
 import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
 
 /**
@@ -27,7 +25,7 @@ public final class SizedDocument extends PlainDocument {
    * Instantiates a new SizedDocument
    */
   public SizedDocument() {
-    super.setDocumentFilter(parsingDocumentFilter(new CaseParser(), stringLengthValidator()));
+    super.setDocumentFilter(new SizedParsingDocumentFilter());
   }
 
   /**
@@ -44,14 +42,14 @@ public final class SizedDocument extends PlainDocument {
    * @param documentCase the case setting
    */
   public void setDocumentCase(final DocumentCase documentCase) {
-    ((CaseParser) ((ParsingDocumentFilter<String>) getDocumentFilter()).getParser()).setDocumentCase(documentCase);
+    ((SizedParsingDocumentFilter) getDocumentFilter()).setDocumentCase(documentCase);
   }
 
   /**
    * @return the document case setting
    */
   public DocumentCase getDocumentCase() {
-    return ((CaseParser) ((ParsingDocumentFilter<String>) getDocumentFilter()).getParser()).documentCase;
+    return ((SizedParsingDocumentFilter) getDocumentFilter()).documentCase;
   }
 
   /**
@@ -68,18 +66,17 @@ public final class SizedDocument extends PlainDocument {
     ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).setMaxLength(maxLength);
   }
 
-  /**
-   * A DocumentFilter controlling both case and maximum length of the document content
-   */
-  private static final class CaseParser implements ParsingDocumentFilter.Parser<String> {
+  private static final class SizedParsingDocumentFilter extends ParsingDocumentFilter<String> {
 
     private DocumentCase documentCase = DocumentCase.NONE;
 
-    @Override
-    public ParsingDocumentFilter.ParseResult<String> parse(final String text) {
-      final String correctedText = setCase(text);
+    private SizedParsingDocumentFilter() {
+      super(STRING_PARSER, stringLengthValidator());
+    }
 
-      return parseResult(correctedText, correctedText);
+    @Override
+    protected String transform(final String string) {
+      return setCase(string);
     }
 
     /**

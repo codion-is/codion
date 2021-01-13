@@ -10,10 +10,10 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
+import static is.codion.swing.common.ui.textfield.Parser.parseResult;
 import static java.util.Objects.requireNonNull;
 
-class NumberParser<T extends Number> implements ParsingDocumentFilter.Parser<T> {
+class NumberParser<T extends Number> implements Parser<T> {
 
   private static final String MINUS_SIGN = "-";
 
@@ -27,7 +27,7 @@ class NumberParser<T extends Number> implements ParsingDocumentFilter.Parser<T> 
   }
 
   @Override
-  public ParsingDocumentFilter.ParseResult<T> parse(final String string) {
+  public ParseResult<T> parse(final String string) {
     if (string.isEmpty() || MINUS_SIGN.equals(string)) {
       return parseResult(string, null, 0);
     }

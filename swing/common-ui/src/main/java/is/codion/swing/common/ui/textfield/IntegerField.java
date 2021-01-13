@@ -9,8 +9,6 @@ import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import java.text.NumberFormat;
 
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
-
 /**
  * A text field for integers.
  */
@@ -45,7 +43,8 @@ public final class IntegerField extends NumberField<Integer> {
    * @param columns the number of columns
    */
   public IntegerField(final NumberFormat format, final int columns) {
-    super(new NumberDocument<>(parsingDocumentFilter(new NumberParser<>(format, Integer.class), new NumberRangeValidator<>())), columns);
+    super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Integer.class),
+            new NumberRangeValidator<>())), columns);
   }
 
   /**

@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 class NumberDocument<T extends Number> extends PlainDocument {
 
-  protected NumberDocument(final ParsingDocumentFilter<T> documentFilter) {
+  protected NumberDocument(final NumberParsingDocumentFilter<T> documentFilter) {
     super.setDocumentFilter(documentFilter);
   }
 
@@ -32,8 +32,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
   }
 
   @Override
-  public final ParsingDocumentFilter<T> getDocumentFilter() {
-    return (ParsingDocumentFilter<T>) super.getDocumentFilter();
+  public final NumberParsingDocumentFilter<T> getDocumentFilter() {
+    return (NumberParsingDocumentFilter<T>) super.getDocumentFilter();
   }
 
   protected final NumberFormat getFormat() {

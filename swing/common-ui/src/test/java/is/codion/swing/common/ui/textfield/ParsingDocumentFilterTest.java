@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
+import static is.codion.swing.common.ui.textfield.Parser.parseResult;
 import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,7 +22,7 @@ public final class ParsingDocumentFilterTest {
   public void test() throws BadLocationException {
     final JTextField textField = new JTextField();
     final AbstractDocument document = (AbstractDocument) textField.getDocument();
-    final ParsingDocumentFilter.Parser<String> parser = text -> parseResult(text, text);
+    final Parser<String> parser = text -> parseResult(text, text);
     final Value.Validator<String> validator = value -> {
       if (!value.contains("42")) {
         throw new IllegalArgumentException();
