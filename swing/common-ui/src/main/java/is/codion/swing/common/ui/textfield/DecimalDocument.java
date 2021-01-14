@@ -12,7 +12,7 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
   static final int MAXIMUM_FRACTION_DIGITS = 340;
 
   DecimalDocument(final DecimalFormat format, final boolean parseBigDecimal) {
-    super(new NumberParsingDocumentFilter<>(new DecimalDocumentParser<>(format, parseBigDecimal), new NumberRangeValidator<>()));
+    super(new NumberParsingDocumentFilter<>(new DecimalDocumentParser<>(format, parseBigDecimal)));
     if (parseBigDecimal) {
       format.setParseBigDecimal(true);
     }

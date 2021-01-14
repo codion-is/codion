@@ -41,7 +41,7 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
     final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
-        getValidators().forEach(validator -> validator.validate(parseResult.getValue()));
+        validate(parseResult.getValue());
       }
       super.insertString(filterBypass, offset, transformedString, attributeSet);
     }
@@ -55,7 +55,7 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
     final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
-        getValidators().forEach(validator -> validator.validate(parseResult.getValue()));
+        validate(parseResult.getValue());
       }
       super.remove(filterBypass, offset, length);
     }
@@ -71,7 +71,7 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
     final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
-        getValidators().forEach(validator -> validator.validate(parseResult.getValue()));
+        validate(parseResult.getValue());
       }
       super.replace(filterBypass, offset, length, transformedText, attributeSet);
     }

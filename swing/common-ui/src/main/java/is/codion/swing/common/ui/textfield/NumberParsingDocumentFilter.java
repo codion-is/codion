@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.value.Value;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
@@ -12,10 +10,17 @@ import javax.swing.text.Document;
 
 final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsingDocumentFilter<T> {
 
+  private final NumberRangeValidator<T> rangeValidator;
+
   private Caret caret;
 
-  NumberParsingDocumentFilter(final NumberParser<T> parser, final Value.Validator<T> validator) {
-    super(parser, validator);
+  NumberParsingDocumentFilter(final NumberParser<T> parser) {
+    this(parser, new NumberRangeValidator<>());
+  }
+
+  NumberParsingDocumentFilter(final NumberParser<T> parser, final NumberRangeValidator<T> rangeValidator) {
+    super(parser, rangeValidator);
+    this.rangeValidator = rangeValidator;
   }
 
   @Override
@@ -38,7 +43,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
     final NumberParser.NumberParseResult<T> parseResult = ((NumberParser<T>) getParser()).parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
-        getValidators().forEach(validator -> validator.validate(parseResult.getValue()));
+        validate(parseResult.getValue());
       }
       super.replace(filterBypass, 0, document.getLength(), parseResult.getText(), attributeSet);
       if (caret != null) {
@@ -52,6 +57,13 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
         }
       }
     }
+  }
+
+  /**
+   * @return the NumberRangeValidator used by this document filter
+   */
+  protected NumberRangeValidator<T> getNumberRangeValidator() {
+    return rangeValidator;
   }
 
   /**

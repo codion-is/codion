@@ -43,8 +43,7 @@ public final class IntegerField extends NumberField<Integer> {
    * @param columns the number of columns
    */
   public IntegerField(final NumberFormat format, final int columns) {
-    super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Integer.class),
-            new NumberRangeValidator<>())), columns);
+    super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Integer.class))), columns);
   }
 
   /**

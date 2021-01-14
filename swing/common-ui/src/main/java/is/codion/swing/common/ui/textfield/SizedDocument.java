@@ -56,27 +56,38 @@ public final class SizedDocument extends PlainDocument {
    * @return the maximum length of the text to allow, -1 if unlimited
    */
   public int getMaxLength() {
-    return ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).getMaxLength();
+    return ((SizedParsingDocumentFilter) getDocumentFilter()).getStringLengthValidator().getMaxLength();
   }
 
   /**
    * @param maxLength the maximum length of the text to allow, -1 if unlimited
    */
   public void setMaxLength(final int maxLength) {
-    ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).setMaxLength(maxLength);
+    ((SizedParsingDocumentFilter) getDocumentFilter()).getStringLengthValidator().setMaxLength(maxLength);
   }
 
   private static final class SizedParsingDocumentFilter extends ParsingDocumentFilter<String> {
 
+    private final StringLengthValidator lengthValidator;
+
     private DocumentCase documentCase = DocumentCase.NONE;
 
     private SizedParsingDocumentFilter() {
-      super(STRING_PARSER, stringLengthValidator());
+      this(stringLengthValidator());
+    }
+
+    private SizedParsingDocumentFilter(final StringLengthValidator lengthValidator) {
+      super(STRING_PARSER, lengthValidator);
+      this.lengthValidator = lengthValidator;
     }
 
     @Override
     protected String transform(final String string) {
       return setCase(string);
+    }
+
+    private StringLengthValidator getStringLengthValidator() {
+      return lengthValidator;
     }
 
     /**
