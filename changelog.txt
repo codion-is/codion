@@ -6650,3 +6650,4 @@
   Some cleanup of domain.entity package, creating factory methods in the relevant interface
   ParsingDocumentFilter bug fixed, did not handle diacritical marks on Ubuntu, AbstractParsingDocumentFilter extracted, caret magic moved to NumberParsingDocumentFilter, somewhat of a mess still
   NumberParseResult added, getCharetOffset() moved there from ParseResult
+  AbstractTextComponentValue, minor improvement, now adds its validators to the underlying document filter instead of creating a new one
