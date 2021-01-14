@@ -9,7 +9,6 @@ import javax.swing.text.DocumentFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -47,10 +46,12 @@ public abstract class AbstractParsingDocumentFilter<T> extends DocumentFilter {
   }
 
   /**
-   * @return the validators
+   * Validates the given value using all the underlying validators (if any).
+   * @param value the value to validate
+   * @see #addValidator(Value.Validator)
    */
-  protected final List<Value.Validator<T>> getValidators() {
-    return unmodifiableList(validators);
+  protected final void validate(final T value) {
+    validators.forEach(validator -> validator.validate(value));
   }
 
   /**

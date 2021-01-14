@@ -43,8 +43,7 @@ public final class LongField extends NumberField<Long> {
    * @param columns the number of columns
    */
   public LongField(final NumberFormat format, final int columns) {
-    super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Long.class),
-            new NumberRangeValidator<>())), columns);
+    super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Long.class))), columns);
   }
 
   /**
