@@ -10,12 +10,14 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityModelBuilder;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityPanelBuilder;
@@ -88,8 +90,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
             .detailPanelBuilder(trackBuilder)
             .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelBuilder employeeBuilder = new EntityPanelBuilder(Employee.TYPE)
+    final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(Employee.TYPE)
+            .tableModelClass(EmployeeTableModel.class);
+    final EntityPanelBuilder employeeBuilder = new EntityPanelBuilder(employeeModelBuilder)
             .editPanelClass(EmployeeEditPanel.class)
+            .tablePanelClass(EmployeeTablePanel.class)
             .detailPanelBuilder(customerBuilder).detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     addSupportPanelBuilders(genreBuilder, mediaTypeBuilder, employeeBuilder);

@@ -6682,3 +6682,4 @@
   NumberParseResult added, getCharetOffset() moved there from ParseResult
   AbstractTextComponentValue, minor improvement, now adds its validators to the underlying document filter instead of creating a new one
   AbstractParseDocumentFilter, some refactoring, getValidators() removed, validate(value) added
+  SwingEntityTreeModel and EntityTree added
