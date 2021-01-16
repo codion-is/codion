@@ -29,7 +29,7 @@ public final class EmployeeTablePanel extends EntityTablePanel {
     splitPane.setContinuousLayout(true);
     splitPane.setOneTouchExpandable(true);
     splitPane.setTopComponent(new JScrollPane(new EntityTree(((EmployeeTableModel) getTableModel()).getTreeModel())));
-    splitPane.setBottomComponent(new JScrollPane(getTable()));
+    splitPane.setBottomComponent(tablePanel);
     add(splitPane, BorderLayout.CENTER);
     add(southPanel, BorderLayout.SOUTH);
   }

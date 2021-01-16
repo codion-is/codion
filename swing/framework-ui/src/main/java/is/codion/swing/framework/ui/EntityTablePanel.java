@@ -209,8 +209,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane conditionScrollPane;
 
-  private final TableColumnComponentPanel<JPanel> summaryPanel;
-
   private final JScrollPane summaryScrollPane;
 
   /**
@@ -303,11 +301,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.tableScrollPane = new JScrollPane(table);
     this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
-    this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
-    this.summaryPanel = new TableColumnComponentPanel<>(tableModel.getColumnModel(), createColumnSummaryPanels(tableModel));
-    this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
+    this.conditionScrollPane = createConditionScrollPane();
     this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
-    this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);
+    this.summaryScrollPane = createSummaryScrollPane();
+    if (summaryScrollPane != null) {
+      this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);
+    }
     this.refreshToolBar = initializeRefreshToolBar();
     bindEvents();
   }
@@ -474,11 +473,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Hides or shows the column summary panel for this EntityTablePanel
+   * Hides or shows the column summary panel for this EntityTablePanel, if no summary panel
+   * is available calling this method has no effect.
    * @param visible if true then the summary panel is shown, if false it is hidden
    */
   public final void setSummaryPanelVisible(final boolean visible) {
-    if (visible && isSummaryPanelVisible()) {
+    if (summaryScrollPane == null || (visible && isSummaryPanelVisible())) {
       return;
     }
 
@@ -491,7 +491,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return true if the column summary panel is visible, false if it is hidden
    */
   public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane.isVisible();
+    return summaryScrollPane != null && summaryScrollPane.isVisible();
   }
 
   /**
@@ -1201,7 +1201,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, table.getSelectColumnsControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-    setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
+    if (summaryScrollPane != null) {
+      setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
+    }
     if (includeConditionPanel && conditionPanel != null) {
       setControl(TOGGLE_CONDITION_PANEL, getToggleConditionPanelControl());
     }
@@ -1288,6 +1290,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     return toolBar;
+  }
+
+  private JScrollPane createConditionScrollPane() {
+    return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
+  }
+
+  private JScrollPane createSummaryScrollPane() {
+    final Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+    if (columnSummaryPanels.isEmpty()) {
+      return null;
+    }
+
+    return createHiddenLinkedScrollPane(tableScrollPane, new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels));
   }
 
   private void updateStatusMessage() {
@@ -1435,7 +1450,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Map<TableColumn, JPanel> components = new HashMap<>();
     tableModel.getColumnModel().getAllColumns().forEach(column -> {
       final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((Property<?>) column.getIdentifier());
-      components.put(column, columnSummaryModel == null ? new JPanel() : new ColumnSummaryPanel(columnSummaryModel));
+      if (columnSummaryModel != null) {
+        components.put(column, new ColumnSummaryPanel(columnSummaryModel));
+      }
     });
 
     return components;
