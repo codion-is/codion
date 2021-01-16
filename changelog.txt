@@ -6654,3 +6654,4 @@
   AbstractParseDocumentFilter, some refactoring, getValidators() removed, validate(value) added
   SwingEntityTreeModel and EntityTree added
   EntityTablePanel, no longer includes a button to toggle column summary panel if no summary panels are available (no numerical columns)
+  EntityTablePanel refactored
