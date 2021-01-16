@@ -1220,17 +1220,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private boolean includeUpdateSelectedControls() {
-    final SwingEntityTableModel entityTableModel = tableModel;
-
-    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
-            entityTableModel.isBatchUpdateEnabled() &&
-            !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
+    return !tableModel.isReadOnly() && tableModel.isUpdateEnabled() &&
+            tableModel.isBatchUpdateEnabled() &&
+            !tableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
-    final SwingEntityTableModel entityTableModel = tableModel;
-
-    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
+    return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
   }
 
   private FilteredTable<Entity, Property<?>, SwingEntityTableModel> initializeFilteredTable() {
