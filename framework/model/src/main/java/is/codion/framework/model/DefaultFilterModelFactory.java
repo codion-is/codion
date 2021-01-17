@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
@@ -13,7 +14,7 @@ import is.codion.framework.domain.property.Property;
 public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
-  public <T> ColumnConditionModel<Entity, Property<?>, T> createFilterModel(final Property<T> property) {
+  public <T> ColumnConditionModel<Entity, Attribute<?>, T> createFilterModel(final Property<T> property) {
     return new DefaultPropertyFilterModel<>(property);
   }
 }

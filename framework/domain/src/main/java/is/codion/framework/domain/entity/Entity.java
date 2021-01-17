@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.Property;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -57,9 +59,18 @@ public interface Entity extends Comparable<Entity> {
    * if the associated property has a format it is used.
    * @param attribute the attribute for which to retrieve the value
    * @param <T> the value type
-   * @return a String representation of the value of {@code attribute}
+   * @return a String representation of the value associated with {@code attribute}
    */
   <T> String getAsString(Attribute<T> attribute);
+
+  /**
+   * This method returns a String representation of the value associated with the given property,
+   * if the associated property has a format it is used.
+   * @param property the property for which to retrieve the value
+   * @param <T> the value type
+   * @return a String representation of the value associated with {@code property}
+   */
+  <T> String getAsString(Property<T> property);
 
   /**
    * Reverts the value associated with the given attribute to its original value.

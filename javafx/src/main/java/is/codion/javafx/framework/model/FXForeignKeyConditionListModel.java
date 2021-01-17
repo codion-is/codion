@@ -4,7 +4,7 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultForeignKeyConditionModel;
 
 import java.util.Collection;
@@ -18,11 +18,11 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
 
   /**
    * Constructs a FXForeignKeyConditionListModel instance
-   * @param property the property
+   * @param foreignKey the foreign key
    * @param listModel the list model to use
    */
-  public FXForeignKeyConditionListModel(final ForeignKeyProperty property, final ObservableEntityList listModel) {
-    super(property);
+  public FXForeignKeyConditionListModel(final ForeignKey foreignKey, final ObservableEntityList listModel) {
+    super(foreignKey);
     this.listModel = listModel;
     if (listModel != null) {
       listModel.refresh();

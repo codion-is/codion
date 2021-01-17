@@ -6,7 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 /**
  * A column condition panel based on a foreign key.
  */
-public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity, ForeignKeyProperty, Entity> {
+public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity, ForeignKey, Entity> {
 
   /**
    * Instantiates a new ForeignKeyConditionPanel.
@@ -32,9 +32,9 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
 
   private static final class ForeignKeyBoundFieldFactory implements BoundFieldFactory {
 
-    private final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model;
+    private final ColumnConditionModel<Entity, ForeignKey, Entity> model;
 
-    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model) {
+    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<Entity, ForeignKey, Entity> model) {
       this.model = model;
     }
 

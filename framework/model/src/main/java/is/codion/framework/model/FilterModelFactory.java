@@ -4,11 +4,12 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
 /**
- * Specifies an object responsible for providing property filter models
+ * Specifies an object responsible for providing attribute filter models
  */
 public interface FilterModelFactory {
 
@@ -18,5 +19,5 @@ public interface FilterModelFactory {
    * @param property the Property for which to initialize a ColumnConditionModel
    * @return a ColumnConditionModel for the given property
    */
-  <T> ColumnConditionModel<Entity, Property<?>, T> createFilterModel(Property<T> property);
+  <T> ColumnConditionModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
 }

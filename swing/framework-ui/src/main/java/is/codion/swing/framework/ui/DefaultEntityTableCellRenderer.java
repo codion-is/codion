@@ -124,7 +124,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
 
   /**
    * @param value the value to set
-   * @see SwingEntityTableModel#getValue(Entity, Property)
+   * @see SwingEntityTableModel#getValue(Entity, Attribute)
    */
   @Override
   protected void setValue(final Object value) {

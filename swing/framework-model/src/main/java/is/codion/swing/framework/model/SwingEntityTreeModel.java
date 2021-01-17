@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * A basic tree model for viewing self-referential entities,
- * using a {@link SwingEntityTreeModel} as a data source.
+ * using a {@link SwingEntityTableModel} as a data source.
  */
 public final class SwingEntityTreeModel extends DefaultTreeModel {
 

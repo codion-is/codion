@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
@@ -17,40 +18,43 @@ import static is.codion.swing.framework.ui.EntityInputComponents.createInputComp
 import static java.util.Objects.requireNonNull;
 
 /**
- * A column condition panel based on the Property class.
- * @param <C> the property type
+ * A column condition panel based on an Attribute.
+ * @param <C> the attribute type
  * @param <T> the column value type
  */
-public final class PropertyConditionPanel<C extends Property<T>, T> extends ColumnConditionPanel<Entity, C, T> {
+public final class AttributeConditionPanel<C extends Attribute<T>, T> extends ColumnConditionPanel<Entity, C, T> {
 
   /**
-   * Instantiates a new PropertyConditionPanel.
+   * Instantiates a new AttributeConditionPanel.
    * @param columnConditionModel the model to base this panel on
+   * @param property the underlying property
    */
-  public PropertyConditionPanel(final ColumnConditionModel<Entity, C, T> columnConditionModel) {
+  public AttributeConditionPanel(final ColumnConditionModel<Entity, C, T> columnConditionModel, final Property<T> property) {
     super(columnConditionModel, ToggleAdvancedButton.NO,
-            new PropertyBoundFieldFactory<>(columnConditionModel), getOperators(columnConditionModel));
+            new PropertyBoundFieldFactory<>(columnConditionModel, property), getOperators(columnConditionModel));
   }
 
-  private static <C extends Property<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
-    if (model.getColumnIdentifier().getAttribute().isBoolean()) {
+  private static <C extends Attribute<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
+    if (model.getColumnIdentifier().isBoolean()) {
       return new Operator[] {Operator.EQUAL};
     }
 
     return Operator.values();
   }
 
-  private static final class PropertyBoundFieldFactory<C extends Property<T>, T> implements BoundFieldFactory {
+  private static final class PropertyBoundFieldFactory<C extends Attribute<T>, T> implements BoundFieldFactory {
 
     private final ColumnConditionModel<Entity, C, T> conditionModel;
+    private final Property<T> property;
 
-    private PropertyBoundFieldFactory(final ColumnConditionModel<Entity, C, T> conditionModel) {
+    private PropertyBoundFieldFactory(final ColumnConditionModel<Entity, C, T> conditionModel, final Property<T> property) {
       this.conditionModel = requireNonNull(conditionModel);
+      this.property = requireNonNull(property);
     }
 
     @Override
     public JComponent createEqualField() {
-      final JComponent component = createInputComponent(conditionModel.getColumnIdentifier(), conditionModel.getEqualValueSet().value());
+      final JComponent component = createInputComponent(property, conditionModel.getEqualValueSet().value());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
@@ -64,7 +68,7 @@ public final class PropertyConditionPanel<C extends Property<T>, T> extends Colu
         return null;//no upper bound field required for booleans
       }
 
-      final JComponent component = createInputComponent(conditionModel.getColumnIdentifier(), conditionModel.getUpperBoundValue());
+      final JComponent component = createInputComponent(property, conditionModel.getUpperBoundValue());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
@@ -78,7 +82,7 @@ public final class PropertyConditionPanel<C extends Property<T>, T> extends Colu
         return null;//no lower bound field required for booleans
       }
 
-      final JComponent component = createInputComponent(conditionModel.getColumnIdentifier(), conditionModel.getLowerBoundValue());
+      final JComponent component = createInputComponent(property, conditionModel.getLowerBoundValue());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }

@@ -6683,3 +6683,7 @@
   AbstractTextComponentValue, minor improvement, now adds its validators to the underlying document filter instead of creating a new one
   AbstractParseDocumentFilter, some refactoring, getValidators() removed, validate(value) added
   SwingEntityTreeModel and EntityTree added
+  EntityTablePanel, no longer includes a button to toggle column summary panel if no summary panels are available (no numerical columns)
+  EntityTablePanel refactored
+  SwingEntityTableModel and related models now based on Attribute instead of Property
+  FilteredTableColumnModel.getLockedState() added, used in FilteredTable to prevent user from selecting columns

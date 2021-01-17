@@ -3,10 +3,11 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
 
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * A default sort model implementation based on Entity
  */
-public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Property<?>> {
+public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Attribute<?>> {
 
   private final Entities entities;
 
@@ -33,29 +34,29 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
   }
 
   @Override
-  public final Class<?> getColumnClass(final Property<?> property) {
-    return property.getAttribute().getTypeClass();
+  public final Class<?> getColumnClass(final Attribute<?> attribute) {
+    return attribute.getTypeClass();
   }
 
   @Override
-  protected Comparator<?> initializeColumnComparator(final Property<?> property) {
-    if (property instanceof ForeignKeyProperty) {
-      return entities.getDefinition(((ForeignKeyProperty) property).getReferencedEntityType()).getComparator();
+  protected Comparator<?> initializeColumnComparator(final Attribute<?> attribute) {
+    if (attribute instanceof ForeignKey) {
+      return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
     }
 
-    return super.initializeColumnComparator(property);
+    return super.initializeColumnComparator(attribute);
   }
 
   @Override
-  protected final Comparable<?> getComparable(final Entity row, final Property<?> property) {
-    return (Comparable<?>) row.get(property.getAttribute());
+  protected final Comparable<?> getComparable(final Entity row, final Attribute<?> attribute) {
+    return (Comparable<?>) row.get(attribute);
   }
 
   private static List<TableColumn> initializeColumns(final List<Property<?>> visibleProperties) {
     final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
     for (final Property<?> property : visibleProperties) {
       final TableColumn column = new TableColumn(columns.size());
-      column.setIdentifier(property);
+      column.setIdentifier(property.getAttribute());
       column.setHeaderValue(property.getCaption());
       if (property.getPreferredColumnWidth() > 0) {
         column.setPreferredWidth(property.getPreferredColumnWidth());

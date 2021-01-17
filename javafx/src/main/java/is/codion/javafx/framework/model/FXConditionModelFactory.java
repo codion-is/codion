@@ -7,7 +7,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultConditionModelFactory;
 
 /**
@@ -17,13 +17,13 @@ import is.codion.framework.model.DefaultConditionModelFactory;
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKeyProperty, Entity> createForeignKeyConditionModel(
-          final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
-    if (connectionProvider.getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
-      return new FXForeignKeyConditionListModel(foreignKeyProperty,
-              new ObservableEntityList(foreignKeyProperty.getReferencedEntityType(), connectionProvider));
+  public ColumnConditionModel<Entity, ForeignKey, Entity> createForeignKeyConditionModel(
+          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
+    if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
+      return new FXForeignKeyConditionListModel(foreignKey,
+              new ObservableEntityList(foreignKey.getReferencedEntityType(), connectionProvider));
     }
 
-    return super.createForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
+    return super.createForeignKeyConditionModel(foreignKey, connectionProvider);
   }
 }

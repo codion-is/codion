@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.DefaultEntityLookupModel;
 import is.codion.framework.model.EntityLookupModel;
@@ -486,7 +485,7 @@ public final class EntityLookupField extends JTextField {
    */
   public static class TableSelectionProvider implements SelectionProvider {
 
-    private final FilteredTable<Entity, Property<?>, SwingEntityTableModel> table;
+    private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
     private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
@@ -513,9 +512,8 @@ public final class EntityLookupField extends JTextField {
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
       final Collection<Attribute<String>> lookupAttributes = lookupModel.getLookupAttributes();
-      final EntityDefinition definition = lookupModel.getConnectionProvider().getEntities().getDefinition(lookupModel.getEntityType());
-      tableModel.getColumnModel().setColumns(lookupAttributes.stream().map(definition::getProperty).toArray(Property[]::new));
-      tableModel.setSortingDirective(lookupAttributes.iterator().next(), SortingDirective.ASCENDING);
+      tableModel.getColumnModel().setColumns(lookupAttributes.toArray(new Attribute[0]));
+      tableModel.getSortModel().setSortingDirective(lookupAttributes.iterator().next(), SortingDirective.ASCENDING);
       table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
@@ -526,7 +524,7 @@ public final class EntityLookupField extends JTextField {
     /**
      * @return the underlying FilteredTablePanel
      */
-    public final FilteredTable<Entity, Property<?>, SwingEntityTableModel> getTable() {
+    public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> getTable() {
       return table;
     }
 

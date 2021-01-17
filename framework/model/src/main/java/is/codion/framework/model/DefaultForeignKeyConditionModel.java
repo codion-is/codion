@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * A default ForeignKeyConditionModel implementation.
  */
-public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<Entity, ForeignKeyProperty, Entity>
+public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<Entity, ForeignKey, Entity>
         implements ForeignKeyConditionModel {
 
   private final EntityLookupModel entityLookupModel;
@@ -22,19 +22,19 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
-   * @param property the property
+   * @param foreignKey the foreign key
    */
-  public DefaultForeignKeyConditionModel(final ForeignKeyProperty property) {
-    this(property, null);
+  public DefaultForeignKeyConditionModel(final ForeignKey foreignKey) {
+    this(foreignKey, null);
   }
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
-   * @param property the property
+   * @param foreignKey the foreign key
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeyConditionModel(final ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
-    super(property, Entity.class, Property.WILDCARD_CHARACTER.get());
+  public DefaultForeignKeyConditionModel(final ForeignKey foreignKey, final EntityLookupModel entityLookupModel) {
+    super(foreignKey, Entity.class, Property.WILDCARD_CHARACTER.get());
     this.entityLookupModel = entityLookupModel;
     if (entityLookupModel != null) {
       bindLookupModelEvents();

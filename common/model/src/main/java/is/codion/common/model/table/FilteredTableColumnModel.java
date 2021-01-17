@@ -4,6 +4,7 @@
 package is.codion.common.model.table;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,14 +28,25 @@ public interface FilteredTableColumnModel<R, C, T> {
   Collection<T> getHiddenColumns();
 
   /**
+   * Returns a {@link State} instance controlling whether this model is locked or not.
+   * A locked column model does not allow adding or removing of columns, but columns can be reordered.
+   * @return a {@link State} controlling whether this model is locked or not
+   */
+  State getLockedState();
+
+  /**
    * Shows the column with the given columnIdentifier.
    * @param columnIdentifier the column identifier
+   * @throws IllegalStateException in case this model is locked
+   * @see #getLockedState()
    */
   void showColumn(C columnIdentifier);
 
   /**
    * Hides the column with the given columnIdentifier.
    * @param columnIdentifier the column identifier
+   * @throws IllegalStateException in case this model is locked
+   * @see #getLockedState()
    */
   void hideColumn(C columnIdentifier);
 

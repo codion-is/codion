@@ -174,6 +174,25 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
+  public <T> String getAsString(final Property<T> property) {
+    if (!getEntityType().equals(property.getEntityType())) {
+      throw new IllegalArgumentException("Property " + property + " is not part of entity " + getEntityType());
+    }
+    if (property instanceof ValueListProperty) {
+      return ((ValueListProperty<T>) property).getCaption(get(property));
+    }
+    final Attribute<T> attribute = property.getAttribute();
+    if (attribute instanceof ForeignKey && !isLoaded(((ForeignKey) attribute))) {
+      final Key referencedKey = getReferencedKey((ForeignKey) attribute);
+      if (referencedKey != null) {
+        return referencedKey.toString();
+      }
+    }
+
+    return property.formatValue(get(property));
+  }
+
+  @Override
   public Entity clearPrimaryKey() {
     definition.getPrimaryKeyAttributes().forEach(this::remove);
     primaryKey = null;
@@ -382,20 +401,6 @@ final class DefaultEntity implements Entity, Serializable {
     }
 
     return get(property);
-  }
-
-  private <T> String getAsString(final Property<T> property) {
-    if (property instanceof ValueListProperty) {
-      return ((ValueListProperty<T>) property).getCaption(get(property));
-    }
-    if (property instanceof ForeignKeyProperty && !isLoaded(((ForeignKeyProperty) property).getAttribute())) {
-      final Key referencedKey = getReferencedKey(((ForeignKeyProperty) property).getAttribute());
-      if (referencedKey != null) {
-        return referencedKey.toString();
-      }
-    }
-
-    return property.formatValue(get(property));
   }
 
   private <T> T putInternal(final Property<T> property, final T value) {

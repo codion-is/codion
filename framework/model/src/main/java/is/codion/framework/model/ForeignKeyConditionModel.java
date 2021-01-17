@@ -6,12 +6,12 @@ package is.codion.framework.model;
 import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 
 /**
- * A condition model based on foreign key properties, using one or more {@link Entity} instances as condition values.
+ * A condition model based on a foreign key, using one or more {@link Entity} instances as condition values.
  */
-public interface ForeignKeyConditionModel extends ColumnConditionModel<Entity, ForeignKeyProperty, Entity>, Refreshable {
+public interface ForeignKeyConditionModel extends ColumnConditionModel<Entity, ForeignKey, Entity>, Refreshable {
 
   /**
    * @return the EntityLookupModel used by this ForeignKeyConditionModel, if any

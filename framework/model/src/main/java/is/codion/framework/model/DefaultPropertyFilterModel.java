@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
@@ -11,14 +12,14 @@ import is.codion.framework.domain.property.Property;
  * A class for filtering a set of entities based on a property.
  * @param <T> the underlying column value type
  */
-public final class DefaultPropertyFilterModel<T> extends DefaultColumnConditionModel<Entity, Property<?>, T> {
+public final class DefaultPropertyFilterModel<T> extends DefaultColumnConditionModel<Entity, Attribute<?>, T> {
 
   /**
    * Instantiates a new DefaultPropertyFilterModel
    * @param property the property
    */
   public DefaultPropertyFilterModel(final Property<T> property) {
-    super(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
+    super(property.getAttribute(), property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
             property.getFormat(), property.getDateTimeFormatPattern());
     setComparableFunction(row -> {
       if (row.isNull(property.getAttribute())) {
