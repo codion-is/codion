@@ -113,6 +113,32 @@ public class SwingFilteredTableColumnModelTest {
     assertEquals(3, columnModel.getColumnIndex(0));
   }
 
+  @Test
+  public void lock() {
+    final TableColumn column0 = new TableColumn(0);
+    column0.setIdentifier(0);
+    final TableColumn column1 = new TableColumn(1);
+    column1.setIdentifier(1);
+    final TableColumn column2 = new TableColumn(2);
+    column2.setIdentifier(2);
+    final TableColumn column3 = new TableColumn(3);
+    column3.setIdentifier(3);
+
+    final SwingFilteredTableColumnModel<String, Integer> columnModel =
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3), null);
+
+    columnModel.getLockedState().set(true);
+    assertThrows(IllegalStateException.class, () -> columnModel.hideColumn(0));
+    columnModel.getLockedState().set(false);
+    columnModel.hideColumn(0);
+    columnModel.getLockedState().set(true);
+    assertThrows(IllegalStateException.class, () -> columnModel.showColumn(0));
+
+    columnModel.setColumns(3, 2, 1);
+
+    assertThrows(IllegalStateException.class, () -> columnModel.setColumns(1, 0, 2));
+  }
+
   private SwingFilteredTableColumnModel createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);

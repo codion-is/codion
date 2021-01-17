@@ -375,7 +375,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public Control getSelectColumnsControl() {
     return Controls.control(this::selectColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
-            null, MESSAGES.getString(SELECT_COLUMNS));
+            tableModel.getColumnModel().getLockedState().getReversedObserver(), MESSAGES.getString(SELECT_COLUMNS));
   }
 
   /**

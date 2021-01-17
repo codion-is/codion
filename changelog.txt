@@ -6656,3 +6656,4 @@
   EntityTablePanel, no longer includes a button to toggle column summary panel if no summary panels are available (no numerical columns)
   EntityTablePanel refactored
   SwingEntityTableModel and related models now based on Attribute instead of Property
+  FilteredTableColumnModel.getLockedState() added, used in FilteredTable to prevent user from selecting columns

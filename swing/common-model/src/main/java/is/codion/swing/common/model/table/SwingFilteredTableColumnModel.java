@@ -7,6 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.FilteredTableColumnModel;
+import is.codion.common.state.State;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -53,6 +54,11 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   private final Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels = new HashMap<>();
 
   /**
+   * A lock which prevents adding or removing columns from this column model
+   */
+  private final State lockedState = State.state();
+
+  /**
    * Caches the column indexes in the model
    */
   private final int[] columnIndexCache;
@@ -87,9 +93,15 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   }
 
   @Override
+  public State getLockedState() {
+    return lockedState;
+  }
+
+  @Override
   public void showColumn(final C columnIdentifier) {
     final TableColumn column = hiddenColumns.get(columnIdentifier);
     if (column != null) {
+      checkIfLocked();
       hiddenColumns.remove(columnIdentifier);
       addColumn(column);
       moveColumn(getColumnCount() - 1, 0);
@@ -100,6 +112,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   @Override
   public void hideColumn(final C columnIdentifier) {
     if (!hiddenColumns.containsKey(columnIdentifier)) {
+      checkIfLocked();
       final TableColumn column = getTableColumn(columnIdentifier);
       removeColumn(column);
       hiddenColumns.put((C) column.getIdentifier(), column);
@@ -218,6 +231,12 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
     }
 
     return -1;
+  }
+
+  private void checkIfLocked() {
+    if (lockedState.get()) {
+      throw new IllegalStateException("Column model is locked");
+    }
   }
 
   private void bindEvents() {
