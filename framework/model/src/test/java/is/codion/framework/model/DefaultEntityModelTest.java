@@ -204,8 +204,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {}
     @Override
-    public <T extends Number> ColumnSummaryModel getColumnSummaryModel(final Attribute<T> attribute) {return null;}
-    @Override
     public Object getBackgroundColor(final int row, final Attribute<?> attribute) {return null;}
     @Override
     public int getQueryRowCountLimit() {return 0;}
