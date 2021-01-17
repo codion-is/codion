@@ -4,7 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultForeignKeyConditionModel;
 
 import java.util.Collection;
@@ -19,11 +19,11 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
 
   /**
    * Constructs a SwingForeignKeyConditionModel instance
-   * @param property the property
+   * @param foreignKey the foreign key
    * @param comboBoxModel a SwingEntityComboBoxModel
    */
-  public SwingForeignKeyConditionModel(final ForeignKeyProperty property, final SwingEntityComboBoxModel comboBoxModel) {
-    super(property);
+  public SwingForeignKeyConditionModel(final ForeignKey foreignKey, final SwingEntityComboBoxModel comboBoxModel) {
+    super(foreignKey);
     this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
     if (entityComboBoxModel.isCleared()) {
       entityComboBoxModel.setSelectedItem(getUpperBound());

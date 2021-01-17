@@ -199,7 +199,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final SwingEntityTableModel tableModel;
 
-  private final FilteredTable<Entity, Property<?>, SwingEntityTableModel> table;
+  private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
 
   private final EntityComponentValues componentValues;
 
@@ -308,7 +308,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return the filtered table instance
    */
-  public final FilteredTable<Entity, Property<?>, SwingEntityTableModel> getTable() {
+  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> getTable() {
     return table;
   }
 
@@ -1229,8 +1229,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
   }
 
-  private FilteredTable<Entity, Property<?>, SwingEntityTableModel> initializeFilteredTable() {
-    final FilteredTable<Entity, Property<?>, SwingEntityTableModel> filteredTable =
+  private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> initializeFilteredTable() {
+    final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
             new FilteredTable<>(tableModel, new DefaultConditionPanelFactory(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
@@ -1354,7 +1354,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void configureColumn(final TableColumn column) {
-    final Property<?> property = (Property<?>) column.getIdentifier();
+    final Property<?> property = tableModel.getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier());
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);
@@ -1441,10 +1441,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Dialogs.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
   }
 
-  private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Property<?>> tableModel) {
+  private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Attribute<?>> tableModel) {
     final Map<TableColumn, JPanel> components = new HashMap<>();
     tableModel.getColumnModel().getAllColumns().forEach(column -> {
-      final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((Property<?>) column.getIdentifier());
+      final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((Attribute<?>) column.getIdentifier());
       if (columnSummaryModel != null) {
         components.put(column, new ColumnSummaryPanel(columnSummaryModel));
       }
@@ -1511,17 +1511,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               hasFocus, row, column);
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
-      final Property<?> property = (Property<?>) tableColumn.getIdentifier();
+      final Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel.getTableConditionModel().isConditionEnabled(property.getAttribute());
+              && tableModel.getTableConditionModel().isConditionEnabled(attribute);
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;
     }
   }
 
-  private static final class DefaultConditionPanelFactory<C extends Property<T>, T> implements ConditionPanelFactory<Entity, C, T> {
+  private static final class DefaultConditionPanelFactory<C extends Attribute<T>, T> implements ConditionPanelFactory<Entity, C, T> {
 
     private final SwingEntityTableModel tableModel;
 
@@ -1531,11 +1531,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     @Override
     public ColumnConditionPanel<Entity, C, T> createConditionPanel(final TableColumn column) {
-      final Property<T> identifier = (Property<T>) column.getIdentifier();
-      final ColumnConditionModel<Entity, Property<T>, T> filterModel =
-              tableModel.getTableConditionModel().getFilterModel(identifier.getAttribute());
+      final Attribute<T> identifier = (Attribute<T>) column.getIdentifier();
+      final ColumnConditionModel<Entity, Attribute<T>, T> filterModel =
+              tableModel.getTableConditionModel().getFilterModel(identifier);
 
-      return (ColumnConditionPanel<Entity, C, T>) new PropertyFilterPanel<>(filterModel);
+      return (ColumnConditionPanel<Entity, C, T>) new AttributeFilterPanel<>(filterModel);
     }
   }
 }

@@ -208,8 +208,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public Object getBackgroundColor(final int row, final Attribute<?> attribute) {return null;}
     @Override
-    public int getColumnIndex(final Attribute<?> attribute) {return 0;}
-    @Override
     public int getQueryRowCountLimit() {return 0;}
     @Override
     public void setQueryRowCountLimit(final int queryRowCountLimit) {}

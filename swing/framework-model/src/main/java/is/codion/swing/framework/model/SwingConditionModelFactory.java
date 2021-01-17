@@ -7,7 +7,7 @@ import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.ConditionModelFactory;
 import is.codion.framework.model.DefaultConditionModelFactory;
 
@@ -18,15 +18,15 @@ import is.codion.framework.model.DefaultConditionModelFactory;
 public class SwingConditionModelFactory extends DefaultConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKeyProperty, Entity> createForeignKeyConditionModel(
-          final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
-    if (connectionProvider.getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
-      final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);
+  public ColumnConditionModel<Entity, ForeignKey, Entity> createForeignKeyConditionModel(
+          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
+    if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
+      final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), connectionProvider);
       comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
 
-      return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);
+      return new SwingForeignKeyConditionModel(foreignKey, comboBoxModel);
     }
 
-    return super.createForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
+    return super.createForeignKeyConditionModel(foreignKey, connectionProvider);
   }
 }

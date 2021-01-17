@@ -4,6 +4,7 @@
 package is.codion.javafx.framework.ui;
 
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -14,10 +15,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.util.Callback;
 
 /**
- * A table column based on properties via {@link FXEntityListModel.PropertyTableColumn}
+ * A table column based on attributes via {@link FXEntityListModel.AttributeTableColumn}
  * @param <T> the column value type
  */
-public final class EntityTableColumn<T> extends FXEntityListModel.PropertyTableColumn<T> {
+public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTableColumn<T> {
 
   private final PropertyConditionView<T> conditionView;
 
@@ -29,8 +30,8 @@ public final class EntityTableColumn<T> extends FXEntityListModel.PropertyTableC
    */
   public EntityTableColumn(final FXEntityListModel listModel, final Property<T> property,
                            final Callback<CellDataFeatures<Entity, T>, ObservableValue<T>> cellValueFactory) {
-    super(property);
-    this.conditionView = initializeConditionView(listModel);
+    super(property.getAttribute(), property.getCaption());
+    this.conditionView = initializeConditionView(listModel, property);
     setCellValueFactory(cellValueFactory);
     final int preferredWidth = property.getPreferredColumnWidth();
     if (preferredWidth > 0) {
@@ -58,13 +59,12 @@ public final class EntityTableColumn<T> extends FXEntityListModel.PropertyTableC
     }
   }
 
-  private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel) {
-    final Property<T> property = getProperty();
+  private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel, final Property<T> property) {
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
-      final ColumnConditionModel<Entity, ? extends Property<?>, T> conditionModel =
-              listModel.getTableConditionModel().getConditionModel(getProperty().getAttribute());
+      final ColumnConditionModel<Entity, ? extends Attribute<?>, T> conditionModel =
+              listModel.getTableConditionModel().getConditionModel(property.getAttribute());
       if (conditionModel != null) {
-        final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel);
+        final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
         view.prefWidthProperty().setValue(getWidth());
         widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
         widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));

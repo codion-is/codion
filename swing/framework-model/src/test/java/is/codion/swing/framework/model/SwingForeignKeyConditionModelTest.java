@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
@@ -22,8 +21,6 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingForeignKeyConditionModelTest {
-
-  private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -47,8 +44,7 @@ public class SwingForeignKeyConditionModelTest {
   @Test
   public void getSearchEntitiesComboBoxModel() throws DatabaseException {
     final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(
-            DOMAIN.getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), comboBoxModel);
+    final SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, comboBoxModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();

@@ -235,12 +235,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   Object getBackgroundColor(int row, Attribute<?> attribute);
 
   /**
-   * @param attribute the attribute
-   * @return the index of the column representing the given attribute
-   */
-  int getColumnIndex(Attribute<?> attribute);
-
-  /**
    * Returns the maximum number of records to fetch via the underlying query the next time
    * this table model is refreshed, a value of -1 means all records should be fetched
    * @return the fetch count

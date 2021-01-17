@@ -13,8 +13,8 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 
@@ -29,6 +29,11 @@ public interface EntityTableConditionModel extends Refreshable {
    * @return the type of the entity this table condition model is based on
    */
   EntityType<?> getEntityType();
+
+  /**
+   * @return the underlying entity definition
+   */
+  EntityDefinition getEntityDefinition();
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.
@@ -126,7 +131,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, ? extends Property<?>, ?>> getConditionModels();
+  Collection<ColumnConditionModel<Entity, ? extends Attribute<?>, ?>> getConditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
@@ -136,7 +141,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsConditionModel(Attribute)
    */
-  <T> ColumnConditionModel<Entity, ? extends Property<T>, T> getConditionModel(Attribute<T> attribute);
+  <T> ColumnConditionModel<Entity, ? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and
@@ -147,7 +152,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the filter models available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, Property<?>, ?>> getFilterModels();
+  Collection<ColumnConditionModel<Entity, Attribute<?>, ?>> getFilterModels();
 
   /**
    * The filter model associated with {@code attribute}
@@ -156,7 +161,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} for the {@code attribute}, null if none is found
    */
-  <C extends Property<T>, T> ColumnConditionModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
+  <C extends Attribute<T>, T> ColumnConditionModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
 
   /**
    * @param attribute column attribute

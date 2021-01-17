@@ -25,7 +25,7 @@ public final class LookupTableModel extends SwingEntityTableModel {
 
   private void configureConditionModels() {
     getTableConditionModel().getConditionModels().stream()
-            .filter(model -> model.getColumnIdentifier().getAttribute().isString())
+            .filter(model -> model.getColumnIdentifier().isString())
             .forEach(LookupTableModel::configureConditionModel);
   }
 

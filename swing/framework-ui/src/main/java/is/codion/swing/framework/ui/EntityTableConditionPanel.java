@@ -10,6 +10,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -39,7 +40,7 @@ import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 /**
  * A UI component based on the EntityTableConditionModel
  * @see EntityTableConditionModel
- * @see PropertyConditionPanel
+ * @see AttributeConditionPanel
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
@@ -50,7 +51,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
-   * an {@link TableColumnComponentPanel} containing {@link PropertyConditionPanel}s
+   * an {@link TableColumnComponentPanel} containing {@link AttributeConditionPanel}s
    * @param tableConditionModel the table condition model
    * @param columnModel the column model
    * @param onSearchListener notified when this condition panel triggers a search
@@ -87,7 +88,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     final List<Property<?>> conditionProperties = new ArrayList<>();
     conditionPanel.getColumnComponents().forEach((column, panel) -> {
       if (panel instanceof ColumnConditionPanel) {
-        conditionProperties.add((Property<?>) column.getIdentifier());
+        conditionProperties.add(getTableConditionModel().getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier()));
       }
     });
     if (!conditionProperties.isEmpty()) {
@@ -95,7 +96,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
       final Property<?> property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
               Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
       if (property != null) {
-        final ColumnConditionPanel<Entity, Property<?>, ?> panel = getConditionPanel(property.getAttribute());
+        final ColumnConditionPanel<Entity, Attribute<?>, ?> panel = getConditionPanel(property.getAttribute());
         if (panel != null) {
           panel.requestInputFocus();
         }
@@ -130,14 +131,13 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   /**
-   * @param  attribute the attribute
+   * @param attribute the attribute
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel<Entity, Property<?>, ?> getConditionPanel(final Attribute<?> attribute) {
+  public ColumnConditionPanel<Entity, Attribute<?>, ?> getConditionPanel(final Attribute<?> attribute) {
     for (final TableColumn column : getTableColumns()) {
-      final Property<?> property = (Property<?>) column.getIdentifier();
-      if (property.getAttribute().equals(attribute)) {
-        return (ColumnConditionPanel<Entity, Property<?>, ?>) conditionPanel.getColumnComponents().get(column);
+      if (column.getIdentifier().equals(attribute)) {
+        return (ColumnConditionPanel<Entity, Attribute<?>, ?>) conditionPanel.getColumnComponents().get(column);
       }
     }
 
@@ -151,11 +151,12 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   private static Map<TableColumn, ColumnConditionPanel<Entity, ?, ?>> createPropertyConditionPanels(final EntityTableConditionModel conditionModel,
                                                                                                     final SwingFilteredTableColumnModel<?, ?> columnModel) {
+    final EntityDefinition definition = conditionModel.getEntityDefinition();
     final Map<TableColumn, ColumnConditionPanel<Entity, ?, ?>> components = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> {
-      final Property<?> property = (Property<?>) column.getIdentifier();
-      if (conditionModel.containsConditionModel(property.getAttribute())) {
-        components.put(column, initializeConditionPanel(conditionModel.getConditionModel(property.getAttribute())));
+      final Attribute<Object> attribute = (Attribute<Object>) column.getIdentifier();
+      if (conditionModel.containsConditionModel(attribute)) {
+        components.put(column, initializeConditionPanel(conditionModel.getConditionModel(attribute), definition.getProperty(attribute)));
       }
     });
 
@@ -167,12 +168,12 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
    * @return a ColumnConditionPanel based on the given model
    */
-  private static <C extends Property<T>, T> ColumnConditionPanel<Entity, C, T> initializeConditionPanel(
-          final ColumnConditionModel<Entity, C, T> propertyConditionModel) {
+  private static <C extends Attribute<T>, T> ColumnConditionPanel<Entity, C, T> initializeConditionPanel(
+          final ColumnConditionModel<Entity, C, T> propertyConditionModel, final Property<T> property) {
     if (propertyConditionModel instanceof ForeignKeyConditionModel) {
       return (ColumnConditionPanel<Entity, C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
     }
 
-    return new PropertyConditionPanel<>(propertyConditionModel);
+    return new AttributeConditionPanel<>(propertyConditionModel, property);
   }
 }

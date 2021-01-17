@@ -290,7 +290,7 @@ public class EntityTableView extends TableView<Entity> {
     if (!selectionModel.isEmpty()) {
       final TablePosition<Entity, Object> pos = getSelectionModel().getSelectedCells().get(0);
       final Entity item = listModel.get(pos.getRow());
-      final String value = item.getAsString(((EntityTableColumn<?>) pos.getTableColumn()).getProperty().getAttribute());
+      final String value = item.getAsString(((EntityTableColumn<?>) pos.getTableColumn()).getAttribute());
       FXUiUtil.setClipboard(value);
     }
   }

@@ -9,8 +9,9 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultForeignKeyConditionModel;
 import is.codion.javafx.framework.model.FXForeignKeyConditionListModel;
@@ -37,7 +38,7 @@ import static is.codion.common.item.Item.item;
  */
 public final class PropertyConditionView<T> extends BorderPane {
 
-  private final ColumnConditionModel<Entity, ? extends Property<?>, T> model;
+  private final ColumnConditionModel<Entity, ? extends Attribute<?>, T> model;
   private final Pane operatorPane;
   private final Pane topPane;
   private final Label header;
@@ -51,15 +52,16 @@ public final class PropertyConditionView<T> extends BorderPane {
   /**
    * Instantiates a new {@link PropertyConditionView}
    * @param model the {@link ColumnConditionModel} to base this view on
+   * @param property the underlying property
    */
-  public PropertyConditionView(final ColumnConditionModel<Entity, ? extends Property<?>, T> model) {
+  public PropertyConditionView(final ColumnConditionModel<Entity, ? extends Attribute<?>, T> model, final Property<T> property) {
     this.model = model;
-    this.header = new Label(model.getColumnIdentifier().getCaption());
+    this.header = new Label(property.getCaption());
     this.enabledBox = createEnabledBox();
     this.checkBoxPane = createCheckBoxPane();
-    this.equalsValueControl = createEqualsValueControl();
-    this.upperBoundControl = createUpperBoundControl();
-    this.lowerBoundControl = createLowerBoundControl();
+    this.equalsValueControl = createEqualsValueControl(property);
+    this.upperBoundControl = createUpperBoundControl(property);
+    this.lowerBoundControl = createLowerBoundControl(property);
     this.topPane = createTopPane();
     this.operatorPane = createOperatorPane();
     setTop(topPane);
@@ -69,7 +71,7 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   /**
    * Toggles the advanced view
-   * @param advanced the toggle values
+   * @param advanced the toggle value
    */
   public void setAdvanced(final boolean advanced) {
     advancedCondition.set(advanced);
@@ -118,42 +120,42 @@ public final class PropertyConditionView<T> extends BorderPane {
     return box;
   }
 
-  private Control createEqualsValueControl() {
-    final Control control = createControl();
+  private Control createEqualsValueControl(final Property<T> property) {
+    final Control control = createControl(property);
     if (!(control instanceof EntityLookupField)) {
       final ValueSet<T> valueSet = model.getEqualValueSet();
       final Value<T> value = Value.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
-      FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null).link(value);
+      FXUiUtil.createValue(property, control, null).link(value);
     }
 
     return control;
   }
 
-  private Control createUpperBoundControl() {
-    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKeyProperty) {
+  private Control createUpperBoundControl(final Property<T> property) {
+    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
     }
-    final Control control = createControl();
-    FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null).link(model.getUpperBoundValue());
+    final Control control = createControl(property);
+    FXUiUtil.createValue(property, control, null).link(model.getUpperBoundValue());
 
     return control;
   }
 
-  private Control createLowerBoundControl() {
-    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKeyProperty) {
+  private Control createLowerBoundControl(final Property<T> property) {
+    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
     }
-    final Control control = createControl();
-    FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null).link(model.getLowerBoundValue());
+    final Control control = createControl(property);
+    FXUiUtil.createValue(property, control, null).link(model.getLowerBoundValue());
 
     return control;
   }
 
-  private Control createControl() {
+  private Control createControl(final Property<T> property) {
     final Control control;
     if (model instanceof FXForeignKeyConditionListModel) {
       final FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
@@ -164,7 +166,7 @@ public final class PropertyConditionView<T> extends BorderPane {
       control = new EntityLookupField(((DefaultForeignKeyConditionModel) model).getEntityLookupModel());
     }
     else {
-      control = FXUiUtil.createControl(model.getColumnIdentifier(), null);
+      control = FXUiUtil.createControl(property, null);
     }
     if (!(control instanceof EntityLookupField)) {
       control.setOnKeyReleased(event -> {
@@ -234,13 +236,13 @@ public final class PropertyConditionView<T> extends BorderPane {
     return gridPane;
   }
 
-  private static Collection<Item<Operator>> getOperators(final Property<?> property) {
+  private static Collection<Item<Operator>> getOperators(final Attribute<?> attribute) {
     final Collection<Item<Operator>> types = new ArrayList<>();
-    if (property instanceof ForeignKeyProperty) {
+    if (attribute instanceof ForeignKey) {
       types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
       types.add(item(Operator.NOT_EQUAL, Operator.NOT_EQUAL.getCaption()));
     }
-    else if (property.getAttribute().isBoolean()) {
+    else if (attribute.isBoolean()) {
       types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
     }
     else {
