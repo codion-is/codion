@@ -129,8 +129,9 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
   FilteredTableColumnModel<R, C, T> getColumnModel();
 
   /**
+   * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
    * @param columnIdentifier the column identifier
-   * @return the ColumnSummaryModel for the column identified by the given, null if not applicable
+   * @return the ColumnSummaryModel for the column identified by the given identifier, null if none is available
    */
   ColumnSummaryModel getColumnSummaryModel(C columnIdentifier);
 

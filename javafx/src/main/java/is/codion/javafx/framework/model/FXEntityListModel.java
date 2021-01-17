@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -289,11 +288,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final boolean isRefreshOnForeignKeyConditionValuesSet() {
     return refreshOnForeignKeyConditionValuesSet;
-  }
-
-  @Override
-  public final <T extends Number> ColumnSummaryModel getColumnSummaryModel(final Attribute<T> attribute) {
-    throw new UnsupportedOperationException();
   }
 
   @Override

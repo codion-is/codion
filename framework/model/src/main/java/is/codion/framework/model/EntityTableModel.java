@@ -8,7 +8,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.Refreshable;
-import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -217,14 +216,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param batchUpdateEnabled true if this model should enable multiple entities to be updated at a time
    */
   void setBatchUpdateEnabled(boolean batchUpdateEnabled);
-
-  /**
-   * Returns the {@link ColumnSummaryModel} associated with {@code attribute}
-   * @param attribute the attribute
-   * @param <T> the column type
-   * @return the {@link ColumnSummaryModel} for the given property id
-   */
-  <T extends Number> ColumnSummaryModel getColumnSummaryModel(Attribute<T> attribute);
 
   /**
    * @param row the row for which to retrieve the background color
