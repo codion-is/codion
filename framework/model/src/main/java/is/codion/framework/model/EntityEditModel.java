@@ -544,6 +544,16 @@ public interface EntityEditModel extends Refreshable {
   <T> void removeValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
 
   /**
+   * @param listener the listener to remove
+   */
+  void removeValueListener(EventDataListener<ValueChange<?>> listener);
+
+  /**
+   * @param listener a listener notified each time a value changes
+   */
+  void addValueListener(EventDataListener<ValueChange<?>> listener);
+
+  /**
    * @param listener a listener notified each time the entity is set
    * @see #setEntity(Entity)
    */
