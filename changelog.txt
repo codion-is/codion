@@ -6659,3 +6659,4 @@
   FilteredTableColumnModel.getLockedState() added, used in FilteredTable to prevent user from selecting columns
   SwingEntityTableModel bug fixed, getColumnSummaryModel() removed
   DefaultEntityEditModel.notifyValueEdit() bug fixed, switched value and previousValue in notification for depending attributes
+  EntityEditPanel.getActiveObserver() added

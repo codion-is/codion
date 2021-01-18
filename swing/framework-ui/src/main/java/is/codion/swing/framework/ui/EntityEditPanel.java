@@ -9,6 +9,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -192,6 +193,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final void setActive(final boolean active) {
     activeState.set(active);
+  }
+
+  /**
+   * @return a {@link StateObserver} indicating whether this panel is active
+   */
+  public final StateObserver getActiveObserver() {
+    return activeState.getObserver();
   }
 
   /**
