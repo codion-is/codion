@@ -997,7 +997,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     dependentValues.forEach((dependentAttribute, previousValue) -> {
       final Object currentValue = get(dependentAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
-        notifyValueEdit(new DefaultValueChange<>((Attribute<Object>) dependentAttribute, previousValue, currentValue), emptyMap());
+        notifyValueEdit(new DefaultValueChange<>((Attribute<Object>) dependentAttribute, currentValue, previousValue), emptyMap());
       }
     });
   }
