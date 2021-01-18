@@ -103,6 +103,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<Entity> entitySetEvent = Event.event();
 
   /**
+   * An event notified each time a value changes
+   */
+  private final Event<ValueChange<?>> valueChangeEvent = Event.event();
+
+  /**
    * The validator used by this edit model
    */
   private final EntityValidator validator;
@@ -333,7 +338,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isModified() {
+  public boolean isModified() {
     return entity.isModified();
   }
 
@@ -676,6 +681,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
+  public final void removeValueListener(final EventDataListener<ValueChange<?>> listener) {
+    valueChangeEvent.removeDataListener(listener);
+  }
+
+  @Override
+  public final void addValueListener(final EventDataListener<ValueChange<?>> listener) {
+    valueChangeEvent.addDataListener(listener);
+  }
+
+  @Override
   public final void removeEntitySetListener(final EventDataListener<Entity> listener) {
     entitySetEvent.removeDataListener(listener);
   }
@@ -860,6 +875,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
+   * @return the State used to indicate the modified state of this edit model, handle with care
+   */
+  protected final State getModifiedState() {
+    return entityModifiedState;
+  }
+
+  /**
    * Notifies that a insert is about to be performed
    * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
@@ -1003,14 +1025,15 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> void onValueChange(final ValueChange<T> valueChange) {
-    entityModifiedState.set(entity.isModified());
+    entityModifiedState.set(isModified());
     validState.set(validator.isValid(entity, getEntityDefinition()));
     primaryKeyNullState.set(entity.getPrimaryKey().isNull());
     entityNewState.set(isEntityNew());
-    final Event<ValueChange<T>> valueChangeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
-    if (valueChangeEvent != null) {
-      valueChangeEvent.onEvent(valueChange);
+    final Event<ValueChange<T>> changeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
+    if (changeEvent != null) {
+      changeEvent.onEvent(valueChange);
     }
+    valueChangeEvent.onEvent(valueChange);
   }
 
   /**
