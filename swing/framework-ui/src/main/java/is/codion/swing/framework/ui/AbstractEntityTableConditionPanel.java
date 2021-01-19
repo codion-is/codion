@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
@@ -96,7 +96,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @param listener a listener notified when a condition panel receives focus, note this does not apply
    * for custom search panels
    */
-  public void addFocusGainedListener(final EventDataListener<Property<?>> listener) {}
+  public void addFocusGainedListener(final EventDataListener<Attribute<?>> listener) {}
 
   /**
    * Sets the advanced search state, if supported
