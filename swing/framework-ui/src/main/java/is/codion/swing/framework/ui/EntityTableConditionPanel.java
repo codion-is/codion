@@ -109,8 +109,8 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * for custom search panels
    */
   @Override
-  public void addFocusGainedListener(final EventDataListener<Property<?>> listener) {
-    conditionPanel.getColumnComponents().values().forEach(panel -> ((ColumnConditionPanel<?, Property<?>, ?>) panel).addFocusGainedListener(listener));
+  public void addFocusGainedListener(final EventDataListener<Attribute<?>> listener) {
+    conditionPanel.getColumnComponents().values().forEach(panel -> ((ColumnConditionPanel<?, Attribute<?>, ?>) panel).addFocusGainedListener(listener));
   }
 
   /**
