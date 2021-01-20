@@ -6663,3 +6663,4 @@
   EntityEditModel.add/removeValueListener() added, notified when any value changes
   DefaultEntityEditModel.isModified() no longer final, used when setting the modified state
   EntityTableConditionPanel.addFocusGainedListener() bug fixed, incorrect column identifier type
+  SwingEntityTableModel.getSearchValueAt() bug fixed, incorrect column identifier type

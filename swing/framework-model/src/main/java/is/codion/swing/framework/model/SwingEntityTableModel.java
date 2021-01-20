@@ -646,7 +646,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
-    return getItemAt(rowIndex).getAsString(((Property<?>) column.getIdentifier()).getAttribute());
+    return getItemAt(rowIndex).getAsString((Attribute<?>) column.getIdentifier());
   }
 
   /**
