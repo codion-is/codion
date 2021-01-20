@@ -210,7 +210,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
       return entityComparator.compare(node1.entity, node2.entity);
     }
-  };
+  }
 
   private static final class EntityTreeSelectionListener implements TreeSelectionListener {
 
