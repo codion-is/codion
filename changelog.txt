@@ -6694,3 +6694,4 @@
   DefaultEntityEditModel.isModified() no longer final, used when setting the modified state
   EntityTableConditionPanel.addFocusGainedListener() bug fixed, incorrect column identifier type
   SwingEntityTableModel.getSearchValueAt() bug fixed, incorrect column identifier type
+  DefaultEntityValidator, property caption used explicitly in error messages
