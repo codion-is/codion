@@ -6665,3 +6665,4 @@
   EntityTableConditionPanel.addFocusGainedListener() bug fixed, incorrect column identifier type
   SwingEntityTableModel.getSearchValueAt() bug fixed, incorrect column identifier type
   DefaultEntityValidator, property caption used explicitly in error messages
+  EntityEditComponentPanel.getSelectComponentAttributes() now public, refactored
