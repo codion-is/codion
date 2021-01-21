@@ -240,8 +240,26 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * @return a list of attributes to use when selecting a input component in this panel,
+   * this returns all attributes that have an associated component in this panel
+   * that are enabled, displayable, visible and focusable.
+   * @see #excludeComponentFromSelection(Attribute)
+   * @see #setComponent(Attribute, JComponent)
+   * @see #isComponentSelectable(JComponent)
+   */
+  public final List<Attribute<?>> getSelectComponentAttributes() {
+    final List<Attribute<?>> attributes = getComponentAttributes();
+    attributes.removeIf(attribute ->
+            excludeFromSelection.contains(attribute) ||
+                    !isComponentSelectable(getComponent(attribute)));
+
+    return attributes;
+  }
+
+  /**
    * Specifies that the given attribute should be excluded when presenting a component selection list.
    * @param attribute the attribute to exclude from selection
+   * @see #selectInputComponent()
    */
   public final void excludeComponentFromSelection(final Attribute<?> attribute) {
     getEditModel().getEntityDefinition().getProperty(attribute);//just validating that the attribute exists
@@ -1068,22 +1086,14 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return a list of attributes to use when selecting a input component in this panel,
-   * this returns all attributes that have mapped components in this panel
-   * that are enabled, displayable, visible and focusable.
-   * @see #excludeComponentFromSelection(String)
-   * @see #setComponent(String, javax.swing.JComponent)
+   * Returns true if this component can be selected, that is,
+   * if it is non-null, displayable, visible, focusable and enabled.
+   * @param component the component
+   * @return true if this component can be selected
    */
-  private List<Attribute<?>> getSelectComponentAttributes() {
-    final List<Attribute<?>> attributes = getComponentAttributes();
-    attributes.removeIf(attribute -> {
-      final JComponent component = getComponent(attribute);
-
-      return component == null || excludeFromSelection.contains(attribute) || !component.isDisplayable() ||
-              !component.isVisible() || !component.isFocusable() || !component.isEnabled();
-    });
-
-    return attributes;
+  private static boolean isComponentSelectable(final JComponent component) {
+    return component != null && component.isDisplayable() &&
+            component.isVisible() && component.isFocusable() && component.isEnabled();
   }
 
   private static JLabel setLabelForComponent(final JLabel label, final JComponent component) {
