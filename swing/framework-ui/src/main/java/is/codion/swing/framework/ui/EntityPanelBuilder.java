@@ -277,7 +277,7 @@ public class EntityPanelBuilder {
    * @param comboBox the combo box in which to select the new entity, if created
    * @return the Action
    */
-  public Action createEditPanelAction(final EntityComboBox comboBox) {
+  public final Action createEditPanelAction(final EntityComboBox comboBox) {
     return new InsertEntityAction(comboBox);
   }
 
@@ -287,7 +287,7 @@ public class EntityPanelBuilder {
    * @param lookupField the lookup field in which to select the new entity, if created
    * @return the Action
    */
-  public Action createEditPanelAction(final EntityLookupField lookupField) {
+  public final Action createEditPanelAction(final EntityLookupField lookupField) {
     return new InsertEntityAction(lookupField);
   }
 
@@ -299,7 +299,7 @@ public class EntityPanelBuilder {
    * @param insertListener the listener notified when insert has been performed
    * @return the Action
    */
-  public Action createEditPanelAction(final JComponent component, final EntityConnectionProvider connectionProvider,
+  public final Action createEditPanelAction(final JComponent component, final EntityConnectionProvider connectionProvider,
                                       final EventDataListener<List<Entity>> insertListener) {
     return new InsertEntityAction(component, connectionProvider, insertListener);
   }
