@@ -172,6 +172,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void setInitialFocusAttribute(final Attribute<?> attribute) {
+    getEditModel().getEntityDefinition().getProperty(attribute);
     this.initialFocusAttribute = attribute;
   }
 
@@ -194,6 +195,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #setAfterInsertFocusComponent(JComponent)
    */
   public final void setAfterInsertFocusAttribute(final Attribute<?> attribute) {
+    getEditModel().getEntityDefinition().getProperty(attribute);
     this.afterInsertFocusAttribute = attribute;
   }
 
