@@ -40,18 +40,16 @@ public interface Key {
   /**
    * Returns true if a null value is mapped to the given attribute or no mapping exists.
    * @param attribute the attribute
-   * @param <T> the value type
    * @return true if the value mapped to the given attribute is null or none exists
    */
-  <T> boolean isNull(Attribute<T> attribute);
+  boolean isNull(Attribute<?> attribute);
 
   /**
    * Returns true if a non-null value is mapped to the given attribute.
    * @param attribute the attribute
-   * @param <T> the value type
    * @return true if a non-null value is mapped to the given attribute
    */
-  <T> boolean isNotNull(Attribute<T> attribute);
+  boolean isNotNull(Attribute<?> attribute);
 
   /**
    * Returns this keys attribute. Note that this method throws an exception if this key is a composite key.
