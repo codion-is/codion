@@ -143,7 +143,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final <T> boolean isModified(final Attribute<T> attribute) {
+  public <T> boolean isModified(final Attribute<T> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     return originalValues != null && originalValues.containsKey(attribute);
   }
@@ -210,7 +210,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final void saveAll() {
+  public void saveAll() {
     originalValues = null;
   }
 
@@ -244,15 +244,15 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final Map<Attribute<?>, Object> setAs(final Entity entity) {
+  public Map<Attribute<?>, Object> setAs(final Entity entity) {
     if (entity == this) {
       return Collections.emptyMap();
     }
     if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
     }
-    final Map<Attribute<?>, Object> previousValues = new HashMap<>();
-    definition.getProperties().forEach(property -> previousValues.put(property.getAttribute(), get(property.getAttribute())));
+    final Map<Property<?>, Object> previousValues = new HashMap<>();
+    definition.getProperties().forEach(property -> previousValues.put(property, get(property)));
     clear();
     if (entity != null) {
       entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
@@ -262,13 +262,13 @@ final class DefaultEntity implements Entity, Serializable {
       }
     }
     final Map<Attribute<?>, Object> affectedAttributes = new HashMap<>();
-    previousValues.forEach((attribute, previousValue) -> {
-      if (!Objects.equals(previousValue, get(attribute))) {
-        affectedAttributes.put(attribute, previousValue);
+    previousValues.forEach((property, previousValue) -> {
+      if (!Objects.equals(get(property), previousValue)) {
+        affectedAttributes.put(property.getAttribute(), previousValue);
       }
     });
 
-    return affectedAttributes;
+    return unmodifiableMap(affectedAttributes);
   }
 
   @Override
