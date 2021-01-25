@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -245,14 +244,14 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final Collection<Attribute<?>> setAs(final Entity entity) {
+  public final Map<Attribute<?>, Object> setAs(final Entity entity) {
     if (entity == this) {
-      return Collections.emptyList();
+      return Collections.emptyMap();
     }
     if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
     }
-    final Map<Attribute<?>, Object> previousValues = new HashMap<>(values);
+    final Map<Attribute<?>, Object> previousValues = new HashMap<>();
     definition.getProperties().forEach(property -> previousValues.put(property.getAttribute(), get(property.getAttribute())));
     clear();
     if (entity != null) {
@@ -262,10 +261,10 @@ final class DefaultEntity implements Entity, Serializable {
         entity.originalEntrySet().forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
       }
     }
-    final Set<Attribute<?>> affectedAttributes = new HashSet<>();
-    previousValues.forEach((attribute, value) -> {
-      if (!Objects.equals(value, entity == null ? null : entity.get(attribute))) {
-        affectedAttributes.add(attribute);
+    final Map<Attribute<?>, Object> affectedAttributes = new HashMap<>();
+    previousValues.forEach((attribute, previousValue) -> {
+      if (!Objects.equals(previousValue, get(attribute))) {
+        affectedAttributes.put(attribute, previousValue);
       }
     });
 
