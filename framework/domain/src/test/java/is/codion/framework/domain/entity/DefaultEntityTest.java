@@ -172,6 +172,22 @@ public class DefaultEntityTest {
   }
 
   @Test
+  public void getDerivedOriginal() {
+    final Entity entity = ENTITIES.entity(Detail.TYPE);
+    entity.put(Detail.INT, 1);
+    assertEquals(10, entity.get(Detail.INT_DERIVED));
+    assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+
+    entity.put(Detail.INT, 2);
+    assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+    assertEquals(20, entity.get(Detail.INT_DERIVED));
+
+    entity.put(Detail.INT, 1);
+    assertEquals(10, entity.get(Detail.INT_DERIVED));
+    assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+  }
+
+  @Test
   public void saveRevertValue() {
     final Entity entity = ENTITIES.entity(Master.TYPE);
     final String newName = "aname";

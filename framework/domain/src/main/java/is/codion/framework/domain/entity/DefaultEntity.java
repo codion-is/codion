@@ -390,13 +390,16 @@ final class DefaultEntity implements Entity, Serializable {
 
   private <T> T get(final Property<T> property) {
     if (property instanceof DerivedProperty) {
-      return getDerivedValue((DerivedProperty<T>) property);
+      return getDerivedValue((DerivedProperty<T>) property, false);
     }
 
     return (T) values.get(property.getAttribute());
   }
 
   private <T> T getOriginal(final Property<T> property) {
+    if (property instanceof DerivedProperty) {
+      return getDerivedValue((DerivedProperty<T>) property, true);
+    }
     if (isModified(property.getAttribute())) {
       return (T) originalValues.get(property.getAttribute());
     }
@@ -632,22 +635,23 @@ final class DefaultEntity implements Entity, Serializable {
     return new DefaultKey(definition, attribute, originalValues ? getOriginal(attribute) : values.get(attribute), true);
   }
 
-  private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty) {
-    return derivedProperty.getValueProvider().get(getSourceValues(derivedProperty));
+  private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty, final boolean originalValues) {
+    return derivedProperty.getValueProvider().get(getSourceValues(derivedProperty, originalValues));
   }
 
-  private DerivedProperty.SourceValues getSourceValues(final DerivedProperty<?> derivedProperty) {
+  private DerivedProperty.SourceValues getSourceValues(final DerivedProperty<?> derivedProperty, final boolean originalValues) {
     final List<Attribute<?>> sourceAttributes = derivedProperty.getSourceAttributes();
     if (sourceAttributes.size() == 1) {
       final Attribute<?> sourceAttribute = sourceAttributes.get(0);
 
-      return new DefaultSourceValues(derivedProperty.getAttribute(), singletonMap(sourceAttribute, get(sourceAttribute)));
+      return new DefaultSourceValues(derivedProperty.getAttribute(),
+              singletonMap(sourceAttribute, originalValues ? getOriginal(sourceAttribute) : get(sourceAttribute)));
     }
     else {
       final Map<Attribute<?>, Object> valueMap = new HashMap<>(sourceAttributes.size());
       for (int i = 0; i < sourceAttributes.size(); i++) {
         final Attribute<?> sourceAttribute = sourceAttributes.get(i);
-        valueMap.put(sourceAttribute, get(sourceAttribute));
+        valueMap.put(sourceAttribute, originalValues ? getOriginal(sourceAttribute) : get(sourceAttribute));
       }
 
       return new DefaultSourceValues(derivedProperty.getAttribute(), valueMap);
