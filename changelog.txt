@@ -6670,3 +6670,4 @@
   DefaultEntity.setAs() improved, now only returns attribute as affected if the value actually changed
   Entity.setAs() now returns a Map, containing the affected attributes along with their previous value
   Entity.getOriginal() implemented for DerivedProperty, using the original source values
+  Entity and Key, redundant T type parameter removed from a bunch of methods

@@ -250,12 +250,12 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> boolean isNull(final Attribute<T> attribute) {
+  public boolean isNull(final Attribute<?> attribute) {
     return values.get(attribute) == null;
   }
 
   @Override
-  public <T> boolean isNotNull(final Attribute<T> attribute) {
+  public boolean isNotNull(final Attribute<?> attribute) {
     return !isNull(attribute);
   }
 

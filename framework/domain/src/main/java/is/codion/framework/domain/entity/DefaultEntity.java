@@ -133,17 +133,17 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> boolean isNull(final Attribute<T> attribute) {
+  public boolean isNull(final Attribute<?> attribute) {
     return isNull(definition.getProperty(attribute));
   }
 
   @Override
-  public <T> boolean isNotNull(final Attribute<T> attribute) {
+  public boolean isNotNull(final Attribute<?> attribute) {
     return !isNull(attribute);
   }
 
   @Override
-  public <T> boolean isModified(final Attribute<T> attribute) {
+  public boolean isModified(final Attribute<?> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     return originalValues != null && originalValues.containsKey(attribute);
   }
@@ -168,19 +168,20 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> String getAsString(final Attribute<T> attribute) {
+  public String getAsString(final Attribute<?> attribute) {
     return getAsString(definition.getProperty(attribute));
   }
 
   @Override
-  public <T> String getAsString(final Property<T> property) {
+  public String getAsString(final Property<?> property) {
     if (!getEntityType().equals(property.getEntityType())) {
       throw new IllegalArgumentException("Property " + property + " is not part of entity " + getEntityType());
     }
+    final Property<Object> objectProperty = (Property<Object>) property;
     if (property instanceof ValueListProperty) {
-      return ((ValueListProperty<T>) property).getCaption(get(property));
+      return ((ValueListProperty<Object>) property).getCaption(get(objectProperty));
     }
-    final Attribute<T> attribute = property.getAttribute();
+    final Attribute<?> attribute = property.getAttribute();
     if (attribute instanceof ForeignKey && !isLoaded(((ForeignKey) attribute))) {
       final Key referencedKey = getReferencedKey((ForeignKey) attribute);
       if (referencedKey != null) {
@@ -188,7 +189,7 @@ final class DefaultEntity implements Entity, Serializable {
       }
     }
 
-    return property.formatValue(get(property));
+    return objectProperty.formatValue(get(objectProperty));
   }
 
   @Override
@@ -205,7 +206,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> void save(final Attribute<T> attribute) {
+  public void save(final Attribute<?> attribute) {
     removeOriginalValue(requireNonNull(attribute, ATTRIBUTE));
   }
 
@@ -215,9 +216,10 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> void revert(final Attribute<T> attribute) {
+  public void revert(final Attribute<?> attribute) {
     if (isModified(attribute)) {
-      put(attribute, getOriginal(attribute));
+      final Attribute<Object> objectAttribute = (Attribute<Object>) attribute;
+      put(objectAttribute, getOriginal(objectAttribute));
     }
   }
 
@@ -344,7 +346,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> boolean containsValue(final Attribute<T> attribute) {
+  public boolean containsValue(final Attribute<?> attribute) {
     return values.containsKey(requireNonNull(attribute, ATTRIBUTE));
   }
 

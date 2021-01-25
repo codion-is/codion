@@ -57,27 +57,24 @@ public interface Entity extends Comparable<Entity> {
    * This method returns a String representation of the value associated with the given attribute,
    * if the associated property has a format it is used.
    * @param attribute the attribute for which to retrieve the value
-   * @param <T> the value type
    * @return a String representation of the value associated with {@code attribute}
    */
-  <T> String getAsString(Attribute<T> attribute);
+  String getAsString(Attribute<?> attribute);
 
   /**
    * This method returns a String representation of the value associated with the given property,
    * if the associated property has a format it is used.
    * @param property the property for which to retrieve the value
-   * @param <T> the value type
    * @return a String representation of the value associated with {@code property}
    */
-  <T> String getAsString(Property<T> property);
+  String getAsString(Property<?> property);
 
   /**
    * Reverts the value associated with the given attribute to its original value.
    * If the value has not been modified then calling this method has no effect.
    * @param attribute the attribute for which to revert the value
-   * @param <T> the value type
    */
-  <T> void revert(Attribute<T> attribute);
+  void revert(Attribute<?> attribute);
 
   /**
    * Reverts all value modifications that have been made.
@@ -90,9 +87,8 @@ public interface Entity extends Comparable<Entity> {
    * Saves the value associated with the given attribute, that is, removes the original value.
    * If no original value exists calling this method has no effect.
    * @param attribute the attribute for which to save the value
-   * @param <T> the value type
    */
-  <T> void save(Attribute<T> attribute);
+  void save(Attribute<?> attribute);
 
   /**
    * Saves all the value modifications that have been made.
@@ -114,27 +110,24 @@ public interface Entity extends Comparable<Entity> {
    * Returns true if a null value is mapped to the given attribute or if no mapping is found.
    * In case of foreign key attributes the value of the underlying reference attribute is checked.
    * @param attribute the attribute
-   * @param <T> the value type
    * @return true if the value mapped to the given attribute is null or no value is mapped
    */
-  <T> boolean isNull(Attribute<T> attribute);
+  boolean isNull(Attribute<?> attribute);
 
   /**
    * Returns true if a this Entity contains a non-null value mapped to the given attribute
    * In case of foreign key attributes the value of the underlying reference attribute is checked.
    * @param attribute the attribute
-   * @param <T> the value type
    * @return true if a non-null value is mapped to the given attribute
    */
-  <T> boolean isNotNull(Attribute<T> attribute);
+  boolean isNotNull(Attribute<?> attribute);
 
   /**
    * Returns true if this Entity contains a value for the given attribute, that value can be null.
    * @param attribute the attribute
-   * @param <T> the value type
    * @return true if a value is mapped to this attribute
    */
-  <T> boolean containsValue(Attribute<T> attribute);
+  boolean containsValue(Attribute<?> attribute);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
@@ -167,11 +160,13 @@ public interface Entity extends Comparable<Entity> {
   boolean isForeignKeyNull(ForeignKey foreignKey);
 
   /**
+   * Returns true if the value associated with the given attribute has been modified since first set,
+   * note that this does not apply to attributes based on derived values.
    * @param attribute the attribute
    * @param <T> the attribute type
    * @return true if the value associated with the given attribute has been modified
    */
-  <T> boolean isModified(Attribute<T> attribute);
+  boolean isModified(Attribute<?> attribute);
 
   /**
    * Returns true if one or more writable attributes have been modified, read only and non-updatable attributes
