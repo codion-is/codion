@@ -143,7 +143,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final <T> boolean isModified(final Attribute<T> attribute) {
+  public <T> boolean isModified(final Attribute<T> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     return originalValues != null && originalValues.containsKey(attribute);
   }
@@ -210,7 +210,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final void saveAll() {
+  public void saveAll() {
     originalValues = null;
   }
 
@@ -244,7 +244,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final Map<Attribute<?>, Object> setAs(final Entity entity) {
+  public Map<Attribute<?>, Object> setAs(final Entity entity) {
     if (entity == this) {
       return Collections.emptyMap();
     }
@@ -252,7 +252,7 @@ final class DefaultEntity implements Entity, Serializable {
       throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
     }
     final Map<Attribute<?>, Object> previousValues = new HashMap<>();
-    definition.getProperties().forEach(property -> previousValues.put(property.getAttribute(), get(property.getAttribute())));
+    definition.getProperties().forEach(property -> previousValues.put(property.getAttribute(), get(property)));
     clear();
     if (entity != null) {
       entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
@@ -268,7 +268,7 @@ final class DefaultEntity implements Entity, Serializable {
       }
     });
 
-    return affectedAttributes;
+    return unmodifiableMap(affectedAttributes);
   }
 
   @Override
