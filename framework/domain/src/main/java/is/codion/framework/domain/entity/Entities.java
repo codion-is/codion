@@ -418,6 +418,20 @@ public interface Entities {
   }
 
   /**
+   * Returns true if all attribute values are equal in the given entities.
+   * @param entityOne the first entity
+   * @param entityTwo the second entity
+   * @return true if the values of the given attributes are equal in the given entities
+   */
+  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo) {
+    if (entityOne.entrySet().size() != entityTwo.entrySet().size()) {
+      return false;
+    }
+
+    return valuesEqual(entityOne, entityTwo, entityOne.entrySet().stream().map(Map.Entry::getKey).toArray(Attribute[]::new));
+  }
+
+  /**
    * Returns true if the values of the given attributes are equal in the given entities.
    * @param entityOne the first entity
    * @param entityTwo the second entity
@@ -425,8 +439,9 @@ public interface Entities {
    * @return true if the values of the given attributes are equal in the given entities
    */
   static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final Attribute<?>... attributes) {
-    requireNonNull(entityOne);
-    requireNonNull(entityTwo);
+    if (!requireNonNull(entityOne).getEntityType().equals(requireNonNull(entityTwo).getEntityType())) {
+      throw new IllegalArgumentException("Type mismatch: " + entityOne.getEntityType() + " - " + entityTwo.getEntityType());
+    }
     if (requireNonNull(attributes).length == 0) {
       throw new IllegalArgumentException("No attributes provided for equality check");
     }

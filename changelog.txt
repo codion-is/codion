@@ -6697,3 +6697,5 @@
   DefaultEntityValidator, property caption used explicitly in error messages
   EntityEditComponentPanel.getSelectComponentAttributes() now public, refactored
   EntityEditComponents.setInitialFocusAttribute() and setAfterInsertFocusAttribute() now valiate the entity type
+  DefaultEntity.setAs() improved, now only returns attribute as affected if the value actually changed
+  Entity.setAs() now returns a Map, containing the affected attributes along with their previous value

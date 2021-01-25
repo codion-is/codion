@@ -964,11 +964,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void doSetEntity(final Entity entity) {
-    final Entity previousValues = getEntityCopy();
-    final Collection<Attribute<?>> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-    for (final Attribute<?> affectedAttribute : affectedAttributes) {
-      final Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
-      onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), previousValues.get(objectAttribute)));
+    final Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
+    for (final Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
+      final Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
+      onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), entry.getValue()));
+    }
+    if (affectedAttributes.isEmpty()) {//no value changes to trigger state updates
+      updateEntityStates();
     }
 
     entitySetEvent.onEvent(entity);
@@ -1025,15 +1027,19 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> void onValueChange(final ValueChange<T> valueChange) {
-    entityModifiedState.set(isModified());
-    validState.set(validator.isValid(entity, getEntityDefinition()));
-    primaryKeyNullState.set(entity.getPrimaryKey().isNull());
-    entityNewState.set(isEntityNew());
+    updateEntityStates();
     final Event<ValueChange<T>> changeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
     if (changeEvent != null) {
       changeEvent.onEvent(valueChange);
     }
     valueChangeEvent.onEvent(valueChange);
+  }
+
+  private void updateEntityStates() {
+    entityModifiedState.set(isModified());
+    validState.set(validator.isValid(entity, getEntityDefinition()));
+    primaryKeyNullState.set(entity.getPrimaryKey().isNull());
+    entityNewState.set(isEntityNew());
   }
 
   /**

@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -245,27 +244,29 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final Collection<Attribute<?>> setAs(final Entity entity) {
+  public final Map<Attribute<?>, Object> setAs(final Entity entity) {
     if (entity == this) {
-      return Collections.emptyList();
+      return Collections.emptyMap();
     }
     if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
     }
-    final Set<Attribute<?>> affectedAttributes = new HashSet<>(values.keySet());
+    final Map<Attribute<?>, Object> previousValues = new HashMap<>();
+    definition.getProperties().forEach(property -> previousValues.put(property.getAttribute(), get(property.getAttribute())));
     clear();
     if (entity != null) {
-      entity.entrySet().forEach(attributeValue -> {
-        final Attribute<?> attribute = attributeValue.getKey();
-        values.put(attribute, attributeValue.getValue());
-        affectedAttributes.add(attribute);
-        affectedAttributes.addAll(definition.getDerivedAttributes(attribute));
-      });
+      entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
       if (entity.isModified()) {
         originalValues = new HashMap<>();
         entity.originalEntrySet().forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
       }
     }
+    final Map<Attribute<?>, Object> affectedAttributes = new HashMap<>();
+    previousValues.forEach((attribute, previousValue) -> {
+      if (!Objects.equals(previousValue, get(attribute))) {
+        affectedAttributes.put(attribute, previousValue);
+      }
+    });
 
     return affectedAttributes;
   }

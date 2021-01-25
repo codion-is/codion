@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.property.Property;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -201,9 +200,9 @@ public interface Entity extends Comparable<Entity> {
    * After a call to this method this Entity contains the same values and original values as the source entity.
    * A null argument to this method clears the destination entity of all values and original values.
    * @param entity the entity to copy or null for clearing all values in this instance
-   * @return the affected attributes
+   * @return the affected attributes and their previous values, that is, attributes which values changed
    */
-  Collection<Attribute<?>> setAs(Entity entity);
+  Map<Attribute<?>, Object> setAs(Entity entity);
 
   /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
@@ -227,6 +226,8 @@ public interface Entity extends Comparable<Entity> {
   Key getOriginalPrimaryKey();
 
   /**
+   * Returns an unmodifiable view of the entries in this Entity, note that
+   * attributes based on derived values are not included.
    * @return an unmodifiable view of the entries in this Entity
    */
   Set<Map.Entry<Attribute<?>, Object>> entrySet();
