@@ -201,7 +201,7 @@ public interface Entity extends Comparable<Entity> {
    * After a call to this method this Entity contains the same values and original values as the source entity.
    * A null argument to this method clears the destination entity of all values and original values.
    * @param entity the entity to copy or null for clearing all values in this instance
-   * @return the affected attributes
+   * @return the affected attributes, that is, attributes which values changed
    */
   Collection<Attribute<?>> setAs(Entity entity);
 

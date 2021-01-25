@@ -55,7 +55,11 @@ public final class EntitiesTest {
     assertTrue(Entities.valuesEqual(department1, department2,
             TestDomain.Department.NAME, TestDomain.Department.LOCATION));
 
-    assertThrows(IllegalArgumentException.class, () -> Entities.valuesEqual(department1, department2));
+    final Entity employee = entities.entity(TestDomain.Employee.TYPE);
+    employee.put(TestDomain.Employee.ID, 1);
+    employee.put(TestDomain.Employee.NAME, "name");
+
+    assertThrows(IllegalArgumentException.class, () -> Entities.valuesEqual(department1, employee));
   }
 
   @Test

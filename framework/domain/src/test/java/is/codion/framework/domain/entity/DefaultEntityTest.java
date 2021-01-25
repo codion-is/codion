@@ -134,6 +134,44 @@ public class DefaultEntityTest {
   }
 
   @Test
+  public void setAsAffectedAttributes() {
+    final Entity original = ENTITIES.entity(Detail.TYPE);
+    original.put(Detail.ID, 1L);
+
+    final Entity entity = ENTITIES.entity(Detail.TYPE);
+    entity.put(Detail.ID, 1L);
+
+    assertEquals(0, original.setAs(entity).size());
+    assertTrue(Entities.valuesEqual(original, entity));
+
+    original.put(Detail.BOOLEAN, true);
+    entity.put(Detail.BOOLEAN, false);
+
+    assertEquals(1, original.setAs(entity).size());
+    assertTrue(Entities.valuesEqual(original, entity));
+
+    original.put(Detail.INT, 1);
+    entity.put(Detail.INT, 2);
+    entity.put(Detail.INT, 3);//modified
+
+    assertEquals(2, original.setAs(entity).size());//int + int_derived
+    assertTrue(Entities.valuesEqual(original, entity));
+    assertTrue(original.isModified());
+    assertTrue(entity.isModified());
+
+    original.put(Detail.DOUBLE, 1.2);
+    original.put(Detail.STRING, "str");
+    entity.put(Detail.DOUBLE, 1.3);
+    entity.put(Detail.STRING, "strng");
+
+    assertEquals(2, original.setAs(entity).size());
+    assertTrue(Entities.valuesEqual(original, entity));
+
+    assertEquals(0, original.setAs(entity).size());
+    assertEquals(0, entity.setAs(original).size());
+  }
+
+  @Test
   public void saveRevertValue() {
     final Entity entity = ENTITIES.entity(Master.TYPE);
     final String newName = "aname";

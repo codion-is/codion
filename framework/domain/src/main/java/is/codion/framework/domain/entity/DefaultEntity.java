@@ -252,20 +252,22 @@ final class DefaultEntity implements Entity, Serializable {
     if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
     }
-    final Set<Attribute<?>> affectedAttributes = new HashSet<>(values.keySet());
+    final Map<Attribute<?>, Object> previousValues = new HashMap<>(values);
+    definition.getProperties().forEach(property -> previousValues.put(property.getAttribute(), get(property.getAttribute())));
     clear();
     if (entity != null) {
-      entity.entrySet().forEach(attributeValue -> {
-        final Attribute<?> attribute = attributeValue.getKey();
-        values.put(attribute, attributeValue.getValue());
-        affectedAttributes.add(attribute);
-        affectedAttributes.addAll(definition.getDerivedAttributes(attribute));
-      });
+      entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
       if (entity.isModified()) {
         originalValues = new HashMap<>();
         entity.originalEntrySet().forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
       }
     }
+    final Set<Attribute<?>> affectedAttributes = new HashSet<>();
+    previousValues.forEach((attribute, value) -> {
+      if (!Objects.equals(value, entity == null ? null : entity.get(attribute))) {
+        affectedAttributes.add(attribute);
+      }
+    });
 
     return affectedAttributes;
   }
