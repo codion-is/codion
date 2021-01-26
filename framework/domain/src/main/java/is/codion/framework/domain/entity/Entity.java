@@ -163,7 +163,6 @@ public interface Entity extends Comparable<Entity> {
    * Returns true if the value associated with the given attribute has been modified since first set,
    * note that this does not apply to attributes based on derived values.
    * @param attribute the attribute
-   * @param <T> the attribute type
    * @return true if the value associated with the given attribute has been modified
    */
   boolean isModified(Attribute<?> attribute);
