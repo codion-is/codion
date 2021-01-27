@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 
 /**
  * A {@link Dialog} implementation for receiving property values as input from user
+ * @param <T> the input value type
  */
 public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.InputResult<T>> {
 
