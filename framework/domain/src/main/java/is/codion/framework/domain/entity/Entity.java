@@ -168,9 +168,9 @@ public interface Entity extends Comparable<Entity> {
   boolean isModified(Attribute<?> attribute);
 
   /**
-   * Returns true if one or more writable attributes have been modified, read only and non-updatable attributes
-   * are excluded unless they are transient.
-   * @return true if one or more attributes have been modified since the entity was instantiated
+   * Returns true if one or more writable attributes have been modified from their initial value,
+   * read only and non-updatable attributes are excluded unless they are transient.
+   * @return true if one or more attributes have been modified since the entity was initialized
    */
   boolean isModified();
 
@@ -192,7 +192,7 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * After a call to this method this Entity contains the same values and original values as the source entity.
-   * A null argument to this method clears the destination entity of all values and original values.
+   * A null argument to this method clears this entity instance of all values and original values.
    * @param entity the entity to copy or null for clearing all values in this instance
    * @return the affected attributes and their previous values, that is, attributes which values changed
    */
