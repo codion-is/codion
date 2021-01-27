@@ -92,6 +92,14 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
+  public void listeners() {
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueEditListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
+  }
+
+
+
+  @Test
   public void getForeignKeyLookupModel() {
     assertFalse(employeeEditModel.containsLookupModel(TestDomain.EMP_DEPARTMENT_FK));
     final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK);
@@ -442,6 +450,8 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setPersistValue(TestDomain.EMP_JOB, false);
     employeeEditModel.setEntity(null);
     assertNull(employeeEditModel.get(TestDomain.EMP_JOB));
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.setPersistValue(TestDomain.DEPARTMENT_ID, true));
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.isPersistValue(TestDomain.DEPARTMENT_ID));
   }
 
   @Test
