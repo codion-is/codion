@@ -227,6 +227,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isPersistValue(final Attribute<?> attribute) {
+    getEntityDefinition().getProperty(attribute);
     if (persistentValues.containsKey(attribute)) {
       return persistentValues.get(attribute);
     }
@@ -236,6 +237,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setPersistValue(final Attribute<?> attribute, final boolean persistValue) {
+    getEntityDefinition().getProperty(attribute);
     persistentValues.put(attribute, persistValue);
   }
 
@@ -621,6 +623,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <V> Value<V> value(final Attribute<V> attribute) {
+    getEntityDefinition().getProperty(attribute);
     return (Value<V>) editModelValues.computeIfAbsent(attribute,
             valueAttribute -> new EditModelValue<>(this, attribute));
   }
@@ -981,10 +984,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> Event<ValueChange<T>> getValueEditEvent(final Attribute<T> attribute) {
+    getEntityDefinition().getProperty(attribute);
     return (Event<ValueChange<T>>) valueEditEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private <T> Event<ValueChange<T>> getValueChangeEvent(final Attribute<T> attribute) {
+    getEntityDefinition().getProperty(attribute);
     return (Event<ValueChange<T>>) valueChangeEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
