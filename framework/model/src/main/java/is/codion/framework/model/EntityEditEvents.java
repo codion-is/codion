@@ -22,8 +22,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A central event hub for listening for entity inserts, updates and deletes.
- * Uses {@link java.lang.ref.WeakReference} so adding a listener does not prevent it from being garbage collected, so keep
- * a live reference to any listeners in order to keep them active.
+ * You must keep a live reference to any listeners added in order to prevent
+ * them from being garbage collected, since listeners are added via a {@link java.lang.ref.WeakReference}.
  * {@link EntityEditModel} uses this to post its events.
  * @see EntityEditModel#POST_EDIT_EVENTS
  */
@@ -34,7 +34,9 @@ public final class EntityEditEvents {
   private EntityEditEvents() {}
 
   /**
-   * Adds a insert listener
+   * Adds a insert listener, notified each time entities of the given type are inserted.
+   * Note that you have to keep a live reference to the listener instance,
+   * otherwise it will be garbage collected, due to a weak reference.
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
@@ -43,7 +45,9 @@ public final class EntityEditEvents {
   }
 
   /**
-   * Adds a update listener
+   * Adds a update listener, notified each time entities of the given type are updated.
+   * Note that you have to keep a live reference to the listener instance,
+   * otherwise it will be garbage collected, due to a weak reference.
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
@@ -52,7 +56,9 @@ public final class EntityEditEvents {
   }
 
   /**
-   * Adds a delete listener
+   * Adds a delete listener, notified each time entities of the given type are deleted.
+   * Note that you have to keep a live reference to the listener instance,
+   * otherwise it will be garbage collected, due to a weak reference.
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
