@@ -920,7 +920,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         showWaitCursor(this);
         setupControls();
         initializeTable();
-        layoutPanel(tablePanel, initializeSouthPanel());
+        layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
         bindEvents();
         updateStatusMessage();
       }
@@ -1146,17 +1146,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * This method simply adds the given {@code southPanel} to the {@code BorderLayout.SOUTH} location and the
-   * {@code tablePanel} at location BorderLayout.CENTER.
+   * This method simply adds {@code tablePanel} at location BorderLayout.CENTER and,
+   * if non-null, the given {@code southPanel} to the {@code BorderLayout.SOUTH} location.
    * By overriding this method you can override the default layout.
    * @param tablePanel the panel containing the table, condition and summary panel
-   * @param southPanel the south toolbar panel
+   * @param southPanel the south toolbar panel, null if not required
    * @see #initializeSouthPanel()
    */
   protected void layoutPanel(final JPanel tablePanel, final JPanel southPanel) {
+    requireNonNull(tablePanel, "tablePanel");
     setLayout(new BorderLayout());
     add(tablePanel, BorderLayout.CENTER);
-    if (includeSouthPanel && southPanel != null) {
+    if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
   }
