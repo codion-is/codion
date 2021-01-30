@@ -17,7 +17,6 @@ dependencies {
     testImplementation project(':codion-framework-db-local')
 
     runtimeOnly "org.json:json:${jsonVersion}"
-    runtimeOnly "com.toedter:jcalendar:${jcalendarVersion}"
 
     testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"

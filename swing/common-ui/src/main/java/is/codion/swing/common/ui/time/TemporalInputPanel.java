@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.time;
 
 import is.codion.common.DateTimeParser;
-import is.codion.common.Util;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
 
@@ -24,8 +23,6 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the Temporal type supplied by this panel
  */
 public class TemporalInputPanel<T extends Temporal> extends JPanel {
-
-  protected static final String JCALENDAR_CLASS_NAME = "com.toedter.calendar.JCalendar";
 
   /**
    * Specifies whether a {@link TemporalInputPanel} should contain a button for opening a Calendar for input entry.
@@ -108,13 +105,6 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public void setEditable(final boolean editable) {
     inputField.setEditable(editable);
-  }
-
-  /**
-   * @return true if the JCalendar library is available
-   */
-  public static boolean isJCalendarAvailable() {
-    return Util.onClasspath(JCALENDAR_CLASS_NAME);
   }
 
   /**
