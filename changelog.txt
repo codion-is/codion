@@ -6675,3 +6675,4 @@
   DefaultEntityEditModel, adding a value listener for attributes which are not part of the underlying entity now results in IllegalArgumentException
   DefaultEntityEditModel, configuring value persistence or creating a model value for attributes which are not part of the underlying entity now results in IllegalArgumentException
   EntityTableConditionPanel.selectConditionPanel() bug fixed, hidden columns now excluded
+  EntityTablePanel.selectConditionPanel() bug fixed, did not respect includeConditionPanel directive

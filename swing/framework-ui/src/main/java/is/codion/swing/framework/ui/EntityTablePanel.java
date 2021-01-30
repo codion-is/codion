@@ -458,7 +458,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see EntityTableConditionPanel#selectConditionPanel()
    */
   public final void selectConditionPanel() {
-    if (conditionPanel != null) {
+    if (includeConditionPanel && conditionPanel != null) {
       if (!isConditionPanelVisible()) {
         setConditionPanelVisible(true);
       }
