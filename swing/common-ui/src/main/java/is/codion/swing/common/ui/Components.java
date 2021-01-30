@@ -13,9 +13,11 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
@@ -45,12 +47,15 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.stream;
@@ -65,7 +70,17 @@ public final class Components {
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+  private static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
   private static JScrollBar verticalScrollBar;
+
+  static {
+    final LookAndFeelProvider systemProvider = lookAndFeelProvider(getSystemLookAndFeelClassName());
+    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.getName(), systemProvider);
+    final LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
+    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.getName())) {
+      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.getName(), crossPlatformProvider);
+    }
+  }
 
   private Components() {}
 
@@ -366,12 +381,52 @@ public final class Components {
   }
 
   /**
+   * Adds the given look and feel provider.
+   * Note that this overrides any existing look and feel provider with the same name.
+   * @param lookAndFeelProvider the look and feel provider to add
+   */
+  public static void addLookAndFeelProvider(final LookAndFeelProvider lookAndFeelProvider) {
+    LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).getName(), lookAndFeelProvider);
+  }
+
+  /**
+   * Returns a look and feel provider with the given name, if available
+   * @param name the look and feel name
+   * @return a look and feel provider, null if not found
+   */
+  public static Optional<LookAndFeelProvider> getLookAndFeelProvider(final String name) {
+    return name == null ? Optional.empty() : Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(name));
+  }
+
+  /**
+   * Allows the user the select between all available Look and Feels.
+   * @param dialogOwner the dialog owner
+   * @param dialogTitle the dialog title
+   * @return the selected look and feel provider, null if none was selected
+   */
+  public static LookAndFeelProvider selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
+    final JComboBox<LookAndFeelProvider> lookAndFeelComboBox = new JComboBox<>();
+    final List<LookAndFeelProvider> providers = LOOK_AND_FEEL_PROVIDERS.values().stream()
+            .sorted(Comparator.comparing(LookAndFeelProvider::getName)).collect(Collectors.toList());
+    providers.forEach(lookAndFeelComboBox::addItem);
+    providers.stream().filter(provider ->
+            provider.getClassName().equals(UIManager.getLookAndFeel().getClass().getName()))
+            .findFirst().ifPresent(lookAndFeelComboBox::setSelectedItem);
+
+    final int option = JOptionPane.showOptionDialog(dialogOwner, lookAndFeelComboBox,
+            dialogTitle, JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+    return option == JOptionPane.OK_OPTION ? (LookAndFeelProvider) lookAndFeelComboBox.getSelectedItem() : null;
+  }
+
+  /**
    * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
    * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
    * tabbed panes look bad
    * @return the default look and feel for the platform we're running on
    */
-  public static String getDefaultLookAndFeelClassName() {
+  public static String getSystemLookAndFeelClassName() {
     String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
     if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
       systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
@@ -537,6 +592,124 @@ public final class Components {
       else {
         WAIT_CURSOR_REQUESTS.put(root, requests);
       }
+    }
+  }
+
+  /**
+   * Provides a LookAndFeel implementation.
+   */
+  public interface LookAndFeelProvider {
+
+    /**
+     * The name of the underlying LookAndFeel class
+     * @return the look and feel classname
+     */
+    String getClassName();
+
+    /**
+     * @return a unique name representing this look and feel, the classname by default
+     */
+    default String getName() {
+      return getClassName();
+    }
+
+    /**
+     * Configures and applies this LookAndFeel.
+     */
+    default void configure() {
+      try {
+        UIManager.setLookAndFeel(getClassName());
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  /**
+   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to configure.
+   * @param classname the look and feel classname
+   * @return a look and feel provider
+   */
+  public static LookAndFeelProvider lookAndFeelProvider(final String classname) {
+    return lookAndFeelProvider(classname, () -> {
+      try {
+        UIManager.setLookAndFeel(classname);
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
+  /**
+   * Instantiates a new LookAndFeelProvider.
+   * @param classname the look and feel classname
+   * @param configurer applies and configures this look and feel
+   * @return a look and feel provider
+   */
+  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final Runnable configurer) {
+    return lookAndFeelProvider(classname, classname, configurer);
+  }
+
+  /**
+   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to configure.
+   * @param classname the look and feel classname
+   * @param name a unique name
+   * @return a look and feel provider
+   */
+  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final String name) {
+    return lookAndFeelProvider(classname, name, () -> {
+      try {
+        UIManager.setLookAndFeel(classname);
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
+  /**
+   * Instantiates a new LookAndFeelProvider.
+   * @param classname the look and feel classname
+   * @param name a unique name
+   * @param configurer applies and configures this look and feel
+   * @return a look and feel provider
+   */
+  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final String name, final Runnable configurer) {
+    return new DefaultLookAndFeelProvider(classname, name, configurer);
+  }
+
+  private static final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
+
+    private final String classname;
+    private final String name;
+    private final Runnable configurer;
+
+    private DefaultLookAndFeelProvider(final String classname, final String name, final Runnable configurer) {
+      this.classname = requireNonNull(classname);
+      this.name = requireNonNull(name);
+      this.configurer = requireNonNull(configurer);
+    }
+
+    @Override
+    public String getClassName() {
+      return classname;
+    }
+
+    @Override
+    public String getName() {
+      return name;
+    }
+
+    @Override
+    public void configure() {
+      this.configurer.run();
+    }
+
+    @Override
+    public String toString() {
+      return getName();
     }
   }
 
