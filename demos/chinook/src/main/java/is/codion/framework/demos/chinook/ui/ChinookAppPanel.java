@@ -30,6 +30,11 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -46,6 +51,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.Components.addLookAndFeelProvider;
+import static is.codion.swing.common.ui.Components.lookAndFeelProvider;
 import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -232,8 +239,23 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   public static void main(final String[] args) throws CancelException {
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
+    addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), () -> {
+      FlatLightLaf.install();
+      UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+    }));
+    addLookAndFeelProvider(lookAndFeelProvider(FlatIntelliJLaf.class.getName(), () -> {
+      FlatIntelliJLaf.install();
+      UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+    }));
+    addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), () -> {
+      FlatDarkLaf.install();
+      UIManager.put("Table.alternateRowColor", null);
+    }));
+    addLookAndFeelProvider(lookAndFeelProvider(FlatDarculaLaf.class.getName(), () -> {
+      FlatDarculaLaf.install();
+      UIManager.put("Table.alternateRowColor", null);
+    }));
     UiManagerDefaults.initialize();
-    UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);

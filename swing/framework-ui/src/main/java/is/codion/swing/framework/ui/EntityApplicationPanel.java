@@ -27,6 +27,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Components.LookAndFeelProvider;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.LoginPanel;
@@ -70,7 +71,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -94,6 +94,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
@@ -114,6 +115,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
   private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
+  private static final String LOOK_AND_FEEL_SELECTED_MESSAGE = "look_and_feel_selected_message";
   private static final String HELP = "help";
   private static final String ABOUT = "about";
 
@@ -381,20 +383,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Allows the user the select between the system and cross platform Look and Feel, activated on next appliation start
+   * Allows the user the select between the available Look and Feels, saving the selection as a user preference,
+   * which will be activated on next appliation start.
+   * @see Components#addLookAndFeelProvider(LookAndFeelProvider)
+   * @see Components#getLookAndFeelProvider(String)
+   * @see Components#selectLookAndFeel(JComponent, String)
    */
   public final void selectLookAndFeel() {
-    final JComboBox<String> lookAndFeelComboBox = new JComboBox<>();
-    lookAndFeelComboBox.addItem(UIManager.getSystemLookAndFeelClassName());
-    lookAndFeelComboBox.addItem(UIManager.getCrossPlatformLookAndFeelClassName());
-    lookAndFeelComboBox.setSelectedItem(UIManager.getLookAndFeel().getClass().getName());
-
-    final int option = JOptionPane.showOptionDialog(this, lookAndFeelComboBox,
-            resourceBundle.getString(SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (option == JOptionPane.OK_OPTION) {
-      UserPreferences.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
-      JOptionPane.showMessageDialog(this, resourceBundle.getString("look_and_feel_selected_message"));
+    final LookAndFeelProvider provider = Components.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL));
+    if (provider != null) {
+      UserPreferences.putUserPreference(applicationLookAndFeelProperty, provider.getName());
+      JOptionPane.showMessageDialog(this, resourceBundle.getString(LOOK_AND_FEEL_SELECTED_MESSAGE));
     }
   }
 
@@ -1134,11 +1133,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the look and feel class name to use
-   * @see Components#getDefaultLookAndFeelClassName()
+   * Returns the name of the default look and feel to use, this default implementation fetches
+   * it from user preferences, if no preference is available the default system look and feel is used.
+   * @return the look and feel name to use
+   * @see Components#getSystemLookAndFeelClassName()
    */
-  protected String getDefaultLookAndFeelClassName() {
-    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, Components.getDefaultLookAndFeelClassName());
+  protected String getDefaultLookAndFeelName() {
+    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, Components.getSystemLookAndFeelClassName());
   }
 
   /**
@@ -1386,12 +1387,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                           final User silentLoginUser) throws Exception {
     LOG.debug("{} application starting", frameCaption);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    final String defaultLookAndFeelClassName = getDefaultLookAndFeelClassName();
-    if (!UIManager.getLookAndFeel().getClass().getName().equals(defaultLookAndFeelClassName)) {
-      UIManager.setLookAndFeel(defaultLookAndFeelClassName);
-    }
+    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
     final Integer fontSize = getDefaultFontSize();
-    if (!fontSize.equals(100)) {
+    if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
     final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logoTransparent();

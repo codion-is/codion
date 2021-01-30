@@ -235,7 +235,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Clients.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(() -> {
       try {
-        UIManager.setLookAndFeel(Components.getDefaultLookAndFeelClassName());
+        UIManager.setLookAndFeel(Components.getSystemLookAndFeelClassName());
         new EntityServerMonitorPanel().showFrame();
       }
       catch (final Exception e) {
