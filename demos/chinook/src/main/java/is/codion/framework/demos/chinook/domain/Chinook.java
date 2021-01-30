@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.domain;
 
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
-import static is.codion.common.db.operation.ProcedureType.procedureType;
 import static is.codion.framework.domain.DomainType.domainType;
 
 public interface Chinook {
@@ -155,7 +153,7 @@ public interface Chinook {
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
 
-    ProcedureType<EntityConnection, Object> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
+    FunctionType<EntityConnection, Object, List<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
 
     default Invoice updateTotal() {
       put(TOTAL, get(TOTAL_SUBQUERY));

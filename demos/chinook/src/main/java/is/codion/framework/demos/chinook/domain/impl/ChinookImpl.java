@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -269,7 +268,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.INVOICEDATE))
             .stringFactory(stringFactory(Invoice.ID));
 
-    defineProcedure(Invoice.UPDATE_TOTALS, new UpdateTotalsProcedure());
+    defineFunction(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
   }
 
   void invoiceLine() {
@@ -332,16 +331,16 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .text(" - ").value(PlaylistTrack.TRACK_FK));
   }
 
-  private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Object> {
+  private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Object, List<Entity>> {
 
     private static final SelectCondition ALL_INVOICES =
             condition(Invoice.TYPE).select()
                     .forUpdate().fetchDepth(0);
 
     @Override
-    public void execute(final EntityConnection entityConnection,
-                        final List<Object> arguments) throws DatabaseException {
-      entityConnection.update(entityConnection.getEntities()
+    public List<Entity> execute(final EntityConnection entityConnection,
+                                final List<Object> arguments) throws DatabaseException {
+      return entityConnection.update(entityConnection.getEntities()
               .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES)).stream()
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)

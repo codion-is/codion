@@ -6677,3 +6677,4 @@
   EntityTableConditionPanel.selectConditionPanel() bug fixed, hidden columns now excluded
   EntityTablePanel.selectConditionPanel() bug fixed, did not respect includeConditionPanel directive
   EntityTablePanel bug fixed, no longer calls initializeSouthPanel() if includeSouthPanel is false
+  Chinook demo improvements, update totals now a function instead of procedure, ChinookAppPanel.updateInvoiceTotals() now uses ProgressWorker directly

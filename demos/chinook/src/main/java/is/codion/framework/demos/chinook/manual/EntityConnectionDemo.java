@@ -229,18 +229,14 @@ public final class EntityConnectionDemo {
     // end::deleteKey[]
   }
 
-  static void procedure(EntityConnection connection) throws DatabaseException {
-    // tag::procedure[]
-    connection.executeProcedure(Invoice.UPDATE_TOTALS);
-    // end::procedure[]
-  }
-
   static void function(EntityConnection connection) throws DatabaseException {
     // tag::function[]
     List<Long> trackIds = asList(123L, 1234L);
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
     List<Entity> modifiedTracks = connection.executeFunction(Track.RAISE_PRICE, asList(trackIds, priceIncrease));
+
+    List<Entity> modifiedInvoices = connection.executeFunction(Invoice.UPDATE_TOTALS);
     // end::function[]
   }
 
@@ -296,7 +292,6 @@ public final class EntityConnectionDemo {
     updateConditionDemo(connection);
     deleteCondition(connection);
     deleteKey(connection);
-    procedure(connection);
     function(connection);
     report(connection);
     transaction(connection);

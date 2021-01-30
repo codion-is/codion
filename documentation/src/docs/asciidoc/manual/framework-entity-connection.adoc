@@ -198,13 +198,6 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeProcedure
 
-** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-T\...-[executeProcedure(ProcedureType procedureType, T... arguments)]
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
-----
-
 === executeFunction
 
 ** {url-entity-connection}#executeFunction-is.codion.common.db.operation.FunctionType-T\...-[executeFunction(FunctionType functionType, T... arguments)]
@@ -213,6 +206,10 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
 ----
+
+** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-T\...-[executeProcedure(ProcedureType procedureType, T... arguments)]
+
+Executing procedures is the same as executing functions, except without a return value.
 
 == Reporting
 

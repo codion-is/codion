@@ -5,8 +5,11 @@ package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+
+import java.util.List;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 
@@ -41,7 +44,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     customerModel.refresh();
   }
 
-  public void updateInvoiceTotals() throws DatabaseException {
-    getConnectionProvider().getConnection().executeProcedure(Invoice.UPDATE_TOTALS);
+  public List<Entity> updateInvoiceTotals() throws DatabaseException {
+    return getConnectionProvider().getConnection().executeFunction(Invoice.UPDATE_TOTALS);
   }
 }
