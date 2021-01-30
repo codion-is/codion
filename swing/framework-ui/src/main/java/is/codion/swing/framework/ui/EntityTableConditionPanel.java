@@ -47,6 +47,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName());
 
   private final TableColumnComponentPanel<ColumnConditionPanel<Entity, ?, ?>> conditionPanel;
+  private final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel;
   private final ToggleControl conditionRequiredControl;
 
   /**
@@ -58,11 +59,11 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param queryConditionRequiredState the state indicating whether a condition is required
    */
   public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                   final SwingFilteredTableColumnModel<?, ?> columnModel,
-                                   final EventListener onSearchListener,
-                                   final State queryConditionRequiredState) {
+                                   final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel,
+                                   final EventListener onSearchListener, final State queryConditionRequiredState) {
     super(tableConditionModel, columnModel.getAllColumns());
     this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createPropertyConditionPanels(tableConditionModel, columnModel));
+    this.columnModel = columnModel;
     this.conditionRequiredControl = Controls.toggleControl(queryConditionRequiredState, MESSAGES.getString("require_query_condition"));
     this.conditionRequiredControl.setDescription(MESSAGES.getString("require_query_condition_description"));
     setLayout(new BorderLayout());
@@ -87,7 +88,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   public void selectConditionPanel() {
     final List<Property<?>> conditionProperties = new ArrayList<>();
     conditionPanel.getColumnComponents().forEach((column, panel) -> {
-      if (panel instanceof ColumnConditionPanel) {
+      if (panel instanceof ColumnConditionPanel && columnModel.isColumnVisible((Attribute<?>) column.getIdentifier())) {
         conditionProperties.add(getTableConditionModel().getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier()));
       }
     });
