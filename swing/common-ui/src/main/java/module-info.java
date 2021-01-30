@@ -1,5 +1,6 @@
 module is.codion.swing.common.ui {
   requires java.rmi;
+  requires com.github.lgooddatepicker;
   requires transitive is.codion.swing.common.model;
 
   exports is.codion.swing.common.ui;
