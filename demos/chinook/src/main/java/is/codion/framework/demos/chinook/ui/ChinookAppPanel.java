@@ -11,11 +11,14 @@ import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityModelBuilder;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -36,13 +39,15 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
-import static is.codion.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
+import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 
@@ -181,8 +186,25 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void updateInvoiceTotals() {
-    runWithProgressBar(this, getModel()::updateInvoiceTotals, bundle.getString(UPDATING_TOTALS),
-            bundle.getString(TOTALS_UPDATED), bundle.getString(UPDATING_TOTALS_FAILED));
+    final Window dialogOwner = Windows.getParentWindow(this);
+    final ProgressWorker<List<Entity>> worker = new ProgressWorker<List<Entity>>(dialogOwner, bundle.getString(UPDATING_TOTALS)) {
+      @Override
+      protected List<Entity> doInBackground() throws Exception {
+        return getModel().updateInvoiceTotals();
+      }
+
+      @Override
+      protected void onException(final Throwable exception) {
+        showExceptionDialog(dialogOwner, bundle.getString(UPDATING_TOTALS_FAILED), exception);
+      }
+    };
+    worker.addOnSuccessListener(updatedInvoices -> {
+      getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
+              .getTableModel().replaceEntities(updatedInvoices);
+      showMessageDialog(dialogOwner, bundle.getString(TOTALS_UPDATED));
+    });
+
+    worker.execute();
   }
 
   private void selectLanguage() {
@@ -197,11 +219,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     buttonPanel.add(isButton);
     enButton.setSelected(language.equals(LANGUAGE_EN));
     isButton.setSelected(language.equals(LANGUAGE_IS));
-    JOptionPane.showMessageDialog(this, buttonPanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
+    showMessageDialog(this, buttonPanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
     final String newLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
     if (!language.equals(newLanguage)) {
       UserPreferences.putUserPreference(LANGUAGE_PREFERENCES_KEY, newLanguage);
-      JOptionPane.showMessageDialog(this,
+      showMessageDialog(this,
               "Language has been changed, restart the application to apply the changes.\n\n" +
                       "Tungumáli hefur verið breytt, endurræstu kerfið til að virkja breytingar");
     }

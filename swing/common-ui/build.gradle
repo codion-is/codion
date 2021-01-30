@@ -5,5 +5,5 @@ dependencies {
 
     api project(':codion-swing-common-model')
 
-    runtimeOnly "com.toedter:jcalendar:${jcalendarVersion}"
+    api "com.github.lgooddatepicker:LGoodDatePicker:${lGoodDatePickerVersion}"
 }

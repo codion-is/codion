@@ -38,13 +38,13 @@ See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FA
 
 Codion uses a very limited set of third-party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
-* *com.toedter:jcalendar* for date input
+* *com.github.lgooddatepicker:LGoodDatePicker* for date input
 * *org.json:json* for persisting client preferences
 * *org.slf4j:slf4j-api* for your logging framework of choice
 * *JDBC driver*
 * *Logging framework*
 
-A simple CRUD client pulls in ~15 Codion modules totalling ~1MB, so the combined weight of the Pet Clinic demo client for example is ~1.3MB (excluding the JDBC driver and logging framework).
+A simple CRUD client pulls in ~15 Codion modules totalling ~1.2MB, so the combined weight of the Pet Clinic demo client for example is ~2MB (excluding the JDBC driver and logging framework).
 
 == Rich Swing Client
 
