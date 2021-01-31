@@ -63,7 +63,6 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     Locale.setDefault(new Locale("en", "EN"));
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);

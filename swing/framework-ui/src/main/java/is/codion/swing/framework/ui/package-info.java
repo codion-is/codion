@@ -14,7 +14,6 @@
  * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_TOGGLE_EDIT_PANEL_CONTROL}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_DETAIL_PANEL_CONTROLS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#SPLIT_PANE_DIVIDER_SIZE}<br>
- * {@link is.codion.swing.framework.ui.EntityPanel#COMPACT_ENTITY_PANEL_LAYOUT}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#TOOLBAR_BUTTONS}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#ALLOW_COLUMN_REORDERING}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_CONDITION_PANEL_VISIBLE}<br>

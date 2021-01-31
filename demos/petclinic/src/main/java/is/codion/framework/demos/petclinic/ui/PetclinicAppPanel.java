@@ -92,7 +92,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityEditPanel.USE_SAVE_CONTROL.set(false);
-    EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
