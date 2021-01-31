@@ -6710,3 +6710,6 @@
   Chinook demo improvements, update totals now a function instead of procedure, ChinookAppPanel.updateInvoiceTotals() now uses ProgressWorker directly
   JCalendar replaced with LGoodDatePicker
   Components.addLookAndFeelProvider() added along with LookAndFeelProvider added, with Components.lookAndFeelProvider() factory methods, FlatLaf added to Chinook demo
+  ForeignKeyConditionPanel now refreshes the combobox on first showing instead of creation
+  EntityPanel, initial layout refactored, getEditControlTablePanel() added for easier ui overriding
+  EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT configuration parameter removed

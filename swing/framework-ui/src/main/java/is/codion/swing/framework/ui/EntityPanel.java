@@ -145,14 +145,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           "is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
-   * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
-
-  /**
    * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -206,6 +198,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final JPanel editControlPanel = new JPanel(Layouts.borderLayout());
 
   /**
+   * The base panel containing the edit, control and table panels
+   */
+  private final JPanel editControlTablePanel = new JPanel(Layouts.borderLayout());
+
+  /**
    * The caption to use when presenting this entity panel
    */
   private String caption;
@@ -228,11 +225,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private JTabbedPane detailPanelTabbedPane;
 
   /**
-   * A base panel used in case this EntityPanel is in a compact configuration
-   */
-  private JPanel compactBase;
-
-  /**
    * The dialog used when detail panels are undocked
    */
   private JDialog detailPanelDialog;
@@ -241,11 +233,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * The dialog used when the edit panel is undocked
    */
   private JDialog editPanelDialog;
-
-  /**
-   * true if this panel should use a compact layout
-   */
-  private boolean compactDetailLayout = COMPACT_ENTITY_PANEL_LAYOUT.get();
 
   /**
    * indicates where the control panel should be placed in a BorderLayout
@@ -408,23 +395,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         throw new IllegalArgumentException("Control panel constraint must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
     }
     this.controlPanelConstraints = controlPanelConstraints;
-  }
-
-  /**
-   * @return true if this entity panel is using a compact detail layout
-   */
-  public final boolean isCompactDetailLayout() {
-    return compactDetailLayout;
-  }
-
-  /**
-   * @param compactDetailLayout true if this panel and its detail panels should be laid out in a compact state
-   */
-  public final void setCompactDetailLayout(final boolean compactDetailLayout) {
-    if (detailEntityPanels.isEmpty()) {
-      throw new IllegalArgumentException("This panel contains no detail panels, compact detail layout not available");
-    }
-    this.compactDetailLayout = compactDetailLayout;
   }
 
   /**
@@ -993,17 +963,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    *<pre>
    * The default layout is as follows:
    * __________________________________
-   * |      edit panel        |control|
-   * |   (EntityEditPanel)    | panel | } edit control panel
-   * |________________________|_______|
-   * |                  |             |
-   * |   table panel    |   detail    |
-   * |(EntityTablePanel)|   panel     |
-   * |                  |             |
-   * |__________________|_____________|
-   *
-   * or in case of compact layout:
-   * __________________________________
    * |  edit    |control|             |
    * |  panel   | panel |             |
    * |__________|_______|   detail    |
@@ -1013,6 +972,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * |                  |             |
    * |__________________|_____________|
    * </pre>
+   * @see #getEditControlPanel()
+   * @see #getEditControlTablePanel()
    */
   protected void initializeUI() {
     if (editPanel != null) {
@@ -1020,18 +981,20 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     if (tablePanel != null) {
       initializeTablePanel();
+      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     }
+    setLayout(Layouts.borderLayout());
     if (!includeDetailPanelTabPane || detailEntityPanels.isEmpty()) {
       horizontalSplitPane = null;
       detailPanelTabbedPane = null;
+      add(editControlTablePanel, BorderLayout.CENTER);
     }
     else {
       horizontalSplitPane = initializeHorizontalSplitPane();
       detailPanelTabbedPane = initializeDetailTabPane();
-    }
-    setLayout(Layouts.borderLayout());
-    if (detailPanelTabbedPane != null || tablePanel != null) {
-      initializeDetailAndTablePanels();
+      horizontalSplitPane.setLeftComponent(editControlTablePanel);
+      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
+      add(horizontalSplitPane, BorderLayout.CENTER);
     }
     setDetailPanelState(detailPanelState);
     if (containsEditPanel()) {
@@ -1084,6 +1047,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     return editPanel.createVerticalControlPanel();
+  }
+
+  /**
+   * Returns the base panel containing the edit and table panels (north, center).
+   * @return the edit and table base panel
+   */
+  protected final JPanel getEditControlTablePanel() {
+    return editControlTablePanel;
   }
 
   /**
@@ -1225,24 +1196,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     tablePanel.setMinimumSize(new Dimension(0, 0));
   }
 
-  private void initializeDetailAndTablePanels() {
-    if (detailPanelTabbedPane == null) { //no left right split pane
-      add(tablePanel, BorderLayout.CENTER);
-    }
-    else {
-      if (compactDetailLayout) {
-        compactBase = new JPanel(Layouts.borderLayout());
-        compactBase.add(tablePanel, BorderLayout.CENTER);
-        horizontalSplitPane.setLeftComponent(compactBase);
-      }
-      else {
-        horizontalSplitPane.setLeftComponent(tablePanel);
-      }
-      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
-      add(horizontalSplitPane, BorderLayout.CENTER);
-    }
-  }
-
   /**
    * Initializes the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
@@ -1350,20 +1303,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (editPanelState == EMBEDDED) {
-      if (compactBase != null) {
-        compactBase.add(editControlPanel, BorderLayout.NORTH);
-      }
-      else {
-        add(editControlPanel, BorderLayout.NORTH);
-      }
+      editControlTablePanel.add(editControlPanel, BorderLayout.NORTH);
     }
     else if (editPanelState == HIDDEN) {
-      if (compactBase != null && !detailEntityPanels.isEmpty()) {
-        compactBase.remove(editControlPanel);
-      }
-      else {
-        remove(editControlPanel);
-      }
+      editControlTablePanel.remove(editControlPanel);
     }
     else {
       showEditDialog();
