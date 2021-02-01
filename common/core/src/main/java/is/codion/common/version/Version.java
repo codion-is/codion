@@ -74,7 +74,7 @@ public interface Version extends Comparable<Version> {
    * @return a string containing the framework version number, without any version metadata (fx. build no.)
    */
   static String getVersionString() {
-    final String versionString = getVersionAndBuildNumberString();
+    final String versionString = getVersionAndMetadataString();
     if (versionString.toLowerCase().contains("-")) {
       return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
     }
@@ -85,7 +85,7 @@ public interface Version extends Comparable<Version> {
   /**
    * @return a string containing the framework version and version metadata
    */
-  static String getVersionAndBuildNumberString() {
+  static String getVersionAndMetadataString() {
     return DefaultVersion.VERSION.toString();
   }
 
