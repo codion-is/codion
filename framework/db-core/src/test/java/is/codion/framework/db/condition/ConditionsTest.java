@@ -85,7 +85,7 @@ public final class ConditionsTest {
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     assertEquals("(string = ? and int = ?)", combination1.getWhereClause(detailDefinition));
     final Condition.Combination combination2 = Conditions.condition(TestDomain.DETAIL_DOUBLE).equalTo(666.666)
-            .and(Conditions.condition(TestDomain.DETAIL_STRING).equalTo("valu%e2").setCaseSensitive(false));
+            .and(Conditions.condition(TestDomain.DETAIL_STRING).equalTo("valu%e2").caseSensitive(false));
     final Condition.Combination combination3 = combination1.or(combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
             combination3.getWhereClause(detailDefinition));

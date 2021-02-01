@@ -170,12 +170,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public void addOnConnectListener(final EventDataListener<EntityConnection> listener) {
+  public final void addOnConnectListener(final EventDataListener<EntityConnection> listener) {
     onConnectEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeOnConnectListener(final EventDataListener<EntityConnection> listener) {
+  public final void removeOnConnectListener(final EventDataListener<EntityConnection> listener) {
     onConnectEvent.removeDataListener(listener);
   }
 

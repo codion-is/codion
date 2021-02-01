@@ -29,7 +29,7 @@ public interface AttributeCondition<T> extends Condition {
    * @return this condition
    * @throws IllegalArgumentException in case the underlying attribute is not String based
    */
-  AttributeCondition<String> setCaseSensitive(boolean caseSensitive);
+  AttributeCondition<String> caseSensitive(boolean caseSensitive);
 
   /**
    * A builder for {@link AttributeCondition}.

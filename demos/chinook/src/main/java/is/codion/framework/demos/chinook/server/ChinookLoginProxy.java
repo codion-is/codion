@@ -89,7 +89,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private void authenticateUser(final User user) throws LoginException {
     try (final EntityConnection connection = getConnectionFromPool()) {
       final int rows = connection.rowCount(condition(Authentication.User.USERNAME)
-              .equalTo(user.getUsername()).setCaseSensitive(false)
+              .equalTo(user.getUsername()).caseSensitive(false)
                       .and(condition(Authentication.User.PASSWORD_HASH)
                               .equalTo(valueOf(user.getPassword()).hashCode())));
       if (rows == 0) {

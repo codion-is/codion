@@ -56,7 +56,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   @Override
-  public AttributeCondition<String> setCaseSensitive(final boolean caseSensitive) {
+  public AttributeCondition<String> caseSensitive(final boolean caseSensitive) {
     if (!getAttribute().isString()) {
       throw new IllegalStateException("Attribute " + getAttribute() + " is not a String attribute");
     }
