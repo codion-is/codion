@@ -35,7 +35,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   }
 
   @Override
-  public AttributeCondition<String> setCaseSensitive(final boolean caseSensitive) {
+  public AttributeCondition<String> caseSensitive(final boolean caseSensitive) {
     throw new UnsupportedOperationException();
   }
 

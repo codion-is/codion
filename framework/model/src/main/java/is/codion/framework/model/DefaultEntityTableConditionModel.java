@@ -356,13 +356,13 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       case EQUAL:
         final AttributeCondition<T> equalCondition = equalToValues.isEmpty() ? builder.isNull() : builder.equalTo(equalToValues);
         if (equalCondition.getAttribute().isString()) {
-          equalCondition.setCaseSensitive(conditionModel.isCaseSensitive());
+          equalCondition.caseSensitive(conditionModel.isCaseSensitive());
         }
         return equalCondition;
       case NOT_EQUAL:
         final AttributeCondition<T> notEqualCondition = equalToValues.isEmpty() ? builder.isNotNull() : builder.notEqualTo(equalToValues);
         if (notEqualCondition.getAttribute().isString()) {
-          notEqualCondition.setCaseSensitive(conditionModel.isCaseSensitive());
+          notEqualCondition.caseSensitive(conditionModel.isCaseSensitive());
         }
         return notEqualCondition;
       case LESS_THAN:
