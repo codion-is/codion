@@ -134,6 +134,11 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     return new DefaultUpdateCondition(this);
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + ": " + getEntityType();
+  }
+
   private static String toString(final Conjunction conjunction) {
     switch (conjunction) {
       case AND: return " and ";
