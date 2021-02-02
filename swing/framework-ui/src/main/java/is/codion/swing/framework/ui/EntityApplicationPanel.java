@@ -875,7 +875,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    final String versionString = Version.getVersionAndBuildNumberString();
+    final String versionString = Version.getVersionAndMetadataString();
     panel.add(new JLabel(icons().logoTransparent()), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsage() + ")");
     versionMemoryField.setEditable(false);
