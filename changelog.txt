@@ -6685,3 +6685,4 @@
   EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT configuration parameter removed
   AbstractEntityConnectionProvider, couple of methods finalized
   AttributeCondition.setCaseSensitive() renamed caseSensitive()
+  DefaultConditionCombination.toString() added
