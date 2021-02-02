@@ -409,12 +409,21 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final M detailModel : linkedDetailModels) {
-      if (detailModelForeignKeys.containsKey(detailModel)) {
-        detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
-      }
-      else {
-        detailModel.initialize(getEntityType(), activeEntities);
-      }
+      initializeDetailModel(activeEntities, detailModel);
+    }
+  }
+
+  /**
+   * Initializes the given detail model according to the given active master entities.
+   * @param activeEntities the currently active master entities
+   * @param detailModel the detail model
+   */
+  protected void initializeDetailModel(final List<Entity> activeEntities, final M detailModel) {
+    if (detailModelForeignKeys.containsKey(detailModel)) {
+      detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
+    }
+    else {
+      detailModel.initialize(getEntityType(), activeEntities);
     }
   }
 
