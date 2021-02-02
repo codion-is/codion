@@ -62,7 +62,7 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
   }
 
   @Override
-  protected void doSet(final Set<V> values) {
+  protected void setValue(final Set<V> values) {
     this.values.clear();
     this.values.addAll(values);
   }
@@ -85,7 +85,7 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
     }
 
     @Override
-    protected void doSet(final V value) {
+    protected void setValue(final V value) {
       valueSet.set(value == null ? emptySet() : singleton(value));
     }
   }

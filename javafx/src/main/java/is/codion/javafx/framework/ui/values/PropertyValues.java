@@ -370,7 +370,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void doSet(final V value) {
+    protected void setValue(final V value) {
       stringProperty.set(converter.toString(value));
     }
   }
@@ -390,7 +390,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void doSet(final Boolean value) {
+    protected void setValue(final Boolean value) {
       booleanProperty.set(value);
     }
   }
@@ -410,7 +410,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void doSet(final V value) {
+    protected void setValue(final V value) {
       selectionModel.select(value);
     }
   }
@@ -435,7 +435,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void doSet(final T value) {
+    protected void setValue(final T value) {
       selectionModel.select(Item.item(value));
     }
   }
@@ -457,7 +457,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void doSet(final Entity value) {
+    protected void setValue(final Entity value) {
       lookupModel.setSelectedEntity(value);
     }
   }
@@ -477,7 +477,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void doSet(final List<Entity> value) {
+    protected void setValue(final List<Entity> value) {
       lookupModel.setSelectedEntities(value);
     }
   }

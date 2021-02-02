@@ -49,7 +49,7 @@ public abstract class AbstractValue<V> implements Value<V> {
     final V actualValue = value == null ? nullValue : value;
     validators.forEach(validator -> validator.validate(actualValue));
     if (!Objects.equals(get(), actualValue)) {
-      doSet(actualValue);
+      setValue(actualValue);
       if (notifyOnSet) {
         notifyValueChange();
       }
@@ -131,7 +131,7 @@ public abstract class AbstractValue<V> implements Value<V> {
    * Sets the actual internal value.
    * @param value the value
    */
-  protected abstract void doSet(final V value);
+  protected abstract void setValue(final V value);
 
   /**
    * Fires the change event for this value, using the current value, indicating that

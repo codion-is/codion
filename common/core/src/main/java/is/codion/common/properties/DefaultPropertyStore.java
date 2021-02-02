@@ -203,7 +203,7 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    protected void doSet(final V value) {
+    protected void setValue(final V value) {
       this.value = value;
       if (value == null) {
         properties.remove(propertyName);

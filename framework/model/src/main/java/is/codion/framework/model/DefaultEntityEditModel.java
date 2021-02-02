@@ -1104,7 +1104,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    protected void doSet(final V value) {
+    protected void setValue(final V value) {
       editModel.put(attribute, value);
     }
   }

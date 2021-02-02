@@ -161,7 +161,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    protected void doSet(final Boolean value) {
+    protected void setValue(final Boolean value) {
       model.setItemEnabled(item, value);
     }
   }
@@ -182,7 +182,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    protected void doSet(final Boolean value) {
+    protected void setValue(final Boolean value) {
       buttonModel.setSelected(value);
     }
   }
@@ -202,7 +202,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    protected void doSet(final Integer value) {
+    protected void setValue(final Integer value) {
       model.setWeight(item, value);
     }
   }
@@ -223,7 +223,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    protected void doSet(final Integer value) {
+    protected void setValue(final Integer value) {
       spinnerModel.setValue(value);
     }
   }
