@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static java.util.Collections.*;
@@ -84,7 +85,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
-  private final Map<ForeignKey, EntityLookupModel> entityLookupModels = new HashMap<>();
+  private final Map<ForeignKey, EntityLookupModel> entityLookupModels = new ConcurrentHashMap<>();
 
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
@@ -613,7 +614,15 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    return entityLookupModels.computeIfAbsent(foreignKey, fk -> createForeignKeyLookupModel(foreignKey));
+    synchronized (entityLookupModels) {
+      EntityLookupModel lookupModel = entityLookupModels.get(foreignKey);
+      if (lookupModel == null) {
+        lookupModel = createForeignKeyLookupModel(foreignKey);
+        entityLookupModels.put(foreignKey, lookupModel);
+      }
+
+      return lookupModel;
+    }
   }
 
   @Override

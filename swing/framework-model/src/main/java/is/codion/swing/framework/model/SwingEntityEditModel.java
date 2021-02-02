@@ -85,9 +85,15 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
+    synchronized (comboBoxModels) {
+      SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKey);
+      if (comboBoxModel == null) {
+        comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
+        comboBoxModels.put(foreignKey, comboBoxModel);
+      }
 
-    return (SwingEntityComboBoxModel) comboBoxModels.computeIfAbsent(foreignKey,
-            attribute -> createForeignKeyComboBoxModel(foreignKey));
+      return comboBoxModel;
+    }
   }
 
   /**
@@ -95,12 +101,19 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param attribute the attribute
    * @param <T> the value type
    * @return a {@link FilteredComboBoxModel} for the given attribute
+   * @see #createComboBoxModel(Attribute)
    */
   public final <T> FilteredComboBoxModel<T> getComboBoxModel(final Attribute<T> attribute) {
-    requireNonNull(attribute, "attribute");
+    getEntityDefinition().getProperty(attribute);
+    synchronized (comboBoxModels) {
+      FilteredComboBoxModel<?> comboBoxModel = comboBoxModels.get(attribute);
+      if (comboBoxModel == null) {
+        comboBoxModel = createComboBoxModel(attribute);
+        comboBoxModels.put(attribute, comboBoxModel);
+      }
 
-    return (FilteredComboBoxModel<T>) comboBoxModels.computeIfAbsent(attribute,
-            theAttribute -> createComboBoxModel(attribute));
+      return (FilteredComboBoxModel<T>) comboBoxModel;
+    }
   }
 
   /**
