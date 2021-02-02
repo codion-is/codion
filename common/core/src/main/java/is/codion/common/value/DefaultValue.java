@@ -18,7 +18,7 @@ final class DefaultValue<V> extends AbstractValue<V> {
   }
 
   @Override
-  protected void doSet(final V value) {
+  protected void setValue(final V value) {
     this.value = value;
   }
 }

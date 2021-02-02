@@ -22,7 +22,7 @@ final class IntervalValue extends AbstractValue<Integer> {
   }
 
   @Override
-  protected void doSet(final Integer value) {
+  protected void setValue(final Integer value) {
     scheduler.setInterval(value);
   }
 }

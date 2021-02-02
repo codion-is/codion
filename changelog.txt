@@ -6719,3 +6719,4 @@
   DefaultConditionCombination.toString() added
   SwingEntityEditModel bug fixed, getForeignKeyComboBoxModel() and getComboBoxModel() no longer create missing combo box models via computeIfAbstent() since that prevents recursive creation of interdepending combo box models (javadoc: must not attempt to update any other mappings of this map)
   DefaultEntityEditModel bug fixed, getForeignKeyLookupModel() no longer creates missing lookup model via computeIfAbstent(), see above
+  AbstractValue.doSet() renamed setValue()

@@ -502,7 +502,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
      * @param value the value
      */
     @Override
-    protected void doSet(final T value) {
+    protected void setValue(final T value) {
       setSelectedItem(value == null ? null : finder.findByValue(getVisibleItems(), attribute, value));
     }
   }

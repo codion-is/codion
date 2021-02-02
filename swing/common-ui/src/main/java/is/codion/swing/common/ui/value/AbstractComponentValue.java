@@ -48,7 +48,7 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
   }
 
   @Override
-  protected final void doSet(final V value) {
+  protected final void setValue(final V value) {
     if (SwingUtilities.isEventDispatchThread()) {
       setComponentValue(component, value);
     }

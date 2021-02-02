@@ -1125,6 +1125,6 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     @Override
-    protected void doSet(final String value) {/*read only*/}
+    protected void setValue(final String value) {/*read only*/}
   }
 }

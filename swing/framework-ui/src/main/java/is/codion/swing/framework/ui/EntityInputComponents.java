@@ -944,7 +944,7 @@ public final class EntityInputComponents {
     }
 
     @Override
-    protected void doSet(final Entity value) {
+    protected void setValue(final Entity value) {
       lookupModel.setSelectedEntity(value);
     }
   }
