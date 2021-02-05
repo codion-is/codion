@@ -70,7 +70,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient doLogin(final RemoteClient remoteClient) throws LoginException {
+  public RemoteClient login(final RemoteClient remoteClient) throws LoginException {
     authenticateUser(remoteClient.getUser());
 
     //Create a new RemoteClient based on the one received
@@ -79,7 +79,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   @Override
-  public void doLogout(final RemoteClient remoteClient) {}
+  public void logout(final RemoteClient remoteClient) {}
 
   @Override
   public void close() {

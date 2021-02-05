@@ -55,7 +55,7 @@ public final class AbstractFilteredTableModelTest {
     }
 
     @Override
-    protected void doRefresh() {
+    protected void refreshModel() {
       clear();
       addItemsSorted(ITEMS);
     }
@@ -139,7 +139,7 @@ public final class AbstractFilteredTableModelTest {
   public void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(null) {
       @Override
-      protected void doRefresh() {}
+      protected void refreshModel() {}
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -257,7 +257,7 @@ public final class AbstractFilteredTableModelTest {
               }
             }, null) {
       @Override
-      protected void doRefresh() {
+      protected void refreshModel() {
         clear();
         addItems(items);
       }

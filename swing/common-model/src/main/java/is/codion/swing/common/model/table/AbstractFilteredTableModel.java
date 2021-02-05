@@ -217,7 +217,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     try {
       refreshStartedEvent.onEvent();
       final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
-      doRefresh();
+      refreshModel();
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
@@ -452,7 +452,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @see #addItemsAt(int, List)
    * @see #addItemsAtSorted(int, List)
    */
-  protected abstract void doRefresh();
+  protected abstract void refreshModel();
 
   /**
    * Creates a ColumnValueProvider for the given column, null if the column type is not numerical

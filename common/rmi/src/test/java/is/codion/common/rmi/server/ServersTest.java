@@ -36,11 +36,11 @@ public class ServersTest {
     configuration.setSslEnabled(false);
     server = new AbstractServer<Remote, ServerAdmin>(configuration) {
       @Override
-      protected Remote doConnect(final RemoteClient remoteClient) {return null;}
+      protected Remote connect(final RemoteClient remoteClient) {return null;}
       @Override
       public ServerAdmin getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {return null;}
       @Override
-      protected void doDisconnect(final Remote connection) {}
+      protected void disconnect(final Remote connection) {}
       @Override
       protected void maintainConnections(final Collection<ClientConnection<Remote>> connections) throws RemoteException {}
       @Override

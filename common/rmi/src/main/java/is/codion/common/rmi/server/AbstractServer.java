@@ -207,14 +207,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
     final ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
-      doDisconnect(clientConnection.getConnection());
+      disconnect(clientConnection.getConnection());
       final RemoteClient remoteClient = clientConnection.getRemoteClient();
       for (final LoginProxy loginProxy : sharedLoginProxies) {
-        loginProxy.doLogout(remoteClient);
+        loginProxy.logout(remoteClient);
       }
       final LoginProxy loginProxy = loginProxies.get(remoteClient.getClientTypeId());
       if (loginProxy != null) {
-        loginProxy.doLogout(remoteClient);
+        loginProxy.logout(remoteClient);
       }
       LOG.debug("Client disconnected {}", remoteClient);
     }
@@ -313,14 +313,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @throws RemoteException in case of an exception
    * @throws LoginException in case of an error during the login
    */
-  protected abstract T doConnect(RemoteClient remoteClient) throws RemoteException, LoginException;
+  protected abstract T connect(RemoteClient remoteClient) throws RemoteException, LoginException;
 
   /**
    * Disconnects the given connection.
    * @param connection the connection to disconnect
    * @throws RemoteException in case of an exception
    */
-  protected abstract void doDisconnect(T connection) throws RemoteException;
+  protected abstract void disconnect(T connection) throws RemoteException;
 
   /**
    * Maintains the given connections, that is, disconnects inactive or invalid connections, if required.
@@ -374,14 +374,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     RemoteClient remoteClient = remoteClient(connectionRequest);
     setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
     for (final LoginProxy loginProxy : sharedLoginProxies) {
-      remoteClient = loginProxy.doLogin(remoteClient);
+      remoteClient = loginProxy.login(remoteClient);
     }
     final LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
     LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
     if (clientLoginProxy != null) {
-      remoteClient = clientLoginProxy.doLogin(remoteClient);
+      remoteClient = clientLoginProxy.login(remoteClient);
     }
-    final ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, doConnect(remoteClient));
+    final ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
     connections.put(remoteClient.getClientId(), clientConnection);
 
     return clientConnection;

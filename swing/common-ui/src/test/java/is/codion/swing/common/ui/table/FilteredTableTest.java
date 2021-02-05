@@ -40,7 +40,7 @@ public class FilteredTableTest {
     final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(
             new TestAbstractTableSortModel(singletonList(column)), singletonList(filterModel)) {
       @Override
-      protected void doRefresh() {
+      protected void refreshModel() {
         clear();
         addItems(asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo")));
       }
@@ -101,7 +101,7 @@ public class FilteredTableTest {
     }
 
     @Override
-    protected void doRefresh() {
+    protected void refreshModel() {
       clear();
       addItems(ITEMS);
     }

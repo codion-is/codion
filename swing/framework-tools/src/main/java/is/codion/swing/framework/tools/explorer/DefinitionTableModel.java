@@ -37,7 +37,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   }
 
   @Override
-  protected void doRefresh() {
+  protected void refreshModel() {
     clear();
     schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
             addItemsSorted(createDomainDefinitions(schema)));

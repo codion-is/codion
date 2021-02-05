@@ -227,7 +227,7 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    protected void doRefresh() {
+    protected void refreshModel() {
       try {
         for (final RemoteClient remoteClient : server.getClients()) {
           final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
