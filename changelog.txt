@@ -6691,3 +6691,4 @@
   DefaultEntityEditModel bug fixed, getForeignKeyLookupModel() no longer creates missing lookup model via computeIfAbstent(), see above
   AbstractValue.doSet() renamed setValue()
   DefaultEntityModel.initializeDetailModel() added, overridable
+  Migrate build from JCenter to Maven Central, due to closure
