@@ -60,14 +60,14 @@ final class DefaultStateObserver implements StateObserver {
     getEventObserver().removeDataListener(listener);
   }
 
-  void notifyObservers(final boolean previousValue, final boolean newValue) {
+  void notifyObservers(final boolean newValue, final boolean previousValue) {
     synchronized (lock) {
       if (previousValue != newValue) {
         if (stateChangedEvent != null) {
           stateChangedEvent.onEvent(newValue);
         }
         if (reversedStateObserver != null) {
-          reversedStateObserver.notifyObservers(newValue, previousValue);
+          reversedStateObserver.notifyObservers(previousValue, newValue);
         }
       }
     }

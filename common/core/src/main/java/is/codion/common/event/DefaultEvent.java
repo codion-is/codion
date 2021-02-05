@@ -15,13 +15,8 @@ final class DefaultEvent<T> implements Event<T> {
 
   @Override
   public void onEvent(final T data) {
-    if (observer != null && observer.hasListeners()) {
-      for (final EventListener listener : observer.getEventListeners()) {
-        listener.onEvent();
-      }
-      for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
-        dataListener.onEvent(data);
-      }
+    if (observer != null) {
+      observer.notifyListeners(data);
     }
   }
 

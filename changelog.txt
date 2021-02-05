@@ -6695,3 +6695,4 @@
   LoginProxy.doLogin() and doLogout() renamed login() and logout() respectively
   AbstractServer.doConnect() and doDisconnect() renamed connect() and disconnect() respectively
   AbstractFilteredTableModel.doRefresh() renamed refreshModel()
+  DefaultEvent, DefaultEventObserver, DefaultState refactored
