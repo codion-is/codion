@@ -81,10 +81,10 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
       }
 
       @Override
-      public void ancestorRemoved(final AncestorEvent event) {}
+      public void ancestorRemoved(final AncestorEvent event) {/*Not necessary*/}
 
       @Override
-      public void ancestorMoved(final AncestorEvent event) {}
+      public void ancestorMoved(final AncestorEvent event) {/*Not necessary*/}
     }
   }
 }

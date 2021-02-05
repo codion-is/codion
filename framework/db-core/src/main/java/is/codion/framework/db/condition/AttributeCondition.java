@@ -25,6 +25,7 @@ public interface AttributeCondition<T> extends Condition {
   Operator getOperator();
 
   /**
+   * Sets the case-sensitivity for this condition.
    * @param caseSensitive false if this condition should not be case-sensitive
    * @return this condition
    * @throws IllegalArgumentException in case the underlying attribute is not String based

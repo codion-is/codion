@@ -1384,7 +1384,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
                                           final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
-                                          final User silentLoginUser) throws Exception {
+                                          final User silentLoginUser) {
     LOG.debug("{} application starting", frameCaption);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
