@@ -112,7 +112,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient) throws RemoteException, LoginException {
+  protected final AbstractRemoteEntityConnection connect(final RemoteClient remoteClient) throws RemoteException, LoginException {
     requireNonNull(remoteClient, "remoteClient");
     try {
       final AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,
@@ -137,7 +137,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final void doDisconnect(final AbstractRemoteEntityConnection connection) throws RemoteException {
+  protected final void disconnect(final AbstractRemoteEntityConnection connection) throws RemoteException {
     connection.close();
   }
 

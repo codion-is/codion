@@ -78,7 +78,6 @@ public class AbstractServerTest {
     assertEquals(connection, server.getConnection(connectionRequest.getClientId()));
     assertNotNull(server.getConnection(connectionRequest.getClientId()));
     server.disconnect(connectionRequest.getClientId());
-    server.disconnect(null);
     assertNull(server.getConnection(connectionRequest.getClientId()));
     final ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
@@ -189,7 +188,7 @@ public class AbstractServerTest {
     }
 
     @Override
-    protected ServerTest doConnect(final RemoteClient remoteClient) {
+    protected ServerTest connect(final RemoteClient remoteClient) {
       return new ServerTestImpl(remoteClient);
     }
 
@@ -199,7 +198,7 @@ public class AbstractServerTest {
     }
 
     @Override
-    protected void doDisconnect(final ServerTest connection) {}
+    protected void disconnect(final ServerTest connection) {}
 
     @Override
     protected void maintainConnections(final Collection<ClientConnection<ServerTest>> connections) throws RemoteException {}
