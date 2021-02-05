@@ -164,6 +164,6 @@ project(':codion-demos-world').projectDir = file('demos/world')
 
 dependencyResolutionManagement {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
