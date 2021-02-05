@@ -82,7 +82,7 @@ public class AbstractServerTest {
     final ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
     assertNotNull(server.getServerInformation());
-    assertThrows(NullPointerException.class, () -> server.connect(null));
+    assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
   }
 
   @Test
