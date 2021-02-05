@@ -35,7 +35,7 @@ public class SwingTableSelectionModelTest {
     };
     final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(sortModel) {
       @Override
-      protected void doRefresh() {
+      protected void refreshModel() {
         clear();
         addItems(data);
       }

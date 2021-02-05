@@ -39,7 +39,7 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
   }
 
   @Override
-  protected void doRefresh() {
+  protected void refreshModel() {
     clear();
     addItemsSorted(new ArrayList<>(schemas));
   }

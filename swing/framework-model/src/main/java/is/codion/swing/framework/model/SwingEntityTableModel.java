@@ -574,7 +574,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  protected final void doRefresh() {
+  protected final void refreshModel() {
     try {
       LOG.debug("{} refreshing", this);
       checkQueryRowCount();

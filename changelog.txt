@@ -6694,3 +6694,4 @@
   Migrate build from JCenter to Maven Central, due to closure
   LoginProxy.doLogin() and doLogout() renamed login() and logout() respectively
   AbstractServer.doConnect() and doDisconnect() renamed connect() and disconnect() respectively
+  AbstractFilteredTableModel.doRefresh() renamed refreshModel()
