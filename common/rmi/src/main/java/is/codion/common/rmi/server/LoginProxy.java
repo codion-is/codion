@@ -28,13 +28,13 @@ public interface LoginProxy {
    * @throws LoginException in case the login fails
    * @see RemoteClient#getDatabaseUser()
    */
-  RemoteClient doLogin(RemoteClient remoteClient) throws LoginException;
+  RemoteClient login(RemoteClient remoteClient) throws LoginException;
 
   /**
    * Called after the given client has been disconnected
    * @param remoteClient the remote client
    */
-  void doLogout(RemoteClient remoteClient);
+  void logout(RemoteClient remoteClient);
 
   /**
    * Disposes of all resources used by this LoginProxy, after a call to this

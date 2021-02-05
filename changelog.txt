@@ -6692,3 +6692,4 @@
   AbstractValue.doSet() renamed setValue()
   DefaultEntityModel.initializeDetailModel() added, overridable
   Migrate build from JCenter to Maven Central, due to closure
+  LoginProxy.doLogin() and doLogout() renamed login() and logout() respectively

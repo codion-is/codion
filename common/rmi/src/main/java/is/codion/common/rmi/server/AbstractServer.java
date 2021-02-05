@@ -211,11 +211,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       doDisconnect(clientConnection.getConnection());
       final RemoteClient remoteClient = clientConnection.getRemoteClient();
       for (final LoginProxy loginProxy : sharedLoginProxies) {
-        loginProxy.doLogout(remoteClient);
+        loginProxy.logout(remoteClient);
       }
       final LoginProxy loginProxy = loginProxies.get(remoteClient.getClientTypeId());
       if (loginProxy != null) {
-        loginProxy.doLogout(remoteClient);
+        loginProxy.logout(remoteClient);
       }
       LOG.debug("Client disconnected {}", remoteClient);
     }
@@ -375,12 +375,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     RemoteClient remoteClient = remoteClient(connectionRequest);
     setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
     for (final LoginProxy loginProxy : sharedLoginProxies) {
-      remoteClient = loginProxy.doLogin(remoteClient);
+      remoteClient = loginProxy.login(remoteClient);
     }
     final LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
     LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
     if (clientLoginProxy != null) {
-      remoteClient = clientLoginProxy.doLogin(remoteClient);
+      remoteClient = clientLoginProxy.login(remoteClient);
     }
     final ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, doConnect(remoteClient));
     connections.put(remoteClient.getClientId(), clientConnection);

@@ -221,12 +221,12 @@ public class AbstractServerTest {
       return null;
     }
     @Override
-    public RemoteClient doLogin(final RemoteClient remoteClient) {
+    public RemoteClient login(final RemoteClient remoteClient) {
       LOGIN_COUNTER.incrementAndGet();
       return remoteClient;
     }
     @Override
-    public void doLogout(final RemoteClient remoteClient) {
+    public void logout(final RemoteClient remoteClient) {
       LOGOUT_COUNTER.incrementAndGet();
     }
     @Override

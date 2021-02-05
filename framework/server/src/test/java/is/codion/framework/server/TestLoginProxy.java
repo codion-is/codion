@@ -29,7 +29,7 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerAuthenticationException {
+  public RemoteClient login(final RemoteClient remoteClient) throws ServerAuthenticationException {
     authenticateUser(remoteClient.getUser());
 
     final RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
@@ -39,7 +39,7 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   @Override
-  public void doLogout(final RemoteClient remoteClient) {}
+  public void logout(final RemoteClient remoteClient) {}
 
   @Override
   public void close() {
