@@ -45,30 +45,33 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
     }
   }
 
-  List<EventListener> getEventListeners() {
-    synchronized (lock) {
-      if (listeners == null) {
-        return emptyList();
-      }
-
-      return new ArrayList<>(listeners);
+  void notifyListeners(final T data) {
+    for (final EventListener listener : getEventListeners()) {
+      listener.onEvent();
+    }
+    for (final EventDataListener<T> dataListener : getEventDataListeners()) {
+      dataListener.onEvent(data);
     }
   }
 
-  List<EventDataListener<T>> getEventDataListeners() {
+  private List<EventListener> getEventListeners() {
     synchronized (lock) {
-      if (dataListeners == null) {
-        return emptyList();
+      if (listeners != null && !listeners.isEmpty()) {
+        return new ArrayList<>(listeners);
       }
-
-      return new ArrayList<>(dataListeners);
     }
+
+    return emptyList();
   }
 
-  boolean hasListeners() {
+  private List<EventDataListener<T>> getEventDataListeners() {
     synchronized (lock) {
-      return (listeners != null && !listeners.isEmpty()) || (dataListeners != null && !dataListeners.isEmpty());
+      if (dataListeners != null && !dataListeners.isEmpty()) {
+        return new ArrayList<>(dataListeners);
+      }
     }
+
+    return emptyList();
   }
 
   private Set<EventListener> getListeners() {

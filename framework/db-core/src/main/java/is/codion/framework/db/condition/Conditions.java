@@ -12,6 +12,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.ForeignKey.Reference;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.Arrays;
@@ -247,7 +248,7 @@ public final class Conditions {
 
     @Override
     public Condition equalTo(final Collection<? extends Entity> values) {
-      final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(ForeignKey.Reference::getReferencedAttribute).collect(toList());
+      final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(Reference::getReferencedAttribute).collect(toList());
 
       return foreignKeyCondition(foreignKey, EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
     }
@@ -264,7 +265,7 @@ public final class Conditions {
 
     @Override
     public Condition notEqualTo(final Collection<? extends Entity> values) {
-      final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(ForeignKey.Reference::getReferencedAttribute).collect(toList());
+      final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(Reference::getReferencedAttribute).collect(toList());
 
       return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
     }
@@ -286,7 +287,7 @@ public final class Conditions {
       return compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
 
-    final ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
+    final Reference<?> reference = foreignKey.getReferences().get(0);
     final List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {

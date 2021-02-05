@@ -12,7 +12,7 @@ import is.codion.common.Conjunction;
  *
  * StateObserver observer = state.getObserver();
  *
- * observer.getChangeObserver().addDataListener(this::onStateChange);
+ * observer.addDataListener(this::onStateChange);
  *
  * state.set(true);
  * </pre>

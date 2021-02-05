@@ -54,9 +54,9 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     requireNonNull(state, "state");
     synchronized (lock) {
       if (!findListener(state).isPresent()) {
-        final boolean value = get();
+        final boolean previousValue = get();
         stateListeners.add(new StateCombinationListener(state));
-        ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
+        ((DefaultStateObserver) getObserver()).notifyObservers(get(), previousValue);
       }
     }
   }
@@ -65,11 +65,11 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   public void removeState(final StateObserver state) {
     requireNonNull(state, "state");
     synchronized (lock) {
-      final boolean value = get();
+      final boolean previousValue = get();
       findListener(state).ifPresent(listener -> {
         state.removeDataListener(listener);
         stateListeners.remove(listener);
-        ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
+        ((DefaultStateObserver) getObserver()).notifyObservers(get(), previousValue);
       });
     }
   }
@@ -117,7 +117,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
 
     @Override
     public void onEvent(final Boolean newValue) {
-      ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !newValue), get());
+      ((DefaultStateObserver) getObserver()).notifyObservers(get(), getPreviousState(state, !newValue));
     }
 
     private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {

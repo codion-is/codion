@@ -30,10 +30,9 @@ class DefaultState implements State {
   public void set(final boolean value) {
     synchronized (lock) {
       if (this.value != value) {
-        final boolean previousValue = this.value;
         this.value = value;
         if (observer != null) {
-          observer.notifyObservers(previousValue, value);
+          observer.notifyObservers(value, !value);
         }
       }
     }
