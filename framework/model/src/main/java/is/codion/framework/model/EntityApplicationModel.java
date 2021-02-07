@@ -53,7 +53,8 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation", true);
 
   /**
-   * Log out from this application model
+   * Closes the underlying database connection.
+   * @see #addLogoutListener(EventDataListener)
    */
   void logout();
 
@@ -61,6 +62,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Logs in the given user
    * @param user the user to login
    * @throws NullPointerException in case user is null
+   * @see #addLoginListener(EventDataListener)
    */
   void login(User user);
 
