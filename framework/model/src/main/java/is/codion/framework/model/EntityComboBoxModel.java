@@ -40,7 +40,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   Entity getEntity(Key primaryKey);
 
   /**
-   * Use this method to retrieve the default foreign key filter condition model if you
+   * Use this method to retrieve the default foreign key filter include condition if you
    * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
    * <pre>
    *   Predicate fkCondition = model.getForeignKeyIncludeCondition();
