@@ -161,9 +161,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   @Override
   public List<R> getSelectedItems() {
-    final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
-
-    return selectedModelIndexes.stream().mapToInt(modelIndex ->
+    return getSelectedIndexes().stream().mapToInt(modelIndex ->
             modelIndex).mapToObj(tableModel::getItemAt).collect(toList());
   }
 
