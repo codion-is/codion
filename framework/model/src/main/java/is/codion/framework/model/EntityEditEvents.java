@@ -190,11 +190,11 @@ public final class EntityEditEvents {
 
     private static final class Listeners<T> {
 
-      private final List<WeakReference<EventDataListener<T>>> listeners = new ArrayList<>();
+      private final List<WeakReference<EventDataListener<T>>> listenerReferences = new ArrayList<>();
 
       private synchronized void onEvent(final T data) {
         requireNonNull(data);
-        final Iterator<WeakReference<EventDataListener<T>>> iterator = listeners.iterator();
+        final Iterator<WeakReference<EventDataListener<T>>> iterator = listenerReferences.iterator();
         while (iterator.hasNext()) {
           final EventDataListener<T> listener = iterator.next().get();
           if (listener == null) {
@@ -208,17 +208,17 @@ public final class EntityEditEvents {
 
       private synchronized void addDataListener(final EventDataListener<T> listener) {
         requireNonNull(listener);
-        for (final WeakReference<EventDataListener<T>> reference : listeners) {
+        for (final WeakReference<EventDataListener<T>> reference : listenerReferences) {
           if (reference.get() == listener) {
             return;
           }
         }
-        listeners.add(new WeakReference<>(requireNonNull(listener)));
+        listenerReferences.add(new WeakReference<>(requireNonNull(listener)));
       }
 
       private synchronized void removeDataListener(final EventDataListener<T> listener) {
         requireNonNull(listener);
-        listeners.removeIf(reference -> reference.get() == null || reference.get() == listener);
+        listenerReferences.removeIf(reference -> reference.get() == null || reference.get() == listener);
       }
     }
   }
