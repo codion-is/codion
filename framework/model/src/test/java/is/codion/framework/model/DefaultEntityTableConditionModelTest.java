@@ -135,9 +135,8 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setEnabled(false);
     assertEquals(2, counter.get());
     conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setOperator(Operator.GREATER_THAN_OR_EQUAL);
-    conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setUpperBound(1200d);
+    conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setLowerBound(1200d);
     //automatically set enabled when upper bound is set
-    assertEquals(3, counter.get());
     assertEquals(3, counter.get());
     conditionModel.removeConditionListener(conditionChangedListener);
   }

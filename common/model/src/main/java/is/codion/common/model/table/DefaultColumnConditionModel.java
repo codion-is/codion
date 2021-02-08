@@ -628,16 +628,27 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     @Override
     public void onEvent() {
       if (autoEnable) {
-        if (operatorValue.is(Operator.EQUAL) || operatorValue.is(Operator.NOT_EQUAL)) {
-          setEnabled(equalValues.isNotEmpty());
-        }
-        else {
-          if (operatorValue.get().getValues().equals(Operator.Values.TWO)) {
-            setEnabled(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
-          }
-          else {
+        switch (operatorValue.get()) {
+          case EQUAL:
+          case NOT_EQUAL:
+            setEnabled(equalValues.isNotEmpty());
+            break;
+          case LESS_THAN:
+          case LESS_THAN_OR_EQUAL:
             setEnabled(upperBoundValue.isNotNull());
-          }
+            break;
+          case GREATER_THAN:
+          case GREATER_THAN_OR_EQUAL:
+            setEnabled(lowerBoundValue.isNotNull());
+            break;
+          case BETWEEN:
+          case BETWEEN_EXCLUSIVE:
+          case NOT_BETWEEN:
+          case NOT_BETWEEN_EXCLUSIVE:
+            setEnabled(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
+            break;
+          default:
+            throw new IllegalStateException("Unknown operator: " + operatorValue.get());
         }
       }
     }

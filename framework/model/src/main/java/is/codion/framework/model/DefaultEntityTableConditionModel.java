@@ -370,9 +370,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       case LESS_THAN_OR_EQUAL:
         return builder.lessThanOrEqualTo(conditionModel.getUpperBound());
       case GREATER_THAN:
-        return builder.greaterThan(conditionModel.getUpperBound());
+        return builder.greaterThan(conditionModel.getLowerBound());
       case GREATER_THAN_OR_EQUAL:
-        return builder.greaterThanOrEqualTo(conditionModel.getUpperBound());
+        return builder.greaterThanOrEqualTo(conditionModel.getLowerBound());
       case BETWEEN_EXCLUSIVE:
         return builder.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case BETWEEN:
