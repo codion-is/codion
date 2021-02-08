@@ -244,4 +244,137 @@ public class DefaultColumnConditionModelTest {
 
     assertTrue(conditionModel.getEqualValues().containsAll(strings));
   }
+
+  @Test
+  public void autoEnable() {
+    final DefaultColumnConditionModel<String, String, Integer> conditionModel = new DefaultColumnConditionModel<>("Test", Integer.class, null);
+
+    conditionModel.setOperator(Operator.EQUAL);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setEqualValue(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(null);
+    conditionModel.setLowerBound(null);
+
+    conditionModel.setOperator(Operator.NOT_EQUAL);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setEqualValue(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(null);
+    conditionModel.setLowerBound(null);
+
+    conditionModel.setOperator(Operator.LESS_THAN);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setUpperBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+
+    conditionModel.setOperator(Operator.LESS_THAN_OR_EQUAL);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setUpperBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+
+    conditionModel.setOperator(Operator.GREATER_THAN);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(null);
+
+    conditionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(null);
+
+    conditionModel.setOperator(Operator.BETWEEN);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(null);
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    conditionModel.setUpperBound(null);
+
+    conditionModel.setOperator(Operator.BETWEEN_EXCLUSIVE);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(null);
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    conditionModel.setUpperBound(null);
+
+    conditionModel.setOperator(Operator.NOT_BETWEEN);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(null);
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    conditionModel.setUpperBound(null);
+
+    conditionModel.setOperator(Operator.NOT_BETWEEN_EXCLUSIVE);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setEqualValue(null);
+    conditionModel.setLowerBound(1);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setUpperBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    assertFalse(conditionModel.isEnabled());
+    conditionModel.setLowerBound(1);
+    assertTrue(conditionModel.isEnabled());
+    conditionModel.setLowerBound(null);
+    conditionModel.setUpperBound(null);
+  }
 }

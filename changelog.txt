@@ -6696,3 +6696,5 @@
   AbstractServer.doConnect() and doDisconnect() renamed connect() and disconnect() respectively
   AbstractFilteredTableModel.doRefresh() renamed refreshModel()
   DefaultEvent, DefaultEventObserver, DefaultState refactored
+  DefaultEntityTableConditionModel bug fixed, did not use upper bounds in case of greater than
+  DefaultColumnConditionModel.AutoEnableListener bug fixed
