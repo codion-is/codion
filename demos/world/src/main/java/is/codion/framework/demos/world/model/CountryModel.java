@@ -16,7 +16,7 @@ public final class CountryModel extends SwingEntityModel {
 
   public CountryModel(EntityConnectionProvider connectionProvider) {
     super(new CountryEditModel(connectionProvider), new CountryTableModel(connectionProvider));
-    SwingEntityModel cityModel = new SwingEntityModel(City.TYPE, connectionProvider);
+    SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
     SwingEntityModel countryLanguageModel = new SwingEntityModel(CountryLanguage.TYPE, connectionProvider);
     addDetailModels(cityModel, countryLanguageModel);
     bindEvents();

@@ -59,7 +59,8 @@ public final class WorldImpl extends DefaultDomain {
                     .maximumLength(20),
             columnProperty(City.POPULATION, "Population")
                     .nullable(false)
-                    .numberFormatGrouping(true))
+                    .numberFormatGrouping(true),
+            columnProperty(City.LOCATION, "Location"))
             // tag::sequence[]
             .keyGenerator(sequence("world.city_seq"))
             // end::sequence[]
