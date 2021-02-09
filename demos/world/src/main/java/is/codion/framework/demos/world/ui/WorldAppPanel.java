@@ -47,11 +47,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
             .panelClass(CountryCustomPanel.class)
             .caption("Custom Country");
 
-    EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(City.TYPE);
-    cityPanelBuilder.editPanelClass(CityEditPanel.class);
+    EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(City.TYPE)
+            .editPanelClass(CityEditPanel.class)
+            .tablePanelClass(CityTablePanel.class);
 
-    EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(CountryLanguage.TYPE);
-    countryLanguagePanelBuilder.editPanelClass(CountryLanguageEditPanel.class);
+    EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(CountryLanguage.TYPE)
+            .editPanelClass(CountryLanguageEditPanel.class);
 
     countryPanelBuilder.detailPanelBuilder(cityPanelBuilder);
     countryPanelBuilder.detailPanelBuilder(countryLanguagePanelBuilder);

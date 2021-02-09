@@ -25,16 +25,18 @@ public interface ControlList extends Control {
    * Adds the given action to this ControlList,
    * adding a null action has the same effect as addSeparator()
    * @param action the action to add
+   * @return this ControlList instance
    */
-  void add(Action action);
+  ControlList add(Action action);
 
   /**
    * Adds the given action to this ControlList at the specified index,
    * adding a null action has the same effect as addSeparator()
    * @param index the index
    * @param action the action to add at the specified index
+   * @return this ControlList instance
    */
-  void addAt(int index, Action action);
+  ControlList addAt(int index, Action action);
 
   /**
    * @param action the action to remove
@@ -65,29 +67,34 @@ public interface ControlList extends Control {
 
   /**
    * @param controls the control list to add
+   * @return this ControlList instance
    */
-  void add(ControlList controls);
+  ControlList add(ControlList controls);
 
   /**
    * @param index the index
    * @param controls the control list to add at the specified index
+   * @return this ControlList instance
    */
-  void addAt(int index, ControlList controls);
+  ControlList addAt(int index, ControlList controls);
 
   /**
    * Adds a separator to the end of this control list
+   * @return this ControlList instance
    */
-  void addSeparator();
+  ControlList addSeparator();
 
   /**
    * Adds a separator at the given index
    * @param index the index
+   * @return this ControlList instance
    */
-  void addSeparatorAt(int index);
+  ControlList addSeparatorAt(int index);
 
   /**
    * Adds all actions found in {@code controls} to this control list
    * @param controls the source list
+   * @return this ControlList instance
    */
-  void addAll(ControlList controls);
+  ControlList addAll(ControlList controls);
 }

@@ -44,6 +44,9 @@ public final class WorldImplTest extends EntityTestUnit {
       entity.put(Country.CODE, "XXX");
       entity.put(Country.CONTINENT, "Asia");
     }
+    else if (entityType.equals(City.TYPE)) {
+      entity.remove(City.LOCATION);
+    }
 
     return entity;
   }
@@ -53,6 +56,9 @@ public final class WorldImplTest extends EntityTestUnit {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.getEntityType().equals(Country.TYPE)) {
       testEntity.put(Country.CONTINENT, "Europe");
+    }
+    else if (testEntity.getEntityType().equals(City.TYPE)) {
+      testEntity.put(City.LOCATION, null);
     }
   }
 

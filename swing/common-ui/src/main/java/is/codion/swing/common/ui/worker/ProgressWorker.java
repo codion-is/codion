@@ -31,10 +31,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * A SwingWorker implementation which displays a progress bar in a modal dialog
  * while background work is being performed.
- * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 - 100.
+ * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 - 100 by default.
  * Note that instances of this class are not reusable.
  * Use {@link SwingWorker#setProgress} in {@link SwingWorker#doInBackground()} to indicate work progress.
  * @param <T> the type of result this {@link ProgressWorker} produces.
+ * @see #setMaximum(int)
  */
 public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
@@ -55,7 +56,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
   private static final int NO_PROGRESS = -1;
-  private static final int MAX_PROGRESS = 100;
+  private static final int DEFAULT_MAX_PROGRESS = 100;
 
   private final ProgressDialog progressDialog;
   private final Event<T> onSuccessEvent = Event.event();
@@ -74,7 +75,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @param dialogOwner the dialog owner
    * @param progressMessage the message to display while work is in progress
    * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
-   * progress bar goes from 0 - 100.
+   * progress bar goes from 0 - 100 by default.
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage,
                         final Indeterminate indeterminate) {
@@ -86,7 +87,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @param dialogOwner the dialog owner
    * @param progressMessage the message to display while work is in progress
    * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
-   * progress bar goes from 0 - 100.
+   * progress bar goes from 0 - 100 by default.
    * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
    * location of the progress dialog
    * @param buttonControls if specified buttons based on the controls in this control list are added
@@ -95,7 +96,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   public ProgressWorker(final Window dialogOwner, final String progressMessage,
                         final Indeterminate indeterminate, final JPanel dialogNorthPanel, final ControlList buttonControls) {
     this.progressDialog = new ProgressDialog(dialogOwner, progressMessage,
-            indeterminate == Indeterminate.YES ? NO_PROGRESS : MAX_PROGRESS, dialogNorthPanel, buttonControls);
+            indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS, dialogNorthPanel, buttonControls);
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -260,6 +261,16 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
       worker.addOnSuccessListener(Void -> onSuccess.run());
     }
     worker.execute();
+  }
+
+  /**
+   * Sets the maximum progress.
+   * @param maximumProgress the maximum progress
+   * @return this ProgressWorker instance
+   */
+  public final ProgressWorker<T> setMaximum(final int maximumProgress) {
+    progressDialog.getProgressModel().setMaximum(maximumProgress);
+    return this;
   }
 
   @Override

@@ -34,6 +34,7 @@ public interface World {
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
+    Attribute<String> LOCATION = TYPE.stringAttribute("location");
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
 
