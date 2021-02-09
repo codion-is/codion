@@ -4,6 +4,8 @@ module is.codion.framework.demos.world {
   requires org.kordamp.ikonli.foundation;
   requires org.kordamp.ikonli.swing;
   requires org.jfree.jfreechart;
+  requires org.json;
+  requires jxmapviewer2;
 
   exports is.codion.framework.demos.world.domain;
   exports is.codion.framework.demos.world.model
