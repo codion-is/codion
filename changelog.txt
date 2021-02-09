@@ -6699,3 +6699,4 @@
   DefaultEntityTableConditionModel bug fixed, did not use upper bounds in case of greater than
   DefaultColumnConditionModel.AutoEnableListener bug fixed
 0.17.9
+  ControlList, methods for adding items can now be chained

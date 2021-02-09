@@ -40,13 +40,15 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public void add(final Action action) {
-    actions.add(action);
+  public ControlList add(final Action action) {
+    actions.add(requireNonNull(action, "action"));
+    return this;
   }
 
   @Override
-  public void addAt(final int index, final Action action) {
-    actions.add(index, action);
+  public ControlList addAt(final int index, final Action action) {
+    actions.add(index, requireNonNull(action, "action"));
+    return this;
   }
 
   @Override
@@ -75,30 +77,33 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public void add(final ControlList controls) {
-    requireNonNull(controls, "controls");
-    actions.add(controls);
+  public ControlList add(final ControlList controls) {
+    actions.add(requireNonNull(controls, "controls"));
+    return this;
   }
 
   @Override
-  public void addAt(final int index, final ControlList controls) {
-    requireNonNull(controls, "controls");
-    actions.add(index, controls);
+  public ControlList addAt(final int index, final ControlList controls) {
+    actions.add(index, requireNonNull(controls, "controls"));
+    return this;
   }
 
   @Override
-  public void addSeparator() {
+  public ControlList addSeparator() {
     actions.add(null);
+    return this;
   }
 
   @Override
-  public void addSeparatorAt(final int index) {
+  public ControlList addSeparatorAt(final int index) {
     actions.add(index, null);
+    return this;
   }
 
   @Override
-  public void addAll(final ControlList controls) {
+  public ControlList addAll(final ControlList controls) {
     actions.addAll(requireNonNull(controls, "controls").getActions());
+    return this;
   }
 
   @Override
