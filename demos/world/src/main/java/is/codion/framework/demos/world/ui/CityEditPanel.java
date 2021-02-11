@@ -60,7 +60,6 @@ public final class CityEditPanel extends EntityEditPanel {
     JXMapKit mapKit = new JXMapKit();
     mapKit.setPreferredSize(new Dimension(300, 300));
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
-    mapKit.getMainMap().setCenterPosition(new GeoPosition(64.799392, -18.721995));
     mapKit.setMiniMapVisible(false);
     mapKit.setZoomSliderVisible(false);
     mapKit.setBorder(createRaisedBevelBorder());

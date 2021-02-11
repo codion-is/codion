@@ -16,6 +16,7 @@ import org.jfree.chart.ChartPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -90,8 +91,10 @@ public final class CountryCustomPanel extends EntityPanel {
 
     setLayout(borderLayout());
 
-    add(countryTablePanel, BorderLayout.CENTER);
-    add(southTabbedPane, BorderLayout.SOUTH);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, countryTablePanel, southTabbedPane);
+    splitPane.setContinuousLayout(true);
+    splitPane.setResizeWeight(0.33);
+    add(splitPane, BorderLayout.CENTER);
 
     initializeEditControlPanel();
     initializeKeyboardActions();
