@@ -14,8 +14,6 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
 import javax.swing.JComponent;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 /**
  * A column condition panel based on a foreign key.
@@ -56,35 +54,10 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
 
     private JComponent createForeignKeyField() {
       if (model instanceof SwingForeignKeyConditionModel) {
-        final EntityComboBox comboBox = new EntityComboBox(((SwingForeignKeyConditionModel) model).getEntityComboBoxModel());
-        new RefreshOnVisible(comboBox);
-
-        return Completion.maximumMatch(comboBox);
+        return Completion.maximumMatch(new EntityComboBox(((SwingForeignKeyConditionModel) model).getEntityComboBoxModel()).refreshOnSetVisible());
       }
 
       return TextFields.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));
-    }
-
-    private static final class RefreshOnVisible implements AncestorListener {
-
-      private final EntityComboBox comboBox;
-
-      private RefreshOnVisible(final EntityComboBox comboBox) {
-        this.comboBox = comboBox;
-        this.comboBox.addAncestorListener(this);
-      }
-
-      @Override
-      public void ancestorAdded(final AncestorEvent event) {
-        comboBox.getModel().refresh();
-        comboBox.removeAncestorListener(this);
-      }
-
-      @Override
-      public void ancestorRemoved(final AncestorEvent event) {/*Not necessary*/}
-
-      @Override
-      public void ancestorMoved(final AncestorEvent event) {/*Not necessary*/}
     }
   }
 }

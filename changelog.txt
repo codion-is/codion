@@ -6731,3 +6731,4 @@
 0.17.9
   ControlList, methods for adding items can now be chained
   ProgressWorker.setMaximum() added
+  EntityComboBox.refreshOnSetVisible() added (migrated from ForeignKeyConditionPanel)
