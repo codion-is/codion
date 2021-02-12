@@ -162,6 +162,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           "is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
 
   /**
+   * Specifies whether to include a 'Clear' control in the popup menu.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL = Configuration.booleanValue(
+          "is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
+
+  /**
    * Specifies whether the refresh button toolbar should be hidden automatically when the condition panel is not visible.<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -242,6 +250,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * specifies whether to include the condition panel
    */
   private boolean includeConditionPanel = true;
+
+  /**
+   * specifies whether to include a 'Clear' control in the popup menu.
+   */
+  private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
 
   /**
    * specifies whether to include a popup menu
@@ -379,6 +392,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setIncludePopupMenu(final boolean includePopupMenu) {
     checkIfInitialized();
     this.includePopupMenu = includePopupMenu;
+  }
+
+  /**
+   * @param includeClearControl true if a 'Clear' control should be included in the popup menu
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final void setIncludeClearControl(final boolean includeClearControl) {
+    checkIfInitialized();
+    this.includeClearControl = includeClearControl;
   }
 
   /**
@@ -1007,7 +1030,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     requireNonNull(additionalPopupControls);
     final ControlList popupControls = Controls.controlList();
     popupControls.add(controlMap.get(REFRESH));
-    popupControls.add(controlMap.get(CLEAR));
+    if (controlMap.containsKey(CLEAR)) {
+      popupControls.add(controlMap.get(CLEAR));
+    }
     popupControls.addSeparator();
     addAdditionalControls(popupControls, additionalPopupControls);
     boolean separatorRequired = false;
@@ -1193,7 +1218,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (includeConditionPanel) {
       setControl(CONDITION_PANEL_VISIBLE, getConditionPanelControl());
     }
-    setControl(CLEAR, getClearControl());
+    if (includeClearControl) {
+      setControl(CLEAR, getClearControl());
+    }
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, table.getSelectColumnsControl());
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
