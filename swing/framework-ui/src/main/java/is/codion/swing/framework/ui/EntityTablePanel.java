@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
@@ -1136,10 +1137,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     if (property instanceof ForeignKeyProperty) {
-      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(), (ForeignKeyProperty) property);
+      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(),
+              getTableModel().getEntityDefinition(), (ForeignKey) property.getAttribute());
     }
 
-    return new EntityTableCellEditor<>(property);
+    return new EntityTableCellEditor<>(getTableModel().getEntityDefinition(), property.getAttribute());
   }
 
   /**

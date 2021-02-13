@@ -4,7 +4,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;
@@ -23,13 +24,15 @@ import static java.util.Objects.requireNonNull;
  */
 class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
 
-  private final Property<T> property;
+  private final EntityInputComponents inputComponents;
+  private final Attribute<T> attribute;
   private final Value<T> cellValue = Value.value();
 
   private JComponent component;
 
-  EntityTableCellEditor(final Property<T> property) {
-    this.property = requireNonNull(property, "property");
+  EntityTableCellEditor(final EntityDefinition entityDefinition, final Attribute<T> attribute) {
+    this.inputComponents = new EntityInputComponents(entityDefinition);
+    this.attribute = requireNonNull(attribute, "attribute");
   }
 
   @Override
@@ -57,8 +60,12 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
     return false;
   }
 
-  protected final Property<T> getProperty() {
-    return property;
+  protected final EntityInputComponents getInputComponents() {
+    return inputComponents;
+  }
+
+  protected final Attribute<T> getAttribute() {
+    return attribute;
   }
 
   protected final Value<T> getCellValue() {
@@ -66,7 +73,7 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
   }
 
   protected JComponent initializeEditorComponent() {
-    final JComponent editorComponent = EntityInputComponents.createInputComponent(property, cellValue);
+    final JComponent editorComponent = inputComponents.createInputComponent(attribute, cellValue);
     if (editorComponent instanceof JCheckBox) {
       ((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
     }

@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -77,6 +76,11 @@ public class EntityEditComponentPanel extends JPanel {
   private final SwingEntityEditModel editModel;
 
   /**
+   * The input component creator
+   */
+  private final EntityInputComponents inputComponents;
+
+  /**
    * Input components mapped to their respective attributes
    */
   private final Map<Attribute<?>, JComponent> components = new HashMap<>();
@@ -117,6 +121,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected EntityEditComponentPanel(final SwingEntityEditModel editModel) {
     this.editModel = requireNonNull(editModel, "editModel");
+    this.inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
   }
 
   /**
@@ -434,8 +439,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns,
                                            final UpdateOn updateOn, final StateObserver enabledState) {
-    final Property<String> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    final JTextArea textArea = EntityInputComponents.createTextArea(property, getEditModel().value(attribute),
+    final JTextArea textArea = inputComponents.createTextArea(attribute, getEditModel().value(attribute),
             rows, columns, updateOn, enabledState);
     EntityComponentValidators.addValidator(attribute, textArea, getEditModel());
     setComponent(attribute, textArea);
@@ -461,8 +465,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextInputPanel createTextInputPanel(final Attribute<String> attribute, final UpdateOn updateOn,
                                                       final ButtonFocusable buttonFocusable) {
-    final TextInputPanel inputPanel = EntityInputComponents.createTextInputPanel(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final TextInputPanel inputPanel = inputComponents.createTextInputPanel(attribute,
             getEditModel().value(attribute), updateOn, buttonFocusable);
     if (transferFocusOnEnter) {
       transferFocusOnEnter(inputPanel.getTextField());
@@ -523,8 +526,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
                                                                                       final StateObserver enabledState, final UpdateOn updateOn) {
-    final TemporalInputPanel<T> panel = EntityInputComponents.createTemporalInputPanel(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final TemporalInputPanel<T> panel = inputComponents.createTemporalInputPanel(attribute,
             getEditModel().value(attribute), updateOn, calendarButton, enabledState);
     if (panel instanceof LocalDateInputPanel) {
       final LocalDateInputPanel localDateInputPanel = (LocalDateInputPanel) panel;
@@ -577,8 +579,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
                                                  final StateObserver enabledState) {
-    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    final JTextField textField = EntityInputComponents.createTextField(property,
+    final JTextField textField = inputComponents.createTextField(attribute,
             getEditModel().value(attribute), updateOn, enabledState);
     EntityComponentValidators.addValidator(attribute, textField, getEditModel());
     if (transferFocusOnEnter) {
@@ -627,8 +628,7 @@ public class EntityEditComponentPanel extends JPanel {
                                                             final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
                                                             final StateObserver enabledState) {
     requireNonNull(formatMaskString, "formatMaskString");
-    final Property<String> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    final JFormattedTextField textField = EntityInputComponents.createMaskedTextField(property,
+    final JFormattedTextField textField = inputComponents.createMaskedTextField(attribute,
             getEditModel().value(attribute), formatMaskString, valueContainsLiterals, updateOn, enabledState);
     EntityComponentValidators.addFormattedValidator(attribute, textField, getEditModel());
     if (transferFocusOnEnter) {
@@ -677,8 +677,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState,
                                            final IncludeCaption includeCaption) {
-    final JCheckBox box = EntityInputComponents.createCheckBox(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final JCheckBox box = inputComponents.createCheckBox(attribute,
             getEditModel().value(attribute), enabledState, includeCaption);
     if (transferFocusOnEnter) {
       transferFocusOnEnter(box);
@@ -716,8 +715,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState,
                                                           final IncludeCaption includeCaption) {
-    final NullableCheckBox box = EntityInputComponents.createNullableCheckBox(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final NullableCheckBox box = inputComponents.createNullableCheckBox(attribute,
             getEditModel().value(attribute), enabledState, includeCaption);
     if (transferFocusOnEnter) {
       transferFocusOnEnter(box);
@@ -745,8 +743,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return JComboBox for the given attribute
    */
   protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
-    final JComboBox<Item<Boolean>> comboBox = EntityInputComponents.createBooleanComboBox(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final JComboBox<Item<Boolean>> comboBox = inputComponents.createBooleanComboBox(attribute,
             getEditModel().value(attribute), enabledState);
     setComponent(attribute, comboBox);
 
@@ -779,8 +776,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
                                                         final boolean maximumMatch, final StateObserver enabledState) {
-    final SteppedComboBox<T> comboBox = EntityInputComponents.createComboBox(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
             getEditModel().value(attribute), comboBoxModel, enabledState);
     if (maximumMatch) {
       Completion.maximumMatch(comboBox);
@@ -844,13 +840,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Sorted sorted,
                                                                        final StateObserver enabledState) {
-    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    if (!(property instanceof ValueListProperty)) {
-      throw new IllegalArgumentException("Property identified by '" + attribute + "' is not a ValueListProperty");
-    }
-
-    final SteppedComboBox<Item<T>> box = EntityInputComponents.createValueListComboBox(
-            (ValueListProperty<T>) property, getEditModel().value(attribute), sorted, enabledState);
+    final SteppedComboBox<Item<T>> box = inputComponents.createValueListComboBox(attribute,
+            getEditModel().value(attribute), sorted, enabledState);
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);
@@ -881,8 +872,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
                                                                 final StateObserver enabledState) {
-    final SteppedComboBox<T> comboBox = EntityInputComponents.createComboBox(
-            getEditModel().getEntityDefinition().getProperty(attribute),
+    final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
             getEditModel().value(attribute), comboBoxModel, enabledState, Editable.YES);
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -927,9 +917,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> SteppedComboBox<T> createAttributeComboBox(final Attribute<T> attribute, final StateObserver enabledState,
                                                                  final Editable editable) {
-    final SteppedComboBox<T> comboBox = EntityInputComponents.createPropertyComboBox(
-            getEditModel().getEntityDefinition().getColumnProperty(attribute),
-            getEditModel().value(attribute),
+    final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute, getEditModel().value(attribute),
             (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute), enabledState, editable);
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -956,10 +944,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a EntityComboBox bound to the foreign key
    */
   protected final EntityComboBox createForeignKeyComboBox(final ForeignKey foreignKey, final StateObserver enabledState) {
-    final EntityComboBox comboBox = EntityInputComponents.createForeignKeyComboBox(
-            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey),
-            getEditModel().value(foreignKey),
-            getEditModel().getForeignKeyComboBoxModel(foreignKey), enabledState);
+    final EntityComboBox comboBox = inputComponents.createForeignKeyComboBox(foreignKey,
+            getEditModel().value(foreignKey), getEditModel().getForeignKeyComboBoxModel(foreignKey), enabledState);
     if (transferFocusOnEnter) {
       //getEditor().getEditorComponent() only required because the combo box is editable, due to AutoCompletion
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -986,10 +972,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey,
                                                                 final StateObserver enabledState) {
-    final EntityLookupField lookupField = EntityInputComponents.createForeignKeyLookupField(
-            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey),
-            getEditModel().value(foreignKey),
-            getEditModel().getForeignKeyLookupModel(foreignKey), enabledState);
+    final EntityLookupField lookupField = inputComponents.createForeignKeyLookupField(foreignKey,
+            getEditModel().value(foreignKey), getEditModel().getForeignKeyLookupModel(foreignKey), enabledState);
     if (transferFocusOnEnter) {
       lookupField.setTransferFocusOnEnter();
     }
@@ -1040,8 +1024,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JLabel for the given attribute
    */
   protected final <T> JLabel createLabel(final Attribute<T> attribute, final int horizontalAlignment) {
-    return setLabelForComponent(EntityInputComponents.createLabel(getEditModel().getEntityDefinition()
-            .getProperty(attribute), horizontalAlignment), getComponent(attribute));
+    return setLabelForComponent(inputComponents.createLabel(attribute, horizontalAlignment), getComponent(attribute));
   }
 
   /**
