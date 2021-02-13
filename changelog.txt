@@ -6708,3 +6708,4 @@
   EntityTablePanel bug fixed, did not display condition and summary panels when initialized
   EntityInputComponents no longer a static utility class, Property parameters replaced with Attribute, related refactoring
   EntityTablePanel, minor refactoring
+  EntityValidator.revalidate() removed, apparently unused
