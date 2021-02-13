@@ -6703,3 +6703,4 @@
   ProgressWorker.setMaximum() added
   EntityComboBox.refreshOnSetVisible() added (migrated from ForeignKeyConditionPanel)
   EntityTablePanel.INCLUDE_CLEAR_CONTROL configuration parameter added along with includeClearControl property
+  EntityTablePanel.ControlCode enum added, some related refactoring
