@@ -5,10 +5,10 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.swing.framework.model.SwingEntityModel;
 
-public final class CountryCustomModel extends SwingEntityModel {
+public final class CountryOverviewModel extends SwingEntityModel {
 
-  public CountryCustomModel(EntityConnectionProvider connectionProvider) {
-    super(new CountryEditModel(connectionProvider), new CountryTableModel(connectionProvider));
+  public CountryOverviewModel(EntityConnectionProvider connectionProvider) {
+    super(new CountryEditModel(connectionProvider), new CountryOverviewTableModel(connectionProvider));
     SwingEntityModel cityModel = new SwingEntityModel(City.TYPE, connectionProvider);
     SwingEntityModel countryLanguageModel = new SwingEntityModel(CountryLanguage.TYPE, connectionProvider);
     addDetailModels(cityModel, countryLanguageModel);

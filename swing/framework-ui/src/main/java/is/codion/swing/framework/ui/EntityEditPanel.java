@@ -44,6 +44,7 @@ import static is.codion.swing.common.ui.Components.showWaitCursor;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -661,6 +662,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @param control the control to associate with {@code controlCode}
    */
   protected final void setControl(final ControlCode controlCode, final Control control) {
+    requireNonNull(controlCode);
     if (control == null) {
       controls.remove(controlCode);
     }

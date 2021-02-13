@@ -4,13 +4,15 @@ import is.codion.common.model.table.ColumnSummary;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.demos.world.model.CountryCustomModel;
 import is.codion.framework.demos.world.model.CountryEditModel;
-import is.codion.framework.demos.world.model.CountryTableModel;
+import is.codion.framework.demos.world.model.CountryOverviewModel;
+import is.codion.framework.demos.world.model.CountryOverviewTableModel;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 
@@ -26,13 +28,22 @@ import java.awt.Dimension;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayInDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static org.jfree.chart.ChartFactory.createPieChart;
 
-public final class CountryCustomPanel extends EntityPanel {
+public final class CountryOverviewPanel extends EntityPanel {
 
-  public CountryCustomPanel(CountryCustomModel entityModel) {
-    super(entityModel,
-            new CountryEditPanel((CountryEditModel) entityModel.getEditModel()),
-            new CountryTablePanel((CountryTableModel) entityModel.getTableModel()));
+  private final ChartPanel cityChartPanel;
+  private final ChartPanel languageChartPanel;
+
+  public CountryOverviewPanel(CountryOverviewModel entityModel) {
+    super(entityModel, new CountryEditPanel((CountryEditModel) entityModel.getEditModel()));
+    final CountryOverviewTableModel tableModel = (CountryOverviewTableModel) entityModel.getTableModel();
+    cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCitiesDataset()));
+    cityChartPanel.getChart().removeLegend();
+    cityChartPanel.setPreferredSize(new Dimension(300, 300));
+    languageChartPanel = new ChartPanel(createPieChart("Languages", tableModel.getLanguagesDataset()));
+    languageChartPanel.getChart().removeLegend();
+    languageChartPanel.setPreferredSize(new Dimension(300, 300));
   }
 
   @Override
@@ -46,8 +57,7 @@ public final class CountryCustomPanel extends EntityPanel {
     countryModel.addLinkedDetailModel(cityModel);
     countryModel.addLinkedDetailModel(countryLanguageModel);
 
-    CountryEditPanel countryEditPanel = (CountryEditPanel) getEditPanel();
-    CountryTablePanel countryTablePanel = (CountryTablePanel) getTablePanel();
+    EntityTablePanel countryTablePanel = getTablePanel();
     countryTablePanel.getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     countryTablePanel.getTable().setDoubleClickAction(Controls.control(this::displayEditPanel));
     countryTablePanel.setSummaryPanelVisible(true);
@@ -63,17 +73,12 @@ public final class CountryCustomPanel extends EntityPanel {
     languagePanel.getTablePanel().getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     languagePanel.getTablePanel().setIncludeSouthPanel(false);
 
-    addDetailPanels(cityPanel, languagePanel);
+    EntityEditPanel countryEditPanel = getEditPanel();
 
     countryEditPanel.initializePanel();
     countryTablePanel.initializePanel();
     cityPanel.initializePanel();
     languagePanel.initializePanel();
-
-    ChartPanel cityChartPanel = countryTablePanel.getCityChartPanel();
-    cityChartPanel.setPreferredSize(new Dimension(300, 300));
-    ChartPanel languageChartPanel = countryTablePanel.getLanguageChartPanel();
-    languageChartPanel.setPreferredSize(new Dimension(300, 300));
 
     JPanel southTablePanel = new JPanel(gridLayout(1, 2));
     southTablePanel.add(cityPanel);
