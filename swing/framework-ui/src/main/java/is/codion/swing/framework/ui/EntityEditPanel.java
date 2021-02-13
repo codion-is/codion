@@ -265,7 +265,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * @return a control for refreshing the model data
    */
-  public final Control getRefreshControl() {
+  public final Control createRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.control(getEditModel()::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
             activeState, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
@@ -275,7 +275,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * @return a control for deleting the active entity
    */
-  public final Control getDeleteControl() {
+  public final Control createDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             State.combination(Conjunction.AND,
@@ -289,7 +289,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * @return a control for clearing the UI controls
    */
-  public final Control getClearControl() {
+  public final Control createClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Controls.control(this::clearAndRequestFocus, FrameworkMessages.get(FrameworkMessages.CLEAR),
             activeState, FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
@@ -299,7 +299,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * @return a control for performing an update on the active entity
    */
-  public final Control getUpdateControl() {
+  public final Control createUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.control(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
             State.combination(Conjunction.AND,
@@ -314,7 +314,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * @return a control for performing an insert on the active entity
    */
-  public final Control getInsertControl() {
+  public final Control createInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
             State.combination(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
@@ -326,7 +326,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @return a control for performing a save on the active entity, that is, update if an entity
    * is selected and modified or insert otherwise
    */
-  public final Control getSaveControl() {
+  public final Control createSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
     final State insertUpdateState = State.combination(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
             State.combination(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
@@ -731,25 +731,25 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       setupEditControls(codes);
     }
     if (codes.contains(ControlCode.CLEAR)) {
-      setControl(ControlCode.CLEAR, getClearControl());
+      setControl(ControlCode.CLEAR, createClearControl());
     }
     if (codes.contains(ControlCode.REFRESH)) {
-      setControl(ControlCode.REFRESH, getRefreshControl());
+      setControl(ControlCode.REFRESH, createRefreshControl());
     }
   }
 
   private void setupEditControls(final Collection<ControlCode> controlCodes) {
     if (getEditModel().isInsertEnabled() && getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
-      setControl(ControlCode.SAVE, getSaveControl());
+      setControl(ControlCode.SAVE, createSaveControl());
     }
     if (getEditModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
-      setControl(ControlCode.INSERT, getInsertControl());
+      setControl(ControlCode.INSERT, createInsertControl());
     }
     if (getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
-      setControl(ControlCode.UPDATE, getUpdateControl());
+      setControl(ControlCode.UPDATE, createUpdateControl());
     }
     if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
-      setControl(ControlCode.DELETE, getDeleteControl());
+      setControl(ControlCode.DELETE, createDeleteControl());
     }
   }
 

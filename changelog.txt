@@ -6733,3 +6733,7 @@
   ProgressWorker.setMaximum() added
   EntityComboBox.refreshOnSetVisible() added (migrated from ForeignKeyConditionPanel)
   EntityTablePanel.INCLUDE_CLEAR_CONTROL configuration parameter added along with includeClearControl property
+  EntityTablePanel.ControlCode enum added, some related refactoring
+  EntityTablePanel, EntityEditPanel, FilteredTable, get***Control() methods renamed create***Control() where a Control was being created
+  EntityTablePanel bug fixed, did not display condition and summary panels when initialized
+  EntityInputComponents no longer a static utility class, Property parameters replaced with Attribute, related refactoring

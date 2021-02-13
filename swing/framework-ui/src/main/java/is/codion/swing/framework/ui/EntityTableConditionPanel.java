@@ -157,7 +157,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     columnModel.getAllColumns().forEach(column -> {
       final Attribute<Object> attribute = (Attribute<Object>) column.getIdentifier();
       if (conditionModel.containsConditionModel(attribute)) {
-        components.put(column, initializeConditionPanel(conditionModel.getConditionModel(attribute), definition.getProperty(attribute)));
+        components.put(column, initializeConditionPanel(conditionModel.getConditionModel(attribute), definition, attribute));
       }
     });
 
@@ -170,11 +170,11 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @return a ColumnConditionPanel based on the given model
    */
   private static <C extends Attribute<T>, T> ColumnConditionPanel<Entity, C, T> initializeConditionPanel(
-          final ColumnConditionModel<Entity, C, T> propertyConditionModel, final Property<T> property) {
+          final ColumnConditionModel<Entity, C, T> propertyConditionModel, final EntityDefinition entityDefinition, final Attribute<T> attribute) {
     if (propertyConditionModel instanceof ForeignKeyConditionModel) {
       return (ColumnConditionPanel<Entity, C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
     }
 
-    return new AttributeConditionPanel<>(propertyConditionModel, property);
+    return new AttributeConditionPanel<>(propertyConditionModel, entityDefinition, attribute);
   }
 }

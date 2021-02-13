@@ -5,7 +5,9 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntityLookupModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -20,23 +22,24 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
 
   private final EntityConnectionProvider connectionProvider;
 
-  ForeignKeyTableCellEditor(final EntityConnectionProvider connectionProvider, final ForeignKeyProperty property) {
-    super(property);
+  ForeignKeyTableCellEditor(final EntityConnectionProvider connectionProvider, final EntityDefinition entityDefinition,
+                            final ForeignKey foreignKey) {
+    super(entityDefinition, foreignKey);
     this.connectionProvider = connectionProvider;
   }
 
   //TODO handle Enter key correctly
   @Override
   protected JComponent initializeEditorComponent() {
-    final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) getProperty();
-    final EntityType<?> foreignEntityType = foreignKeyProperty.getReferencedEntityType();
+    final ForeignKey foreignKey = (ForeignKey) getAttribute();
+    final EntityType<?> foreignEntityType = foreignKey.getReferencedEntityType();
 
     if (connectionProvider.getEntities().getDefinition(foreignEntityType).isSmallDataset()) {
-      return EntityInputComponents.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),
+      return getInputComponents().createForeignKeyComboBox(foreignKey, getCellValue(),
               new SwingEntityComboBoxModel(foreignEntityType, connectionProvider));
     }
 
-    return EntityInputComponents.createForeignKeyLookupField(foreignKeyProperty, getCellValue(),
+    return getInputComponents().createForeignKeyLookupField(foreignKey, getCellValue(),
             new DefaultEntityLookupModel(foreignEntityType, connectionProvider));
   }
 }

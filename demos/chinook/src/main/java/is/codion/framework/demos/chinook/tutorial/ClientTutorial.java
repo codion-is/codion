@@ -122,7 +122,7 @@ public final class ClientTutorial {
       artistLookupField.setColumns(15);
       JTextField titleField = createTextField(Album.TITLE);
       removeTransferFocusOnEnter(titleField);
-      titleField.setAction(getInsertControl());
+      titleField.setAction(createInsertControl());
       titleField.setColumns(15);
       setLayout(gridLayout(2, 1));
       addInputPanel(Album.ARTIST_FK);

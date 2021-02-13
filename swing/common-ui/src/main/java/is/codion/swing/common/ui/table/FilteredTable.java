@@ -373,7 +373,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * @return a control for showing the column selection dialog
    */
-  public Control getSelectColumnsControl() {
+  public Control createSelectColumnsControl() {
     return Controls.control(this::selectColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
             tableModel.getColumnModel().getLockedState().getReversedObserver(), MESSAGES.getString(SELECT_COLUMNS));
   }
@@ -381,7 +381,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
-  public ToggleControl getSingleSelectionModeControl() {
+  public ToggleControl createSingleSelectionModeControl() {
     return Controls.toggleControl(tableModel.getSelectionModel().getSingleSelectionModeState(), MESSAGES.getString(SINGLE_SELECTION_MODE));
   }
 

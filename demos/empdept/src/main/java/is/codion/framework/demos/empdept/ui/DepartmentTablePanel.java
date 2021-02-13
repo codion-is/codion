@@ -38,10 +38,10 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
   // end::viewEmployeeReport[]
 
-  // tag::getPrintControls[]
+  // tag::createPrintControls[]
   @Override
-  protected ControlList getPrintControls() {
-    final ControlList printControls = super.getPrintControls();
+  protected ControlList createPrintControls() {
+    final ControlList printControls = super.createPrintControls();
     final StateObserver selectionNotEmptyObserver =
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
     printControls.add(Controls.control(this::viewEmployeeReport,
@@ -50,4 +50,4 @@ public class DepartmentTablePanel extends EntityTablePanel {
     return printControls;
   }
 }
-// end::getPrintControls[]
+// end::createPrintControls[]

@@ -8,8 +8,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -22,6 +20,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
@@ -177,22 +176,27 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static final PropertyValue<Boolean> AUTOMATICALLY_HIDE_REFRESH_TOOLBAR = Configuration.booleanValue(
           "is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar", true);
 
-  public static final String PRINT_TABLE = "printTable";
-  public static final String DELETE_SELECTED = "deleteSelected";
-  public static final String VIEW_DEPENDENCIES = "viewDependencies";
-  public static final String UPDATE_SELECTED = "updateSelected";
-  public static final String SELECT_COLUMNS = "selectTableColumns";
-  public static final String EXPORT_JSON = "exportJSON";
-  public static final String SELECTION_MODE = "selectionMode";
-  public static final String CLEAR = "clear";
-  public static final String REFRESH = "refresh";
-  public static final String TOGGLE_SUMMARY_PANEL = "toggleSummaryPanel";
-  public static final String TOGGLE_CONDITION_PANEL = "toggleConditionPanel";
-  public static final String CONDITION_PANEL_VISIBLE = "conditionPanelVisible";
-  public static final String CLEAR_SELECTION = "clearSelection";
-  public static final String MOVE_SELECTION_UP = "moveSelectionUp";
-  public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
-  public static final String COPY_TABLE_DATA = "copyTableData";
+  /**
+   * The standard controls available to the TablePanel
+   */
+  public enum ControlCode {
+    PRINT_TABLE,
+    DELETE_SELECTED,
+    VIEW_DEPENDENCIES,
+    UPDATE_SELECTED,
+    SELECT_COLUMNS,
+    EXPORT_JSON,
+    SELECTION_MODE,
+    CLEAR,
+    REFRESH,
+    TOGGLE_SUMMARY_PANEL,
+    TOGGLE_CONDITION_PANEL,
+    CONDITION_PANEL_VISIBLE,
+    CLEAR_SELECTION,
+    MOVE_SELECTION_UP,
+    MOVE_SELECTION_DOWN,
+    COPY_TABLE_DATA
+  }
 
   private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(24, 24);
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
@@ -200,10 +204,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 
-  private final Event<Boolean> conditionPanelVisibilityChangedEvent = Event.event();
-  private final Event<Boolean> summaryPanelVisibleChangedEvent = Event.event();
+  private final State conditionPanelVisibleState = State.state();
+  private final State summaryPanelVisibleState = State.state();
 
-  private final Map<String, Control> controlMap = new HashMap<>();
+  private final Map<ControlCode, Control> controlMap = new HashMap<>();
 
   private final SwingEntityTableModel tableModel;
 
@@ -424,18 +428,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param visible if true the condition panel is shown, if false it is hidden
    */
   public final void setConditionPanelVisible(final boolean visible) {
-    if (visible && isConditionPanelVisible()) {
-      return;
-    }
-
-    if (conditionScrollPane != null) {
-      conditionScrollPane.setVisible(visible);
-      if (automaticallyHideRefreshToolbar) {
-        refreshToolBar.setVisible(visible);
-      }
-      revalidate();
-      conditionPanelVisibilityChangedEvent.onEvent(visible);
-    }
+    conditionPanelVisibleState.set(visible);
   }
 
   /**
@@ -495,13 +488,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param visible if true then the summary panel is shown, if false it is hidden
    */
   public final void setSummaryPanelVisible(final boolean visible) {
-    if (summaryScrollPane == null || (visible && isSummaryPanelVisible())) {
-      return;
-    }
-
-    summaryScrollPane.setVisible(visible);
-    revalidate();
-    summaryPanelVisibleChangedEvent.onEvent(visible);
+    summaryPanelVisibleState.set(visible);
   }
 
   /**
@@ -528,7 +515,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
    */
-  public final Control getControl(final String controlCode) {
+  public final Control getControl(final ControlCode controlCode) {
     if (!controlMap.containsKey(requireNonNull(controlCode))) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
@@ -546,7 +533,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see #excludeFromUpdateMenu(Attribute)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
-  public final ControlList getUpdateSelectedControls() {
+  public final ControlList createUpdateSelectedControls() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
@@ -569,7 +556,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a control for showing the dependencies dialog
    */
-  public final Control getViewDependenciesControl() {
+  public final Control createViewDependenciesControl() {
     return control(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...",
             tableModel.getSelectionModel().getSelectionNotEmptyObserver(),
@@ -581,7 +568,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for deleting the selected entities
    * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
    */
-  public final Control getDeleteSelectedControl() {
+  public final Control createDeleteSelectedControl() {
     if (!includeDeleteSelectedControl()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
@@ -596,7 +583,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a control for printing the table
    */
-  public final Control getPrintTableControl() {
+  public final Control createPrintTableControl() {
     final String printCaption = MESSAGES.getString("print_table");
     return control(this::printTable, printCaption, null,
             printCaption, printCaption.charAt(0), null, frameworkIcons().print());
@@ -605,7 +592,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a Control for refreshing the underlying table data
    */
-  public final Control getRefreshControl() {
+  public final Control createRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
     return control(tableModel::refresh, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
@@ -615,7 +602,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a Control for clearing the underlying table model, that is, removing all rows
    */
-  public final Control getClearControl() {
+  public final Control createClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
     return control(tableModel::clear, clearCaption,
             null, null, clearCaption.charAt(0), null, null);
@@ -758,7 +745,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Initializes the button used to toggle the condition panel state (hidden, visible and advanced)
    * @return a condition panel toggle button
    */
-  public final Control getToggleConditionPanelControl() {
+  public final Control createToggleConditionPanelControl() {
     if (!includeConditionPanel) {
       return null;
     }
@@ -773,9 +760,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Initializes the button used to toggle the summary panel state (hidden and visible)
    * @return a summary panel toggle button
    */
-  public final Control getToggleSummaryPanelControl() {
-    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
-            summaryPanelVisibleChangedEvent);
+  public final Control createToggleSummaryPanelControl() {
+    final Control toggleControl = Controls.toggleControl(summaryPanelVisibleState);
     toggleControl.setIcon(frameworkIcons().summary());
     toggleControl.setDescription(MESSAGES.getString("toggle_summary_tip"));
 
@@ -785,7 +771,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a control for clearing the table selection
    */
-  public final Control getClearSelectionControl() {
+  public final Control createClearSelectionControl() {
     final Control clearSelection = control(tableModel.getSelectionModel()::clearSelection, null,
             tableModel.getSelectionModel().getSelectionNotEmptyObserver(), null, -1, null,
             frameworkIcons().clearSelection());
@@ -797,7 +783,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a control for moving the table selection down one index
    */
-  public final Control getMoveSelectionDownControl() {
+  public final Control createMoveSelectionDownControl() {
     final Control selectionDown = control(tableModel.getSelectionModel()::moveSelectionDown,
             frameworkIcons().down());
     selectionDown.setDescription(MESSAGES.getString("selection_down_tip"));
@@ -808,26 +794,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return a control for moving the table selection up one index
    */
-  public final Control getMoveSelectionUpControl() {
+  public final Control createMoveSelectionUpControl() {
     final Control selectionUp = control(tableModel.getSelectionModel()::moveSelectionUp,
             frameworkIcons().up());
     selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
     return selectionUp;
-  }
-
-  /**
-   * @param listener a listener notified each time the condition panel visibility changes
-   */
-  public final void addConditionPanelVisibleListener(final EventDataListener<Boolean> listener) {
-    conditionPanelVisibilityChangedEvent.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeConditionPanelVisibleListener(final EventDataListener<Boolean> listener) {
-    conditionPanelVisibilityChangedEvent.removeDataListener(listener);
   }
 
   /**
@@ -915,15 +887,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     };
     final ControlList popupControls = Controls.controlList();
     if (tablePanel.includeUpdateSelectedControls()) {
-      popupControls.add(tablePanel.getUpdateSelectedControls());
+      popupControls.add(tablePanel.createUpdateSelectedControls());
     }
     if (tablePanel.includeDeleteSelectedControl()) {
-      popupControls.add(tablePanel.getDeleteSelectedControl());
+      popupControls.add(tablePanel.createDeleteSelectedControl());
     }
     if (!popupControls.isEmpty()) {
       popupControls.addSeparator();
     }
-    popupControls.add(tablePanel.getViewDependenciesControl());
+    popupControls.add(tablePanel.createViewDependenciesControl());
     tablePanel.addPopupControls(popupControls);
     tablePanel.setIncludeConditionPanel(false);
     tablePanel.setIncludeSouthPanel(false);
@@ -944,6 +916,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         setupControls();
         initializeTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
+        setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
+        setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
         updateStatusMessage();
       }
@@ -983,7 +957,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param controlCode the control code
    * @param control the control to associate with {@code controlCode}
    */
-  protected final void setControl(final String controlCode, final Control control) {
+  protected final void setControl(final ControlCode controlCode, final Control control) {
     requireNonNull(controlCode);
     if (control == null) {
       controlMap.remove(controlCode);
@@ -996,21 +970,21 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected ControlList getToolBarControls(final List<ControlList> additionalToolBarControlLists) {
     requireNonNull(additionalToolBarControlLists);
     final ControlList toolbarControls = Controls.controlList();
-    if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
-      toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
+    if (controlMap.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
+      toolbarControls.add(controlMap.get(ControlCode.TOGGLE_SUMMARY_PANEL));
     }
-    if (controlMap.containsKey(TOGGLE_CONDITION_PANEL)) {
-      toolbarControls.add(controlMap.get(TOGGLE_CONDITION_PANEL));
+    if (controlMap.containsKey(ControlCode.TOGGLE_CONDITION_PANEL)) {
+      toolbarControls.add(controlMap.get(ControlCode.TOGGLE_CONDITION_PANEL));
       toolbarControls.addSeparator();
     }
-    if (controlMap.containsKey(DELETE_SELECTED)) {
-      toolbarControls.add(controlMap.get(DELETE_SELECTED));
+    if (controlMap.containsKey(ControlCode.DELETE_SELECTED)) {
+      toolbarControls.add(controlMap.get(ControlCode.DELETE_SELECTED));
     }
-    toolbarControls.add(getPrintTableControl());
-    toolbarControls.add(controlMap.get(CLEAR_SELECTION));
+    toolbarControls.add(createPrintTableControl());
+    toolbarControls.add(controlMap.get(ControlCode.CLEAR_SELECTION));
     toolbarControls.addSeparator();
-    toolbarControls.add(controlMap.get(MOVE_SELECTION_UP));
-    toolbarControls.add(controlMap.get(MOVE_SELECTION_DOWN));
+    toolbarControls.add(controlMap.get(ControlCode.MOVE_SELECTION_UP));
+    toolbarControls.add(controlMap.get(ControlCode.MOVE_SELECTION_DOWN));
     additionalToolBarControlLists.forEach(controlList -> {
       toolbarControls.addSeparator();
       controlList.getActions().forEach(toolbarControls::add);
@@ -1029,54 +1003,54 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
     requireNonNull(additionalPopupControls);
     final ControlList popupControls = Controls.controlList();
-    popupControls.add(controlMap.get(REFRESH));
-    if (controlMap.containsKey(CLEAR)) {
-      popupControls.add(controlMap.get(CLEAR));
+    popupControls.add(controlMap.get(ControlCode.REFRESH));
+    if (controlMap.containsKey(ControlCode.CLEAR)) {
+      popupControls.add(controlMap.get(ControlCode.CLEAR));
     }
     popupControls.addSeparator();
     addAdditionalControls(popupControls, additionalPopupControls);
     boolean separatorRequired = false;
-    if (controlMap.containsKey(UPDATE_SELECTED)) {
-      popupControls.add(controlMap.get(UPDATE_SELECTED));
+    if (controlMap.containsKey(ControlCode.UPDATE_SELECTED)) {
+      popupControls.add(controlMap.get(ControlCode.UPDATE_SELECTED));
       separatorRequired = true;
     }
-    if (controlMap.containsKey(DELETE_SELECTED)) {
-      popupControls.add(controlMap.get(DELETE_SELECTED));
+    if (controlMap.containsKey(ControlCode.DELETE_SELECTED)) {
+      popupControls.add(controlMap.get(ControlCode.DELETE_SELECTED));
       separatorRequired = true;
     }
-    if (controlMap.containsKey(EXPORT_JSON)) {
-      popupControls.add(controlMap.get(EXPORT_JSON));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
-      popupControls.addSeparator();
-      separatorRequired = false;
-    }
-    if (controlMap.containsKey(VIEW_DEPENDENCIES)) {
-      popupControls.add(controlMap.get(VIEW_DEPENDENCIES));
+    if (controlMap.containsKey(ControlCode.EXPORT_JSON)) {
+      popupControls.add(controlMap.get(ControlCode.EXPORT_JSON));
       separatorRequired = true;
     }
     if (separatorRequired) {
       popupControls.addSeparator();
       separatorRequired = false;
     }
-    final ControlList printControls = getPrintControls();
+    if (controlMap.containsKey(ControlCode.VIEW_DEPENDENCIES)) {
+      popupControls.add(controlMap.get(ControlCode.VIEW_DEPENDENCIES));
+      separatorRequired = true;
+    }
+    if (separatorRequired) {
+      popupControls.addSeparator();
+      separatorRequired = false;
+    }
+    final ControlList printControls = createPrintControls();
     if (printControls != null) {
       popupControls.add(printControls);
       separatorRequired = true;
     }
-    if (controlMap.containsKey(SELECT_COLUMNS)) {
+    if (controlMap.containsKey(ControlCode.SELECT_COLUMNS)) {
       if (separatorRequired) {
         popupControls.addSeparator();
       }
-      popupControls.add(controlMap.get(SELECT_COLUMNS));
+      popupControls.add(controlMap.get(ControlCode.SELECT_COLUMNS));
       separatorRequired = true;
     }
-    if (controlMap.containsKey(SELECTION_MODE)) {
+    if (controlMap.containsKey(ControlCode.SELECTION_MODE)) {
       if (separatorRequired) {
         popupControls.addSeparator();
       }
-      popupControls.add(controlMap.get(SELECTION_MODE));
+      popupControls.add(controlMap.get(ControlCode.SELECTION_MODE));
       separatorRequired = true;
     }
     if (includeConditionPanel) {
@@ -1089,39 +1063,38 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (separatorRequired) {
       popupControls.addSeparator();
     }
-    popupControls.add(controlMap.get(COPY_TABLE_DATA));
+    popupControls.add(controlMap.get(ControlCode.COPY_TABLE_DATA));
 
     return popupControls;
   }
 
-  protected ControlList getPrintControls() {
+  protected ControlList createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
     final ControlList printControls = Controls.controlList(printCaption, printCaption.charAt(0),
             frameworkIcons().print());
-    printControls.add(controlMap.get(PRINT_TABLE));
+    printControls.add(controlMap.get(ControlCode.PRINT_TABLE));
 
     return printControls;
   }
 
-  protected final Control getConditionPanelControl() {
-    return Controls.toggleControl(this, CONDITION_PANEL_VISIBLE,
-            FrameworkMessages.get(FrameworkMessages.SHOW), conditionPanelVisibilityChangedEvent);
+  protected final Control createConditionPanelControl() {
+    return Controls.toggleControl(conditionPanelVisibleState, FrameworkMessages.get(FrameworkMessages.SHOW));
   }
 
-  protected final ControlList getCopyControlList() {
-    final ControlList copyControls = Controls.controlList(Messages.get(Messages.COPY), getCopyCellControl(),
-            getCopyTableWithHeaderControl());
+  protected final ControlList createCopyControls() {
+    final ControlList copyControls = Controls.controlList(Messages.get(Messages.COPY),
+            createCopyCellControl(), createCopyTableWithHeaderControl());
     copyControls.setIcon(frameworkIcons().copy());
 
     return copyControls;
   }
 
-  protected final Control getCopyCellControl() {
+  protected final Control createCopyCellControl() {
     return control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
             tableModel.getSelectionModel().getSelectionNotEmptyObserver());
   }
 
-  protected final Control getCopyTableWithHeaderControl() {
+  protected final Control createCopyTableWithHeaderControl() {
     return control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
   }
 
@@ -1164,10 +1137,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     if (property instanceof ForeignKeyProperty) {
-      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(), (ForeignKeyProperty) property);
+      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(),
+              getTableModel().getEntityDefinition(), (ForeignKey) property.getAttribute());
     }
 
-    return new EntityTableCellEditor<>(property);
+    return new EntityTableCellEditor<>(getTableModel().getEntityDefinition(), property.getAttribute());
   }
 
   /**
@@ -1210,32 +1184,32 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void setupControls() {
     if (includeDeleteSelectedControl()) {
-      setControl(DELETE_SELECTED, getDeleteSelectedControl());
+      setControl(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
     }
     if (includeUpdateSelectedControls()) {
-      setControl(UPDATE_SELECTED, getUpdateSelectedControls());
+      setControl(ControlCode.UPDATE_SELECTED, createUpdateSelectedControls());
     }
     if (includeConditionPanel) {
-      setControl(CONDITION_PANEL_VISIBLE, getConditionPanelControl());
+      setControl(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
     }
     if (includeClearControl) {
-      setControl(CLEAR, getClearControl());
+      setControl(ControlCode.CLEAR, createClearControl());
     }
-    setControl(REFRESH, getRefreshControl());
-    setControl(SELECT_COLUMNS, table.getSelectColumnsControl());
-    setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
+    setControl(ControlCode.REFRESH, createRefreshControl());
+    setControl(ControlCode.SELECT_COLUMNS, table.createSelectColumnsControl());
+    setControl(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
     if (summaryScrollPane != null) {
-      setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
+      setControl(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
     }
     if (includeConditionPanel && conditionPanel != null) {
-      setControl(TOGGLE_CONDITION_PANEL, getToggleConditionPanelControl());
+      setControl(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
     }
-    setControl(PRINT_TABLE, getPrintTableControl());
-    setControl(CLEAR_SELECTION, getClearSelectionControl());
-    setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
-    setControl(MOVE_SELECTION_DOWN, getMoveSelectionUpControl());
-    setControl(COPY_TABLE_DATA, getCopyControlList());
-    setControl(SELECTION_MODE, table.getSingleSelectionModeControl());
+    setControl(ControlCode.PRINT_TABLE, createPrintTableControl());
+    setControl(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
+    setControl(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
+    setControl(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
+    setControl(ControlCode.COPY_TABLE_DATA, createCopyControls());
+    setControl(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
   }
 
   private void copySelectedCell() {
@@ -1301,6 +1275,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
+  private JScrollPane initializeSummaryScrollPane(final JScrollPane tableScrollPane) {
+    final Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+    if (columnSummaryPanels.isEmpty()) {
+      return null;
+    }
+
+    return createHiddenLinkedScrollPane(tableScrollPane, new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels));
+  }
+
   private JPanel initializeTablePanel(final JScrollPane tableScrollPane) {
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
@@ -1312,15 +1295,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     return panel;
-  }
-
-  private JScrollPane initializeSummaryScrollPane(final JScrollPane tableScrollPane) {
-    final Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
-    if (columnSummaryPanels.isEmpty()) {
-      return null;
-    }
-
-    return createHiddenLinkedScrollPane(tableScrollPane, new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels));
   }
 
   private void updateStatusMessage() {
@@ -1341,13 +1315,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
-      KeyEvents.addKeyEvent(table, KeyEvent.VK_DELETE,
-              getDeleteSelectedControl());
+      KeyEvents.addKeyEvent(table, KeyEvent.VK_DELETE, createDeleteSelectedControl());
     }
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
               control(this::showEntityMenu));
     }
+    conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
+    summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilteringListener(statusListener);
@@ -1368,6 +1343,23 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           }
         });
       }
+    }
+  }
+
+  private void setConditionPanelVisibleInternal(final boolean visible) {
+    if (conditionScrollPane != null) {
+      conditionScrollPane.setVisible(visible);
+      if (automaticallyHideRefreshToolbar) {
+        refreshToolBar.setVisible(visible);
+      }
+      revalidate();
+    }
+  }
+
+  private void setSummaryPanelVisibleInternal(final boolean visible) {
+    if (summaryScrollPane != null) {
+      summaryScrollPane.setVisible(visible);
+      revalidate();
     }
   }
 
@@ -1416,8 +1408,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (conditionPanel != null) {
       final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH),
               (char) 0, frameworkIcons().filter());
-      if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
-        controls.add(getControl(CONDITION_PANEL_VISIBLE));
+      if (controlMap.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
+        controls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
       }
       final ControlList searchPanelControls = conditionPanel.getControls();
       if (searchPanelControls != null && !searchPanelControls.isEmpty()) {

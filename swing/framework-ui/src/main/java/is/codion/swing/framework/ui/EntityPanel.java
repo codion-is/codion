@@ -1159,7 +1159,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  protected void initializeEditControlPanel() {
+  protected final void initializeEditControlPanel() {
     editPanel.initializePanel();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
