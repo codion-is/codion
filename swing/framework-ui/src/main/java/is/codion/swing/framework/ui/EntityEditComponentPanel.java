@@ -17,7 +17,6 @@ import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -754,33 +753,25 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a SteppedComboBox bound to {@code attribute}
    * @param attribute the attribute to bind
    * @param comboBoxModel the ComboBoxModel
-   * @param maximumMatch true if maximum match should be used
    * @param <T> the attribute type
    * @return a SteppedComboBox bound the the attribute
-   * @see is.codion.swing.common.ui.combobox.Completion
    */
-  protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
-                                                        final boolean maximumMatch) {
-    return createComboBox(attribute, comboBoxModel, maximumMatch, null);
+  protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
+    return createComboBox(attribute, comboBoxModel, null);
   }
 
   /**
    * Creates a SteppedComboBox bound to {@code attribute}
    * @param attribute the attribute to bind
    * @param comboBoxModel the ComboBoxModel
-   * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
    * @param <T> the attribute type
    * @return a SteppedComboBox bound the the attribute
-   * @see is.codion.swing.common.ui.combobox.Completion
    */
   protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
-                                                        final boolean maximumMatch, final StateObserver enabledState) {
+                                                        final StateObserver enabledState) {
     final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
             getEditModel().value(attribute), comboBoxModel, enabledState);
-    if (maximumMatch) {
-      Completion.maximumMatch(comboBox);
-    }
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       transferFocusOnEnter(comboBox);

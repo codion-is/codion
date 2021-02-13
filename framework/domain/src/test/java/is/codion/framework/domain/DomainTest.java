@@ -9,7 +9,6 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.event.EventListener;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
@@ -41,7 +40,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.framework.domain.TestDomain.DOMAIN;
 import static java.util.Arrays.asList;
@@ -461,19 +459,6 @@ public class DomainTest {
     assertThrows(RangeValidationException.class, () -> validator.validate(emp, definition));
     emp.put(Employee.COMMISSION, 2100d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp, definition));
-  }
-
-  @Test
-  public void revalidate() {
-    final AtomicInteger counter = new AtomicInteger();
-    final DefaultEntityValidator validator = new DefaultEntityValidator();
-    final EventListener listener = counter::incrementAndGet;
-    validator.addRevalidationListener(listener);
-    validator.revalidate();
-    assertEquals(1, counter.get());
-    validator.removeRevalidationListener(listener);
-    validator.revalidate();
-    assertEquals(1, counter.get());
   }
 
   @Test

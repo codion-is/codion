@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.event.EventListener;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
@@ -92,22 +91,4 @@ public interface EntityValidator {
    * @see Property.Builder#maximumLength(int)
    */
   void performLengthValidation(Entity entity, Property<String> property) throws LengthValidationException;
-
-  /**
-   * Notifies all re-validation listeners that a re-validation is called for, for example
-   * due to modified validation settings
-   * @see #addRevalidationListener(EventListener)
-   */
-  void revalidate();
-
-  /**
-   * @param listener a listener notified each time a re-validation of all values is required, for example
-   * when the underlying validation settings have changed
-   */
-  void addRevalidationListener(EventListener listener);
-
-  /**
-   * @param listener a listener to remove
-   */
-  void removeRevalidationListener(EventListener listener);
 }

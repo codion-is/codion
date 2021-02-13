@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityModelBuilder;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityInputComponents;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityPanelBuilder;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -258,6 +259,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     UiManagerDefaults.initialize();
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
+    EntityInputComponents.COMBO_BOX_COMPLETION_MODE.set(EntityInputComponents.COMPLETION_MODE_AUTOCOMPLETE);
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);

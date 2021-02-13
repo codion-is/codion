@@ -87,7 +87,6 @@ public final class EntityComponentValidators {
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
-      this.editModel.getValidator().addRevalidationListener(this::validate);
       this.editModel.addValueListener(attribute, valueChange -> validate());
     }
 

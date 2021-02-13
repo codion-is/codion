@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
@@ -39,8 +37,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
   private boolean performNullValidation = true;
-
-  private transient Event<?> revalidateEvent;
 
   /**
    * @return true if this validator performs null validation
@@ -157,29 +153,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       throw new LengthValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maxLength);
     }
-  }
-
-  @Override
-  public final void revalidate() {
-    getRevalidateEvent().onEvent();
-  }
-
-  @Override
-  public final void addRevalidationListener(final EventListener listener) {
-    getRevalidateEvent().addListener(listener);
-  }
-
-  @Override
-  public final void removeRevalidationListener(final EventListener listener) {
-    getRevalidateEvent().removeListener(listener);
-  }
-
-  private Event<?> getRevalidateEvent() {
-    if (revalidateEvent == null) {
-      revalidateEvent = Event.event();
-    }
-
-    return revalidateEvent;
   }
 
   private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property<?> property) {
