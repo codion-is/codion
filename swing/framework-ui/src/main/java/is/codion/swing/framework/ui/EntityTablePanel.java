@@ -915,6 +915,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         setupControls();
         initializeTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
+        setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
+        setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
         updateStatusMessage();
       }
@@ -1271,6 +1273,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
+  private JScrollPane initializeSummaryScrollPane(final JScrollPane tableScrollPane) {
+    final Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+    if (columnSummaryPanels.isEmpty()) {
+      return null;
+    }
+
+    return createHiddenLinkedScrollPane(tableScrollPane, new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels));
+  }
+
   private JPanel initializeTablePanel(final JScrollPane tableScrollPane) {
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
@@ -1282,15 +1293,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     return panel;
-  }
-
-  private JScrollPane initializeSummaryScrollPane(final JScrollPane tableScrollPane) {
-    final Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
-    if (columnSummaryPanels.isEmpty()) {
-      return null;
-    }
-
-    return createHiddenLinkedScrollPane(tableScrollPane, new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels));
   }
 
   private void updateStatusMessage() {
@@ -1343,10 +1345,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void setConditionPanelVisibleInternal(final boolean visible) {
-    if (visible && isConditionPanelVisible()) {
-      return;
-    }
-
     if (conditionScrollPane != null) {
       conditionScrollPane.setVisible(visible);
       if (automaticallyHideRefreshToolbar) {
@@ -1357,12 +1355,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void setSummaryPanelVisibleInternal(final boolean visible) {
-    if (summaryScrollPane == null || (visible && isSummaryPanelVisible())) {
-      return;
+    if (summaryScrollPane != null) {
+      summaryScrollPane.setVisible(visible);
+      revalidate();
     }
-
-    summaryScrollPane.setVisible(visible);
-    revalidate();
   }
 
   private void initializeTable() {

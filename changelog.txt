@@ -6705,3 +6705,4 @@
   EntityTablePanel.INCLUDE_CLEAR_CONTROL configuration parameter added along with includeClearControl property
   EntityTablePanel.ControlCode enum added, some related refactoring
   EntityTablePanel, EntityEditPanel, FilteredTable, get***Control() methods renamed create***Control() where a Control was being created
+  EntityTablePanel bug fixed, did not display condition and summary panels when initialized
