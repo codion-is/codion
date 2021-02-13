@@ -8,8 +8,8 @@ import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
-import is.codion.framework.demos.world.model.CountryCustomModel;
 import is.codion.framework.demos.world.model.CountryModel;
+import is.codion.framework.demos.world.model.CountryOverviewModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.framework.model.SwingEntityModelBuilder;
@@ -31,7 +31,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   // tag::setupEntityPanelBuilders[]
   @Override
   protected void setupEntityPanelBuilders() {
-    final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
+    SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
     countryModelBuilder.modelClass(CountryModel.class);
     EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder) {
       @Override
@@ -40,13 +40,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
       }
     };
     countryPanelBuilder.editPanelClass(CountryEditPanel.class);
-    countryPanelBuilder.tablePanelClass(CountryTablePanel.class);
 
-    final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
-    countryCustomModelBuilder.modelClass(CountryCustomModel.class);
-    EntityPanelBuilder countryCustomPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
-            .panelClass(CountryCustomPanel.class)
-            .caption("Custom Country");
+    SwingEntityModelBuilder countryOverviewModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
+    countryOverviewModelBuilder.modelClass(CountryOverviewModel.class);
+    EntityPanelBuilder countryCustomPanelBuilder = new EntityPanelBuilder(countryOverviewModelBuilder)
+            .panelClass(CountryOverviewPanel.class)
+            .caption("Country Overview");
 
     EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(City.TYPE)
             .editPanelClass(CityEditPanel.class)
