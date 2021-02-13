@@ -471,45 +471,45 @@ public final class EntityInputComponents {
    * Creates a combo box based on the given combo box model
    * @param attribute the attribute
    * @param value the value to bind to the field
-   * @param model the combo box model
+   * @param comboBoxModel the combo box model
    * @param <T> the attribute type
    * @return a combo box based on the given model
    */
   public <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final Value<T> value,
-                                               final ComboBoxModel<T> model) {
-    return createComboBox(attribute, value, model, null);
+                                               final ComboBoxModel<T> comboBoxModel) {
+    return createComboBox(attribute, value, comboBoxModel, null);
   }
 
   /**
    * Creates a combo box based on the given combo box model
    * @param attribute the attribute
    * @param value the value to bind to the field
-   * @param model the combo box model
+   * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
    * @param <T> the attribute type
    * @return a combo box based on the given model
    */
   public <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final Value<T> value,
-                                               final ComboBoxModel<T> model, final StateObserver enabledState) {
-    return createComboBox(attribute, value, model, enabledState, Editable.NO);
+                                               final ComboBoxModel<T> comboBoxModel, final StateObserver enabledState) {
+    return createComboBox(attribute, value, comboBoxModel, enabledState, Editable.NO);
   }
 
   /**
    * Creates a combo box based on the given combo box model
    * @param attribute the attribute
    * @param value the value to bind to the field
-   * @param model the combo box model
+   * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
    * @param editable if yes then the combo box is made editable
    * @param <T> the attribute type
    * @return a combo box based on the given model
    */
   public <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final Value<T> value,
-                                               final ComboBoxModel<T> model, final StateObserver enabledState,
+                                               final ComboBoxModel<T> comboBoxModel, final StateObserver enabledState,
                                                final Editable editable) {
     requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final SteppedComboBox<T> comboBox = new SteppedComboBox<>(model);
+    final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
     if (editable == Editable.YES && !attribute.isString()) {
       throw new IllegalArgumentException("Editable attribute ComboBox is only implemented for String properties");
     }
@@ -719,7 +719,7 @@ public final class EntityInputComponents {
       TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDateTime>) value);
     }
     else {
-      throw new IllegalArgumentException("Property type does not support text fields: " + attribute);
+      throw new IllegalArgumentException("Text fields not implemented for attribute type: " + attribute);
     }
 
     return textField;

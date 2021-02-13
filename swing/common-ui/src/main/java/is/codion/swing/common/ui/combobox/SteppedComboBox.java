@@ -22,10 +22,10 @@ public class SteppedComboBox<V> extends JComboBox<V> {
 
   /**
    * Instantiates a new SteppedComboBox.
-   * @param model the combo box model
+   * @param comboBoxModel the combo box model
    */
-  public SteppedComboBox(final ComboBoxModel<V> model) {
-    super(Objects.requireNonNull(model, "model"));
+  public SteppedComboBox(final ComboBoxModel<V> comboBoxModel) {
+    super(Objects.requireNonNull(comboBoxModel, "comboBoxModel"));
     setUI(new SteppedComboBoxUI());
   }
 
