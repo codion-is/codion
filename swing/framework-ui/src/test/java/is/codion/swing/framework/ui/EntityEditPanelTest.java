@@ -61,7 +61,7 @@ public final class EntityEditPanelTest {
     assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.DELETE));
     assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.REFRESH));
     assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.CLEAR));
-    assertNotNull(editPanel.getInsertControl());
+    assertNotNull(editPanel.createInsertControl());
   }
 
   private static final class TestEditPanel extends EntityEditPanel {

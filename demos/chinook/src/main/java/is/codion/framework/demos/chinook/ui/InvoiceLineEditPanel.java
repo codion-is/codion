@@ -39,7 +39,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     final JTextField quantityField = createTextField(InvoiceLine.QUANTITY);
     selectAllOnFocusGained(quantityField);
     removeTransferFocusOnEnter(quantityField);//otherwise the action set below wont work
-    quantityField.setAction(getSaveControl());
+    quantityField.setAction(createSaveControl());
 
     setLayout(borderLayout());
     add(createInputPanel(InvoiceLine.TRACK_FK), BorderLayout.WEST);

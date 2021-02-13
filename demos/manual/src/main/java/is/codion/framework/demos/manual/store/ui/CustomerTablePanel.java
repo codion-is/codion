@@ -28,8 +28,8 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlList getPrintControls() {
-    ControlList printControls = super.getPrintControls();
+  protected ControlList createPrintControls() {
+    ControlList printControls = super.createPrintControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
     printControls.add(Controls.control(this::viewCustomerReport, "Customer report",
