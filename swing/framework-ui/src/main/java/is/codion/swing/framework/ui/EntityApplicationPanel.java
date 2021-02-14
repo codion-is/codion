@@ -913,7 +913,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     clearEntityPanelBuilders();
-    setupEntityPanelBuilders();
+    setupEntityPanelBuilders(applicationModel);
     this.entityPanels.addAll(initializeEntityPanels(applicationModel));
     initializeUI();
     bindEventsInternal();
@@ -1022,8 +1022,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #addEntityPanelBuilders(EntityPanelBuilder...)
    * @see #addSupportPanelBuilder(EntityPanelBuilder)
    * @see #addSupportPanelBuilders(EntityPanelBuilder...)
+   * @param applicationModel the application model
    */
-  protected void setupEntityPanelBuilders() {}
+  protected void setupEntityPanelBuilders(final M applicationModel) {}
 
   /**
    * Initializes this EntityApplicationPanel
@@ -1053,14 +1054,19 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected List<EntityPanel> initializeEntityPanels(final M applicationModel) {
     final List<EntityPanel> panels = new ArrayList<>();
     for (final EntityPanel.Builder panelBuilder : entityPanelBuilders) {
-      final SwingEntityModel entityModel = initializeEntityModel(applicationModel, panelBuilder.getModelBuilder());
       final EntityPanel entityPanel;
-      if (applicationModel.containsEntityModel(panelBuilder.getEntityType())) {
-        entityPanel = panelBuilder.buildPanel(entityModel);
+      if (panelBuilder.containsModel()) {
+        entityPanel = panelBuilder.buildPanel();
       }
       else {
-        entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
-        applicationModel.addEntityModel(entityPanel.getModel());
+        final SwingEntityModel entityModel = initializeEntityModel(applicationModel, panelBuilder.getModelBuilder());
+        if (applicationModel.containsEntityModel(panelBuilder.getEntityType())) {
+          entityPanel = panelBuilder.buildPanel(entityModel);
+        }
+        else {
+          entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
+          applicationModel.addEntityModel(entityPanel.getModel());
+        }
       }
       panels.add(entityPanel);
     }

@@ -58,19 +58,19 @@ public final class EmpDeptMinimalApp {
    * And for the columns in the SCOTT.EMP table.
    */
   interface Employee {
-    EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
+    EntityType<Entity> TYPE = DOMAIN.entityType("scott.emp");
 
-    Attribute<Integer> EMPNO = T_EMP.integerAttribute("empno");
-    Attribute<String> ENAME = T_EMP.stringAttribute("ename");
-    Attribute<Integer> DEPTNO = T_EMP.integerAttribute("deptno");
-    Attribute<String> JOB = T_EMP.stringAttribute("job");
-    Attribute<Double> SAL = T_EMP.doubleAttribute("sal");
-    Attribute<Double> COMM = T_EMP.doubleAttribute("comm");
-    Attribute<Integer> MGR = T_EMP.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = T_EMP.localDateAttribute("hiredate");
+    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
+    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Double> SAL = TYPE.doubleAttribute("sal");
+    Attribute<Double> COMM = TYPE.doubleAttribute("comm");
+    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
+    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
 
-    ForeignKey DEPT_FK = T_EMP.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
-    ForeignKey MGR_FK = T_EMP.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
+    ForeignKey DEPT_FK = TYPE.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
   }
 
   /**
@@ -99,7 +99,7 @@ public final class EmpDeptMinimalApp {
        * note the foreign key properties, referencing the
        * department as well as the manager
        */
-      define(Employee.T_EMP,
+      define(Employee.TYPE,
               primaryKeyProperty(Employee.EMPNO),
               columnProperty(Employee.ENAME, "Name")
                       .searchProperty()
@@ -134,7 +134,7 @@ public final class EmpDeptMinimalApp {
   public static final class EmployeeEditModel extends SwingEntityEditModel {
 
     public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
-      super(Employee.T_EMP, connectionProvider);
+      super(Employee.TYPE, connectionProvider);
     }
 
     /**
@@ -222,6 +222,10 @@ public final class EmpDeptMinimalApp {
 
     private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
+      final SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
+      final SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
+      departmentModel.addDetailModel(employeeModel);
+      addEntityModel(departmentModel);
     }
   }
 
@@ -235,18 +239,21 @@ public final class EmpDeptMinimalApp {
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
-    protected void setupEntityPanelBuilders() {
+    protected void setupEntityPanelBuilders(final EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
-      final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.T_EMP)
-              .editModelClass(EmployeeEditModel.class);
-      final EntityPanel.Builder employeeProvider = EntityPanel.builder(employeeModelBuilder)
-              .editPanelClass(EmployeeEditPanel.class);
-      final EntityPanel.Builder departmentProvider = EntityPanel.builder(Department.TYPE)
-              .editPanelClass(DepartmentEditPanel.class)
-              .detailPanelBuilder(employeeProvider);
+      final SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
+      final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+
+      final EntityPanel.Builder employeePanelBuilder =
+              EntityPanel.builder(employeeModel)
+                      .editPanelClass(EmployeeEditPanel.class);
+      final EntityPanel.Builder departmentPanelBuilder =
+              EntityPanel.builder(departmentModel)
+                      .editPanelClass(DepartmentEditPanel.class)
+                      .detailPanelBuilder(employeePanelBuilder);
 
       //the department panel is the main (or root) application panel
-      addEntityPanelBuilder(departmentProvider);
+      addEntityPanelBuilder(departmentPanelBuilder);
     }
 
     @Override

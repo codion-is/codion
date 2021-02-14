@@ -203,7 +203,8 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     if (obj instanceof SwingEntityModelBuilder) {
       final SwingEntityModelBuilder that = (SwingEntityModelBuilder) obj;
 
-      return Objects.equals(modelClass, that.modelClass) &&
+      return Objects.equals(entityType, that.entityType) &&
+              Objects.equals(modelClass, that.modelClass) &&
               Objects.equals(editModelClass, that.editModelClass) &&
               Objects.equals(tableModelClass, that.tableModelClass);
     }
@@ -213,7 +214,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
   @Override
   public int hashCode() {
-    return Objects.hash(modelClass, editModelClass, tableModelClass);
+    return Objects.hash(entityType, modelClass, editModelClass, tableModelClass);
   }
 
   private SwingEntityModel buildDefaultModel(final EntityConnectionProvider connectionProvider) {

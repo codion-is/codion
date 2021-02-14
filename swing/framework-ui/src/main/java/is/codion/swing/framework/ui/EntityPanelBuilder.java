@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -34,6 +35,10 @@ import static java.util.Objects.requireNonNull;
 final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
+
+  private final EntityType<?> entityType;
+  private final SwingEntityModel.Builder modelBuilder;
+  private final SwingEntityModel model;
 
   private String caption;
   private boolean refreshOnInit = true;
@@ -49,22 +54,33 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private Consumer<EntityEditPanel> editPanelInitializer = editPanel ->  {};
   private Consumer<EntityTablePanel> tablePanelInitializer = tablePanel -> {};
 
-  private final SwingEntityModel.Builder modelBuilder;
-
   private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
   EntityPanelBuilder(final SwingEntityModel.Builder modelBuilder) {
     this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
+    this.entityType = modelBuilder.getEntityType();
+    this.model = null;
+  }
+
+  EntityPanelBuilder(final SwingEntityModel model) {
+    this.model = requireNonNull(model, "model");
+    this.entityType = model.getEntityType();
+    this.modelBuilder = null;
   }
 
   @Override
   public EntityType<?> getEntityType() {
-    return modelBuilder.getEntityType();
+    return entityType;
   }
 
   @Override
   public SwingEntityModel.Builder getModelBuilder() {
     return modelBuilder;
+  }
+
+  @Override
+  public boolean containsModel() {
+    return model != null;
   }
 
   @Override
@@ -82,7 +98,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   public EntityPanel.Builder detailPanelBuilder(final EntityPanel.Builder panelBuilder) {
     if (!detailPanelBuilders.contains(panelBuilder)) {
       detailPanelBuilders.add(panelBuilder);
-      modelBuilder.detailModelBuilder(panelBuilder.getModelBuilder());//todo not very clean
     }
 
     return this;
@@ -159,28 +174,40 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   @Override
   public boolean equals(final Object obj) {
-    return obj instanceof EntityPanelBuilder &&
-            ((EntityPanelBuilder) obj).modelBuilder.getEntityType().equals(modelBuilder.getEntityType()) &&
-            ((EntityPanelBuilder) obj).modelBuilder.getModelClass().equals(modelBuilder.getModelClass());
+    if (obj instanceof EntityPanelBuilder) {
+      final EntityPanelBuilder that = (EntityPanelBuilder) obj;
+
+      return Objects.equals(modelBuilder, that.model) &&
+              Objects.equals(model, that.model) &&
+              Objects.equals(panelClass, that.panelClass) &&
+              Objects.equals(editPanelClass, that.editPanelClass) &&
+              Objects.equals(tablePanelClass, that.tablePanelClass);
+    }
+
+    return false;
   }
 
   @Override
   public int hashCode() {
-    return modelBuilder.getEntityType().hashCode() + modelBuilder.getModelClass().hashCode();
+    return Objects.hash(modelBuilder, model, panelClass, editPanelClass, tablePanelClass);
+  }
+
+  @Override
+  public EntityPanel buildPanel() {
+    if (model == null) {
+      throw new IllegalStateException("A SwingEntityModel is not avilable in this panel builder: " + getEntityType());
+    }
+
+    return buildPanel(model);
   }
 
   @Override
   public EntityPanel buildPanel(final EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, "connectionProvider");
-    try {
-      return buildPanel(modelBuilder.buildModel(connectionProvider));
+    if (modelBuilder == null) {
+      throw new IllegalStateException("A SwingEntityModel.Builder is not avilable in this panel builder: " + getEntityType());
     }
-    catch (final RuntimeException e) {
-      throw e;
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+
+    return buildPanel(modelBuilder.buildModel(requireNonNull(connectionProvider, "connectionProvider")));
   }
 
   @Override

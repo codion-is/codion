@@ -48,7 +48,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   }
 
   @Override
-  protected void setupEntityPanelBuilders() {
+  protected void setupEntityPanelBuilders(final StoreAppModel applicationModel) {
     addSupportPanelBuilder(EntityPanel.builder(Address.TYPE)
             .editPanelClass(AddressEditPanel.class));
   }

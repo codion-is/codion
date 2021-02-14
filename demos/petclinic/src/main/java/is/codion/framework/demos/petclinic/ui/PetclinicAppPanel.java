@@ -72,7 +72,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   }
 
   @Override
-  protected void setupEntityPanelBuilders() {
+  protected void setupEntityPanelBuilders(PetclinicAppModel applicationModel) {
     EntityPanel.Builder petTypePanelBuilder =
             EntityPanel.builder(PetType.TYPE)
                     .editPanelClass(PetTypeEditPanel.class)

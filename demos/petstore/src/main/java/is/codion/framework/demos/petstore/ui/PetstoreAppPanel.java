@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
@@ -18,37 +19,50 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
   @Override
-  protected void setupEntityPanelBuilders() {
+  protected void setupEntityPanelBuilders(final PetstoreAppModel applicationModel) {
     /* CATEGORY
      *   PRODUCT
      *     ITEM
      *       ITEMTAG
      */
-    final EntityPanel.Builder tagItemProvider = EntityPanel.builder(TagItem.TYPE)
-            .editPanelClass(TagItemEditPanel.class);
+    final SwingEntityModel categoryModel = applicationModel.getEntityModel(Category.TYPE);
+    final SwingEntityModel productModel = categoryModel.getDetailModel(Product.TYPE);
+    final SwingEntityModel itemModel = productModel.getDetailModel(Item.TYPE);
+    final SwingEntityModel tagItemModel = itemModel.getDetailModel(TagItem.TYPE);
 
-    addEntityPanelBuilder(EntityPanel.builder(Category.TYPE)
+    addEntityPanelBuilder(EntityPanel.builder(categoryModel)
             .editPanelClass(CategoryEditPanel.class)
-            .detailPanelBuilder(EntityPanel.builder(Product.TYPE)
+            .detailPanelBuilder(EntityPanel.builder(productModel)
                     .editPanelClass(ProductEditPanel.class)
-                    .detailPanelBuilder(EntityPanel.builder(Item.TYPE)
+                    .detailPanelBuilder(EntityPanel.builder(itemModel)
                             .editPanelClass(ItemEditPanel.class)
-                            .detailPanelBuilder(tagItemProvider)
+                            .detailPanelBuilder(EntityPanel.builder(tagItemModel)
+                                    .editPanelClass(TagItemEditPanel.class))
                             .detailPanelState(EntityPanel.PanelState.HIDDEN))
                     .detailSplitPanelResizeWeight(0.3)).detailSplitPanelResizeWeight(0.3));
+
+    final SwingEntityModel.Builder tagModelBuilder =
+            SwingEntityModel.builder(Tag.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));
+    final SwingEntityModel.Builder sellerContactInfoModelBuilder =
+            SwingEntityModel.builder(SellerContactInfo.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Item.TYPE)
+                            .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE)));
 
     addSupportPanelBuilders(
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class),
-            EntityPanel.builder(SellerContactInfo.TYPE)
+            EntityPanel.builder(sellerContactInfoModelBuilder)
                     .editPanelClass(ContactInfoEditPanel.class)
                     .detailPanelBuilder(EntityPanel.builder(Item.TYPE)
                             .editPanelClass(ItemEditPanel.class)
-                            .detailPanelBuilder(tagItemProvider)
+                            .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
+                                    .editPanelClass(TagItemEditPanel.class))
                             .detailPanelState(EntityPanel.PanelState.HIDDEN)),
-            EntityPanel.builder(Tag.TYPE)
+            EntityPanel.builder(tagModelBuilder)
                     .editPanelClass(TagEditPanel.class)
-                    .detailPanelBuilder(tagItemProvider)
+                    .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
+                            .editPanelClass(TagItemEditPanel.class))
                     .detailPanelState(EntityPanel.PanelState.HIDDEN));
   }
 

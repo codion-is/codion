@@ -82,24 +82,28 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
    *     INVOICELINE
    */
   @Override
-  protected void setupEntityPanelBuilders() {
-    final EntityPanel.Builder trackBuilder = EntityPanel.builder(Track.TYPE)
-            .editPanelClass(TrackEditPanel.class)
-            .tablePanelClass(TrackTablePanel.class);
+  protected void setupEntityPanelBuilders(final ChinookApplicationModel applicationModel) {
+    final EntityPanel.Builder trackBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(Track.TYPE))
+                    .editPanelClass(TrackEditPanel.class)
+                    .tablePanelClass(TrackTablePanel.class);
 
-    final EntityPanel.Builder customerBuilder = EntityPanel.builder(Customer.TYPE)
-            .editPanelClass(CustomerEditPanel.class)
-            .tablePanelClass(CustomerTablePanel.class);
+    final EntityPanel.Builder customerBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(Customer.TYPE))
+                    .editPanelClass(CustomerEditPanel.class)
+                    .tablePanelClass(CustomerTablePanel.class);
 
-    final EntityPanel.Builder genreBuilder = EntityPanel.builder(Genre.TYPE)
-            .editPanelClass(GenreEditPanel.class)
-            .detailPanelBuilder(trackBuilder)
-            .detailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanel.Builder genreBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(Genre.TYPE))
+                    .editPanelClass(GenreEditPanel.class)
+                    .detailPanelBuilder(trackBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanel.Builder mediaTypeBuilder = EntityPanel.builder(MediaType.TYPE)
-            .editPanelClass(MediaTypeEditPanel.class)
-            .detailPanelBuilder(trackBuilder)
-            .detailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanel.Builder mediaTypeBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(MediaType.TYPE))
+                    .editPanelClass(MediaTypeEditPanel.class)
+                    .detailPanelBuilder(trackBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE)
             .tableModelClass(EmployeeTableModel.class);

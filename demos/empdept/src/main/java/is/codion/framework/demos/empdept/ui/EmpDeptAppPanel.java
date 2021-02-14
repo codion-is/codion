@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
-  protected void setupEntityPanelBuilders() {
+  protected void setupEntityPanelBuilders(final EmpDeptApplicationModel applicationModel) {
     final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE)
             .tableModelInitializer(tableModel ->
                     tableModel.getColumnSummaryModel(Employee.SALARY)
