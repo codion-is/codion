@@ -139,7 +139,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * should be persisted, or kept in memory, when the dialog is closed, instead of being created each time.<br>
    * Value type: Boolean<br>
    * Default value: false
-   * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanelBuilder)
+   * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)
    */
   public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("codion.swing.persistEntityPanels", false);
 
@@ -1018,10 +1018,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Called during initialization, after the application model has been initialized,
    * override to keep all entity panel builder definitions in one place.
-   * @see #addEntityPanelBuilder(EntityPanelBuilder)
-   * @see #addEntityPanelBuilders(EntityPanelBuilder...)
-   * @see #addSupportPanelBuilder(EntityPanelBuilder)
-   * @see #addSupportPanelBuilders(EntityPanelBuilder...)
+   * @see #addEntityPanelBuilder(EntityPanel.Builder)
+   * @see #addEntityPanelBuilders(EntityPanel.Builder...)
+   * @see #addSupportPanelBuilder(EntityPanel.Builder)
+   * @see #addSupportPanelBuilders(EntityPanel.Builder...)
    * @param applicationModel the application model
    */
   protected void setupEntityPanelBuilders(final M applicationModel) {}
@@ -1046,10 +1046,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * By default this method returns the panels defined by the available {@link EntityPanelBuilder}s.
+   * By default this method returns the panels defined by the available {@link EntityPanel.Builder}s.
    * @param applicationModel the application model responsible for providing EntityModels for the panels
    * @return a List containing the {@link EntityPanel}s to include in this application panel
-   * @see #addEntityPanelBuilder(EntityPanelBuilder)
+   * @see #addEntityPanelBuilder(EntityPanel.Builder)
    */
   protected List<EntityPanel> initializeEntityPanels(final M applicationModel) {
     final List<EntityPanel> panels = new ArrayList<>();

@@ -1562,7 +1562,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     Builder caption(String caption);
 
     /**
-     * @return the caption to use when this EntityPanelBuilder is shown in f.x. menus
+     * @return the caption to use when the EntityPanel is shown in f.x. menus
      */
     String getCaption();
 
