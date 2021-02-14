@@ -10,7 +10,6 @@ import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.util.Locale;
 
@@ -25,29 +24,29 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
      *     ITEM
      *       ITEMTAG
      */
-    final EntityPanelBuilder tagItemProvider = new EntityPanelBuilder(TagItem.TYPE)
+    final EntityPanel.Builder tagItemProvider = EntityPanel.builder(TagItem.TYPE)
             .editPanelClass(TagItemEditPanel.class);
 
-    addEntityPanelBuilder(new EntityPanelBuilder(Category.TYPE)
+    addEntityPanelBuilder(EntityPanel.builder(Category.TYPE)
             .editPanelClass(CategoryEditPanel.class)
-            .detailPanelBuilder(new EntityPanelBuilder(Product.TYPE)
+            .detailPanelBuilder(EntityPanel.builder(Product.TYPE)
                     .editPanelClass(ProductEditPanel.class)
-                    .detailPanelBuilder(new EntityPanelBuilder(Item.TYPE)
+                    .detailPanelBuilder(EntityPanel.builder(Item.TYPE)
                             .editPanelClass(ItemEditPanel.class)
                             .detailPanelBuilder(tagItemProvider)
                             .detailPanelState(EntityPanel.PanelState.HIDDEN))
                     .detailSplitPanelResizeWeight(0.3)).detailSplitPanelResizeWeight(0.3));
 
     addSupportPanelBuilders(
-            new EntityPanelBuilder(Address.TYPE)
+            EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class),
-            new EntityPanelBuilder(SellerContactInfo.TYPE)
+            EntityPanel.builder(SellerContactInfo.TYPE)
                     .editPanelClass(ContactInfoEditPanel.class)
-                    .detailPanelBuilder(new EntityPanelBuilder(Item.TYPE)
+                    .detailPanelBuilder(EntityPanel.builder(Item.TYPE)
                             .editPanelClass(ItemEditPanel.class)
                             .detailPanelBuilder(tagItemProvider)
                             .detailPanelState(EntityPanel.PanelState.HIDDEN)),
-            new EntityPanelBuilder(Tag.TYPE)
+            EntityPanel.builder(Tag.TYPE)
                     .editPanelClass(TagEditPanel.class)
                     .detailPanelBuilder(tagItemProvider)
                     .detailPanelState(EntityPanel.PanelState.HIDDEN));

@@ -4,7 +4,10 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.value.PropertyValue;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
@@ -22,6 +25,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -51,6 +55,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
@@ -954,6 +959,24 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     detailEntityPanels.forEach(EntityPanel::savePreferences);
   }
 
+  /**
+   * Instantiates a new EntityPanel.Builder
+   * @param entityType the entity type to base this panel builder on
+   * @return a panel builder
+   */
+  public static EntityPanel.Builder builder(final EntityType<?> entityType) {
+    return new EntityPanelBuilder(SwingEntityModel.builder(entityType));
+  }
+
+  /**
+   * Instantiates a new EntityPanel.Builder
+   * @param modelBuilder the SwingEntityModel.Builder to base this panel builder on
+   * @return a panel builder
+   */
+  public static EntityPanel.Builder builder(final SwingEntityModel.Builder modelBuilder) {
+    return new EntityPanelBuilder(modelBuilder);
+  }
+
   //#############################################################################################
   // Begin - initialization methods
   //#############################################################################################
@@ -1501,5 +1524,157 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     public void componentShown(final ComponentEvent e) {
       SwingUtilities.invokeLater(() -> setFilterPanelsVisible(true));
     }
+  }
+
+  /**
+   * A class providing EntityPanel instances.
+   */
+  public interface Builder {
+
+    /**
+     * @return the entityType
+     */
+    EntityType<?> getEntityType();
+
+    /**
+     * @return the EntityModelBuilder this panel provider is based on
+     */
+    SwingEntityModel.Builder getModelBuilder();
+
+    /**
+     * @param caption the panel caption
+     * @return this EntityPanel.Builder instance
+     */
+    Builder caption(String caption);
+
+    /**
+     * @return the caption to use when this EntityPanelBuilder is shown in f.x. menus
+     */
+    String getCaption();
+
+    /**
+     * Adds the given detail panel builder to this panel builder, if it hasn't been previously added
+     * @param panelBuilder the detail panel provider
+     * @return this EntityPanel.Builder instance
+     */
+    Builder detailPanelBuilder(EntityPanel.Builder panelBuilder);
+
+    /**
+     * @param refreshOnInit if true then the data model this panel is based on will be refreshed when
+     * the panel is initialized
+     * @return this EntityPanel.Builder instance
+     */
+    Builder refreshOnInit(boolean refreshOnInit);
+
+    /**
+     * @param tableConditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
+     * @return this EntityPanel.Builder instance
+     */
+    Builder tableConditionPanelVisible(boolean tableConditionPanelVisible);
+
+    /**
+     * @param detailPanelState the state of the detail panels when this panel is initialized
+     * @return this EntityPanel.Builder instance
+     */
+    Builder detailPanelState(PanelState detailPanelState);
+
+    /**
+     * @param detailSplitPanelResizeWeight the split panel resize weight to use when initializing this panel
+     * with its detail panels
+     * @return this EntityPanel.Builder instance
+     */
+    Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight);
+
+    /**
+     * Note that setting the EntityPanel class overrides any table panel or edit panel classes that have been set.
+     * @param panelClass the EntityPanel class to use when providing this panel
+     * @return this EntityPanel.Builder instance
+     */
+    Builder panelClass(Class<? extends EntityPanel> panelClass);
+
+    /**
+     * @param editPanelClass the EntityEditPanel class to use when providing this panel
+     * @return this EntityPanel.Builder instance
+     */
+    Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass);
+
+    /**
+     * @param tablePanelClass the EntityTablePanel class to use when providing this panel
+     * @return this EntityPanel.Builder instance
+     */
+    Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass);
+
+    /**
+     * @param panelInitializer initializes the panel post construction
+     * @return this EntityPanel.Builder instance
+     */
+    Builder panelInitializer(Consumer<EntityPanel> panelInitializer);
+
+    /**
+     * @param editPanelInitializer initializes the edit panel post construction
+     * @return this EntityPanel.Builder instance
+     */
+    Builder editPanelInitializer(Consumer<EntityEditPanel> editPanelInitializer);
+
+    /**
+     * @param tablePanelInitializer initializes the table panel post construction
+     * @return this EntityPanel.Builder instance
+     */
+    Builder tablePanelInitializer(Consumer<EntityTablePanel> tablePanelInitializer);
+
+    /**
+     * Creates an EntityPanel based on this provider configuration
+     * @param connectionProvider the connection provider
+     * @return an EntityPanel based on this provider configuration
+     */
+    EntityPanel buildPanel(EntityConnectionProvider connectionProvider);
+
+    /**
+     * Creates an EntityPanel based on this provider configuration
+     * @param model the EntityModel to base this panel on
+     * @return an EntityPanel based on this provider configuration
+     */
+    EntityPanel buildPanel(SwingEntityModel model);
+
+    /**
+     * Creates an EntityEditPanel
+     * @param connectionProvider the connection provider
+     * @return an EntityEditPanel based on this provider
+     */
+    EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider);
+
+    /**
+     * Creates an EntityTablePanel
+     * @param connectionProvider the connection provider
+     * @return an EntityTablePanel based on this provider
+     */
+    EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
+
+    /**
+     * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
+     * adds the new entity to the {@code comboBox} and selects it.
+     * @param comboBox the combo box in which to select the new entity, if created
+     * @return the Action
+     */
+    Action createEditPanelAction(EntityComboBox comboBox);
+
+    /**
+     * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
+     * selects the new entity in the {@code lookupField}.
+     * @param lookupField the lookup field in which to select the new entity, if created
+     * @return the Action
+     */
+    Action createEditPanelAction(EntityLookupField lookupField);
+
+    /**
+     * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
+     * {@code insertListener} is notified.
+     * @param component this component used as dialog parent, receives the focus after insert
+     * @param connectionProvider the connection provider
+     * @param insertListener the listener notified when insert has been performed
+     * @return the Action
+     */
+    Action createEditPanelAction(JComponent component, EntityConnectionProvider connectionProvider,
+                                 EventDataListener<List<Entity>> insertListener);
   }
 }

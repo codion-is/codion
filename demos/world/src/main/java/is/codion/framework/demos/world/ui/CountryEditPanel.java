@@ -10,7 +10,7 @@ import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.Editable;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -49,7 +49,9 @@ public final class CountryEditPanel extends EntityEditPanel {
             setPreferredWidth(createForeignKeyComboBox(Country.CAPITAL_FK), 120);
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
-            new CityPanelBuilder().createEditPanelAction(capitalComboBox));
+            EntityPanel.builder(City.TYPE)
+                    .editPanelInitializer(this::initializeCapitalEditPanel)
+                    .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
     ComponentValue<Double, DoubleField> averageCityPopulationFieldValue = NumericalValues.doubleValue();
     final DoubleField averageCityPopulationField = averageCityPopulationFieldValue.getComponent();
@@ -77,30 +79,20 @@ public final class CountryEditPanel extends EntityEditPanel {
     add(createInputPanel(new JLabel("Avg. city population"), averageCityPopulationField));
   }
 
-  /** A EntityPanelBuilder for adding a new city */
-  private final class CityPanelBuilder extends EntityPanelBuilder {
-
-    public CityPanelBuilder() {
-      super(City.TYPE);
-      editPanelClass(CityEditPanel.class);
-    }
-
-    @Override
-    protected void configureEditPanel(EntityEditPanel editPanel) {
-      //set the country to the one selected in the CountryEditPanel
-      Entity country = CountryEditPanel.this.getEditModel().getEntityCopy();
-      if (country.getPrimaryKey().isNotNull()) {
-        //if a country is selected, then we don't allow it to be changed
-        editPanel.getEditModel().put(City.COUNTRY_FK, country);
-        //initialize the panel components, so we can configure the country component
-        editPanel.initializePanel();
-        //disable the country selection component
-        JComponent countryComponent = editPanel.getComponent(City.COUNTRY_FK);
-        countryComponent.setEnabled(false);
-        countryComponent.setFocusable(false);
-        //and change the initial focus property
-        editPanel.setInitialFocusAttribute(City.NAME);
-      }
+  private void initializeCapitalEditPanel(EntityEditPanel capitalEditPanel) {
+    //set the country to the one selected in the CountryEditPanel
+    Entity country = getEditModel().getEntityCopy();
+    if (country.getPrimaryKey().isNotNull()) {
+      //if a country is selected, then we don't allow it to be changed
+      capitalEditPanel.getEditModel().put(City.COUNTRY_FK, country);
+      //initialize the panel components, so we can configure the country component
+      capitalEditPanel.initializePanel();
+      //disable the country selection component
+      JComponent countryComponent = capitalEditPanel.getComponent(City.COUNTRY_FK);
+      countryComponent.setEnabled(false);
+      countryComponent.setFocusable(false);
+      //and change the initial focus property
+      capitalEditPanel.setInitialFocusAttribute(City.NAME);
     }
   }
 }

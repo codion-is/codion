@@ -8,7 +8,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.SwingEntityModelBuilder;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,30 +22,30 @@ public class EntityPanelBuilderTest {
 
   @Test
   public void setPanelClass() {
-    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .editPanelClass(EntityEditPanel.class).panelClass(EntityPanel.class));
-    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .tablePanelClass(EntityTablePanel.class).panelClass(EntityPanel.class));
 
-    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .panelClass(EntityPanel.class).editPanelClass(EntityEditPanel.class));
-    assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .panelClass(EntityPanel.class).tablePanelClass(EntityTablePanel.class));
   }
 
   @Test
   public void testDetailPanelBuilder() {
-    final SwingEntityModelBuilder customerModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT);
-    final SwingEntityModelBuilder invoiceModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
+    final SwingEntityModel.Builder customerModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT);
+    final SwingEntityModel.Builder invoiceModelBuilder = SwingEntityModel.builder(TestDomain.T_EMP);
 
     customerModelBuilder.detailModelBuilder(invoiceModelBuilder);
 
     final SwingEntityModel customerModel = customerModelBuilder.buildModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
-    final EntityPanelBuilder customerPanelBuilder = new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
+    final EntityPanel.Builder customerPanelBuilder = EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .caption(customerCaption);
-    final EntityPanelBuilder invoicePanelBuilder = new EntityPanelBuilder(TestDomain.T_EMP)
+    final EntityPanel.Builder invoicePanelBuilder = EntityPanel.builder(TestDomain.T_EMP)
             .caption("empCaption");
 
     customerPanelBuilder.detailPanelBuilder(invoicePanelBuilder);

@@ -14,7 +14,7 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
@@ -23,11 +23,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected void setupEntityPanelBuilders() {
-    addEntityPanelBuilder(new EntityPanelBuilder(Schema.TYPE)
-            .detailPanelBuilder(new EntityPanelBuilder(Table.TYPE)
-                    .detailPanelBuilder(new EntityPanelBuilder(Column.TYPE))
-                    .detailPanelBuilder(new EntityPanelBuilder(Constraint.TYPE)
-                            .detailPanelBuilder(new EntityPanelBuilder(ColumnConstraint.TYPE))))
+    addEntityPanelBuilder(EntityPanel.builder(Schema.TYPE)
+            .detailPanelBuilder(EntityPanel.builder(Table.TYPE)
+                    .detailPanelBuilder(EntityPanel.builder(Column.TYPE))
+                    .detailPanelBuilder(EntityPanel.builder(Constraint.TYPE)
+                            .detailPanelBuilder(EntityPanel.builder(ColumnConstraint.TYPE))))
             .detailSplitPanelResizeWeight(0.3));
   }
 

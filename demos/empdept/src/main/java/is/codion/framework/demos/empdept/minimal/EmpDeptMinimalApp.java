@@ -17,11 +17,11 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -237,11 +237,11 @@ public final class EmpDeptMinimalApp {
     @Override
     protected void setupEntityPanelBuilders() {
       //now, let's assemble our application
-      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(Employee.T_EMP)
+      final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.T_EMP)
               .editModelClass(EmployeeEditModel.class);
-      final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelBuilder)
+      final EntityPanel.Builder employeeProvider = EntityPanel.builder(employeeModelBuilder)
               .editPanelClass(EmployeeEditPanel.class);
-      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder(Department.TYPE)
+      final EntityPanel.Builder departmentProvider = EntityPanel.builder(Department.TYPE)
               .editPanelClass(DepartmentEditPanel.class)
               .detailPanelBuilder(employeeProvider);
 
