@@ -35,7 +35,7 @@ public final class SwingEntityModelBuilderTest {
 
   @Test
   public void testDetailModelBuilder() {
-    final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    final SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .editModelClass(DepartmentEditModel.class)
             .tableModelClass(DepartmentTableModel.class);
     final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);

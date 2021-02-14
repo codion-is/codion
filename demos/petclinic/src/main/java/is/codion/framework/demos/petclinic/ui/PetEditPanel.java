@@ -10,7 +10,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -30,7 +30,7 @@ public final class PetEditPanel extends EntityEditPanel {
     createTextField(Pet.BIRTH_DATE);
     EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
 
-    Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE)
+    Action newPetTypeAction = EntityPanel.builder(PetType.TYPE)
             .editPanelClass(PetTypeEditPanel.class)
             .createEditPanelAction(petTypeBox);
     JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);

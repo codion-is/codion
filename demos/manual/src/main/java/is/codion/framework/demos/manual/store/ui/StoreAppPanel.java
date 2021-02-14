@@ -17,7 +17,6 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import java.util.Collections;
@@ -49,8 +48,8 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   }
 
   @Override
-  protected void setupEntityPanelBuilders() {
-    addSupportPanelBuilder(new EntityPanelBuilder(Address.TYPE)
+  protected void setupEntityPanelBuilders(final StoreAppModel applicationModel) {
+    addSupportPanelBuilder(EntityPanel.builder(Address.TYPE)
             .editPanelClass(AddressEditPanel.class));
   }
 

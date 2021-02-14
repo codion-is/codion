@@ -10,7 +10,7 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -35,13 +35,13 @@ public class TrackEditPanel extends EntityEditPanel {
     createTextField(Track.NAME).setColumns(18);
     final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK);
     setPreferredHeight(mediaTypeBox, getPreferredTextFieldHeight());
-    final Action newMediaTypeAction = new EntityPanelBuilder(MediaType.TYPE)
+    final Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
             .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
     final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
     final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK);
     setPreferredHeight(genreBox, getPreferredTextFieldHeight());
-    final Action newGenreAction = new EntityPanelBuilder(Genre.TYPE)
+    final Action newGenreAction = EntityPanel.builder(Genre.TYPE)
             .editPanelClass(GenreEditPanel.class)
             .createEditPanelAction(genreBox);
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);

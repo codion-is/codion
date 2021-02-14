@@ -7,6 +7,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityModel;
 
+import java.util.function.Consumer;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -48,5 +50,107 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    */
   public SwingEntityModel(final SwingEntityEditModel editModel, final SwingEntityTableModel tableModel) {
     super(editModel, tableModel);
+  }
+
+  /**
+   * Instantiates a new {@link SwingEntityModel.Builder} instance
+   * @param entityType the entity type
+   * @return a new builder instance
+   */
+  public static SwingEntityModel.Builder builder(final EntityType<?> entityType) {
+    return new SwingEntityModelBuilder(entityType);
+  }
+
+  /**
+   * Builds a {@link SwingEntityModel}.
+   */
+  public interface Builder {
+
+    /**
+     * @return the underlying entity type
+     */
+    EntityType<?> getEntityType();
+
+    /**
+     * Sets the model class
+     * @param modelClass the model class
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder modelClass(Class<? extends SwingEntityModel> modelClass);
+
+    /**
+     * Sets the edit model class
+     * @param editModelClass the edit model class
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder editModelClass(Class<? extends SwingEntityEditModel> editModelClass);
+
+    /**
+     * Sets the table model class
+     * @param tableModelClass the table model class
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder tableModelClass(Class<? extends SwingEntityTableModel> tableModelClass);
+
+    /**
+     * @param modelInitializer initializes the model post construction
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder modelInitializer(Consumer<SwingEntityModel> modelInitializer);
+
+    /**
+     * @param editModelInitializer initializes the edit model post construction
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder editModelInitializer(Consumer<SwingEntityEditModel> editModelInitializer);
+
+    /**
+     * @param tableModelInitializer initializes the table model post construction
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder tableModelInitializer(Consumer<SwingEntityTableModel> tableModelInitializer);
+
+    /**
+     * Adds a detail model builder to this model builder
+     * @param detailModelBuilder the detail model builder to add
+     * @return this SwingEntityModel.Builder instance
+     */
+    Builder detailModelBuilder(Builder detailModelBuilder);
+
+    /**
+     * @return the model class
+     */
+    Class<? extends SwingEntityModel> getModelClass();
+
+    /**
+     * @return the edit model class
+     */
+    Class<? extends SwingEntityEditModel> getEditModelClass();
+
+    /**
+     * @return the table model class
+     */
+    Class<? extends SwingEntityTableModel> getTableModelClass();
+
+    /**
+     * Builds a {@link SwingEntityModel} instance
+     * @param connectionProvider the connection provider
+     * @return a SwingEntityModel instance
+     */
+    SwingEntityModel buildModel(EntityConnectionProvider connectionProvider);
+
+    /**
+     * Builds a {@link SwingEntityEditModel} instance
+     * @param connectionProvider the connection provider
+     * @return a SwingEntityEditModel instance
+     */
+    SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider);
+
+    /**
+     * Builds a {@link SwingEntityTableModel} instance
+     * @param connectionProvider the connection provider
+     * @return a SwingEntityTableModel instance
+     */
+    SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider);
   }
 }

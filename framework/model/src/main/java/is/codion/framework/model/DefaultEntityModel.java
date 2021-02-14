@@ -136,6 +136,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void setMasterModel(final M entityModel) {
+    requireNonNull(entityModel, "entityModel");
     if (this.masterModel != null) {
       throw new IllegalStateException("Master model has already been set for " + this);
     }
@@ -168,6 +169,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final M addDetailModel(final M detailModel) {
+    requireNonNull(detailModel, "detailModel");
     if (this.detailModels.contains(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
@@ -185,17 +187,19 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final boolean containsDetailModel(final Class<? extends M> modelClass) {
+    requireNonNull(modelClass, "modelClass");
     return detailModels.stream().anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
   }
 
   @Override
   public final boolean containsDetailModel(final EntityType<?> entityType) {
+    requireNonNull(entityType, "entityType");
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
   }
 
   @Override
   public final boolean containsDetailModel(final M detailModel) {
-    return detailModels.contains(detailModel);
+    return detailModels.contains(requireNonNull(detailModel, "detailModel"));
   }
 
   @Override
@@ -242,6 +246,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final M getDetailModel(final EntityType<?> entityType) {
+    requireNonNull(entityType, "entityType");
     for (final M detailModel : detailModels) {
       if (detailModel.getEntityType().equals(entityType)) {
         return detailModel;
@@ -268,7 +273,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final ForeignKey getDetailModelForeignKey(final M detailModel) {
-    return detailModelForeignKeys.get(detailModel);
+    return detailModelForeignKeys.get(requireNonNull(detailModel, "detailModel"));
   }
 
   @Override
@@ -317,14 +322,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void initialize(final EntityType<?> foreignKeyEntityType, final List<Entity> foreignKeyValues) {
-    final List<ForeignKey> foreignKey = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
-    if (!foreignKey.isEmpty()) {
-      initialize(foreignKey.get(0), foreignKeyValues);
+    final List<ForeignKey> foreignKeys = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
+    if (!foreignKeys.isEmpty()) {
+      initialize(foreignKeys.get(0), foreignKeyValues);
     }
   }
 
   @Override
   public final void initialize(final ForeignKey foreignKey, final List<Entity> foreignKeyValues) {
+    requireNonNull(foreignKey);
     if (containsTableModel()) {
       tableModel.setForeignKeyConditionValues(foreignKey, foreignKeyValues);
     }

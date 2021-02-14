@@ -8,7 +8,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -28,7 +28,7 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(VetSpecialty.VET_FK);
     EntityComboBox specialtyComboBox = createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK);
 
-    Action newSpecialtyAction = new EntityPanelBuilder(VetSpecialty.TYPE)
+    Action newSpecialtyAction = EntityPanel.builder(VetSpecialty.TYPE)
             .editPanelClass(VetSpecialtyEditPanel.class)
             .createEditPanelAction(specialtyComboBox);
     JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyAction);

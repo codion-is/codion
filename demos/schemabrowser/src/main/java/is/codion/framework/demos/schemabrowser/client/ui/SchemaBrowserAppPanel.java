@@ -13,8 +13,9 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
@@ -22,12 +23,18 @@ import javax.swing.JTable;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   @Override
-  protected void setupEntityPanelBuilders() {
-    addEntityPanelBuilder(new EntityPanelBuilder(Schema.TYPE)
-            .detailPanelBuilder(new EntityPanelBuilder(Table.TYPE)
-                    .detailPanelBuilder(new EntityPanelBuilder(Column.TYPE))
-                    .detailPanelBuilder(new EntityPanelBuilder(Constraint.TYPE)
-                            .detailPanelBuilder(new EntityPanelBuilder(ColumnConstraint.TYPE))))
+  protected void setupEntityPanelBuilders(final SchemaBrowserApplicationModel applicationModel) {
+    final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
+    final SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
+    final SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
+    final SwingEntityModel constraintModel = tableModel.getDetailModel(Constraint.TYPE);
+    final SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ColumnConstraint.TYPE);
+
+    addEntityPanelBuilder(EntityPanel.builder(schemaModel)
+            .detailPanelBuilder(EntityPanel.builder(tableModel)
+                    .detailPanelBuilder(EntityPanel.builder(columnModel))
+                    .detailPanelBuilder(EntityPanel.builder(constraintModel)
+                            .detailPanelBuilder(EntityPanel.builder(columnConstraintModel))))
             .detailSplitPanelResizeWeight(0.3));
   }
 
@@ -52,6 +59,17 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
     public SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
+      final SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
+      final SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
+      final SwingEntityModel columnModel = new SwingEntityModel(Column.TYPE, connectionProvider);
+      final SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
+      final SwingEntityModel columnConstraintModel = new SwingEntityModel(ColumnConstraint.TYPE, connectionProvider);
+
+      schemaModel.addDetailModel(tableModel);
+      tableModel.addDetailModels(columnModel, constraintModel);
+      constraintModel.addDetailModels(columnConstraintModel);
+
+      addEntityModel(schemaModel);
     }
   }
 }

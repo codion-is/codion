@@ -22,7 +22,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
@@ -73,13 +72,13 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   }
 
   @Override
-  protected void setupEntityPanelBuilders() {
-    EntityPanelBuilder petTypePanelBuilder =
-            new EntityPanelBuilder(PetType.TYPE)
+  protected void setupEntityPanelBuilders(PetclinicAppModel applicationModel) {
+    EntityPanel.Builder petTypePanelBuilder =
+            EntityPanel.builder(PetType.TYPE)
                     .editPanelClass(PetTypeEditPanel.class)
                     .caption("Pet types");
-    EntityPanelBuilder specialtiesPanelBuilder =
-            new EntityPanelBuilder(Specialty.TYPE)
+    EntityPanel.Builder specialtiesPanelBuilder =
+            EntityPanel.builder(Specialty.TYPE)
                     .editPanelClass(SpecialtyEditPanel.class)
                     .caption("Specialties");
 

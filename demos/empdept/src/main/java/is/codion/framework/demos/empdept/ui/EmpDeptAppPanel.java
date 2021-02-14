@@ -19,11 +19,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.SwingEntityModelBuilder;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.io.File;
@@ -33,20 +30,22 @@ import java.nio.charset.Charset;
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
-  protected void setupEntityPanelBuilders() {
-    final EmployeeModelBuilder employeeModelBuilder = new EmployeeModelBuilder();
-    final EmployeePanelBuilder employeePanelBuilder = new EmployeePanelBuilder(employeeModelBuilder);
+  protected void setupEntityPanelBuilders(final EmpDeptApplicationModel applicationModel) {
+    final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE)
+            .tableModelInitializer(tableModel ->
+                    tableModel.getColumnSummaryModel(Employee.SALARY)
+                            .setSummary(ColumnSummary.AVERAGE));
 
-    final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(Department.TYPE) {
-      @Override
-      protected void configureModel(final SwingEntityModel entityModel) {
-        entityModel.getDetailModel(Employee.TYPE).getTableModel().getQueryConditionRequiredState().set(false);
-      }
-    };
-    //This relies on the foreign key association between employee and department
-    departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
+    final SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE)
+            .modelInitializer(model ->
+                    model.getDetailModel(Employee.TYPE).getTableModel()
+                            .getQueryConditionRequiredState().set(false))
+            .detailModelBuilder(employeeModelBuilder);
 
-    final EntityPanelBuilder departmentPanelBuilder = new EntityPanelBuilder(departmentModelBuilder)
+    final EntityPanel.Builder employeePanelBuilder = EntityPanel.builder(employeeModelBuilder)
+            .editPanelClass(EmployeeEditPanel.class);
+
+    final EntityPanel.Builder departmentPanelBuilder = EntityPanel.builder(departmentModelBuilder)
             .editPanelClass(DepartmentEditPanel.class)
             .tablePanelClass(DepartmentTablePanel.class)
             .detailPanelBuilder(employeePanelBuilder);
@@ -97,37 +96,9 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
       final SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
-      departmentModel.addDetailModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
+      departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
       addEntityModel(departmentModel);
     }
   }
   // end::applicationModel[]
-
-  // tag::employeeModelBuilder[]
-  private static final class EmployeeModelBuilder extends SwingEntityModelBuilder {
-    private EmployeeModelBuilder() {
-      super(Employee.TYPE);
-      editModelClass(EmployeeEditModel.class);
-    }
-
-    @Override
-    protected void configureTableModel(final SwingEntityTableModel tableModel) {
-      tableModel.getColumnSummaryModel(Employee.SALARY).setSummary(ColumnSummary.AVERAGE);
-    }
-  }
-  // end::employeeModelBuilder[]
-
-  // tag::employeePanelBuilder[]
-  private static final class EmployeePanelBuilder extends EntityPanelBuilder {
-    private EmployeePanelBuilder(final EmployeeModelBuilder modelProvider) {
-      super(modelProvider);
-      editPanelClass(EmployeeEditPanel.class);
-    }
-
-    @Override
-    protected void configureTablePanel(final EntityTablePanel tablePanel) {
-      tablePanel.setSummaryPanelVisible(true);
-    }
-  }
 }
-// end::employeePanelBuilder[]

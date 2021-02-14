@@ -5,17 +5,15 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Continent;
-import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.CountryOverviewModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
 import is.codion.swing.common.ui.icons.Icons;
-import is.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
@@ -30,36 +28,35 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
   // tag::setupEntityPanelBuilders[]
   @Override
-  protected void setupEntityPanelBuilders() {
-    SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
-    countryModelBuilder.modelClass(CountryModel.class);
-    EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder) {
-      @Override
-      protected void configurePanel(final EntityPanel entityPanel) {
-        entityPanel.setDetailSplitPanelResizeWeight(0.7);
-      }
-    };
+  protected void setupEntityPanelBuilders(final WorldAppModel applicationModel) {
+    SwingEntityModel countryModel = applicationModel.getEntityModel(CountryModel.class);
+    SwingEntityModel countryOverviewModel = applicationModel.getEntityModel(CountryOverviewModel.class);
+    SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
+    SwingEntityModel countryLanguageModel = countryModel.getDetailModel(CountryLanguage.TYPE);
+    SwingEntityModel continentModel = applicationModel.getEntityModel(Continent.TYPE);
+    SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
+
+    EntityPanel.Builder countryPanelBuilder = EntityPanel.builder(countryModel)
+            .panelInitializer(entityPanel -> entityPanel.setDetailSplitPanelResizeWeight(0.7));
     countryPanelBuilder.editPanelClass(CountryEditPanel.class);
 
-    SwingEntityModelBuilder countryOverviewModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
-    countryOverviewModelBuilder.modelClass(CountryOverviewModel.class);
-    EntityPanelBuilder countryCustomPanelBuilder = new EntityPanelBuilder(countryOverviewModelBuilder)
+    EntityPanel.Builder countryCustomPanelBuilder = EntityPanel.builder(countryOverviewModel)
             .panelClass(CountryOverviewPanel.class)
             .caption("Country Overview");
 
-    EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(City.TYPE)
+    EntityPanel.Builder cityPanelBuilder = EntityPanel.builder(cityModel)
             .editPanelClass(CityEditPanel.class)
             .tablePanelClass(CityTablePanel.class);
 
-    EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(CountryLanguage.TYPE)
+    EntityPanel.Builder countryLanguagePanelBuilder = EntityPanel.builder(countryLanguageModel)
             .editPanelClass(CountryLanguageEditPanel.class);
 
     countryPanelBuilder.detailPanelBuilder(cityPanelBuilder);
     countryPanelBuilder.detailPanelBuilder(countryLanguagePanelBuilder);
 
-    EntityPanelBuilder continentPanelBuilder = new EntityPanelBuilder(Continent.TYPE)
+    EntityPanel.Builder continentPanelBuilder = EntityPanel.builder(continentModel)
             .panelClass(ContinentPanel.class);
-    EntityPanelBuilder lookupPanelBuilder = new EntityPanelBuilder(Lookup.TYPE)
+    EntityPanel.Builder lookupPanelBuilder = EntityPanel.builder(lookupModel)
             .tablePanelClass(LookupTablePanel.class)
             .refreshOnInit(false);
 

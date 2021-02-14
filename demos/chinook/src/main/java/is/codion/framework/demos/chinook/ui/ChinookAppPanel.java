@@ -20,11 +20,9 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.model.SwingEntityModelBuilder;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityInputComponents;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
@@ -84,28 +82,32 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
    *     INVOICELINE
    */
   @Override
-  protected void setupEntityPanelBuilders() {
-    final EntityPanelBuilder trackBuilder = new EntityPanelBuilder(Track.TYPE)
-            .editPanelClass(TrackEditPanel.class)
-            .tablePanelClass(TrackTablePanel.class);
+  protected void setupEntityPanelBuilders(final ChinookApplicationModel applicationModel) {
+    final EntityPanel.Builder trackBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(Track.TYPE))
+                    .editPanelClass(TrackEditPanel.class)
+                    .tablePanelClass(TrackTablePanel.class);
 
-    final EntityPanelBuilder customerBuilder = new EntityPanelBuilder(Customer.TYPE)
-            .editPanelClass(CustomerEditPanel.class)
-            .tablePanelClass(CustomerTablePanel.class);
+    final EntityPanel.Builder customerBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(Customer.TYPE))
+                    .editPanelClass(CustomerEditPanel.class)
+                    .tablePanelClass(CustomerTablePanel.class);
 
-    final EntityPanelBuilder genreBuilder = new EntityPanelBuilder(Genre.TYPE)
-            .editPanelClass(GenreEditPanel.class)
-            .detailPanelBuilder(trackBuilder)
-            .detailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanel.Builder genreBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(Genre.TYPE))
+                    .editPanelClass(GenreEditPanel.class)
+                    .detailPanelBuilder(trackBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelBuilder mediaTypeBuilder = new EntityPanelBuilder(MediaType.TYPE)
-            .editPanelClass(MediaTypeEditPanel.class)
-            .detailPanelBuilder(trackBuilder)
-            .detailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanel.Builder mediaTypeBuilder =
+            EntityPanel.builder(applicationModel.getEntityModel(MediaType.TYPE))
+                    .editPanelClass(MediaTypeEditPanel.class)
+                    .detailPanelBuilder(trackBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(Employee.TYPE)
+    final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE)
             .tableModelClass(EmployeeTableModel.class);
-    final EntityPanelBuilder employeeBuilder = new EntityPanelBuilder(employeeModelBuilder)
+    final EntityPanel.Builder employeeBuilder = EntityPanel.builder(employeeModelBuilder)
             .editPanelClass(EmployeeEditPanel.class)
             .tablePanelClass(EmployeeTablePanel.class)
             .detailPanelBuilder(customerBuilder).detailPanelState(EntityPanel.PanelState.HIDDEN);

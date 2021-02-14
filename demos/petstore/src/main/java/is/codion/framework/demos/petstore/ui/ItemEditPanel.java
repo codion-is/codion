@@ -11,7 +11,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
-import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
@@ -48,11 +48,11 @@ public class ItemEditPanel extends EntityEditPanel {
     add(createInputPanel(Item.DESCRIPTION));
     addInputPanel(Item.PRICE);
     add(createInputPanel(Item.CONTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
-            new EntityPanelBuilder(SellerContactInfo.TYPE)
+            EntityPanel.builder(SellerContactInfo.TYPE)
                     .editPanelClass(ContactInfoEditPanel.class)
                     .createEditPanelAction(contactInfoBox))));
     add(createInputPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,
-            new EntityPanelBuilder(Address.TYPE)
+            EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class)
                     .createEditPanelAction(addressBox))));
     addInputPanel(Item.IMAGE_URL);

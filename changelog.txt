@@ -6739,3 +6739,8 @@
   EntityInputComponents no longer a static utility class, Property parameters replaced with Attribute, related refactoring
   EntityTablePanel, minor refactoring
   EntityValidator.revalidate() removed, apparently unused
+  SwingEntityModel.Builder interface extracted from SwingEntityModelBuilder
+  SwingEntityModelBuilder no longer public, SwingEntityModel.builder() factory method added
+  EntityPanel.Builder interface extracted from EntityPanelBuilder
+  EntityPanelBuilder no longer public, EntityPanel.builder() factory method added
+  EntityPanel.builder(SwingEntityModel) and EntityPanel.Builder.build() added
