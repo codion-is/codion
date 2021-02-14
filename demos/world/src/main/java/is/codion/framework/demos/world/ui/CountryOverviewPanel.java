@@ -4,8 +4,6 @@ import is.codion.common.model.table.ColumnSummary;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.demos.world.model.CountryEditModel;
-import is.codion.framework.demos.world.model.CountryOverviewModel;
 import is.codion.framework.demos.world.model.CountryOverviewTableModel;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Modal;
@@ -35,8 +33,8 @@ public final class CountryOverviewPanel extends EntityPanel {
   private final ChartPanel cityChartPanel;
   private final ChartPanel languageChartPanel;
 
-  public CountryOverviewPanel(CountryOverviewModel entityModel) {
-    super(entityModel, new CountryEditPanel((CountryEditModel) entityModel.getEditModel()));
+  public CountryOverviewPanel(SwingEntityModel entityModel) {
+    super(entityModel, new CountryEditPanel(entityModel.getEditModel()));
     final CountryOverviewTableModel tableModel = (CountryOverviewTableModel) entityModel.getTableModel();
     cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCitiesDataset()));
     cityChartPanel.getChart().removeLegend();

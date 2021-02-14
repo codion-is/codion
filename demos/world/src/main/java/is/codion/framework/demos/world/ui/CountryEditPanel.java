@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.NumericalValues;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.Editable;
@@ -23,7 +24,7 @@ import static is.codion.swing.common.ui.textfield.TextFields.upperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
-  public CountryEditPanel(CountryEditModel editModel) {
+  public CountryEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

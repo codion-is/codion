@@ -206,7 +206,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final String applicationFontSizeProperty;
 
   private final Supplier<JFrame> frameProvider;
-  private final List<EntityPanel.Builder> entityPanelBuilders = new ArrayList<>();
   private final List<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
 
@@ -252,25 +251,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final M getModel() {
     return applicationModel;
-  }
-
-  /**
-   * Adds main application panels, displayed on application start
-   * @param panelBuilders the main application panel providers
-   */
-  public final void addEntityPanelBuilders(final EntityPanel.Builder... panelBuilders) {
-    requireNonNull(panelBuilders, "panelBuilders");
-    for (final EntityPanel.Builder panelBuilder : panelBuilders) {
-      addEntityPanelBuilder(panelBuilder);
-    }
-  }
-
-  /**
-   * Adds a main application panel, displayed on application start
-   * @param panelBuilder the main application panel provider
-   */
-  public final void addEntityPanelBuilder(final EntityPanel.Builder panelBuilder) {
-    entityPanelBuilders.add(panelBuilder);
   }
 
   /**
@@ -912,8 +892,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final void initialize(final M applicationModel) {
     requireNonNull(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
-    clearEntityPanelBuilders();
-    setupEntityPanelBuilders(applicationModel);
+    this.supportPanelBuilders.clear();
+    this.supportPanelBuilders.addAll(initializeSupportEntityPanelBuilders(applicationModel));
     this.entityPanels.addAll(initializeEntityPanels(applicationModel));
     initializeUI();
     bindEventsInternal();
@@ -1016,17 +996,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Called during initialization, after the application model has been initialized,
-   * override to keep all entity panel builder definitions in one place.
-   * @see #addEntityPanelBuilder(EntityPanel.Builder)
-   * @see #addEntityPanelBuilders(EntityPanel.Builder...)
-   * @see #addSupportPanelBuilder(EntityPanel.Builder)
-   * @see #addSupportPanelBuilders(EntityPanel.Builder...)
-   * @param applicationModel the application model
-   */
-  protected void setupEntityPanelBuilders(final M applicationModel) {}
-
-  /**
    * Initializes this EntityApplicationPanel
    */
   protected void initializeUI() {
@@ -1049,29 +1018,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * By default this method returns the panels defined by the available {@link EntityPanel.Builder}s.
    * @param applicationModel the application model responsible for providing EntityModels for the panels
    * @return a List containing the {@link EntityPanel}s to include in this application panel
-   * @see #addEntityPanelBuilder(EntityPanel.Builder)
    */
-  protected List<EntityPanel> initializeEntityPanels(final M applicationModel) {
-    final List<EntityPanel> panels = new ArrayList<>();
-    for (final EntityPanel.Builder panelBuilder : entityPanelBuilders) {
-      final EntityPanel entityPanel;
-      if (panelBuilder.containsModel()) {
-        entityPanel = panelBuilder.buildPanel();
-      }
-      else {
-        final SwingEntityModel entityModel = initializeEntityModel(applicationModel, panelBuilder.getModelBuilder());
-        if (applicationModel.containsEntityModel(panelBuilder.getEntityType())) {
-          entityPanel = panelBuilder.buildPanel(entityModel);
-        }
-        else {
-          entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
-          applicationModel.addEntityModel(entityPanel.getModel());
-        }
-      }
-      panels.add(entityPanel);
-    }
+  protected abstract List<EntityPanel> initializeEntityPanels(final M applicationModel);
 
-    return panels;
+  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final M applicationModel) {
+    return Collections.emptyList();
   }
 
   /**
@@ -1346,11 +1297,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected void savePreferences() {
     getEntityPanels().forEach(EntityPanel::savePreferences);
     getModel().savePreferences();
-  }
-
-  private void clearEntityPanelBuilders() {
-    entityPanelBuilders.clear();
-    supportPanelBuilders.clear();
   }
 
   private JTabbedPane initializeApplicationTabPane() {

@@ -4,6 +4,7 @@ import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.kordamp.ikonli.foundation.Foundation;
@@ -20,7 +21,7 @@ import static is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.ima
 
 public final class LookupTablePanel extends EntityTablePanel {
 
-  public LookupTablePanel(LookupTableModel tableModel) {
+  public LookupTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setConditionPanelVisible(true);
   }

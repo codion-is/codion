@@ -27,7 +27,7 @@ import java.util.Locale;
 public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final StoreAppModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(StoreAppModel applicationModel) {
     CustomerModel customerModel =
             (CustomerModel) applicationModel.getEntityModel(Customer.TYPE);
     //populate model with rows from database
@@ -47,11 +47,16 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     return Collections.singletonList(customerPanel);
   }
 
+  // tag::initializeSupportEntityPanelBuilders[]
   @Override
-  protected void setupEntityPanelBuilders(final StoreAppModel applicationModel) {
-    addSupportPanelBuilder(EntityPanel.builder(Address.TYPE)
-            .editPanelClass(AddressEditPanel.class));
+  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(StoreAppModel applicationModel) {
+    EntityPanel.Builder addressPanelBuilder =
+            EntityPanel.builder(Address.TYPE)
+                    .editPanelClass(AddressEditPanel.class);
+
+    return Collections.singletonList(addressPanelBuilder);
   }
+  // end::initializeSupportEntityPanelBuilders[]
 
   @Override
   protected StoreAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {

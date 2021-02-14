@@ -1,6 +1,7 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.model.ContinentModel;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -18,7 +19,7 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 
 public final class ContinentPanel extends EntityPanel {
 
-  public ContinentPanel(ContinentModel entityModel) {
+  public ContinentPanel(SwingEntityModel entityModel) {
     super(entityModel, new ContinentTablePanel(entityModel.getTableModel()));
   }
 

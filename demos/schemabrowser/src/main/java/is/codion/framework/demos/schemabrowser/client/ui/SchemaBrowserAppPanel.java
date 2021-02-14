@@ -19,23 +19,35 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
+import java.util.Collections;
+import java.util.List;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   @Override
-  protected void setupEntityPanelBuilders(final SchemaBrowserApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final SchemaBrowserApplicationModel applicationModel) {
     final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
     final SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
     final SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
     final SwingEntityModel constraintModel = tableModel.getDetailModel(Constraint.TYPE);
     final SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ColumnConstraint.TYPE);
 
-    addEntityPanelBuilder(EntityPanel.builder(schemaModel)
-            .detailPanelBuilder(EntityPanel.builder(tableModel)
-                    .detailPanelBuilder(EntityPanel.builder(columnModel))
-                    .detailPanelBuilder(EntityPanel.builder(constraintModel)
-                            .detailPanelBuilder(EntityPanel.builder(columnConstraintModel))))
-            .detailSplitPanelResizeWeight(0.3));
+    final EntityPanel schemaPanel = new EntityPanel(schemaModel);
+    final EntityPanel tablePanel = new EntityPanel(tableModel);
+    final EntityPanel columnPanel = new EntityPanel(columnModel);
+    final EntityPanel constraintPanel = new EntityPanel(constraintModel);
+    final EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);
+
+    schemaPanel.addDetailPanel(tablePanel);
+    tablePanel.addDetailPanels(columnPanel);
+    tablePanel.addDetailPanel(constraintPanel);
+    constraintPanel.addDetailPanel(columnConstraintPanel);
+
+    schemaPanel.setDetailSplitPanelResizeWeight(0.3);
+
+    schemaModel.refresh();
+
+    return Collections.singletonList(schemaPanel);
   }
 
   @Override

@@ -21,6 +21,7 @@ import javax.swing.tree.TreeModel;
 import java.util.Enumeration;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,6 +41,11 @@ public class EntityApplicationPanelTest {
   @Test
   public void getDependencyTreeModel() {
     final EntityApplicationPanel panel = new EntityApplicationPanel() {
+      @Override
+      protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
+        return emptyList();
+      }
+
       @Override
       protected SwingEntityApplicationModel initializeApplicationModel(
               final EntityConnectionProvider connectionProvider) {

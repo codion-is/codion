@@ -12,6 +12,9 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
@@ -19,7 +22,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
   @Override
-  protected void setupEntityPanelBuilders(final PetstoreAppModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final PetstoreAppModel applicationModel) {
     /* CATEGORY
      *   PRODUCT
      *     ITEM
@@ -30,17 +33,28 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     final SwingEntityModel itemModel = productModel.getDetailModel(Item.TYPE);
     final SwingEntityModel tagItemModel = itemModel.getDetailModel(TagItem.TYPE);
 
-    addEntityPanelBuilder(EntityPanel.builder(categoryModel)
-            .editPanelClass(CategoryEditPanel.class)
-            .detailPanelBuilder(EntityPanel.builder(productModel)
-                    .editPanelClass(ProductEditPanel.class)
-                    .detailPanelBuilder(EntityPanel.builder(itemModel)
-                            .editPanelClass(ItemEditPanel.class)
-                            .detailPanelBuilder(EntityPanel.builder(tagItemModel)
-                                    .editPanelClass(TagItemEditPanel.class))
-                            .detailPanelState(EntityPanel.PanelState.HIDDEN))
-                    .detailSplitPanelResizeWeight(0.3)).detailSplitPanelResizeWeight(0.3));
+    final EntityPanel categoryPanel = new EntityPanel(categoryModel,
+            new CategoryEditPanel(categoryModel.getEditModel()));
+    final EntityPanel productPanel = new EntityPanel(productModel,
+            new ProductEditPanel(productModel.getEditModel()));
+    final EntityPanel itemPanel = new EntityPanel(itemModel,
+            new ItemEditPanel(itemModel.getEditModel()));
+    final EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
+            new TagItemEditPanel(tagItemModel.getEditModel()));
 
+    categoryPanel.addDetailPanel(productPanel);
+    categoryPanel.setDetailSplitPanelResizeWeight(0.3);
+    productPanel.addDetailPanel(itemPanel);
+    itemPanel.addDetailPanels(tagItemPanel);
+    itemPanel.setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+
+    categoryModel.refresh();
+
+    return Collections.singletonList(categoryPanel);
+  }
+
+  @Override
+  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final PetstoreAppModel applicationModel) {
     final SwingEntityModel.Builder tagModelBuilder =
             SwingEntityModel.builder(Tag.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));
@@ -49,7 +63,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
                     .detailModelBuilder(SwingEntityModel.builder(Item.TYPE)
                             .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE)));
 
-    addSupportPanelBuilders(
+    return Arrays.asList(
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class),
             EntityPanel.builder(sellerContactInfoModelBuilder)

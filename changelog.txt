@@ -6714,3 +6714,4 @@
   EntityPanel.Builder interface extracted from EntityPanelBuilder
   EntityPanelBuilder no longer public, EntityPanel.builder() factory method added
   EntityPanel.builder(SwingEntityModel) and EntityPanel.Builder.build() added
+  EntityApplicationPanel.setupEntityPanels() removed, initializeEntityPanels() and initializeSupportEntityPanelBuilders() added

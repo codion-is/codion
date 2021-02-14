@@ -22,13 +22,16 @@ import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.List;
 import java.util.Locale;
+
+import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
-  // tag::setupEntityPanelBuilders[]
+  // tag::initializeEntityPanels[]
   @Override
-  protected void setupEntityPanelBuilders(final WorldAppModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final WorldAppModel applicationModel) {
     SwingEntityModel countryModel = applicationModel.getEntityModel(CountryModel.class);
     SwingEntityModel countryOverviewModel = applicationModel.getEntityModel(CountryOverviewModel.class);
     SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
@@ -36,33 +39,32 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     SwingEntityModel continentModel = applicationModel.getEntityModel(Continent.TYPE);
     SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
 
-    EntityPanel.Builder countryPanelBuilder = EntityPanel.builder(countryModel)
-            .panelInitializer(entityPanel -> entityPanel.setDetailSplitPanelResizeWeight(0.7));
-    countryPanelBuilder.editPanelClass(CountryEditPanel.class);
+    EntityPanel countryPanel = new EntityPanel(countryModel,
+            new CountryEditPanel(countryModel.getEditModel()));
+    countryPanel.setDetailSplitPanelResizeWeight(0.7);
+    countryModel.refresh();
 
-    EntityPanel.Builder countryCustomPanelBuilder = EntityPanel.builder(countryOverviewModel)
-            .panelClass(CountryOverviewPanel.class)
-            .caption("Country Overview");
+    EntityPanel countryOverviewPanel = new CountryOverviewPanel(countryOverviewModel);
+    countryOverviewPanel.setCaption("Country Overview");
+    countryOverviewModel.refresh();
 
-    EntityPanel.Builder cityPanelBuilder = EntityPanel.builder(cityModel)
-            .editPanelClass(CityEditPanel.class)
-            .tablePanelClass(CityTablePanel.class);
+    EntityPanel cityPanel = new EntityPanel(cityModel,
+            new CityEditPanel(cityModel.getEditModel()),
+            new CityTablePanel(cityModel.getTableModel()));
 
-    EntityPanel.Builder countryLanguagePanelBuilder = EntityPanel.builder(countryLanguageModel)
-            .editPanelClass(CountryLanguageEditPanel.class);
+    EntityPanel countryLanguagePanel = new EntityPanel(countryLanguageModel,
+            new CountryLanguageEditPanel(countryLanguageModel.getEditModel()));
 
-    countryPanelBuilder.detailPanelBuilder(cityPanelBuilder);
-    countryPanelBuilder.detailPanelBuilder(countryLanguagePanelBuilder);
+    countryPanel.addDetailPanels(cityPanel, countryLanguagePanel);
 
-    EntityPanel.Builder continentPanelBuilder = EntityPanel.builder(continentModel)
-            .panelClass(ContinentPanel.class);
-    EntityPanel.Builder lookupPanelBuilder = EntityPanel.builder(lookupModel)
-            .tablePanelClass(LookupTablePanel.class)
-            .refreshOnInit(false);
+    EntityPanel continentPanel = new ContinentPanel(continentModel);
+    continentModel.refresh();
 
-    addEntityPanelBuilders(countryPanelBuilder, countryCustomPanelBuilder, continentPanelBuilder, lookupPanelBuilder);
+    EntityPanel lookupPanel = new EntityPanel(lookupModel, new LookupTablePanel(lookupModel.getTableModel()));
+
+    return asList(countryPanel, countryOverviewPanel, continentPanel, lookupPanel);
   }
-  // end::setupEntityPanelBuilders[]
+  // end::initializeEntityPanels[]
 
   @Override
   protected WorldAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {

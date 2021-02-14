@@ -157,11 +157,11 @@ include::{dir-source}/is/codion/framework/demos/empdept/ui/EmployeeEditPanel.jav
 [#_main_application_panel]
 === Main application panel
 
-We create a main application panel by extending {url-javadoc}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelBuilders()* we configure two sets of *SwingEntityModel.Builder* and *EntityPanel.Builder* objects. These allow for lazy initialization of UI components. We call *addEntityPanelBuilder()* making the department panel the main application panel.
+We create a main application panel by extending {url-javadoc}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *initializeEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=setupEntityPanelBuilders]
+include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=initializeEntityPanels]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
