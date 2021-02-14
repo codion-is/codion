@@ -5,7 +5,6 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.common.Text;
 import is.codion.common.model.CancelException;
-import is.codion.common.model.table.ColumnSummary;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
@@ -25,34 +24,30 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
 
-// tag::setupEntityPanelBuilders[]
+// tag::initializeEntityPanels[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
-  protected void setupEntityPanelBuilders(final EmpDeptApplicationModel applicationModel) {
-    final SwingEntityModel.Builder employeeModelBuilder = SwingEntityModel.builder(Employee.TYPE)
-            .tableModelInitializer(tableModel ->
-                    tableModel.getColumnSummaryModel(Employee.SALARY)
-                            .setSummary(ColumnSummary.AVERAGE));
+  protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
+    final SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
+    final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
-    final SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE)
-            .modelInitializer(model ->
-                    model.getDetailModel(Employee.TYPE).getTableModel()
-                            .getQueryConditionRequiredState().set(false))
-            .detailModelBuilder(employeeModelBuilder);
+    final EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
+            new EmployeeEditPanel(employeeModel.getEditModel()));;
 
-    final EntityPanel.Builder employeePanelBuilder = EntityPanel.builder(employeeModelBuilder)
-            .editPanelClass(EmployeeEditPanel.class);
+    final EntityPanel departmentPanel = new EntityPanel(departmentModel,
+            new DepartmentEditPanel(departmentModel.getEditModel()),
+            new DepartmentTablePanel(departmentModel.getTableModel()));
+    departmentPanel.addDetailPanel(employeePanelBuilder);
 
-    final EntityPanel.Builder departmentPanelBuilder = EntityPanel.builder(departmentModelBuilder)
-            .editPanelClass(DepartmentEditPanel.class)
-            .tablePanelClass(DepartmentTablePanel.class)
-            .detailPanelBuilder(employeePanelBuilder);
+    departmentModel.refresh();
 
-    addEntityPanelBuilder(departmentPanelBuilder);
+    return Collections.singletonList(departmentPanel);
   }
-  // end::setupEntityPanelBuilders[]
+  // end::initializeEntityPanels[]
 
   // tag::importJSON[]
   public void importJSON() throws Exception {

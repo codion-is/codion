@@ -72,7 +72,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   }
 
   @Override
-  protected void setupEntityPanelBuilders(PetclinicAppModel applicationModel) {
+  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(PetclinicAppModel applicationModel) {
     EntityPanel.Builder petTypePanelBuilder =
             EntityPanel.builder(PetType.TYPE)
                     .editPanelClass(PetTypeEditPanel.class)
@@ -82,7 +82,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
                     .editPanelClass(SpecialtyEditPanel.class)
                     .caption("Specialties");
 
-    addSupportPanelBuilders(petTypePanelBuilder, specialtiesPanelBuilder);
+    return asList(petTypePanelBuilder, specialtiesPanelBuilder);
   }
 
   public static void main(final String[] args) throws CancelException {

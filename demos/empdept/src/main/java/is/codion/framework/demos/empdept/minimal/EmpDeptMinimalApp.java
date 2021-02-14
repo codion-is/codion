@@ -26,6 +26,8 @@ import is.codion.swing.framework.ui.EntityPanel;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
@@ -239,21 +241,18 @@ public final class EmpDeptMinimalApp {
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
-    protected void setupEntityPanelBuilders(final EmpDeptApplicationModel applicationModel) {
+    protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
       final SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
       final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
-      final EntityPanel.Builder employeePanelBuilder =
-              EntityPanel.builder(employeeModel)
-                      .editPanelClass(EmployeeEditPanel.class);
-      final EntityPanel.Builder departmentPanelBuilder =
-              EntityPanel.builder(departmentModel)
-                      .editPanelClass(DepartmentEditPanel.class)
-                      .detailPanelBuilder(employeePanelBuilder);
+      final EntityPanel employeePanel = new EntityPanel(employeeModel,
+              new EmployeeEditPanel(employeeModel.getEditModel()));
+      final EntityPanel departmentPanel = new EntityPanel(departmentModel,
+              new DepartmentEditPanel(departmentModel.getEditModel()));
+      departmentPanel.addDetailPanel(employeePanel);
 
-      //the department panel is the main (or root) application panel
-      addEntityPanelBuilder(departmentPanelBuilder);
+      return Collections.singletonList(departmentPanel);
     }
 
     @Override
