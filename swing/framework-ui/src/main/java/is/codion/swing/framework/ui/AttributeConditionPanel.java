@@ -26,6 +26,7 @@ public final class AttributeConditionPanel<C extends Attribute<T>, T> extends Co
   /**
    * Instantiates a new AttributeConditionPanel.
    * @param columnConditionModel the model to base this panel on
+   * @param entityDefinition the entity definition
    * @param attribute the underlying attribute
    */
   public AttributeConditionPanel(final ColumnConditionModel<Entity, C, T> columnConditionModel,

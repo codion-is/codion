@@ -7,7 +7,7 @@ include::{basedir}/manual/framework-entity-edit-panel.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-table-panel.adoc[leveloffset=+1]
 
-include::{basedir}/manual/framework-entity-panel-provider.adoc[leveloffset=+1]
+include::{basedir}/manual/framework-entity-panel-builder.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-application-panel.adoc[leveloffset=+1]
 
