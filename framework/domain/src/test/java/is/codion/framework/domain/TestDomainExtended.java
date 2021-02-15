@@ -3,10 +3,17 @@
  */
 package is.codion.framework.domain;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.reports.Report;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+
+import java.sql.Connection;
 
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.foreignKeyProperty;
@@ -21,6 +28,10 @@ public final class TestDomainExtended extends DefaultDomain {
   public static final Attribute<Integer> EXTENDED_DEPT_ID = T_EXTENDED.integerAttribute("dept_id");
   public static final ForeignKey EXTENDED_DEPT_FK = T_EXTENDED.foreignKey("dept_fk", EXTENDED_DEPT_ID, TestDomain.Department.NO);
 
+  public static final ProcedureType<?, ?> PROC_TYPE = ProcedureType.procedureType("proc");
+  public static final FunctionType<Object, Object, Object> FUNC_TYPE = FunctionType.functionType("func");
+  public static final ReportType<Object, Object, Object> REP_TYPE = ReportType.reportType("rep");
+
   public TestDomainExtended() {
     this(DOMAIN);
   }
@@ -29,6 +40,9 @@ public final class TestDomainExtended extends DefaultDomain {
     super(domainType);
     addEntities(new TestDomain());
     extended();
+    procedure();
+    report();
+    function();
   }
 
   final void extended() {
@@ -37,6 +51,28 @@ public final class TestDomainExtended extends DefaultDomain {
             columnProperty(EXTENDED_NAME),
             columnProperty(EXTENDED_DEPT_ID),
             foreignKeyProperty(EXTENDED_DEPT_FK));
+  }
+
+  final void procedure() {
+    defineProcedure(PROC_TYPE, (connection, arguments) -> {});
+  }
+
+  final void function() {
+    defineFunction(FUNC_TYPE, (connection, arguments) -> null);
+  }
+
+  final void report() {
+    defineReport(REP_TYPE, new Report<Object, Object, Object>() {
+      @Override
+      public Object fillReport(final Connection connection, final Object parameters) throws ReportException {
+        return null;
+      }
+
+      @Override
+      public Object loadReport() throws ReportException {
+        return null;
+      }
+    });
   }
 
   public static final class TestDomainSecondExtension extends DefaultDomain {
@@ -49,7 +85,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
     public TestDomainSecondExtension() {
       super(DOMAIN);
-      addEntities(new TestDomainExtended());
+      copyFrom(new TestDomainExtended());
       extendedSecond();
     }
 

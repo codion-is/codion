@@ -19,6 +19,7 @@ import is.codion.framework.domain.property.Property;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -53,6 +54,21 @@ public abstract class DefaultDomain implements Domain {
   @Override
   public final Entities getEntities() {
     return entities;
+  }
+
+  @Override
+  public final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> getReports() {
+    return unmodifiableMap(reports.reports);
+  }
+
+  @Override
+  public final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> getProcedures() {
+    return unmodifiableMap(procedures.procedures);
+  }
+
+  @Override
+  public final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> getFunctions() {
+    return unmodifiableMap(functions.functions);
   }
 
   @Override
@@ -158,6 +174,21 @@ public abstract class DefaultDomain implements Domain {
   }
 
   /**
+   * Copies all entities, procedures, functions and reports from the given domain model.
+   * @param domain the domain model to copy from
+   * @see #addProcedures(Domain)
+   * @see #addFunctions(Domain)
+   * @see #addReports(Domain)
+   */
+  protected final void copyFrom(final Domain domain) {
+    requireNonNull(domain, "domain");
+    addEntities(domain);
+    addProcedures(domain);
+    addFunctions(domain);
+    addReports(domain);
+  }
+
+  /**
    * Adds all the entities from the given domain to this domain.
    * Note that the entity type names must be unique.
    * @param domain the domain model which entities to add
@@ -168,6 +199,42 @@ public abstract class DefaultDomain implements Domain {
     domain.getEntities().getDefinitions().forEach(definition -> {
       if (!entities.contains(definition.getEntityType())) {
         entities.addDefinitionInternal(definition);
+      }
+    });
+  }
+
+  /**
+   * Adds all the procedures from the given domain to this domain.
+   * @param domain the domain model which procedures to add
+   */
+  protected final void addProcedures(final Domain domain) {
+    domain.getProcedures().forEach((procedureType, procedure) -> {
+      if (!procedures.procedures.containsKey(procedureType)) {
+        procedures.procedures.put(procedureType, procedure);
+      }
+    });
+  }
+
+  /**
+   * Adds all the functions from the given domain to this domain.
+   * @param domain the domain model which functions to add
+   */
+  protected final void addFunctions(final Domain domain) {
+    domain.getFunctions().forEach((functionType, function) -> {
+      if (!functions.functions.containsKey(functionType)) {
+        functions.functions.put(functionType, function);
+      }
+    });
+  }
+
+  /**
+   * Adds all the reports from the given domain to this domain.
+   * @param domain the domain model which reports to add
+   */
+  protected final void addReports(final Domain domain) {
+    domain.getReports().forEach((reportType, report) -> {
+      if (!reports.reports.containsKey(reportType)) {
+        reports.reports.put(reportType, report);
       }
     });
   }

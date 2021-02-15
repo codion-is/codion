@@ -787,6 +787,10 @@ public class DomainTest {
 
     entities.entity(TestDomain.T_COMPOSITE_MASTER);
 
+    assertNotNull(second.getProcedure(TestDomainExtended.PROC_TYPE));
+    assertNotNull(second.getFunction(TestDomainExtended.FUNC_TYPE));
+    assertNotNull(second.getReport(TestDomainExtended.REP_TYPE));
+
     //entity type name clash
     assertThrows(IllegalArgumentException.class, TestDomainExtended.TestDomainThirdExtension::new);
   }
