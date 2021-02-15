@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
@@ -32,6 +33,21 @@ public interface Domain {
    * @return the Domain entities
    */
   Entities getEntities();
+
+  /**
+   * @return the Domain reports
+   */
+  Map<ReportType<?, ?, ?>, Report<?, ?, ?>> getReports();
+
+  /**
+   * @return the Domain procedures
+   */
+  Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> getProcedures();
+
+  /**
+   * @return the Domain functions
+   */
+  Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> getFunctions();
 
   /**
    * Retrieves the report of the given type.

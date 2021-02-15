@@ -6745,3 +6745,4 @@
   EntityPanelBuilder no longer public, EntityPanel.builder() factory method added
   EntityPanel.builder(SwingEntityModel) and EntityPanel.Builder.build() added
   EntityApplicationPanel.setupEntityPanels() removed, initializeEntityPanels() and initializeSupportEntityPanelBuilders() added
+  Domain.getProcedures(), getFunctions(), getReports() added, DefaultDomain.addProcedures(), addFunctions(), addReports() and copyFrom() added
