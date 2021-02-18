@@ -7,6 +7,7 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.framework.domain.property.ColumnProperty;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -69,6 +70,38 @@ public final class KeyGenerators {
    */
   public static KeyGenerator automatic(final String valueSource) {
     return new AutomaticKeyGenerator(valueSource);
+  }
+
+  /**
+   * Instantiates a primary key generator based on an IDENTITY type column.
+   * @see Statement#getGeneratedKeys()
+   * @return a generated primary key generator
+   */
+  public static KeyGenerator identity() {
+    return new IdentityKeyGenerator();
+  }
+
+  private static final class IdentityKeyGenerator implements KeyGenerator {
+
+    @Override
+    public boolean isInserted() {
+      return false;
+    }
+
+    @Override
+    public boolean returnGeneratedKeys() {
+      return true;
+    }
+
+    @Override
+    public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
+                            final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
+      try (final ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+        if (generatedKeys.next()) {
+          entity.put((Attribute<Object>) primaryKeyProperties.get(0).getAttribute(), generatedKeys.getObject(1));
+        }
+      }
+    }
   }
 
   private abstract static class AbstractQueriedKeyGenerator implements KeyGenerator {

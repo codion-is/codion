@@ -45,6 +45,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -223,9 +224,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             throw new SQLException("Unable to insert entity " + entity.getEntityType() + ", no properties to insert");
           }
 
-          final String[] returnColumns = keyGenerator.returnGeneratedKeys() ? getPrimaryKeyColumnNames(entityDefinition) : null;
           insertQuery = insertQuery(entityDefinition.getTableName(), statementProperties);
-          statement = prepareStatement(insertQuery, returnColumns);
+          statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
           executeStatement(statement, insertQuery, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, primaryKeyProperties, connection, statement);
 
@@ -1045,31 +1045,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private PreparedStatement prepareStatement(final String query) throws SQLException {
-    return prepareStatement(query, null);
+    return prepareStatement(query, false);
   }
 
-  private PreparedStatement prepareStatement(final String query, final String[] returnColumns) throws SQLException {
+  private PreparedStatement prepareStatement(final String query, final boolean returnGeneratedKeys) throws SQLException {
     try {
       logAccess("prepareStatement", query);
-      if (returnColumns == null) {
-        return connection.getConnection().prepareStatement(query);
+      if (returnGeneratedKeys) {
+        return connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       }
 
-      return connection.getConnection().prepareStatement(query, returnColumns);
+      return connection.getConnection().prepareStatement(query);
     }
     finally {
       logExit("prepareStatement");
     }
-  }
-
-  private static String[] getPrimaryKeyColumnNames(final EntityDefinition entityDefinition) {
-    final List<ColumnProperty<?>> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
-    final String[] columnNames = new String[primaryKeyProperties.size()];
-    for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      columnNames[i] = primaryKeyProperties.get(i).getColumnName();
-    }
-
-    return columnNames;
   }
 
   /**
