@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.domain.entity.KeyGenerators.automatic;
-import static is.codion.framework.domain.entity.KeyGenerators.identity;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
@@ -179,7 +178,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
-            .keyGenerator(automatic("chinook.genre"))
+            .keyGenerator(identity())
             .orderBy(orderBy().ascending(Genre.NAME))
             .stringFactory(stringFactory(Genre.NAME))
             .smallDataset();
