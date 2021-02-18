@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -398,7 +398,7 @@ public class DefaultEntityDefinitionTest {
         super(DOMAIN_TYPE);
         define(entityType,
                 columnProperty(entityType.integerAttribute("attribute")))
-                .keyGenerator(KeyGenerators.queried("select 1"));
+                .keyGenerator(KeyGenerator.queried("select 1"));
       }
     }
     assertThrows(IllegalStateException.class, () -> new TestDomain());

@@ -20,7 +20,7 @@ import java.awt.Color;
 import java.io.Serializable;
 
 import static is.codion.common.Util.notNull;
-import static is.codion.framework.domain.entity.KeyGenerators.sequence;
+import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;

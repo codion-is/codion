@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerators.increment;
-import static is.codion.framework.domain.entity.KeyGenerators.queried;
+import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.KeyGenerator.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;

@@ -6717,3 +6717,4 @@
   EntityApplicationPanel.setupEntityPanels() removed, initializeEntityPanels() and initializeSupportEntityPanelBuilders() added
   Domain.getProcedures(), getFunctions(), getReports() added, DefaultDomain.addProcedures(), addFunctions(), addReports() and copyFrom() added
   KeyGenerators.identity() added
+  KeyGenerators removed, factory methods moved to KeyGenerator

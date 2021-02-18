@@ -4,11 +4,14 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Generates primary key values for entities on insert.
@@ -69,5 +72,64 @@ public interface KeyGenerator {
    */
   default boolean returnGeneratedKeys() {
     return false;
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches the current maximum primary key value and increments
+   * it by one prior to insert.
+   * Note that if the primary key value of the entity being inserted is already populated this key
+   * generator does nothing, that is, it does not overwrite a manually set primary key value.
+   * @param tableName the table name
+   * @param columnName the primary key column name
+   * @return a incrementing primary key generator
+   */
+  static KeyGenerator increment(final String tableName, final String columnName) {
+    return new IncrementKeyGenerator(tableName, columnName);
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
+   * Note that if the primary key value of the entity being inserted is already populated this key
+   * generator does nothing, that is, it does not overwrite a manually set primary key value.
+   * @param sequenceName the sequence name
+   * @return a sequence based primary key generator
+   */
+  static KeyGenerator sequence(final String sequenceName) {
+    return new SequenceKeyGenerator(sequenceName);
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
+   * Note that if the primary key value of the entity being inserted is already populated this key
+   * generator does nothing, that is, it does not overwrite a manually set primary key value.
+   * @param query a query for retrieving the primary key value
+   * @return a query based primary key generator
+   */
+  static KeyGenerator queried(final String query) {
+    requireNonNull(query, "query");
+    return new AbstractQueriedKeyGenerator() {
+      @Override
+      protected String getQuery(final Database database) {
+        return query;
+      }
+    };
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches automatically incremented primary key values after insert.
+   * @param valueSource the value source, whether a sequence or a table name
+   * @return a auto-increment based primary key generator
+   */
+  static KeyGenerator automatic(final String valueSource) {
+    return new AutomaticKeyGenerator(valueSource);
+  }
+
+  /**
+   * Instantiates a primary key generator based on an IDENTITY type column.
+   * @see Statement#getGeneratedKeys()
+   * @return a generated primary key generator
+   */
+  static KeyGenerator identity() {
+    return new IdentityKeyGenerator();
   }
 }

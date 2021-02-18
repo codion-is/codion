@@ -274,7 +274,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 [#_keygenerator]
 == KeyGenerator
 
-The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/is/codion/framework/domain/entity/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] class serves as a factory for {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
 === Auto-increment
 
