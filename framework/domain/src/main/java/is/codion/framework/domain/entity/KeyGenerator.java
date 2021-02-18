@@ -65,7 +65,7 @@ public interface KeyGenerator {
    * The default implementation returns false.
    * @return true if the primary key column values should be returned via the insert statement resultSet
    * @see Statement#getGeneratedKeys()
-   * @see java.sql.Connection#prepareStatement(String, String[])
+   * @see java.sql.Connection#prepareStatement(String, int)
    */
   default boolean returnGeneratedKeys() {
     return false;
