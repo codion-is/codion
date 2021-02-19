@@ -10,27 +10,25 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  EQUAL("=", Values.MANY),
-  NOT_EQUAL("\u2260", Values.MANY),
-  LESS_THAN("<", Values.ONE),
-  LESS_THAN_OR_EQUAL("\u2264", Values.ONE),
-  GREATER_THAN(">", Values.ONE),
-  GREATER_THAN_OR_EQUAL("\u2265", Values.ONE),
-  BETWEEN_EXCLUSIVE("> <", Values.TWO),
-  BETWEEN("\u2265 \u2264", Values.TWO),
-  NOT_BETWEEN_EXCLUSIVE("< >", Values.TWO),
-  NOT_BETWEEN("\u2264 \u2265", Values.TWO);
+  EQUAL("="),
+  NOT_EQUAL("\u2260"),
+  LESS_THAN("<"),
+  LESS_THAN_OR_EQUAL("\u2264"),
+  GREATER_THAN(">"),
+  GREATER_THAN_OR_EQUAL("\u2265"),
+  BETWEEN_EXCLUSIVE("> <"),
+  BETWEEN("\u2265 \u2264"),
+  NOT_BETWEEN_EXCLUSIVE("< >"),
+  NOT_BETWEEN("\u2264 \u2265");
 
   private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
 
   private final String caption;
   private final String description;
-  private final Values values;
 
-  Operator(final String caption, final Values values) {
+  Operator(final String caption) {
     this.caption = caption;
     this.description = messages.getString(name().toLowerCase());
-    this.values = values;
   }
 
   @Override
@@ -44,16 +42,5 @@ public enum Operator {
 
   public String getDescription() {
     return description;
-  }
-
-  public Values getValues() {
-    return values;
-  }
-
-  /**
-   * The number of values expected for a operator
-   */
-  public enum Values {
-    ONE, TWO, MANY
   }
 }

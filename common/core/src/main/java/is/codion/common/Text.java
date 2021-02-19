@@ -63,7 +63,7 @@ public final class Text {
    * @param maxLength the maximum length
    * @return a random string
    */
-  public static String createRandomString(final int minLength, final int maxLength) {
+  public static String randomString(final int minLength, final int maxLength) {
     if (minLength > maxLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }

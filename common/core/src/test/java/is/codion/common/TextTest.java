@@ -52,17 +52,17 @@ public final class TextTest {
   }
 
   @Test
-  public void createRandomStringMinLengthExceedsMaxLength() {
-    assertThrows(IllegalArgumentException.class, () -> Text.createRandomString(3, 2));
+  public void randomStringMinLengthExceedsMaxLength() {
+    assertThrows(IllegalArgumentException.class, () -> Text.randomString(3, 2));
   }
 
   @Test
-  public void createRandomString() {
-    String randomString = Text.createRandomString(1, 1);
+  public void randomString() {
+    String randomString = Text.randomString(1, 1);
     assertEquals(1, randomString.length());
-    randomString = Text.createRandomString(5, 5);
+    randomString = Text.randomString(5, 5);
     assertEquals(5, randomString.length());
-    randomString = Text.createRandomString(4, 10);
+    randomString = Text.randomString(4, 10);
     assertTrue(randomString.length() >= 4);
     assertTrue(randomString.length() <= 10);
   }

@@ -6748,3 +6748,7 @@
   Domain.getProcedures(), getFunctions(), getReports() added, DefaultDomain.addProcedures(), addFunctions(), addReports() and copyFrom() added
   KeyGenerators.identity() added
   KeyGenerators removed, factory methods moved to KeyGenerator
+  LoggerProxy.createLoggerProxy() renamed loggerProxy()
+  Text.createRandomString() renamed randomString()
+  Report.getReportPath() now uses PropertyValue.getOrThrow()
+  Operator.Values removed, no longer used
