@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
@@ -53,7 +53,7 @@ public class Store extends DefaultDomain {
                     .maximumLength(100),
             columnProperty(Customer.IS_ACTIVE, "Is active")
                     .defaultValue(true))
-            .keyGenerator(automatic("store.customer"))
+            .keyGenerator(identity())
             .stringFactory(stringFactory(Customer.LAST_NAME)
                     .text(", ").value(Customer.FIRST_NAME))
             .caption("Customer");
@@ -67,7 +67,7 @@ public class Store extends DefaultDomain {
                     .nullable(false).maximumLength(100),
             columnProperty(Address.CITY, "City")
                     .nullable(false).maximumLength(50))
-            .keyGenerator(automatic("store.address"))
+            .keyGenerator(identity())
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))
             .caption("Address");
