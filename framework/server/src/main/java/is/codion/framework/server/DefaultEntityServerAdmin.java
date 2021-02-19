@@ -33,7 +33,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
    */
   private final EntityServer server;
 
-  private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
+  private final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
 
   /**
    * Instantiates a new DefaultEntityServerAdmin

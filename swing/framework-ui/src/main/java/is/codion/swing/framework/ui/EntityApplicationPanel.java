@@ -335,7 +335,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog for setting the log level
    */
   public final void setLogLevel() {
-    final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
+    final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
     if (loggerProxy == null) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }

@@ -31,7 +31,7 @@ public interface LoggerProxy {
   /**
    * @return the first available LoggerProxy implementation found, null if none is available
    */
-  static LoggerProxy createLoggerProxy() {
+  static LoggerProxy loggerProxy() {
     final ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
     final Iterator<LoggerProxy> proxyIterator = loader.iterator();
     if (proxyIterator.hasNext()) {

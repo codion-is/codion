@@ -65,7 +65,7 @@ public final class ServerMonitor {
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
 
-  private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
+  private final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
 
   private boolean shutdown = false;
 
