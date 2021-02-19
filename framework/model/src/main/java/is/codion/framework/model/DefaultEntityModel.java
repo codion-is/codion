@@ -39,6 +39,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
+  private static final String DETAIL_MODEL_PARAMETER = "detailModel";
+
   private final Event<?> refreshStartedEvent = Event.event();
   private final Event<?> refreshDoneEvent = Event.event();
   private final Event<M> linkedDetailModelAddedEvent = Event.event();
@@ -169,7 +171,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final M addDetailModel(final M detailModel) {
-    requireNonNull(detailModel, "detailModel");
+    requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     if (this.detailModels.contains(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
@@ -199,7 +201,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final boolean containsDetailModel(final M detailModel) {
-    return detailModels.contains(requireNonNull(detailModel, "detailModel"));
+    return detailModels.contains(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
   @Override
@@ -258,7 +260,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void setDetailModelForeignKey(final M detailModel, final ForeignKey foreignKey) {
-    requireNonNull(detailModel, "detailModel");
+    requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
     }
@@ -273,7 +275,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final ForeignKey getDetailModelForeignKey(final M detailModel) {
-    return detailModelForeignKeys.get(requireNonNull(detailModel, "detailModel"));
+    return detailModelForeignKeys.get(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
   @Override

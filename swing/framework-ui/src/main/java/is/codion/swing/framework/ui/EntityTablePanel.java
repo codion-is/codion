@@ -78,6 +78,7 @@ import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -207,7 +208,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final State conditionPanelVisibleState = State.state();
   private final State summaryPanelVisibleState = State.state();
 
-  private final Map<ControlCode, Control> controls = new HashMap<>();
+  private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
   private final SwingEntityTableModel tableModel;
 
@@ -540,17 +541,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = State.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.UPDATE),
+    final ControlList controlList = Controls.controlList(FrameworkMessages.get(FrameworkMessages.UPDATE),
             (char) 0, enabled, frameworkIcons().edit());
-    controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
+    controlList.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-        controls.add(control(() -> updateSelectedEntities(property), caption, enabled));
+        controlList.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });
 
-    return controls;
+    return controlList;
   }
 
   /**
@@ -1403,17 +1404,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void addConditionControls(final ControlList popupControls) {
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH),
+    final ControlList controlList = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH),
             (char) 0, frameworkIcons().filter());
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
-      controls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
+      controlList.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
     final ControlList searchPanelControls = conditionPanel.getControls();
     if (searchPanelControls != null && !searchPanelControls.isEmpty()) {
-      controls.addAll(searchPanelControls);
+      controlList.addAll(searchPanelControls);
     }
-    if (!controls.isEmpty()) {
-      popupControls.add(controls);
+    if (!controlList.isEmpty()) {
+      popupControls.add(controlList);
     }
   }
 
