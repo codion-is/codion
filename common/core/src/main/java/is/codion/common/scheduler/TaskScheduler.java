@@ -35,7 +35,8 @@ public interface TaskScheduler {
   int getInterval();
 
   /**
-   * Sets the new task interval and re-schedules the task, note that if the scheduler was stopped it will be restarted.
+   * Sets the new task interval and, in case this scheduler was running, re-schedules the task.
+   * If the scheduler was stopped it will remain so, the new interval coming into effect on next start.
    * @param interval the interval
    * @throws IllegalArgumentException in case {@code interval} isn't a positive integer
    */

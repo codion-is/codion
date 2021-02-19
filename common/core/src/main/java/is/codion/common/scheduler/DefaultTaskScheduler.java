@@ -53,7 +53,9 @@ final class DefaultTaskScheduler implements TaskScheduler {
     synchronized (lock) {
       if (this.interval != interval) {
         this.interval = interval;
-        start();
+        if (isRunning()) {
+          start();
+        }
       }
     }
     intervalChangedEvent.onEvent(interval);
