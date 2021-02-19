@@ -141,7 +141,7 @@ public final class ClientInstanceMonitor {
   }
 
   public ValueObserver<Integer> getCurrentSearchTextPosition() {
-    return Value.valueObserver(currentSearchTextPosition);
+    return Value.observer(currentSearchTextPosition);
   }
 
   public Document getLogDocument() {

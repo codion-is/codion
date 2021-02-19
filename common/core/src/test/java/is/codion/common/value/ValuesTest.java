@@ -67,7 +67,7 @@ public class ValuesTest {
     assertFalse(intValue.isNullable());
     assertTrue(intValue.toOptional().isPresent());
     assertTrue(intValue.is(42));
-    final ValueObserver<Integer> valueObserver = Value.valueObserver(intValue);
+    final ValueObserver<Integer> valueObserver = Value.observer(intValue);
     intValue.addListener(eventCounter::incrementAndGet);
     intValue.addDataListener(data -> {
       if (eventCounter.get() != 2) {
@@ -162,7 +162,7 @@ public class ValuesTest {
     final Value<Integer> modelValue = Value.propertyValue(this, "intValue", int.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Value.value();
     assertFalse(modelValue.isNullable());
-    uiValue.link(Value.valueObserver(modelValue));
+    uiValue.link(Value.observer(modelValue));
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.addListener(uiValueEventCounter::incrementAndGet);

@@ -341,7 +341,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final ValueObserver<Integer> applicationCountObserver() {
-    return Value.valueObserver(applicationCountValue);
+    return Value.observer(applicationCountValue);
   }
 
   /**
