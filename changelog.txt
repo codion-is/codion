@@ -6753,3 +6753,4 @@
   Report.getReportPath() now uses PropertyValue.getOrThrow()
   Operator.Values removed, no longer used
   Value.valueObserver() renamed observer()
+  EntityApplicationPanel.addSupportPanelBuilder() removed

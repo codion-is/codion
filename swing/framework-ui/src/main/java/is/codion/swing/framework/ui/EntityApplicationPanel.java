@@ -254,25 +254,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Adds support application panels, available via a support panel menu
-   * @param panelBuilders the support application panel providers
-   */
-  public final void addSupportPanelBuilders(final EntityPanel.Builder... panelBuilders) {
-    requireNonNull(panelBuilders, "panelBuilders");
-    for (final EntityPanel.Builder panelBuilder : panelBuilders) {
-      addSupportPanelBuilder(panelBuilder);
-    }
-  }
-
-  /**
-   * Adds a support application panel, available via a support panel menu
-   * @param panelBuilder the support application panel provider
-   */
-  public final void addSupportPanelBuilder(final EntityPanel.Builder panelBuilder) {
-    supportPanelBuilders.add(panelBuilder);
-  }
-
-  /**
    * @param entityType the entityType
    * @return the first entity panel found based on the given entity type, null if none is found
    */
