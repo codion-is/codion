@@ -160,7 +160,7 @@ public interface Value<V> extends ValueObserver<V> {
    * @param <V> the value type
    * @return a ValueObserver for the given value
    */
-  static <V> ValueObserver<V> valueObserver(final Value<V> value) {
+  static <V> ValueObserver<V> observer(final Value<V> value) {
     return new DefaultValueObserver<>(value);
   }
 }
