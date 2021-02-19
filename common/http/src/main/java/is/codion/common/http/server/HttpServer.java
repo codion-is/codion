@@ -100,6 +100,11 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
     serverStoppedEvent.addListener(listener);
   }
 
+  @Override
+  public final void setHandler(final Handler handler) {
+    super.setHandler(handler);
+  }
+
   /**
    * Adds a handler to this http server
    * @param handler the handler to add

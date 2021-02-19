@@ -85,4 +85,9 @@ public class DatabaseException extends Exception {
   public final int getErrorCode() {
     return errorCode;
   }
+
+  @Override
+  public final void setStackTrace(final StackTraceElement[] stackTrace) {
+    super.setStackTrace(stackTrace);
+  }
 }

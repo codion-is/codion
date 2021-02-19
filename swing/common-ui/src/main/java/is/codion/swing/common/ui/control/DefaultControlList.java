@@ -17,6 +17,8 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultControlList extends AbstractControl implements ControlList {
 
+  private static final String CONTROLS_PARAMETER = "controls";
+
   private final List<Action> actions = new ArrayList<>();
 
   DefaultControlList(final String name, final char mnemonic, final StateObserver enabledState, final Icon icon,
@@ -78,13 +80,13 @@ final class DefaultControlList extends AbstractControl implements ControlList {
 
   @Override
   public ControlList add(final ControlList controls) {
-    actions.add(requireNonNull(controls, "controls"));
+    actions.add(requireNonNull(controls, CONTROLS_PARAMETER));
     return this;
   }
 
   @Override
   public ControlList addAt(final int index, final ControlList controls) {
-    actions.add(index, requireNonNull(controls, "controls"));
+    actions.add(index, requireNonNull(controls, CONTROLS_PARAMETER));
     return this;
   }
 
@@ -102,7 +104,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
 
   @Override
   public ControlList addAll(final ControlList controls) {
-    actions.addAll(requireNonNull(controls, "controls").getActions());
+    actions.addAll(requireNonNull(controls, CONTROLS_PARAMETER).getActions());
     return this;
   }
 
