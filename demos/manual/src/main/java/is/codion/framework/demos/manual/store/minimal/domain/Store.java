@@ -22,7 +22,7 @@ public class Store extends DefaultDomain {
   public interface Customer {
     EntityType<Entity> TYPE = DOMAIN.entityType("store.customer");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
     Attribute<String> EMAIL = TYPE.stringAttribute("email");
@@ -32,8 +32,8 @@ public class Store extends DefaultDomain {
   public interface Address {
     EntityType<Entity> TYPE = DOMAIN.entityType("store.address");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
+    Attribute<Long> ID = TYPE.longAttribute("id");
+    Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customer_id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
 
