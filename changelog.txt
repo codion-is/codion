@@ -6719,3 +6719,4 @@
   KeyGenerators.identity() added
   KeyGenerators removed, factory methods moved to KeyGenerator
   LoggerProxy.createLoggerProxy() renamed loggerProxy()
+  Text.createRandomString() renamed randomString()

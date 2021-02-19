@@ -466,7 +466,7 @@ public class EntityTestUnit {
   private static String getRandomString(final Property<?> property) {
     final int length = property.getMaximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaximumLength();
 
-    return Text.createRandomString(length, length);
+    return Text.randomString(length, length);
   }
 
   private static byte[] getRandomBlob(final Property<?> property) {
