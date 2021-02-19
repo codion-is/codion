@@ -8,8 +8,6 @@ import is.codion.common.value.PropertyValue;
 
 import java.sql.Connection;
 
-import static is.codion.common.Util.nullOrEmpty;
-
 /**
  * A simple wrapper for a report
  * @param <T> the report type
@@ -48,15 +46,10 @@ public interface Report<T, R, P> {
 
   /**
    * @return the value associated with {@link Report#REPORT_PATH}
-   * @throws IllegalArgumentException in case it is not specified
+   * @throws IllegalStateException in case it is not specified
    */
   static String getReportPath() {
-    final String path = REPORT_PATH.get();
-    if (nullOrEmpty(path)) {
-      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
-    }
-
-    return path;
+    return REPORT_PATH.getOrThrow();
   }
 
   /**
@@ -64,7 +57,7 @@ public interface Report<T, R, P> {
    * and the given report path.
    * @param reportPath the report path relative to {@link Report#REPORT_PATH}.
    * @return a full report path
-   * @throws IllegalArgumentException in case {@link Report#REPORT_PATH} is not specified
+   * @throws IllegalStateException in case {@link Report#REPORT_PATH} is not specified
    */
   static String getFullReportPath(final String reportPath) {
     final String slash = "/";

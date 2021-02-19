@@ -13,7 +13,7 @@ public class ReportTest {
   @Test
   public void getReportPathNotSpecified() {
     Report.REPORT_PATH.set(null);
-    assertThrows(IllegalArgumentException.class, Report::getReportPath);
+    assertThrows(IllegalStateException.class, Report::getReportPath);
   }
 
   @Test
