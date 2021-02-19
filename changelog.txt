@@ -6721,3 +6721,4 @@
   LoggerProxy.createLoggerProxy() renamed loggerProxy()
   Text.createRandomString() renamed randomString()
   Report.getReportPath() now uses PropertyValue.getOrThrow()
+  Operator.Values removed, no longer used
