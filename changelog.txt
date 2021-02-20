@@ -6756,3 +6756,4 @@
   EntityApplicationPanel.addSupportPanelBuilder() removed
 0.17.10
   TaskScheduler.setInterval() no longer schedules a stopped scheduler
+  StateValue now extends AbstractValue
