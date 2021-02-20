@@ -95,22 +95,26 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                     .tablePanelClass(CustomerTablePanel.class);
 
     final EntityPanel.Builder genreBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(Genre.TYPE))
+            EntityPanel.builder(SwingEntityModel.builder(Genre.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
                     .editPanelClass(GenreEditPanel.class)
                     .detailPanelBuilder(trackBuilder)
                     .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     final EntityPanel.Builder mediaTypeBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(MediaType.TYPE))
+            EntityPanel.builder(SwingEntityModel.builder(MediaType.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
                     .editPanelClass(MediaTypeEditPanel.class)
                     .detailPanelBuilder(trackBuilder)
                     .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanel.Builder employeeBuilder = EntityPanel.builder(SwingEntityModel.builder(Employee.TYPE)
-            .tableModelClass(EmployeeTableModel.class))
-            .editPanelClass(EmployeeEditPanel.class)
-            .tablePanelClass(EmployeeTablePanel.class)
-            .detailPanelBuilder(customerBuilder).detailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanel.Builder employeeBuilder =
+            EntityPanel.builder(SwingEntityModel.builder(Employee.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
+                    .tableModelClass(EmployeeTableModel.class))
+                    .editPanelClass(EmployeeEditPanel.class)
+                    .tablePanelClass(EmployeeTablePanel.class)
+                    .detailPanelBuilder(customerBuilder).detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     return Arrays.asList(genreBuilder, mediaTypeBuilder, employeeBuilder);
   }
