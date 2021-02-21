@@ -67,12 +67,12 @@ class DefaultState implements State {
   }
 
   @Override
-  public void addDataListener(final EventDataListener<Boolean> listener) {
+  public final void addDataListener(final EventDataListener<Boolean> listener) {
     getObserver().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<Boolean> listener) {
+  public final void removeDataListener(final EventDataListener<Boolean> listener) {
     getObserver().removeDataListener(listener);
   }
 
