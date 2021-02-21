@@ -129,6 +129,12 @@ public interface ControlList extends Control {
     Builder name(String name);
 
     /**
+     * @param description a description for the control list
+     * @return this Builder instance
+     */
+    Builder description(String description);
+
+    /**
      * @param mnemonic the mnemonic to assign to this control list
      * @return this Builder instance
      */

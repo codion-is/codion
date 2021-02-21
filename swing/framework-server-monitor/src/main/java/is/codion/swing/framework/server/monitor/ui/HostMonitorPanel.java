@@ -15,6 +15,7 @@ import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 
 /**
@@ -46,7 +47,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private ControlList getControls() {
-    return controlListBuilder().control(Controls.control(model::refresh, "Refresh")).build();
+    return controlListBuilder().control(controlBuilder().command(model::refresh).name("Refresh").build()).build();
   }
 
   private void bindEvents() {

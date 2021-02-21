@@ -18,13 +18,20 @@ final class ControlListBuilder implements ControlList.Builder {
   private final List<Action> controls = new ArrayList<>();
 
   private String name;
+  private String description;
   private char mnemonic = 0;
   private StateObserver enabledState;
   private Icon icon;
 
   @Override
   public ControlList.Builder name(final String name) {
-    this.name = requireNonNull(name);
+    this.name = name;
+    return this;
+  }
+
+  @Override
+  public ControlList.Builder description(final String description) {
+    this.description = description;
     return this;
   }
 
@@ -36,13 +43,13 @@ final class ControlListBuilder implements ControlList.Builder {
 
   @Override
   public ControlList.Builder enabledState(final StateObserver enabledState) {
-    this.enabledState = requireNonNull(enabledState);
+    this.enabledState = enabledState;
     return this;
   }
 
   @Override
   public ControlList.Builder icon(final Icon icon) {
-    this.icon = requireNonNull(icon);
+    this.icon = icon;
     return this;
   }
 
@@ -78,6 +85,6 @@ final class ControlListBuilder implements ControlList.Builder {
 
   @Override
   public ControlList build() {
-    return new DefaultControlList(name, mnemonic, enabledState, icon, controls);
+    return (ControlList) new DefaultControlList(name, mnemonic, enabledState, icon, controls).setDescription(description);
   }
 }

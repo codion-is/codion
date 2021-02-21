@@ -17,6 +17,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -98,7 +99,9 @@ import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
+import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
@@ -730,77 +733,82 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for exiting the application
    */
   protected final Control createExitControl() {
-    return Controls.control(this::exit, FrameworkMessages.get(FrameworkMessages.EXIT),
-            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
-            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0));
+    return controlBuilder()
+            .command(this::exit)
+            .name(FrameworkMessages.get(FrameworkMessages.EXIT))
+            .description(FrameworkMessages.get(FrameworkMessages.EXIT_TIP))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0))
+            .build();
   }
 
   /**
    * @return a Control for setting the log level
    */
   protected final Control createLogLevelControl() {
-    final Control setLogLevel = Controls.control(this::setLogLevel,
-            resourceBundle.getString(SET_LOG_LEVEL));
-    setLogLevel.setDescription(resourceBundle.getString(SET_LOG_LEVEL_DESC));
-
-    return setLogLevel;
+    return controlBuilder()
+            .command(this::setLogLevel)
+            .name(resourceBundle.getString(SET_LOG_LEVEL))
+            .description(resourceBundle.getString(SET_LOG_LEVEL_DESC))
+            .build();
   }
 
   /**
    * @return a Control for refreshing the application model
    */
   protected final Control createRefreshAllControl() {
-    return Controls.control(applicationModel::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
+    return controlBuilder().command(applicationModel::refresh).name(FrameworkMessages.get(FrameworkMessages.REFRESH_ALL)).build();
   }
 
   /**
    * @return a Control for viewing the application structure tree
    */
   protected final Control createViewApplicationTreeControl() {
-    return Controls.control(this::viewApplicationTree, resourceBundle.getString("view_application_tree"));
+    return controlBuilder().command(this::viewApplicationTree).name(resourceBundle.getString("view_application_tree")).build();
   }
 
   /**
    * @return a Control for viewing the application dependency tree
    */
   protected final Control createViewDependencyTree() {
-    return Controls.control(this::viewDependencyTree, FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES));
+    return controlBuilder().command(this::viewDependencyTree).name(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES)).build();
   }
 
   /**
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
-    return Controls.control(this::selectLookAndFeel, resourceBundle.getString(SELECT_LOOK_AND_FEEL));
+    return controlBuilder().command(this::selectLookAndFeel).name(resourceBundle.getString(SELECT_LOOK_AND_FEEL)).build();
   }
 
   /**
    * @return a Control for selecting the font size
    */
   protected final Control createSelectFontSizeControl() {
-    return Controls.control(this::selectFontSize, resourceBundle.getString("select_font_size"));
+    return controlBuilder().command(this::selectFontSize).name(resourceBundle.getString("select_font_size")).build();
   }
 
   /**
    * @return a Control controlling the always on top status
    */
   protected final ToggleControl createAlwaysOnTopControl() {
-    return Controls.toggleControl(this,
-            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
+    return toggleControlBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP))
+            .value(Value.propertyValue(this, "alwaysOnTop", boolean.class, alwaysOnTopChangedEvent))
+            .build();
   }
 
   /**
    * @return a Control for viewing information about the application
    */
   protected final Control createAboutControl() {
-    return Controls.control(this::displayAbout, resourceBundle.getString(ABOUT) + "...", null, null);
+    return controlBuilder().command(this::displayAbout).name(resourceBundle.getString(ABOUT) + "...").build();
   }
 
   /**
    * @return a Control for displaying the help
    */
   protected final Control createHelpControl() {
-    return Controls.control(this::displayHelp, resourceBundle.getString(HELP) + "...", null, null);
+    return controlBuilder().command(this::displayHelp).name(resourceBundle.getString(HELP) + "...").build();
   }
 
   /**
@@ -915,9 +923,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final ControlList controls = controlListBuilder()
             .name(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0)).build();
-    supportPanelBuilders.forEach(panelBuilder -> controls.add(Controls.control(() -> displayEntityPanelDialog(panelBuilder),
-            panelBuilder.getCaption() == null ?
-                    entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())));
+    supportPanelBuilders.forEach(panelBuilder -> controls.add(controlBuilder()
+            .command(() -> displayEntityPanelDialog(panelBuilder))
+            .name(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+            .build()));
 
     return controls;
   }
@@ -966,7 +975,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
       KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(dialog::dispose));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Control.control(dialog::dispose));
       dialog.pack();
       dialog.setLocationRelativeTo(this);
       if (modalDialog) {

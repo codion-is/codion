@@ -19,7 +19,6 @@ import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
@@ -35,7 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
+import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
@@ -65,12 +66,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     super(tableConditionModel, columnModel.getAllColumns());
     this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createPropertyConditionPanels(tableConditionModel, columnModel));
     this.columnModel = columnModel;
-    this.conditionRequiredControl = Controls.toggleControl(queryConditionRequiredState, MESSAGES.getString("require_query_condition"));
-    this.conditionRequiredControl.setDescription(MESSAGES.getString("require_query_condition_description"));
+    this.conditionRequiredControl = toggleControlBuilder()
+            .state(queryConditionRequiredState)
+            .name(MESSAGES.getString("require_query_condition"))
+            .description(MESSAGES.getString("require_query_condition_description")).build();
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            Controls.control(onSearchListener::onEvent, getTableConditionModel().getConditionObserver()));
+            controlBuilder().command(onSearchListener::onEvent).enabledState(getTableConditionModel().getConditionObserver()).build());
   }
 
   /**
@@ -124,9 +127,9 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter()).build();
     if (canToggleAdvanced()) {
-      controls.add(Controls.toggleControl(getAdvancedState(), FrameworkMessages.get(FrameworkMessages.ADVANCED)));
+      controls.add(toggleControlBuilder().state(getAdvancedState()).name(FrameworkMessages.get(FrameworkMessages.ADVANCED)).build());
     }
-    controls.add(Controls.control(getTableConditionModel()::clearConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controls.add(controlBuilder().command(getTableConditionModel()::clearConditionModels).name(FrameworkMessages.get(FrameworkMessages.CLEAR)).build());
     controls.addSeparator();
     controls.add(conditionRequiredControl);
 

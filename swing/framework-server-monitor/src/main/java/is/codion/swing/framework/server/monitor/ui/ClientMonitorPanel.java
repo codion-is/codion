@@ -20,6 +20,8 @@ import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
+
 /**
  * A ClientMonitorPanel
  */
@@ -56,7 +58,7 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(new JButton(Controls.control(this::refresh, "Refresh")), BorderLayout.SOUTH);
+    clientInstanceBase.add(new JButton(controlBuilder().command(this::refresh).name("Refresh").build()), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -86,12 +88,12 @@ public final class ClientMonitorPanel extends JPanel {
 
   private JPopupMenu initializePopupMenu() {
     final ControlList controls = ControlList.controlList();
-    controls.add(Controls.control(() -> {
+    controls.add(controlBuilder().command(() -> {
       for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
         model.getServer().disconnect(remoteClient.getClientId());
         model.getRemoteClientListModel().removeElement(remoteClient);
       }
-    }, "Disconnect"));
+    }).name("Disconnect").build());
 
     return Controls.popupMenu(controls);
   }

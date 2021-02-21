@@ -13,8 +13,8 @@ public class DefaultControlListTest {
 
   @Test
   public void test() {
-    final Control one = Controls.control(() -> {}, "one");
-    final Control two = Controls.control(() -> {}, "two");
+    final Control one = Control.control(() -> {});
+    final Control two = Control.control(() -> {});
     final ControlList list = controlListBuilder().name("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
@@ -24,7 +24,7 @@ public class DefaultControlListTest {
     assertEquals("list", list.getName());
     final ControlList list1 = ControlList.controlList();
     assertTrue(nullOrEmpty(list1.getName()));
-    assertEquals("", list1.getName());
+    assertNull(list1.getName());
     final ControlList list2 = controlListBuilder().control(two).build();
     list2.setName("list");
     assertFalse(nullOrEmpty(list2.getName()));

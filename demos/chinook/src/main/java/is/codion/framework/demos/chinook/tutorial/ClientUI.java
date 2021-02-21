@@ -15,7 +15,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.value.SelectedValues;
 import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -55,7 +55,7 @@ public final class ClientUI {
 
     // add a insert action to the name field
     // so we can insert by pressing Enter
-    nameField.addActionListener(Controls.control(() -> {
+    nameField.addActionListener(Control.control(() -> {
       try {
         // insert the entity
         editModel.insert();
@@ -123,7 +123,7 @@ public final class ClientUI {
 
     // add a insert action to the title field
     // so we can insert by pressing Enter
-    titleField.addActionListener(Controls.control(() -> {
+    titleField.addActionListener(Control.control(() -> {
       try {
         editModel.insert();
 

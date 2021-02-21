@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static is.codion.swing.common.ui.Windows.getParentWindow;
-import static is.codion.swing.common.ui.control.Controls.control;
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -43,15 +43,21 @@ public final class EntitySelectionDialog extends JDialog {
   private final SwingEntityTableModel tableModel;
   private final EntityTablePanel entityTablePanel;
 
-  private final Control okControl = control(this::ok,
-          Messages.get(Messages.OK), null, null,
-          Messages.get(Messages.OK_MNEMONIC).charAt(0));
-  private final Control cancelControl = control(this::dispose,
-          Messages.get(Messages.CANCEL), null, null,
-          Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-  private final Control searchControl = control(this::search,
-          FrameworkMessages.get(FrameworkMessages.SEARCH), null, null,
-          FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
+  private final Control okControl = controlBuilder()
+          .command(this::ok)
+          .name(Messages.get(Messages.OK))
+          .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+          .build();
+  private final Control cancelControl = controlBuilder()
+          .command(this::dispose)
+          .name(Messages.get(Messages.CANCEL))
+          .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
+          .build();
+  private final Control searchControl = controlBuilder()
+          .command(this::search)
+          .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+          .mnemonic(FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0))
+          .build();
 
   /**
    * Instantiates a JDialog for searching for and selecting one or more entities.

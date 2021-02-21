@@ -14,7 +14,6 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -26,6 +25,8 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
+
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
 
 // tag::initializeEntityPanels[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
@@ -62,7 +63,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   @Override
   protected ControlList getToolsControls() {
     final ControlList toolsControls = super.getToolsControls();
-    toolsControls.add(Controls.control(this::importJSON, "Import JSON"));
+    toolsControls.add(controlBuilder()
+            .command(this::importJSON).name("Import JSON").build());
 
     return toolsControls;
   }

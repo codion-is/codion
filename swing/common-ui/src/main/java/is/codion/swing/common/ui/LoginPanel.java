@@ -6,7 +6,7 @@ package is.codion.swing.common.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -134,7 +134,7 @@ public final class LoginPanel extends JPanel {
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
     KeyEvents.addKeyEvent(passwordField, KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_DOWN_MASK,
-            Controls.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())));
+            Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())));
 
     final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, FixRowHeights.YES, FixColumnWidths.NO));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
@@ -147,10 +147,10 @@ public final class LoginPanel extends JPanel {
     setLayout(Layouts.borderLayout());
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().isEmpty()) {
-      Components.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
+      Components.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
-      Components.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
+      Components.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
   }
 

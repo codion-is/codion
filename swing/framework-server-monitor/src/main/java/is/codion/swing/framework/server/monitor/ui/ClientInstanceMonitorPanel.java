@@ -33,8 +33,9 @@ import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
-import static is.codion.swing.common.ui.control.Controls.control;
 import static is.codion.swing.common.ui.control.Controls.popupMenu;
 import static java.util.Objects.requireNonNull;
 
@@ -96,13 +97,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     infoBase.add(infoPanel, BorderLayout.CENTER);
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
-    settingsPanel.add(new JButton(control(this::updateView, "Refresh log")));
+    settingsPanel.add(new JButton(controlBuilder().command(this::updateView).name("Refresh log").build()));
     infoBase.add(settingsPanel, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(popupMenu(controlListBuilder().control(control(this::saveLogToFile, "Save to file...")).build()));
+    logArea.setComponentPopupMenu(popupMenu(controlListBuilder()
+            .control(controlBuilder().command(this::saveLogToFile).name("Save to file...").build()).build()));
 
     addKeyEvent(searchField, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, control(this::scrollToNextSearchPosition));
     addKeyEvent(searchField, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, control(this::scrollToPreviousSearchPosition));

@@ -43,6 +43,8 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
+import static is.codion.swing.common.ui.control.ToggleControl.toggleControl;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 
 /**
@@ -180,26 +182,36 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final ToggleControl detailsControl = Controls.toggleControl(showDetailsState);
+    final ToggleControl detailsControl = toggleControl(showDetailsState);
     detailsControl.setName(MESSAGES.getString("details"));
     detailsControl.setDescription(MESSAGES.getString("show_details"));
-    final Control printControl = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
-    printControl.setDescription(MESSAGES.getString("print_error_report"));
-    printControl.setMnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0));
-    final Control closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
-    closeControl.setDescription(MESSAGES.getString("close_dialog"));
-    closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
+    final Control printControl = controlBuilder()
+            .command(() -> detailsArea.print())
+            .name(Messages.get(Messages.PRINT))
+            .description(MESSAGES.getString("print_error_report"))
+            .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
+            .build();
+    final Control closeControl = controlBuilder()
+            .command(this::dispose)
+            .name(Messages.get(Messages.CLOSE))
+            .description(MESSAGES.getString("close_dialog"))
+            .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
+            .build();
     KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
     KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
-    final Control saveControl = Controls.control(() ->
-                    Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
-                            Arrays.asList(detailsArea.getText().split("\\r?\\n"))),
-            MESSAGES.getString("save"));
-    saveControl.setDescription(MESSAGES.getString("save_error_log"));
-    saveControl.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
-    final Control copyControl = Controls.control(() -> Components.setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
-    copyControl.setDescription(MESSAGES.getString("copy_to_clipboard"));
-    copyControl.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
+    final Control saveControl = controlBuilder()
+            .command(() -> Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
+                    Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
+            .name(MESSAGES.getString("save"))
+            .description(MESSAGES.getString("save_error_log"))
+            .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
+            .build();
+    final Control copyControl = controlBuilder()
+            .command(() -> Components.setClipboard(detailsArea.getText()))
+            .name(Messages.get(Messages.COPY))
+            .description(MESSAGES.getString("copy_to_clipboard"))
+            .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
+            .build();
 
     final JButton closeButton = new JButton(closeControl);
     printButton = new JButton(printControl);

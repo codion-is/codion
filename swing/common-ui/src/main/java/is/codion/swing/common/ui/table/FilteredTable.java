@@ -16,7 +16,6 @@ import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -67,6 +66,8 @@ import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
+import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -374,15 +375,19 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a control for showing the column selection dialog
    */
   public Control createSelectColumnsControl() {
-    return Controls.control(this::selectColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
-            tableModel.getColumnModel().getLockedState().getReversedObserver(), MESSAGES.getString(SELECT_COLUMNS));
+    return controlBuilder()
+            .command(this::selectColumns)
+            .name(MESSAGES.getString(SELECT_COLUMNS) + "...")
+            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .description(MESSAGES.getString(SELECT_COLUMNS))
+            .build();
   }
 
   /**
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl createSingleSelectionModeControl() {
-    return Controls.toggleControl(tableModel.getSelectionModel().getSingleSelectionModeState(), MESSAGES.getString(SINGLE_SELECTION_MODE));
+    return toggleControlBuilder().state(tableModel.getSelectionModel().getSingleSelectionModeState()).name(MESSAGES.getString(SINGLE_SELECTION_MODE)).build();
   }
 
   /**
@@ -457,11 +462,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                 lastSearchResultCoordinate.getRow(), true, field.getText());
       }
     });
-    final Control findNext = Controls.control(() -> findNext(field.getText()));
-    final Control findAndSelectNext = Controls.control(() -> findAndSelectNext(field.getText()));
-    final Control findPrevious = Controls.control(() -> findPrevious(field.getText()));
-    final Control findAndSelectPrevious = Controls.control(() -> findAndSelectPrevious(field.getText()));
-    final Control cancel = Controls.control(this::requestFocusInWindow);
+    final Control findNext = Control.control(() -> findNext(field.getText()));
+    final Control findAndSelectNext = Control.control(() -> findAndSelectNext(field.getText()));
+    final Control findPrevious = Control.control(() -> findPrevious(field.getText()));
+    final Control findAndSelectPrevious = Control.control(() -> findAndSelectPrevious(field.getText()));
+    final Control cancel = Control.control(this::requestFocusInWindow);
     addKeyEvent(field, KeyEvent.VK_ENTER, 0, 0, ON_KEY_PRESSED, findNext);
     addKeyEvent(field, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectNext);
     addKeyEvent(field, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, findNext);
@@ -505,13 +510,18 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 1));
     panel.add(boxRegexp);
 
-    final Control control = Controls.control(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()),
-            Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    final Control control = controlBuilder()
+            .command(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()))
+            .name(Messages.get(Messages.OK))
+            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+            .build();
 
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
-    popupMenu.add(Controls.control(() ->
-            Dialogs.displayInDialog(FilteredTable.this, panel, settingsMessage, control), settingsMessage));
+    popupMenu.add(controlBuilder()
+            .command(() -> Dialogs.displayInDialog(FilteredTable.this, panel, settingsMessage, control))
+            .name(settingsMessage)
+            .build());
 
     return popupMenu;
   }
@@ -525,8 +535,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       togglePanel.add(columnCheckBox);
     });
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), MESSAGES.getString("select_all"))));
-    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), MESSAGES.getString("select_none"))));
+    southPanel.add(new JButton(controlBuilder().command(() -> setSelected(checkBoxes, true)).name(MESSAGES.getString("select_all")).build()));
+    southPanel.add(new JButton(controlBuilder().command(() -> setSelected(checkBoxes, false)).name(MESSAGES.getString("select_none")).build()));
 
     final JPanel base = new JPanel(Layouts.borderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);

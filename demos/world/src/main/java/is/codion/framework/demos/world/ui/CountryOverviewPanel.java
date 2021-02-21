@@ -5,7 +5,7 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.model.CountryOverviewTableModel;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -57,7 +57,7 @@ public final class CountryOverviewPanel extends EntityPanel {
 
     EntityTablePanel countryTablePanel = getTablePanel();
     countryTablePanel.getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    countryTablePanel.getTable().setDoubleClickAction(Controls.control(this::displayEditPanel));
+    countryTablePanel.getTable().setDoubleClickAction(Control.control(this::displayEditPanel));
     countryTablePanel.setSummaryPanelVisible(true);
 
     EntityPanel cityPanel = new EntityPanel(cityModel);

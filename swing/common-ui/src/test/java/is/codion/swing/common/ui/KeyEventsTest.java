@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui;
 
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ public class KeyEventsTest {
     final JTextField textField = new JTextField();
     final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyReleased";
     assertNull(textField.getActionMap().get(actionName));
-    KeyEvents.addKeyEvent(textField, KeyEvent.VK_ENTER, Controls.control(() -> {}));
+    KeyEvents.addKeyEvent(textField, KeyEvent.VK_ENTER, Control.control(() -> {}));
     assertNotNull(textField.getActionMap().get(actionName));
   }
 }

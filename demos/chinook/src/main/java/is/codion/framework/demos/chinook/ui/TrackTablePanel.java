@@ -9,7 +9,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
@@ -25,6 +24,8 @@ import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static is.codion.swing.common.ui.control.Control.controlBuilder;
+
 public class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
@@ -34,8 +35,8 @@ public class TrackTablePanel extends EntityTablePanel {
   @Override
   protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
     final ControlList controls = super.getPopupControls(additionalPopupControls);
-    controls.addAt(0, Controls.control(this::raisePriceOfSelected, "Raise price...",
-            getTableModel().getSelectionModel().getSelectionNotEmptyObserver()));
+    controls.addAt(0, controlBuilder().command(this::raisePriceOfSelected).name("Raise price...")
+            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
     controls.addSeparatorAt(1);
 
     return controls;

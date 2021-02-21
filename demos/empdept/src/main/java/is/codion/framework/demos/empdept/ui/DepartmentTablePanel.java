@@ -7,8 +7,8 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -44,8 +44,10 @@ public class DepartmentTablePanel extends EntityTablePanel {
     final ControlList printControls = super.createPrintControls();
     final StateObserver selectionNotEmptyObserver =
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
-    printControls.add(Controls.control(this::viewEmployeeReport,
-            "Employee Report", selectionNotEmptyObserver));
+    printControls.add(Control.controlBuilder()
+            .command(this::viewEmployeeReport)
+            .name("Employee Report")
+            .enabledState(selectionNotEmptyObserver).build());
 
     return printControls;
   }

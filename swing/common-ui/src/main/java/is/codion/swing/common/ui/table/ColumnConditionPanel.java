@@ -59,6 +59,8 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static is.codion.swing.common.ui.control.ToggleControl.toggleControl;
+import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -151,11 +153,11 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     this.equalField = equalField;
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
-    this.toggleEnabledButton = Controls.toggleButton(
-            Controls.toggleControl(conditionModel, "enabled", null, conditionModel.getEnabledObserver()));
+    this.toggleEnabledButton = Controls.toggleButton(toggleControlBuilder()
+            .value(Value.propertyValue(conditionModel, "enabled", boolean.class, conditionModel.getEnabledObserver())).build());
     this.toggleEnabledButton.setIcon(icons().filter());
     if (toggleAdvancedButton == ToggleAdvancedButton.YES) {
-      this.toggleAdvancedButton = Controls.toggleButton(Controls.toggleControl(advancedConditionState));
+      this.toggleAdvancedButton = Controls.toggleButton(toggleControl(advancedConditionState));
       this.toggleAdvancedButton.setIcon(icons().configure());
     }
     else {
