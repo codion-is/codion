@@ -75,13 +75,13 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
   }
 
   @Override
-  public final boolean isIndicateCondition() {
+  public final boolean isDisplayConditionStatus() {
     return indicateCondition;
   }
 
   @Override
-  public final void setIndicateCondition(final boolean indicateCondition) {
-    this.indicateCondition = indicateCondition;
+  public final void setDisplayConditionStatus(final boolean displayConditionStatus) {
+    this.indicateCondition = displayConditionStatus;
   }
 
   @Override
@@ -194,7 +194,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     private final SwingEntityTableModel tableModel;
     private final Property<Boolean> property;
 
-    private boolean indicateCondition = true;
+    private boolean displayConditionStatus = true;
 
     BooleanRenderer(final SwingEntityTableModel tableModel, final Property<Boolean> property) {
       super(new NullableToggleButtonModel());
@@ -221,17 +221,17 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
         return table.getSelectionBackground();
       }
 
-      return getBackgroundColor(tableModel, property.getAttribute(), row, indicateCondition);
+      return getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionStatus);
     }
 
     @Override
-    public boolean isIndicateCondition() {
-      return indicateCondition;
+    public boolean isDisplayConditionStatus() {
+      return displayConditionStatus;
     }
 
     @Override
-    public void setIndicateCondition(final boolean indicateCondition) {
-      this.indicateCondition = indicateCondition;
+    public void setDisplayConditionStatus(final boolean displayConditionStatus) {
+      this.displayConditionStatus = displayConditionStatus;
     }
 
     /**

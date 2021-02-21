@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -18,6 +17,6 @@ public final class ContinentTablePanel extends EntityTablePanel {
 
   @Override
   protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
-    return Controls.controlList(createRefreshControl());
+    return ControlList.builder().control(createRefreshControl()).build();
   }
 }

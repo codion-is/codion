@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.table;
 
 import is.codion.common.model.table.ColumnSummaryModel;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -64,7 +64,8 @@ public final class ColumnSummaryPanel extends JPanel {
     final JPopupMenu popupMenu = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
     for (final ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
-      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Controls.control(() -> model.setSummary(summary), summary.toString()));
+      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder().command(() ->
+              model.setSummary(summary)).name(summary.toString()).build());
       model.addSummaryListener(newSummary -> item.setSelected(newSummary.equals(summary)));
       item.setSelected(model.getSummary().equals(summary));
       group.add(item);

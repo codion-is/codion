@@ -7,8 +7,8 @@ import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -32,8 +32,8 @@ public class CustomerTablePanel extends EntityTablePanel {
     ControlList printControls = super.createPrintControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
-    printControls.add(Controls.control(this::viewCustomerReport, "Customer report",
-            getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()));
+    printControls.add(Control.builder().command(this::viewCustomerReport).name("Customer report")
+            .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
 
     return printControls;
   }

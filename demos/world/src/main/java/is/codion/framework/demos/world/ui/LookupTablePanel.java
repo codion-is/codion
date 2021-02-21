@@ -3,7 +3,6 @@ package is.codion.framework.demos.world.ui;
 import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -31,8 +30,10 @@ public final class LookupTablePanel extends EntityTablePanel {
     ControlList controls = super.getPopupControls(additionalPopupControls);
     controls.addSeparatorAt(1);
 
-    Control exportControl = Controls.control(this::exportCSV, "Export CSV...");
-    exportControl.setIcon(imageIcon(FontIcon.of(Foundation.PAGE_EXPORT_CSV, ICON_SIZE)));
+    Control exportControl = Control.builder()
+            .command(this::exportCSV).name("Export CSV...")
+            .icon(imageIcon(FontIcon.of(Foundation.PAGE_EXPORT_CSV, ICON_SIZE)))
+            .build();
 
     controls.addAt(2, exportControl);
 

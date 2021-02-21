@@ -9,12 +9,14 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -151,54 +153,51 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private ControlList initializeMainMenuControls() {
-    final ControlList controls = Controls.controlList();
-    final ControlList file = Controls.controlList("File", 'F');
-    file.add(initializeExitControl());
-    controls.add(file);
-    final ControlList view = Controls.controlList("View", 'V');
-    view.add(initializeRefreshControl());
-    view.addSeparator();
-    view.add(initializeAlwaysOnTopControl());
-    controls.add(view);
-    final ControlList tools = Controls.controlList("Tools", 'T');
-    tools.add(Controls.control(this::setUpdateInterval, "Chart update interval"));
-    tools.add(initializeSetJDKDirControl());
-    tools.add(initializeJConsoleControl());
-    controls.add(tools);
-
-    return controls;
+    return ControlList.builder()
+            .control(ControlList.builder()
+                    .name("File")
+                    .mnemonic('F')
+                    .control(initializeExitControl()).build())
+            .control(ControlList.builder()
+                    .name("View")
+                    .mnemonic('V')
+                    .control(initializeRefreshControl())
+                    .separator()
+                    .control(initializeAlwaysOnTopControl()).build())
+            .control(ControlList.builder()
+                    .name("Tools")
+                    .mnemonic('T')
+                    .control(initializeUpateIntervalControl())
+                    .control(initializeSetJDKDirControl())
+                    .control(initializeJConsoleControl()).build())
+            .build();
   }
 
   private Control initializeRefreshControl() {
-    final Control control = Controls.control(model::refresh, "Refresh");
-    control.setMnemonic('R');
-
-    return control;
+    return Control.builder().command(model::refresh).name("Refresh").mnemonic('R').build();
   }
 
   private Control initializeAlwaysOnTopControl() {
-    final Control control = Controls.toggleControl(this, "alwaysOnTop", "Always on Top", alwaysOnTopChangedEvent);
-    control.setMnemonic('A');
+    return ToggleControl.builder()
+            .name("Always on Top")
+            .value(Value.propertyValue(this, "alwaysOnTop", boolean.class, alwaysOnTopChangedEvent))
+            .mnemonic('A').build();
+  }
 
-    return control;
+  private Control initializeUpateIntervalControl() {
+    return Control.builder().command(this::setUpdateInterval).name("Chart update interval").build();
   }
 
   private Control initializeSetJDKDirControl() {
-    final Control control = Controls.control(this::setJDKDir, "Set JDK home...");
-    control.setMnemonic('S');
-
-    return control;
+    return Control.builder().command(this::setJDKDir).name("Set JDK home...").mnemonic('S').build();
   }
 
   private Control initializeJConsoleControl() {
-    final Control control = Controls.control(this::runJConsole, "Run JConsole");
-    control.setMnemonic('J');
-
-    return control;
+    return Control.builder().command(this::runJConsole).name("Run JConsole").mnemonic('J').build();
   }
 
   private Control initializeExitControl() {
-    return Controls.control(() -> System.exit(0), "Exit", null, null, 'X');
+    return Control.builder().command(() -> System.exit(0)).name("Exit").mnemonic('X').build();
   }
 
   private void setUpdateInterval() {
@@ -210,10 +209,10 @@ public final class EntityServerMonitorPanel extends JPanel {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
     final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
-    Dialogs.prepareOkCancelDialog(dialog, panel, Controls.control(() -> {
+    Dialogs.prepareOkCancelDialog(dialog, panel, Control.control(() -> {
       getModel().setUpdateInterval(componentValue.get());
       dialog.dispose();
-    }), Controls.control(dialog::dispose));
+    }), Control.control(dialog::dispose));
     dialog.setVisible(true);
   }
 

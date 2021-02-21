@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.DisposeOnEscape;
@@ -636,20 +635,20 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return a control for toggling the edit panel
    */
   public final Control getToggleEditPanelControl() {
-    final Control toggle = Controls.control(this::toggleEditPanelState, frameworkIcons().editPanel());
-    toggle.setDescription(MESSAGES.getString("toggle_edit"));
-
-    return toggle;
+    return Control.builder()
+            .command(this::toggleEditPanelState)
+            .icon(frameworkIcons().editPanel())
+            .description(MESSAGES.getString("toggle_edit")).build();
   }
 
   /**
    * @return a control for toggling the detail panel
    */
   public final Control getToggleDetailPanelControl() {
-    final Control toggle = Controls.control(this::toggleDetailPanelState, frameworkIcons().detail());
-    toggle.setDescription(MESSAGES.getString("toggle_detail"));
-
-    return toggle;
+    return Control.builder()
+            .command(this::toggleDetailPanelState)
+            .icon(frameworkIcons().detail())
+            .description(MESSAGES.getString("toggle_detail")).build();
   }
 
   /**
@@ -1110,12 +1109,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   protected final void initializeKeyboardActions() {
     if (containsTablePanel()) {
-      final Control selectTablePanelControl =
-              Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
-      final Control selectSearchFieldControl =
-              Controls.control(getTablePanel().getTable().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
-      final Control selectConditionPanelAction =
-              Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");
+      final Control selectTablePanelControl = Control.control(getTablePanel().getTable()::requestFocus);
+      final Control selectSearchFieldControl = Control.control(getTablePanel().getTable().getSearchField()::requestFocus);
+      final Control selectConditionPanelAction = Control.control(getTablePanel()::selectConditionPanel);
       addKeyEvent(this, KeyEvent.VK_T, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectTablePanelControl);
       addKeyEvent(this, KeyEvent.VK_F, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -1136,10 +1132,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
     }
     if (containsEditPanel()) {
-      final Control selectEditPanelControl =
-              Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
-      final Control selectInputComponentControl =
-              Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
+      final Control selectEditPanelControl = Control.control(this::selectEditPanel);
+      final Control selectInputComponentControl = Control.control(this::selectInputComponent);
       addKeyEvent(this, KeyEvent.VK_E, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectEditPanelControl);
       addKeyEvent(this, KeyEvent.VK_I, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -1208,7 +1202,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeTablePanel() {
-    final ControlList toolbarControls = Controls.controlList();
+    final ControlList toolbarControls = ControlList.controlList();
     if (showToggleEditPanelControl && editPanel != null) {
       toolbarControls.add(getToggleEditPanelControl());
     }
@@ -1277,7 +1271,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the Control to trigger when the a double click is performed on the table
    */
   private Control initializeTableDoubleClickAction() {
-    return Controls.control(() -> {
+    return Control.control(() -> {
       if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
         if (containsEditPanel() && getEditPanelState() == HIDDEN) {
           setEditPanelState(DIALOG);
@@ -1299,13 +1293,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return null;
     }
 
-    final ControlList controls = Controls.controlList(MESSAGES.getString(MSG_DETAIL_TABLES), (char) 0,
-            frameworkIcons().detail());
+    final ControlList controls = ControlList.builder()
+            .name(MESSAGES.getString(MSG_DETAIL_TABLES))
+            .icon(frameworkIcons().detail()).build();
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      controls.add(Controls.control(() -> {
+      controls.add(Control.builder().command(() -> {
         setDetailPanelState(status);
         detailPanel.activatePanel();
-      }, detailPanel.getCaption()));
+      }).name(detailPanel.getCaption()).build());
     }
 
     return controls;
@@ -1360,7 +1355,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = Dialogs.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
             caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), Modal.NO,
-            Controls.control(() -> {
+            Control.control(() -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
               if (getDetailPanelState() != EMBEDDED) {
                 setDetailPanelState(HIDDEN);
@@ -1389,7 +1384,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, Modal.NO,
             disposeEditDialogOnEscape ? DisposeOnEscape.YES : DisposeOnEscape.NO,
-            Controls.control(() -> setEditPanelState(HIDDEN)));
+            Control.control(() -> setEditPanelState(HIDDEN)));
   }
 
   /**

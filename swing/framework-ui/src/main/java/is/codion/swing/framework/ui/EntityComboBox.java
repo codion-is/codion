@@ -11,7 +11,6 @@ import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
@@ -70,7 +69,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a Control for filtering this combo box
    */
   public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
-    return Controls.control(() -> {
+    return Control.builder().command(() -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKey),
               MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
@@ -78,7 +77,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
       if (result != JOptionPane.OK_OPTION) {
         getModel().setForeignKeyFilterEntities(foreignKey, current);
       }
-    }, null, null, null, 0, null, frameworkIcons().filter());
+    }).icon(frameworkIcons().filter()).build();
   }
 
   /**
@@ -146,7 +145,10 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(Controls.control(((EntityComboBoxModel) getModel())::forceRefresh, FrameworkMessages.get(FrameworkMessages.REFRESH)));
+    popupMenu.add(Control.builder()
+            .command(((EntityComboBoxModel) getModel())::forceRefresh)
+            .name(FrameworkMessages.get(FrameworkMessages.REFRESH))
+            .build());
 
     return popupMenu;
   }

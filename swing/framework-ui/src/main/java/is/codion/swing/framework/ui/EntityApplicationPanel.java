@@ -17,6 +17,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -637,7 +638,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getHelpControls()
    */
   protected ControlList getMainMenuControls() {
-    final ControlList menuControls = Controls.controlList();
+    final ControlList menuControls = ControlList.controlList();
     final ControlList fileControls = getFileControls();
     if (fileControls != null && !fileControls.isEmpty()) {
       menuControls.add(fileControls);
@@ -672,132 +673,139 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the ControlList specifying the items in the 'File' menu
    */
   protected ControlList getFileControls() {
-    final ControlList file = Controls.controlList(FrameworkMessages.get(FrameworkMessages.FILE));
-    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-    file.add(createExitControl());
-
-    return file;
+    return ControlList.builder()
+            .name(FrameworkMessages.get(FrameworkMessages.FILE))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0))
+            .control(createExitControl()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'Settings' menu
    */
   protected ControlList getSettingsControls() {
-    return Controls.controlList(FrameworkMessages.get(FrameworkMessages.SETTINGS), createLogLevelControl());
+    return ControlList.builder()
+            .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+            .control(createLogLevelControl()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'Tools' menu
    */
   protected ControlList getToolsControls() {
-    return Controls.controlList(resourceBundle.getString("tools"), resourceBundle.getString("tools_mnemonic").charAt(0), getSettingsControls());
+    return ControlList.builder()
+            .name(resourceBundle.getString("tools"))
+            .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
+            .control(getSettingsControls()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'View' menu
    */
   protected ControlList getViewControls() {
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.VIEW),
-            FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    controls.add(createRefreshAllControl());
-    controls.addSeparator();
-    controls.add(createViewApplicationTreeControl());
-    controls.add(createViewDependencyTree());
-    controls.add(createSelectLookAndFeelControl());
-    controls.add(createSelectFontSizeControl());
-    controls.addSeparator();
-    controls.add(createAlwaysOnTopControl());
-
-    return controls;
+    return ControlList.builder()
+            .name(FrameworkMessages.get(FrameworkMessages.VIEW))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
+            .control(createRefreshAllControl())
+            .separator()
+            .control(createViewApplicationTreeControl())
+            .control(createViewDependencyTree())
+            .control(createSelectLookAndFeelControl())
+            .control(createSelectFontSizeControl())
+            .separator()
+            .control(createAlwaysOnTopControl()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'Help' menu
    */
   protected ControlList getHelpControls() {
-    final ControlList controls = Controls.controlList(resourceBundle.getString(HELP), resourceBundle.getString("help_mnemonic").charAt(0));
-    controls.add(createHelpControl());
-    controls.addSeparator();
-    controls.add(createAboutControl());
-
-    return controls;
+    return ControlList.builder()
+            .name(resourceBundle.getString(HELP))
+            .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
+            .control(createHelpControl()).separator()
+            .control(createAboutControl()).build();
   }
 
   /**
    * @return a Control for exiting the application
    */
   protected final Control createExitControl() {
-    return Controls.control(this::exit, FrameworkMessages.get(FrameworkMessages.EXIT),
-            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
-            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0));
+    return Control.builder()
+            .command(this::exit)
+            .name(FrameworkMessages.get(FrameworkMessages.EXIT))
+            .description(FrameworkMessages.get(FrameworkMessages.EXIT_TIP))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0))
+            .build();
   }
 
   /**
    * @return a Control for setting the log level
    */
   protected final Control createLogLevelControl() {
-    final Control setLogLevel = Controls.control(this::setLogLevel,
-            resourceBundle.getString(SET_LOG_LEVEL));
-    setLogLevel.setDescription(resourceBundle.getString(SET_LOG_LEVEL_DESC));
-
-    return setLogLevel;
+    return Control.builder()
+            .command(this::setLogLevel)
+            .name(resourceBundle.getString(SET_LOG_LEVEL))
+            .description(resourceBundle.getString(SET_LOG_LEVEL_DESC))
+            .build();
   }
 
   /**
    * @return a Control for refreshing the application model
    */
   protected final Control createRefreshAllControl() {
-    return Controls.control(applicationModel::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
+    return Control.builder().command(applicationModel::refresh).name(FrameworkMessages.get(FrameworkMessages.REFRESH_ALL)).build();
   }
 
   /**
    * @return a Control for viewing the application structure tree
    */
   protected final Control createViewApplicationTreeControl() {
-    return Controls.control(this::viewApplicationTree, resourceBundle.getString("view_application_tree"));
+    return Control.builder().command(this::viewApplicationTree).name(resourceBundle.getString("view_application_tree")).build();
   }
 
   /**
    * @return a Control for viewing the application dependency tree
    */
   protected final Control createViewDependencyTree() {
-    return Controls.control(this::viewDependencyTree, FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES));
+    return Control.builder().command(this::viewDependencyTree).name(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES)).build();
   }
 
   /**
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
-    return Controls.control(this::selectLookAndFeel, resourceBundle.getString(SELECT_LOOK_AND_FEEL));
+    return Control.builder().command(this::selectLookAndFeel).name(resourceBundle.getString(SELECT_LOOK_AND_FEEL)).build();
   }
 
   /**
    * @return a Control for selecting the font size
    */
   protected final Control createSelectFontSizeControl() {
-    return Controls.control(this::selectFontSize, resourceBundle.getString("select_font_size"));
+    return Control.builder().command(this::selectFontSize).name(resourceBundle.getString("select_font_size")).build();
   }
 
   /**
    * @return a Control controlling the always on top status
    */
   protected final ToggleControl createAlwaysOnTopControl() {
-    return Controls.toggleControl(this,
-            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
+    return ToggleControl.builder()
+            .name(FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP))
+            .value(Value.propertyValue(this, "alwaysOnTop", boolean.class, alwaysOnTopChangedEvent))
+            .build();
   }
 
   /**
    * @return a Control for viewing information about the application
    */
   protected final Control createAboutControl() {
-    return Controls.control(this::displayAbout, resourceBundle.getString(ABOUT) + "...", null, null);
+    return Control.builder().command(this::displayAbout).name(resourceBundle.getString(ABOUT) + "...").build();
   }
 
   /**
    * @return a Control for displaying the help
    */
   protected final Control createHelpControl() {
-    return Controls.control(this::displayHelp, resourceBundle.getString(HELP) + "...", null, null);
+    return Control.builder().command(this::displayHelp).name(resourceBundle.getString(HELP) + "...").build();
   }
 
   /**
@@ -909,11 +917,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return comparator.compare(thisCompare, thatCompare);
     });
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
-            FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
-    supportPanelBuilders.forEach(panelBuilder -> controls.add(Controls.control(() -> displayEntityPanelDialog(panelBuilder),
-            panelBuilder.getCaption() == null ?
-                    entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())));
+    final ControlList controls = ControlList.builder()
+            .name(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0)).build();
+    supportPanelBuilders.forEach(panelBuilder -> controls.add(Control.builder()
+            .command(() -> displayEntityPanelDialog(panelBuilder))
+            .name(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+            .build()));
 
     return controls;
   }
@@ -962,7 +972,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
       KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(dialog::dispose));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Control.control(dialog::dispose));
       dialog.pack();
       dialog.setLocationRelativeTo(this);
       if (modalDialog) {

@@ -12,8 +12,6 @@ import java.awt.Window;
 import java.util.List;
 
 import static is.codion.swing.common.ui.Windows.getParentWindow;
-import static is.codion.swing.common.ui.control.Controls.control;
-import static is.codion.swing.common.ui.control.Controls.controlList;
 import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 
 public final class CityTablePanel extends EntityTablePanel {
@@ -30,8 +28,8 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   private Control createUpdateLocationControl() {
-    return control(this::updateLocation, "Update location",
-            getTableModel().getSelectionModel().getSelectionNotEmptyObserver());
+    return Control.builder().command(this::updateLocation).name("Update location")
+            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver()).build();
   }
 
   private void updateLocation() {
@@ -45,8 +43,11 @@ public final class CityTablePanel extends EntityTablePanel {
 
     private LocationUpdater(final Window dialogOwner, final CityTableModel cityTableModel) {
       super(dialogOwner, "Updating locations", Indeterminate.NO, null,
-              controlList(control(cityTableModel::cancelLocationUpdate, "Cancel",
-                      cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver())));
+              ControlList.builder().control(Control.builder()
+                      .command(cityTableModel::cancelLocationUpdate)
+                      .name("Cancel")
+                      .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver())
+                      .build()).build());
       this.dialogOwner = dialogOwner;
       this.cityTableModel = cityTableModel;
       setMaximum(cityTableModel.getSelectionModel().getSelectionCount());

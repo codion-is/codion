@@ -4,6 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -56,7 +57,7 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(new JButton(Controls.control(this::refresh, "Refresh")), BorderLayout.SOUTH);
+    clientInstanceBase.add(new JButton(Control.builder().command(this::refresh).name("Refresh").build()), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -85,13 +86,13 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final ControlList controls = Controls.controlList();
-    controls.add(Controls.control(() -> {
+    final ControlList controls = ControlList.controlList();
+    controls.add(Control.builder().command(() -> {
       for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
         model.getServer().disconnect(remoteClient.getClientId());
         model.getRemoteClientListModel().removeElement(remoteClient);
       }
-    }, "Disconnect"));
+    }).name("Disconnect").build());
 
     return Controls.popupMenu(controls);
   }

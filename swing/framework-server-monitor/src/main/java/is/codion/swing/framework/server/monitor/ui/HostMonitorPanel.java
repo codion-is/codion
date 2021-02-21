@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -44,7 +45,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private ControlList getControls() {
-    return Controls.controlList(Controls.control(model::refresh, "Refresh"));
+    return ControlList.builder().control(Control.builder().command(model::refresh).name("Refresh").build()).build();
   }
 
   private void bindEvents() {

@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
-import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.imageio.ImageIO;
@@ -56,8 +56,8 @@ final class CoverArtPanel extends JPanel {
     coverPanel.add(imagePanel, BorderLayout.CENTER);
 
     final JPanel coverButtonPanel = new JPanel(gridLayout(1, 2));
-    coverButtonPanel.add(new JButton(Controls.control(this::setCover, BUNDLE.getString(SELECT_COVER))));
-    coverButtonPanel.add(new JButton(Controls.control(this::removeCover, BUNDLE.getString(REMOVE_COVER))));
+    coverButtonPanel.add(new JButton(Control.builder().command(this::setCover).name(BUNDLE.getString(SELECT_COVER)).build()));
+    coverButtonPanel.add(new JButton(Control.builder().command(this::removeCover).name(BUNDLE.getString(REMOVE_COVER)).build()));
 
     add(coverPanel, BorderLayout.CENTER);
     add(coverButtonPanel, BorderLayout.SOUTH);

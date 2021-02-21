@@ -8,7 +8,6 @@ import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JPanel;
@@ -63,7 +62,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
    */
   public ControlList getControls() {
-    return Controls.controlList();
+    return ControlList.controlList();
   }
 
   /**

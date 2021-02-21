@@ -10,7 +10,6 @@ import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.DisposeOnEscape;
 import is.codion.swing.common.ui.dialog.Modal;
@@ -61,7 +60,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
                              final CalendarButton calendarButton, final StateObserver enabledState) {
     super(inputField, dateFormat, LocalDate::parse, enabledState);
     if (calendarButton == CalendarButton.YES) {
-      this.button = new JButton(Controls.control(this::displayCalendar, "..."));
+      this.button = new JButton(Control.builder().command(this::displayCalendar).name("...").build());
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
         Components.linkToEnabledState(enabledState, button);
@@ -95,8 +94,8 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
   public static LocalDate getLocalDateWithCalendar(final LocalDate startDate, final String message, final Container parent) {
     final Event<?> closeEvent = Event.event();
     final State cancel = State.state();
-    final Control okControl = Controls.control(closeEvent::onEvent);
-    final Control cancelControl = Controls.control(() -> {
+    final Control okControl = Control.control(closeEvent::onEvent);
+    final Control cancelControl = Control.control(() -> {
       cancel.set(true);
       closeEvent.onEvent();
     });

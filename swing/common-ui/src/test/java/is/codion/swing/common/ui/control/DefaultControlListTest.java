@@ -12,19 +12,19 @@ public class DefaultControlListTest {
 
   @Test
   public void test() {
-    final Control one = Controls.control(() -> {}, "one");
-    final Control two = Controls.control(() -> {}, "two");
-    final ControlList list = Controls.controlList("list", one, two);
+    final Control one = Control.control(() -> {});
+    final Control two = Control.control(() -> {});
+    final ControlList list = ControlList.builder().name("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
     assertFalse(nullOrEmpty(list.getName()));
     assertNull(list.getIcon());
     assertEquals("list", list.getName());
-    final ControlList list1 = Controls.controlList();
+    final ControlList list1 = ControlList.controlList();
     assertTrue(nullOrEmpty(list1.getName()));
-    assertEquals("", list1.getName());
-    final ControlList list2 = Controls.controlList(two);
+    assertNull(list1.getName());
+    final ControlList list2 = ControlList.builder().control(two).build();
     list2.setName("list");
     assertFalse(nullOrEmpty(list2.getName()));
     assertEquals("list", list2.getName());
