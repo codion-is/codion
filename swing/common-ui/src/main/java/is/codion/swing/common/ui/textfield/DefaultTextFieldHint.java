@@ -13,24 +13,14 @@ import java.awt.event.FocusListener;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-/**
- * Implements a hint text for text fields, that is, text that is shown
- * when the field contains no data, is empty and unfocused.
- */
-public final class TextFieldHint {
+final class DefaultTextFieldHint implements TextFields.Hint {
 
   private final JTextField textField;
   private final String hintText;
   private final Color defaultForegroundColor;
   private final Color hintForegroundColor;
 
-  /**
-   * Instantiates a new TextFieldHint for the given field.
-   * @param textField the text field
-   * @param hintText the hint text
-   * @param hintForegroundColor the font color for the hint text
-   */
-  private TextFieldHint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
+  DefaultTextFieldHint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
     requireNonNull(textField, "textField");
     if (nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
@@ -45,40 +35,14 @@ public final class TextFieldHint {
     updateState();
   }
 
-  /**
-   * @return the search hint string
-   */
+  @Override
   public String getHintText() {
     return hintText;
   }
 
-  /**
-   * @return true if the hint text is visible
-   */
-  public boolean isHintTextVisible() {
+  @Override
+  public boolean isHintVisible() {
     return textField.getText().equals(hintText);
-  }
-
-  /**
-   * Enables the search hint for the given field
-   * @param textField the text field
-   * @param hintText the hint text
-   * @return the TextFieldHint instance
-   */
-  public static TextFieldHint enable(final JTextField textField, final String hintText) {
-    return enable(textField, hintText, Color.LIGHT_GRAY);
-  }
-
-  /**
-   * Enables the search hint for the given field
-   * @param textField the text field
-   * @param hintText the hint text
-   * @param hintForegroundColor the font color for the hint text
-   * @return the TextFieldHint instance
-   */
-  public static TextFieldHint enable(final JTextField textField, final String hintText,
-                                     final Color hintForegroundColor) {
-    return new TextFieldHint(textField, hintText, hintForegroundColor);
   }
 
   private FocusListener initializeFocusListener() {
@@ -87,6 +51,7 @@ public final class TextFieldHint {
       public void focusGained(final FocusEvent e) {
         updateState();
       }
+
       @Override
       public void focusLost(final FocusEvent e) {
         updateState();
@@ -113,7 +78,7 @@ public final class TextFieldHint {
   }
 
   private void updateColor() {
-    final boolean hintForeground = !textField.hasFocus() && isHintTextVisible();
+    final boolean hintForeground = !textField.hasFocus() && isHintVisible();
     textField.setForeground(hintForeground ? hintForegroundColor : defaultForegroundColor);
   }
 }

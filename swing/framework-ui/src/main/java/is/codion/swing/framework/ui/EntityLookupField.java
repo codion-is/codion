@@ -26,7 +26,7 @@ import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.textfield.SizedDocument;
-import is.codion.swing.common.ui.textfield.TextFieldHint;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
@@ -92,7 +92,7 @@ public final class EntityLookupField extends JTextField {
   private static final int BORDER_SIZE = 15;
 
   private final EntityLookupModel model;
-  private final TextFieldHint searchHint;
+  private final TextFields.Hint searchHint;
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = KeyEvents.transferFocusForwardAction(this);
   private final Action transferFocusBackwardAction = KeyEvents.transferFocusBackwardAction(this);
@@ -120,7 +120,7 @@ public final class EntityLookupField extends JTextField {
     addFocusListener(initializeFocusListener());
     addEnterListener();
     addEscapeListener();
-    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+    this.searchHint = TextFields.hint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -237,7 +237,7 @@ public final class EntityLookupField extends JTextField {
           if (getText().isEmpty()) {
             getModel().setSelectedEntity(null);
           }
-          else if (!searchHint.isHintTextVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
+          else if (!searchHint.isHintVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
             performLookup(false);
           }
         }
@@ -247,7 +247,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void updateColors() {
-    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintTextVisible());
+    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintVisible());
     setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 
