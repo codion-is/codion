@@ -6727,3 +6727,4 @@
   TaskScheduler.setInterval() no longer schedules a stopped scheduler
   StateValue now extends AbstractValue
 0.17.10
+  EntityEditPanel, control setup and event binding moved to initializePanel()

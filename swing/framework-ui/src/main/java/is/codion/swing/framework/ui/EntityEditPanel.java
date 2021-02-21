@@ -35,14 +35,16 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static is.codion.swing.common.ui.Components.hideWaitCursor;
 import static is.codion.swing.common.ui.Components.showWaitCursor;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
@@ -101,6 +103,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
+   * The controls this edit panel should include
+   */
+  private final Set<ControlCode> controlCodes;
+
+  /**
    * Controls mapped to their respective control codes
    */
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
@@ -157,8 +164,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (!ALL_PANELS_ACTIVE.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
-    setupControls(controlCodes);
-    bindEventsInternal();
+    this.controlCodes = controlCodes == null ? emptySet() : new HashSet<>(Arrays.asList(controlCodes));
   }
 
   @Override
@@ -421,6 +427,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (!panelInitialized) {
       try {
         showWaitCursor(this);
+        setupControls();
+        bindEventsInternal();
         initializeUI();
       }
       finally {
@@ -718,29 +726,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
    * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc)
    * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
-   * @param controlCodes the control codes for which controls should be initialized
    * @see is.codion.swing.common.ui.control.Control
    * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)
    * todo updateEnabled(false) þá vantar Insert control nema það sé tiltekið í smið
    */
-  private void setupControls(final ControlCode... controlCodes) {
-    if (controlCodes == null || controlCodes.length == 0) {
-      return;
-    }
-    final Collection<ControlCode> codes = asList(controlCodes);
+  private void setupControls() {
     if (!getEditModel().isReadOnly()) {
-      setupEditControls(codes);
+      setupEditControls();
     }
-    if (codes.contains(ControlCode.CLEAR)) {
+    if (controlCodes.contains(ControlCode.CLEAR)) {
       setControl(ControlCode.CLEAR, createClearControl());
     }
-    if (codes.contains(ControlCode.REFRESH)) {
+    if (controlCodes.contains(ControlCode.REFRESH)) {
       setControl(ControlCode.REFRESH, createRefreshControl());
     }
   }
 
-  private void setupEditControls(final Collection<ControlCode> controlCodes) {
+  private void setupEditControls() {
     if (getEditModel().isInsertEnabled() && getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
       setControl(ControlCode.SAVE, createSaveControl());
     }
