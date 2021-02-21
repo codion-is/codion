@@ -6733,3 +6733,5 @@
   Builder methods from above renamed, prefer class prefix instead of longer builder factory names
   CommandControl renamed DefaultControl for consistency
   Images utility class removed
+  DecimalFieldValue renamed DoubleFieldValue
+  DoubleFieldValue, IntegerFieldValue and LongFieldValue only set the null value if required

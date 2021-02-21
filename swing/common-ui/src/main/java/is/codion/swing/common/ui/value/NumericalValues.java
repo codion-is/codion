@@ -135,7 +135,7 @@ public final class NumericalValues {
    */
   public static ComponentValue<Double, DoubleField> doubleValue(final DoubleField doubleField, final Nullable nullable,
                                                                 final UpdateOn updateOn) {
-    return new DecimalFieldValue(doubleField, nullable, updateOn);
+    return new DoubleFieldValue(doubleField, nullable, updateOn);
   }
 
   /**

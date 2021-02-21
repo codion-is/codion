@@ -6,11 +6,11 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.textfield.DoubleField;
 
-final class DecimalFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
+final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
 
-  DecimalFieldValue(final DoubleField doubleField, final Nullable nullable, final UpdateOn updateOn) {
+  DoubleFieldValue(final DoubleField doubleField, final Nullable nullable, final UpdateOn updateOn) {
     super(doubleField, nullable == Nullable.YES ? null : 0d, updateOn);
-    if (!isNullable()) {
+    if (!isNullable() && doubleField.getDouble() == null) {
       doubleField.setDouble(0d);
     }
   }
