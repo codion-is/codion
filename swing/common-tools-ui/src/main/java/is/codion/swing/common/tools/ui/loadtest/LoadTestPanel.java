@@ -13,6 +13,7 @@ import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -54,8 +55,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
@@ -232,7 +231,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = new JButton(controlBuilder().command(() -> {
+    final JButton button = new JButton(Control.builder().command(() -> {
       if (add) {
         loadTestModel.addApplicationBatch();
       }
@@ -250,8 +249,8 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(Controls.checkBox(toggleControlBuilder().state(loadTestModel.getCollectChartDataState()).name("Collect chart data").build()));
-    controlPanel.add(new JButton(controlBuilder().command(loadTestModel::resetChartData).name("Reset").build()));
+    controlPanel.add(Controls.checkBox(ToggleControl.builder().state(loadTestModel.getCollectChartDataState()).name("Collect chart data").build()));
+    controlPanel.add(new JButton(Control.builder().command(loadTestModel::resetChartData).name("Reset").build()));
 
     return controlPanel;
   }
@@ -339,7 +338,7 @@ public final class LoadTestPanel<T> extends JPanel {
     final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
-    final ToggleControl pauseControl = toggleControlBuilder().state(loadTestModel.getPausedState()).name("Pause").mnemonic('P').build();
+    final ToggleControl pauseControl = ToggleControl.builder().state(loadTestModel.getPausedState()).name("Pause").mnemonic('P').build();
 
     final FlexibleGridLayout layout = Layouts.flexibleGridLayout(4, 2, FixRowHeights.YES, FixColumnWidths.NO);
     layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());

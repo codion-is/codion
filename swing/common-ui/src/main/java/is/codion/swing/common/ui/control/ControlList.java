@@ -106,19 +106,19 @@ public interface ControlList extends Control {
    * @return a new ControlList instance.
    */
   static ControlList controlList() {
-    return controlListBuilder().build();
+    return builder().build();
   }
 
   /**
    * @return a new ControlList.Builder instance
    */
-  static Builder controlListBuilder() {
+  static Builder builder() {
     return new ControlListBuilder();
   }
 
   /**
    * A builder for ControlList
-   * @see ControlList#controlListBuilder()
+   * @see ControlList#builder()
    */
   interface Builder {
 

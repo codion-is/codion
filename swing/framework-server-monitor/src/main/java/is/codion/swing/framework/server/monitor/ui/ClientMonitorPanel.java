@@ -4,6 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -19,8 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
-
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 
 /**
  * A ClientMonitorPanel
@@ -58,7 +57,7 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(new JButton(controlBuilder().command(this::refresh).name("Refresh").build()), BorderLayout.SOUTH);
+    clientInstanceBase.add(new JButton(Control.builder().command(this::refresh).name("Refresh").build()), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -88,7 +87,7 @@ public final class ClientMonitorPanel extends JPanel {
 
   private JPopupMenu initializePopupMenu() {
     final ControlList controls = ControlList.controlList();
-    controls.add(controlBuilder().command(() -> {
+    controls.add(Control.builder().command(() -> {
       for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
         model.getServer().disconnect(remoteClient.getClientId());
         model.getRemoteClientListModel().removeElement(remoteClient);

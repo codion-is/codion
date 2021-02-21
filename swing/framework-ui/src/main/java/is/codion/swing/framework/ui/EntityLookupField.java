@@ -67,7 +67,6 @@ import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -296,7 +295,7 @@ public final class EntityLookupField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(controlBuilder()
+    popupMenu.add(Control.builder()
             .command(() ->
                     Dialogs.displayInDialog(EntityLookupField.this, settingsPanel, FrameworkMessages.get(FrameworkMessages.SETTINGS)))
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
@@ -311,7 +310,7 @@ public final class EntityLookupField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
-    final JButton okButton = new JButton(controlBuilder().command(closeEvent::onEvent).name(Messages.get(Messages.OK)).build());
+    final JButton okButton = new JButton(Control.builder().command(closeEvent::onEvent).name(Messages.get(Messages.OK)).build());
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
             ON_KEY_PRESSED, Control.control(okButton::doClick));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED,
@@ -443,7 +442,7 @@ public final class EntityLookupField extends JTextField {
      */
     public ListSelectionProvider(final EntityLookupModel lookupModel) {
       requireNonNull(lookupModel, LOOKUP_MODEL);
-      this.selectControl = controlBuilder().command(() -> {
+      this.selectControl = Control.builder().command(() -> {
         lookupModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
       }).name(Messages.get(Messages.OK)).build();
@@ -505,7 +504,7 @@ public final class EntityLookupField extends JTextField {
         }
       };
       table = new FilteredTable<>(tableModel);
-      selectControl = controlBuilder().command(() -> {
+      selectControl = Control.builder().command(() -> {
         lookupModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         Windows.getParentDialog(table).dispose();
       }).name(Messages.get(Messages.OK)).build();

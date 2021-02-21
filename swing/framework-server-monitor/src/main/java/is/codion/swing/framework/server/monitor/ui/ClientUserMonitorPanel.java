@@ -5,6 +5,7 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
@@ -29,7 +30,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
@@ -89,7 +89,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(new JButton(controlBuilder().command(model::refresh).name("Refresh").build()), BorderLayout.SOUTH);
+    clientTypeBase.add(new JButton(Control.builder().command(model::refresh).name("Refresh").build()), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
@@ -101,12 +101,12 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(connectionTimeoutSpinner);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(new JButton(controlBuilder()
+    actionBase.add(new JButton(Control.builder()
             .command(model::disconnectTimedOut)
             .name("Disconnect idle")
             .description("Disconnect those that have exceeded the allowed idle time")
             .build()));
-    actionBase.add(new JButton(controlBuilder()
+    actionBase.add(new JButton(Control.builder()
             .command(this::disconnectAll)
             .name("Disconnect all")
             .description("Disconnect all clients").build()));
@@ -141,7 +141,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
-    configBase.add(new JButton(controlBuilder().command(model::resetHistory).name("Reset").build()), BorderLayout.EAST);
+    configBase.add(new JButton(Control.builder().command(model::resetHistory).name("Reset").build()), BorderLayout.EAST);
 
     final FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
 

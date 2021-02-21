@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
@@ -70,7 +69,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a Control for filtering this combo box
    */
   public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
-    return controlBuilder().command(() -> {
+    return Control.builder().command(() -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKey),
               MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
@@ -146,7 +145,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(controlBuilder()
+    popupMenu.add(Control.builder()
             .command(((EntityComboBoxModel) getModel())::forceRefresh)
             .name(FrameworkMessages.get(FrameworkMessages.REFRESH))
             .build());

@@ -12,8 +12,6 @@ import java.awt.Window;
 import java.util.List;
 
 import static is.codion.swing.common.ui.Windows.getParentWindow;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 
 public final class CityTablePanel extends EntityTablePanel {
@@ -30,7 +28,7 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   private Control createUpdateLocationControl() {
-    return controlBuilder().command(this::updateLocation).name("Update location")
+    return Control.builder().command(this::updateLocation).name("Update location")
             .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver()).build();
   }
 
@@ -45,7 +43,7 @@ public final class CityTablePanel extends EntityTablePanel {
 
     private LocationUpdater(final Window dialogOwner, final CityTableModel cityTableModel) {
       super(dialogOwner, "Updating locations", Indeterminate.NO, null,
-              controlListBuilder().control(controlBuilder()
+              ControlList.builder().control(Control.builder()
                       .command(cityTableModel::cancelLocationUpdate)
                       .name("Cancel")
                       .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver())

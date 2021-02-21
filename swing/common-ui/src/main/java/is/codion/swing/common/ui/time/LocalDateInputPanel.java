@@ -29,7 +29,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.Components.createOkCancelButtonPanel;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 
 /**
  * A panel for LocalDate input via a formatted text field and a button activating a calendar for date input.
@@ -61,7 +60,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
                              final CalendarButton calendarButton, final StateObserver enabledState) {
     super(inputField, dateFormat, LocalDate::parse, enabledState);
     if (calendarButton == CalendarButton.YES) {
-      this.button = new JButton(controlBuilder().command(this::displayCalendar).name("...").build());
+      this.button = new JButton(Control.builder().command(this::displayCalendar).name("...").build());
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
         Components.linkToEnabledState(enabledState, button);

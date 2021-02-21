@@ -7,6 +7,7 @@ import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
@@ -18,8 +19,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 
 // tag::customerTablePanel[]
 public class CustomerTablePanel extends EntityTablePanel {
@@ -33,7 +32,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     ControlList printControls = super.createPrintControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
-    printControls.add(controlBuilder().command(this::viewCustomerReport).name("Customer report")
+    printControls.add(Control.builder().command(this::viewCustomerReport).name("Customer report")
             .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
 
     return printControls;

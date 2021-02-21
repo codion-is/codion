@@ -44,7 +44,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     final ControlList printControls = super.createPrintControls();
     final StateObserver selectionNotEmptyObserver =
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
-    printControls.add(Control.controlBuilder()
+    printControls.add(Control.builder()
             .command(this::viewEmployeeReport)
             .name("Employee Report")
             .enabledState(selectionNotEmptyObserver).build());

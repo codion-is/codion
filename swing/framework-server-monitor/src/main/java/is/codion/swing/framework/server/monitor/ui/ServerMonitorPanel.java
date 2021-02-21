@@ -6,6 +6,7 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.state.State;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.BooleanValues;
@@ -45,7 +46,6 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 import static java.util.Arrays.asList;
 
@@ -135,7 +135,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    shutdownBasePanel.add(new JButton(controlBuilder().command(this::shutdownServer).name("Shutdown").build()), BorderLayout.EAST);
+    shutdownBasePanel.add(new JButton(Control.builder().command(this::shutdownServer).name("Shutdown").build()), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
     northPanel.setBorder(BorderFactory.createTitledBorder("Server"));
 
@@ -166,7 +166,7 @@ public final class ServerMonitorPanel extends JPanel {
     intervalPanel.add(updateIntervalSpinner, BorderLayout.CENTER);
 
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
-    chartsPanel.add(new JButton(controlBuilder().command(model::clearStatistics).name("Clear").build()), BorderLayout.EAST);
+    chartsPanel.add(new JButton(Control.builder().command(model::clearStatistics).name("Clear").build()), BorderLayout.EAST);
 
     controlPanel.add(chartsPanel);
 
@@ -174,7 +174,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
     BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(Value.stateValue(synchronizedZoomState));
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
-    zoomPanel.add(new JButton(controlBuilder().command(this::resetZoom).name("Reset zoom").build()), BorderLayout.EAST);
+    zoomPanel.add(new JButton(Control.builder().command(this::resetZoom).name("Reset zoom").build()), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
 
     final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
@@ -218,7 +218,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(new JButton(controlBuilder().command(model::refreshDomainList).name("Refresh").build()));
+    refreshPanel.add(new JButton(Control.builder().command(model::refreshDomainList).name("Refresh").build()));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 

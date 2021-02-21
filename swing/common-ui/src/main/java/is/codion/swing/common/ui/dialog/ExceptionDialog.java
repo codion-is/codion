@@ -43,8 +43,6 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ToggleControl.toggleControl;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 
 /**
@@ -182,16 +180,18 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final ToggleControl detailsControl = toggleControl(showDetailsState);
-    detailsControl.setName(MESSAGES.getString("details"));
-    detailsControl.setDescription(MESSAGES.getString("show_details"));
-    final Control printControl = controlBuilder()
+    final ToggleControl detailsControl = ToggleControl.builder()
+            .state(showDetailsState)
+            .name(MESSAGES.getString("details"))
+            .description(MESSAGES.getString("show_details"))
+            .build();
+    final Control printControl = Control.builder()
             .command(() -> detailsArea.print())
             .name(Messages.get(Messages.PRINT))
             .description(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build();
-    final Control closeControl = controlBuilder()
+    final Control closeControl = Control.builder()
             .command(this::dispose)
             .name(Messages.get(Messages.CLOSE))
             .description(MESSAGES.getString("close_dialog"))
@@ -199,14 +199,14 @@ final class ExceptionDialog extends JDialog {
             .build();
     KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
     KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
-    final Control saveControl = controlBuilder()
+    final Control saveControl = Control.builder()
             .command(() -> Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                     Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
             .name(MESSAGES.getString("save"))
             .description(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
-    final Control copyControl = controlBuilder()
+    final Control copyControl = Control.builder()
             .command(() -> Components.setClipboard(detailsArea.getText()))
             .name(Messages.get(Messages.COPY))
             .description(MESSAGES.getString("copy_to_clipboard"))

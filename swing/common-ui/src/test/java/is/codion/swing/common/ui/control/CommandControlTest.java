@@ -35,7 +35,7 @@ public final class CommandControlTest {
   @Test
   public void test() throws Exception {
     final State enabledState = State.state();
-    final Control control = Control.controlBuilder().command(this::method).enabledState(enabledState).build();
+    final Control control = Control.builder().command(this::method).enabledState(enabledState).build();
     final JButton button = new JButton(control);
     assertFalse(button.isEnabled());
     enabledState.set(true);

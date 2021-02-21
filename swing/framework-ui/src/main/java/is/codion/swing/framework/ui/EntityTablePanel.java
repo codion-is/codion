@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -91,9 +92,6 @@ import static is.codion.swing.common.ui.Components.hideWaitCursor;
 import static is.codion.swing.common.ui.Components.showWaitCursor;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
-import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
@@ -548,7 +546,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = State.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
-    final ControlList controlList = controlListBuilder()
+    final ControlList controlList = ControlList.builder()
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
             .icon(frameworkIcons().edit()).build();
@@ -556,7 +554,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-        controlList.add(controlBuilder().command(() -> updateSelectedEntities(property)).name(caption).enabledState(enabled).build());
+        controlList.add(Control.builder().command(() -> updateSelectedEntities(property)).name(caption).enabledState(enabled).build());
       }
     });
 
@@ -567,7 +565,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for showing the dependencies dialog
    */
   public final Control createViewDependenciesControl() {
-    return controlBuilder().command(this::viewSelectionDependencies)
+    return Control.builder().command(this::viewSelectionDependencies)
             .name(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...")
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
             .description(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP))
@@ -584,7 +582,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (!includeDeleteSelectedControl()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
-    return controlBuilder()
+    return Control.builder()
             .command(this::delete)
             .name(FrameworkMessages.get(FrameworkMessages.DELETE))
             .enabledState(State.combination(Conjunction.AND,
@@ -600,7 +598,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control createPrintTableControl() {
     final String printCaption = MESSAGES.getString("print_table");
-    return controlBuilder()
+    return Control.builder()
             .command(this::printTable)
             .name(printCaption)
             .description(printCaption)
@@ -614,7 +612,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control createRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return controlBuilder()
+    return Control.builder()
             .command(tableModel::refresh)
             .name(refreshCaption)
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP))
@@ -627,7 +625,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control createClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return controlBuilder()
+    return Control.builder()
             .command(tableModel::clear)
             .name(clearCaption)
             .mnemonic(clearCaption.charAt(0))
@@ -776,7 +774,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return null;
     }
 
-    return controlBuilder()
+    return Control.builder()
             .command(this::toggleConditionPanel)
             .icon(frameworkIcons().filter())
             .description(MESSAGES.getString("show_condition_panel")).build();
@@ -787,7 +785,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a summary panel toggle button
    */
   public final Control createToggleSummaryPanelControl() {
-    return toggleControlBuilder()
+    return ToggleControl.builder()
             .state(summaryPanelVisibleState)
             .icon(frameworkIcons().summary())
             .description(MESSAGES.getString("toggle_summary_tip"))
@@ -798,7 +796,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for clearing the table selection
    */
   public final Control createClearSelectionControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(tableModel.getSelectionModel()::clearSelection)
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
             .icon(frameworkIcons().clearSelection())
@@ -809,7 +807,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for moving the table selection down one index
    */
   public final Control createMoveSelectionDownControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(tableModel.getSelectionModel()::moveSelectionDown)
             .icon(frameworkIcons().down())
             .description(MESSAGES.getString("selection_down_tip")).build();
@@ -819,7 +817,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for moving the table selection up one index
    */
   public final Control createMoveSelectionUpControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(tableModel.getSelectionModel()::moveSelectionUp)
             .icon(frameworkIcons().up())
             .description(MESSAGES.getString("selection_up_tip")).build();
@@ -1093,7 +1091,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected ControlList createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
-    final ControlList printControls = controlListBuilder()
+    final ControlList printControls = ControlList.builder()
             .name(printCaption)
             .mnemonic(printCaption.charAt(0))
             .icon(frameworkIcons().print()).build();
@@ -1103,25 +1101,25 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final Control createConditionPanelControl() {
-    return toggleControlBuilder().state(conditionPanelVisibleState).name(FrameworkMessages.get(FrameworkMessages.SHOW)).build();
+    return ToggleControl.builder().state(conditionPanelVisibleState).name(FrameworkMessages.get(FrameworkMessages.SHOW)).build();
   }
 
   protected final ControlList createCopyControls() {
-    return controlListBuilder()
+    return ControlList.builder()
             .name(Messages.get(Messages.COPY))
             .icon(frameworkIcons().copy())
             .controls(createCopyCellControl(), createCopyTableWithHeaderControl()).build();
   }
 
   protected final Control createCopyCellControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(this::copySelectedCell)
             .name(FrameworkMessages.get(FrameworkMessages.COPY_CELL))
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver()).build();
   }
 
   protected final Control createCopyTableWithHeaderControl() {
-    return controlBuilder().command(this::copyTableAsDelimitedString).name(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)).build();
+    return Control.builder().command(this::copyTableAsDelimitedString).name(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)).build();
   }
 
   /**
@@ -1272,7 +1270,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refresh = controlBuilder()
+    final Control refresh = Control.builder()
             .command(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionObserver())
             .name(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
@@ -1431,7 +1429,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void addConditionControls(final ControlList popupControls) {
-    final ControlList controlList = controlListBuilder()
+    final ControlList controlList = ControlList.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter()).build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {

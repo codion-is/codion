@@ -59,8 +59,6 @@ import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -637,7 +635,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return a control for toggling the edit panel
    */
   public final Control getToggleEditPanelControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(this::toggleEditPanelState)
             .icon(frameworkIcons().editPanel())
             .description(MESSAGES.getString("toggle_edit")).build();
@@ -647,7 +645,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return a control for toggling the detail panel
    */
   public final Control getToggleDetailPanelControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(this::toggleDetailPanelState)
             .icon(frameworkIcons().detail())
             .description(MESSAGES.getString("toggle_detail")).build();
@@ -1295,11 +1293,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return null;
     }
 
-    final ControlList controls = controlListBuilder()
+    final ControlList controls = ControlList.builder()
             .name(MESSAGES.getString(MSG_DETAIL_TABLES))
             .icon(frameworkIcons().detail()).build();
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      controls.add(controlBuilder().command(() -> {
+      controls.add(Control.builder().command(() -> {
         setDetailPanelState(status);
         detailPanel.activatePanel();
       }).name(detailPanel.getCaption()).build());

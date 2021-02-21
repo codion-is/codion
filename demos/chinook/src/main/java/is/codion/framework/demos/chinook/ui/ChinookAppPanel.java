@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.worker.ProgressWorker;
@@ -52,7 +53,6 @@ import java.util.ResourceBundle;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.Components.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.Components.lookAndFeelProvider;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -185,14 +185,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   protected ControlList getViewControls() {
     return super.getViewControls()
             .addSeparator()
-            .add(controlBuilder().command(this::selectLanguage).name(bundle.getString(SELECT_LANGUAGE)).build());
+            .add(Control.builder().command(this::selectLanguage).name(bundle.getString(SELECT_LANGUAGE)).build());
   }
 
   @Override
   protected ControlList getToolsControls() {
     return super.getToolsControls()
             .addSeparator()
-            .add(controlBuilder().command(this::updateInvoiceTotals).name(bundle.getString(UPDATE_TOTALS)).build());
+            .add(Control.builder().command(this::updateInvoiceTotals).name(bundle.getString(UPDATE_TOTALS)).build());
   }
 
   private void updateInvoiceTotals() {

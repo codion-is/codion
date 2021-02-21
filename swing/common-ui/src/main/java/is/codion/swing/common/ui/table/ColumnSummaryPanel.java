@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.table;
 
 import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -13,8 +14,6 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 
 /**
  * A panel that shows a summary value for a numerical column property in a EntityTableModel.
@@ -65,7 +64,7 @@ public final class ColumnSummaryPanel extends JPanel {
     final JPopupMenu popupMenu = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
     for (final ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
-      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(controlBuilder().command(() ->
+      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder().command(() ->
               model.setSummary(summary)).name(summary.toString()).build());
       model.addSummaryListener(newSummary -> item.setSelected(newSummary.equals(summary)));
       item.setSelected(model.getSummary().equals(summary));

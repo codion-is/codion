@@ -26,7 +26,7 @@ public interface ToggleControl extends Control {
    * @return a new ToggleControl
    */
   static ToggleControl toggleControl(final Value<Boolean> value) {
-    return toggleControlBuilder().value(value).build();
+    return builder().value(value).build();
   }
 
   /**
@@ -35,13 +35,13 @@ public interface ToggleControl extends Control {
    * @return a new ToggleControl
    */
   static ToggleControl toggleControl(final State state) {
-    return toggleControlBuilder().state(state).build();
+    return builder().state(state).build();
   }
 
   /**
    * @return a new ToggleControl.Builder
    */
-  static Builder toggleControlBuilder() {
+  static Builder builder() {
     return new ToggleControlBuilder();
   }
 

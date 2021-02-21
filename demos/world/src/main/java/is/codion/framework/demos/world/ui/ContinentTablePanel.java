@@ -7,8 +7,6 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import javax.swing.JTable;
 import java.util.List;
 
-import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
-
 public final class ContinentTablePanel extends EntityTablePanel {
 
   public ContinentTablePanel(SwingEntityTableModel tableModel) {
@@ -19,6 +17,6 @@ public final class ContinentTablePanel extends EntityTablePanel {
 
   @Override
   protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
-    return controlListBuilder().control(createRefreshControl()).build();
+    return ControlList.builder().control(createRefreshControl()).build();
   }
 }

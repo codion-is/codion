@@ -5,6 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
@@ -16,8 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-
 public class CustomerTablePanel extends EntityTablePanel {
 
   public CustomerTablePanel(final SwingEntityTableModel tableModel) {
@@ -27,7 +26,7 @@ public class CustomerTablePanel extends EntityTablePanel {
   @Override
   protected ControlList createPrintControls() {
     final ControlList printControls = super.createPrintControls();
-    printControls.add(controlBuilder().command(this::viewCustomerReport).name("Customer report")
+    printControls.add(Control.builder().command(this::viewCustomerReport).name("Customer report")
             .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
 
     return printControls;

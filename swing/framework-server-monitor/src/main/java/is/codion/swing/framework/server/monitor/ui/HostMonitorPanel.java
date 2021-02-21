@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -14,9 +15,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
-
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 
 /**
  * A HostMonitorPanel
@@ -47,7 +45,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private ControlList getControls() {
-    return controlListBuilder().control(controlBuilder().command(model::refresh).name("Refresh").build()).build();
+    return ControlList.builder().control(Control.builder().command(model::refresh).name("Refresh").build()).build();
   }
 
   private void bindEvents() {

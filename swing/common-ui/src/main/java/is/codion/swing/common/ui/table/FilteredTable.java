@@ -66,8 +66,6 @@ import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-import static is.codion.swing.common.ui.control.ToggleControl.toggleControlBuilder;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -375,7 +373,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a control for showing the column selection dialog
    */
   public Control createSelectColumnsControl() {
-    return controlBuilder()
+    return Control.builder()
             .command(this::selectColumns)
             .name(MESSAGES.getString(SELECT_COLUMNS) + "...")
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
@@ -387,7 +385,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl createSingleSelectionModeControl() {
-    return toggleControlBuilder().state(tableModel.getSelectionModel().getSingleSelectionModeState()).name(MESSAGES.getString(SINGLE_SELECTION_MODE)).build();
+    return ToggleControl.builder().state(tableModel.getSelectionModel().getSingleSelectionModeState()).name(MESSAGES.getString(SINGLE_SELECTION_MODE)).build();
   }
 
   /**
@@ -510,7 +508,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 1));
     panel.add(boxRegexp);
 
-    final Control control = controlBuilder()
+    final Control control = Control.builder()
             .command(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()))
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
@@ -518,7 +516,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
-    popupMenu.add(controlBuilder()
+    popupMenu.add(Control.builder()
             .command(() -> Dialogs.displayInDialog(FilteredTable.this, panel, settingsMessage, control))
             .name(settingsMessage)
             .build());
@@ -535,8 +533,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       togglePanel.add(columnCheckBox);
     });
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    southPanel.add(new JButton(controlBuilder().command(() -> setSelected(checkBoxes, true)).name(MESSAGES.getString("select_all")).build()));
-    southPanel.add(new JButton(controlBuilder().command(() -> setSelected(checkBoxes, false)).name(MESSAGES.getString("select_none")).build()));
+    southPanel.add(new JButton(Control.builder().command(() -> setSelected(checkBoxes, true)).name(MESSAGES.getString("select_all")).build()));
+    southPanel.add(new JButton(Control.builder().command(() -> setSelected(checkBoxes, false)).name(MESSAGES.getString("select_none")).build()));
 
     final JPanel base = new JPanel(Layouts.borderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);

@@ -96,7 +96,7 @@ public interface Control extends Action {
    * @return a Control for calling the given {@link Control.Command}
    */
   static Control control(final Command command) {
-    return controlBuilder().command(command).build();
+    return builder().command(command).build();
   }
 
   /**
@@ -112,7 +112,7 @@ public interface Control extends Action {
   /**
    * @return a new Control.Builder
    */
-  static Builder controlBuilder() {
+  static Builder builder() {
     return new ControlBuilder();
   }
 

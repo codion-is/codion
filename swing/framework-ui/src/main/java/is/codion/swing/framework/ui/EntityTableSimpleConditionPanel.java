@@ -16,7 +16,6 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -65,7 +64,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   }
 
   private JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
-    final Control simpleSearchControl = controlBuilder().command(this::performSimpleSearch).name(FrameworkMessages.get(FrameworkMessages.SEARCH)).build();
+    final Control simpleSearchControl = Control.builder().command(this::performSimpleSearch).name(FrameworkMessages.get(FrameworkMessages.SEARCH)).build();
     final JButton simpleSearchButton = new JButton(simpleSearchControl);
     simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(Layouts.borderLayout());

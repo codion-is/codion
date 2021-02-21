@@ -8,6 +8,7 @@ import is.codion.common.model.CancelException;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
@@ -24,8 +25,6 @@ import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
-
 public class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
@@ -35,7 +34,7 @@ public class TrackTablePanel extends EntityTablePanel {
   @Override
   protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
     final ControlList controls = super.getPopupControls(additionalPopupControls);
-    controls.addAt(0, controlBuilder().command(this::raisePriceOfSelected).name("Raise price...")
+    controls.addAt(0, Control.builder().command(this::raisePriceOfSelected).name("Raise price...")
             .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
     controls.addSeparatorAt(1);
 

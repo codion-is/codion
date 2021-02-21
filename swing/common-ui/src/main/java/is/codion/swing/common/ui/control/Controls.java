@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A factory class for Control objects and UI controls based on the Control class and its descendants.
+ * A factory class for UI controls based on the Control class and its descendants.
  */
 public final class Controls {
 

@@ -6,6 +6,7 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.DateFormats;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.BooleanValues;
@@ -36,7 +37,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.Components.createWestCenterPanel;
-import static is.codion.swing.common.ui.control.Control.controlBuilder;
 import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;
@@ -208,7 +208,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(collectSnapshotCheckBox);
 
-    final JButton clearButton = new JButton(controlBuilder().command(model::clearInPoolStatistics).name("Clear").build());
+    final JButton clearButton = new JButton(Control.builder().command(model::clearInPoolStatistics).name("Clear").build());
     clearButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(clearButton);
 
@@ -241,7 +241,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statisticsBase.add(createWestCenterPanel(new JLabel("Created"), createdField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Since"), resetTimeField));
-    statisticsBase.add(new JButton(controlBuilder().command(model::clearStatistics).name("Clear").build()), BorderLayout.SOUTH);
+    statisticsBase.add(new JButton(Control.builder().command(model::clearStatistics).name("Clear").build()), BorderLayout.SOUTH);
 
     statisticsBase.setBorder(BorderFactory.createTitledBorder("Statistics"));
 
