@@ -68,7 +68,7 @@ final class ControlBuilder implements Control.Builder {
       throw new IllegalStateException("Command must be specified for control");
     }
 
-    return new CommandControl(command, name, enabledState)
+    return new DefaultControl(command, name, enabledState)
             .setMnemonic(mnemonic)
             .setIcon(icon)
             .setDescription(description)

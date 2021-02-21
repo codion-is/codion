@@ -10,7 +10,7 @@ final class IntegerFieldValue extends AbstractTextComponentValue<Integer, Intege
 
   IntegerFieldValue(final IntegerField integerField, final Nullable nullable, final UpdateOn updateOn) {
     super(integerField, nullable == Nullable.YES ? null : 0, updateOn);
-    if (!isNullable()) {
+    if (!isNullable() && integerField.getInteger() == null) {
       integerField.setInteger(0);
     }
   }

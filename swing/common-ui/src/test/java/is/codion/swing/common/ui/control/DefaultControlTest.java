@@ -12,7 +12,7 @@ import javax.swing.JButton;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class CommandControlTest {
+public final class DefaultControlTest {
 
   private int callCount = 0;
 

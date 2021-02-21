@@ -10,11 +10,11 @@ import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
 
-final class CommandControl extends AbstractControl {
+final class DefaultControl extends AbstractControl {
 
   private final Command command;
 
-  CommandControl(final Command command, final String name, final StateObserver enabledObserver) {
+  DefaultControl(final Command command, final String name, final StateObserver enabledObserver) {
     super(name, enabledObserver);
     this.command = requireNonNull(command);
   }

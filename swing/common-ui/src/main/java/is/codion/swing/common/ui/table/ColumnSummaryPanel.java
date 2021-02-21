@@ -15,6 +15,8 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A panel that shows a summary value for a numerical column property in a EntityTableModel.
  */
@@ -27,7 +29,7 @@ public final class ColumnSummaryPanel extends JPanel {
    * @param model the PropertySummaryModel instance
    */
   public ColumnSummaryPanel(final ColumnSummaryModel model) {
-    this.model = model;
+    this.model = requireNonNull(model, "model");
     model.addSummaryValueListener(() -> {
       final String summaryText = model.getSummaryText();
       summaryField.setText(summaryText);

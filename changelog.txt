@@ -6761,3 +6761,7 @@
   ControlList.Builder added along with controlListBuilder() factory method, replaces factory methods in Controls
   Control.Builder added along with controlBuilder() factory method, replaces factory methods in Controls, ToggleControl.Builder as well
   Builder methods from above renamed, prefer class prefix instead of longer builder factory names
+  CommandControl renamed DefaultControl for consistency
+  Images utility class removed
+  DecimalFieldValue renamed DoubleFieldValue
+  DoubleFieldValue, IntegerFieldValue and LongFieldValue only set the null value if required

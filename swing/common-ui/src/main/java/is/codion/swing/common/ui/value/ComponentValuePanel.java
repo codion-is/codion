@@ -34,8 +34,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
 
-  private static final int COLUMNS = 2;
-
   private final Event<Integer> buttonClickedEvent = Event.event();
   private final ComponentValue<V, C> componentValue;
   private final Action okAction;
@@ -136,7 +134,7 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   private JPanel createButtonPanel() {
     final JButton okButton = new JButton(okAction);
     final JButton cancelButton = new JButton(cancelAction);
-    final JPanel panel = new JPanel(new GridLayout(1, COLUMNS));
+    final JPanel panel = new JPanel(new GridLayout(1, 2));
     panel.add(okButton);
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED,
             new AbstractAction("cancelInput") {

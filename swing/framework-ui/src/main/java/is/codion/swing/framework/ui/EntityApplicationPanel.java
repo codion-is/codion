@@ -42,7 +42,6 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
-import is.codion.swing.common.ui.images.Images;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -82,11 +81,13 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1334,7 +1335,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logoTransparent();
+    final ImageIcon applicationIcon = iconName != null ? loadIcon(getClass(), iconName) : icons().logoTransparent();
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
       final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : User.user("");
@@ -1488,6 +1489,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static boolean referencesOnlySelf(final Entities entities, final EntityType<?> entityType) {
     return entities.getDefinition(entityType).getForeignKeys().stream()
             .allMatch(foreignKey -> foreignKey.getReferencedEntityType().equals(entityType));
+  }
+
+  private static <T> ImageIcon loadIcon(final Class<T> resourceOwnerClass, final String resourceName) {
+    final URL url = resourceOwnerClass.getResource(resourceName);
+    requireNonNull(url, "Resource: " + resourceName + " for " + resourceOwnerClass);
+
+    return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
