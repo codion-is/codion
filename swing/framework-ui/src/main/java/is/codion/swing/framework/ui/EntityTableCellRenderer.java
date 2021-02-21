@@ -30,13 +30,13 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
   /**
    * @return true if the condition state should be represented visually
    */
-  boolean isIndicateCondition();
+  boolean isDisplayConditionStatus();
 
   /**
    * If true then columns involved in a condition have different background color
-   * @param indicateCondition the value
+   * @param displayConditionStatus the value
    */
-  void setIndicateCondition(boolean indicateCondition);
+  void setDisplayConditionStatus(boolean displayConditionStatus);
 
   /**
    * @return if true then the cell data is added as a tool tip for the cell

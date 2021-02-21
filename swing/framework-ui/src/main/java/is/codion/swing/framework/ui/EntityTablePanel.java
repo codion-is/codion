@@ -447,9 +447,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Toggles the condition panel through the states hidden, visible and in case it is a EntityTableConditionPanel, advanced
+   * Toggles the condition panel through the states hidden, visible and in case it can, advanced
+   * @see AbstractEntityTableConditionPanel#canToggleAdvanced()
    */
   public final void toggleConditionPanel() {
+    if (conditionPanel == null) {
+      return;
+    }
     if (conditionPanel.canToggleAdvanced()) {
       final State advancedState = conditionPanel.getAdvancedState();
       if (isConditionPanelVisible()) {
@@ -500,7 +504,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
+   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error during delete
    */
   public final void setReferentialIntegrityErrorHandling(final ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
     this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
@@ -1529,10 +1533,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
-      final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isIndicateCondition()
+      final boolean displayConditionStatus = renderer instanceof EntityTableCellRenderer
+              && ((EntityTableCellRenderer) renderer).isDisplayConditionStatus()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      label.setFont(indicateSearch ? searchFont : defaultFont);
+      label.setFont(displayConditionStatus ? searchFont : defaultFont);
 
       return label;
     }
