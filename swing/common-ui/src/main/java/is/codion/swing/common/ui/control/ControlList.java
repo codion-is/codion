@@ -3,7 +3,10 @@
  */
 package is.codion.swing.common.ui.control;
 
+import is.codion.common.state.StateObserver;
+
 import javax.swing.Action;
+import javax.swing.Icon;
 import java.util.List;
 
 /**
@@ -97,4 +100,87 @@ public interface ControlList extends Control {
    * @return this ControlList instance
    */
   ControlList addAll(ControlList controls);
+
+  /**
+   * Constructs a new ControlList.
+   * @return a new ControlList instance.
+   */
+  static ControlList controlList() {
+    return controlListBuilder().build();
+  }
+
+  /**
+   * @return a new ControlList.Builder instance
+   */
+  static Builder controlListBuilder() {
+    return new ControlListBuilder();
+  }
+
+  /**
+   * A builder for ControlList
+   * @see ControlList#controlListBuilder()
+   */
+  interface Builder {
+
+    /**
+     * @param name the control list name
+     * @return this Builder instance
+     */
+    Builder name(String name);
+
+    /**
+     * @param mnemonic the mnemonic to assign to this control list
+     * @return this Builder instance
+     */
+    Builder mnemonic(char mnenomic);
+
+    /**
+     * @param enabledState the state observer dictating the enable state of this control
+     * @return this Builder instance
+     */
+    Builder enabledState(StateObserver enabledState);
+
+    /**
+     * @param icon the icon
+     * @return this Builder instance
+     */
+    Builder icon(Icon icon);
+
+    /**
+     * @param control the control to add to this list
+     * @return this Builder instance
+     */
+    Builder control(Control control);
+
+    /**
+     *
+     * @param controls
+     * @return this Builder instance
+     */
+    Builder controls(Control... controls);
+
+    /**
+     * @param action the Action to add to this list
+     * @return this Builder instance
+     */
+    Builder action(Action action);
+
+    /**
+     * @param actions the Actions to add to this list
+     * @return this Builder instance
+     */
+    Builder actions(Action... actions);
+
+    /**
+     * Adds a separator to the ControlList
+     * @return this Builder instance
+     */
+    Builder separator();
+
+    /**
+     * Builds the ControlList
+     * @return a new ControlList
+     */
+    ControlList build();
+  }
 }

@@ -85,7 +85,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final ControlList controls = Controls.controlList();
+    final ControlList controls = ControlList.controlList();
     controls.add(Controls.control(() -> {
       for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
         model.getServer().disconnect(remoteClient.getClientId());

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.control;
 import org.junit.jupiter.api.Test;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlListTest {
@@ -14,17 +15,17 @@ public class DefaultControlListTest {
   public void test() {
     final Control one = Controls.control(() -> {}, "one");
     final Control two = Controls.control(() -> {}, "two");
-    final ControlList list = Controls.controlList("list", one, two);
+    final ControlList list = controlListBuilder().name("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
     assertFalse(nullOrEmpty(list.getName()));
     assertNull(list.getIcon());
     assertEquals("list", list.getName());
-    final ControlList list1 = Controls.controlList();
+    final ControlList list1 = ControlList.controlList();
     assertTrue(nullOrEmpty(list1.getName()));
     assertEquals("", list1.getName());
-    final ControlList list2 = Controls.controlList(two);
+    final ControlList list2 = controlListBuilder().control(two).build();
     list2.setName("list");
     assertFalse(nullOrEmpty(list2.getName()));
     assertEquals("list", list2.getName());

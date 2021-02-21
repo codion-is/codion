@@ -6728,3 +6728,4 @@
   StateValue now extends AbstractValue
 0.17.10
   EntityEditPanel, control setup and event binding moved to initializePanel()
+  ControlList.Builder added along with builder() factory method, replaces factory methods in Controls

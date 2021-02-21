@@ -1,12 +1,13 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 import java.util.List;
+
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 
 public final class ContinentTablePanel extends EntityTablePanel {
 
@@ -18,6 +19,6 @@ public final class ContinentTablePanel extends EntityTablePanel {
 
   @Override
   protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
-    return Controls.controlList(createRefreshControl());
+    return controlListBuilder().control(createRefreshControl()).build();
   }
 }

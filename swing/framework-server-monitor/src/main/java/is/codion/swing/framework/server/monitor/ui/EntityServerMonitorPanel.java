@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 
 /**
@@ -151,22 +152,24 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private ControlList initializeMainMenuControls() {
-    final ControlList controls = Controls.controlList();
-    final ControlList file = Controls.controlList("File", 'F');
-    file.add(initializeExitControl());
-    controls.add(file);
-    final ControlList view = Controls.controlList("View", 'V');
-    view.add(initializeRefreshControl());
-    view.addSeparator();
-    view.add(initializeAlwaysOnTopControl());
-    controls.add(view);
-    final ControlList tools = Controls.controlList("Tools", 'T');
-    tools.add(Controls.control(this::setUpdateInterval, "Chart update interval"));
-    tools.add(initializeSetJDKDirControl());
-    tools.add(initializeJConsoleControl());
-    controls.add(tools);
-
-    return controls;
+    return controlListBuilder()
+            .control(controlListBuilder()
+                    .name("File")
+                    .mnemonic('F')
+                    .control(initializeExitControl()).build())
+            .control(controlListBuilder()
+                    .name("View")
+                    .mnemonic('V')
+                    .control(initializeRefreshControl())
+                    .separator()
+                    .control(initializeAlwaysOnTopControl()).build())
+            .control(controlListBuilder()
+                    .name("Tools")
+                    .mnemonic('T')
+                    .control(Controls.control(this::setUpdateInterval, "Chart update interval"))
+                    .control(initializeSetJDKDirControl())
+                    .control(initializeJConsoleControl()).build())
+            .build();
   }
 
   private Control initializeRefreshControl() {

@@ -684,7 +684,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @return the ControlList on which to base the control panel
    */
   protected ControlList initializeControlPanelControls() {
-    final ControlList controlPanelControls = Controls.controlList("Actions");
+    final ControlList controlPanelControls = ControlList.controlList();
     if (this.controls.containsKey(ControlCode.SAVE)) {
       controlPanelControls.add(this.controls.get(ControlCode.SAVE));
     }

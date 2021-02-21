@@ -33,7 +33,9 @@ import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
-import static is.codion.swing.common.ui.control.Controls.*;
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
+import static is.codion.swing.common.ui.control.Controls.control;
+import static is.codion.swing.common.ui.control.Controls.popupMenu;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -100,7 +102,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(popupMenu(controlList(control(this::saveLogToFile, "Save to file..."))));
+    logArea.setComponentPopupMenu(popupMenu(controlListBuilder().control(control(this::saveLogToFile, "Save to file...")).build()));
 
     addKeyEvent(searchField, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, control(this::scrollToNextSearchPosition));
     addKeyEvent(searchField, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, control(this::scrollToPreviousSearchPosition));

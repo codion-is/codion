@@ -22,11 +22,16 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   private final List<Action> actions = new ArrayList<>();
 
   DefaultControlList(final String name, final char mnemonic, final StateObserver enabledState, final Icon icon,
-                     final Control... controls) {
+                     final List<Action> controls) {
     super(name, enabledState, icon);
     setMnemonic(mnemonic);
-    for (final Control control : controls) {
-      add(control);
+    for (final Action control : controls) {
+      if (control != null) {
+        add(control);
+      }
+      else {
+        addSeparator();
+      }
     }
   }
 

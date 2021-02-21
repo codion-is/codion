@@ -90,6 +90,7 @@ import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Components.hideWaitCursor;
 import static is.codion.swing.common.ui.Components.showWaitCursor;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.common.ui.control.Controls.control;
 import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -545,8 +546,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = State.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
-    final ControlList controlList = Controls.controlList(FrameworkMessages.get(FrameworkMessages.UPDATE),
-            (char) 0, enabled, frameworkIcons().edit());
+    final ControlList controlList = controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
+            .enabledState(enabled)
+            .icon(frameworkIcons().edit()).build();
     controlList.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
@@ -890,7 +893,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         return additionalPopupControls.get(0);
       }
     };
-    final ControlList popupControls = Controls.controlList();
+    final ControlList popupControls = ControlList.controlList();
     if (tablePanel.includeUpdateSelectedControls()) {
       popupControls.add(tablePanel.createUpdateSelectedControls());
     }
@@ -974,7 +977,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected ControlList getToolBarControls(final List<ControlList> additionalToolBarControlLists) {
     requireNonNull(additionalToolBarControlLists);
-    final ControlList toolbarControls = Controls.controlList();
+    final ControlList toolbarControls = ControlList.controlList();
     if (controls.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controls.get(ControlCode.TOGGLE_SUMMARY_PANEL));
     }
@@ -1007,7 +1010,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
     requireNonNull(additionalPopupControls);
-    final ControlList popupControls = Controls.controlList();
+    final ControlList popupControls = ControlList.controlList();
     popupControls.add(controls.get(ControlCode.REFRESH));
     if (controls.containsKey(ControlCode.CLEAR)) {
       popupControls.add(controls.get(ControlCode.CLEAR));
@@ -1075,8 +1078,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected ControlList createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
-    final ControlList printControls = Controls.controlList(printCaption, printCaption.charAt(0),
-            frameworkIcons().print());
+    final ControlList printControls = controlListBuilder()
+            .name(printCaption)
+            .mnemonic(printCaption.charAt(0))
+            .icon(frameworkIcons().print()).build();
     printControls.add(controls.get(ControlCode.PRINT_TABLE));
 
     return printControls;
@@ -1087,11 +1092,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final ControlList createCopyControls() {
-    final ControlList copyControls = Controls.controlList(Messages.get(Messages.COPY),
-            createCopyCellControl(), createCopyTableWithHeaderControl());
-    copyControls.setIcon(frameworkIcons().copy());
-
-    return copyControls;
+    return controlListBuilder()
+            .name(Messages.get(Messages.COPY))
+            .icon(frameworkIcons().copy())
+            .controls(createCopyCellControl(), createCopyTableWithHeaderControl()).build();
   }
 
   protected final Control createCopyCellControl() {
@@ -1408,8 +1412,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void addConditionControls(final ControlList popupControls) {
-    final ControlList controlList = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH),
-            (char) 0, frameworkIcons().filter());
+    final ControlList controlList = controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .icon(frameworkIcons().filter()).build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       controlList.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }

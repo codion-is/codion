@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
@@ -119,8 +120,9 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public ControlList getControls() {
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    controls.setIcon(frameworkIcons().filter());
+    final ControlList controls = controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .icon(frameworkIcons().filter()).build();
     if (canToggleAdvanced()) {
       controls.add(Controls.toggleControl(getAdvancedState(), FrameworkMessages.get(FrameworkMessages.ADVANCED)));
     }

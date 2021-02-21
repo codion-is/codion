@@ -20,6 +20,7 @@ import javax.swing.JToolBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlsTest {
@@ -28,10 +29,9 @@ public final class ControlsTest {
   private final Event<Boolean> valueChangeEvent = Event.event();
   private Boolean value = false;
 
-  private final ControlList controlList = Controls.controlList(
+  private final ControlList controlList = controlListBuilder().controls(
           Controls.control(() -> {}, "one"), Controls.control(() -> {}, "two"),
-          Controls.toggleControl(this, "booleanValue", "three", Event.event())
-  );
+          Controls.toggleControl(this, "booleanValue", "three", Event.event())).build();
   private boolean booleanValue;
   private Object selectedValue;
 
@@ -212,7 +212,7 @@ public final class ControlsTest {
 
   @Test
   public void menuBar() {
-    final ControlList base = Controls.controlList();
+    final ControlList base = ControlList.controlList();
     base.add(controlList);
 
     final JMenuBar menu = Controls.menuBar(base);
@@ -230,7 +230,7 @@ public final class ControlsTest {
 
   @Test
   public void popupMenu() {
-    final ControlList base = Controls.controlList();
+    final ControlList base = ControlList.controlList();
     base.add(controlList);
 
     Controls.popupMenu(base);

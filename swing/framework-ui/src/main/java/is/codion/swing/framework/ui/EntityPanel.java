@@ -60,6 +60,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -1208,7 +1209,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeTablePanel() {
-    final ControlList toolbarControls = Controls.controlList();
+    final ControlList toolbarControls = ControlList.controlList();
     if (showToggleEditPanelControl && editPanel != null) {
       toolbarControls.add(getToggleEditPanelControl());
     }
@@ -1299,8 +1300,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return null;
     }
 
-    final ControlList controls = Controls.controlList(MESSAGES.getString(MSG_DETAIL_TABLES), (char) 0,
-            frameworkIcons().detail());
+    final ControlList controls = controlListBuilder()
+            .name(MESSAGES.getString(MSG_DETAIL_TABLES))
+            .icon(frameworkIcons().detail()).build();
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controls.add(Controls.control(() -> {
         setDetailPanelState(status);

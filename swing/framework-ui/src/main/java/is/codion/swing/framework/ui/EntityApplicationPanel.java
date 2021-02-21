@@ -98,6 +98,7 @@ import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.control.ControlList.controlListBuilder;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
@@ -637,7 +638,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getHelpControls()
    */
   protected ControlList getMainMenuControls() {
-    final ControlList menuControls = Controls.controlList();
+    final ControlList menuControls = ControlList.controlList();
     final ControlList fileControls = getFileControls();
     if (fileControls != null && !fileControls.isEmpty()) {
       menuControls.add(fileControls);
@@ -672,55 +673,57 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the ControlList specifying the items in the 'File' menu
    */
   protected ControlList getFileControls() {
-    final ControlList file = Controls.controlList(FrameworkMessages.get(FrameworkMessages.FILE));
-    file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-    file.add(createExitControl());
-
-    return file;
+    return controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.FILE))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0))
+            .control(createExitControl()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'Settings' menu
    */
   protected ControlList getSettingsControls() {
-    return Controls.controlList(FrameworkMessages.get(FrameworkMessages.SETTINGS), createLogLevelControl());
+    return controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+            .control(createLogLevelControl()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'Tools' menu
    */
   protected ControlList getToolsControls() {
-    return Controls.controlList(resourceBundle.getString("tools"), resourceBundle.getString("tools_mnemonic").charAt(0), getSettingsControls());
+    return controlListBuilder()
+            .name(resourceBundle.getString("tools"))
+            .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
+            .control(getSettingsControls()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'View' menu
    */
   protected ControlList getViewControls() {
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.VIEW),
-            FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    controls.add(createRefreshAllControl());
-    controls.addSeparator();
-    controls.add(createViewApplicationTreeControl());
-    controls.add(createViewDependencyTree());
-    controls.add(createSelectLookAndFeelControl());
-    controls.add(createSelectFontSizeControl());
-    controls.addSeparator();
-    controls.add(createAlwaysOnTopControl());
-
-    return controls;
+    return controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.VIEW))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
+            .control(createRefreshAllControl())
+            .separator()
+            .control(createViewApplicationTreeControl())
+            .control(createViewDependencyTree())
+            .control(createSelectLookAndFeelControl())
+            .control(createSelectFontSizeControl())
+            .separator()
+            .control(createAlwaysOnTopControl()).build();
   }
 
   /**
    * @return the ControlList specifying the items in the 'Help' menu
    */
   protected ControlList getHelpControls() {
-    final ControlList controls = Controls.controlList(resourceBundle.getString(HELP), resourceBundle.getString("help_mnemonic").charAt(0));
-    controls.add(createHelpControl());
-    controls.addSeparator();
-    controls.add(createAboutControl());
-
-    return controls;
+    return controlListBuilder()
+            .name(resourceBundle.getString(HELP))
+            .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
+            .control(createHelpControl()).separator()
+            .control(createAboutControl()).build();
   }
 
   /**
@@ -909,8 +912,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return comparator.compare(thisCompare, thatCompare);
     });
-    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
-            FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
+    final ControlList controls = controlListBuilder()
+            .name(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0)).build();
     supportPanelBuilders.forEach(panelBuilder -> controls.add(Controls.control(() -> displayEntityPanelDialog(panelBuilder),
             panelBuilder.getCaption() == null ?
                     entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())));
