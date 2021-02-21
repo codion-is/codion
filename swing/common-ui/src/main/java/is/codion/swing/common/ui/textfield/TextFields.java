@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.model.CancelException;
@@ -15,6 +18,7 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
@@ -137,6 +141,27 @@ public final class TextFields {
     }
 
     return textComponent;
+  }
+
+  /**
+   * Enables the hint text for the given field
+   * @param textField the text field
+   * @param hintText the hint text
+   * @return the {@link Hint} instance
+   */
+  public static Hint hint(final JTextField textField, final String hintText) {
+    return hint(textField, hintText, Color.LIGHT_GRAY);
+  }
+
+  /**
+   * Enables the hint text for the given field
+   * @param textField the text field
+   * @param hintText the hint text
+   * @param hintForegroundColor the font color for the hint text
+   * @return the {@link Hint} instance
+   */
+  public static Hint hint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
+    return new DefaultTextFieldHint(textField, hintText, hintForegroundColor);
   }
 
   /**
@@ -274,6 +299,24 @@ public final class TextFields {
     catch (final Exception e) {
       return null;
     }
+  }
+
+  /**
+   * A hint text for text fields, that is, text that is shown
+   * when the field contains no data, is empty and unfocused.
+   * @see TextFields#hint(JTextField, String)
+   */
+  public interface Hint {
+
+    /**
+     * @return the search hint string
+     */
+    String getHintText();
+
+    /**
+     * @return true if the field does not have focus and is displayint the hint text
+     */
+    boolean isHintVisible();
   }
 
   /**

@@ -19,7 +19,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TextFieldHint;
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
@@ -453,9 +452,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     field.setColumns(SEARCH_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(field);
-    final TextFieldHint textFieldHint = TextFieldHint.enable(field, Messages.get(Messages.SEARCH_FIELD_HINT));
+    final TextFields.Hint textFieldHint = TextFields.hint(field, Messages.get(Messages.SEARCH_FIELD_HINT));
     field.getDocument().addDocumentListener((DocumentAdapter) e -> {
-      if (!textFieldHint.isHintTextVisible()) {
+      if (!textFieldHint.isHintVisible()) {
         performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
                 lastSearchResultCoordinate.getRow(), true, field.getText());
       }

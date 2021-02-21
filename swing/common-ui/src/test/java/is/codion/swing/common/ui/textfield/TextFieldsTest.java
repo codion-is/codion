@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TextFieldsTest {
 
@@ -45,5 +46,35 @@ public class TextFieldsTest {
     assertEquals(focusListenerCount + 1, textField.getFocusListeners().length);
     TextFields.selectNoneOnFocusGained(textField);
     assertEquals(focusListenerCount, textField.getFocusListeners().length);
+  }
+
+  @Test
+  public void enableNullTextField() {
+    assertThrows(NullPointerException.class, () -> TextFields.hint(null, "test"));
+  }
+
+  @Test
+  public void enableNullHintString() {
+    assertThrows(IllegalArgumentException.class, () -> TextFields.hint(new JTextField(), null));
+  }
+
+  @Test
+  public void enableEmptyHintString() {
+    assertThrows(IllegalArgumentException.class, () -> TextFields.hint(new JTextField(), ""));
+  }
+
+  @Test
+  public void enableNullForegroundColor() {
+    assertThrows(NullPointerException.class, () -> TextFields.hint(new JTextField(), "test", null));
+  }
+
+  @Test
+  public void hint() {
+    final JTextField textField = new JTextField();
+    final TextFields.Hint hint = TextFields.hint(textField, "search");
+    assertEquals("search", hint.getHintText());
+    assertEquals("search", textField.getText());
+    textField.setText("he");
+    assertEquals("he", textField.getText());
   }
 }
