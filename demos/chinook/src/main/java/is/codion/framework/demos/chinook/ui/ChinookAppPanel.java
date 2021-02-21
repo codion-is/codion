@@ -13,7 +13,6 @@ import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
@@ -258,7 +257,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
       FlatDarculaLaf.install();
       UIManager.put("Table.alternateRowColor", null);
     }));
-    UiManagerDefaults.initialize();
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityInputComponents.COMBO_BOX_COMPLETION_MODE.set(EntityInputComponents.COMPLETION_MODE_AUTOCOMPLETE);
