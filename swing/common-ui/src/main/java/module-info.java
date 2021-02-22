@@ -9,7 +9,6 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui.control;
   exports is.codion.swing.common.ui.dialog;
   exports is.codion.swing.common.ui.icons;
-  exports is.codion.swing.common.ui.images;
   exports is.codion.swing.common.ui.layout;
   exports is.codion.swing.common.ui.table;
   exports is.codion.swing.common.ui.textfield;
