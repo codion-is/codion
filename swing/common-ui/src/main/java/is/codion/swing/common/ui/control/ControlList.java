@@ -135,7 +135,7 @@ public interface ControlList extends Control {
     Builder description(String description);
 
     /**
-     * @param mnemonic the mnemonic to assign to this control list
+     * @param mnenomic the mnemonic to assign to this control list
      * @return this Builder instance
      */
     Builder mnemonic(char mnenomic);
@@ -159,8 +159,7 @@ public interface ControlList extends Control {
     Builder control(Control control);
 
     /**
-     *
-     * @param controls
+     * @param controls the controls to add
      * @return this Builder instance
      */
     Builder controls(Control... controls);
