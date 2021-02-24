@@ -238,16 +238,27 @@ public final class Conditions {
 
     @Override
     public Condition equalTo(final Entity value) {
+      if (value == null) {
+        return isNull();
+      }
+
       return equalTo(singletonList(value));
     }
 
     @Override
     public Condition equalTo(final Entity... values) {
+      if (values == null) {
+        throw new IllegalArgumentException("equalTo condition values can not be null");
+      }
+
       return equalTo(Arrays.asList(values));
     }
 
     @Override
     public Condition equalTo(final Collection<? extends Entity> values) {
+      if (values == null || values.isEmpty()) {
+        throw new IllegalArgumentException("equalTo condition values can not be null or empty");
+      }
       final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(Reference::getReferencedAttribute).collect(toList());
 
       return foreignKeyCondition(foreignKey, EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
@@ -255,16 +266,27 @@ public final class Conditions {
 
     @Override
     public Condition notEqualTo(final Entity value) {
+      if (value == null) {
+        return isNotNull();
+      }
+
       return notEqualTo(singletonList(value));
     }
 
     @Override
     public Condition notEqualTo(final Entity... values) {
+      if (values == null) {
+        throw new IllegalArgumentException("notEqualTo condition values can not be null");
+      }
+
       return notEqualTo(Arrays.asList(values));
     }
 
     @Override
     public Condition notEqualTo(final Collection<? extends Entity> values) {
+      if (values == null || values.isEmpty()) {
+        throw new IllegalArgumentException("notEqualTo condition values can not be null or empty");
+      }
       final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(Reference::getReferencedAttribute).collect(toList());
 
       return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));

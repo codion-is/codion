@@ -23,7 +23,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   @Override
   public AttributeCondition<T> equalTo(final T value) {
     if (value == null) {
-      throw new IllegalArgumentException("equalTo condition value can not be null");
+      return isNull();
     }
 
     return equalTo(singletonList(value));
@@ -50,7 +50,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   @Override
   public AttributeCondition<T> notEqualTo(final T value) {
     if (value == null) {
-      throw new IllegalArgumentException("notEqualTo condition value can not be null");
+      return isNotNull();
     }
 
     return notEqualTo(singletonList(value));
