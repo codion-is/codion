@@ -13,10 +13,9 @@ import java.util.Collection;
 public interface ForeignKeyConditionBuilder {
 
   /**
-   * Returns a 'equalTo' {@link Condition}.
+   * Returns a 'equalTo' {@link Condition} or 'isNull' in case the value is null.
    * @param value the value to use in the condition
    * @return a {@link Condition}
-   * @throws IllegalArgumentException in case {@code value} is null
    */
   Condition equalTo(Entity value);
 
@@ -37,10 +36,9 @@ public interface ForeignKeyConditionBuilder {
   Condition equalTo(Collection<? extends Entity> values);
 
   /**
-   * Returns a 'notEqualTo' {@link Condition}.
+   * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case the value is null.
    * @param value the value to use in the condition
    * @return a {@link Condition}
-   * @throws IllegalArgumentException in case {@code value} is null
    */
   Condition notEqualTo(Entity value);
 
