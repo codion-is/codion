@@ -6738,3 +6738,4 @@
   TextFieldHint moved to TextFields, renamed Hint, factory methods moved to TextFields, TextFieldHint removed
   DefaultAttributeConditionBuilder and DefaultForeignKeyConditionBuilder.equalTo() and notEqualTo() with null value now result in isNull() and isNotNull() respectively
   DefaultLocalEntityConnection, Conditions, changed according to the above
+  DefaultAttributeConditionBuilder and DefaultForeignKeyConditionBuilder.equalTo() and notEqualTo() with an empty array or collection now result in isNull() and isNotNull() respectively

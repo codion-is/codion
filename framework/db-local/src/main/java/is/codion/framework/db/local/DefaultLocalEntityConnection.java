@@ -508,12 +508,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
     requireNonNull(values, "values");
     if (attribute instanceof ForeignKey) {
-      return select(values.isEmpty() ?
-              condition((ForeignKey) attribute).isNull() :
-              condition((ForeignKey) attribute).equalTo((Collection<Entity>) values));
+      return select(condition((ForeignKey) attribute).equalTo((Collection<Entity>) values));
     }
 
-    return select(values.isEmpty() ? condition(attribute).isNull() : condition(attribute).equalTo(values));
+    return select(condition(attribute).equalTo(values));
   }
 
   @Override

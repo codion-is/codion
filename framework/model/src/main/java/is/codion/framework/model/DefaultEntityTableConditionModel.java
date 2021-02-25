@@ -341,9 +341,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final ForeignKeyConditionBuilder builder = Conditions.condition(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        return values.isEmpty() ? builder.isNull() : builder.equalTo(values);
+        return builder.equalTo(values);
       case NOT_EQUAL:
-        return values.isEmpty() ? builder.isNotNull() : builder.notEqualTo(values);
+        return builder.notEqualTo(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key conditions");
     }
@@ -354,13 +354,13 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final AttributeCondition.Builder<T> builder = Conditions.condition((Attribute<T>) conditionModel.getColumnIdentifier());
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        final AttributeCondition<T> equalCondition = equalToValues.isEmpty() ? builder.isNull() : builder.equalTo(equalToValues);
+        final AttributeCondition<T> equalCondition = builder.equalTo(equalToValues);
         if (equalCondition.getAttribute().isString()) {
           equalCondition.caseSensitive(conditionModel.isCaseSensitive());
         }
         return equalCondition;
       case NOT_EQUAL:
-        final AttributeCondition<T> notEqualCondition = equalToValues.isEmpty() ? builder.isNotNull() : builder.notEqualTo(equalToValues);
+        final AttributeCondition<T> notEqualCondition = builder.notEqualTo(equalToValues);
         if (notEqualCondition.getAttribute().isString()) {
           notEqualCondition.caseSensitive(conditionModel.isCaseSensitive());
         }

@@ -20,18 +20,18 @@ public interface ForeignKeyConditionBuilder {
   Condition equalTo(Entity value);
 
   /**
-   * Returns a 'equalTo' {@link Condition}.
+   * Returns a 'equalTo' {@link Condition} or 'isNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
-   * @throws IllegalArgumentException in case {@code values} is null
+   * @throws NullPointerException in case {@code values} is null
    */
   Condition equalTo(Entity... values);
 
   /**
-   * Returns a 'equalTo' {@link Condition}.
+   * Returns a 'equalTo' {@link Condition} or 'isNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
-   * @throws IllegalArgumentException in case {@code values} is null or empty
+   * @throws NullPointerException in case {@code values} is null
    */
   Condition equalTo(Collection<? extends Entity> values);
 
@@ -43,18 +43,18 @@ public interface ForeignKeyConditionBuilder {
   Condition notEqualTo(Entity value);
 
   /**
-   * Returns a 'notEqualTo' {@link Condition}.
+   * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
-   * @throws IllegalArgumentException in case {@code values} is null
+   * @throws NullPointerException in case {@code values} is null
    */
   Condition notEqualTo(Entity... values);
 
   /**
-   * Returns a 'notEqualTo' condition.
+   * Returns a 'notEqualTo' condition or 'isNotNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
-   * @throws IllegalArgumentException in case {@code values} is null or empty
+   * @throws IllegalArgumentException in case {@code values} is null
    */
   Condition notEqualTo(Collection<? extends Entity> values);
 

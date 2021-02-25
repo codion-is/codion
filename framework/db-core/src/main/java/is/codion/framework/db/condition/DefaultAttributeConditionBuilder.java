@@ -14,6 +14,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Builder<T> {
 
+  private static final String VALUES_PARAMETER = "values";
+
   private final Attribute<T> attribute;
 
   DefaultAttributeConditionBuilder(final Attribute<T> attribute) {
@@ -31,18 +33,14 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> equalTo(final T... values) {
-    if (values == null) {
-      throw new IllegalArgumentException("equalTo condition values can not be null");
-    }
+    requireNonNull(values, VALUES_PARAMETER);
 
     return equalTo(asList(values));
   }
 
   @Override
   public AttributeCondition<T> equalTo(final Collection<? extends T> values) {
-    if (values == null || values.isEmpty()) {
-      throw new IllegalArgumentException("equalTo condition must contain at least one value");
-    }
+    requireNonNull(values, VALUES_PARAMETER);
 
     return new DefaultAttributeEqualCondition<>(attribute, values);
   }
@@ -58,18 +56,14 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> notEqualTo(final T... values) {
-    if (values == null) {
-      throw new IllegalArgumentException("notEqualTo condition values can not be null");
-    }
+    requireNonNull(values, VALUES_PARAMETER);
 
     return notEqualTo(asList(values));
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final Collection<? extends T> values) {
-    if (values == null || values.isEmpty()) {
-      throw new IllegalArgumentException("notEqualTo condition must contain at least one value");
-    }
+    requireNonNull(values, VALUES_PARAMETER);
 
     return new DefaultAttributeEqualCondition<>(attribute, values, true);
   }
