@@ -167,10 +167,10 @@ public final class Conditions {
       final Object value = valueMap.get(valueAttribute);
       final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) conditionAttribute);
       if (operator == EQUAL) {
-        conditionCombination.add(value == null ? condition.isNull() : condition.equalTo(value));
+        conditionCombination.add(condition.equalTo(value));
       }
       else if (operator == NOT_EQUAL) {
-        conditionCombination.add(value == null ? condition.isNotNull() : condition.notEqualTo(value));
+        conditionCombination.add(condition.notEqualTo(value));
       }
       else {
         throw new IllegalArgumentException("Unsupported operator: " + operator);

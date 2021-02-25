@@ -448,12 +448,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
     if (attribute instanceof ForeignKey) {
-      return selectSingle(value == null ?
-              condition((ForeignKey) attribute).isNull() :
-              condition((ForeignKey) attribute).equalTo((Entity) value));
+      return selectSingle(condition((ForeignKey) attribute).equalTo((Entity) value));
     }
 
-    return selectSingle(value == null ? condition(attribute).isNull() : condition(attribute).equalTo(value));
+    return selectSingle(condition(attribute).equalTo(value));
   }
 
   @Override
@@ -500,12 +498,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
     if (attribute instanceof ForeignKey) {
-      return select(value == null ?
-              condition((ForeignKey) attribute).isNull() :
-              condition((ForeignKey) attribute).equalTo((Entity) value));
+      return select(condition((ForeignKey) attribute).equalTo((Entity) value));
     }
 
-    return select(value == null ? condition(attribute).isNull() : condition(attribute).equalTo(value));
+    return select(condition(attribute).equalTo(value));
   }
 
   @Override
