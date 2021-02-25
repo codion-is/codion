@@ -10,9 +10,13 @@ dependencies {
     }
 
     implementation "commons-logging:commons-logging:${commonsLoggingVersion}"
-    implementation "commons-digester:commons-digester:${commonsDigesterVersion}"
+    implementation ("commons-digester:commons-digester:${commonsDigesterVersion}") {
+        transitive = false
+    }
     implementation "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
-    implementation "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
+    implementation ("commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}") {
+        transitive = false
+    }
     implementation "org.eclipse.jdt:ecj:${jdtCoreCompilerVersion}"
 
     testImplementation project(':codion-dbms-h2database')
