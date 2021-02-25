@@ -13,7 +13,7 @@ dependencies {
     implementation "commons-digester:commons-digester:${commonsDigesterVersion}"
     implementation "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
     implementation "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
-    implementation "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
+    implementation "org.eclipse.jdt:ecj:${jdtCoreCompilerVersion}"
 
     testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
