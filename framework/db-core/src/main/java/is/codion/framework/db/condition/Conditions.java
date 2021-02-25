@@ -167,10 +167,10 @@ public final class Conditions {
       final Object value = valueMap.get(valueAttribute);
       final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) conditionAttribute);
       if (operator == EQUAL) {
-        conditionCombination.add(value == null ? condition.isNull() : condition.equalTo(value));
+        conditionCombination.add(condition.equalTo(value));
       }
       else if (operator == NOT_EQUAL) {
-        conditionCombination.add(value == null ? condition.isNotNull() : condition.notEqualTo(value));
+        conditionCombination.add(condition.notEqualTo(value));
       }
       else {
         throw new IllegalArgumentException("Unsupported operator: " + operator);
@@ -230,6 +230,8 @@ public final class Conditions {
 
   private static final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuilder {
 
+    private static final String VALUES_PARAMETER = "values";
+
     private final ForeignKey foreignKey;
 
     private DefaultForeignKeyConditionBuilder(final ForeignKey foreignKey) {
@@ -247,18 +249,15 @@ public final class Conditions {
 
     @Override
     public Condition equalTo(final Entity... values) {
-      if (values == null) {
-        throw new IllegalArgumentException("equalTo condition values can not be null");
-      }
+      requireNonNull(values, VALUES_PARAMETER);
 
       return equalTo(Arrays.asList(values));
     }
 
     @Override
     public Condition equalTo(final Collection<? extends Entity> values) {
-      if (values == null || values.isEmpty()) {
-        throw new IllegalArgumentException("equalTo condition values can not be null or empty");
-      }
+      requireNonNull(values, VALUES_PARAMETER);
+
       final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(Reference::getReferencedAttribute).collect(toList());
 
       return foreignKeyCondition(foreignKey, EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
@@ -275,18 +274,15 @@ public final class Conditions {
 
     @Override
     public Condition notEqualTo(final Entity... values) {
-      if (values == null) {
-        throw new IllegalArgumentException("notEqualTo condition values can not be null");
-      }
+      requireNonNull(values, VALUES_PARAMETER);
 
       return notEqualTo(Arrays.asList(values));
     }
 
     @Override
     public Condition notEqualTo(final Collection<? extends Entity> values) {
-      if (values == null || values.isEmpty()) {
-        throw new IllegalArgumentException("notEqualTo condition values can not be null or empty");
-      }
+      requireNonNull(values, VALUES_PARAMETER);
+
       final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(Reference::getReferencedAttribute).collect(toList());
 
       return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
@@ -313,17 +309,9 @@ public final class Conditions {
     final List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {
-      if (values.isEmpty()) {
-        return condition((Attribute<Object>) reference.getAttribute()).isNull();
-      }
-
       return condition((Attribute<Object>) reference.getAttribute()).equalTo(values);
     }
     if (operator == NOT_EQUAL) {
-      if (values.isEmpty()) {
-        return condition((Attribute<Object>) reference.getAttribute()).isNotNull();
-      }
-
       return condition((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
     }
 

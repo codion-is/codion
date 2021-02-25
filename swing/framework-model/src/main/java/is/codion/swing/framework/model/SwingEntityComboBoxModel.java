@@ -416,12 +416,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private void linkCondition(final ForeignKey foreignKey, final EntityComboBoxModel foreignKeyModel) {
     final EventDataListener<Entity> listener = selected -> {
-      if (selected == null) {
-        setSelectConditionProvider(() -> condition(foreignKey).isNull());
-      }
-      else {
-        setSelectConditionProvider(() -> condition(foreignKey).equalTo(selected));
-      }
+      setSelectConditionProvider(() -> condition(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);
