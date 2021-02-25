@@ -33,7 +33,7 @@ dependencies {
     runtimeOnly "commons-digester:commons-digester:${commonsDigesterVersion}"
     runtimeOnly "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
     runtimeOnly "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
-    runtimeOnly "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
+    runtimeOnly "org.eclipse.jdt:ecj:${jdtCoreCompilerVersion}"
 
     runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"

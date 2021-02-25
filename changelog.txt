@@ -6739,3 +6739,4 @@
   DefaultAttributeConditionBuilder and DefaultForeignKeyConditionBuilder.equalTo() and notEqualTo() with null value now result in isNull() and isNotNull() respectively
   DefaultLocalEntityConnection, Conditions, changed according to the above
   DefaultAttributeConditionBuilder and DefaultForeignKeyConditionBuilder.equalTo() and notEqualTo() with an empty array or collection now result in isNull() and isNotNull() respectively
+  org.eclipse.jdt.core.compiler:ecj:4.6.1 replaced with org.eclipse.jdt:ecj:3.24.0, solving a problem on the modular side
