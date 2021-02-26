@@ -54,7 +54,7 @@ public final class DatabaseExplorerModel {
   }
 
   public ValueObserver<String> getDomainSourceObserver() {
-    return Value.observer(domainSourceValue);
+    return domainSourceValue.getObserver();
   }
 
   public void close() {

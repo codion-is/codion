@@ -27,6 +27,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   private final Method getMethod;
   private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
 
+  private ValueObserver<V> observer;
   private Method setMethod;
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
@@ -63,6 +64,17 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public final ValueObserver<V> getObserver() {
+    synchronized (changeEvent) {
+      if (observer == null) {
+        observer = new DefaultValueObserver<>(this);
+      }
+
+      return observer;
     }
   }
 
