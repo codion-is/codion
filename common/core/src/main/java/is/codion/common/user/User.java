@@ -53,12 +53,13 @@ public interface User {
   /**
    * Parses a User from a string, containing a username and password with a single ':' as delimiter, i.e. "user:pass"
    * or "user:" for en empty password. If no delimiter is found the whole string is assumed to be the username
-   * and the password empty. The username portion is trimmed.
+   * and the password empty. The username portion is trimmed. Any delimeter beyond the initial one are assumed
+   * to be part of the password.
    * @param userPassword the username and password string
    * @return a User with the given username and password
    */
   static User parseUser(final String userPassword) {
-    final String[] split = requireNonNull(userPassword).split(":");
+    final String[] split = requireNonNull(userPassword).split(":", 2);
     if (split.length == 1) {
       return new DefaultUser(split[0].trim(), null);
     }
