@@ -6750,3 +6750,4 @@
   ConnectionRequest.Builder added, factory methods replaced
   Entities, utility methods moved to Entity
   Entity.getValues() renamed get()
+  EntityTableModel.getItems(), unnecessary override removed
