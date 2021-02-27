@@ -17,7 +17,6 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -645,14 +644,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
-    final Collection<T> values = Entities.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
+    final Collection<T> values = Entity.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel<T, JComponent> inputPanel = new ComponentValuePanel<>(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue));
     Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      Entities.put(propertyToUpdate.getAttribute(), inputPanel.getValue(), selectedEntities);
+      Entity.put(propertyToUpdate.getAttribute(), inputPanel.getValue(), selectedEntities);
       try {
         showWaitCursor(this);
         tableModel.update(selectedEntities);

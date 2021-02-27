@@ -15,7 +15,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.UpdateCondition;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
@@ -141,7 +140,7 @@ abstract class AbstractHttpEntityConnectionTest {
       connection.beginTransaction();
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
-      final List<Entity> afterUpdate = connection.select(Entities.getPrimaryKeys(entities));
+      final List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
         assertEquals(4200d, entity.get(TestDomain.EMP_SALARY));

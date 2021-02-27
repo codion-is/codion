@@ -5,7 +5,6 @@ package is.codion.javafx.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Properties;
@@ -260,7 +259,7 @@ public class EntityTableView extends TableView<Entity> {
   private <T> void updateSelectedEntities(final Property<T> property) {
     final List<Entity> selectedEntities = listModel.getEntities().deepCopyEntities(listModel.getSelectionModel().getSelectedItems());
 
-    final List<T> values = Entities.getDistinctValues(property.getAttribute(), selectedEntities);
+    final List<T> values = Entity.getDistinctValues(property.getAttribute(), selectedEntities);
     final T defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());
@@ -269,7 +268,7 @@ public class EntityTableView extends TableView<Entity> {
     final Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        Entities.put(property.getAttribute(), inputResult.get().getValue(), selectedEntities);
+        Entity.put(property.getAttribute(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }

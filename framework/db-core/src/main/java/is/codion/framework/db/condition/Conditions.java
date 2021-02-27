@@ -25,7 +25,7 @@ import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
 import static is.codion.common.db.Operator.EQUAL;
 import static is.codion.common.db.Operator.NOT_EQUAL;
-import static is.codion.framework.domain.entity.Entities.getValues;
+import static is.codion.framework.domain.entity.Entity.getValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;

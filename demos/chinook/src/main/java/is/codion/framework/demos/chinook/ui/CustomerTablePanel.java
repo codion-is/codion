@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
-import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -33,7 +33,7 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   private void viewCustomerReport() throws Exception {
-    final Collection<Long> customerIDs = Entities.getDistinctValues(Customer.ID,
+    final Collection<Long> customerIDs = Entity.getDistinctValues(Customer.ID,
             getTableModel().getSelectionModel().getSelectedItems());
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);

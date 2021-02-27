@@ -6,7 +6,6 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -168,7 +167,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> mapped = Entity.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
         if (containsComboBoxModel(foreignKey)) {
@@ -183,7 +182,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> mapped = Entity.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
         if (containsComboBoxModel(foreignKey)) {

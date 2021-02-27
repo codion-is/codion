@@ -242,7 +242,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void replaceEntities(final List<Entity> entities) {
-    replaceEntitiesByKey(Entities.mapToPrimaryKey(entities));
+    replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
   @Override
@@ -407,7 +407,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       header.add(getEntityDefinition().getProperty(attribute).getCaption());
     });
 
-    return Text.getDelimitedString(header, Entities.getStringValueList(attributes,
+    return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

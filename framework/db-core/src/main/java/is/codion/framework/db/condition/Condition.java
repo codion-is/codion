@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Specifies objects serving as where conditions in database queries
+ * @see Conditions for factory and builder methods
  */
 public interface Condition {
 

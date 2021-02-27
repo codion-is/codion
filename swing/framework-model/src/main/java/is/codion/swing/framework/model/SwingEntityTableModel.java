@@ -418,7 +418,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   public final void replaceEntities(final List<Entity> entities) {
-    replaceEntitiesByKey(Entities.mapToPrimaryKey(entities));
+    replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
   @Override
@@ -539,7 +539,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
       header.add(getEntityDefinition().getProperty(attribute).getCaption());
     }
 
-    return Text.getDelimitedString(header, Entities.getStringValueList(attributes,
+    return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

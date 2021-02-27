@@ -142,20 +142,20 @@ public class DefaultEntityTest {
     entity.put(Detail.ID, 1L);
 
     assertEquals(0, original.setAs(entity).size());
-    assertTrue(Entities.valuesEqual(original, entity));
+    assertTrue(Entity.valuesEqual(original, entity));
 
     original.put(Detail.BOOLEAN, true);
     entity.put(Detail.BOOLEAN, false);
 
     assertEquals(1, original.setAs(entity).size());
-    assertTrue(Entities.valuesEqual(original, entity));
+    assertTrue(Entity.valuesEqual(original, entity));
 
     original.put(Detail.INT, 1);
     entity.put(Detail.INT, 2);
     entity.put(Detail.INT, 3);//modified
 
     assertEquals(2, original.setAs(entity).size());//int + int_derived
-    assertTrue(Entities.valuesEqual(original, entity));
+    assertTrue(Entity.valuesEqual(original, entity));
     assertTrue(original.isModified());
     assertTrue(entity.isModified());
 
@@ -165,7 +165,7 @@ public class DefaultEntityTest {
     entity.put(Detail.STRING, "strng");
 
     assertEquals(2, original.setAs(entity).size());
-    assertTrue(Entities.valuesEqual(original, entity));
+    assertTrue(Entity.valuesEqual(original, entity));
 
     assertEquals(0, original.setAs(entity).size());
     assertEquals(0, entity.setAs(original).size());
