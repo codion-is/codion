@@ -44,11 +44,6 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
     listModel.refresh();
   }
 
-  @Override
-  public void clear() {
-    listModel.clear();
-  }
-
   private void bindListModelEvents() {
     listModel.addSelectionChangedListener(() -> {
       if (!isUpdatingModel()) {

@@ -36,11 +36,6 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     entityComboBoxModel.refresh();
   }
 
-  @Override
-  public void clear() {
-    entityComboBoxModel.clear();
-  }
-
   public SwingEntityComboBoxModel getEntityComboBoxModel() {
     return entityComboBoxModel;
   }

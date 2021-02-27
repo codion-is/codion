@@ -6,7 +6,6 @@ package is.codion.common.model.table;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.model.Refreshable;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.function.Predicate;
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  * @param <T> the type representing table columns
  */
-public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshable {
+public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
@@ -217,4 +216,14 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshab
    * @return the sorting model
    */
   TableSortModel<R, C, T> getSortModel();
+
+  /**
+   * Refreshes the items in this table model
+   */
+  void refresh();
+
+  /**
+   * Clears all items from this table model
+   */
+  void clear();
 }

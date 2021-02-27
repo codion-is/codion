@@ -6,7 +6,6 @@ package is.codion.common.model.combobox;
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.model.Refreshable;
 import is.codion.common.value.PropertyValue;
 
 import java.util.Collection;
@@ -18,7 +17,7 @@ import java.util.function.Predicate;
  * @param <T> the type of the combo box model elements
  * @see #setIncludeCondition(Predicate)
  */
-public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable {
+public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
 
   /**
    * Specifies the value used by default to represent a null value in combo box models.
@@ -153,4 +152,14 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * @return the selected item
    */
   Object getSelectedItem();
+
+  /**
+   * Refreshes the items in this combo box model
+   */
+  void refresh();
+
+  /**
+   * Clears all items from this combo box model
+   */
+  void clear();
 }

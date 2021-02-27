@@ -6,7 +6,6 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -23,7 +22,7 @@ import java.util.Collection;
  * in a table model and searching functionality, which refers to configuring the underlying query,
  * which then needs to be re-run.<br>
  */
-public interface EntityTableConditionModel extends Refreshable {
+public interface EntityTableConditionModel {
 
   /**
    * @return the type of the entity this table condition model is based on
@@ -168,6 +167,11 @@ public interface EntityTableConditionModel extends Refreshable {
    * @return true if the filter model behind column with index {@code columnIndex} is enabled
    */
   boolean isFilterEnabled(Attribute<?> attribute);
+
+  /**
+   * Refreshes any data bound models in this table condition model
+   */
+  void refresh();
 
   /**
    * Note that modifying this value may (and probably will) change the automatic prefix and case sensetivity settings of

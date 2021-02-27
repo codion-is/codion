@@ -49,9 +49,6 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   @Override
   public void refresh() {/*Nothing to refresh in this default implementation*/}
 
-  @Override
-  public void clear() {/*Nothing to clear in this default implementation*/}
-
   protected final boolean isUpdatingModel() {
     return updatingModel;
   }

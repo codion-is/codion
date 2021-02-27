@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.Refreshable;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -63,7 +62,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Refreshes all combobox models
    */
   public final void refreshComboBoxModels() {
-    for (final Refreshable comboBoxModel : comboBoxModels.values()) {
+    for (final FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
       comboBoxModel.refresh();
     }
   }
@@ -72,7 +71,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Clears all combobox models
    */
   public final void clearComboBoxModels() {
-    for (final Refreshable comboBoxModel : comboBoxModels.values()) {
+    for (final FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
       comboBoxModel.clear();
     }
   }

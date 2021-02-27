@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.Refreshable;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
@@ -31,7 +30,7 @@ import java.util.function.Supplier;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends Refreshable {
+public interface EntityEditModel {
 
   /**
    * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
@@ -376,6 +375,16 @@ public interface EntityEditModel extends Refreshable {
    * @see #addAfterDeleteListener(EventDataListener)
    */
   List<Entity> delete(List<Entity> entities) throws DatabaseException;
+
+  /**
+   * Refreshes all data models used by this edit model, combo box models f.ex.
+   */
+  void refresh();
+
+  /**
+   * Clears all data models used by this edit model.
+   */
+  void clear();
 
   /**
    * @return true if the underlying Entity is modified

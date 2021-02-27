@@ -7,7 +7,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.model.Refreshable;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -35,8 +34,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An {@link ObservableList} based on a {@link Entity}
  */
-public class ObservableEntityList extends SimpleListProperty<Entity>
-        implements ObservableList<Entity>, FilteredModel<Entity>, Refreshable {
+public class ObservableEntityList extends SimpleListProperty<Entity> implements ObservableList<Entity>, FilteredModel<Entity> {
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
@@ -91,7 +89,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     return connectionProvider;
   }
 
-  @Override
   public final void refresh() {
     checkQueryRowCount();
     List<Entity> selectedItems = null;

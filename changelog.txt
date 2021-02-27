@@ -6744,3 +6744,4 @@
   Value.getObserver() added, Value.observer() factory method removed
   User.parse() now handles passwords containing colons
   EntityTableView bug fixed, clear search menu item called clear() instead of the correct clearConditionModels()
+  Refreshable removed, related cleanup

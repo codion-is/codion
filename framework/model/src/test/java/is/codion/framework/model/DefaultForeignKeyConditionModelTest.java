@@ -60,6 +60,5 @@ public class DefaultForeignKeyConditionModelTest {
     assertTrue(searchEntities.isEmpty());
 
     conditionModel.refresh();
-    conditionModel.clear();
   }
 }

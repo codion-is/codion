@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.Util;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.Refreshable;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -24,8 +23,7 @@ import java.util.List;
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>>
-        extends Refreshable {
+public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * Specifies whether a table model should automatically search by the inserted entity
@@ -199,6 +197,16 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the foreign key the given detail model is based on, null if none has been defined
    */
   ForeignKey getDetailModelForeignKey(M detailModel);
+
+  /**
+   * Refreshes all data models used by this model, combo box models f.ex.
+   */
+  void refresh();
+
+  /**
+   * Clears all data models used by this model.
+   */
+  void clear();
 
   /**
    * Refreshes the detail models.
