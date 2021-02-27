@@ -6,8 +6,11 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Encapsulates information about a client required by a server for establishing a connection
@@ -45,40 +48,98 @@ public interface ConnectionRequest {
   Map<String, Object> getParameters();
 
   /**
-   * Instantiates a ConnectionRequest
-   * @param user the user
-   * @param clientId the client id
-   * @param clientTypeId the client type id
-   * @return a ConnectionRequest
+   * @return a ConnectionRequest.Builder
    */
-  static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId) {
-    return connectionRequest(user, clientId, clientTypeId, null);
+  static ConnectionRequest.Builder builder() {
+    return new ConnectionRequestBuilder();
   }
 
   /**
-   * Instantiates a ConnectionRequest
-   * @param user the user
-   * @param clientId the client id
-   * @param clientTypeId the client type id
-   * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
-   * @return a ConnectionRequest
+   * A builder for ConnectionRequest
    */
-  static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
-                                             final Map<String, Object> parameters) {
-    return connectionRequest(user, clientId, clientTypeId, null, parameters);
+  interface Builder {
+
+    /**
+     * @param user the user
+     * @return this Builder instance
+     */
+    Builder user(User user);
+
+    /**
+     * @param clientId the client id
+     * @return this Builder instance
+     */
+    Builder clientId(UUID clientId);
+
+    /**
+     * @param clientTypeId the client type id
+     * @return this Builder instance
+     */
+    Builder clientTypeId(String clientTypeId);
+
+    /**
+     * @param clientVersion the client version
+     * @return this Builder instance
+     */
+    Builder clientVersion(Version clientVersion);
+
+    /**
+     * @param key the key
+     * @param value the value
+     * @return this Builder instance
+     */
+    Builder parameter(String key, Object value);
+
+    /**
+     * @return a new ConnectionRequest instance
+     */
+    ConnectionRequest build();
   }
 
-  /**
-   * Instantiates a ConnectionRequest
-   * @param user the user
-   * @param clientId the client id
-   * @param clientTypeId the client type id
-   * @param clientVersion the client application version
-   * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
-   * @return a ConnectionRequest
-   */
-  static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
-                                             final Version clientVersion, final Map<String, Object> parameters) {
-    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Version.getVersion(), parameters);
+  final class ConnectionRequestBuilder implements Builder {
+
+    private User user;
+    private UUID clientId = UUID.randomUUID();
+    private String clientTypeId;
+    private Version clientVersion;
+    private Map<String, Object> parameters;
+
+    @Override
+    public Builder user(final User user) {
+      this.user = requireNonNull(user);
+      return this;
+    }
+
+    @Override
+    public Builder clientId(final UUID clientId) {
+      this.clientId = requireNonNull(clientId);
+      return this;
+    }
+
+    @Override
+    public Builder clientTypeId(final String clientTypeId) {
+      this.clientTypeId = requireNonNull(clientTypeId);
+      return this;
+    }
+
+    @Override
+    public Builder clientVersion(final Version clientVersion) {
+      this.clientVersion = clientVersion;
+      return this;
+    }
+
+    @Override
+    public Builder parameter(final String key, final Object value) {
+      if (parameters == null) {
+        parameters = new HashMap<>();
+      }
+      parameters.put(key, value);
+      return this;
+    }
+
+    @Override
+    public ConnectionRequest build() {
+      return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Version.getVersion(), parameters);
+    }
   }
 }

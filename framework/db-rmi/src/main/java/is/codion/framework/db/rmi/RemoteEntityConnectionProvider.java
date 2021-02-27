@@ -23,7 +23,6 @@ import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,9 +110,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       LOG.debug("Initializing connection for {}", getUser());
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
               new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
-                      getServer().connect(ConnectionRequest.connectionRequest(getUser(), getClientId(), getClientTypeId(),
-                              getClientVersion(), Collections.singletonMap(REMOTE_CLIENT_DOMAIN_TYPE,
-                                      getDomainTypeName(getDomainClassName()))))));
+                      getServer().connect(ConnectionRequest.builder()
+                              .user(getUser())
+                              .clientId(getClientId())
+                              .clientTypeId(getClientTypeId())
+                              .clientVersion(getClientVersion())
+                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(getDomainClassName())).build())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

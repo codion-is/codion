@@ -6747,3 +6747,4 @@
   Refreshable removed, related cleanup
   ConnectionPoolFactory.getInstance() renamed connectionPoolFactory(), for consistency
   AuxiliaryServerFactory.getAuxiliaryServerFactory() renamed auxiliaryServerFactory(), for consistency
+  ConnectionRequest.Builder added, factory methods replaced

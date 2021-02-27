@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -58,11 +56,14 @@ abstract class AbstractEntityService extends Application {
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);
-    final Map<String, Object> parameters = new HashMap<>(2);
-    parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName);
-    parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
-    return server.connect(ConnectionRequest.connectionRequest(user, clientId, clientTypeId, parameters));
+    return server.connect(ConnectionRequest.builder()
+            .user(user)
+            .clientId(clientId)
+            .clientTypeId(clientTypeId)
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
+            .parameter(Server.CLIENT_HOST_KEY, getRemoteHost(request))
+            .build());
   }
 
   static Response logAndGetExceptionResponse(final Exception exception) {

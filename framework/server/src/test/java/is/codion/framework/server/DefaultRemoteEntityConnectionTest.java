@@ -23,7 +23,6 @@ import java.lang.reflect.Proxy;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collection;
-import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,19 +37,22 @@ public class DefaultRemoteEntityConnectionTest {
 
   @Test
   public void wrongUsername() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(User.user("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+            .user(User.user("foo", "bar".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1234));
   }
 
   @Test
   public void wrongPassword() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+            .user(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1235));
   }
 
   @Test
   public void rollbackOnClose() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+            .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
     final Condition condition = Conditions.condition(TestDomain.T_EMP);
     connection.beginTransaction();
@@ -68,7 +70,8 @@ public class DefaultRemoteEntityConnectionTest {
     DefaultRemoteEntityConnection adapter = null;
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
-      final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+      final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+              .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
       adapter = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
 
       Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
