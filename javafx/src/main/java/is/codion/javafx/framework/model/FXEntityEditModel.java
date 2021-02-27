@@ -4,7 +4,6 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -76,7 +75,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> mapped = Entity.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
@@ -93,7 +92,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> mapped = Entity.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);

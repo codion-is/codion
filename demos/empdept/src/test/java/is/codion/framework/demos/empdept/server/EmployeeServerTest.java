@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.server;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
@@ -22,7 +23,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
-import static is.codion.common.rmi.client.ConnectionRequest.connectionRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {
@@ -50,8 +50,11 @@ public final class EmployeeServerTest {
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final UUID clientId = UUID.randomUUID();
-    final EmployeeService employeeService = remoteServer.connect(
-            connectionRequest(User.parseUser("scott:tiger"), clientId, "EmployeeServerTest"));
+    final EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
+            .user(User.parseUser("scott:tiger"))
+            .clientId(clientId)
+            .clientTypeId("EmployeeServerTest")
+            .build());
 
     final List<Entity> employees = employeeService.getEmployees();
     assertEquals(16, employees.size());

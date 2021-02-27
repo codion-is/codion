@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -24,7 +23,7 @@ public class TrackTableModel extends SwingEntityTableModel {
 
   public void raisePriceOfSelected(final BigDecimal increase) throws DatabaseException {
     if (getSelectionModel().isSelectionNotEmpty()) {
-      List<Long> trackIds = Entities.getValues(Track.ID, getSelectionModel().getSelectedItems());
+      List<Long> trackIds = Entity.get(Track.ID, getSelectionModel().getSelectedItems());
       List<Entity> result = getConnectionProvider().getConnection()
               .executeFunction(Track.RAISE_PRICE, asList(trackIds, increase));
       replaceEntities(result);

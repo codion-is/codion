@@ -6,7 +6,7 @@ package is.codion.framework.demos.empdept.ui;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -29,7 +29,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   // tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
     final Collection<Integer> departmentNumbers =
-            Entities.getDistinctValues(Department.ID,
+            Entity.getDistinct(Department.ID,
                     getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);

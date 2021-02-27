@@ -26,7 +26,7 @@ import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.Entities.getPrimaryKeys;
+import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;

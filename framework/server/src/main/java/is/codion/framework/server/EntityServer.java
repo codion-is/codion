@@ -383,10 +383,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     if (!startupPoolUsers.isEmpty()) {
       final ConnectionPoolFactory poolFactory;
       if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
-        poolFactory = ConnectionPoolFactory.getInstance();
+        poolFactory = ConnectionPoolFactory.connectionPoolFactory();
       }
       else {
-        poolFactory = ConnectionPoolFactory.getInstance(connectionPoolFactoryClassName);
+        poolFactory = ConnectionPoolFactory.connectionPoolFactory(connectionPoolFactoryClassName);
       }
       for (final User user : startupPoolUsers) {
         database.initializeConnectionPool(poolFactory, user);

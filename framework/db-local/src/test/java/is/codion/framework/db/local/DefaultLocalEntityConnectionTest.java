@@ -42,7 +42,7 @@ import java.util.Random;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.local.TestDomain.*;
-import static is.codion.framework.domain.entity.Entities.getPrimaryKeys;
+import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -527,7 +527,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(condition));
-      final List<Entity> afterUpdate = connection.select(Entities.getPrimaryKeys(entities));
+      final List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(EMP_COMMISSION));
         assertEquals(4200d, entity.get(EMP_SALARY));

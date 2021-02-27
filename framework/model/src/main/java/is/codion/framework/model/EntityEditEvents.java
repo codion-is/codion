@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Util.map;
-import static is.codion.framework.domain.entity.Entities.mapToType;
+import static is.codion.framework.domain.entity.Entity.mapToType;
 import static java.util.Objects.requireNonNull;
 
 /**

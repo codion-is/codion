@@ -6775,3 +6775,8 @@
   User.parse() now handles passwords containing colons
   EntityTableView bug fixed, clear search menu item called clear() instead of the correct clearConditionModels()
   Refreshable removed, related cleanup
+  ConnectionPoolFactory.getInstance() renamed connectionPoolFactory(), for consistency
+  AuxiliaryServerFactory.getAuxiliaryServerFactory() renamed auxiliaryServerFactory(), for consistency
+  ConnectionRequest.Builder added, factory methods replaced
+  Entities, utility methods moved to Entity
+  Entity.getValues() renamed get()

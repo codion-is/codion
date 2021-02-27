@@ -316,7 +316,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(entityTypeEntities.getKey());
       for (final ForeignKey foreignKey : foreignKeys) {
@@ -347,12 +347,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return Entities.isEntityNew(getEntity());
+    return Entity.isEntityNew(getEntity());
   }
 
   @Override
   public final void setForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
@@ -846,7 +846,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
-    connectionProvider.getConnection().delete(Entities.getPrimaryKeys(entities));
+    connectionProvider.getConnection().delete(Entity.getPrimaryKeys(entities));
 
     return entities;
   }
@@ -862,7 +862,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #update(java.util.List)
    */
   protected List<Entity> getModifiedEntities(final List<Entity> entities) {
-    return Entities.getModifiedEntities(entities);
+    return Entity.getModifiedEntities(entities);
   }
 
   protected void refreshDataModels() {}

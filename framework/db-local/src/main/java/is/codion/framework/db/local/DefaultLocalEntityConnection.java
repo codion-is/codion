@@ -49,7 +49,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -60,7 +59,6 @@ import static is.codion.common.db.connection.DatabaseConnection.databaseConnecti
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.local.Queries.*;
-import static is.codion.framework.domain.entity.Entities.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -260,7 +258,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
       return emptyList();
     }
-    final LinkedHashMap<EntityType<?>, List<Entity>> entitiesByEntityType = mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     checkIfReadOnly(entitiesByEntityType.keySet());
 
     final List<Object> statementValues = new ArrayList<>();
@@ -300,7 +298,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelect(condition(getPrimaryKeys(entitiesToUpdate)).select());
+          final List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).select());
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -412,7 +410,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (requireNonNull(keys, "keys").isEmpty()) {
       return 0;
     }
-    final LinkedHashMap<EntityType<?>, List<Key>> keysByEntityType = mapKeysToType(keys);
+    final Map<EntityType<?>, List<Key>> keysByEntityType = Entity.mapKeysToType(keys);
     checkIfReadOnly(keysByEntityType.keySet());
 
     PreparedStatement statement = null;
@@ -481,7 +479,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final List<Key> entityTypeKeys : mapKeysToType(keys).values()) {
+        for (final List<Key> entityTypeKeys : Entity.mapKeysToType(keys).values()) {
           result.addAll(doSelect(condition(entityTypeKeys).select()));
         }
         commitIfTransactionIsNotOpen();
@@ -859,13 +857,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void performOptimisticLocking(final Map<EntityType<?>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (final Map.Entry<EntityType<?>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
-      final List<Key> originalKeys = getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
+      final List<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
       final SelectCondition selectForUpdateCondition = condition(originalKeys).select()
               .attributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
               .forUpdate();
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final EntityDefinition definition = domainEntities.getDefinition(entitiesByEntityTypeEntry.getKey());
-      final Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(currentEntities);
+      final Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(currentEntities);
       for (final Entity entity : entitiesByEntityTypeEntry.getValue()) {
         final Entity current = currentEntitiesByKey.get(entity.getOriginalPrimaryKey());
         if (current == null) {
@@ -875,7 +873,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                   + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final List<Attribute<?>> modified = getModifiedColumnAttributes(definition, entity, current);
+        final List<Attribute<?>> modified = Entity.getModifiedColumnAttributes(definition, entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }
@@ -925,7 +923,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               currentForeignKeyFetchDepth < conditionFetchDepthLimit.intValue()) {
         try {
           logAccess("setForeignKeys", foreignKeyProperty);
-          final List<Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKey));
+          final List<Key> referencedKeys = new ArrayList<>(Entity.getReferencedKeys(entities, foreignKey));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKey, null);
@@ -936,7 +934,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                     .fetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
-            final Map<Key, Entity> referencedEntitiesMappedByKey = mapToPrimaryKey(referencedEntities);
+            final Map<Key, Entity> referencedEntitiesMappedByKey = Entity.mapToPrimaryKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
               final Key referencedKey = entity.getReferencedKey(foreignKey);

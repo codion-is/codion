@@ -275,7 +275,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
-    Entities.put(TestDomain.DETAIL_STRING, "hello", entities);
+    Entity.put(TestDomain.DETAIL_STRING, "hello", entities);
     assertThrows(IllegalStateException.class, () -> testModel.update(entities));
   }
 

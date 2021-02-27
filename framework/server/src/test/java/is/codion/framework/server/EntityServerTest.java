@@ -76,8 +76,10 @@ public class EntityServerTest {
     //which registers the entities received from the server
     //thus overwriting the entities containing the custom conditions
     new TestDomain();
-    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            "ClientTypeID", CONNECTION_PARAMS);
+    final ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
+            .user(UNIT_TEST_USER)
+            .clientTypeId("ClientTypeID")
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
@@ -90,8 +92,10 @@ public class EntityServerTest {
 
   @Test
   public void testWrongPassword() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.connectionRequest(User.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
-            UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS)));
+    assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
+            .user(User.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()))
+            .clientTypeId(getClass().getSimpleName())
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
   }
 
   @Test
@@ -116,8 +120,9 @@ public class EntityServerTest {
 
   @Test
   public void test() throws Exception {
-    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            "ClientTypeID", CONNECTION_PARAMS);
+    final ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
+            .user(UNIT_TEST_USER)
+            .clientTypeId("ClientTypeID").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
     final RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
     assertTrue(remoteConnectionOne.isConnected());
@@ -128,21 +133,25 @@ public class EntityServerTest {
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.getUsername()));
 
     try {
-      server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID"));
+      server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId("ClientTypeID").build());
       fail();
     }
     catch (final LoginException ignored) {}
 
     try {
-      server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
-              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
-                      new EmptyDomain().getDomainType().getName())));
+      server.connect(ConnectionRequest.builder()
+              .user(UNIT_TEST_USER)
+              .clientTypeId("ClientTypeID")
+              .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
+                      new EmptyDomain().getDomainType().getName()).build());
       fail();
     }
     catch (final LoginException ignored) {}
 
-    final ConnectionRequest connectionRequestTwo = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            "ClientTypeID", CONNECTION_PARAMS);
+    final ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
+            .user(UNIT_TEST_USER)
+            .clientTypeId("ClientTypeID")
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     final RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
     admin.setLoggingEnabled(connectionRequestTwo.getClientId(), true);
     assertTrue(admin.isLoggingEnabled(connectionRequestOne.getClientId()));
@@ -207,12 +216,18 @@ public class EntityServerTest {
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
     final User john = User.user("john", "hello".toCharArray());
-    final ConnectionRequest connectionRequestJohn = ConnectionRequest.connectionRequest(john,
-            UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestHelen = ConnectionRequest.connectionRequest(User.user("helen", "juno".toCharArray()),
-            UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestInvalid = ConnectionRequest.connectionRequest(User.user("foo", "bar".toCharArray()),
-            UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
+    final ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
+            .user(john)
+            .clientTypeId(testClientTypeId)
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+    final ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
+            .user(User.user("helen", "juno".toCharArray()))
+            .clientTypeId(testClientTypeId)
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+    final ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
+            .user(User.user("foo", "bar".toCharArray()))
+            .clientTypeId(testClientTypeId)
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     server.connect(connectionRequestJohn);
     final RemoteClient clientJohn = admin.getClients(john).iterator().next();
     assertNotNull(clientJohn.getClientHost());

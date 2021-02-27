@@ -7,7 +7,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -34,7 +33,7 @@ public final class UpdateTotalsPrices extends AbstractEntityUsageScenario<Chinoo
       final SwingEntityTableModel invoiceLineTableModel =
               invoiceModel.getDetailModel(InvoiceLine.TYPE).getTableModel();
       final List<Entity> invoiceLines = invoiceLineTableModel.getItems();
-      Entities.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1, invoiceLines);
+      Entity.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1, invoiceLines);
 
       invoiceLineTableModel.update(invoiceLines);
 
