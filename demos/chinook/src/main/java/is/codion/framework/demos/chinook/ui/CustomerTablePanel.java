@@ -33,7 +33,7 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   private void viewCustomerReport() throws Exception {
-    final Collection<Long> customerIDs = Entity.getDistinctValues(Customer.ID,
+    final Collection<Long> customerIDs = Entity.getDistinct(Customer.ID,
             getTableModel().getSelectionModel().getSelectedItems());
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);

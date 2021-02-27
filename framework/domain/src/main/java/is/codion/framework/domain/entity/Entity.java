@@ -376,7 +376,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the property value
    * @return a List containing the non-null values of the property with the given id from the given entities
    */
-  static <T> List<T> getValues(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> List<T> get(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).collect(toList());
@@ -389,7 +389,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return a List containing the distinct non-null property values
    */
-  static <T> List<T> getDistinctValues(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> List<T> getDistinct(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
@@ -402,7 +402,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return a List containing the distinct property values
    */
-  static <T> List<T> getDistinctValuesIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> List<T> getDistinctIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).distinct().collect(toList());

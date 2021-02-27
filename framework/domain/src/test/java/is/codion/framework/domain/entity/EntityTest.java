@@ -175,7 +175,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getPropertyValues() {
+  public void get() {
     final List<Entity> entityList = new ArrayList<>();
     final List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
@@ -184,15 +184,15 @@ public final class EntityTest {
       values.add(i);
       entityList.add(entity);
     }
-    Collection<Integer> propertyValues = Entity.getValues(TestDomain.Department.NO, entityList);
+    Collection<Integer> propertyValues = Entity.get(TestDomain.Department.NO, entityList);
     assertTrue(propertyValues.containsAll(values));
-    propertyValues = Entity.getValues(TestDomain.Department.NO, entityList);
+    propertyValues = Entity.get(TestDomain.Department.NO, entityList);
     assertTrue(propertyValues.containsAll(values));
-    assertTrue(Entity.getValues(TestDomain.Department.NO, emptyList()).isEmpty());
+    assertTrue(Entity.get(TestDomain.Department.NO, emptyList()).isEmpty());
   }
 
   @Test
-  public void getDistinctPropertyValues() {
+  public void getDistinct() {
     final List<Entity> entityList = new ArrayList<>();
     final List<Object> values = new ArrayList<>();
 
@@ -229,16 +229,16 @@ public final class EntityTest {
     values.add(3);
     values.add(4);
 
-    Collection<Integer> propertyValues = Entity.getDistinctValues(TestDomain.Department.NO, entityList);
+    Collection<Integer> propertyValues = Entity.getDistinct(TestDomain.Department.NO, entityList);
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 
-    propertyValues = Entity.getDistinctValuesIncludingNull(TestDomain.Department.NO, entityList);
+    propertyValues = Entity.getDistinctIncludingNull(TestDomain.Department.NO, entityList);
     assertEquals(5, propertyValues.size());
     values.add(null);
     assertTrue(propertyValues.containsAll(values));
 
-    assertEquals(0, Entity.getDistinctValuesIncludingNull(TestDomain.Department.NO, new ArrayList<>()).size());
+    assertEquals(0, Entity.getDistinctIncludingNull(TestDomain.Department.NO, new ArrayList<>()).size());
   }
 
   @Test

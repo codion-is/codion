@@ -644,7 +644,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
-    final Collection<T> values = Entity.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
+    final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel<T, JComponent> inputPanel = new ComponentValuePanel<>(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue));

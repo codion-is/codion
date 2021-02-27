@@ -43,7 +43,7 @@ public class CustomerTablePanel extends EntityTablePanel {
       return;
     }
 
-    Collection<String> customerIds = Entity.getValues(Customer.ID, selectedCustomers);
+    Collection<String> customerIds = Entity.get(Customer.ID, selectedCustomers);
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 

@@ -6749,3 +6749,4 @@
   AuxiliaryServerFactory.getAuxiliaryServerFactory() renamed auxiliaryServerFactory(), for consistency
   ConnectionRequest.Builder added, factory methods replaced
   Entities, utility methods moved to Entity
+  Entity.getValues() renamed get()
