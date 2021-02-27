@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.model.Refreshable;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
@@ -21,7 +20,7 @@ import java.util.List;
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> extends Refreshable {
+public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * Specifies a string to prepend to the username field in the login dialog<br>
@@ -160,6 +159,16 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return the EntityModel based on the given entityType
    */
   M getEntityModel(EntityType<?> entityType);
+
+  /**
+   * Refreshes all data models contained in this application model
+   */
+  void refresh();
+
+  /**
+   * Clears all data from models contained in this application model
+   */
+  void clear();
 
   /**
    * @param listener a listener notified each time a login is performed

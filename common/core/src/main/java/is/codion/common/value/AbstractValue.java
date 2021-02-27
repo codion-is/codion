@@ -31,6 +31,8 @@ public abstract class AbstractValue<V> implements Value<V> {
   private final boolean notifyOnSet;
   private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
 
+  private ValueObserver<V> observer;
+
   public AbstractValue() {
     this(null);
   }
@@ -53,6 +55,17 @@ public abstract class AbstractValue<V> implements Value<V> {
       if (notifyOnSet) {
         notifyValueChange();
       }
+    }
+  }
+
+  @Override
+  public final ValueObserver<V> getObserver() {
+    synchronized (changeEvent) {
+      if (observer == null) {
+        observer = new DefaultValueObserver<>(this);
+      }
+
+      return observer;
     }
   }
 

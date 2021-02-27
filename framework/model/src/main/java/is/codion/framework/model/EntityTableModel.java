@@ -7,7 +7,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -30,7 +29,7 @@ import java.util.List;
  * Specifies a table model containing {@link Entity} objects
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
  */
-public interface EntityTableModel<E extends EntityEditModel> extends FilteredModel<Entity>, Refreshable {
+public interface EntityTableModel<E extends EntityEditModel> extends FilteredModel<Entity> {
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
@@ -350,6 +349,17 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the table data as a tab delimited string, with column names as a header
    */
   String getTableDataAsDelimitedString(char delimiter);
+
+  /**
+   * Refreshes the items in this table model, according to the underlying condition
+   * @see #getTableConditionModel()
+   */
+  void refresh();
+
+  /**
+   * Clears all items from this table model
+   */
+  void clear();
 
   /**
    * @return the items in this table model, visible and filtered

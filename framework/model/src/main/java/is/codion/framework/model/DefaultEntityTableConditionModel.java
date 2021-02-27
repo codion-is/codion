@@ -7,7 +7,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.Util;
 import is.codion.common.db.Operator;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -107,17 +106,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   @Override
   public void refresh() {
     for (final ColumnConditionModel<?, ?, ?> model : conditionModels.values()) {
-      if (model instanceof Refreshable) {
-        ((Refreshable) model).refresh();
-      }
-    }
-  }
-
-  @Override
-  public void clear() {
-    for (final ColumnConditionModel<?, ?, ?> model : conditionModels.values()) {
-      if (model instanceof Refreshable) {
-        ((Refreshable) model).clear();
+      if (model instanceof ForeignKeyConditionModel) {
+        ((ForeignKeyConditionModel) model).refresh();
       }
     }
   }

@@ -26,6 +26,12 @@ public interface Value<V> extends ValueObserver<V> {
   void set(V value);
 
   /**
+   * Returns a ValueObserver notified each time this value changes.
+   * @return a ValueObserver for this value
+   */
+  ValueObserver<V> getObserver();
+
+  /**
    * Creates a bidirectional link between this and the given original value,
    * so that changes in one are reflected in the other.
    * Note that after a call to this method this value is the same as {@code originalValue}.
@@ -152,15 +158,5 @@ public interface Value<V> extends ValueObserver<V> {
     stateValue(state).link(requireNonNull(booleanValue, "booleanValue"));
 
     return state;
-  }
-
-  /**
-   * Instantiates a new ValueObserver for the given value.
-   * @param value the value to observe
-   * @param <V> the value type
-   * @return a ValueObserver for the given value
-   */
-  static <V> ValueObserver<V> observer(final Value<V> value) {
-    return new DefaultValueObserver<>(value);
   }
 }

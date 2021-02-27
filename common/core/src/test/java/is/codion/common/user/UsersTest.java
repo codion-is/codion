@@ -46,16 +46,16 @@ public class UsersTest {
     user = User.parseUser(" john ");
     assertEquals("john", user.getUsername());
     assertTrue(String.valueOf(user.getPassword()).isEmpty());
+    user = User.parseUser("scott:tiger:pet:e");
+    assertEquals("scott", user.getUsername());
+    assertEquals("tiger:pet:e", String.valueOf(user.getPassword()));
   }
 
   @Test
   public void parseUserNoUsername() {
     assertThrows(IllegalArgumentException.class, () -> User.parseUser(":tiger"));
-  }
-
-  @Test
-  public void parseMultipleDelimiters() {
-    assertThrows(IllegalArgumentException.class, () -> User.parseUser("scott:tiger:pete"));
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser("::"));
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser("::tiger:"));
   }
 
   @Test
