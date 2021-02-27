@@ -362,12 +362,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void clear();
 
   /**
-   * @return the items in this table model, visible and filtered
-   */
-  @Override
-  List<Entity> getItems();
-
-  /**
    * @return the number of visible rows in this table model
    */
   int getRowCount();
