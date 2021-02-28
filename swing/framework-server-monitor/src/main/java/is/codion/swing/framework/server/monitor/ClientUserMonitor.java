@@ -427,7 +427,7 @@ public final class ClientUserMonitor {
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP_FULL);
 
     @Override
     protected void setValue(final Object value) {

@@ -293,7 +293,7 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)
-                    .dateTimeFormatPattern(DateFormats.SHORT_DOT)
+                    .dateTimeFormatPattern(DateFormats.DATE_SHORT_DOT)
                     .nullable(false)
                     .beanProperty("hiredate"),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION)

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.DateFormats;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Employee;
@@ -34,7 +33,7 @@ public class StringFactoryTest {
     employee.put(Employee.NAME, "Darri");
     employee.put(Employee.HIREDATE, hiredate);
 
-    final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
+    final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
     Function<Entity, String> employeeToString = StringFactory.stringFactory(Employee.NAME)
             .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")

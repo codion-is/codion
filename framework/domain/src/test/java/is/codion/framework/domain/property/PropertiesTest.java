@@ -83,12 +83,12 @@ public final class PropertiesTest {
 
   @Test
   public void intPropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).format(new SimpleDateFormat(DateFormats.COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).format(new SimpleDateFormat(DateFormats.DATE_COMPACT)));
   }
 
   @Test
   public void doublePropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute")).format(new SimpleDateFormat(DateFormats.COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute")).format(new SimpleDateFormat(DateFormats.DATE_COMPACT)));
   }
 
   @Test

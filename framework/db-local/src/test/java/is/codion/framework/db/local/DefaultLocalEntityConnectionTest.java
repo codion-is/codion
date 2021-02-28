@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.DateFormats;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
@@ -417,9 +416,9 @@ public class DefaultLocalEntityConnectionTest {
     emp.put(EMP_DEPARTMENT_FK, sales);
     emp.put(EMP_NAME, "Nobody");
     emp.put(EMP_SALARY, salary);
-    final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH));
+    final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     emp.put(EMP_HIREDATE, hiredate);
-    final LocalDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP));
+    final LocalDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     emp.put(EMP_HIRETIME, hiretime);
 
     emp = connection.selectSingle(connection.insert(emp));
