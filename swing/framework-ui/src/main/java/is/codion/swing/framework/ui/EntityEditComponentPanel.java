@@ -527,6 +527,7 @@ public class EntityEditComponentPanel extends JPanel {
                                                                                       final StateObserver enabledState, final UpdateOn updateOn) {
     final TemporalInputPanel<T> panel = inputComponents.createTemporalInputPanel(attribute,
             getEditModel().value(attribute), updateOn, calendarButton, enabledState);
+    EntityComponentValidators.addFormattedValidator(attribute, panel.getInputField(), getEditModel());
     if (panel instanceof LocalDateInputPanel) {
       final LocalDateInputPanel localDateInputPanel = (LocalDateInputPanel) panel;
       if (localDateInputPanel.getCalendarButton() != null && transferFocusOnEnter) {
