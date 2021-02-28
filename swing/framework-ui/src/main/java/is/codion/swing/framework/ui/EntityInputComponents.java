@@ -823,7 +823,7 @@ public final class EntityInputComponents {
       return initializeLongField((Property<Long>) property);
     }
     else if (attribute.isTemporal()) {
-      return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
+      return TextFields.createFormattedField(formatMaskString);
     }
     else if (attribute.isString()) {
       return initializeStringField(formatMaskString, valueContainsLiterals);
