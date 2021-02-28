@@ -6752,3 +6752,5 @@
   Entity.getValues() renamed get()
   EntityTableModel.getItems(), unnecessary override removed
   Util.serializeToFile() and deserializeFromFile() moved to Serializer
+  DateFormats, default formats now locale sensitive when it comes to date element ordering
+  Property, default date formats now based on DateFormats

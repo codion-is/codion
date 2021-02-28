@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.Configuration;
+import is.codion.common.DateFormats;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
@@ -42,23 +43,23 @@ public interface Property<T> {
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
-   * Default value: HH:mm
+   * Default value: {@link DateFormats.TIME_SHORT}
    */
-  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", "HH:mm");
+  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", DateFormats.TIME_SHORT);
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
-   * Default value: dd-MM-yyyy HH:mm
+   * Default value: {@link DateFormats.TIMESTAMP_MEDIUM}
    */
-  PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("codion.domain.timestampFormat", "dd-MM-yyyy HH:mm");
+  PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("codion.domain.timestampFormat", DateFormats.TIMESTAMP_MEDIUM);
 
   /**
    * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
-   * Default value: dd-MM-yyyy
+   * Default value: {@link DateFormats.DATE_SHORT_DASH}
    */
-  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", "dd-MM-yyyy");
+  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", DateFormats.DATE_SHORT_DASH);
 
   /**
    * Specifies the default foreign key fetch depth<br>

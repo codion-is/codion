@@ -78,12 +78,12 @@ public class TemporalValuesTest {
 
   @Test
   public void testDate() throws Exception {
-    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DOT);
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
+    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask("dd.MM.yyyy"));
     final Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
-    TemporalValues.localDateValue(textField, DateFormats.SHORT_DOT).link(datePropertyValue);
+    TemporalValues.localDateValue(textField, "dd.MM.yyyy").link(datePropertyValue);
     assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
@@ -98,12 +98,12 @@ public class TemporalValuesTest {
 
   @Test
   public void testTimestamp() throws Exception {
-    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
-    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
+    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask("dd-MM-yy HH:mm"));
     final Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
-    TemporalValues.localDateTimeValue(textField, DateFormats.SHORT_TIMESTAMP).link(timestampPropertyValue);
+    TemporalValues.localDateTimeValue(textField, "dd-MM-yy HH:mm").link(timestampPropertyValue);
     assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);
@@ -141,10 +141,10 @@ public class TemporalValuesTest {
 
   @Test
   public void localDateUiValue() {
-    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DASH));//dd-MM-yyyy
-    final Value<LocalDate> value = TemporalValues.localDateValue(textField, DateFormats.SHORT_DASH);
+    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask("dd-MM-yyyy"));
+    final Value<LocalDate> value = TemporalValues.localDateValue(textField, "dd-MM-yyyy");
 
-    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH);
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     assertNull(value.get());
     final String dateString = "03-10-1975";
@@ -162,10 +162,10 @@ public class TemporalValuesTest {
 
   @Test
   public void localDateTimeUiValue() {
-    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.TIMESTAMP));//dd-MM-yyyy HH:mm
-    final Value<LocalDateTime> value = TemporalValues.localDateTimeValue(textField, DateFormats.TIMESTAMP);
+    final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask("dd-MM-yyyy HH:mm"));
+    final Value<LocalDateTime> value = TemporalValues.localDateTimeValue(textField, "dd-MM-yyyy HH:mm");
 
-    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP);
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     assertNull(value.get());
     final String dateString = "03-10-1975 22:45";
@@ -185,13 +185,13 @@ public class TemporalValuesTest {
   public void temporalValue() {
     final LocalDate date = LocalDate.now();
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            TemporalValues.temporalValue(new LocalDateInputPanel(date, DateFormats.SHORT_DASH));
+            TemporalValues.temporalValue(new LocalDateInputPanel(date, "dd-MM-yyyy"));
     assertEquals(date, componentValue.get());
 
-    componentValue = new TemporalInputPanelValue(new LocalDateInputPanel(null, DateFormats.SHORT_DASH));
+    componentValue = new TemporalInputPanelValue(new LocalDateInputPanel(null, "dd-MM-yyyy"));
     assertNull(componentValue.get());
 
-    componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH).format(date));
+    componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
     assertEquals(date, componentValue.get());
   }
 }

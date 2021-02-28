@@ -252,7 +252,7 @@ public final class ServerMonitor {
    */
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
-    final String startDate = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(serverInformation.getStartTime());
+    final String startDate = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP_FULL).format(serverInformation.getStartTime());
     contents.append("Server info:").append("\n");
     contents.append(serverInformation.getServerName()).append(" (").append(startDate).append(")").append(
             " port: ").append(serverInformation.getServerPort()).append("\n").append("\n");

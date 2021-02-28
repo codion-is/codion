@@ -140,7 +140,6 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     this.attribute = attribute;
     this.caption = caption;
     this.format = initializeDefaultFormat();
-    this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
     this.beanProperty = Text.underscoreToCamelCase(attribute.getName());
     this.captionResourceKey = attribute.getName();
     this.hidden = caption == null && resourceNotFound(attribute.getEntityType().getResourceBundleName(), captionResourceKey);
@@ -223,13 +222,18 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final String getDateTimeFormatPattern() {
+    if (dateTimeFormatPattern == null) {
+      return getDefaultDateTimeFormatPattern();
+    }
+
     return dateTimeFormatPattern;
   }
 
   @Override
   public final DateTimeFormatter getDateTimeFormatter() {
-    if (dateTimeFormatter == null && dateTimeFormatPattern != null) {
-      dateTimeFormatter = ofPattern(dateTimeFormatPattern);
+    if (dateTimeFormatter == null) {
+      final String formatPattern = getDateTimeFormatPattern();
+      dateTimeFormatter = formatPattern == null ? null : ofPattern(formatPattern);
     }
 
     return dateTimeFormatter;
