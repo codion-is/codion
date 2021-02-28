@@ -43,21 +43,21 @@ public interface Property<T> {
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats.TIME_SHORT}
+   * Default value: {@link DateFormats#TIME_SHORT}
    */
   PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", DateFormats.TIME_SHORT);
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats.TIMESTAMP_MEDIUM}
+   * Default value: {@link DateFormats#TIMESTAMP_MEDIUM}
    */
   PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("codion.domain.timestampFormat", DateFormats.TIMESTAMP_MEDIUM);
 
   /**
    * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats.DATE_SHORT_DASH}
+   * Default value: {@link DateFormats#DATE_SHORT_DASH}
    */
   PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", DateFormats.DATE_SHORT_DASH);
 
