@@ -6751,3 +6751,4 @@
   Entities, utility methods moved to Entity
   Entity.getValues() renamed get()
   EntityTableModel.getItems(), unnecessary override removed
+  Util.serializeToFile() and deserializeFromFile() moved to Serializer

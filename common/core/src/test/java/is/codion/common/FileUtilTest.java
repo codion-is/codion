@@ -6,9 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileUtilTest {
@@ -23,20 +21,5 @@ public class FileUtilTest {
     assertEquals(5, FileUtil.countLines(file.toString()));
     assertEquals(5, FileUtil.countLines(file));
     assertEquals(4, FileUtil.countLines(file, "--"));
-  }
-
-  @Test
-  public void serialize() throws IOException, ClassNotFoundException {
-    final List<Integer> ints = asList(1, 2, 3, 4);
-    final File file = File.createTempFile("FileUtilTest.serialize", ".txt");
-    file.deleteOnExit();
-
-    FileUtil.serializeToFile(ints, file);
-
-    final List<Integer> readInts = FileUtil.deserializeFromFile(file);
-
-    assertEquals(ints, readInts);
-
-    file.delete();
   }
 }
