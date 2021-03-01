@@ -115,6 +115,13 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void removeItem(R item);
 
   /**
+   * Removes from this table model the visible element whose index is between index
+   * @param index the index of the row to be removed
+   * @throws IndexOutOfBoundsException in case the indexe is out of bounds
+   */
+  void removeItemAt(int index);
+
+  /**
    * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
    * @param fromIndex index of first row to be removed
    * @param toIndex index after last row to be removed
