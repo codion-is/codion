@@ -48,7 +48,7 @@ public interface ToggleControl extends Control {
   /**
    * A builder for ToggleControl
    */
-  interface Builder {
+  interface Builder extends Control.Builder {
 
     /**
      * @param name the name of the control

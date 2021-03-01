@@ -7,6 +7,7 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.KeyStroke;
 import java.util.List;
 
 /**
@@ -120,7 +121,7 @@ public interface ControlList extends Control {
    * A builder for ControlList
    * @see ControlList#builder()
    */
-  interface Builder {
+  interface Builder extends Control.Builder {
 
     /**
      * @param name the control list name
@@ -141,6 +142,12 @@ public interface ControlList extends Control {
     Builder mnemonic(char mnenomic);
 
     /**
+     * @param keyStroke the keystroke to associate with the control
+     * @return this Builder instance
+     */
+    Builder keyStroke(KeyStroke keyStroke);
+
+    /**
      * @param enabledState the state observer dictating the enable state of this control
      * @return this Builder instance
      */
@@ -159,10 +166,22 @@ public interface ControlList extends Control {
     Builder control(Control control);
 
     /**
+     * @param controlBuilder the control builder to add to this list
+     * @return this Builder instance
+     */
+    Builder control(Control.Builder controlBuilder);
+
+    /**
      * @param controls the controls to add
      * @return this Builder instance
      */
     Builder controls(Control... controls);
+
+    /**
+     * @param controlBuilders the control builder to add
+     * @return this Builder instance
+     */
+    Builder controls(Control.Builder... controlBuilders);
 
     /**
      * @param action the Action to add to this list

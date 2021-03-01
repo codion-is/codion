@@ -7,9 +7,11 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.KeyStroke;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,6 +24,12 @@ final class ControlListBuilder implements ControlList.Builder {
   private char mnemonic = 0;
   private StateObserver enabledState;
   private Icon icon;
+  private KeyStroke keyStroke;
+
+  @Override
+  public ControlList.Builder command(final Control.Command command) {
+    throw new UnsupportedOperationException("A ControlList can not have a Command");
+  }
 
   @Override
   public ControlList.Builder name(final String name) {
@@ -38,6 +46,12 @@ final class ControlListBuilder implements ControlList.Builder {
   @Override
   public ControlList.Builder mnemonic(final char mnenomic) {
     this.mnemonic = mnenomic;
+    return this;
+  }
+
+  @Override
+  public ControlList.Builder keyStroke(final KeyStroke keyStroke) {
+    this.keyStroke = keyStroke;
     return this;
   }
 
@@ -60,8 +74,20 @@ final class ControlListBuilder implements ControlList.Builder {
   }
 
   @Override
+  public ControlList.Builder control(final Control.Builder controlBuilder) {
+    controls.add(requireNonNull(controlBuilder).build());
+    return this;
+  }
+
+  @Override
   public ControlList.Builder controls(final Control... controls) {
     this.controls.addAll(Arrays.asList(requireNonNull(controls)));
+    return this;
+  }
+
+  @Override
+  public ControlList.Builder controls(final Control.Builder... controlBuilders) {
+    this.controls.addAll(Arrays.stream(controlBuilders).map(Control.Builder::build).collect(Collectors.toList()));
     return this;
   }
 
@@ -85,6 +111,6 @@ final class ControlListBuilder implements ControlList.Builder {
 
   @Override
   public ControlList build() {
-    return (ControlList) new DefaultControlList(name, mnemonic, enabledState, icon, controls).setDescription(description);
+    return (ControlList) new DefaultControlList(name, mnemonic, enabledState, icon, controls).setDescription(description).setKeyStroke(keyStroke);
   }
 }

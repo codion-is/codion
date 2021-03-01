@@ -507,6 +507,21 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
+   * Sets the item at the given index.
+   * If the item should be filtered calling this method has no effect.
+   * @param index the index
+   * @param item the item
+   * @see #setIncludeCondition(Predicate)
+   */
+  protected final void setItemAt(final int index, final R item) {
+    requireNonNull(item, "item");
+    if (includeCondition == null || includeCondition.test(item)) {
+      visibleItems.set(index, item);
+      fireTableRowsUpdated(index, index);
+    }
+  }
+
+  /**
    * Returns the value to use when searching through the table.
    * @param rowIndex the row index
    * @param column the column
