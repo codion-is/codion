@@ -6757,3 +6757,5 @@
   EntityInputComponents.createTextField() bug fixed, did not use formatMaskString parameter for temporal properties
   EntityEditComponentPanel regression bug fixed, did not add formatted validator to the input field
   AbstractFilteredTableModel.setItemAt() added
+  ControlList.Builder.addControl() and addControls() overloaded with Control.Builder parameters, for convenience
+  ControlList.Builder and ToggleControl.Builder now extend Control.Builder

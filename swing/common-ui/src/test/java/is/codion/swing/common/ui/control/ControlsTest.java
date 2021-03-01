@@ -30,9 +30,9 @@ public final class ControlsTest {
   private Boolean value = false;
 
   private final ControlList controlList = ControlList.builder().controls(
-          Control.builder().command(() -> {}).name("one").build(),
-          Control.builder().command(() -> {}).name("two").build(),
-          ToggleControl.builder().value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event())).name("three").build()).build();
+          Control.builder().command(() -> {}).name("one"),
+          Control.builder().command(() -> {}).name("two"),
+          ToggleControl.builder().value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event())).name("three")).build();
   private boolean booleanValue;
   private Object selectedValue;
 
