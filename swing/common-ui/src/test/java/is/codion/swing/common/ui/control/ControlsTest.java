@@ -15,6 +15,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public final class ControlsTest {
     final Value<Boolean> nullableValue = Value.value(true);
     final ToggleControl nullableControl = ToggleControl.builder().value(nullableValue).build();
     ButtonModel buttonModel = Controls.buttonModel(nullableControl);
+    assertTrue(buttonModel.isSelected());
     assertTrue(buttonModel instanceof NullableToggleButtonModel);
     assertTrue(nullableControl.getValue().get());
     nullableValue.set(false);
@@ -99,6 +101,12 @@ public final class ControlsTest {
     assertFalse(nonNullableControl.getValue().get());
     nonNullableValue.set(null);
     assertFalse(nonNullableControl.getValue().get());
+
+    final State state = State.state(true);
+    final ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    assertTrue(toggleControl.getValue().get());
+    final JToggleButton toggleButton = Controls.toggleButton(toggleControl);
+    assertTrue(toggleButton.isSelected());
   }
 
   @Test
