@@ -6756,3 +6756,4 @@
   Property, default date formats now based on DateFormats
   EntityInputComponents.createTextField() bug fixed, did not use formatMaskString parameter for temporal properties
   EntityEditComponentPanel regression bug fixed, did not add formatted validator to the input field
+  AbstractFilteredTableModel.setItemAt() added

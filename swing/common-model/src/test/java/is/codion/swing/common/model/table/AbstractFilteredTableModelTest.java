@@ -11,6 +11,7 @@ import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.common.model.table.RowColumn;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
+import is.codion.common.state.State;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -191,6 +192,25 @@ public final class AbstractFilteredTableModelTest {
     assertFalse(tableModel.isVisible(D));
     assertFalse(tableModel.isVisible(E));
     tableModel.removeTableDataChangedListener(listener);
+  }
+
+  @Test
+  public void setItemAt() {
+    final State selectionChangedState = State.state();
+    tableModel.getSelectionModel().addSelectedItemListener((item) -> selectionChangedState.set(true));
+    tableModel.refresh();
+    tableModel.getSelectionModel().setSelectedItem(B);
+    final List<String> h = singletonList("h");
+    tableModel.setItemAt(tableModel.indexOf(B), h);
+    assertEquals(h, tableModel.getSelectionModel().getSelectedItem());
+    assertTrue(selectionChangedState.get());
+    tableModel.setItemAt(tableModel.indexOf(h), B);
+
+    selectionChangedState.set(false);
+    final List<String> newB = singletonList("b");
+    tableModel.setItemAt(tableModel.indexOf(B), newB);
+    assertFalse(selectionChangedState.get());
+    assertEquals(newB, tableModel.getSelectionModel().getSelectedItem());
   }
 
   @Test
