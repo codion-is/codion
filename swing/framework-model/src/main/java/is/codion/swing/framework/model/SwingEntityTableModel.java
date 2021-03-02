@@ -596,7 +596,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   /**
-   * @return the number of rows {@link #performQuery()} would return on next invocation
+   * @return the number of rows {@link #refreshItems()} would return on next invocation
    */
   protected int getQueryRowCount() {
     if (queryConditionRequiredState.get() && !getTableConditionModel().isEnabled()) {
