@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.AWTException;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilteredTableTest {
 
-  private static final List<List<String>> ITEMS = asList(
+  private static final Collection<List<String>> ITEMS = asList(
           singletonList("a"), singletonList("b"), singletonList("c"), singletonList("d"), singletonList("e"));
 
   @Test
@@ -40,9 +41,8 @@ public class FilteredTableTest {
     final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(
             new TestAbstractTableSortModel(singletonList(column)), singletonList(filterModel)) {
       @Override
-      protected void refreshModel() {
-        clear();
-        addItems(asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo")));
+      protected Collection<List<String>> refreshItems() {
+        return asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo"));
       }
     };
     final FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable =
@@ -101,9 +101,8 @@ public class FilteredTableTest {
     }
 
     @Override
-    protected void refreshModel() {
-      clear();
-      addItems(ITEMS);
+    protected Collection<List<String>> refreshItems() {
+      return ITEMS;
     }
 
     @Override

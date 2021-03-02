@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Test;
 import javax.swing.table.TableColumn;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +35,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   protected SwingEntityTableModel createTestTableModel() {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, getConnectionProvider()) {
       @Override
-      protected List<Entity> performQuery() {
+      protected Collection<Entity> refreshItems() {
         return testEntities;
       }
     };

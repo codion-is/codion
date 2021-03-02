@@ -6,6 +6,7 @@ package is.codion.swing.common.model.table;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,9 +36,8 @@ public class SwingTableSelectionModelTest {
     };
     final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(sortModel) {
       @Override
-      protected void refreshModel() {
-        clear();
-        addItems(data);
+      protected Collection<String> refreshItems() {
+        return data;
       }
 
       @Override

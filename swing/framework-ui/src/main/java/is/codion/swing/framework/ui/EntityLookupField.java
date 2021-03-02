@@ -499,7 +499,7 @@ public final class EntityLookupField extends JTextField {
       requireNonNull(lookupModel, LOOKUP_MODEL);
       final SwingEntityTableModel tableModel = new SwingEntityTableModel(lookupModel.getEntityType(), lookupModel.getConnectionProvider()) {
         @Override
-        protected List<Entity> performQuery() {
+        protected Collection<Entity> refreshItems() {
           return emptyList();
         }
       };

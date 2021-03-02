@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -33,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 /**
  * A ClientUserMonitor for monitoring connected clients and users connected to a server
@@ -224,28 +224,32 @@ public final class ClientUserMonitor {
 
     private UserHistoryTableModel() {
       super(new UserHistoryTableSortModel());
+      setMergeOnRefresh(true);
     }
 
     @Override
-    protected void refreshModel() {
+    protected Collection<UserInfo> refreshItems() {
       try {
+        final List<UserInfo> items = new ArrayList<>(getItems());
         for (final RemoteClient remoteClient : server.getClients()) {
           final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.getClientId(), remoteClient.getClientVersion(),
                   remoteClient.getFrameworkVersion());
-          if (containsItem(newUserInfo)) {
-            final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
+          final int index = items.indexOf(newUserInfo);
+          if (index == -1) {
+            items.add(newUserInfo);
+          }
+          else {
+            final UserInfo currentUserInfo = items.get(index);
             currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
             if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {
               currentUserInfo.incrementConnectionCount();
               currentUserInfo.setClientID(newUserInfo.getClientId());
             }
           }
-          else {
-            addItemsAt(0, singletonList(newUserInfo));
-          }
         }
-        sort();
+
+        return items;
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

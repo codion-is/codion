@@ -19,11 +19,14 @@ import javax.swing.table.TableColumn;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -96,6 +99,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * true if searching the table model should be done via regular expressions
    */
   private boolean regularExpressionSearch = false;
+
+  /**
+   * true if refresh should merge, in order to not clear the selection during refresh
+   */
+  private boolean mergeOnRefresh = false;
 
   /**
    * Instantiates a new table model.
@@ -209,20 +217,23 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Refreshes the data in this table model, respecting the selection, filtering as well
-   * as sorting states.
+   * Refreshes the data in this table model, respecting the selection, filtering as well as sorting states.
+   * @see #refreshItems()
    */
   @Override
   public final void refresh() {
-    try {
-      refreshStartedEvent.onEvent();
-      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
-      refreshModel();
+    refreshStartedEvent.onEvent();
+    final Collection<R> items = refreshItems();
+    if (mergeOnRefresh && !items.isEmpty()) {
+      merge(items);
+    }
+    else {
+      final Collection<R> selectedItems = selectionModel.getSelectedItems();
+      clear();
+      addItemsSorted(items);
       selectionModel.setSelectedItems(selectedItems);
     }
-    finally {
-      refreshDoneEvent.onEvent();
-    }
+    refreshDoneEvent.onEvent();
   }
 
   @Override
@@ -278,6 +289,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
+  public final boolean isMergeOnRefresh() {
+    return mergeOnRefresh;
+  }
+
+  @Override
+  public final void setMergeOnRefresh(final boolean mergeOnRefresh) {
+    this.mergeOnRefresh = mergeOnRefresh;
+  }
+
+  @Override
   public final R getItemAt(final int index) {
     return visibleItems.get(index);
   }
@@ -289,7 +310,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final void sort() {
-    final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
+    final List<R> selectedItems = selectionModel.getSelectedItems();
     sortModel.sort(visibleItems);
     fireTableRowsUpdated(0, visibleItems.size());
     selectionModel.setSelectedItems(selectedItems);
@@ -451,14 +472,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Refreshes the data in this table model.
-   * @see #clear()
-   * @see #addItems(List)
-   * @see #addItemsSorted(List)
-   * @see #addItemsAt(int, List)
-   * @see #addItemsAtSorted(int, List)
+   * Returns the items this table model should contain.
+   * By default this simply returns the items already in the model.
+   * Override to fetch data from a datasource of some kind.
+   * @return the items this table model should contain.
    */
-  protected abstract void refreshModel();
+  protected Collection<R> refreshItems() {
+    return getItems();
+  }
 
   /**
    * Creates a ColumnValueProvider for the given column, null if the column type is not numerical
@@ -474,7 +495,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Adds the given items to the bottom of this table model.
    * @param items the items to add
    */
-  protected final void addItems(final List<R> items) {
+  protected final void addItems(final Collection<R> items) {
     addItemsAt(visibleItems.size(), items);
   }
 
@@ -483,7 +504,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * If sorting is enabled this model is sorted after the items have been added.
    * @param items the items to add
    */
-  protected final void addItemsSorted(final List<R> items) {
+  protected final void addItemsSorted(final Collection<R> items) {
     addItemsAtSorted(visibleItems.size(), items);
   }
 
@@ -492,7 +513,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param index the index at which to add the items
    * @param items the items to add
    */
-  protected final void addItemsAt(final int index, final List<R> items) {
+  protected final void addItemsAt(final int index, final Collection<R> items) {
     addItemsAtInternal(index, items);
     fireTableDataChanged();
   }
@@ -504,7 +525,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param items the items to add
    * @see TableSortModel#isSortingEnabled()
    */
-  protected final void addItemsAtSorted(final int index, final List<R> items) {
+  protected final void addItemsAtSorted(final int index, final Collection<R> items) {
     addItemsAtInternal(index, items);
     if (sortModel.isSortingEnabled()) {
       sortModel.sort(visibleItems);
@@ -539,6 +560,24 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     final Object value = getValueAt(rowIndex, column.getModelIndex());
 
     return value == null ? "" : value.toString();
+  }
+
+  private void merge(final Collection<R> items) {
+    final Set<R> itemSet = new HashSet<>(items);
+    getItems().forEach(item -> {
+      if (!itemSet.contains(item)) {
+        removeItem(item);
+      }
+    });
+    items.forEach(item -> {
+      final int index = indexOf(item);
+      if (index == -1) {
+        addItemsSorted(Collections.singletonList(item));
+      }
+      else {
+        setItemAt(index, item);
+      }
+    });
   }
 
   /**
@@ -582,7 +621,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return null;
   }
 
-  private void addItemsAtInternal(final int index, final List<R> items) {
+  private void addItemsAtInternal(final int index, final Collection<R> items) {
     requireNonNull(items);
     int counter = 0;
     for (final R item : items) {
