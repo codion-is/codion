@@ -59,13 +59,17 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public boolean remove(final Action action) {
-    return action != null && actions.remove(action);
+  public ControlList remove(final Action action) {
+    if (action != null) {
+      actions.remove(action);
+    }
+    return this;
   }
 
   @Override
-  public void removeAll() {
+  public ControlList removeAll() {
     actions.clear();
+    return this;
   }
 
   @Override

@@ -44,14 +44,15 @@ public interface ControlList extends Control {
 
   /**
    * @param action the action to remove
-   * @return true if the action was removed
+   * @return this ControlList instance
    */
-  boolean remove(Action action);
+  ControlList remove(Action action);
 
   /**
    * Removes all actions from this control list
+   * @return this ControlList instance
    */
-  void removeAll();
+  ControlList removeAll();
 
   /**
    * @return the number of controls in this list
