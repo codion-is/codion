@@ -6762,3 +6762,4 @@
   FilteredTableModel.removeItemAt() added
   AbstractFilteredTableModel refactored, FilteredTableModel.setMergeOnRefresh() added
   ControlList.remove() and removeAll() now return the list
+  Entity, some utility methods renamed

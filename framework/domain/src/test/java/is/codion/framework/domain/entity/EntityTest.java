@@ -363,7 +363,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getEntitiesByValue() {
+  public void getByValue() {
     final Entity one = entities.entity(TestDomain.Detail.TYPE);
     one.put(TestDomain.Detail.ID, 1L);
     one.put(TestDomain.Detail.STRING, "b");
@@ -380,11 +380,11 @@ public final class EntityTest {
 
     final Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(TestDomain.Detail.STRING, "b");
-    assertEquals(1, Entity.getEntitiesByValue(entities, values).size());
+    assertEquals(1, Entity.getByValue(entities, values).size());
     values.put(TestDomain.Detail.STRING, "zz");
-    assertEquals(2, Entity.getEntitiesByValue(entities, values).size());
+    assertEquals(2, Entity.getByValue(entities, values).size());
     values.put(TestDomain.Detail.ID, 3L);
-    assertEquals(1, Entity.getEntitiesByValue(entities, values).size());
+    assertEquals(1, Entity.getByValue(entities, values).size());
   }
 
   @Test

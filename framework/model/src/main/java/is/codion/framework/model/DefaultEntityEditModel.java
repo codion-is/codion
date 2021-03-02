@@ -347,7 +347,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return Entity.isEntityNew(getEntity());
+    return Entity.isNew(getEntity());
   }
 
   @Override
@@ -862,7 +862,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #update(java.util.List)
    */
   protected List<Entity> getModifiedEntities(final List<Entity> entities) {
-    return Entity.getModifiedEntities(entities);
+    return Entity.getModified(entities);
   }
 
   protected void refreshDataModels() {}
