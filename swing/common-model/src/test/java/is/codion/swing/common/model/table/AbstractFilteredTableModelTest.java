@@ -56,9 +56,8 @@ public final class AbstractFilteredTableModelTest {
     }
 
     @Override
-    protected void refreshModel() {
-      clear();
-      addItemsSorted(ITEMS);
+    protected Collection<List<String>> refreshItems() {
+      return ITEMS;
     }
 
     @Override
@@ -139,8 +138,6 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(null) {
-      @Override
-      protected void refreshModel() {}
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -165,6 +162,16 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(1, started.get());
     assertEquals(1, done.get());
     assertEquals(1, cleared.get());
+
+    started.set(0);
+    done.set(0);
+    cleared.set(0);
+    tableModel.setMergeOnRefresh(true);
+    tableModel.refresh();
+    assertEquals(1, started.get());
+    assertEquals(1, done.get());
+    assertEquals(0, cleared.get());
+
     tableModel.removeRefreshStartedListener(startListener);
     tableModel.removeRefreshDoneListener(doneListener);
     tableModel.removeTableModelClearedListener(clearedListener);
@@ -227,6 +234,12 @@ public final class AbstractFilteredTableModelTest {
     assertFalse(tableModel.containsItem(C));
     assertTrue(tableModel.containsItem(D));
     assertTrue(tableModel.containsItem(E));
+
+    tableModel.setMergeOnRefresh(true);
+    events.set(0);
+    tableModel.refresh();
+    assertEquals(5, events.get());
+
     tableModel.removeTableDataChangedListener(listener);
   }
 
@@ -277,9 +290,8 @@ public final class AbstractFilteredTableModelTest {
               }
             }, null) {
       @Override
-      protected void refreshModel() {
-        clear();
-        addItems(items);
+      protected Collection<Row> refreshItems() {
+        return items;
       }
 
       @Override

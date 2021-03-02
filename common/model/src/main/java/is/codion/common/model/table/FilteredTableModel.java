@@ -30,7 +30,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void removeRefreshStartedListener(EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time a refresh has ended
+   * @param listener a listener to be notified each time a refresh has ended successfully
    */
   void addRefreshDoneListener(EventListener listener);
 
@@ -207,6 +207,16 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * @param regularExpressionSearch true if regular expression search should be enabled
    */
   void setRegularExpressionSearch(boolean regularExpressionSearch);
+
+  /**
+   * @return true if merge on refresh is enabled
+   */
+  boolean isMergeOnRefresh();
+
+  /**
+   * @param mergeOnRefresh true if merge on refresh should be enabled
+   */
+  void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
    * Sorts the visible contents according to the {@link TableSortModel}, keeping the selection state intact

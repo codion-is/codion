@@ -856,8 +856,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityType(), connectionProvider) {
       @Override
-      protected List<Entity> performQuery() {
-        return new ArrayList<>(entities);
+      protected Collection<Entity> refreshItems() {
+        return entities;
       }
     };
     tableModel.refresh();
@@ -882,8 +882,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final SwingEntityEditModel editModel = new SwingEntityEditModel(entityType, connectionProvider);
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
-      protected List<Entity> performQuery() {
-        return new ArrayList<>(entities);
+      protected Collection<Entity> refreshItems() {
+        return entities;
       }
     };
     tableModel.setEditModel(editModel);

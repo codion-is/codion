@@ -6790,3 +6790,4 @@
   ControlList.Builder.addControl() and addControls() overloaded with Control.Builder parameters, for convenience
   ControlList.Builder and ToggleControl.Builder now extend Control.Builder
   FilteredTableModel.removeItemAt() added
+  AbstractFilteredTableModel refactored, FilteredTableModel.setMergeOnRefresh() added

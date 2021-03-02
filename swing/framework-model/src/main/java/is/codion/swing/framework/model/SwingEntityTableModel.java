@@ -339,7 +339,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
 
     final Property<?> property = entityDefinition.getProperty(attribute);
-    
+
     return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
   }
 
@@ -573,22 +573,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     return null;
   }
 
-  @Override
-  protected final void refreshModel() {
-    try {
-      LOG.debug("{} refreshing", this);
-      checkQueryRowCount();
-      final List<Entity> queryResult = performQuery();
-      clear();
-      addEntitiesSorted(queryResult);
-      tableConditionModel.rememberCondition();
-      refreshEvent.onEvent();
-    }
-    finally {
-      LOG.debug("{} refreshing done", this);
-    }
-  }
-
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderBy()}
@@ -596,11 +580,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @see #getQueryConditionRequiredState()
    * @see EntityTableConditionModel#getCondition()
    */
-  protected List<Entity> performQuery() {
+  @Override
+  protected Collection<Entity> refreshItems() {
     if (queryConditionRequiredState.get() && !getTableConditionModel().isEnabled()) {
       return emptyList();
     }
-
+    checkQueryRowCount();
     try {
       return connectionProvider.getConnection().select(getTableConditionModel().getCondition()
               .select().fetchCount(fetchCount).orderBy(getOrderBy()));
@@ -683,6 +668,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
+    addRefreshDoneListener(() -> {
+      tableConditionModel.rememberCondition();
+      refreshEvent.onEvent();
+    });
   }
 
   private void bindEditModelEvents() {

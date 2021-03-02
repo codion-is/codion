@@ -8,7 +8,6 @@ import is.codion.common.model.table.SortingDirective;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
@@ -39,8 +38,7 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
   }
 
   @Override
-  protected void refreshModel() {
-    clear();
-    addItemsSorted(new ArrayList<>(schemas));
+  protected Collection<Schema> refreshItems() {
+    return schemas;
   }
 }

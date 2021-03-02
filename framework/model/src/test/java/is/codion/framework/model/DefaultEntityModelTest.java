@@ -128,6 +128,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void removeItems(final int fromIndex, final int toIndex) {}
     @Override
+    public void removeItemAt(final int index) {}
+    @Override
     public FilteredTableColumnModel<Entity, Property, Object> getColumnModel() {return null;}
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final Property columnIdentifier) {return null;}
@@ -147,6 +149,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public boolean isRegularExpressionSearch() {return false;}
     @Override
     public void setRegularExpressionSearch(final boolean regularExpressionSearch) {}
+    @Override
+    public boolean isMergeOnRefresh() {return false;}
+    @Override
+    public void setMergeOnRefresh(final boolean mergeOnRefresh) {}
     @Override
     public void sort() {}
     @Override

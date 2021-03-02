@@ -7,7 +7,8 @@ import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.domain.DomainType.domainType;
@@ -37,13 +38,14 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   }
 
   @Override
-  protected void refreshModel() {
-    clear();
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
-            addItemsSorted(createDomainDefinitions(schema)));
+  protected Collection<DefinitionRow> refreshItems() {
+    final Collection<DefinitionRow> items = new ArrayList<>();
+    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
+
+    return items;
   }
 
-  private static List<DefinitionRow> createDomainDefinitions(final Schema schema) {
+  private static Collection<DefinitionRow> createDomainDefinitions(final Schema schema) {
     final DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
 
     return domain.getEntities().getDefinitions().stream().map(definition ->
