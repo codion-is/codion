@@ -6791,3 +6791,4 @@
   ControlList.Builder and ToggleControl.Builder now extend Control.Builder
   FilteredTableModel.removeItemAt() added
   AbstractFilteredTableModel refactored, FilteredTableModel.setMergeOnRefresh() added
+  ControlList.remove() and removeAll() now return the list
