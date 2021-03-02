@@ -253,7 +253,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entity the entity
    * @return true if this entity has not been persisted
    */
-  static boolean isEntityNew(final Entity entity) {
+  static boolean isNew(final Entity entity) {
     requireNonNull(entity);
     final Key key = entity.getPrimaryKey();
     final Key originalKey = entity.getOriginalPrimaryKey();
@@ -278,7 +278,7 @@ public interface Entity extends Comparable<Entity> {
    * @return a List of entities that have been modified
    * @see Entity#isModified()
    */
-  static <T extends Entity> List<T> getModifiedEntities(final Collection<T> entities) {
+  static <T extends Entity> List<T> getModified(final Collection<T> entities) {
     return requireNonNull(entities, "entities").stream().filter(Entity::isModified).collect(toList());
   }
 
@@ -488,12 +488,12 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Finds entities according to the values of values
+   * Finds entities according to attribute values
    * @param entities the entities to search
-   * @param values the property values to use as condition mapped to their respective attributes
-   * @return the entities having the exact same property values as in the given value map
+   * @param values the attribute values to use as condition mapped to their respective attributes
+   * @return the entities having the exact same attribute values as in the given value map
    */
-  static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
+  static List<Entity> getByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
     requireNonNull(values);
     return requireNonNull(entities).stream().filter(entity ->
             values.entrySet().stream().allMatch(entry ->
