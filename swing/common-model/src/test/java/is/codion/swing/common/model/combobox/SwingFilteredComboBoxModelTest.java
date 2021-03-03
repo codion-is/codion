@@ -160,7 +160,7 @@ public class SwingFilteredComboBoxModelTest {
     final AtomicInteger filteringEndedCounter = new AtomicInteger();
     final EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
-    testModel.addFilteringListener(filteringEndedListener);
+    testModel.addFilterListener(filteringEndedListener);
 
     testModel.setIncludeCondition(item -> false);
     assertEquals(1, filteringEndedCounter.get());
@@ -189,7 +189,7 @@ public class SwingFilteredComboBoxModelTest {
     assertTrue(testModel.containsItem(BJORN));
 
     testModel.removeListDataListener(listDataListener);
-    testModel.removeFilteringListener(filteringEndedListener);
+    testModel.removeFilterListener(filteringEndedListener);
   }
 
   @Test

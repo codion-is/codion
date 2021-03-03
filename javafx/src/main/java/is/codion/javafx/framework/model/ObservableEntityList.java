@@ -46,7 +46,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> selectionChangedEvent = Event.event();
-  private final Event<?> filteringDoneEvent = Event.event();
+  private final Event<?> filterEvent = Event.event();
 
   private FXEntityListSelectionModel selectionModel;
 
@@ -267,17 +267,17 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   @Override
   public final void filterContents() {
     filteredList.setPredicate(entity -> includeCondition == null || includeCondition.test(entity));
-    filteringDoneEvent.onEvent();
+    filterEvent.onEvent();
   }
 
   @Override
-  public final void addFilteringListener(final EventListener listener) {
-    filteringDoneEvent.addListener(listener);
+  public final void addFilterListener(final EventListener listener) {
+    filterEvent.addListener(listener);
   }
 
   @Override
-  public final void removeFilteringListener(final EventListener listener) {
-    filteringDoneEvent.removeListener(listener);
+  public final void removeFilterListener(final EventListener listener) {
+    filterEvent.removeListener(listener);
   }
 
   /**

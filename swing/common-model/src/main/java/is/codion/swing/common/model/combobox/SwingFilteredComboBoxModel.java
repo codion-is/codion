@@ -32,7 +32,8 @@ import static java.util.Objects.requireNonNull;
 public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
 
   private final Event<T> selectionChangedEvent = Event.event();
-  private final Event<?> filteringDoneEvent = Event.event();
+  private final Event<?> filterEvent = Event.event();
+  private final Event<?> refreshEvent = Event.event();
 
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
@@ -85,6 +86,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void refresh() {
     setContents(initializeContents());
+    refreshEvent.onEvent();
   }
 
   @Override
@@ -114,33 +116,29 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void filterContents() {
-    try {
-      visibleItems.addAll(filteredItems);
-      filteredItems.clear();
-      if (includeCondition != null) {
-        for (final Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
-          final T item = iterator.next();
-          if (item != null && !includeCondition.test(item)) {
-            filteredItems.add(item);
-            iterator.remove();
-          }
+    visibleItems.addAll(filteredItems);
+    filteredItems.clear();
+    if (includeCondition != null) {
+      for (final Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+        final T item = iterator.next();
+        if (item != null && !includeCondition.test(item)) {
+          filteredItems.add(item);
+          iterator.remove();
         }
       }
-      sortVisibleItems();
-      if (selectedItem != null && visibleItems.contains(selectedItem)) {
-        //update the selected item since the underlying data could have changed
-        selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
-      }
-      if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
-        setSelectedItem(null);
-      }
-      else {
-        fireContentsChanged();
-      }
     }
-    finally {
-      filteringDoneEvent.onEvent();
+    sortVisibleItems();
+    if (selectedItem != null && visibleItems.contains(selectedItem)) {
+      //update the selected item since the underlying data could have changed
+      selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
     }
+    if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
+      setSelectedItem(null);
+    }
+    else {
+      fireContentsChanged();
+    }
+    filterEvent.onEvent();
   }
 
   @Override
@@ -342,13 +340,23 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void addFilteringListener(final EventListener listener) {
-    filteringDoneEvent.addListener(listener);
+  public final void addFilterListener(final EventListener listener) {
+    filterEvent.addListener(listener);
   }
 
   @Override
-  public final void removeFilteringListener(final EventListener listener) {
-    filteringDoneEvent.removeListener(listener);
+  public final void removeFilterListener(final EventListener listener) {
+    filterEvent.removeListener(listener);
+  }
+
+  @Override
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
   }
 
   @Override

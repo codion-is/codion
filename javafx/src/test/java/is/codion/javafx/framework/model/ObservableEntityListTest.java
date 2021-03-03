@@ -52,7 +52,7 @@ public final class ObservableEntityListTest {
     final AtomicInteger counter = new AtomicInteger();
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final EventListener listener = counter::incrementAndGet;
-    list.addFilteringListener(listener);
+    list.addFilterListener(listener);
     list.refresh();
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
@@ -76,7 +76,7 @@ public final class ObservableEntityListTest {
     assertEquals(0, list.getFilteredItems().size());
     assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
-    list.removeFilteringListener(listener);
+    list.removeFilterListener(listener);
   }
 
   @Test

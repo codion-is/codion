@@ -222,18 +222,22 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
-    refreshStartedEvent.onEvent();
-    final Collection<R> items = refreshItems();
-    if (mergeOnRefresh && !items.isEmpty()) {
-      merge(items);
+    try {
+      refreshStartedEvent.onEvent();
+      final Collection<R> items = refreshItems();
+      if (mergeOnRefresh && !items.isEmpty()) {
+        merge(items);
+      }
+      else {
+        final Collection<R> selectedItems = selectionModel.getSelectedItems();
+        clear();
+        addItemsSorted(items);
+        selectionModel.setSelectedItems(selectedItems);
+      }
     }
-    else {
-      final Collection<R> selectedItems = selectionModel.getSelectedItems();
-      clear();
-      addItemsSorted(items);
-      selectionModel.setSelectedItems(selectedItems);
+    finally {
+      refreshDoneEvent.onEvent();
     }
-    refreshDoneEvent.onEvent();
   }
 
   @Override
@@ -432,12 +436,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final void addFilteringListener(final EventListener listener) {
+  public final void addFilterListener(final EventListener listener) {
     filterEvent.addListener(listener);
   }
 
   @Override
-  public final void removeFilteringListener(final EventListener listener) {
+  public final void removeFilterListener(final EventListener listener) {
     filterEvent.removeListener(listener);
   }
 
