@@ -6764,3 +6764,4 @@
   ControlList.remove() and removeAll() now return the list
   Entity, some utility methods renamed
   EntityInputComponents.createTextField() bug fixed, revert change from l:6757
+0.17.11
