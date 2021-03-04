@@ -1348,7 +1348,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
-    tableModel.addFilteringListener(statusListener);
+    tableModel.addFilterListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
     tableModel.getTableConditionModel().addConditionListener(this::onConditionChanged);
     tableModel.addSortListener(table.getTableHeader()::repaint);

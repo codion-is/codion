@@ -17,12 +17,12 @@ public interface FilteredModel<T> {
   /**
    * @param listener a listener notified each time this model is filtered
    */
-  void addFilteringListener(EventListener listener);
+  void addFilterListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeFilteringListener(EventListener listener);
+  void removeFilterListener(EventListener listener);
 
   /**
    * Filters the table according to the condition returned by {@link #getIncludeCondition()}.
@@ -30,7 +30,7 @@ public interface FilteredModel<T> {
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getIncludeCondition()
    * @see #setIncludeCondition(Predicate)
-   * @see #addFilteringListener(EventListener)
+   * @see #addFilterListener(EventListener)
    */
   void filterContents();
 

@@ -5,6 +5,7 @@ package is.codion.common.model.combobox;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.value.PropertyValue;
 
@@ -36,6 +37,18 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * @param listener a selection listener to remove
    */
   void removeSelectionListener(EventDataListener<T> listener);
+
+  /**
+   * @param listener a listener to be notified each time this model has been successfully refreshed
+   * @see #refresh()
+   */
+  void addRefreshListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   * @see #refresh()
+   */
+  void removeRefreshListener(EventListener listener);
 
   /**
    * Resets the contents of this model using the values found in {@code contents},
@@ -155,6 +168,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
 
   /**
    * Refreshes the items in this combo box model
+   * @see #addRefreshListener(EventListener)
    */
   void refresh();
 

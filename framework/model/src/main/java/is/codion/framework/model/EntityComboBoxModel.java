@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.EventListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -186,16 +185,6 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return a {@link Value} for selecting items by attribute value
    */
   <T> Value<T> selectorValue(Attribute<T> attribute, Finder<T> finder);
-
-  /**
-   * @param listener a listener to be notified each time this model is refreshed
-   */
-  void addRefreshListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeRefreshListener(EventListener listener);
 
   /**
    * Responsible for finding an Entity by the value of a given attribute.

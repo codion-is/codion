@@ -5,9 +5,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
@@ -43,8 +41,6 @@ import static java.util.Objects.requireNonNull;
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
 public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
-
-  private final Event<?> refreshDoneEvent = Event.event();
 
   /**
    * the id of the underlying entity
@@ -261,22 +257,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public <T> Value<T> selectorValue(final Attribute<T> attribute) {
     return selectorValue(attribute, (entities, theAttribute, value) -> entities.stream().filter(entity ->
-                Objects.equals(value, entity.get(theAttribute))).findFirst().orElse(null));
+            Objects.equals(value, entity.get(theAttribute))).findFirst().orElse(null));
   }
 
   @Override
   public <T> Value<T> selectorValue(final Attribute<T> attribute, final Finder<T> finder) {
     return new SelectorValue<>(attribute, finder);
-  }
-
-  @Override
-  public final void addRefreshListener(final EventListener listener) {
-    refreshDoneEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(final EventListener listener) {
-    refreshDoneEvent.removeListener(listener);
   }
 
   @Override
@@ -302,16 +288,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   protected final List<Entity> initializeContents() {
-    try {
-      if (staticData && !isCleared() && !forceRefresh) {
-        return super.initializeContents();
-      }
+    if (staticData && !isCleared() && !forceRefresh) {
+      return super.initializeContents();
+    }
 
-      return performQuery();
-    }
-    finally {
-      refreshDoneEvent.onEvent();
-    }
+    return performQuery();
   }
 
   /**

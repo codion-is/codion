@@ -6794,3 +6794,7 @@
   ControlList.remove() and removeAll() now return the list
   Entity, some utility methods renamed
   EntityInputComponents.createTextField() bug fixed, revert change from l:6757
+0.17.11
+  SwingEntityComboBoxModel bug fixed, refresh event was fired before contents were updated, moved to SwingFilteredComboBoxModel
+  FilteredModel.addFilteringListener() renamed addFilterListener(), filterEvent only fired after successful filtering
+  AbstractFilteredTableModel, refreshDoneEvent always fired, not only when refresh was successful (used to enable/disable wait cursor in UI)

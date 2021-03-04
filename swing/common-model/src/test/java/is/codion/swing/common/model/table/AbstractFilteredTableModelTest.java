@@ -706,7 +706,7 @@ public final class AbstractFilteredTableModelTest {
   public void filtering() throws Exception {
     final AtomicInteger done = new AtomicInteger();
     final EventListener listener = done::incrementAndGet;
-    tableModel.addFilteringListener(listener);
+    tableModel.addFilterListener(listener);
 
     tableModel.refresh();
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
@@ -750,7 +750,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addItemsAt(0, singletonList(singletonList("x")));
     assertEquals(rowCount, tableModel.getRowCount());
 
-    tableModel.removeFilteringListener(listener);
+    tableModel.removeFilterListener(listener);
   }
 
   @Test
