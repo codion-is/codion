@@ -43,6 +43,7 @@ import is.codion.swing.common.ui.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.table.TableColumnComponentPanel;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -199,7 +200,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     COPY_TABLE_DATA
   }
 
-  private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(24, 24);
+  private static final Dimension TOOLBAR_BUTTON_SIZE = TextFields.DIMENSION_TEXT_FIELD_SQUARE;
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
@@ -1272,7 +1273,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Control refresh = Control.builder()
             .command(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionObserver())
-            .name(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
+            .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired()).build();
 
     KeyEvents.addKeyEvent(this, KeyEvent.VK_F5, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh);
