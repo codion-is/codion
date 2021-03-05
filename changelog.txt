@@ -6768,3 +6768,4 @@
   SwingEntityComboBoxModel bug fixed, refresh event was fired before contents were updated, moved to SwingFilteredComboBoxModel
   FilteredModel.addFilteringListener() renamed addFilterListener(), filterEvent only fired after successful filtering
   AbstractFilteredTableModel, refreshDoneEvent always fired, not only when refresh was successful (used to enable/disable wait cursor in UI)
+  EntityTablePanel.initializeRefreshToolbar() bug fixed, refresh control description was used as name
