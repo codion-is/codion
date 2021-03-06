@@ -449,13 +449,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Toggles the condition panel through the states hidden, visible and in case it can, advanced
-   * @see AbstractEntityTableConditionPanel#canToggleAdvanced()
+   * @see AbstractEntityTableConditionPanel#hasAdvancedView()
    */
   public final void toggleConditionPanel() {
     if (conditionPanel == null) {
       return;
     }
-    if (conditionPanel.canToggleAdvanced()) {
+    if (conditionPanel.hasAdvancedView()) {
       final State advancedState = conditionPanel.getAdvancedState();
       if (isConditionPanelVisible()) {
         if (advancedState.get()) {
@@ -1360,7 +1360,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     if (conditionPanel != null) {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
-      if (conditionPanel.canToggleAdvanced()) {
+      if (conditionPanel.hasAdvancedView()) {
         conditionPanel.addAdvancedListener(advanced -> {
           if (isConditionPanelVisible()) {
             revalidate();

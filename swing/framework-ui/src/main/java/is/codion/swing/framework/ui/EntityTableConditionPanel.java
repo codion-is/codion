@@ -78,7 +78,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @return true if this panel has an advanced view which can be toggled on/off
    */
   @Override
-  public boolean canToggleAdvanced() {
+  public boolean hasAdvancedView() {
     return true;
   }
 
@@ -124,7 +124,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     final ControlList controls = ControlList.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter()).build();
-    if (canToggleAdvanced()) {
+    if (hasAdvancedView()) {
       controls.add(ToggleControl.builder().state(getAdvancedState()).name(FrameworkMessages.get(FrameworkMessages.ADVANCED)).build());
     }
     controls.add(Control.builder().command(getTableConditionModel()::clearConditionModels).name(FrameworkMessages.get(FrameworkMessages.CLEAR)).build());

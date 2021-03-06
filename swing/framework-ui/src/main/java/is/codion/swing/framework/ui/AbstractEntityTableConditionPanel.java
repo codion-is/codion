@@ -68,7 +68,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   /**
    * @return true if this panel has an advanced view which can be toggled on/off
    */
-  public boolean canToggleAdvanced() {
+  public boolean hasAdvancedView() {
     return false;
   }
 
@@ -101,7 +101,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * Sets the advanced search state, if supported
    * @param advanced true
    * @throws UnsupportedOperationException by default
-   * @see #canToggleAdvanced()
+   * @see #hasAdvancedView()
    */
   protected void setAdvanced(final boolean advanced) {
     throw new UnsupportedOperationException();
