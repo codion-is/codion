@@ -28,8 +28,11 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   private Control createUpdateLocationControl() {
-    return Control.builder().command(this::updateLocation).name("Update location")
-            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver()).build();
+    return Control.builder()
+            .command(this::updateLocation)
+            .name("Update location")
+            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
+            .build();
   }
 
   private void updateLocation() {
@@ -42,12 +45,12 @@ public final class CityTablePanel extends EntityTablePanel {
     private final CityTableModel cityTableModel;
 
     private LocationUpdater(final Window dialogOwner, final CityTableModel cityTableModel) {
-      super(dialogOwner, "Updating locations", Indeterminate.NO, null,
-              ControlList.builder().control(Control.builder()
+      super(dialogOwner, "Updating locations", Indeterminate.NO, null, ControlList.builder()
+              .control(Control.builder()
                       .command(cityTableModel::cancelLocationUpdate)
                       .name("Cancel")
-                      .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver())
-                      .build()).build());
+                      .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
+              .build());
       this.dialogOwner = dialogOwner;
       this.cityTableModel = cityTableModel;
       setMaximum(cityTableModel.getSelectionModel().getSelectionCount());

@@ -153,13 +153,14 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     this.toggleEnabledButton = Controls.toggleButton(ToggleControl.builder()
-            .value(Value.propertyValue(conditionModel, "enabled", boolean.class, conditionModel.getEnabledObserver()))
+            .value(conditionModel.getEnabledValue())
             .icon(icons().filter())
             .build());
     if (toggleAdvancedButton == ToggleAdvancedButton.YES) {
       this.toggleAdvancedButton = Controls.toggleButton(ToggleControl.builder()
               .state(advancedConditionState)
-              .icon(icons().configure()).build());
+              .icon(icons().configure())
+              .build());
     }
     else {
       this.toggleAdvancedButton = null;
@@ -476,7 +477,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   private void bindEvents() {
     advancedConditionState.addListener(this::initializePanel);
-    conditionModel.getOperatorObserver().addListener(() -> {
+    conditionModel.getOperatorValue().addListener(() -> {
       initializePanel();
       operatorCombo.requestFocusInWindow();
     });
@@ -521,8 +522,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    SelectedValues.selectedValue(comboBox)
-            .link(Value.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver()));
+    SelectedValues.selectedValue(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
 
     return comboBox;

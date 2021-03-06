@@ -69,7 +69,10 @@ public final class DatabaseMonitorPanel extends JPanel {
 
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
-    chartConfig.add(new JButton(Control.builder().command(model::clearStatistics).name("Clear").build()));
+    chartConfig.add(new JButton(Control.builder()
+            .command(model::clearStatistics)
+            .name("Clear")
+            .build()));
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);

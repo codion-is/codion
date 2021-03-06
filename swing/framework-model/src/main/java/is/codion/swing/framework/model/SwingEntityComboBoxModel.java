@@ -287,9 +287,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  protected final List<Entity> initializeContents() {
+  protected final Collection<Entity> refreshItems() {
     if (staticData && !isCleared() && !forceRefresh) {
-      return super.initializeContents();
+      return super.refreshItems();
     }
 
     return performQuery();
@@ -301,7 +301,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @return the entities to present in this EntityComboBoxModel
    * @see #getSelectConditionProvider()
    */
-  protected List<Entity> performQuery() {
+  protected Collection<Entity> performQuery() {
     try {
       final Condition condition;
       if (selectConditionProvider == null) {

@@ -26,8 +26,11 @@ public class CustomerTablePanel extends EntityTablePanel {
   @Override
   protected ControlList createPrintControls() {
     final ControlList printControls = super.createPrintControls();
-    printControls.add(Control.builder().command(this::viewCustomerReport).name("Customer report")
-            .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
+    printControls.add(Control.builder()
+            .command(this::viewCustomerReport)
+            .name("Customer report")
+            .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver())
+            .build());
 
     return printControls;
   }

@@ -20,7 +20,6 @@ public final class FrameworkMessages {
   public static final String VIEW = "view";
   public static final String VIEW_MNEMONIC = "view_mnemonic";
   public static final String REFRESH_ALL = "refresh_all";
-  public static final String ALWAYS_ON_TOP = "always_on_top";
   public static final String SUPPORT_TABLES = "support_tables";
   public static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
   public static final String CLEAR = "clear";

@@ -85,7 +85,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void refresh() {
-    setContents(initializeContents());
+    setContents(refreshItems());
     refreshEvent.onEvent();
   }
 
@@ -370,11 +370,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   /**
-   * @return a List containing the items to be shown in this combo box model,
-   * by default it simply returns a list containing the items currently contained in the model,
+   * @return a Collection containing the items to be shown in this combo box model,
+   * by default this simply returns the items currently contained in the model,
    * both filtered and visible, excluding the null value.
    */
-  protected List<T> initializeContents() {
+  protected Collection<T> refreshItems() {
     final List<T> contents = new ArrayList<>(visibleItems);
     if (nullString != null) {
       contents.remove(null);

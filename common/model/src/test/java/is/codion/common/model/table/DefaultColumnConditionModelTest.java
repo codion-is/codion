@@ -10,6 +10,7 @@ import is.codion.common.event.EventListener;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
@@ -151,6 +152,20 @@ public class DefaultColumnConditionModelTest {
   }
 
   @Test
+  public void setEqualValueLocked() {
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    model.setLocked(true);
+    assertThrows(IllegalStateException.class, () -> model.setEqualValue("test"));
+  }
+
+  @Test
+  public void setEqualValuesLocked() {
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    model.setLocked(true);
+    assertThrows(IllegalStateException.class, () -> model.setEqualValues(Collections.singletonList("test")));
+  }
+
+  @Test
   public void setEnabledLocked() {
     final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
@@ -162,6 +177,7 @@ public class DefaultColumnConditionModelTest {
     final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUAL));
+    assertThrows(IllegalStateException.class, () -> model.getOperatorValue().set(Operator.NOT_EQUAL));
   }
 
   @Test

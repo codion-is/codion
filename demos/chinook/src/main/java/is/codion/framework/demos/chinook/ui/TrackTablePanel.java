@@ -34,8 +34,11 @@ public class TrackTablePanel extends EntityTablePanel {
   @Override
   protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
     final ControlList controls = super.getPopupControls(additionalPopupControls);
-    controls.addAt(0, Control.builder().command(this::raisePriceOfSelected).name("Raise price...")
-            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver()).build());
+    controls.addAt(0, Control.builder()
+            .command(this::raisePriceOfSelected)
+            .name("Raise price...")
+            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
+            .build());
     controls.addSeparatorAt(1);
 
     return controls;

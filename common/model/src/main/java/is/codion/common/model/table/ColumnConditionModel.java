@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.db.Operator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.EventObserver;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
@@ -235,14 +234,14 @@ public interface ColumnConditionModel<R, C, T> {
   StateObserver getLockedObserver();
 
   /**
-   * @return an observer notified each time the enabled state changes
+   * @return a Value controlling the enabled state
    */
-  EventObserver<Boolean> getEnabledObserver();
+  Value<Boolean> getEnabledValue();
 
   /**
-   * @return an observer notified each time the operator changes
+   * @return a Value based on the operator
    */
-  EventObserver<Operator> getOperatorObserver();
+  Value<Operator> getOperatorValue();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes

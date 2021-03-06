@@ -8,9 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -43,8 +41,8 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
   }
 
   @Override
-  protected final List<T> initializeContents() {
-    return new ArrayList<>(valueSupplier.get());
+  protected final Collection<T> refreshItems() {
+    return valueSupplier.get();
   }
 
   private static final class DefaultValueSupplier<T> implements Supplier<Collection<T>> {

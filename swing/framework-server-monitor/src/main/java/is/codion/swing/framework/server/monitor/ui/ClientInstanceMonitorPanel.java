@@ -97,14 +97,20 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     infoBase.add(infoPanel, BorderLayout.CENTER);
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
-    settingsPanel.add(new JButton(Control.builder().command(this::updateView).name("Refresh log").build()));
+    settingsPanel.add(new JButton(Control.builder()
+            .command(this::updateView)
+            .name("Refresh log")
+            .build()));
     infoBase.add(settingsPanel, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
     logArea.setComponentPopupMenu(popupMenu(ControlList.builder()
-            .control(Control.builder().command(this::saveLogToFile).name("Save to file...")).build()));
+            .control(Control.builder()
+                    .command(this::saveLogToFile)
+                    .name("Save to file..."))
+            .build()));
 
     addKeyEvent(searchField, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, control(this::scrollToNextSearchPosition));
     addKeyEvent(searchField, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, control(this::scrollToPreviousSearchPosition));

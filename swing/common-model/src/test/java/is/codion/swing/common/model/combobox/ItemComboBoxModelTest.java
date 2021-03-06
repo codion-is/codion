@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
@@ -28,7 +29,7 @@ public class ItemComboBoxModelTest {
     final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> model = new ItemComboBoxModel<Integer>(items) {
       @Override
-      protected List<Item<Integer>> initializeContents() {
+      protected Collection<Item<Integer>> refreshItems() {
         return items;//so we can clear the model later on without removing all items
       }
     };
@@ -66,7 +67,7 @@ public class ItemComboBoxModelTest {
     //test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> unsortedModel = new ItemComboBoxModel<Integer>(null, items) {
       @Override
-      protected List<Item<Integer>> initializeContents() {
+      protected Collection<Item<Integer>> refreshItems() {
         return items;
       }
     };
