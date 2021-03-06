@@ -384,7 +384,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl createSingleSelectionModeControl() {
-    return ToggleControl.builder().state(tableModel.getSelectionModel().getSingleSelectionModeState()).name(MESSAGES.getString(SINGLE_SELECTION_MODE)).build();
+    return ToggleControl.builder()
+            .state(tableModel.getSelectionModel().getSingleSelectionModeState())
+            .name(MESSAGES.getString(SINGLE_SELECTION_MODE))
+            .build();
   }
 
   /**
@@ -532,8 +535,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       togglePanel.add(columnCheckBox);
     });
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    southPanel.add(new JButton(Control.builder().command(() -> setSelected(checkBoxes, true)).name(MESSAGES.getString("select_all")).build()));
-    southPanel.add(new JButton(Control.builder().command(() -> setSelected(checkBoxes, false)).name(MESSAGES.getString("select_none")).build()));
+    southPanel.add(new JButton(Control.builder()
+            .command(() -> setSelected(checkBoxes, true))
+            .name(MESSAGES.getString("select_all"))
+            .build()));
+    southPanel.add(new JButton(Control.builder()
+            .command(() -> setSelected(checkBoxes, false))
+            .name(MESSAGES.getString("select_none"))
+            .build()));
 
     final JPanel base = new JPanel(Layouts.borderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);

@@ -554,7 +554,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-        controlList.add(Control.builder().command(() -> updateSelectedEntities(property)).name(caption).enabledState(enabled).build());
+        controlList.add(Control.builder()
+                .command(() -> updateSelectedEntities(property))
+                .name(caption)
+                .enabledState(enabled)
+                .build());
       }
     });
 
@@ -565,7 +569,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for showing the dependencies dialog
    */
   public final Control createViewDependenciesControl() {
-    return Control.builder().command(this::viewSelectionDependencies)
+    return Control.builder()
+            .command(this::viewSelectionDependencies)
             .name(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...")
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
             .description(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP))
@@ -1091,17 +1096,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected ControlList createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
-    final ControlList printControls = ControlList.builder()
+    return ControlList.builder()
             .name(printCaption)
             .mnemonic(printCaption.charAt(0))
-            .icon(frameworkIcons().print()).build();
-    printControls.add(controls.get(ControlCode.PRINT_TABLE));
-
-    return printControls;
+            .icon(frameworkIcons().print())
+            .control(controls.get(ControlCode.PRINT_TABLE))
+            .build();
   }
 
   protected final Control createConditionPanelControl() {
-    return ToggleControl.builder().state(conditionPanelVisibleState).name(FrameworkMessages.get(FrameworkMessages.SHOW)).build();
+    return ToggleControl.builder()
+            .state(conditionPanelVisibleState)
+            .name(FrameworkMessages.get(FrameworkMessages.SHOW))
+            .build();
   }
 
   protected final ControlList createCopyControls() {
@@ -1119,7 +1126,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final Control createCopyTableWithHeaderControl() {
-    return Control.builder().command(this::copyTableAsDelimitedString).name(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)).build();
+    return Control.builder()
+            .command(this::copyTableAsDelimitedString)
+            .name(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER))
+            .build();
   }
 
   /**

@@ -249,8 +249,14 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(Controls.checkBox(ToggleControl.builder().state(loadTestModel.getCollectChartDataState()).name("Collect chart data").build()));
-    controlPanel.add(new JButton(Control.builder().command(loadTestModel::resetChartData).name("Reset").build()));
+    controlPanel.add(Controls.checkBox(ToggleControl.builder()
+            .state(loadTestModel.getCollectChartDataState())
+            .name("Collect chart data")
+            .build()));
+    controlPanel.add(new JButton(Control.builder()
+            .command(loadTestModel::resetChartData)
+            .name("Reset")
+            .build()));
 
     return controlPanel;
   }
@@ -338,7 +344,11 @@ public final class LoadTestPanel<T> extends JPanel {
     final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
-    final ToggleControl pauseControl = ToggleControl.builder().state(loadTestModel.getPausedState()).name("Pause").mnemonic('P').build();
+    final ToggleControl pauseControl = ToggleControl.builder()
+            .state(loadTestModel.getPausedState())
+            .name("Pause")
+            .mnemonic('P')
+            .build();
 
     final FlexibleGridLayout layout = Layouts.flexibleGridLayout(4, 2, FixRowHeights.YES, FixColumnWidths.NO);
     layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());

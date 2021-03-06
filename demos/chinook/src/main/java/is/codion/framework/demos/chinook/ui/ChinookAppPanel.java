@@ -184,14 +184,20 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   protected ControlList getViewControls() {
     return super.getViewControls()
             .addSeparator()
-            .add(Control.builder().command(this::selectLanguage).name(bundle.getString(SELECT_LANGUAGE)).build());
+            .add(Control.builder()
+                    .command(this::selectLanguage)
+                    .name(bundle.getString(SELECT_LANGUAGE))
+                    .build());
   }
 
   @Override
   protected ControlList getToolsControls() {
     return super.getToolsControls()
             .addSeparator()
-            .add(Control.builder().command(this::updateInvoiceTotals).name(bundle.getString(UPDATE_TOTALS)).build());
+            .add(Control.builder()
+                    .command(this::updateInvoiceTotals)
+                    .name(bundle.getString(UPDATE_TOTALS))
+                    .build());
   }
 
   private void updateInvoiceTotals() {

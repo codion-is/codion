@@ -57,7 +57,10 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(new JButton(Control.builder().command(this::refresh).name("Refresh").build()), BorderLayout.SOUTH);
+    clientInstanceBase.add(new JButton(Control.builder()
+            .command(this::refresh)
+            .name("Refresh")
+            .build()), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);

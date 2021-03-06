@@ -174,7 +174,11 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeRefreshControl() {
-    return Control.builder().command(model::refresh).name("Refresh").mnemonic('R').build();
+    return Control.builder()
+            .command(model::refresh)
+            .name("Refresh")
+            .mnemonic('R')
+            .build();
   }
 
   private Control initializeAlwaysOnTopControl() {
@@ -185,19 +189,34 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeUpateIntervalControl() {
-    return Control.builder().command(this::setUpdateInterval).name("Chart update interval").build();
+    return Control.builder()
+            .command(this::setUpdateInterval)
+            .name("Chart update interval")
+            .build();
   }
 
   private Control initializeSetJDKDirControl() {
-    return Control.builder().command(this::setJDKDir).name("Set JDK home...").mnemonic('S').build();
+    return Control.builder()
+            .command(this::setJDKDir)
+            .name("Set JDK home...")
+            .mnemonic('S')
+            .build();
   }
 
   private Control initializeJConsoleControl() {
-    return Control.builder().command(this::runJConsole).name("Run JConsole").mnemonic('J').build();
+    return Control.builder()
+            .command(this::runJConsole)
+            .name("Run JConsole")
+            .mnemonic('J')
+            .build();
   }
 
   private Control initializeExitControl() {
-    return Control.builder().command(() -> System.exit(0)).name("Exit").mnemonic('X').build();
+    return Control.builder()
+            .command(() -> System.exit(0))
+            .name("Exit")
+            .mnemonic('X')
+            .build();
   }
 
   private void setUpdateInterval() {

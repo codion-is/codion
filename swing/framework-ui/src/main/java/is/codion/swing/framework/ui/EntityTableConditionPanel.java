@@ -70,8 +70,10 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
             .description(MESSAGES.getString("require_query_condition_description")).build();
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            Control.builder().command(onSearchListener::onEvent).enabledState(getTableConditionModel().getConditionObserver()).build());
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Control.builder()
+            .command(onSearchListener::onEvent)
+            .enabledState(getTableConditionModel().getConditionObserver())
+            .build());
   }
 
   /**
@@ -121,17 +123,21 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public ControlList getControls() {
-    final ControlList controls = ControlList.builder()
+    final ControlList.Builder controls = ControlList.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
-            .icon(frameworkIcons().filter()).build();
+            .icon(frameworkIcons().filter());
     if (hasAdvancedView()) {
-      controls.add(ToggleControl.builder().state(getAdvancedState()).name(FrameworkMessages.get(FrameworkMessages.ADVANCED)).build());
+      controls.control(ToggleControl.builder()
+              .state(getAdvancedState())
+              .name(FrameworkMessages.get(FrameworkMessages.ADVANCED)));
     }
-    controls.add(Control.builder().command(getTableConditionModel()::clearConditionModels).name(FrameworkMessages.get(FrameworkMessages.CLEAR)).build());
-    controls.addSeparator();
-    controls.add(conditionRequiredControl);
+    controls.control(Control.builder()
+            .command(getTableConditionModel()::clearConditionModels)
+            .name(FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controls.separator();
+    controls.control(conditionRequiredControl);
 
-    return controls;
+    return controls.build();
   }
 
   /**

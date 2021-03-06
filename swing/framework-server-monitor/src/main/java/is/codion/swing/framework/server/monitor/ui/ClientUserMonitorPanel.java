@@ -89,7 +89,10 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(new JButton(Control.builder().command(model::refresh).name("Refresh").build()), BorderLayout.SOUTH);
+    clientTypeBase.add(new JButton(Control.builder()
+            .command(model::refresh)
+            .name("Refresh")
+            .build()), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
@@ -109,7 +112,8 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(new JButton(Control.builder()
             .command(this::disconnectAll)
             .name("Disconnect all")
-            .description("Disconnect all clients").build()));
+            .description("Disconnect all clients")
+            .build()));
 
     setLayout(new BorderLayout());
 
@@ -141,7 +145,10 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
-    configBase.add(new JButton(Control.builder().command(model::resetHistory).name("Reset").build()), BorderLayout.EAST);
+    configBase.add(new JButton(Control.builder()
+            .command(model::resetHistory)
+            .name("Reset")
+            .build()), BorderLayout.EAST);
 
     final FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
 

@@ -31,7 +31,8 @@ public final class LookupTablePanel extends EntityTablePanel {
     controls.addSeparatorAt(1);
 
     Control exportControl = Control.builder()
-            .command(this::exportCSV).name("Export CSV...")
+            .command(this::exportCSV)
+            .name("Export CSV...")
             .icon(imageIcon(FontIcon.of(Foundation.PAGE_EXPORT_CSV, ICON_SIZE)))
             .build();
 

@@ -6771,3 +6771,4 @@
   EntityTablePanel.initializeRefreshToolbar() bug fixed, refresh control description was used as name
   SwingEntityComboBoxModel.initializeContents() renamed refreshItems(), returns Collection instead of List, for consistency
   AbstractEntityTableConditionPanel.canToggleAdvanced() renamed hasAdvancedView()
+  Control builder usage formatting now consistent
