@@ -41,7 +41,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void removeRefreshDoneListener(EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time the model has been sorted or the sorting state has been cleared
+   * @param listener a listener to be notified each time the model has been sorted
    */
   void addSortListener(EventListener listener);
 
@@ -220,8 +220,11 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
-   * Sorts the visible contents according to the {@link TableSortModel}, keeping the selection state intact
+   * Sorts the visible contents according to the  {@link TableSortModel}, keeping the selected items.
+   * Calling this method with the sort model disabled has no effect.
    * @see #getSortModel()
+   * @see #addSortListener(EventListener)
+   * @see TableSortModel#isSortingEnabled
    */
   void sort();
 
