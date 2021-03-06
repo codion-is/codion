@@ -121,6 +121,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     monitorFrame.setTitle("Codion Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
+    monitorFrame.setAlwaysOnTop(alwaysOnTopState.get());
     Windows.resizeWindow(monitorFrame, SCREEN_SIZE_RATIO);
     Windows.centerWindow(monitorFrame);
     monitorFrame.setVisible(true);
@@ -229,7 +230,11 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    alwaysOnTopState.addDataListener(monitorFrame::setAlwaysOnTop);
+    alwaysOnTopState.addDataListener(alwaysOnTop -> {
+      if (monitorFrame != null) {
+        monitorFrame.setAlwaysOnTop(alwaysOnTop);
+      }
+    });
   }
 
   private static JPanel initializeSouthPanel() {
