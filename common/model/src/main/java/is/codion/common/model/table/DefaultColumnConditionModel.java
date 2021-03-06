@@ -7,7 +7,6 @@ import is.codion.common.db.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -39,7 +38,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final Event<?> conditionChangedEvent = Event.event();
   private final Event<?> conditionModelClearedEvent = Event.event();
 
-  private final State enabledState = State.state();
+  private final Value<Boolean> enabledValue = Value.value(false, false);
   private final State lockedState = State.state();
 
   private final K columnIdentifier;
@@ -94,6 +93,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     this.format = format;
     this.dateTimeFormatPattern = dateTimeFormatPattern;
     this.automaticWildcard = automaticWildcard;
+    this.enabledValue.addValidator(value -> checkLock());
     this.equalValues.addValidator(value -> checkLock());
     this.upperBoundValue.addValidator(value -> checkLock());
     this.lowerBoundValue.addValidator(value -> checkLock());
@@ -222,15 +222,12 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final boolean isEnabled() {
-    return enabledState.get();
+    return enabledValue.get();
   }
 
   @Override
   public final void setEnabled(final boolean enabled) {
-    checkLock();
-    if (enabledState.get() != enabled) {
-      enabledState.set(enabled);
-    }
+    enabledValue.set(enabled);
   }
 
   @Override
@@ -274,18 +271,18 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public final EventObserver<Boolean> getEnabledObserver() {
-    return enabledState.getObserver();
+  public final Value<Boolean> getEnabledValue() {
+    return enabledValue;
   }
 
   @Override
   public final void addEnabledListener(final EventListener listener) {
-    enabledState.addListener(listener);
+    enabledValue.addListener(listener);
   }
 
   @Override
   public final void removeEnabledListener(final EventListener listener) {
-    enabledState.removeListener(listener);
+    enabledValue.removeListener(listener);
   }
 
   @Override
@@ -355,12 +352,12 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final boolean include(final R row) {
-    return !enabledState.get() || include(comparableFunction.apply(row));
+    return !enabledValue.get() || include(comparableFunction.apply(row));
   }
 
   @Override
   public final boolean include(final Comparable<T> comparable) {
-    if (!enabledState.get()) {
+    if (!enabledValue.get()) {
       return true;
     }
 
@@ -600,7 +597,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
-    enabledState.addListener(conditionChangedEvent);
+    enabledValue.addListener(conditionChangedEvent);
   }
 
   private void checkLock() {
