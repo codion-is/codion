@@ -19,7 +19,6 @@ import javax.swing.table.TableColumn;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -314,11 +313,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final void sort() {
-    final List<R> selectedItems = selectionModel.getSelectedItems();
-    sortModel.sort(visibleItems);
-    fireTableRowsUpdated(0, visibleItems.size());
-    selectionModel.setSelectedItems(selectedItems);
-    sortEvent.onEvent();
+    if (sortModel.isSortingEnabled()) {
+      final List<R> selectedItems = selectionModel.getSelectedItems();
+      sortModel.sort(visibleItems);
+      fireTableRowsUpdated(0, visibleItems.size());
+      selectionModel.setSelectedItems(selectedItems);
+      sortEvent.onEvent();
+    }
   }
 
   @Override
@@ -518,8 +519,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param items the items to add
    */
   protected final void addItemsAt(final int index, final Collection<R> items) {
-    addItemsAtInternal(index, items);
-    fireTableDataChanged();
+    if (addItemsAtInternal(index, items)) {
+      fireTableDataChanged();
+    }
   }
 
   /**
@@ -530,11 +532,34 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @see TableSortModel#isSortingEnabled()
    */
   protected final void addItemsAtSorted(final int index, final Collection<R> items) {
-    addItemsAtInternal(index, items);
-    if (sortModel.isSortingEnabled()) {
-      sortModel.sort(visibleItems);
+    if (addItemsAtInternal(index, items)) {
+      if (sortModel.isSortingEnabled()) {
+        sortModel.sort(visibleItems);
+      }
+      fireTableDataChanged();
     }
-    fireTableDataChanged();
+  }
+
+  /**
+   * Adds the given item to the bottom of this table model.
+   * @param item the item to add
+   */
+  protected final void addItem(final R item) {
+    addItemInternal(item);
+  }
+
+  /**
+   * Adds the given item to the bottom of this table model.
+   * If sorting is enabled this model is sorted after the item has been added.
+   * @param item the item to add
+   */
+  protected final void addItemSorted(final R item) {
+    if (addItemInternal(item)) {
+      if (sortModel.isSortingEnabled()) {
+        sortModel.sort(visibleItems);
+      }
+      fireTableDataChanged();
+    }
   }
 
   /**
@@ -546,7 +571,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   protected final void setItemAt(final int index, final R item) {
     requireNonNull(item, "item");
-    if (includeCondition == null || includeCondition.test(item)) {
+    if (include(item)) {
       visibleItems.set(index, item);
       fireTableRowsUpdated(index, index);
     }
@@ -576,7 +601,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     items.forEach(item -> {
       final int index = indexOf(item);
       if (index == -1) {
-        addItemsSorted(Collections.singletonList(item));
+        addItemSorted(item);
       }
       else {
         setItemAt(index, item);
@@ -625,17 +650,36 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return null;
   }
 
-  private void addItemsAtInternal(final int index, final Collection<R> items) {
+  private boolean addItemInternal(final R item) {
+    if (include(item)) {
+      visibleItems.add(item);
+
+      return true;
+    }
+    filteredItems.add(item);
+
+    return false;
+  }
+
+  private boolean addItemsAtInternal(final int index, final Collection<R> items) {
     requireNonNull(items);
+    boolean visible = false;
     int counter = 0;
     for (final R item : items) {
-      if (includeCondition == null || includeCondition.test(item)) {
+      if (include(item)) {
+        visible = true;
         visibleItems.add(index + counter++, item);
       }
       else {
         filteredItems.add(item);
       }
     }
+
+    return visible;
+  }
+
+  private boolean include(final R item) {
+    return includeCondition == null || includeCondition.test(item);
   }
 
   private static final class RegexSearchCondition implements Predicate<String> {

@@ -6810,3 +6810,5 @@
   State now extends Value<Boolean>, allowing for linking and validation
   ColumnConditionModel.getEnabledValue() is now back to getEnabledState()
   Value.stateValue() and valueState() removed, now that State is a Value
+  AbstractFilteredTableModel.sort() now does nothing if sort model is not enabled, preventing unnecessary event firings
+  AbstractFilteredTableModel, add methods now only fire events if visible items were added
