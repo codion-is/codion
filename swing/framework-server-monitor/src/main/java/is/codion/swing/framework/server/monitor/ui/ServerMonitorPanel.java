@@ -5,7 +5,6 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
 import is.codion.common.value.Nullable;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -178,7 +177,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
-    BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(Value.stateValue(synchronizedZoomState));
+    BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
     zoomPanel.add(new JButton(Control.builder()
             .command(this::resetZoom)

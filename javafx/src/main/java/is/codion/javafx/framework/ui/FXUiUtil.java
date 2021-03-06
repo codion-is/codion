@@ -331,8 +331,7 @@ public final class FXUiUtil {
   public static ToggleButton createToggleButton(final State state) {
     final ToggleButton button = new ToggleButton();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(button.selectedProperty());
-    final Value<Boolean> stateValue = Value.stateValue(state);
-    checkBoxValue.link(stateValue);
+    checkBoxValue.link(state);
 
     return button;
   }
@@ -345,8 +344,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(final State state) {
     final CheckBox box = new CheckBox();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(box.selectedProperty());
-    final Value<Boolean> stateValue = Value.stateValue(state);
-    checkBoxValue.link(stateValue);
+    checkBoxValue.link(state);
 
     return box;
   }
