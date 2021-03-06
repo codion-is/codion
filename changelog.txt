@@ -6779,3 +6779,4 @@
   ColumnConditionModel.getEnabledObserver() replaced with getEnabledValue()
   State now extends Value<Boolean>, allowing for linking and validation
   ColumnConditionModel.getEnabledValue() is now back to getEnabledState()
+  Value.stateValue() and valueState() removed, now that State is a Value

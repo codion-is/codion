@@ -5,7 +5,6 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.DateFormats;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -204,7 +203,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     final JCheckBox collectSnapshotCheckBox = new JCheckBox("Snapshot");
     BooleanValues.booleanButtonModelValue(collectSnapshotCheckBox.getModel())
-            .link(Value.stateValue(model.getCollectSnapshotStatisticsState()));
+            .link(model.getCollectSnapshotStatisticsState());
     collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(collectSnapshotCheckBox);
 

@@ -5,8 +5,6 @@ package is.codion.common.value;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 
 import org.junit.jupiter.api.Test;
 
@@ -189,52 +187,6 @@ public class ValuesTest {
     assertNull(uiValue.get());
     assertEquals(1, modelValueEventCounter.get());
     assertEquals(3, uiValueEventCounter.get());
-  }
-
-  @Test
-  public void stateValue() {
-    final State state = State.state(true);
-    final Value<Boolean> stateValue = Value.stateValue(state);
-    assertTrue(stateValue.toOptional().isPresent());
-    assertTrue(stateValue.get());
-    stateValue.set(false);
-    assertFalse(state.get());
-    stateValue.set(null);
-    assertFalse(stateValue.isNull());
-    assertTrue(stateValue.isNotNull());
-    assertFalse(state.get());
-    stateValue.set(true);
-    assertTrue(state.get());
-    state.set(false);
-    assertFalse(stateValue.get());
-  }
-
-  @Test
-  public void booleanValueState() {
-    final Value<Boolean> nullableBooleanValue = Value.value();
-    final State nullableValueState = Value.valueState(nullableBooleanValue);
-    assertFalse(nullableValueState.get());
-    nullableBooleanValue.set(true);
-    assertTrue(nullableValueState.get());
-    nullableBooleanValue.set(null);
-    assertFalse(nullableValueState.get());
-
-    final Value<Boolean> booleanValue = Value.value(true, false);
-    final State state = Value.valueState(booleanValue);
-    final StateObserver reversed = state.getReversedObserver();
-    assertTrue(state.get());
-    assertFalse(reversed.get());
-    state.set(false);
-    assertFalse(booleanValue.get());
-    booleanValue.set(true);
-    assertTrue(state.get());
-    assertFalse(reversed.get());
-    booleanValue.set(null);
-    assertFalse(state.get());
-    assertTrue(reversed.get());
-    assertFalse(booleanValue.get());
-    state.set(true);
-    assertTrue(booleanValue.get());
   }
 
   @Test

@@ -35,7 +35,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl.Builder state(final State state) {
-    this.value = Value.stateValue(state);
+    this.value = requireNonNull(state);
     return this;
   }
 

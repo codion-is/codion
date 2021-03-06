@@ -4,13 +4,10 @@
 package is.codion.common.value;
 
 import is.codion.common.event.EventObserver;
-import is.codion.common.state.State;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper class for setting and getting a value.
@@ -135,28 +132,5 @@ public interface Value<V> extends ValueObserver<V> {
   static <V> PropertyValue<V> propertyValue(final Object owner, final String propertyName, final Class<V> valueClass,
                                             final EventObserver<V> valueChangeObserver) {
     return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
-  }
-
-  /**
-   * Instantiates a boolean Value based on a {@link State}.
-   * Null values are translated to 'false'.
-   * @param state the state to base the value on
-   * @return a boolean state based on the given value
-   */
-  static Value<Boolean> stateValue(final State state) {
-    return new StateValue(state);
-  }
-
-  /**
-   * Instantiates a State linked to the given boolean value.
-   * Null values are translated to 'false'.
-   * @param booleanValue the boolean value to link to the state
-   * @return a State linked to the given value
-   */
-  static State valueState(final Value<Boolean> booleanValue) {
-    final State state = State.state();
-    stateValue(state).link(requireNonNull(booleanValue, "booleanValue"));
-
-    return state;
   }
 }
