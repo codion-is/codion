@@ -94,6 +94,10 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     this.format = format;
     this.dateTimeFormatPattern = dateTimeFormatPattern;
     this.automaticWildcard = automaticWildcard;
+    this.equalValues.addValidator(value -> checkLock());
+    this.upperBoundValue.addValidator(value -> checkLock());
+    this.lowerBoundValue.addValidator(value -> checkLock());
+    this.operatorValue.addValidator(value -> checkLock());
     bindEvents();
   }
 
@@ -164,8 +168,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final void setUpperBound(final T value) {
-    validateType(value);
-    checkLock();
     upperBoundValue.set(value);
   }
 
@@ -176,8 +178,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final void setLowerBound(final T value) {
-    validateType(value);
-    checkLock();
     lowerBoundValue.set(value);
   }
 
@@ -193,7 +193,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final void setOperator(final Operator operator) {
-    checkLock();
     operatorValue.set(requireNonNull(operator, "operator"));
   }
 
@@ -350,7 +349,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public final EventObserver<Operator> getOperatorObserver() {
+  public final Value<Operator> getOperatorValue() {
     return operatorValue;
   }
 
@@ -607,19 +606,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private void checkLock() {
     if (lockedState.get()) {
       throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
-    }
-  }
-
-  private void validateType(final Object value) {
-    if (value != null) {
-      if (value instanceof Collection) {
-        for (final Object collValue : ((Collection<Object>) value)) {
-          validateType(collValue);
-        }
-      }
-      else if (!typeClass.isAssignableFrom(value.getClass())) {
-        throw new IllegalArgumentException("Value of type " + typeClass + " expected for condition " + this + ", got: " + value.getClass());
-      }
     }
   }
 

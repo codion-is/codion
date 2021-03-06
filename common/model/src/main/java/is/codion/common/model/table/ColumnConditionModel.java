@@ -240,9 +240,9 @@ public interface ColumnConditionModel<R, C, T> {
   EventObserver<Boolean> getEnabledObserver();
 
   /**
-   * @return an observer notified each time the operator changes
+   * @return a Value based on the operator
    */
-  EventObserver<Operator> getOperatorObserver();
+  Value<Operator> getOperatorValue();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes
