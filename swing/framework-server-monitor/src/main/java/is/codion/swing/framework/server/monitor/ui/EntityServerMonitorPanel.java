@@ -3,13 +3,12 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
@@ -60,7 +59,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static String jdkDir = UserPreferences.getUserPreference(JDK_PREFERENCE_KEY, null);
 
-  private final Event<Boolean> alwaysOnTopChangedEvent = Event.event();
+  private final State alwaysOnTopState = State.state();
   private final EntityServerMonitor model;
   private JFrame monitorFrame;
 
@@ -83,6 +82,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public EntityServerMonitorPanel(final EntityServerMonitor model) throws RemoteException {
     this.model = model;
     initializeUI();
+    bindEvents();
   }
 
   public EntityServerMonitor getModel() {
@@ -90,18 +90,10 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   /**
-   * @return true if the parent frame is always on top
+   * @return a State controlling the alwaysOnTop state of this panels parent window
    */
-  public boolean isAlwaysOnTop() {
-    return monitorFrame != null && monitorFrame.isAlwaysOnTop();
-  }
-
-  /**
-   * @param alwaysOnTop true if the parent frame should be always on top
-   */
-  public void setAlwaysOnTop(final boolean alwaysOnTop) {
-    monitorFrame.setAlwaysOnTop(alwaysOnTop);
-    alwaysOnTopChangedEvent.onEvent(alwaysOnTop);
+  public State getAlwaysOnTopState() {
+    return alwaysOnTopState;
   }
 
   public void runJConsole() throws IOException {
@@ -183,9 +175,10 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private Control initializeAlwaysOnTopControl() {
     return ToggleControl.builder()
+            .state(alwaysOnTopState)
             .name("Always on Top")
-            .value(Value.propertyValue(this, "alwaysOnTop", boolean.class, alwaysOnTopChangedEvent))
-            .mnemonic('A').build();
+            .mnemonic('A')
+            .build();
   }
 
   private Control initializeUpateIntervalControl() {
@@ -233,6 +226,10 @@ public final class EntityServerMonitorPanel extends JPanel {
       dialog.dispose();
     }), Control.control(dialog::dispose));
     dialog.setVisible(true);
+  }
+
+  private void bindEvents() {
+    alwaysOnTopState.addDataListener(monitorFrame::setAlwaysOnTop);
   }
 
   private static JPanel initializeSouthPanel() {

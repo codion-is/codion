@@ -6772,3 +6772,4 @@
   SwingEntityComboBoxModel.initializeContents() renamed refreshItems(), returns Collection instead of List, for consistency
   AbstractEntityTableConditionPanel.canToggleAdvanced() renamed hasAdvancedView()
   Control builder usage formatting now consistent
+  EntityServerMonitorPanel, alwaysOnTopState added instead of bean property
