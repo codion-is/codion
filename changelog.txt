@@ -6775,3 +6775,4 @@
   EntityServerMonitorPanel, alwaysOnTopState added instead of bean property
   ColumnConditionModel.getOperatorObserver() replaced with getOperatorValue()
   DefaultColumnConditionModel, lock state checking implemented with Value.Validator, unnecessary type checking removed
+  EntityApplicationPanel, alwaysOnTopState added instead of bean property

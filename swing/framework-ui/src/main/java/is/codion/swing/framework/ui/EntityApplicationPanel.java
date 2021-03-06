@@ -15,9 +15,9 @@ import is.codion.common.item.Item;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -119,6 +119,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String LOOK_AND_FEEL_SELECTED_MESSAGE = "look_and_feel_selected_message";
   private static final String HELP = "help";
   private static final String ABOUT = "about";
+  private static final String ALWAYS_ON_TOP = "always_on_top";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -215,7 +216,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private JTabbedPane applicationTabPane;
 
   private final Event<?> applicationStartedEvent = Event.event();
-  private final Event<Boolean> alwaysOnTopChangedEvent = Event.event();
+  private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
 
   private final Map<EntityPanel.Builder, EntityPanel> persistentEntityPanels = new HashMap<>();
@@ -282,8 +283,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
    */
   public final boolean isAlwaysOnTop() {
-    final Window parent = getParentWindow();
-    return parent != null && parent.isAlwaysOnTop();
+    return alwaysOnTopState.get();
   }
 
   /**
@@ -291,11 +291,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #addAlwaysOnTopListener(EventDataListener)
    */
   public final void setAlwaysOnTop(final boolean alwaysOnTop) {
-    final Window parent = getParentWindow();
-    if (parent != null) {
-      parent.setAlwaysOnTop(alwaysOnTop);
-      alwaysOnTopChangedEvent.onEvent(alwaysOnTop);
-    }
+    alwaysOnTopState.set(alwaysOnTop);
+  }
+
+  /**
+   * @return a State controlling the alwaysOnTop state of this panels parent window
+   */
+  public final State getAlwaysOnTopState() {
+    return alwaysOnTopState;
   }
 
   /**
@@ -582,14 +585,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param listener a listener notified each time the always on top status changes
    */
   public final void addAlwaysOnTopListener(final EventDataListener<Boolean> listener) {
-    alwaysOnTopChangedEvent.addDataListener(listener);
+    alwaysOnTopState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeAlwaysOnTopListener(final EventListener listener) {
-    alwaysOnTopChangedEvent.removeListener(listener);
+    alwaysOnTopState.removeListener(listener);
   }
 
   /**
@@ -811,8 +814,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final ToggleControl createAlwaysOnTopControl() {
     return ToggleControl.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP))
-            .value(Value.propertyValue(this, "alwaysOnTop", boolean.class, alwaysOnTopChangedEvent))
+            .state(alwaysOnTopState)
+            .name(resourceBundle.getString(ALWAYS_ON_TOP))
             .build();
   }
 
@@ -1198,11 +1201,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param size if the JFrame is not maximized then its preferredSize is set to this value
    * @param applicationIcon the application icon
    * @param displayFrame specifies whether the frame should be displayed or left invisible
+   * @param alwaysOnTop controls the always on top state of the resulting frame
    * @return an initialized, but non-visible JFrame
    */
   protected final JFrame prepareFrame(final String title, final MaximizeFrame maximizeFrame,
                                       final MainMenu mainMenu, final Dimension size,
-                                      final ImageIcon applicationIcon, final DisplayFrame displayFrame) {
+                                      final ImageIcon applicationIcon, final DisplayFrame displayFrame,
+                                      final boolean alwaysOnTop) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(applicationIcon.getImage());
@@ -1232,6 +1237,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (mainMenu == MainMenu.YES) {
       frame.setJMenuBar(initializeMenuBar());
     }
+    frame.setAlwaysOnTop(alwaysOnTop);
     if (displayFrame == DisplayFrame.YES) {
       frame.setVisible(true);
     }
@@ -1351,6 +1357,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private void bindEventsInternal() {
     applicationModel.getConnectionValidObserver().addDataListener(active -> SwingUtilities.invokeLater(() ->
             setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED))));
+    alwaysOnTopState.addDataListener(alwaysOnTop -> {
+      final Window parent = getParentWindow();
+      if (parent != null) {
+        parent.setAlwaysOnTop(alwaysOnTop);
+      }
+    });
   }
 
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
@@ -1384,7 +1396,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           saveDefaultUsername(connectionProvider.getUser().getUsername());
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
-        final JFrame frame = prepareFrame(this.frameTitle, maximizeFrame, MainMenu.YES, frameSize, applicationIcon, displayFrame);
+        final JFrame frame = prepareFrame(this.frameTitle, maximizeFrame, MainMenu.YES, frameSize, applicationIcon,
+                displayFrame, alwaysOnTopState.get());
         this.applicationStartedEvent.onEvent();
         LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
