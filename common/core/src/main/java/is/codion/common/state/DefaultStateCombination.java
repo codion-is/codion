@@ -75,7 +75,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   @Override
-  public boolean get() {
+  public Boolean get() {
     synchronized (lock) {
       return get(conjunction, null, false);
     }

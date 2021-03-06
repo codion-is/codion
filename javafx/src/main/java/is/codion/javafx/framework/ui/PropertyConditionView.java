@@ -114,7 +114,7 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private CheckBox createEnabledBox() {
     final CheckBox box = new CheckBox();
-    FXUiUtil.createBooleanValue(box).link(model.getEnabledValue());
+    FXUiUtil.createBooleanValue(box).link(model.getEnabledState());
     FXUiUtil.link(box.disableProperty(), model.getLockedObserver());
 
     return box;

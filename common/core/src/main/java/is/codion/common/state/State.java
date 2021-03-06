@@ -4,9 +4,10 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
+import is.codion.common.value.Value;
 
 /**
- * A class encapsulating a boolean state.
+ * A class encapsulating a boolean state, non-nullable.
  * <pre>
  * State state = State.state();
  *
@@ -18,7 +19,7 @@ import is.codion.common.Conjunction;
  * </pre>
  * A factory class for {@link State} objects.
  */
-public interface State extends StateObserver {
+public interface State extends StateObserver, Value<Boolean> {
 
   /**
    * Sets the value of this {@link State}.

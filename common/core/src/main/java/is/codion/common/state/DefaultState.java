@@ -5,55 +5,111 @@ package is.codion.common.state;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
+
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 class DefaultState implements State {
 
-  private final Object lock = new Object();
+  private final Value<Boolean> value;
 
   private DefaultStateObserver observer;
-  private boolean value;
 
   DefaultState() {
     this(false);
   }
 
   DefaultState(final boolean value) {
-    this.value = value;
+    this.value = Value.value(value, false);
+    this.value.addDataListener(new Notifier());
   }
 
   @Override
   public String toString() {
-    return Boolean.toString(value);
+    return Boolean.toString(value.get());
   }
 
   @Override
   public void set(final boolean value) {
-    synchronized (lock) {
-      if (this.value != value) {
-        this.value = value;
-        if (observer != null) {
-          observer.notifyObservers(value, !value);
-        }
-      }
+    synchronized (this.value) {
+      this.value.set(value);
     }
   }
 
   @Override
-  public boolean get() {
-    synchronized (lock) {
-      return value;
+  public Boolean get() {
+    synchronized (this.value) {
+      return this.value.get();
     }
   }
 
   @Override
   public final StateObserver getObserver() {
-    synchronized (lock) {
+    synchronized (this.value) {
       if (observer == null) {
         observer = new DefaultStateObserver(this, false);
       }
 
       return observer;
     }
+  }
+
+  @Override
+  public final StateObserver getReversedObserver() {
+    return getObserver().getReversedObserver();
+  }
+
+  @Override
+  public final void set(final Boolean value) {
+    this.value.set(value);
+  }
+
+  @Override
+  public final void link(final Value<Boolean> originalValue) {
+    this.value.link(originalValue);
+  }
+
+  @Override
+  public final void link(final ValueObserver<Boolean> originalValueObserver) {
+    this.value.link(originalValueObserver);
+  }
+
+  @Override
+  public final void addValidator(final Validator<Boolean> validator) {
+    this.value.addValidator(validator);
+  }
+
+  @Override
+  public final Collection<Validator<Boolean>> getValidators() {
+    return this.value.getValidators();
+  }
+
+  @Override
+  public final Optional<Boolean> toOptional() {
+    return Optional.of(get());
+  }
+
+  @Override
+  public final boolean isNull() {
+    return false;
+  }
+
+  @Override
+  public final boolean isNotNull() {
+    return true;
+  }
+
+  @Override
+  public final boolean isNullable() {
+    return false;
+  }
+
+  @Override
+  public final boolean is(final Boolean value) {
+    return Objects.equals(get(), value);
   }
 
   @Override
@@ -76,8 +132,13 @@ class DefaultState implements State {
     getObserver().removeDataListener(listener);
   }
 
-  @Override
-  public final StateObserver getReversedObserver() {
-    return getObserver().getReversedObserver();
+  private final class Notifier implements EventDataListener<Boolean> {
+
+    @Override
+    public void onEvent(final Boolean value) {
+      if (observer != null) {
+        observer.notifyObservers(value, !value);
+      }
+    }
   }
 }
