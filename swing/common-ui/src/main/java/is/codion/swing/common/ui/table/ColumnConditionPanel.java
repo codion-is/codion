@@ -153,7 +153,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     this.toggleEnabledButton = Controls.toggleButton(ToggleControl.builder()
-            .value(conditionModel.getEnabledValue())
+            .state(conditionModel.getEnabledState())
             .icon(icons().filter())
             .build());
     if (toggleAdvancedButton == ToggleAdvancedButton.YES) {

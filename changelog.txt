@@ -6807,3 +6807,5 @@
   DefaultColumnConditionModel, lock state checking implemented with Value.Validator, unnecessary type checking removed
   EntityApplicationPanel, alwaysOnTopState added instead of bean property
   ColumnConditionModel.getEnabledObserver() replaced with getEnabledValue()
+  State now extends Value<Boolean>, allowing for linking and validation
+  ColumnConditionModel.getEnabledValue() is now back to getEnabledState()

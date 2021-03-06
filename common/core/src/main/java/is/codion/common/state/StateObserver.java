@@ -3,17 +3,12 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.value.ValueObserver;
 
 /**
  * Specifies an observer for a {@link State} instance.
  */
-public interface StateObserver extends EventObserver<Boolean> {
-
-  /**
-   * @return the value of the state being observed
-   */
-  boolean get();
+public interface StateObserver extends ValueObserver<Boolean> {
 
   /**
    * @return A StateObserver instance that is always the reverse of this StateObserver

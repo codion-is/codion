@@ -8,6 +8,9 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 
+import java.util.Objects;
+import java.util.Optional;
+
 final class DefaultStateObserver implements StateObserver {
 
   private final Object lock = new Object();
@@ -23,10 +26,35 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public boolean get() {
+  public Boolean get() {
     synchronized (lock) {
       return reversed ? !stateObserver.get() : stateObserver.get();
     }
+  }
+
+  @Override
+  public Optional<Boolean> toOptional() {
+    return Optional.of(stateObserver.get());
+  }
+
+  @Override
+  public boolean isNull() {
+    return false;
+  }
+
+  @Override
+  public boolean isNotNull() {
+    return true;
+  }
+
+  @Override
+  public boolean isNullable() {
+    return false;
+  }
+
+  @Override
+  public boolean is(final Boolean value) {
+    return Objects.equals(stateObserver.get(), value);
   }
 
   @Override

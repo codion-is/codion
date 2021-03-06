@@ -38,7 +38,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final Event<?> conditionChangedEvent = Event.event();
   private final Event<?> conditionModelClearedEvent = Event.event();
 
-  private final Value<Boolean> enabledValue = Value.value(false, false);
+  private final State enabledState = State.state();
   private final State lockedState = State.state();
 
   private final K columnIdentifier;
@@ -93,7 +93,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     this.format = format;
     this.dateTimeFormatPattern = dateTimeFormatPattern;
     this.automaticWildcard = automaticWildcard;
-    this.enabledValue.addValidator(value -> checkLock());
+    this.enabledState.addValidator(value -> checkLock());
     this.equalValues.addValidator(value -> checkLock());
     this.upperBoundValue.addValidator(value -> checkLock());
     this.lowerBoundValue.addValidator(value -> checkLock());
@@ -222,12 +222,12 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final boolean isEnabled() {
-    return enabledValue.get();
+    return enabledState.get();
   }
 
   @Override
   public final void setEnabled(final boolean enabled) {
-    enabledValue.set(enabled);
+    enabledState.set(enabled);
   }
 
   @Override
@@ -271,18 +271,18 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public final Value<Boolean> getEnabledValue() {
-    return enabledValue;
+  public final State getEnabledState() {
+    return enabledState;
   }
 
   @Override
   public final void addEnabledListener(final EventListener listener) {
-    enabledValue.addListener(listener);
+    enabledState.addListener(listener);
   }
 
   @Override
   public final void removeEnabledListener(final EventListener listener) {
-    enabledValue.removeListener(listener);
+    enabledState.removeListener(listener);
   }
 
   @Override
@@ -352,12 +352,12 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final boolean include(final R row) {
-    return !enabledValue.get() || include(comparableFunction.apply(row));
+    return !enabledState.get() || include(comparableFunction.apply(row));
   }
 
   @Override
   public final boolean include(final Comparable<T> comparable) {
-    if (!enabledValue.get()) {
+    if (!enabledState.get()) {
       return true;
     }
 
@@ -597,7 +597,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
-    enabledValue.addListener(conditionChangedEvent);
+    enabledState.addListener(conditionChangedEvent);
   }
 
   private void checkLock() {
