@@ -122,7 +122,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public int selectInteger(final String sql) throws SQLException {
-    final List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, -1);
+    final List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, 1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -132,7 +132,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public long selectLong(final String sql) throws SQLException {
-    final List<Long> longs = select(sql, LONG_RESULT_PACKER, -1);
+    final List<Long> longs = select(sql, LONG_RESULT_PACKER, 1);
     if (!longs.isEmpty()) {
       return longs.get(0);
     }
@@ -242,18 +242,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  /**
-   * Performs a query and returns the result packed by the {@code resultPacker}
-   * @param sql the sql query
-   * @param resultPacker the result packer
-   * @param fetchCount the maximum number of records to fetch
-   * @param <T> the type of object returned by the query
-   * @return a List of records based on the given query
-   * @throws SQLException thrown if anything goes wrong during the execution
-   */
-  private <T> List<T> select(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
+  private <T> List<T> select(final String sql, final ResultPacker<T> resultPacker, final int fetchLimit) throws SQLException {
     checkIfClosed();
-    requireNonNull(resultPacker, "resultPacker");
     database.countQuery(requireNonNull(sql, "sql"));
     Statement statement = null;
     SQLException exception = null;
@@ -263,7 +253,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       statement = connection.createStatement();
       resultSet = statement.executeQuery(sql);
 
-      return resultPacker.pack(resultSet, fetchCount);
+      return resultPacker.pack(resultSet, fetchLimit);
     }
     catch (final SQLException e) {
       exception = e;
