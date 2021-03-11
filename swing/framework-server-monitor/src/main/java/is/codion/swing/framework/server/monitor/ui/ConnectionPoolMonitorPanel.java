@@ -88,7 +88,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     poolSizeField.setText(format.format(statistics.getSize()));
     createdField.setText(format.format(statistics.getCreated()));
     destroyedField.setText(format.format(statistics.getDestroyed()));
-    resetTimeField.setText(DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP_FULL)
+    resetTimeField.setText(DateTimeFormatter.ofPattern(DateFormats.DATE_TIME_FULL)
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
     final double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;

@@ -17,6 +17,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A collection of locale sensitive numerical date format strings.
+ * Orders the year and month parts according to the default locale,
+ * with two digit month and day parts and two or four digit year.
  */
 public final class DateFormats {
 
@@ -53,37 +55,37 @@ public final class DateFormats {
   /**
    * Four letter year, dash delimiter, hours, minutes, i.e. dd-MM-yyyy HH:mm
    */
-  public static final String TIMESTAMP = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT);
+  public static final String DATE_TIME = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT);
 
   /**
    * Two letter year, no delimiter, hours, minutes, i.e. ddMMyy HH:mm
    */
-  public static final String TIMESTAMP_COMPACT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.TWO, TIME_SHORT);
+  public static final String DATE_TIME_COMPACT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.TWO, TIME_SHORT);
 
   /**
    * Two letter year, dash delimiter, hours, minutes, i.e. dd-MM-yy HH:mm
    */
-  public static final String TIMESTAMP_SHORT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.TWO, TIME_SHORT);
+  public static final String DATE_TIME_SHORT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.TWO, TIME_SHORT);
 
   /**
    * Four letter year, dash delimiter, hours, minutes, i.e. dd-MM-yyyy HH:mm
    */
-  public static final String TIMESTAMP_MEDIUM = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT);
+  public static final String DATE_TIME_MEDIUM = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT);
 
   /**
    * Four letter year, dash delimiter, hours, minutes, seconds, i.e. dd-MM-yyyy HH:mm:ss
    */
-  public static final String TIMESTAMP_FULL = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT + ":ss");
+  public static final String DATE_TIME_FULL = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT + ":ss");
 
   /**
    * Four letter year, dash delimiter, hours, minutes, seconds, milliseconds, i.e. dd-MM-yyyy HH:mm:ss.SSS
    */
-  public static final String TIMESTAMP_EXACT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT + ":ss.SSS");
+  public static final String DATE_TIME_EXACT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.DASH, YearLength.FOUR, TIME_SHORT + ":ss.SSS");
 
   /**
    * Two letter year, no delimiter, hours, minutes, seconds, i.e. ddMMyy HH:mm:ss
    */
-  public static final String TIMESTAMP_FULL_COMPACT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.NONE, YearLength.TWO, TIME_SHORT + ":ss");
+  public static final String DATE_TIME_FULL_COMPACT = getDateTimeFormat(Locale.getDefault(), DateDelimiter.NONE, YearLength.TWO, TIME_SHORT + ":ss");
 
   private DateFormats() {}
 

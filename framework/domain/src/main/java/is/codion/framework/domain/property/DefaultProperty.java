@@ -342,7 +342,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return TIME_FORMAT.get();
     }
     else if (attribute.isLocalDateTime()) {
-      return TIMESTAMP_FORMAT.get();
+      return DATE_TIME_FORMAT.get();
     }
 
     return null;

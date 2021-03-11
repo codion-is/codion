@@ -50,9 +50,9 @@ public interface Property<T> {
   /**
    * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats#TIMESTAMP_MEDIUM}
+   * Default value: {@link DateFormats#DATE_TIME_MEDIUM}
    */
-  PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("codion.domain.timestampFormat", DateFormats.TIMESTAMP_MEDIUM);
+  PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", DateFormats.DATE_TIME_MEDIUM);
 
   /**
    * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
