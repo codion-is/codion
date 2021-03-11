@@ -142,7 +142,7 @@ public interface Entity extends Comparable<Entity> {
    * @param attribute the attribute
    * @return true if a value is mapped to this attribute
    */
-  boolean containsValue(Attribute<?> attribute);
+  boolean contains(Attribute<?> attribute);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
@@ -549,7 +549,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(entity);
     requireNonNull(comparison);
     requireNonNull(attribute);
-    if (!entity.containsValue(attribute)) {
+    if (!entity.contains(attribute)) {
       return true;
     }
 

@@ -380,7 +380,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final <T> T remove(final Attribute<T> attribute) {
     requireNonNull(attribute, PROPERTY);
     T value = null;
-    if (entity.containsValue(attribute)) {
+    if (entity.contains(attribute)) {
       final Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
       value = entity.remove(attribute);
       notifyValueEdit(new DefaultValueChange<>(attribute, null, value), dependingValues);

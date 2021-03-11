@@ -298,13 +298,13 @@ public class DefaultLocalEntityConnectionTest {
     final List<Entity> emps = connection.select(condition(T_EMP).select()
             .attributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
     for (final Entity emp : emps) {
-      assertTrue(emp.containsValue(EMP_ID));
-      assertTrue(emp.containsValue(EMP_JOB));
-      assertTrue(emp.containsValue(EMP_DEPARTMENT_FK));
-      assertFalse(emp.containsValue(EMP_COMMISSION));
-      assertFalse(emp.containsValue(EMP_HIREDATE));
-      assertFalse(emp.containsValue(EMP_NAME));
-      assertFalse(emp.containsValue(EMP_SALARY));
+      assertTrue(emp.contains(EMP_ID));
+      assertTrue(emp.contains(EMP_JOB));
+      assertTrue(emp.contains(EMP_DEPARTMENT_FK));
+      assertFalse(emp.contains(EMP_COMMISSION));
+      assertFalse(emp.contains(EMP_HIREDATE));
+      assertFalse(emp.contains(EMP_NAME));
+      assertFalse(emp.contains(EMP_SALARY));
     }
   }
 
@@ -348,7 +348,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     Entity king = connection.selectSingle(EMP_NAME, "KING");
-    assertTrue(king.containsValue(EMP_MGR_FK));
+    assertTrue(king.contains(EMP_MGR_FK));
     assertNull(king.get(EMP_MGR_FK));
 
     king = connection.selectSingle(EMP_MGR_FK, null);

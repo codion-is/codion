@@ -346,7 +346,7 @@ public final class EntityTest {
   public void putNull() {
     final Entity dept = entities.entity(TestDomain.Department.TYPE);
     for (final Property<?> property : entities.getDefinition(TestDomain.Department.TYPE).getProperties()) {
-      assertFalse(dept.containsValue(property.getAttribute()));
+      assertFalse(dept.contains(property.getAttribute()));
       assertTrue(dept.isNull(property.getAttribute()));
       assertFalse(dept.isNotNull(property.getAttribute()));
     }
@@ -356,7 +356,7 @@ public final class EntityTest {
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
     for (final Property<?> property : entities.getDefinition(TestDomain.Department.TYPE).getProperties()) {
-      assertTrue(dept.containsValue(property.getAttribute()));
+      assertTrue(dept.contains(property.getAttribute()));
       assertTrue(dept.isNull(property.getAttribute()));
       assertFalse(dept.isNotNull(property.getAttribute()));
     }

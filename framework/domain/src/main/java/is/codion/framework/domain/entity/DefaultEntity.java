@@ -282,7 +282,7 @@ final class DefaultEntity implements Entity, Serializable {
 
     return definition.getColumnProperties().stream().allMatch(property -> {
       final Attribute<?> attribute = property.getAttribute();
-      if (containsValue(attribute) != entity.containsValue(attribute)) {
+      if (contains(attribute) != entity.contains(attribute)) {
         return false;
       }
       if (attribute.isByteArray()) {
@@ -346,7 +346,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean containsValue(final Attribute<?> attribute) {
+  public boolean contains(final Attribute<?> attribute) {
     return values.containsKey(requireNonNull(attribute, ATTRIBUTE));
   }
 
