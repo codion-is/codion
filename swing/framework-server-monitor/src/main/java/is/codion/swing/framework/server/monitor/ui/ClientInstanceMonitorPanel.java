@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClientInstanceMonitorPanel extends JPanel {
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP_FULL);
+  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateFormats.DATE_TIME_FULL);
   private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
   private final ClientInstanceMonitor model;
