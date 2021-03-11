@@ -287,7 +287,7 @@ public class DomainTest {
 
     final Entity master = entities.entity(key);
     assertEquals(Master.TYPE, master.getEntityType());
-    assertTrue(master.containsValue(Master.ID));
+    assertTrue(master.contains(Master.ID));
     assertEquals(10L, master.get(Master.ID));
 
     assertThrows(NullPointerException.class, () -> entities.entity((EntityType<Entity>) null));

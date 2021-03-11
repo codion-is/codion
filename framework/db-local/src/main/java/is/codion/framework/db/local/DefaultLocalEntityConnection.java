@@ -217,7 +217,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
 
           populatePropertiesAndValues(entity, getInsertableProperties(entityDefinition, keyGenerator.isInserted()),
-                  statementProperties, statementValues, columnProperty -> entity.containsValue(columnProperty.getAttribute()));
+                  statementProperties, statementValues, columnProperty -> entity.contains(columnProperty.getAttribute()));
           if (statementProperties.isEmpty()) {
             throw new SQLException("Unable to insert entity " + entity.getEntityType() + ", no properties to insert");
           }

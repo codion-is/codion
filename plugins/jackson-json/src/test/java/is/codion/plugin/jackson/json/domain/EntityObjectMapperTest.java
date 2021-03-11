@@ -267,8 +267,8 @@ public final class EntityObjectMapperTest {
     mapper.setIncludeNullValues(false);
 
     final Entity emp3Parsed = mapper.deserializeEntities(mapper.serializeEntities(singletonList(emp3))).get(0);
-    assertFalse(emp3Parsed.containsValue(TestDomain.EMP_HIREDATE));
-    assertFalse(emp3Parsed.containsValue(TestDomain.EMP_SALARY));
+    assertFalse(emp3Parsed.contains(TestDomain.EMP_HIREDATE));
+    assertFalse(emp3Parsed.contains(TestDomain.EMP_SALARY));
   }
 
   @Test

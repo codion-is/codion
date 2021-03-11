@@ -107,7 +107,7 @@ public class DefaultEntityTest {
     final Entity masterDeserialized = Serializer.deserialize(Serializer.serialize(master));
     assertEquals(master.get(Master.ID), masterDeserialized.get(Master.ID));
     assertEquals(master.get(Master.CODE), masterDeserialized.get(Master.CODE));
-    assertFalse(masterDeserialized.containsValue(Master.NAME));
+    assertFalse(masterDeserialized.contains(Master.NAME));
   }
 
   @Test
@@ -404,9 +404,9 @@ public class DefaultEntityTest {
 
     testEntity.setAs(null);
     assertTrue(testEntity.getPrimaryKey().isNull());
-    assertFalse(testEntity.containsValue(Detail.DATE));
-    assertFalse(testEntity.containsValue(Detail.STRING));
-    assertFalse(testEntity.containsValue(Detail.BOOLEAN));
+    assertFalse(testEntity.contains(Detail.DATE));
+    assertFalse(testEntity.contains(Detail.STRING));
+    assertFalse(testEntity.contains(Detail.BOOLEAN));
     assertFalse(testEntity.isModified());
 
     testEntity = getDetailEntity(detailId, detailInt, detailDouble,
@@ -414,9 +414,9 @@ public class DefaultEntityTest {
 
     testEntity.clearPrimaryKey();
     assertTrue(testEntity.getPrimaryKey().isNull());
-    assertTrue(testEntity.containsValue(Detail.DATE));
-    assertTrue(testEntity.containsValue(Detail.STRING));
-    assertTrue(testEntity.containsValue(Detail.BOOLEAN));
+    assertTrue(testEntity.contains(Detail.DATE));
+    assertTrue(testEntity.contains(Detail.STRING));
+    assertTrue(testEntity.contains(Detail.BOOLEAN));
   }
 
   @Test
@@ -548,10 +548,10 @@ public class DefaultEntityTest {
     final Entity empDepartment = employee.getForeignKey(Employee.DEPARTMENT_FK);
     assertNotNull(empDepartment);
     //non loaded entity, created from foreign key
-    assertFalse(empDepartment.containsValue(Department.NAME));
+    assertFalse(empDepartment.contains(Department.NAME));
     assertNotNull(employee.get(Employee.DEPARTMENT));
-    assertFalse(employee.containsValue(Employee.DEPARTMENT_FK));
-    assertTrue(employee.containsValue(Employee.DEPARTMENT));
+    assertFalse(employee.contains(Employee.DEPARTMENT_FK));
+    assertTrue(employee.contains(Employee.DEPARTMENT));
   }
 
   @Test

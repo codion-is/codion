@@ -83,9 +83,9 @@ public class DefaultEntityDefinitionTest {
     final Domain domain = new TestDomain();
     final EntityDefinition definition = domain.getEntities().getDefinition(Detail.TYPE);
     final Entity detail = definition.entity(property -> null);
-    assertFalse(detail.containsValue(Detail.DOUBLE));//columnHasDefaultValue
-    assertFalse(detail.containsValue(Detail.DATE));//columnHasDefaultValue
-    assertTrue(detail.containsValue(Detail.BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
+    assertFalse(detail.contains(Detail.DOUBLE));//columnHasDefaultValue
+    assertFalse(detail.contains(Detail.DATE));//columnHasDefaultValue
+    assertTrue(detail.contains(Detail.BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
   }
 
   @Test

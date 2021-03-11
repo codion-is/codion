@@ -6813,3 +6813,4 @@
   AbstractFilteredTableModel.sort() now does nothing if sort model is not enabled, preventing unnecessary event firings
   AbstractFilteredTableModel, add methods now only fire events if visible items were added
   DateFormats.TIMESTAMP_* renamed DATE_TIME_*, Property.TIMESTAMP_FORMAT configuration value renamed DATE_TIME_FORMAT
+  Entity.containsValue() renamed contains()

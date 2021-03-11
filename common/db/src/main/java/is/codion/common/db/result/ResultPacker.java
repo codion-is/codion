@@ -34,17 +34,17 @@ public interface ResultPacker<T> {
    * Items are skipped if {@link #fetch(ResultSet)} returns null.
    * This method does not close or modify the ResultSet in any way.
    * @param resultSet the ResultSet instance containing the query result to process
-   * @param fetchCount the maximum number of records to fetch from the result set,
+   * @param fetchLimit the maximum number of records to fetch from the result set,
    * a negative value means all should be fetched.
    * @return a List containing the data from the query result
    * @throws SQLException thrown if anything goes wrong during the packing
    * @throws NullPointerException in case resultSet is null
    */
-  default List<T> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+  default List<T> pack(final ResultSet resultSet, final int fetchLimit) throws SQLException {
     requireNonNull(resultSet, "resultSet");
-    final List<T> result = fetchCount < 0 ? new ArrayList<>() : new ArrayList<>(fetchCount);
+    final List<T> result = fetchLimit < 0 ? new ArrayList<>() : new ArrayList<>(fetchLimit);
     int counter = 0;
-    while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+    while (resultSet.next() && (fetchLimit < 0 || counter++ < fetchLimit)) {
       final T item = fetch(resultSet);
       if (item != null) {
         result.add(item);
