@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.DateFormats;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
@@ -431,7 +431,9 @@ public final class ClientUserMonitor {
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.DATE_TIME_FULL);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
+            .delimiter("-").fourDigitYear().hoursMinutesSeconds()
+            .build().getDateTimePattern());
 
     @Override
     protected void setValue(final Object value) {

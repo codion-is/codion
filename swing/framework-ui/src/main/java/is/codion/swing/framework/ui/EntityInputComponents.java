@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.DateFormats;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
@@ -554,20 +554,20 @@ public final class EntityInputComponents {
     }
 
     final Property<T> property = entityDefinition.getProperty(attribute);
-    final String formatString = property.getDateTimeFormatPattern();
+    final String formatPattern = property.getDateTimeFormatPattern();
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState,
-            DateFormats.getDateMask(formatString), ValueContainsLiterals.YES);
+            NumericalDateTimePattern.getMask(formatPattern), ValueContainsLiterals.YES);
     if (attribute.isLocalDate()) {
       TemporalValues.localDateValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDate>) value);
-      return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatString, calendarButton, enabledState);
+      return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatPattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
       TemporalValues.localDateTimeValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDateTime>) value);
-      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatString, calendarButton, enabledState);
+      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatPattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalTime()) {
       TemporalValues.localTimeValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalTime>) value);
-      return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatString, enabledState);
+      return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatPattern, enabledState);
     }
 
     throw new IllegalArgumentException("Can not create a date input panel for a non-date attribute: " + attribute);
@@ -823,7 +823,7 @@ public final class EntityInputComponents {
       return initializeLongField((Property<Long>) property);
     }
     else if (attribute.isTemporal()) {
-      return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
+      return TextFields.createFormattedField(NumericalDateTimePattern.getMask(property.getDateTimeFormatPattern()));
     }
     else if (attribute.isString()) {
       return initializeStringField(formatMaskString, valueContainsLiterals);

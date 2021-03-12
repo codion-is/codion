@@ -1,0 +1,158 @@
+/*
+ * Copyright (c) 2021 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.common.formats;
+
+import java.io.Serializable;
+import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
+
+final class DefaultNumericalDatePattern implements NumericalDateTimePattern, Serializable {
+
+  private static final String FOUR_DIGIT_YEAR = "yyyy";
+  private static final String TWO_DIGIT_YEAR = "yy";
+  private static final String TWO_DIGIT_MONTH = "MM";
+  private static final String TWO_DIGIT_DAY = "dd";
+  private static final String HOURS_MINUTES = "HH:mm";
+  private static final String HOURS_MINUTES_SECONDS = "HH:mm:ss";
+  private static final String HOURS_MINUTES_SECONDS_MILLISECONDS = "HH:mm:ss.SSS";
+
+  private final String delimiter;
+  private final boolean fourDigitYear;
+  private final String timeFormat;
+
+  DefaultNumericalDatePattern(final String delimiter, final boolean fourDigitYear, final String timeFormat) {
+    this.delimiter = requireNonNull(delimiter);
+    this.fourDigitYear = fourDigitYear;
+    this.timeFormat = timeFormat;
+  }
+
+  @Override
+  public String getTimePattern() {
+    return timeFormat;
+  }
+
+  @Override
+  public String getDatePattern() {
+    return getDatePattern(Locale.getDefault());
+  }
+
+  @Override
+  public String getDateTimePattern() {
+    return getDateTimePattern(Locale.getDefault());
+  }
+
+  @Override
+  public String getDatePattern(final Locale locale) {
+    return getDatePattern(locale, delimiter, fourDigitYear);
+  }
+
+  @Override
+  public String getDateTimePattern(final Locale locale) {
+    return getDateTimePattern(locale, delimiter, fourDigitYear, timeFormat);
+  }
+
+  private static String getDatePattern(final Locale locale, final String delimiter, final boolean fourDigitYear) {
+    return getDateTimePattern(locale, delimiter, fourDigitYear, null);
+  }
+
+  private static String getDateTimePattern(final Locale locale, final String delimiter, final boolean fourDigitYear,
+                                           final String timePattern) {
+    final String datePattern = DateTimeFormatterBuilder.
+            getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale).toLowerCase(locale);
+    final List<String> pattern = new ArrayList<>(Arrays.asList(null, null, null));
+    pattern.set(indexOf(datePattern, Element.YEAR), fourDigitYear ? FOUR_DIGIT_YEAR : TWO_DIGIT_YEAR);
+    pattern.set(indexOf(datePattern, Element.MONTH), TWO_DIGIT_MONTH);
+    pattern.set(indexOf(datePattern, Element.DAY), TWO_DIGIT_DAY);
+    final StringBuilder builder = new StringBuilder(String.join(delimiter, pattern));
+    if (timePattern != null) {
+      builder.append(" ").append(timePattern);
+    }
+
+    return builder.toString();
+  }
+
+  private static int indexOf(final String pattern, final Element element) {
+    return Stream.of(pattern.indexOf('y'), pattern.indexOf('m'), pattern.indexOf('d'))
+            .sorted().collect(Collectors.toList()).indexOf(pattern.indexOf(element.getChar()));
+  }
+
+  private enum Element {
+    YEAR {
+      @Override
+      char getChar() {
+        return 'y';
+      }
+    },
+    MONTH {
+      @Override
+      char getChar() {
+        return 'm';
+      }
+    },
+    DAY {
+      @Override
+      char getChar() {
+        return 'd';
+      }
+    };
+
+    abstract char getChar();
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private String delimiter = "";
+    private boolean fourDigitYear = true;
+    private String timeFormat;
+
+    @Override
+    public Builder delimiter(final String delimiter) {
+      this.delimiter = requireNonNull(delimiter);
+      return this;
+    }
+
+    @Override
+    public Builder twoDigitYear() {
+      this.fourDigitYear = false;
+      return this;
+    }
+
+    @Override
+    public Builder fourDigitYear() {
+      this.fourDigitYear = true ;
+      return this;
+    }
+
+    @Override
+    public Builder hoursMinutes() {
+      this.timeFormat = HOURS_MINUTES;
+      return this;
+    }
+
+    @Override
+    public Builder hoursMinutesSeconds() {
+      this.timeFormat = HOURS_MINUTES_SECONDS;
+      return this;
+    }
+
+    @Override
+    public Builder hoursMinutesSecondsMilliseconds() {
+      this.timeFormat = HOURS_MINUTES_SECONDS_MILLISECONDS;
+      return this;
+    }
+
+    public NumericalDateTimePattern build() {
+      return new DefaultNumericalDatePattern(delimiter, fourDigitYear, timeFormat);
+    }
+  }
+}

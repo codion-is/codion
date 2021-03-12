@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.time;
 
-import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
@@ -42,10 +42,10 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
   /**
    * Instantiates a new LocalDateInputPanel.
    * @param initialValue the initial value to display
-   * @param dateFormat the date format
+   * @param dateFormatPattern the date format pattern
    */
-  public LocalDateInputPanel(final LocalDate initialValue, final String dateFormat) {
-    this(TextFields.createFormattedField(DateFormats.getDateMask(dateFormat)), dateFormat, CalendarButton.YES, null);
+  public LocalDateInputPanel(final LocalDate initialValue, final String dateFormatPattern) {
+    this(TextFields.createFormattedField(NumericalDateTimePattern.getMask(dateFormatPattern)), dateFormatPattern, CalendarButton.YES, null);
     setTemporal(initialValue);
   }
 
@@ -53,12 +53,12 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
    * Instantiates a new LocalTimeInputPanel.
    * @param inputField the input field
    * @param calendarButton if true a button for displaying a calendar is included
-   * @param dateFormat the date format
+   * @param dateFormatPattern the date format pattern
    * @param enabledState a StateObserver controlling the enabled state of the input field
    */
-  public LocalDateInputPanel(final JFormattedTextField inputField, final String dateFormat,
+  public LocalDateInputPanel(final JFormattedTextField inputField, final String dateFormatPattern,
                              final CalendarButton calendarButton, final StateObserver enabledState) {
-    super(inputField, dateFormat, LocalDate::parse, enabledState);
+    super(inputField, dateFormatPattern, LocalDate::parse, enabledState);
     if (calendarButton == CalendarButton.YES) {
       this.button = new JButton(Control.builder()
               .command(this::displayCalendar)

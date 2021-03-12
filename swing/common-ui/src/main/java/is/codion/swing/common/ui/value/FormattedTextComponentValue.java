@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.Formats;
+import is.codion.common.formats.Formats;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.JTextComponent;

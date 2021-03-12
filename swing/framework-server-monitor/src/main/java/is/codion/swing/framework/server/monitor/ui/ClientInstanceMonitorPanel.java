@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.common.DateFormats;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
@@ -44,7 +44,10 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClientInstanceMonitorPanel extends JPanel {
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateFormats.DATE_TIME_FULL);
+  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+          DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
+                  .delimiter("-").fourDigitYear().hoursMinutesSeconds()
+                  .build().getDatePattern());
   private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
   private final ClientInstanceMonitor model;

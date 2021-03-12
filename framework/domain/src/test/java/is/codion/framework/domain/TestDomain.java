@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.DateFormats;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -293,7 +293,9 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)
-                    .dateTimeFormatPattern(DateFormats.DATE_SHORT_DOT)
+                    .dateTimeFormatPattern(NumericalDateTimePattern.builder()
+                            .delimiter(".").fourDigitYear()
+                            .build().getDatePattern())
                     .nullable(false)
                     .beanProperty("hiredate"),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION)

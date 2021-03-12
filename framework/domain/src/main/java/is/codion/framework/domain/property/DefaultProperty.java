@@ -3,9 +3,9 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.common.Formats;
 import is.codion.common.Text;
 import is.codion.common.Util;
+import is.codion.common.formats.Formats;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 

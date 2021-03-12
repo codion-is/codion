@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.time;
 
-import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
@@ -45,10 +45,10 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
   /**
    * Instantiates a new LocalDateTimeInputPanel.
    * @param initialValue the initial value to display
-   * @param dateFormat the date format
+   * @param dateTimeFormatPattern the date/time format pattern
    */
-  public LocalDateTimeInputPanel(final LocalDateTime initialValue, final String dateFormat) {
-    this(TextFields.createFormattedField(DateFormats.getDateMask(dateFormat)), dateFormat, CalendarButton.YES, null);
+  public LocalDateTimeInputPanel(final LocalDateTime initialValue, final String dateTimeFormatPattern) {
+    this(TextFields.createFormattedField(NumericalDateTimePattern.getMask(dateTimeFormatPattern)), dateTimeFormatPattern, CalendarButton.YES, null);
     setTemporal(initialValue);
   }
 
@@ -56,12 +56,12 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
    * Instantiates a new LocalDateTimeInputPanel.
    * @param inputField the input field
    * @param calendarButton if true a button for displaying a calendar is included
-   * @param dateFormat the date format
+   * @param dateTimeFormatPattern the date/time format pattern
    * @param enabledState a StateObserver controlling the enabled state of the input field
    */
-  public LocalDateTimeInputPanel(final JFormattedTextField inputField, final String dateFormat,
+  public LocalDateTimeInputPanel(final JFormattedTextField inputField, final String dateTimeFormatPattern,
                                  final CalendarButton calendarButton, final StateObserver enabledState) {
-    super(inputField, dateFormat, LocalDateTime::parse, enabledState);
+    super(inputField, dateTimeFormatPattern, LocalDateTime::parse, enabledState);
     if (calendarButton == CalendarButton.YES) {
       this.button = new JButton(Control.builder()
               .command(this::displayCalendar)
