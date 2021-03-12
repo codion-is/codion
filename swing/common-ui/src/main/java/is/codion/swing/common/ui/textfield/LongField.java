@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.Formats;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.formats.Formats;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import java.text.NumberFormat;

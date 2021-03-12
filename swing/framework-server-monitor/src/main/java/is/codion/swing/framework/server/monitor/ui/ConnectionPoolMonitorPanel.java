@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.common.DateFormats;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -88,7 +88,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     poolSizeField.setText(format.format(statistics.getSize()));
     createdField.setText(format.format(statistics.getCreated()));
     destroyedField.setText(format.format(statistics.getDestroyed()));
-    resetTimeField.setText(DateTimeFormatter.ofPattern(DateFormats.DATE_TIME_FULL)
+    resetTimeField.setText(DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
+            .delimiter("-").fourDigitYear().hoursMinutesSeconds()
+            .build().getDatePattern())
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
     final double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;

@@ -3,10 +3,10 @@
  */
 package is.codion.swing.common.ui.table;
 
-import is.codion.common.DateFormats;
 import is.codion.common.db.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -442,21 +442,21 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
       }
       else if (typeClass.equals(LocalTime.class)) {
         final JFormattedTextField formattedField =
-                TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+                TextFields.createFormattedField(NumericalDateTimePattern.getMask(columnConditionModel.getDateTimeFormatPattern()));
         TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalTime>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDate.class)) {
         final JFormattedTextField formattedField =
-                TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+                TextFields.createFormattedField(NumericalDateTimePattern.getMask(columnConditionModel.getDateTimeFormatPattern()));
         TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalDate>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         final JFormattedTextField formattedField =
-                TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+                TextFields.createFormattedField(NumericalDateTimePattern.getMask(columnConditionModel.getDateTimeFormatPattern()));
         TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalDateTime>) value);
 
         return formattedField;

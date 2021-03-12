@@ -3,9 +3,9 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerInformation;
@@ -252,7 +252,9 @@ public final class ServerMonitor {
    */
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
-    final String startDate = DateTimeFormatter.ofPattern(DateFormats.DATE_TIME_FULL).format(serverInformation.getStartTime());
+    final String startDate = DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
+            .delimiter("-").fourDigitYear().hoursMinutesSeconds()
+            .build().getDateTimePattern()).format(serverInformation.getStartTime());
     contents.append("Server info:").append("\n");
     contents.append(serverInformation.getServerName()).append(" (").append(startDate).append(")").append(
             " port: ").append(serverInformation.getServerPort()).append("\n").append("\n");

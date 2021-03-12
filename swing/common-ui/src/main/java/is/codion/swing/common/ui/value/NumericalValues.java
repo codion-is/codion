@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.Formats;
 import is.codion.common.event.EventObserver;
+import is.codion.common.formats.Formats;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.BigDecimalField;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common;
+package is.codion.common.formats;
 
 import java.text.DecimalFormat;
 import java.text.FieldPosition;

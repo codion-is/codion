@@ -3,8 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.common.DateFormats;
 import is.codion.common.Serializer;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -83,12 +83,14 @@ public final class PropertiesTest {
 
   @Test
   public void intPropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).format(new SimpleDateFormat(DateFormats.DATE_COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute"))
+            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().twoDigitYear().build().getDatePattern())));
   }
 
   @Test
   public void doublePropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute")).format(new SimpleDateFormat(DateFormats.DATE_COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute"))
+            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().twoDigitYear().build().getDatePattern())));
   }
 
   @Test

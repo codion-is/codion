@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.Configuration;
-import is.codion.common.DateFormats;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
@@ -43,23 +43,28 @@ public interface Property<T> {
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats#TIME_SHORT}
+   * Default value: HH:mm
    */
-  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", DateFormats.TIME_SHORT);
+  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat",
+          NumericalDateTimePattern.builder().hoursMinutes().build().getTimePattern());
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats#DATE_TIME_MEDIUM}
+   * Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
    */
-  PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", DateFormats.DATE_TIME_MEDIUM);
+  PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", NumericalDateTimePattern.builder()
+          .delimiter("-").fourDigitYear().hoursMinutes()
+          .build().getDateTimePattern());
 
   /**
    * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
-   * Default value: {@link DateFormats#DATE_SHORT_DASH}
+   * Default value: dd-MM-yyyy [month/day order is locale specific]
    */
-  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", DateFormats.DATE_SHORT_DASH);
+  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", NumericalDateTimePattern.builder()
+          .delimiter("-").fourDigitYear()
+          .build().getDatePattern());
 
   /**
    * Specifies the default foreign key fetch depth<br>
