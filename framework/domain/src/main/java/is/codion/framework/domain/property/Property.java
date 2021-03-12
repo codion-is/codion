@@ -54,7 +54,7 @@ public interface Property<T> {
    * Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
    */
   PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", NumericalDateTimePattern.builder()
-          .delimiter("-").fourDigitYear().hoursMinutes()
+          .delimiterDash().yearFourDigits().hoursMinutes()
           .build().getDateTimePattern());
 
   /**
@@ -63,7 +63,7 @@ public interface Property<T> {
    * Default value: dd-MM-yyyy [month/day order is locale specific]
    */
   PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", NumericalDateTimePattern.builder()
-          .delimiter("-").fourDigitYear()
+          .delimiterDash().yearFourDigits()
           .build().getDatePattern());
 
   /**
@@ -358,5 +358,13 @@ public interface Property<T> {
      * @throws IllegalStateException in case the underlying attribute is not a date/time based one
      */
     Property.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
+
+    /**
+     * Sets the numerical date/time format pattern used when presenting and inputting values
+     * @param numericalDateTimePattern the format pattern
+     * @return this instance
+     * @throws IllegalStateException in case the underlying attribute is not a date/time based one
+     */
+    Property.Builder<T> dateTimePattern(NumericalDateTimePattern numericalDateTimePattern);
   }
 }

@@ -5,6 +5,7 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -106,7 +107,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Employee.REPORTSTO),
             foreignKeyProperty(Employee.REPORTSTO_FK),
             columnProperty(Employee.BIRTHDATE),
-            columnProperty(Employee.HIREDATE),
+            columnProperty(Employee.HIREDATE)
+                    .dateTimePattern(NumericalDateTimePattern.builder()
+                            .delimiterDot()
+                            .yearFourDigits()
+                            .build()),
             columnProperty(Employee.ADDRESS)
                     .maximumLength(70),
             columnProperty(Employee.CITY)
@@ -246,7 +251,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false),
             foreignKeyProperty(Invoice.CUSTOMER_FK),
             columnProperty(Invoice.INVOICEDATE)
-                    .nullable(false),
+                    .nullable(false)
+                    .dateTimePattern(NumericalDateTimePattern.builder()
+                            .delimiterDot()
+                            .yearFourDigits()
+                            .hoursMinutes()
+                            .build()),
             columnProperty(Invoice.BILLINGADDRESS)
                     .maximumLength(70),
             columnProperty(Invoice.BILLINGCITY)

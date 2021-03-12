@@ -293,9 +293,10 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)
-                    .dateTimeFormatPattern(NumericalDateTimePattern.builder()
-                            .delimiter(".").fourDigitYear()
-                            .build().getDatePattern())
+                    .dateTimePattern(NumericalDateTimePattern.builder()
+                            .delimiterDot()
+                            .yearFourDigits()
+                            .build())
                     .nullable(false)
                     .beanProperty("hiredate"),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION)

@@ -431,9 +431,9 @@ public final class ClientUserMonitor {
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
-            .delimiter("-").fourDigitYear().hoursMinutesSeconds()
-            .build().getDateTimePattern());
+    private final DateTimeFormatter formatter = NumericalDateTimePattern.builder()
+            .delimiterDash().yearFourDigits().hoursMinutesSeconds()
+            .build().getFormatter();
 
     @Override
     protected void setValue(final Object value) {

@@ -5,6 +5,7 @@ package is.codion.common.formats;
 
 import java.io.Serializable;
 import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -59,6 +60,11 @@ final class DefaultNumericalDatePattern implements NumericalDateTimePattern, Ser
   @Override
   public String getDateTimePattern(final Locale locale) {
     return getDateTimePattern(locale, delimiter, fourDigitYear, timeFormat);
+  }
+
+  @Override
+  public DateTimeFormatter getFormatter() {
+    return DateTimeFormatter.ofPattern(getDateTimePattern());
   }
 
   private static String getDatePattern(final Locale locale, final String delimiter, final boolean fourDigitYear) {
@@ -122,13 +128,28 @@ final class DefaultNumericalDatePattern implements NumericalDateTimePattern, Ser
     }
 
     @Override
-    public Builder twoDigitYear() {
+    public Builder delimiterDash() {
+      return delimiter("-");
+    }
+
+    @Override
+    public Builder delimiterDot() {
+      return delimiter(".");
+    }
+
+    @Override
+    public Builder delimiterSlash() {
+      return delimiter("/");
+    }
+
+    @Override
+    public Builder yearTwoDigits() {
       this.fourDigitYear = false;
       return this;
     }
 
     @Override
-    public Builder fourDigitYear() {
+    public Builder yearFourDigits() {
       this.fourDigitYear = true ;
       return this;
     }

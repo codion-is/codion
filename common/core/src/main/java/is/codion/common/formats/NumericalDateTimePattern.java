@@ -3,6 +3,7 @@
  */
 package is.codion.common.formats;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
@@ -45,6 +46,11 @@ public interface NumericalDateTimePattern {
   String getDateTimePattern(Locale locale);
 
   /**
+   * @return a new {@link DateTimeFormatter} instance based on this pattern
+   */
+  DateTimeFormatter getFormatter();
+
+  /**
    * Parses the date pattern and returns mask string that can be used in JFormattedFields.
    * This only works with plain numerical date formats.
    * @param numericalDatePattern the format pattern for which to create the mask
@@ -81,12 +87,27 @@ public interface NumericalDateTimePattern {
     /**
      * @return this Builder instance
      */
-    Builder twoDigitYear();
+    Builder delimiterDash();
 
     /**
      * @return this Builder instance
      */
-    Builder fourDigitYear();
+    Builder delimiterDot();
+
+    /**
+     * @return this Builder instance
+     */
+    Builder delimiterSlash();
+
+    /**
+     * @return this Builder instance
+     */
+    Builder yearTwoDigits();
+
+    /**
+     * @return this Builder instance
+     */
+    Builder yearFourDigits();
 
     /**
      * @return this Builder instance

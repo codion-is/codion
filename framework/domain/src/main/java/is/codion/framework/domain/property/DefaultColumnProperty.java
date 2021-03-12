@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.math.BigDecimal;
@@ -528,6 +529,12 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
       super.dateTimeFormatPattern(dateTimeFormatPattern);
+      return this;
+    }
+
+    @Override
+    public ColumnProperty.Builder<T> dateTimePattern(final NumericalDateTimePattern dateTimePattern) {
+      super.dateTimePattern(dateTimePattern);
       return this;
     }
 
