@@ -46,7 +46,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
           DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
-                  .delimiter("-").fourDigitYear().hoursMinutesSeconds()
+                  .delimiterDash().yearFourDigits().hoursMinutesSeconds()
                   .build().getDatePattern());
   private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 

@@ -89,7 +89,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     createdField.setText(format.format(statistics.getCreated()));
     destroyedField.setText(format.format(statistics.getDestroyed()));
     resetTimeField.setText(DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
-            .delimiter("-").fourDigitYear().hoursMinutesSeconds()
+            .delimiterDash().yearFourDigits().hoursMinutesSeconds()
             .build().getDatePattern())
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));

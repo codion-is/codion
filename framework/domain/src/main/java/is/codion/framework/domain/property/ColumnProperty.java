@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
+import is.codion.common.formats.NumericalDateTimePattern;
 
 import java.math.RoundingMode;
 import java.sql.ResultSet;
@@ -218,6 +219,9 @@ public interface ColumnProperty<T> extends Property<T> {
 
     @Override
     ColumnProperty.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
+
+    @Override
+    ColumnProperty.Builder<T> dateTimePattern(NumericalDateTimePattern numericalDateTimePattern);
 
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.

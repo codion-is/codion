@@ -84,13 +84,13 @@ public final class PropertiesTest {
   @Test
   public void intPropertyWithDateFormat() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute"))
-            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().twoDigitYear().build().getDatePattern())));
+            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
   }
 
   @Test
   public void doublePropertyWithDateFormat() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute"))
-            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().twoDigitYear().build().getDatePattern())));
+            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
   }
 
   @Test

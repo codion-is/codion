@@ -6815,3 +6815,5 @@
   DateFormats.TIMESTAMP_* renamed DATE_TIME_*, Property.TIMESTAMP_FORMAT configuration value renamed DATE_TIME_FORMAT
   Entity.containsValue() renamed contains()
   DateFormats replaced with NumericalDateTimePattern + Builder, moved to format package along with Formats
+  NumericalDateTimePattern, some additions and renaming
+  Property.dateTimePattern added

@@ -29,7 +29,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -252,9 +251,9 @@ public final class ServerMonitor {
    */
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
-    final String startDate = DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
-            .delimiter("-").fourDigitYear().hoursMinutesSeconds()
-            .build().getDateTimePattern()).format(serverInformation.getStartTime());
+    final String startDate = NumericalDateTimePattern.builder()
+            .delimiterDash().yearFourDigits().hoursMinutesSeconds()
+            .build().getFormatter().format(serverInformation.getStartTime());
     contents.append("Server info:").append("\n");
     contents.append(serverInformation.getServerName()).append(" (").append(startDate).append(")").append(
             " port: ").append(serverInformation.getServerPort()).append("\n").append("\n");

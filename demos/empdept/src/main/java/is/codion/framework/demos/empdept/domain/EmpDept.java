@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.empdept.domain;
 
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -170,7 +171,11 @@ public final class EmpDept extends DefaultDomain {
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, "Hiredate")
                     .nullable(false)
-                    .beanProperty("hiredate"),
+                    .beanProperty("hiredate")
+                    .dateTimePattern(NumericalDateTimePattern.builder()
+                            .delimiterDash()
+                            .yearFourDigits()
+                            .build()),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location",
                     Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))

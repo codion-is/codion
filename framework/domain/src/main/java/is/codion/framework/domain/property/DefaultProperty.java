@@ -6,6 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.Text;
 import is.codion.common.Util;
 import is.codion.common.formats.Formats;
+import is.codion.common.formats.NumericalDateTimePattern;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -115,14 +116,19 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   private Format format;
 
   /**
-   * The date/time format pattern
+   * A locale sensitive numerical date/time pattern
    */
-  private String dateTimeFormatPattern;
+  private NumericalDateTimePattern dateTimePattern;
 
   /**
    * The rounding mode to use when working with decimal numbers
    */
   private RoundingMode decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
+
+  /**
+   * The date/time format pattern
+   */
+  private transient String dateTimeFormatPattern;
 
   /**
    * The DateTimeFormatter to use, based on dateTimeFormatPattern
@@ -223,7 +229,10 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   @Override
   public final String getDateTimeFormatPattern() {
     if (dateTimeFormatPattern == null) {
-      return getDefaultDateTimeFormatPattern();
+      if (dateTimePattern == null) {
+        return getDefaultDateTimeFormatPattern();
+      }
+      dateTimeFormatPattern = dateTimePattern.getDateTimePattern();
     }
 
     return dateTimeFormatPattern;
@@ -539,8 +548,27 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       if (!property.attribute.isTemporal()) {
         throw new IllegalStateException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
       }
-      property.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
+      if (property.dateTimePattern != null) {
+        throw new IllegalStateException("dateTimePattern has already been set for property: " + property.attribute);
+      }
       property.dateTimeFormatPattern = dateTimeFormatPattern;
+      property.dateTimeFormatter = ofPattern(property.dateTimeFormatPattern);
+      return this;
+    }
+
+    @Override
+    public Builder<T> dateTimePattern(final NumericalDateTimePattern dateTimePattern) {
+      requireNonNull(dateTimePattern, "dateTimePattern");
+      if (!property.attribute.isTemporal()) {
+        throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + property.attribute);
+      }
+      if (property.dateTimeFormatPattern != null) {
+        throw new IllegalStateException("dateTimeFormatPattern has already been set for property: " + property.attribute);
+      }
+      property.dateTimePattern = dateTimePattern;
+      property.dateTimeFormatPattern = dateTimePattern.getDateTimePattern();
+      property.dateTimeFormatter = dateTimePattern.getFormatter();
+
       return this;
     }
 

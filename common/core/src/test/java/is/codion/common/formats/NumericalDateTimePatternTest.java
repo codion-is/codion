@@ -19,7 +19,7 @@ public final class NumericalDateTimePatternTest {
   @Test
   public void locale() {
     final NumericalDateTimePattern dateFormat =
-            NumericalDateTimePattern.builder().delimiter("-").fourDigitYear().hoursMinutes().build();
+            NumericalDateTimePattern.builder().delimiterDash().yearFourDigits().hoursMinutes().build();
 
     final Locale iceland = new Locale("is", "IS");
     final Locale us = new Locale("en", "US");
