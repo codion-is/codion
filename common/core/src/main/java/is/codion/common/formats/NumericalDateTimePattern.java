@@ -70,7 +70,7 @@ public interface NumericalDateTimePattern {
    * @return a new Builder for a {@link NumericalDateTimePattern}.
    */
   static Builder builder() {
-    return new DefaultNumericalDatePattern.DefaultBuilder();
+    return new DefaultNumericalDateTimePattern.DefaultBuilder();
   }
 
   /**

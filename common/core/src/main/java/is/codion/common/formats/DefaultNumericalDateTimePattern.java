@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultNumericalDatePattern implements NumericalDateTimePattern, Serializable {
+final class DefaultNumericalDateTimePattern implements NumericalDateTimePattern, Serializable {
 
   private static final String FOUR_DIGIT_YEAR = "yyyy";
   private static final String TWO_DIGIT_YEAR = "yy";
@@ -31,7 +31,7 @@ final class DefaultNumericalDatePattern implements NumericalDateTimePattern, Ser
   private final boolean fourDigitYear;
   private final String timeFormat;
 
-  DefaultNumericalDatePattern(final String delimiter, final boolean fourDigitYear, final String timeFormat) {
+  DefaultNumericalDateTimePattern(final String delimiter, final boolean fourDigitYear, final String timeFormat) {
     this.delimiter = requireNonNull(delimiter);
     this.fourDigitYear = fourDigitYear;
     this.timeFormat = timeFormat;
@@ -173,7 +173,7 @@ final class DefaultNumericalDatePattern implements NumericalDateTimePattern, Ser
     }
 
     public NumericalDateTimePattern build() {
-      return new DefaultNumericalDatePattern(delimiter, fourDigitYear, timeFormat);
+      return new DefaultNumericalDateTimePattern(delimiter, fourDigitYear, timeFormat);
     }
   }
 }
