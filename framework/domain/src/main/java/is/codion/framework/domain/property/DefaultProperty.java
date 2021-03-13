@@ -536,7 +536,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
       }
       if (property.attribute.isTemporal()) {
-        throw new IllegalStateException("Use dateTimeFormatPattern() for temporal properties: " + property.attribute);
+        throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal properties: " + property.attribute);
       }
       property.format = format;
       return this;

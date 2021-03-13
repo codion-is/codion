@@ -88,7 +88,7 @@ public interface ColumnConditionModel<R, C, T> {
   /**
    * @return the date/time format pattern, if any
    */
-  String getDateTimeFormatPattern();
+  String getDateTimePattern();
 
   /**
    * @param row the row

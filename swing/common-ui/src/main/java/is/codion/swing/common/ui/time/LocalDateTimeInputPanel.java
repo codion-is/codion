@@ -45,10 +45,10 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
   /**
    * Instantiates a new LocalDateTimeInputPanel.
    * @param initialValue the initial value to display
-   * @param dateTimeFormatPattern the date/time format pattern
+   * @param dateTimePattern the date/time format pattern
    */
-  public LocalDateTimeInputPanel(final LocalDateTime initialValue, final String dateTimeFormatPattern) {
-    this(TextFields.createFormattedField(LocaleDateTimePattern.getMask(dateTimeFormatPattern)), dateTimeFormatPattern, CalendarButton.YES, null);
+  public LocalDateTimeInputPanel(final LocalDateTime initialValue, final String dateTimePattern) {
+    this(TextFields.createFormattedField(LocaleDateTimePattern.getMask(dateTimePattern)), dateTimePattern, CalendarButton.YES, null);
     setTemporal(initialValue);
   }
 
@@ -56,12 +56,12 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
    * Instantiates a new LocalDateTimeInputPanel.
    * @param inputField the input field
    * @param calendarButton if true a button for displaying a calendar is included
-   * @param dateTimeFormatPattern the date/time format pattern
+   * @param dateTimePattern the date/time format pattern
    * @param enabledState a StateObserver controlling the enabled state of the input field
    */
-  public LocalDateTimeInputPanel(final JFormattedTextField inputField, final String dateTimeFormatPattern,
+  public LocalDateTimeInputPanel(final JFormattedTextField inputField, final String dateTimePattern,
                                  final CalendarButton calendarButton, final StateObserver enabledState) {
-    super(inputField, dateTimeFormatPattern, LocalDateTime::parse, enabledState);
+    super(inputField, dateTimePattern, LocalDateTime::parse, enabledState);
     if (calendarButton == CalendarButton.YES) {
       this.button = new JButton(Control.builder()
               .command(this::displayCalendar)

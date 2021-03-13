@@ -6818,3 +6818,4 @@
   NumericalDateTimePattern, some additions and renaming
   Property.dateTimePattern added
   NumericalDateTimePattern renamed LocaleDateTimePattern, related changes
+  ColumnConditionModel.getDateTimeFormatPattern() renamed getDateTimePattern()
