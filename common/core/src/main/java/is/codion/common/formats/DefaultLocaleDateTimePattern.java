@@ -19,6 +19,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Serializable {
 
+  private static final long serialVersionUID = 1;
+
   private static final String FOUR_DIGIT_YEAR = "yyyy";
   private static final String TWO_DIGIT_YEAR = "yy";
   private static final String TWO_DIGIT_MONTH = "MM";
