@@ -6817,3 +6817,4 @@
   DateFormats replaced with NumericalDateTimePattern + Builder, moved to format package along with Formats
   NumericalDateTimePattern, some additions and renaming
   Property.dateTimePattern added
+  NumericalDateTimePattern renamed LocaleDateTimePattern, related changes

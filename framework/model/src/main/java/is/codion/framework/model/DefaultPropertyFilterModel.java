@@ -20,7 +20,7 @@ public final class DefaultPropertyFilterModel<T> extends DefaultColumnConditionM
    */
   public DefaultPropertyFilterModel(final Property<T> property) {
     super(property.getAttribute(), property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
-            property.getFormat(), property.getDateTimeFormatPattern());
+            property.getFormat(), property.getDateTimePattern());
     setComparableFunction(row -> {
       if (row.isNull(property.getAttribute())) {
         return null;

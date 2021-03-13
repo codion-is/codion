@@ -1,7 +1,7 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.time.LocalDateInputPanel;
@@ -60,7 +60,7 @@ public class TemporalValuesTest {
     final String format = "HH:mm";
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
-    final JFormattedTextField textField = TextFields.createFormattedField(NumericalDateTimePattern.getMask(format));
+    final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask(format));
     final Value<LocalTime> timePropertyValue = Value.propertyValue(this, "time",
             LocalTime.class, timeValueChangedEvent);
     TemporalValues.localTimeValue(textField, format).link(timePropertyValue);
@@ -80,7 +80,7 @@ public class TemporalValuesTest {
   public void testDate() throws Exception {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    final JFormattedTextField textField = TextFields.createFormattedField(NumericalDateTimePattern.getMask("dd.MM.yyyy"));
+    final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd.MM.yyyy"));
     final Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
     TemporalValues.localDateValue(textField, "dd.MM.yyyy").link(datePropertyValue);
@@ -100,7 +100,7 @@ public class TemporalValuesTest {
   public void testTimestamp() throws Exception {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
-    final JFormattedTextField textField = TextFields.createFormattedField(NumericalDateTimePattern.getMask("dd-MM-yy HH:mm"));
+    final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd-MM-yy HH:mm"));
     final Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
     TemporalValues.localDateTimeValue(textField, "dd-MM-yy HH:mm").link(timestampPropertyValue);
@@ -119,7 +119,7 @@ public class TemporalValuesTest {
   @Test
   public void localTimeUiValue() {
     final String format = "HH:mm";
-    final JFormattedTextField textField = TextFields.createFormattedField(NumericalDateTimePattern.getMask(format));//HH:mm
+    final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask(format));//HH:mm
     final Value<LocalTime> value = TemporalValues.localTimeValue(textField, format);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
@@ -141,7 +141,7 @@ public class TemporalValuesTest {
 
   @Test
   public void localDateUiValue() {
-    final JFormattedTextField textField = TextFields.createFormattedField(NumericalDateTimePattern.getMask("dd-MM-yyyy"));
+    final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd-MM-yyyy"));
     final Value<LocalDate> value = TemporalValues.localDateValue(textField, "dd-MM-yyyy");
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -162,7 +162,7 @@ public class TemporalValuesTest {
 
   @Test
   public void localDateTimeUiValue() {
-    final JFormattedTextField textField = TextFields.createFormattedField(NumericalDateTimePattern.getMask("dd-MM-yyyy HH:mm"));
+    final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd-MM-yyyy HH:mm"));
     final Value<LocalDateTime> value = TemporalValues.localDateTimeValue(textField, "dd-MM-yyyy HH:mm");
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");

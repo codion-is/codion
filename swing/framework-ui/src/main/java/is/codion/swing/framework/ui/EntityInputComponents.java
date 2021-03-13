@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
@@ -554,19 +554,19 @@ public final class EntityInputComponents {
     }
 
     final Property<T> property = entityDefinition.getProperty(attribute);
-    final String formatPattern = property.getDateTimeFormatPattern();
+    final String formatPattern = property.getDateTimePattern();
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState,
-            NumericalDateTimePattern.getMask(formatPattern), ValueContainsLiterals.YES);
+            LocaleDateTimePattern.getMask(formatPattern), ValueContainsLiterals.YES);
     if (attribute.isLocalDate()) {
-      TemporalValues.localDateValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDate>) value);
+      TemporalValues.localDateValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatPattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDateTime>) value);
+      TemporalValues.localDateTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatPattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalTime>) value);
+      TemporalValues.localTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatPattern, enabledState);
     }
 
@@ -710,13 +710,13 @@ public final class EntityInputComponents {
       NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn).link((Value<Long>) value);
     }
     else if (attribute.isLocalDate()) {
-      TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDate>) value);
+      TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalTime>) value);
+      TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDateTime>) value);
+      TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
     }
     else {
       throw new IllegalArgumentException("Text fields not implemented for attribute type: " + attribute);
@@ -823,7 +823,7 @@ public final class EntityInputComponents {
       return initializeLongField((Property<Long>) property);
     }
     else if (attribute.isTemporal()) {
-      return TextFields.createFormattedField(NumericalDateTimePattern.getMask(property.getDateTimeFormatPattern()));
+      return TextFields.createFormattedField(LocaleDateTimePattern.getMask(property.getDateTimePattern()));
     }
     else if (attribute.isString()) {
       return initializeStringField(formatMaskString, valueContainsLiterals);

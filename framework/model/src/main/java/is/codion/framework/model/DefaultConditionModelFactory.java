@@ -20,7 +20,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   @Override
   public <T> ColumnConditionModel<Entity, Attribute<?>, T> createColumnConditionModel(final ColumnProperty<T> property) {
     return new DefaultColumnConditionModel<>(property.getAttribute(), property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
-            property.getFormat(), property.getDateTimeFormatPattern());
+            property.getFormat(), property.getDateTimePattern());
   }
 
   @Override

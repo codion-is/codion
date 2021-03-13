@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.time;
 
 import is.codion.common.event.Event;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
@@ -48,7 +48,7 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
    * @param dateTimeFormatPattern the date/time format pattern
    */
   public LocalDateTimeInputPanel(final LocalDateTime initialValue, final String dateTimeFormatPattern) {
-    this(TextFields.createFormattedField(NumericalDateTimePattern.getMask(dateTimeFormatPattern)), dateTimeFormatPattern, CalendarButton.YES, null);
+    this(TextFields.createFormattedField(LocaleDateTimePattern.getMask(dateTimeFormatPattern)), dateTimeFormatPattern, CalendarButton.YES, null);
     setTemporal(initialValue);
   }
 

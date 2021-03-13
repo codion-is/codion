@@ -4,7 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -33,7 +33,6 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.Components.createWestCenterPanel;
 import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
@@ -88,9 +87,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     poolSizeField.setText(format.format(statistics.getSize()));
     createdField.setText(format.format(statistics.getCreated()));
     destroyedField.setText(format.format(statistics.getDestroyed()));
-    resetTimeField.setText(DateTimeFormatter.ofPattern(NumericalDateTimePattern.builder()
+    resetTimeField.setText(LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutesSeconds()
-            .build().getDatePattern())
+            .build().getFormatter()
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
     final double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;

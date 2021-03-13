@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -108,7 +108,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             foreignKeyProperty(Employee.REPORTSTO_FK),
             columnProperty(Employee.BIRTHDATE),
             columnProperty(Employee.HIREDATE)
-                    .dateTimePattern(NumericalDateTimePattern.builder()
+                    .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDot()
                             .yearFourDigits()
                             .build()),
@@ -252,7 +252,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             foreignKeyProperty(Invoice.CUSTOMER_FK),
             columnProperty(Invoice.INVOICEDATE)
                     .nullable(false)
-                    .dateTimePattern(NumericalDateTimePattern.builder()
+                    .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDot()
                             .yearFourDigits()
                             .hoursMinutes()

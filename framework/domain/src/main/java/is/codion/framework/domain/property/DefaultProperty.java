@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.Text;
 import is.codion.common.Util;
 import is.codion.common.formats.Formats;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -118,7 +118,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * A locale sensitive numerical date/time pattern
    */
-  private NumericalDateTimePattern dateTimePattern;
+  private LocaleDateTimePattern localeDateTimePattern;
 
   /**
    * The rounding mode to use when working with decimal numbers
@@ -128,10 +128,10 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * The date/time format pattern
    */
-  private transient String dateTimeFormatPattern;
+  private transient String dateTimePattern;
 
   /**
-   * The DateTimeFormatter to use, based on dateTimeFormatPattern
+   * The DateTimeFormatter to use, based on dateTimePattern
    */
   private transient DateTimeFormatter dateTimeFormatter;
 
@@ -227,22 +227,22 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final String getDateTimeFormatPattern() {
-    if (dateTimeFormatPattern == null) {
-      if (dateTimePattern == null) {
-        return getDefaultDateTimeFormatPattern();
+  public final String getDateTimePattern() {
+    if (dateTimePattern == null) {
+      if (localeDateTimePattern == null) {
+        return getDefaultDateTimePattern();
       }
-      dateTimeFormatPattern = dateTimePattern.getDateTimePattern();
+      dateTimePattern = localeDateTimePattern.getDateTimePattern();
     }
 
-    return dateTimeFormatPattern;
+    return dateTimePattern;
   }
 
   @Override
   public final DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null) {
-      final String formatPattern = getDateTimeFormatPattern();
-      dateTimeFormatter = formatPattern == null ? null : ofPattern(formatPattern);
+      final String pattern = getDateTimePattern();
+      dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
     }
 
     return dateTimeFormatter;
@@ -343,7 +343,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     return Formats.NULL_FORMAT;
   }
 
-  private String getDefaultDateTimeFormatPattern() {
+  private String getDefaultDateTimePattern() {
     if (attribute.isLocalDate()) {
       return DATE_FORMAT.get();
     }
@@ -543,31 +543,31 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public Property.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
-      requireNonNull(dateTimeFormatPattern, "dateTimeFormatPattern");
-      if (!property.attribute.isTemporal()) {
-        throw new IllegalStateException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
-      }
-      if (property.dateTimePattern != null) {
-        throw new IllegalStateException("dateTimePattern has already been set for property: " + property.attribute);
-      }
-      property.dateTimeFormatPattern = dateTimeFormatPattern;
-      property.dateTimeFormatter = ofPattern(property.dateTimeFormatPattern);
-      return this;
-    }
-
-    @Override
-    public Builder<T> dateTimePattern(final NumericalDateTimePattern dateTimePattern) {
+    public Property.Builder<T> dateTimePattern(final String dateTimePattern) {
       requireNonNull(dateTimePattern, "dateTimePattern");
       if (!property.attribute.isTemporal()) {
         throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + property.attribute);
       }
-      if (property.dateTimeFormatPattern != null) {
-        throw new IllegalStateException("dateTimeFormatPattern has already been set for property: " + property.attribute);
+      if (property.localeDateTimePattern != null) {
+        throw new IllegalStateException("localeDateTimePattern has already been set for property: " + property.attribute);
       }
       property.dateTimePattern = dateTimePattern;
-      property.dateTimeFormatPattern = dateTimePattern.getDateTimePattern();
-      property.dateTimeFormatter = dateTimePattern.getFormatter();
+      property.dateTimeFormatter = ofPattern(property.dateTimePattern);
+      return this;
+    }
+
+    @Override
+    public Builder<T> localeDateTimePattern(final LocaleDateTimePattern localeDateTimePattern) {
+      requireNonNull(localeDateTimePattern, "localeDateTimePattern");
+      if (!property.attribute.isTemporal()) {
+        throw new IllegalStateException("localeDateTimePattern is only applicable to temporal properties: " + property.attribute);
+      }
+      if (property.dateTimePattern != null) {
+        throw new IllegalStateException("dateTimePattern has already been set for property: " + property.attribute);
+      }
+      property.localeDateTimePattern = localeDateTimePattern;
+      property.dateTimePattern = localeDateTimePattern.getDateTimePattern();
+      property.dateTimeFormatter = localeDateTimePattern.getFormatter();
 
       return this;
     }

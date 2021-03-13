@@ -29,7 +29,7 @@ public class PropertySearchPanelTest {
     final ColumnProperty<String> property = definition.getColumnProperty(TestDomain.DEPARTMENT_NAME);
     final ColumnConditionModel<Entity, Attribute<String>, String> conditionModel =
             new DefaultColumnConditionModel<>(property.getAttribute(), property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
-                    property.getFormat(), property.getDateTimeFormatPattern());
+                    property.getFormat(), property.getDateTimePattern());
     conditionModel.setEqualValue("DALLAS");
     conditionModel.setOperator(Operator.EQUAL);
     AttributeConditionPanel<Attribute<String>, String> searchPanel = new AttributeConditionPanel<>(conditionModel, definition, TestDomain.DEPARTMENT_NAME);
