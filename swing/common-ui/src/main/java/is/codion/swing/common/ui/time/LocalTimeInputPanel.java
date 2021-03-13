@@ -18,20 +18,20 @@ public final class LocalTimeInputPanel extends TemporalInputPanel<LocalTime> {
   /**
    * Instantiates a new LocalTimeInputPanel.
    * @param initialValue the initial value to display
-   * @param timeFormatPattern the time format pattern
+   * @param timePattern the time format pattern
    */
-  public LocalTimeInputPanel(final LocalTime initialValue, final String timeFormatPattern) {
-    this(TextFields.createFormattedField(LocaleDateTimePattern.getMask(timeFormatPattern)), timeFormatPattern, null);
+  public LocalTimeInputPanel(final LocalTime initialValue, final String timePattern) {
+    this(TextFields.createFormattedField(LocaleDateTimePattern.getMask(timePattern)), timePattern, null);
     setTemporal(initialValue);
   }
 
   /**
    * Instantiates a new LocalTimeInputPanel.
    * @param inputField the input field
-   * @param timeFormatPattern the time format pattern
+   * @param timePattern the time format pattern
    * @param enabledState a StateObserver controlling the enabled state of the input field
    */
-  public LocalTimeInputPanel(final JFormattedTextField inputField, final String timeFormatPattern, final StateObserver enabledState) {
-    super(inputField, timeFormatPattern, LocalTime::parse, enabledState);
+  public LocalTimeInputPanel(final JFormattedTextField inputField, final String timePattern, final StateObserver enabledState) {
+    super(inputField, timePattern, LocalTime::parse, enabledState);
   }
 }

@@ -442,22 +442,22 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
       }
       else if (typeClass.equals(LocalTime.class)) {
         final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimeFormatPattern()));
-        TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalTime>) value);
+                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
+        TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimePattern()).link((Value<LocalTime>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDate.class)) {
         final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimeFormatPattern()));
-        TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalDate>) value);
+                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
+        TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimePattern()).link((Value<LocalDate>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimeFormatPattern()));
-        TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalDateTime>) value);
+                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
+        TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimePattern()).link((Value<LocalDateTime>) value);
 
         return formattedField;
       }

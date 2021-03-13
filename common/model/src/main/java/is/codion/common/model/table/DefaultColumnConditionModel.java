@@ -44,7 +44,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final K columnIdentifier;
   private final Class<T> typeClass;
   private final Format format;
-  private final String dateTimeFormatPattern;
+  private final String dateTimePattern;
 
   private Function<R, Comparable<T>> comparableFunction = value -> (Comparable<T>) value;
   private boolean autoEnable = true;
@@ -68,11 +68,11 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
-   * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
+   * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
-                                     final Format format, final String dateTimeFormatPattern) {
-    this(columnIdentifier, typeClass, wildcard, format, dateTimeFormatPattern, AUTOMATIC_WILDCARD.get());
+                                     final Format format, final String dateTimePattern) {
+    this(columnIdentifier, typeClass, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
   /**
@@ -81,17 +81,17 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
-   * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
+   * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
-                                     final Format format, final String dateTimeFormatPattern,
+                                     final Format format, final String dateTimePattern,
                                      final AutomaticWildcard automaticWildcard) {
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
     this.typeClass = typeClass;
     this.wildcard = wildcard;
     this.format = format;
-    this.dateTimeFormatPattern = dateTimeFormatPattern;
+    this.dateTimePattern = dateTimePattern;
     this.automaticWildcard = automaticWildcard;
     this.enabledState.addValidator(value -> checkLock());
     this.equalValues.addValidator(value -> checkLock());
@@ -122,8 +122,8 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public final String getDateTimeFormatPattern() {
-    return dateTimeFormatPattern;
+  public final String getDateTimePattern() {
+    return dateTimePattern;
   }
 
   @Override

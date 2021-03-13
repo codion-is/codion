@@ -554,20 +554,20 @@ public final class EntityInputComponents {
     }
 
     final Property<T> property = entityDefinition.getProperty(attribute);
-    final String formatPattern = property.getDateTimePattern();
+    final String dateTimePattern = property.getDateTimePattern();
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState,
-            LocaleDateTimePattern.getMask(formatPattern), ValueContainsLiterals.YES);
+            LocaleDateTimePattern.getMask(dateTimePattern), ValueContainsLiterals.YES);
     if (attribute.isLocalDate()) {
       TemporalValues.localDateValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
-      return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatPattern, calendarButton, enabledState);
+      return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
       TemporalValues.localDateTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
-      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatPattern, calendarButton, enabledState);
+      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalTime()) {
       TemporalValues.localTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
-      return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatPattern, enabledState);
+      return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, dateTimePattern, enabledState);
     }
 
     throw new IllegalArgumentException("Can not create a date input panel for a non-date attribute: " + attribute);
