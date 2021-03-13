@@ -3,12 +3,13 @@
  */
 package is.codion.swing.common.ui.table;
 
-import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,10 +32,7 @@ public class ColumnConditionPanelTest {
     assertTrue(panel.isAdvanced());
     panel.setAdvanced(false);
     assertFalse(panel.isAdvanced());
-  }
-
-  @Test
-  public void constructorNullConditionModel() {
-    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String, String>(null, ToggleAdvancedButton.YES, (Operator) null));
+    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String, String>(null, ToggleAdvancedButton.YES, null));
+    assertThrows(IllegalArgumentException.class, () -> new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES, Collections.emptyList()));
   }
 }

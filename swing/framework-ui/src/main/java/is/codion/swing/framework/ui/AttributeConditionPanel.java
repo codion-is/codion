@@ -13,6 +13,9 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,12 +39,12 @@ public final class AttributeConditionPanel<C extends Attribute<T>, T> extends Co
             getOperators(columnConditionModel));
   }
 
-  private static <C extends Attribute<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
+  private static <C extends Attribute<T>, T> List<Operator> getOperators(final ColumnConditionModel<Entity, C, T> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new Operator[] {Operator.EQUAL};
+      return Collections.singletonList(Operator.EQUAL);
     }
 
-    return Operator.values();
+    return Arrays.asList(Operator.values());
   }
 
   private static final class PropertyBoundFieldFactory<C extends Attribute<T>, T> implements BoundFieldFactory {

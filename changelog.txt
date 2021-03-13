@@ -6790,3 +6790,4 @@
   NumericalDateTimePattern renamed LocaleDateTimePattern, related changes
   ColumnConditionModel.getDateTimeFormatPattern() renamed getDateTimePattern()
   ConnectionPool renamed ConnectionPoolWrapper
+  ColumnConditionPanel bug fixed, operator combo box no longer hides popup on selection, refactoring
