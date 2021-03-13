@@ -3,10 +3,10 @@
  */
 package is.codion.plugin.tomcat.pool;
 
-import is.codion.common.db.pool.AbstractConnectionPool;
+import is.codion.common.db.pool.AbstractConnectionPoolWrapper;
 import is.codion.common.db.pool.ConnectionFactory;
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -22,13 +22,13 @@ import java.sql.SQLException;
 public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory {
 
   /**
-   * Creates a Tomcat based connection pool
+   * Creates a Tomcat based connection pool wrapper
    * @param connectionFactory the connection factory
    * @param user the user
    * @return a connection pool
    */
   @Override
-  public ConnectionPool createConnectionPool(final ConnectionFactory connectionFactory, final User user) {
+  public ConnectionPoolWrapper createConnectionPoolWrapper(final ConnectionFactory connectionFactory, final User user) {
     return new DataSourceWrapper(connectionFactory, user, createDataSource(user, connectionFactory));
   }
 
@@ -40,16 +40,16 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     //Codion does not validate connections coming from a connection pool
     pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(connectionFactory));
-    pp.setMaxActive(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
-    pp.setInitialSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
-    pp.setMaxIdle(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
-    pp.setMinIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
-    pp.setSuspectTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get() / 1000);
+    pp.setMaxActive(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setInitialSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setMaxIdle(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+    pp.setMinIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
+    pp.setSuspectTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get() / 1000);
 
     return new DataSource(pp);
   }
 
-  private static final class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
+  private static final class DataSourceWrapper extends AbstractConnectionPoolWrapper<DataSource> {
 
     private DataSourceWrapper(final ConnectionFactory connectionFactory, final User user, final DataSource dataSource) {
       super(connectionFactory, user, dataSource);

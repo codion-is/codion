@@ -6,8 +6,8 @@ package is.codion.swing.common.tools.loadtest;
 import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
@@ -28,7 +28,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   private static final int DEFAULT_LOGIN_DELAY_MS = 2;
   private static final int DEFAULT_BATCH_SIZE = 5;
 
-  private final ConnectionPool pool;
+  private final ConnectionPoolWrapper pool;
 
   /**
    * Instantiates a new QueryLoadTest.
@@ -40,14 +40,14 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
     final ConnectionPoolFactory poolProvider = ConnectionPoolFactory.connectionPoolFactory();
-    this.pool = poolProvider.createConnectionPool(database, user);
+    this.pool = poolProvider.createConnectionPoolWrapper(database, user);
     addShutdownListener(pool::close);
   }
 
   /**
    * @return the underlying connection pool
    */
-  public ConnectionPool getConnectionPool() {
+  public ConnectionPoolWrapper getConnectionPool() {
     return pool;
   }
 
@@ -64,9 +64,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public static final class QueryApplication {
 
-    private final ConnectionPool pool;
+    private final ConnectionPoolWrapper pool;
 
-    private QueryApplication(final ConnectionPool pool) {
+    private QueryApplication(final ConnectionPoolWrapper pool) {
       this.pool = pool;
     }
   }

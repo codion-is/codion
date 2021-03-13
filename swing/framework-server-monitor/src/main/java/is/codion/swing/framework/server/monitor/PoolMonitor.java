@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 import is.codion.framework.server.EntityServerAdmin;
 
@@ -32,7 +32,7 @@ public final class PoolMonitor {
   public PoolMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
     for (final String username : this.server.getConnectionPoolUsernames()) {
-      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(username, this.server), updateRate));
+      connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPoolWrapper(username, this.server), updateRate));
     }
   }
 
@@ -52,12 +52,12 @@ public final class PoolMonitor {
     }
   }
 
-  private static final class MonitorPool implements ConnectionPool {
+  private static final class MonitorPoolWrapper implements ConnectionPoolWrapper {
 
     private final EntityServerAdmin server;
     private final User user;
 
-    private MonitorPool(final String username, final EntityServerAdmin server) {
+    private MonitorPoolWrapper(final String username, final EntityServerAdmin server) {
       this.user = User.user(username);
       this.server = server;
     }

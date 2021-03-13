@@ -6,8 +6,8 @@ package is.codion.common.db.database;
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionFactory;
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 
@@ -199,7 +199,7 @@ public interface Database extends ConnectionFactory {
    * @param username the username
    * @return the connection pool for the given user, null if none exists
    */
-  ConnectionPool getConnectionPool(String username);
+  ConnectionPoolWrapper getConnectionPool(String username);
 
   /**
    * @return the usernames of all available connection pools

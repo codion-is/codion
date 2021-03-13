@@ -6,8 +6,8 @@ package is.codion.framework.demos.chinook.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.rmi.server.LoginProxy;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
@@ -55,10 +55,10 @@ public final class ChinookLoginProxy implements LoginProxy {
   /**
    * The ConnectionPool used when authenticating users.
    */
-  private final ConnectionPool connectionPool;
+  private final ConnectionPoolWrapper connectionPool;
 
   public ChinookLoginProxy() throws DatabaseException {
-    connectionPool = ConnectionPoolFactory.connectionPoolFactory().createConnectionPool(database, databaseUser);
+    connectionPool = ConnectionPoolFactory.connectionPoolFactory().createConnectionPoolWrapper(database, databaseUser);
   }
 
   /**

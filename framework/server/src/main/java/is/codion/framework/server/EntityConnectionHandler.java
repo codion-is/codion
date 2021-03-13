@@ -5,7 +5,7 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
@@ -67,7 +67,7 @@ final class EntityConnectionHandler implements InvocationHandler {
   /**
    * The connection pool to use, if any
    */
-  private final ConnectionPool connectionPool;
+  private final ConnectionPoolWrapper connectionPool;
 
   /**
    * The method call log

@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
  * A default base implementation of the ConnectionPool wrapper, handling the collection of statistics
  * @param <T> the type representing the actual pool object
  */
-public abstract class AbstractConnectionPool<T> implements ConnectionPool {
+public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPoolWrapper {
 
   /**
    * The actual connection pool object
@@ -38,7 +38,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    * @param user the connection pool user
    * @param poolDataSource the DataSource
    */
-  public AbstractConnectionPool(final ConnectionFactory connectionFactory, final User user, final DataSource poolDataSource) {
+  public AbstractConnectionPoolWrapper(final ConnectionFactory connectionFactory, final User user, final DataSource poolDataSource) {
     this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
     this.user = requireNonNull(user, "user");
     this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
