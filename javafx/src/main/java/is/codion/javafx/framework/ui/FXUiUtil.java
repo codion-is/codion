@@ -636,7 +636,7 @@ public final class FXUiUtil {
   public static StringValue<LocalDate> createDateValue(final Property<LocalDate> property, final DatePicker picker) {
     final StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), property.getDateTimeFormatter());
     picker.setConverter(dateValue.getConverter());
-    picker.setPromptText(property.getDateTimeFormatPattern().toLowerCase());
+    picker.setPromptText(property.getDateTimePattern().toLowerCase());
 
     return dateValue;
   }

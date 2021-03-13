@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.Configuration;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
@@ -41,30 +41,28 @@ public interface Property<T> {
   PropertyValue<RoundingMode> DECIMAL_ROUNDING_MODE = Configuration.enumValue("codion.domain.decimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
   /**
-   * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
+   * The default date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
    * Default value: HH:mm
    */
-  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat",
-          NumericalDateTimePattern.builder().hoursMinutes().build().getTimePattern());
+  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
+          .hoursMinutes().build().getTimePattern());
 
   /**
-   * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
+   * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
    */
-  PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", NumericalDateTimePattern.builder()
-          .delimiterDash().yearFourDigits().hoursMinutes()
-          .build().getDateTimePattern());
+  PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
+          .delimiterDash().yearFourDigits().hoursMinutes().build().getDateTimePattern());
 
   /**
-   * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
+   * The default date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy [month/day order is locale specific]
    */
-  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", NumericalDateTimePattern.builder()
-          .delimiterDash().yearFourDigits()
-          .build().getDatePattern());
+  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
+          .delimiterDash().yearFourDigits().build().getDatePattern());
 
   /**
    * Specifies the default foreign key fetch depth<br>
@@ -121,7 +119,7 @@ public interface Property<T> {
    * @param value the value to format.
    * @return the value formatted as a string
    * @see Property.Builder#format(Format)
-   * @see Property.Builder#dateTimeFormatPattern(String)
+   * @see Property.Builder#dateTimePattern(String)
    */
   String formatValue(T value);
 
@@ -196,7 +194,7 @@ public interface Property<T> {
   /**
    * @return the date/time format pattern
    */
-  String getDateTimeFormatPattern();
+  String getDateTimePattern();
 
   /**
    * @return the DateTimeFormatter for this property or null if this is not a date/time based property
@@ -346,25 +344,27 @@ public interface Property<T> {
      * @throws IllegalArgumentException in case the underlying attribute is numerical
      * and the given format is not a NumberFormat.
      * @throws IllegalStateException if the underlying attribute is temporal, in which case
-     * {@link #dateTimeFormatPattern(String)} should be used.
+     * {@link #dateTimePattern(String)} or {@link #localeDateTimePattern(LocaleDateTimePattern)} should be used.
      */
     Property.Builder<T> format(Format format);
 
     /**
-     * Sets the date/time format pattern used when presenting values
-     * @param dateTimeFormatPattern the format pattern
+     * Sets the date/time format pattern used when presenting and inputtind values
+     * @param dateTimePattern the format pattern
      * @return this instance
      * @throws IllegalArgumentException in case the pattern is invalid
      * @throws IllegalStateException in case the underlying attribute is not a date/time based one
+     * @throws IllegalStateException in case {@link #localeDateTimePattern(LocaleDateTimePattern)} has been set
      */
-    Property.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
+    Property.Builder<T> dateTimePattern(String dateTimePattern);
 
     /**
-     * Sets the numerical date/time format pattern used when presenting and inputting values
-     * @param numericalDateTimePattern the format pattern
+     * Sets the locale aware date/time format pattern used when presenting and inputting values
+     * @param localeDateTimePattern the format pattern
      * @return this instance
      * @throws IllegalStateException in case the underlying attribute is not a date/time based one
+     * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
-    Property.Builder<T> dateTimePattern(NumericalDateTimePattern numericalDateTimePattern);
+    Property.Builder<T> localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
   }
 }

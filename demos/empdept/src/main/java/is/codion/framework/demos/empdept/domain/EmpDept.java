@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.domain;
 
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -172,7 +172,7 @@ public final class EmpDept extends DefaultDomain {
             columnProperty(Employee.HIREDATE, "Hiredate")
                     .nullable(false)
                     .beanProperty("hiredate")
-                    .dateTimePattern(NumericalDateTimePattern.builder()
+                    .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDash()
                             .yearFourDigits()
                             .build()),

@@ -14,9 +14,27 @@ import static java.util.Objects.requireNonNull;
  *
  * Orders the year and month parts according to locale,
  * with two digit month and day parts and two or four digit year.
+ *
+ * <pre>
+ *
+ * LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
+ *     .delimiterDash()
+ *     .yearFourDigits()
+ *     .hoursMinutes()
+ *     .build();
+ *
+ * Locale iceland = new Locale("is", "IS");
+ * Locale us = new Locale("en", "US");
+ *
+ * pattern.getDatePattern(iceland);    // "dd-MM-yyyy"
+ * pattern.getDatePattern(us);         // "MM-dd-yyyy"
+ *
+ * pattern.getDateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
+ * pattern.getDateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
+ * </pre>
  * @see #builder()
  */
-public interface NumericalDateTimePattern {
+public interface LocaleDateTimePattern {
 
   /**
    * @return the time part of this format, null if none is available
@@ -51,15 +69,15 @@ public interface NumericalDateTimePattern {
   DateTimeFormatter getFormatter();
 
   /**
-   * Parses the date pattern and returns mask string that can be used in JFormattedFields.
+   * Parses the given date/time pattern and returns mask string that can be used in JFormattedFields.
    * This only works with plain numerical date formats.
-   * @param numericalDatePattern the format pattern for which to create the mask
+   * @param dateTimePattern the format pattern for which to create the mask
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
-  static String getMask(final String numericalDatePattern) {
-    requireNonNull(numericalDatePattern, "dateFormat");
-    final StringBuilder stringBuilder = new StringBuilder(numericalDatePattern.length());
-    for (final Character character : numericalDatePattern.toCharArray()) {
+  static String getMask(final String dateTimePattern) {
+    requireNonNull(dateTimePattern, "dateTimePattern");
+    final StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
+    for (final Character character : dateTimePattern.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);
     }
 
@@ -67,14 +85,14 @@ public interface NumericalDateTimePattern {
   }
 
   /**
-   * @return a new Builder for a {@link NumericalDateTimePattern}.
+   * @return a new Builder for a {@link LocaleDateTimePattern}.
    */
   static Builder builder() {
-    return new DefaultNumericalDateTimePattern.DefaultBuilder();
+    return new DefaultLocaleDateTimePattern.DefaultBuilder();
   }
 
   /**
-   * A Builder for {@link NumericalDateTimePattern}.
+   * A Builder for {@link LocaleDateTimePattern}.
    */
   interface Builder {
 
@@ -125,8 +143,8 @@ public interface NumericalDateTimePattern {
     Builder hoursMinutesSecondsMilliseconds();
 
     /**
-     * @return a new {@link NumericalDateTimePattern} based on this builder.
+     * @return a new {@link LocaleDateTimePattern} based on this builder.
      */
-    NumericalDateTimePattern build();
+    LocaleDateTimePattern build();
   }
 }

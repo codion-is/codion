@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.Serializer;
-import is.codion.common.formats.NumericalDateTimePattern;
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -84,18 +84,18 @@ public final class PropertiesTest {
   @Test
   public void intPropertyWithDateFormat() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute"))
-            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
+            .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
   }
 
   @Test
   public void doublePropertyWithDateFormat() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute"))
-            .format(new SimpleDateFormat(NumericalDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
+            .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
   }
 
   @Test
   public void nonTemporalPropertyWithFormatPatter() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).dateTimeFormatPattern("dd-MM-yy"));
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).dateTimePattern("dd-MM-yy"));
   }
 
   @Test
