@@ -14,7 +14,7 @@ import java.sql.Connection;
 /**
  * A connection pool wrapper, providing statistics from the underlying pool and allowing some configuration.
  */
-public interface ConnectionPool {
+public interface ConnectionPoolWrapper {
 
   /**
    * Specifies the default maximum connection pool size.

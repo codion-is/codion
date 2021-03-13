@@ -3,9 +3,9 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolState;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.scheduler.TaskScheduler;
@@ -34,7 +34,7 @@ public final class ConnectionPoolMonitor {
   private final Event<?> statisticsUpdatedEvent = Event.event();
 
   private final String username;
-  private final ConnectionPool connectionPool;
+  private final ConnectionPoolWrapper connectionPool;
   private ConnectionPoolStatistics poolStatistics;
 
   private final Value<Integer> pooledConnectionTimeoutValue;
@@ -67,7 +67,7 @@ public final class ConnectionPoolMonitor {
    * @param connectionPool the connection pool to monitor
    * @param updateRate the initial statistics update rate in seconds
    */
-  public ConnectionPoolMonitor(final ConnectionPool connectionPool, final int updateRate) {
+  public ConnectionPoolMonitor(final ConnectionPoolWrapper connectionPool, final int updateRate) {
     this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
     this.pooledConnectionTimeoutValue = Value.value(connectionPool.getConnectionTimeout() / THOUSAND);

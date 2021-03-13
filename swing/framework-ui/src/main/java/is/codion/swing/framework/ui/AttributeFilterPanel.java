@@ -9,6 +9,10 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A column filter panel based on an Attribute.
  * @param <C> the attribute type
@@ -24,11 +28,11 @@ public final class AttributeFilterPanel<C extends Attribute<T>, T> extends Colum
     super(model, ToggleAdvancedButton.YES, getOperators(model));
   }
 
-  private static <C extends Attribute<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
+  private static <C extends Attribute<T>, T> List<Operator> getOperators(final ColumnConditionModel<Entity, C, T> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new Operator[] {Operator.EQUAL};
+      return Collections.singletonList(Operator.EQUAL);
     }
 
-    return Operator.values();
+    return Arrays.asList(Operator.values());
   }
 }

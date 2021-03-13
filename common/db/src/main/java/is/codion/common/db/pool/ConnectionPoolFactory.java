@@ -17,13 +17,13 @@ import static java.util.Objects.requireNonNull;
 public interface ConnectionPoolFactory {
 
   /**
-   * Creates a connection pool based on the given database and user.
+   * Creates a connection pool wrapper based on the given database and user.
    * @param connectionFactory the connection factory
    * @param user the user to base the pooled connections on
-   * @return a connection pool based on the given user
+   * @return a connection pool wrapper based on the given user
    * @throws DatabaseException in case of an exception
    */
-  ConnectionPool createConnectionPool(ConnectionFactory connectionFactory, User user) throws DatabaseException;
+  ConnectionPoolWrapper createConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) throws DatabaseException;
 
   /**
    * Returns the {@link ConnectionPoolFactory} implementation found by the {@link ServiceLoader}

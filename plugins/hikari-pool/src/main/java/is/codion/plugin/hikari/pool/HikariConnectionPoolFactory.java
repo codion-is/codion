@@ -3,10 +3,10 @@
  */
 package is.codion.plugin.hikari.pool;
 
-import is.codion.common.db.pool.AbstractConnectionPool;
+import is.codion.common.db.pool.AbstractConnectionPoolWrapper;
 import is.codion.common.db.pool.ConnectionFactory;
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -23,29 +23,29 @@ import java.util.Properties;
 public final class HikariConnectionPoolFactory implements ConnectionPoolFactory {
 
   /**
-   * Creates a HikariCP based connection pool
+   * Creates a HikariCP based connection pool wrapper
    * @param connectionFactory the connection factory
    * @param user the user
    * @return a connection pool
    */
   @Override
-  public ConnectionPool createConnectionPool(final ConnectionFactory connectionFactory, final User user) {
-    return new HikariConnectionPool(connectionFactory, user);
+  public ConnectionPoolWrapper createConnectionPoolWrapper(final ConnectionFactory connectionFactory, final User user) {
+    return new HikariConnectionPoolWrapper(connectionFactory, user);
   }
 
-  private static final class HikariConnectionPool extends AbstractConnectionPool<HikariPool> {
+  private static final class HikariConnectionPoolWrapper extends AbstractConnectionPoolWrapper<HikariPool> {
 
     private final HikariConfig config = new HikariConfig();
 
-    public HikariConnectionPool(final ConnectionFactory connectionFactory, final User user) {
+    public HikariConnectionPoolWrapper(final ConnectionFactory connectionFactory, final User user) {
       super(connectionFactory, user, new DriverDataSource(connectionFactory.getUrl(), null,
               new Properties(), user.getUsername(), String.valueOf(user.getPassword())));
       config.setJdbcUrl(connectionFactory.getUrl());
       config.setAutoCommit(false);
       config.setUsername(user.getUsername());
-      config.setMaximumPoolSize(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());
-      config.setMinimumIdle(ConnectionPool.DEFAULT_MINIMUM_POOL_SIZE.get());
-      config.setIdleTimeout(ConnectionPool.DEFAULT_IDLE_TIMEOUT.get());
+      config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
+      config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
+      config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get());
       config.setDataSource(getPoolDataSource());
       setPool(new HikariPool(config));
     }

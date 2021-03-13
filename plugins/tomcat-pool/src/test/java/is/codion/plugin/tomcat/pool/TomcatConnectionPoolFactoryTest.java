@@ -4,7 +4,7 @@
 package is.codion.plugin.tomcat.pool;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 
@@ -20,7 +20,7 @@ public class TomcatConnectionPoolFactoryTest {
   @Test
   public void test() throws Exception {
     final TomcatConnectionPoolFactory provider = new TomcatConnectionPoolFactory();
-    final ConnectionPool pool = provider.createConnectionPool(new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TomcatConnectionPoolProviderTest",
+    final ConnectionPoolWrapper pool = provider.createConnectionPoolWrapper(new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TomcatConnectionPoolProviderTest",
             Database.DATABASE_INIT_SCRIPTS.get()), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());

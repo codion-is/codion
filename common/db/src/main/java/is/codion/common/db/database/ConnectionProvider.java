@@ -3,6 +3,7 @@
  */
 package is.codion.common.db.database;
 
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
@@ -16,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Responsible for providing JDBC {@link Connection} instances. Usually this means a new connection,
  * but in some cases, for example when wrapping existing connections, an existing connection may be returned.
- * Note that when used in conjunction with a {@link is.codion.common.db.pool.ConnectionPool} a new
+ * Note that when used in conjunction with a {@link ConnectionPoolWrapper} a new
  * connection must be returned.
  */
 public interface ConnectionProvider {

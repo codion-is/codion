@@ -5,8 +5,8 @@ package is.codion.common.db.database;
 
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public abstract class AbstractDatabase implements Database {
 
   static Database instance;
 
-  private final Map<String, ConnectionPool> connectionPools = new HashMap<>();
+  private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
   private final QueryCounter queryCounter = new QueryCounter();
   private final boolean queryCounterEnabled = QUERY_COUNTER_ENABLED.get();
@@ -102,25 +102,25 @@ public abstract class AbstractDatabase implements Database {
     if (connectionPools.containsKey(poolUser.getUsername())) {
       throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
     }
-    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolFactory.createConnectionPool(this, poolUser));
+    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolFactory.createConnectionPoolWrapper(this, poolUser));
   }
 
   @Override
-  public final ConnectionPool getConnectionPool(final String username) {
+  public final ConnectionPoolWrapper getConnectionPool(final String username) {
     return connectionPools.get(requireNonNull(username, "username").toLowerCase());
   }
 
   @Override
   public final void closeConnectionPool(final String username) {
-    final ConnectionPool connectionPool = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
-    if (connectionPool != null) {
-      connectionPool.close();
+    final ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
+    if (connectionPoolWrapper != null) {
+      connectionPoolWrapper.close();
     }
   }
 
   @Override
   public final void closeConnectionPools() {
-    for (final ConnectionPool pool : connectionPools.values()) {
+    for (final ConnectionPoolWrapper pool : connectionPools.values()) {
       closeConnectionPool(pool.getUser().getUsername());
     }
   }

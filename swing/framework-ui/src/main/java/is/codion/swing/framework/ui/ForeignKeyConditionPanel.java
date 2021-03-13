@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
 import javax.swing.JComponent;
+import java.util.Arrays;
 
 /**
  * A column condition panel based on a foreign key.
@@ -26,7 +27,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
    */
   public ForeignKeyConditionPanel(final ForeignKeyConditionModel foreignKeyConditionModel) {
     super(foreignKeyConditionModel, ToggleAdvancedButton.NO,
-            new ForeignKeyBoundFieldFactory(foreignKeyConditionModel), Operator.EQUAL, Operator.NOT_EQUAL);
+            new ForeignKeyBoundFieldFactory(foreignKeyConditionModel), Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL));
   }
 
   private static final class ForeignKeyBoundFieldFactory implements BoundFieldFactory {

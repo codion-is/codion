@@ -59,9 +59,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static is.codion.swing.common.ui.icons.Icons.icons;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -100,6 +101,8 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private final JComponent equalField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
+  private final JPanel controlPanel = new JPanel(new BorderLayout());
+  private final JPanel inputPanel = new JPanel(new BorderLayout());
 
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedConditionState = State.state();
@@ -110,13 +113,22 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private boolean dialogVisible = false;
 
   /**
-   * Instantiates a new ColumnConditionPanel, with a default input field provider.
+   * Instantiates a new ColumnConditionPanel, with a default bound field factory and all available Operators.
+   * @param conditionModel the condition model to base this panel on
+   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
+   */
+  public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton) {
+    this(conditionModel, toggleAdvancedButton, Arrays.asList(Operator.values()));
+  }
+
+  /**
+   * Instantiates a new ColumnConditionPanel, with a default bound field factory.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param operators the operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
-                              final Operator... operators) {
+                              final List<Operator> operators) {
     this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel), operators);
   }
 
@@ -128,13 +140,13 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
-                              final BoundFieldFactory boundFieldFactory, final Operator... operators) {
+                              final BoundFieldFactory boundFieldFactory, final List<Operator> operators) {
     this(conditionModel, toggleAdvancedButton, boundFieldFactory.createEqualField(),
             boundFieldFactory.createUpperBoundField(), boundFieldFactory.createLowerBoundField(), operators);
   }
 
   /**
-   * Instantiates a new ColumnConditionPanel, with a default input field provider.
+   * Instantiates a new ColumnConditionPanel.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param equalField the equal value field
@@ -144,10 +156,13 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel,
                               final ToggleAdvancedButton toggleAdvancedButton, final JComponent equalField,
-                              final JComponent upperBoundField, final JComponent lowerBoundField, final Operator... operators) {
+                              final JComponent upperBoundField, final JComponent lowerBoundField, final List<Operator> operators) {
     requireNonNull(conditionModel, "conditionModel");
+    if (requireNonNull(operators, "operators").isEmpty()) {
+      throw new IllegalArgumentException("One or more operators must be specified");
+    }
     this.conditionModel = conditionModel;
-    this.operators = operators == null ? asList(Operator.values()) : asList(operators);
+    this.operators = Collections.unmodifiableList(operators);
     this.operatorCombo = initializeOperatorComboBox();
     this.equalField = equalField;
     this.upperBoundField = upperBoundField;
@@ -156,18 +171,11 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
             .state(conditionModel.getEnabledState())
             .icon(icons().filter())
             .build());
-    if (toggleAdvancedButton == ToggleAdvancedButton.YES) {
-      this.toggleAdvancedButton = Controls.toggleButton(ToggleControl.builder()
-              .state(advancedConditionState)
-              .icon(icons().configure())
-              .build());
-    }
-    else {
-      this.toggleAdvancedButton = null;
-    }
-    linkComponentsToLockedState();
+    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? Controls.toggleButton(ToggleControl.builder()
+            .state(advancedConditionState)
+            .icon(icons().configure())
+            .build()) : null;
     initializeUI();
-    initializePanel();
     bindEvents();
   }
 
@@ -476,11 +484,8 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedConditionState.addListener(this::initializePanel);
-    conditionModel.getOperatorValue().addListener(() -> {
-      initializePanel();
-      operatorCombo.requestFocusInWindow();
-    });
+    advancedConditionState.addDataListener(this::onAdvancedChange);
+    conditionModel.getOperatorValue().addDataListener(this::onOperatorChanged);
     final FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -507,14 +512,70 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     }
   }
 
-  private void initializePanel() {
-    removeAll();
-    if (advancedConditionState.get()) {
-      initializeAdvancedPanel();
+  private void onOperatorChanged(final Operator operator) {
+    switch (operator) {
+      case EQUAL:
+      case NOT_EQUAL:
+        singleValuePanel(equalField);
+        break;
+      case GREATER_THAN:
+      case GREATER_THAN_OR_EQUAL:
+        singleValuePanel(lowerBoundField);
+        break;
+      case LESS_THAN:
+      case LESS_THAN_OR_EQUAL:
+        singleValuePanel(upperBoundField);
+        break;
+      case BETWEEN_EXCLUSIVE:
+      case BETWEEN:
+      case NOT_BETWEEN_EXCLUSIVE:
+      case NOT_BETWEEN:
+        rangePanel(lowerBoundField, upperBoundField);
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
+    }
+    revalidate();
+  }
+
+  private void onAdvancedChange(final boolean advanced) {
+    if (advanced) {
+      setAdvanced();
     }
     else {
-      initializeSimplePanel();
+      setSimple();
     }
+  }
+
+  private void setSimple() {
+    remove(controlPanel);
+    if (toggleEnabledButton != null) {
+      controlPanel.remove(toggleEnabledButton);
+      inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
+    }
+    if (toggleAdvancedButton != null) {
+      controlPanel.remove(toggleAdvancedButton);
+      inputPanel.add(toggleAdvancedButton, BorderLayout.WEST);
+    }
+    ((FlexibleGridLayout) getLayout()).setRows(1);
+    add(inputPanel);
+    setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
+    revalidate();
+  }
+
+  private void setAdvanced() {
+    if (toggleEnabledButton != null) {
+      inputPanel.remove(toggleEnabledButton);
+      controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
+    }
+    if (toggleAdvancedButton != null) {
+      inputPanel.remove(toggleAdvancedButton);
+      controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
+    }
+    ((FlexibleGridLayout) getLayout()).setRows(2);
+    add(controlPanel);
+    add(inputPanel);
+    setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
   }
 
@@ -529,81 +590,18 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 0, 0, FixRowHeights.YES, FixColumnWidths.NO);
-    setLayout(layout);
+    Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
+            operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
+    setLayout(new FlexibleGridLayout(2, 1, 0, 0, FixRowHeights.YES, FixColumnWidths.NO));
+    controlPanel.add(operatorCombo, BorderLayout.CENTER);
     if (toggleEnabledButton != null) {
       this.toggleEnabledButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
     if (toggleAdvancedButton != null) {
       this.toggleAdvancedButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
-  }
-
-  private void initializeSimplePanel() {
-    ((FlexibleGridLayout) getLayout()).setRows(1);
-    final JPanel inputPanel = initializeInputPanel();
-    if (toggleEnabledButton != null) {
-      inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
-    }
-    if (toggleAdvancedButton != null) {
-      inputPanel.add(toggleAdvancedButton, BorderLayout.WEST);
-    }
-    add(inputPanel);
-    setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
-  }
-
-  private void initializeAdvancedPanel() {
-    ((FlexibleGridLayout) getLayout()).setRows(2);
-    final JPanel inputPanel = initializeInputPanel();
-    final JPanel controlPanel = initializeControlPanel();
-    add(controlPanel);
-    add(inputPanel);
-    setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
-  }
-
-  private JPanel initializeInputPanel() {
-    switch (conditionModel.getOperator()) {
-      case EQUAL:
-      case NOT_EQUAL: return singleValuePanel(equalField);
-      case GREATER_THAN:
-      case GREATER_THAN_OR_EQUAL: return singleValuePanel(lowerBoundField);
-      case LESS_THAN:
-      case LESS_THAN_OR_EQUAL: return singleValuePanel(upperBoundField);
-      case BETWEEN_EXCLUSIVE:
-      case BETWEEN:
-      case NOT_BETWEEN_EXCLUSIVE:
-      case NOT_BETWEEN: return rangePanel();
-      default:
-        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
-    }
-  }
-
-  private JPanel rangePanel() {
-    final JPanel inputPanel = new JPanel(new BorderLayout());
-    final JPanel panel = new JPanel(new GridLayout(1, 2));
-    panel.add(lowerBoundField);
-    panel.add(upperBoundField);
-    inputPanel.add(panel, BorderLayout.CENTER);
-
-    return inputPanel;
-  }
-
-  private JPanel initializeControlPanel() {
-    final JPanel controlPanel = new JPanel(new BorderLayout());
-    controlPanel.add(operatorCombo, BorderLayout.CENTER);
-    if (toggleEnabledButton != null) {
-      controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
-    }
-    if (toggleAdvancedButton != null) {
-      controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
-    }
-
-    return controlPanel;
-  }
-
-  private void linkComponentsToLockedState() {
-    Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
-            operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
+    onOperatorChanged(operators.iterator().next());
+    setSimple();
   }
 
   private void initializeConditionDialog(final Container parent) {
@@ -634,13 +632,17 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     });
   }
 
-  private static JPanel singleValuePanel(final JComponent component) {
-    final JPanel inputPanel = new JPanel(new BorderLayout());
-    final JPanel panel = new JPanel(new GridLayout(1, 1));
-    panel.add(component);
-    inputPanel.add(panel, BorderLayout.CENTER);
+  private void singleValuePanel(final JComponent boundField) {
+    inputPanel.removeAll();
+    inputPanel.add(boundField, BorderLayout.CENTER);
+  }
 
-    return inputPanel;
+  private void rangePanel(final JComponent lowerBoundField, final JComponent upperBoundField) {
+    final JPanel panel = new JPanel(new GridLayout(1, 2));
+    panel.add(lowerBoundField);
+    panel.add(upperBoundField);
+    inputPanel.removeAll();
+    inputPanel.add(panel, BorderLayout.CENTER);
   }
 
   private static final class OperatorComboBoxRenderer extends BasicComboBoxRenderer {
