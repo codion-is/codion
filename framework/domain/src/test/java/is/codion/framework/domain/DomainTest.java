@@ -614,7 +614,7 @@ public class DomainTest {
     dept2.put(Department.LOCATION, "location2");
     dept2.put(Department.NAME, "name2");
 
-    final List<Entity> copies = entities.deepCopyEntities(asList(dept1, dept2));
+    final List<Entity> copies = Entity.deepCopy(asList(dept1, dept2));
     assertNotSame(copies.get(0), dept1);
     assertTrue(copies.get(0).columnValuesEqual(dept1));
     assertNotSame(copies.get(1), dept2);
@@ -625,13 +625,15 @@ public class DomainTest {
     emp1.put(Employee.NAME, "name");
     emp1.put(Employee.COMMISSION, 130.5);
 
-    Entity copy = entities.copyEntity(emp1);
+    Entity copy = emp1.copy();
     assertTrue(emp1.columnValuesEqual(copy));
     assertSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
+    assertFalse(emp1.isModified());
 
-    copy = entities.deepCopyEntity(emp1);
+    copy = emp1.deepCopy();
     assertTrue(emp1.columnValuesEqual(copy));
     assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
+    assertFalse(emp1.isModified());
   }
 
   @Test
@@ -648,7 +650,7 @@ public class DomainTest {
     department.put(Department.LOCATION, deptLocation);
     department.put(Department.ACTIVE, deptActive);
 
-    final List<Department> deptBeans = entities.castTo(Department.TYPE, singletonList(department));
+    final List<Department> deptBeans = Entity.castTo(Department.TYPE, singletonList(department));
     final Department departmentBean = deptBeans.get(0);
     assertEquals(deptNo, departmentBean.deptNo());
     assertEquals(deptName, departmentBean.name());
@@ -680,7 +682,7 @@ public class DomainTest {
     employee.put(Employee.NAME, name);
     employee.put(Employee.SALARY, salary);
 
-    final List<Employee> empBeans = entities.castTo(Employee.TYPE, singletonList(employee));
+    final List<Employee> empBeans = Entity.castTo(Employee.TYPE, singletonList(employee));
     final Employee employeeBean = empBeans.get(0);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
@@ -693,8 +695,7 @@ public class DomainTest {
     assertEquals(name, employeeBean.getName());
     assertEquals(salary, employeeBean.getSalary());
 
-    assertNull(entities.castTo(Employee.TYPE, (Entity) null));
-    assertTrue(entities.castTo(Employee.TYPE, emptyList()).isEmpty());
+    assertTrue(Entity.castTo(Employee.TYPE, emptyList()).isEmpty());
   }
 
   @Test
@@ -704,7 +705,9 @@ public class DomainTest {
     master.put(Master.CODE, 1);
     master.put(Master.NAME, "name");
 
-    final Master master1 = entities.castTo(Master.TYPE, master);
+    final Master master1 = master.castTo(Master.TYPE);
+
+    assertSame(master1, master1.castTo(Master.TYPE));
 
     final Entity master2 = entities.entity(Master.TYPE);
     master2.put(Master.ID, 2L);
@@ -713,7 +716,7 @@ public class DomainTest {
 
     final List<Entity> masters = asList(master, master1, master2);
 
-    final List<Master> mastersTyped = entities.castTo(Master.TYPE, masters);
+    final List<Master> mastersTyped = Entity.castTo(Master.TYPE, masters);
 
     assertSame(master1, mastersTyped.get(1));
 
@@ -729,7 +732,7 @@ public class DomainTest {
     detail.put(Detail.DOUBLE, 1.2);
     detail.put(Detail.MASTER_FK, master);
 
-    final Detail detailTyped = entities.castTo(Detail.TYPE, detail);
+    final Detail detailTyped = detail.castTo(Detail.TYPE);
     assertEquals(detailTyped.getId().get(), 1L);
     assertEquals(detailTyped.getDouble().get(), 1.2);
     assertEquals(detailTyped.getMaster().get(), master);
@@ -752,7 +755,7 @@ public class DomainTest {
     compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
 
-    assertSame(compositeMaster, entities.castTo(TestDomain.T_COMPOSITE_MASTER, compositeMaster));
+    assertSame(compositeMaster, compositeMaster.castTo(TestDomain.T_COMPOSITE_MASTER));
   }
 
   @Test
@@ -766,7 +769,7 @@ public class DomainTest {
       entitiesToSer.add(entity);
     }
 
-    Serializer.deserialize(Serializer.serialize(entities.castTo(Master.TYPE, entitiesToSer)));
+    Serializer.deserialize(Serializer.serialize(Entity.castTo(Master.TYPE, entitiesToSer)));
   }
 
   @Test

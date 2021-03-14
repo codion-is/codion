@@ -214,6 +214,27 @@ public interface Entity extends Comparable<Entity> {
   Map<Attribute<?>, Object> setAs(Entity entity);
 
   /**
+   * Copies this entity.
+   * @return a copy of this entity
+   */
+  Entity copy();
+
+  /**
+   * Copies this entity, with new copied instances of all foreign key value entities.
+   * @return a deep copy of this entity
+   */
+  Entity deepCopy();
+
+  /**
+   * Casts this entity to the given type.
+   * @param type the type
+   * @param <T> the entity type
+   * @return a typed entity
+   * @throws IllegalArgumentException in case this entity is not of the given type
+   */
+  <T extends Entity> T castTo(final EntityType<T> entityType);
+
+  /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
    * @param foreignKey the attribute
    * @return true if the reference entity has been loaded
@@ -425,6 +446,36 @@ public interface Entity extends Comparable<Entity> {
     }
 
     return previousValues;
+  }
+
+  /**
+   * Deep copies the given entities, with new copied instances of all foreign key value entities.
+   * @param entities the entities to copy
+   * @return a deep copy of the given entities
+   */
+  static List<Entity> deepCopy(final List<? extends Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(Entity::deepCopy).collect(toList());
+  }
+
+  /**
+   * Copies the given entities.
+   * @param entities the entities to copy
+   * @return copies of the given entities, in the same order as they are received
+   */
+  static List<Entity> copy(final List<? extends Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(Entity::copy).collect(toList());
+  }
+
+  /**
+   * Casts the given entities to the given type.
+   * @param type the type
+   * @param entities the entities
+   * @param <T> the entity type
+   * @return typed entities
+   * @throws IllegalArgumentException in case any of the entities is not of the given type
+   */
+  static <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(type)).collect(toList());
   }
 
   /**

@@ -649,7 +649,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
-    final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel<T, JComponent> inputPanel = new ComponentValuePanel<>(propertyToUpdate.getCaption(),
@@ -1458,8 +1458,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
       final Point location = getPopupLocation(table);
-      new EntityPopupMenu(tableModel.getConnectionProvider().getEntities().copyEntity(selected),
-              tableModel.getConnectionProvider()).show(this, location.x, location.y);
+      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider()).show(this, location.x, location.y);
     }
   }
 

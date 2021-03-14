@@ -57,7 +57,7 @@ public final class EmployeeServer extends EntityServer {
       synchronized (connectionProxy) {
         final List<Entity> employees = connectionProxy.select(condition(Employee.TYPE).select().fetchDepth(-1));
 
-        return connectionProxy.getEntities().castTo(Employee.TYPE, employees);
+        return Entity.castTo(Employee.TYPE, employees);
       }
     }
   }

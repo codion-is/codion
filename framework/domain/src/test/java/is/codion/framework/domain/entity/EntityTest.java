@@ -144,7 +144,7 @@ public final class EntityTest {
     emp1.put(TestDomain.Employee.SALARY, 1300d);
     emp1.put(TestDomain.Employee.DATA, bytes);
 
-    final Entity emp2 = entities.copyEntity(emp1);
+    final Entity emp2 = emp1.copy();
     emp2.put(TestDomain.Employee.DATA, modifiedBytes);
 
     List<Attribute<?>> modifiedAttributes = Entity.getModifiedColumnAttributes(definition, emp1, emp2);
@@ -157,7 +157,7 @@ public final class EntityTest {
     dept1.put(TestDomain.Department.ACTIVE, true);
     dept1.put(TestDomain.Department.DATA, bytes);
 
-    final Entity dept2 = entities.copyEntity(dept1);
+    final Entity dept2 = dept1.copy();
     dept2.put(TestDomain.Department.DATA, modifiedBytes);
 
     final EntityDefinition departmentDefinition = entities.getDefinition(TestDomain.Department.TYPE);

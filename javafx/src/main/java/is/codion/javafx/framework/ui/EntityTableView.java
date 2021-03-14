@@ -257,7 +257,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private <T> void updateSelectedEntities(final Property<T> property) {
-    final List<Entity> selectedEntities = listModel.getEntities().deepCopyEntities(listModel.getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
 
     final List<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
     final T defaultValue = values.size() == 1 ? values.iterator().next() : null;

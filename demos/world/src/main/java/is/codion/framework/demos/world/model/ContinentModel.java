@@ -2,7 +2,7 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
-import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.jfree.data.category.CategoryDataset;
@@ -43,8 +43,7 @@ public final class ContinentModel extends SwingEntityModel {
     surfaceAreaDataset.clear();
     gnpDataset.clear();
     lifeExpectancyDataset.clear();
-    Entities entities = getConnectionProvider().getEntities();
-    entities.castTo(Continent.TYPE, getTableModel().getItems()).forEach(continent -> {
+    Entity.castTo(Continent.TYPE, getTableModel().getItems()).forEach(continent -> {
       populationDataset.setValue(continent.name(), continent.population());
       surfaceAreaDataset.setValue(continent.name(), continent.surfaceArea());
       gnpDataset.setValue(continent.name(), continent.gnp());

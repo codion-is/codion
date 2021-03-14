@@ -5,7 +5,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
 import org.jfree.data.general.DefaultPieDataset;
@@ -41,14 +40,13 @@ public final class CountryOverviewTableModel extends CountryTableModel {
     try {
       if (!selectedCountries.isEmpty()) {
         EntityConnection connection = getConnectionProvider().getConnection();
-        Entities entities = connection.getEntities();
 
-        List<City> cities = entities.castTo(City.TYPE,
+        List<City> cities = Entity.castTo(City.TYPE,
                 connection.select(City.COUNTRY_FK, selectedCountries));
 
         cities.forEach(city -> citiesDataset.setValue(city.name(), city.population()));
 
-        List<CountryLanguage> languages = entities.castTo(CountryLanguage.TYPE,
+        List<CountryLanguage> languages = Entity.castTo(CountryLanguage.TYPE,
                 connection.select(CountryLanguage.COUNTRY_FK, selectedCountries));
 
         languages.forEach(language -> languagesDataset.setValue(language.language(), language.noOfSpeakers()));

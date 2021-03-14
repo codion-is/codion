@@ -368,7 +368,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
-    final Entity entity = getEntities().copyEntity(getItemAt(rowIndex));
+    final Entity entity = getItemAt(rowIndex).copy();
 
     final Attribute<?> columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
 
