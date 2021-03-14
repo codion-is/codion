@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -21,7 +22,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private static final long serialVersionUID = 1;
 
   private final Condition condition;
-  private HashMap<ForeignKey, Integer> foreignKeyFetchDepths;
+  private Map<ForeignKey, Integer> foreignKeyFetchDepths;
   private List<Attribute<?>> selectAttributes = emptyList();
 
   private OrderBy orderBy;
