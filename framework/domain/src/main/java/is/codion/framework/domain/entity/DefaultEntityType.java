@@ -137,7 +137,8 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public <A, B> ForeignKey foreignKey(final String name, final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
+  public <A, B> ForeignKey foreignKey(final String name,
+                                      final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
                                       final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute) {
     return foreignKey(name, asList(
             reference(firstAttribute, firstReferencedAttribute),
@@ -145,7 +146,8 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public <A, B, C> ForeignKey foreignKey(final String name, final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
+  public <A, B, C> ForeignKey foreignKey(final String name,
+                                         final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
                                          final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute,
                                          final Attribute<C> thirdAttribute, final Attribute<C> thirdReferencedAttribute) {
     return foreignKey(name, asList(

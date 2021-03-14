@@ -28,34 +28,19 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   @Override
   public List<Reference<?>> getReferences() {
-    if (references.isEmpty()) {
-      throw new IllegalStateException("No references defined for foreign key property: " + this);
-    }
-
     return references;
   }
 
   @Override
   public <T> Reference<T> getReference(final Attribute<T> attribute) {
-    final Reference<T> reference = findReference(attribute);
-    if (reference == null) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + getName());
-    }
-
-    return reference;
-  }
-
-  private <T> Reference<T> findReference(final Attribute<T> attribute) {
-    if (references != null) {
-      for (int i = 0; i < references.size(); i++) {
-        final Reference<?> reference = references.get(i);
-        if (reference.getAttribute().equals(attribute)) {
-          return (Reference<T>) reference;
-        }
+    for (int i = 0; i < references.size(); i++) {
+      final Reference<?> reference = references.get(i);
+      if (reference.getAttribute().equals(attribute)) {
+        return (Reference<T>) reference;
       }
     }
 
-    return null;
+    throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + getName());
   }
 
   private List<Reference<?>> validate(final List<Reference<?>> references) {

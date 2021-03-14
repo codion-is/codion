@@ -301,18 +301,18 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final <T extends Entity> T castTo(final EntityType<T> type) {
-    requireNonNull(type, "type");
-    if (type.getEntityClass().isAssignableFrom(getClass())) {
-      // no double wrapping
+  public <T extends Entity> T castTo(final EntityType<T> entityType) {
+    requireNonNull(entityType, "entityType");
+    if (entityType.getEntityClass().isAssignableFrom(getClass())) {
+      // no wrapping required
       return (T) this;
     }
-    if (!getEntityType().equals(type)) {
-      throw new IllegalArgumentException("Entity of type " + type + " expected, got: " + getEntityType());
+    if (!getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity of entityType " + entityType + " expected, got: " + getEntityType());
     }
 
     return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {type.getEntityClass()}, new EntityInvoker(this, definition));
+            new Class[] {entityType.getEntityClass()}, new EntityInvoker(this, definition));
   }
 
   @Override
