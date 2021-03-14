@@ -215,6 +215,15 @@ public class DefaultEntityTest {
     assertEquals(newName, entity.get(Master.NAME));
     assertFalse(entity.isModified());
     assertFalse(entity.isModified(Master.NAME));
+
+    final Entity entity2 = ENTITIES.entity(Master.TYPE);
+    entity2.put(Master.NAME, "name");
+    entity2.put(Master.NAME, "newname");
+    assertTrue(entity2.isModified());
+    assertEquals("name", entity2.getOriginal(Master.NAME));
+    entity2.save(Master.NAME);
+    entity2.put(Master.NAME, "name");
+    assertEquals("newname", entity2.getOriginal(Master.NAME));
   }
 
   @Test
