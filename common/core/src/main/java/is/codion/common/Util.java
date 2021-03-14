@@ -98,22 +98,21 @@ public final class Util {
 
   /**
    * Maps the given values according to the keys provided by the given key provider,
-   * keeping the iteration order of the given collection.
-   * {@code
+   * keeping the iteration order of the given collection. Null keys are allowed.
+   * <pre>
    * class Person {
    *   String name;
    *   Integer age;
-   *   ...
+   *
+   *   public Integer getAge() {
+   *     return age;
+   *   }
    * }
    *
    * List&#60;Person&#62; persons = ...;
-   * Function<Person, Integer> ageKeyProvider = new Function&#60;Person, Integer&#62;() {
-   *   public Integer apply(Person person) {
-   *     return person.getAge();
-   *   }
-   * };
-   * Map&#60;Integer, List&#60;Person&#62;&#62; personsByAge = Util.map(persons, ageKeyProvider);
-   * }
+   *
+   * Map&#60;Integer, List&#60;Person&#62;&#62; personsByAge = Util.map(persons, Person::getAge);
+   * </pre>
    * @param values the values to map
    * @param keyProvider the object providing keys for values
    * @param <K> the key type
