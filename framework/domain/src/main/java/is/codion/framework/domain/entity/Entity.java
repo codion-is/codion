@@ -227,8 +227,8 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Casts this entity to the given type.
-   * @param type the type
-   * @param <T> the entity type
+   * @param entityType the entity type
+   * @param <T> the type
    * @return a typed entity
    * @throws IllegalArgumentException in case this entity is not of the given type
    */
