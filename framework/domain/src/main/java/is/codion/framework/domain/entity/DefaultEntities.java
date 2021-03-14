@@ -110,37 +110,6 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final List<Entity> deepCopyEntities(final List<? extends Entity> entities) {
-    requireNonNull(entities, "entities");
-
-    return entities.stream().map(this::deepCopyEntity).collect(toList());
-  }
-
-  @Override
-  public final Entity copyEntity(final Entity entity) {
-    requireNonNull(entity, "entity");
-    final Entity copy = entity(entity.getEntityType());
-    copy.setAs(entity);
-
-    return copy;
-  }
-
-  @Override
-  public final Entity deepCopyEntity(final Entity entity) {
-    requireNonNull(entity, "entity");
-    final Entity copy = entity(entity.getEntityType());
-    copy.setAs(entity);
-    for (final ForeignKey foreignKey : getDefinition(entity.getEntityType()).getForeignKeys()) {
-      final Entity foreignKeyValue = entity.get(foreignKey);
-      if (foreignKeyValue != null) {
-        entity.put(foreignKey, deepCopyEntity(foreignKeyValue));
-      }
-    }
-
-    return copy;
-  }
-
-  @Override
   public final <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
     return requireNonNull(entities, "entities").stream().map(entity -> castTo(type, entity)).collect(toList());
   }

@@ -75,6 +75,9 @@ final class DefaultEntity implements Entity, Serializable {
    */
   DefaultEntity(final EntityDefinition definition, final Key key) {
     this(definition, createValueMap(requireNonNull(key, "key")), null);
+    if (!definition.getEntityType().equals(key.getEntityType())) {
+      throw new IllegalArgumentException("Invalid type: " + key.getEntityType() + ", expecting: " + definition.getEntityType());
+    }
     if (key.isPrimaryKey()) {
       this.primaryKey = key;
     }
@@ -271,6 +274,27 @@ final class DefaultEntity implements Entity, Serializable {
     });
 
     return unmodifiableMap(affectedAttributes);
+  }
+
+  @Override
+  public Entity copy() {
+    final Entity entity = new DefaultEntity(definition, null, null);
+    entity.setAs(this);
+
+    return entity;
+  }
+
+  @Override
+  public Entity deepCopy() {
+    final Entity copy = copy();
+    for (final ForeignKey foreignKey : definition.getForeignKeys()) {
+      final Entity foreignKeyValue = copy.get(foreignKey);
+      if (foreignKeyValue != null) {
+        copy.put(foreignKey, foreignKeyValue.deepCopy());
+      }
+    }
+
+    return copy;
   }
 
   @Override

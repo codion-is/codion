@@ -327,7 +327,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getEntityCopy() {
-    return getEntities().deepCopyEntity(getEntity());
+    return getEntity().deepCopy();
   }
 
   @Override

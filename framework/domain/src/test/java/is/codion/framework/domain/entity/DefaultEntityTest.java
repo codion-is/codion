@@ -257,7 +257,7 @@ public class DefaultEntityTest {
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
 
     //otherwise the values are equal and put() returns before propagating foreign key values
-    final Entity masterCopy = ENTITIES.deepCopyEntity(master);
+    final Entity masterCopy = master.deepCopy();
     masterCopy.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     masterCopy.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
@@ -322,7 +322,7 @@ public class DefaultEntityTest {
     testEntity.getReferencedKey(Detail.MASTER_FK);
 
     //test copy()
-    final Entity test2 = ENTITIES.deepCopyEntity(testEntity);
+    final Entity test2 = testEntity.deepCopy();
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
     assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
     assertTrue(test2.columnValuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
@@ -330,7 +330,7 @@ public class DefaultEntityTest {
 
     test2.put(Detail.DOUBLE, 2.1);
     assertTrue(test2.isModified());
-    final Entity test2Copy = ENTITIES.copyEntity(test2);
+    final Entity test2Copy = test2.copy();
     assertTrue(test2Copy.isModified());
 
     //test propagate entity reference/denormalized values
@@ -629,7 +629,7 @@ public class DefaultEntityTest {
     emp.put(Employee.MANAGER_FK, manager);
     emp.put(Employee.DEPARTMENT_FK, dept2);
 
-    final Entity copy = ENTITIES.deepCopyEntity(emp);
+    final Entity copy = emp.deepCopy();
     assertNotSame(emp, copy);
     assertTrue(emp.columnValuesEqual(copy));
     assertNotSame(emp.get(Employee.MANAGER_FK), copy.get(Employee.MANAGER_FK));

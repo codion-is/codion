@@ -109,27 +109,6 @@ public interface Entities {
   List<Key> primaryKeys(EntityType<?> entityType, Long... values);
 
   /**
-   * Copies the given entities, with new copied instances of all foreign key value entities.
-   * @param entities the entities to copy
-   * @return deep copies of the entities, in the same order as they are received
-   */
-  List<Entity> deepCopyEntities(List<? extends Entity> entities);
-
-  /**
-   * Copies the given entity.
-   * @param entity the entity to copy
-   * @return copy of the given entity
-   */
-  Entity copyEntity(Entity entity);
-
-  /**
-   * Copies the given entity, with new copied instances of all foreign key value entities.
-   * @param entity the entity to copy
-   * @return a deep copy of the given entity
-   */
-  Entity deepCopyEntity(Entity entity);
-
-  /**
    * Casts the given entities to the given type.
    * @param type the type
    * @param entities the entities

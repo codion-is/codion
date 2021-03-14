@@ -214,6 +214,18 @@ public interface Entity extends Comparable<Entity> {
   Map<Attribute<?>, Object> setAs(Entity entity);
 
   /**
+   * Copies this entity.
+   * @return a copy of this entity
+   */
+  Entity copy();
+
+  /**
+   * Copies this entity, with new copied instances of all foreign key value entities.
+   * @return a deep copy of this entity
+   */
+  Entity deepCopy();
+
+  /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
    * @param foreignKey the attribute
    * @return true if the reference entity has been loaded
@@ -425,6 +437,24 @@ public interface Entity extends Comparable<Entity> {
     }
 
     return previousValues;
+  }
+
+  /**
+   * Deep copies the given entities, with new copied instances of all foreign key value entities.
+   * @param entities the entities to copy
+   * @return a deep copy of the given entities
+   */
+  static List<Entity> deepCopy(final List<? extends Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(Entity::deepCopy).collect(toList());
+  }
+
+  /**
+   * Copies the given entities.
+   * @param entities the entities to copy
+   * @return copies of the given entities, in the same order as they are received
+   */
+  static List<Entity> copy(final List<? extends Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(Entity::copy).collect(toList());
   }
 
   /**
