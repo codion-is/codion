@@ -155,6 +155,14 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
+  public boolean isNew() {
+    final Key key = getPrimaryKey();
+    final Key originalKey = getOriginalPrimaryKey();
+
+    return key.isNull() || originalKey.isNull();
+  }
+
+  @Override
   public Entity getForeignKey(final ForeignKey foreignKey) {
     final Entity value = (Entity) values.get(foreignKey);
     if (value == null) {//possibly not loaded

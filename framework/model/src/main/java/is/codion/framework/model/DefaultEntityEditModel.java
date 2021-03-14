@@ -347,7 +347,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return Entity.isNew(getEntity());
+    return getEntity().isNew();
   }
 
   @Override

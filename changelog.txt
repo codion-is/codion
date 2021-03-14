@@ -6793,3 +6793,4 @@
   ColumnConditionPanel bug fixed, operator combo box no longer hides popup on selection, refactoring
   Entities.copyEntity() and deepCopyEntity() now instance methods on Entity, copyEntities() and deepCopyEntities() moved to Entity and renamed copy() and deepCopy() respectively
   Entities.castTo() now instance method on Entity, castTo() utility method moved to Entity
+  Entity.isNew() now instance method
