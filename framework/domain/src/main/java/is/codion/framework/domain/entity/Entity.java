@@ -468,14 +468,14 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Casts the given entities to the given type.
-   * @param type the type
+   * @param entityType the entity type
    * @param entities the entities
-   * @param <T> the entity type
+   * @param <T> the type to cast to
    * @return typed entities
-   * @throws IllegalArgumentException in case any of the entities is not of the given type
+   * @throws IllegalArgumentException in case any of the entities is not of the given entity type
    */
-  static <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
-    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(type)).collect(toList());
+  static <T extends Entity> List<T> castTo(final EntityType<T> entityType, final List<Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(entityType)).collect(toList());
   }
 
   /**
