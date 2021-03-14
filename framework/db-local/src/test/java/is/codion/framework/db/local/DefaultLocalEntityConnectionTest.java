@@ -869,25 +869,25 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
 
       final List<Entity> departments = connection.select(condition(Department.TYPE));
-      Department department = ENTITIES.castTo(Department.TYPE, departments.get(0));
+      Department department = departments.get(0).castTo(Department.TYPE);
       department.setName("New Name");
 
-      department = ENTITIES.castTo(Department.TYPE, connection.update(department));
+      department = connection.update(department).castTo(Department.TYPE);
 
       assertEquals("New Name", department.getName());
 
-      List<Department> departmentsCast = ENTITIES.castTo(Department.TYPE, connection.select(condition(Department.TYPE)));
+      List<Department> departmentsCast = Entity.castTo(Department.TYPE, connection.select(condition(Department.TYPE)));
 
       departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
 
-      departmentsCast = ENTITIES.castTo(Department.TYPE, connection.update(departmentsCast));
+      departmentsCast = Entity.castTo(Department.TYPE, connection.update(departmentsCast));
 
-      final Department newDept1 = ENTITIES.castTo(Department.TYPE, ENTITIES.entity(Department.TYPE));
+      final Department newDept1 = ENTITIES.entity(Department.TYPE).castTo(Department.TYPE);
       newDept1.setId(-1);
       newDept1.setName("hello1");
       newDept1.setLocation("location");
 
-      final Department newDept2 = ENTITIES.castTo(Department.TYPE, ENTITIES.entity(Department.TYPE));
+      final Department newDept2 = ENTITIES.entity(Department.TYPE).castTo(Department.TYPE);
       newDept2.setId(-2);
       newDept2.setName("hello2");
       newDept2.setLocation("location");

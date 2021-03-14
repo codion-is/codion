@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -295,6 +298,21 @@ final class DefaultEntity implements Entity, Serializable {
     }
 
     return copy;
+  }
+
+  @Override
+  public final <T extends Entity> T castTo(final EntityType<T> type) {
+    requireNonNull(type, "type");
+    if (type.getEntityClass().isAssignableFrom(getClass())) {
+      // no double wrapping
+      return (T) this;
+    }
+    if (!getEntityType().equals(type)) {
+      throw new IllegalArgumentException("Entity of type " + type + " expected, got: " + getEntityType());
+    }
+
+    return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
+            new Class[] {type.getEntityClass()}, new EntityInvoker(this, definition));
   }
 
   @Override
@@ -822,6 +840,61 @@ final class DefaultEntity implements Entity, Serializable {
       }
 
       return (T) values.get(attribute);
+    }
+  }
+
+  private static final class EntityInvoker implements InvocationHandler, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final Entity entity;
+    private final EntityDefinition definition;
+
+    private EntityInvoker(final Entity entity, final EntityDefinition definition) {
+      this.entity = entity;
+      this.definition = definition;
+    }
+
+    @Override
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      if (method.getName().equals("castTo")) {
+        //prevent double wrapping
+        return proxy;
+      }
+      if (method.getParameterCount() == 0) {
+        final Attribute<?> attribute = definition.getGetterAttribute(method);
+        if (attribute != null) {
+          return getValue(attribute, method.getReturnType().equals(Optional.class));
+        }
+      }
+      else if (method.getParameterCount() == 1) {
+        final Attribute<?> attribute = definition.getSetterAttribute(method);
+        if (attribute != null) {
+          return setValue(attribute, args[0]);
+        }
+      }
+      if (method.isDefault()) {
+        return definition.getDefaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
+      }
+
+      return method.invoke(entity, args);
+    }
+
+    private Object getValue(final Attribute<?> attribute, final boolean optional) {
+      Object value = entity.get(attribute);
+      if (value instanceof Entity) {
+        final Entity entityValue = (Entity) value;
+
+        value = entityValue.castTo(entityValue.getEntityType());
+      }
+
+      return optional ? Optional.ofNullable(value) : value;
+    }
+
+    private Object setValue(final Attribute<?> attribute, final Object value) {
+      entity.put((Attribute<Object>) attribute, value);
+
+      return null;
     }
   }
 }

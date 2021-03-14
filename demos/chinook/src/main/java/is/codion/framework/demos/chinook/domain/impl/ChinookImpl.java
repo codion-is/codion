@@ -350,8 +350,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
                                 final List<Object> arguments) throws DatabaseException {
-      return entityConnection.update(entityConnection.getEntities()
-              .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES)).stream()
+      return entityConnection.update(Entity.castTo(Invoice.TYPE,
+              entityConnection.select(ALL_INVOICES)).stream()
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)
               .collect(Collectors.toList()));
@@ -370,8 +370,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               condition(Track.ID).equalTo(trackIds).select()
                       .forUpdate();
 
-      return entityConnection.update(entityConnection.getEntities()
-              .castTo(Track.TYPE, entityConnection.select(selectCondition)).stream()
+      return entityConnection.update(Entity.castTo(Track.TYPE,
+              entityConnection.select(selectCondition)).stream()
               .map(track -> track.raisePrice(priceIncrease))
               .collect(Collectors.toList()));
     }

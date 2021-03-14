@@ -226,6 +226,15 @@ public interface Entity extends Comparable<Entity> {
   Entity deepCopy();
 
   /**
+   * Casts this entity to the given type.
+   * @param type the type
+   * @param <T> the entity type
+   * @return a typed entity
+   * @throws IllegalArgumentException in case this entity is not of the given type
+   */
+  <T extends Entity> T castTo(final EntityType<T> entityType);
+
+  /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
    * @param foreignKey the attribute
    * @return true if the reference entity has been loaded
@@ -455,6 +464,18 @@ public interface Entity extends Comparable<Entity> {
    */
   static List<Entity> copy(final List<? extends Entity> entities) {
     return requireNonNull(entities, "entities").stream().map(Entity::copy).collect(toList());
+  }
+
+  /**
+   * Casts the given entities to the given type.
+   * @param type the type
+   * @param entities the entities
+   * @param <T> the entity type
+   * @return typed entities
+   * @throws IllegalArgumentException in case any of the entities is not of the given type
+   */
+  static <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(type)).collect(toList());
   }
 
   /**

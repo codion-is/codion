@@ -107,24 +107,4 @@ public interface Entities {
    * @throws NullPointerException in case entityType or values is null
    */
   List<Key> primaryKeys(EntityType<?> entityType, Long... values);
-
-  /**
-   * Casts the given entities to the given type.
-   * @param type the type
-   * @param entities the entities
-   * @param <T> the entity type
-   * @return typed entities
-   * @throws IllegalArgumentException in case any of the entities is not of the given type
-   */
-  <T extends Entity> List<T> castTo(EntityType<T> type, List<Entity> entities);
-
-  /**
-   * Casts the given entity to the given type.
-   * @param type the type
-   * @param entity the entity
-   * @param <T> the entity type
-   * @return a typed entity
-   * @throws IllegalArgumentException in case the entity is not of the given type
-   */
-  <T extends Entity> T castTo(EntityType<T> type, Entity entity);
 }

@@ -23,7 +23,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
       //only show cities for currently selected country
       addEntitySetListener(country ->
               comboBoxModel.setIncludeCondition(cityEntity ->
-                      getEntities().castTo(City.TYPE, cityEntity).isInCountry(country)));
+                      cityEntity.castTo(City.TYPE).isInCountry(country)));
     }
 
     return comboBoxModel;
