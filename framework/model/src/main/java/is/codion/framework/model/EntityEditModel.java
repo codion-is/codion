@@ -86,7 +86,7 @@ public interface EntityEditModel {
 
   /**
    * @return a deep copy of the active entity
-   * @see is.codion.framework.domain.entity.Entities#copyEntity(Entity)
+   * @see is.codion.framework.domain.entity.Entity#copy()
    */
   Entity getEntityCopy();
 
