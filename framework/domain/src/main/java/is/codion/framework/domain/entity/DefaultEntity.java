@@ -855,6 +855,8 @@ final class DefaultEntity implements Entity, Serializable {
 
     private static final long serialVersionUID = 1;
 
+    private static final String CAST_TO = "castTo";
+
     private final Entity entity;
     private final EntityDefinition definition;
 
@@ -865,7 +867,7 @@ final class DefaultEntity implements Entity, Serializable {
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-      if (method.getName().equals("castTo")) {
+      if (CAST_TO.equals(method.getName())) {
         //prevent double wrapping
         return proxy;
       }
