@@ -600,8 +600,8 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     if (toggleAdvancedButton != null) {
       this.toggleAdvancedButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
-    onOperatorChanged(operators.iterator().next());
-    setSimple();
+    onOperatorChanged(conditionModel.getOperator());
+    onAdvancedChange(advancedConditionState.get());
   }
 
   private void initializeConditionDialog(final Container parent) {
