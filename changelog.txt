@@ -6794,3 +6794,4 @@
   Entities.copyEntity() and deepCopyEntity() now instance methods on Entity, copyEntities() and deepCopyEntities() moved to Entity and renamed copy() and deepCopy() respectively
   Entities.castTo() now instance method on Entity, castTo() utility method moved to Entity
   Entity.isNew() now instance method
+  ColumnConditionPanel bug fixed, did not initialize UI according to model operator
