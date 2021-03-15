@@ -6825,3 +6825,5 @@
   Entities.castTo() now instance method on Entity, castTo() utility method moved to Entity
   Entity.isNew() now instance method
   ColumnConditionPanel bug fixed, did not initialize UI according to model operator
+0.17.12
+  3d party dependencies upgraded
