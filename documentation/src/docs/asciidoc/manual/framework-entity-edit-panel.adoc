@@ -38,11 +38,11 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Foreign key
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-is.codion.framework.domain.entity.Attribute-[createForeignKeyComboBox(attribute)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyComboBox(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-is.codion.framework.domain.entity.Attribute-[createForeignKeyField(attribute)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyField(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLookupField-is.codion.framework.domain.entity.Attribute-[createForeignKeyLookupField(attribute)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLookupField-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyLookupField(attribute)]
 
 [source,java,indent=0]
 ----

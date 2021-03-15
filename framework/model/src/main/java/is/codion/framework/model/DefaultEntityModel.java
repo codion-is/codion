@@ -410,7 +410,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /**
    * Initializes all linked detail models according to the active entities in this master model
-   * @see #getActiveEntities()
    * @see #addLinkedDetailModel(DefaultEntityModel)
    * @see #initialize(EntityType, List)
    */

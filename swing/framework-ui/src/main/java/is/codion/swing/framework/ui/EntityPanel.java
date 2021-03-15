@@ -1060,7 +1060,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Creates the control panel or component to place next to the edit panel, containing controls for managing
    * records, such as insert, update and delete.
-   * Only called if {@link #includeControlPanel} returns true.
+   * Only called if {@link #isIncludeControlPanel()} returns true.
    * By default the control panel provided by the edit panel is returned.
    * @return the control panel for managing records
    * @see EntityEditPanel#createHorizontalControlPanel()
