@@ -251,7 +251,6 @@ public class EntityEditComponentPanel extends JPanel {
    * that are enabled, displayable, visible and focusable.
    * @see #excludeComponentFromSelection(Attribute)
    * @see #setComponent(Attribute, JComponent)
-   * @see #isComponentSelectable(JComponent)
    */
   public final List<Attribute<?>> getSelectComponentAttributes() {
     final List<Attribute<?>> attributes = getComponentAttributes();

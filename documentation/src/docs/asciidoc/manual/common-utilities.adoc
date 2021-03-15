@@ -8,8 +8,6 @@ Codion provides a few classes with miscellanous utility functions.
 
 {url-javadoc}/is/codion/common/FileUtil.html[FileUtil]
 
-{url-javadoc}/is/codion/common/Formats.html[Formats]
-
 {url-javadoc}/is/codion/common/Memory.html[Memory]
 
 {url-javadoc}/is/codion/common/Serializer.html[Serializer]
