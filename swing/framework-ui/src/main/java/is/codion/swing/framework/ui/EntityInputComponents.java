@@ -192,7 +192,7 @@ public final class EntityInputComponents {
       throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeyLookupField() for ForeignKeys");
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
-    if (attribute instanceof ValueListProperty) {
+    if (property instanceof ValueListProperty) {
       return createValueListComboBox(attribute, value, enabledState);
     }
     if (attribute.isBoolean()) {
