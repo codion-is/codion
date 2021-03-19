@@ -6828,3 +6828,4 @@
 0.17.12
   3d party dependencies upgraded
   EntityInputComponents bug fixed, did not handle ValueListProperty correctly
+  Control.ActionCommand, DefaultActionControl added, allowing Controls based on ActionEvent
