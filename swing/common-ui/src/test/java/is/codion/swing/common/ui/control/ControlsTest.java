@@ -186,6 +186,18 @@ public final class ControlsTest {
   }
 
   @Test
+  public void actionCommand() {
+    final ActionEvent event = new ActionEvent(this, -1, "test");
+    final Control test = Control.actionControl(actionEvent -> {
+      assertSame(this, actionEvent.getSource());
+      assertEquals(actionEvent.getActionCommand(), "test");
+      assertEquals(actionEvent.getID(), -1);
+    });
+    assertTrue(test instanceof DefaultActionControl);
+    test.actionPerformed(event);
+  }
+
+  @Test
   public void setEnabled() {
     final State enabledState = State.state();
     final Control control = Control.builder().command(this::doNothing).name("control").enabledState(enabledState.getObserver()).build();

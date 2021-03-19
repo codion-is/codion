@@ -28,6 +28,11 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   }
 
   @Override
+  public Control.Builder actionCommand(final Control.ActionCommand actionCommand) {
+    throw new UnsupportedOperationException("A ToggleControl can not have a ActionCommand");
+  }
+
+  @Override
   public ToggleControl.Builder name(final String name) {
     this.name = requireNonNull(name);
     return this;

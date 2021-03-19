@@ -32,6 +32,11 @@ final class ControlListBuilder implements ControlList.Builder {
   }
 
   @Override
+  public Control.Builder actionCommand(final Control.ActionCommand actionCommand) {
+    throw new UnsupportedOperationException("A ControlList can not have a ActionCommand");
+  }
+
+  @Override
   public ControlList.Builder name(final String name) {
     this.name = name;
     return this;

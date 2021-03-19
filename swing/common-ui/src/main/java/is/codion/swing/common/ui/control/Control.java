@@ -91,6 +91,27 @@ public interface Control extends Action {
   }
 
   /**
+   * A simple command interface, allowing commands based on {@link ActionEvent}s.
+   */
+  interface ActionCommand {
+
+    /**
+     * Performes the work.
+     * @param actionEvent the action event
+     */
+    void perform(ActionEvent actionEvent);
+  }
+
+  /**
+   * Creates a control based on a {@link Control.ActionCommand}
+   * @param actionCommand the {@link Control.ActionCommand} on which to base this control
+   * @return a Control for calling the given {@link Control.Command}
+   */
+  static Control actionControl(final ActionCommand actionCommand) {
+    return builder().actionCommand(actionCommand).build();
+  }
+
+  /**
    * Creates a control based on a {@link Control.Command}
    * @param command the {@link Control.Command} on which to base this control
    * @return a Control for calling the given {@link Control.Command}
@@ -126,6 +147,12 @@ public interface Control extends Action {
      * @return this Builder instance
      */
     Builder command(Command command);
+
+    /**
+     * @param actionCommand the {@link Control.ActionCommand} on which to base this control
+     * @return this Builder instance
+     */
+    Builder actionCommand(ActionCommand actionCommand);
 
     /**
      * @param name the name of the control
