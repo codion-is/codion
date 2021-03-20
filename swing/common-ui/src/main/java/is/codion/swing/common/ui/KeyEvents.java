@@ -27,7 +27,7 @@ public final class KeyEvents {
 
   /**
    * A Builder for adding a key event to a component, with a default onKeyRelease trigger
-   * and condition {@link JComponent.WHEN_FOCUSED}.
+   * and condition {@link JComponent#WHEN_FOCUSED}.
    */
   public interface KeyEventBuilder {
 
