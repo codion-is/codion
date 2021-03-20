@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static is.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
@@ -238,11 +239,9 @@ public class EntityEditComponentPanel extends JPanel {
   public void selectInputComponent() {
     final List<Property<?>> properties =
             Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
-    final Property<?> property = properties.size() == 1 ?  properties.get(0) :
+    final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.get(0)) :
             Dialogs.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
-    if (property != null) {
-      requestComponentFocus(property.getAttribute());
-    }
+    optionalProperty.ifPresent(property -> requestComponentFocus(property.getAttribute()));
   }
 
   /**

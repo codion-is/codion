@@ -6802,3 +6802,4 @@
   Controls.checkBoxMenuItem() and radioButtonMenuItem() now throw IllegalArgumentException in case the ToggleControl is based on a nullable value
   NullableCheckBox refactored, improved even
   KeyEvents.KeyEventBuilder added, replaces utility methods
+  Dialogs.selectValue() now returns an Optional instead of null

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -102,14 +103,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     });
     if (!conditionProperties.isEmpty()) {
       Properties.sort(conditionProperties);
-      final Property<?> property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
+      final Optional<Property<?>> optionalProperty = conditionProperties.size() == 1 ? Optional.of(conditionProperties.get(0)) :
               Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
-      if (property != null) {
+      optionalProperty.ifPresent(property -> {
         final ColumnConditionPanel<Entity, Attribute<?>, ?> panel = getConditionPanel(property.getAttribute());
         if (panel != null) {
           panel.requestInputFocus();
         }
-      }
+      });
     }
   }
 

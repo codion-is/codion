@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -452,10 +453,10 @@ public final class Dialogs {
    * Displays a dialog for selecting one of a collection of values
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
-   * @return the selected value, null if none was selected
+   * @return the selected value, {@link Optional#empty()} if none was selected
    * @param <T> the type of values being selected
    */
-  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values) {
+  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values) {
     return selectValue(dialogOwner, values, MESSAGES.getString("select_value"));
   }
 
@@ -464,10 +465,10 @@ public final class Dialogs {
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
    * @param dialogTitle the dialog title
-   * @return the selected value, null if none was selected
+   * @return the selected value, {@link Optional#empty()} if none was selected
    * @param <T> the type of values being selected
    */
-  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
+  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
     return selectValue(dialogOwner, values, dialogTitle, null);
   }
 
@@ -477,18 +478,18 @@ public final class Dialogs {
    * @param values the values to choose from
    * @param dialogTitle the dialog title
    * @param defaultSelection the item selected by default
-   * @return the selected value, null if none was selected
+   * @return the selected value, {@link Optional#empty()} if none was selected
    * @param <T> the type of values being selected
    */
-  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
-                                  final T defaultSelection) {
+  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
+                                            final T defaultSelection) {
     final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
             defaultSelection == null ? emptyList() : singletonList(defaultSelection));
     if (selected.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
 
-    return selected.get(0);
+    return Optional.of(selected.get(0));
   }
 
   /**
