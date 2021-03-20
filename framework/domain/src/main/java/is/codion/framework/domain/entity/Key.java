@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,7 +19,7 @@ public interface Key {
   /**
    * @return the attributes comprising this key
    */
-  Collection<Attribute<?>> getAttributes();
+  List<Attribute<?>> getAttributes();
 
   /**
    * @return true if this key represents a primary key for a entity, note that this is true

@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +107,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public Collection<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> getAttributes() {
     return attributes;
   }
 

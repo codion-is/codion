@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -73,10 +74,17 @@ public interface Condition {
 
     /**
      * Adds new Condition objects to this combination
-     * @param conditions the Condition to add
+     * @param conditions the Conditions to add
      * @return this combination instance
      */
     Combination add(Condition... conditions);
+
+    /**
+     * Adds new Condition objects to this combination
+     * @param conditions the Conditions to add
+     * @return this combination instance
+     */
+    Combination add(Collection<Condition> conditions);
 
     /**
      * Adds a new Condition object to this combination

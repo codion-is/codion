@@ -6807,3 +6807,6 @@
   KeyEvents.transferFocusOnEnter() moved to Components
   EntityPanelBuilder.InsertEntityAction now handles exceptions during insert and allows retry
   SwingForeignKeyConditionModel bug fixed, did not initialize correctly when combo box model was cleared, some refactoring
+  Key.getAttributes() now returns a List, order matters
+  Condition.Combination.add(List) added
+  Conditions refactored, DefaultForeignKeyConditionBuilder and EmptyCondition moved up to package level, EmptyCondition renamed DefaultCondition

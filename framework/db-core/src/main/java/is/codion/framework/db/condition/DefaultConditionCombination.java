@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
@@ -50,6 +51,16 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public Combination add(final Condition... conditions) {
+    requireNonNull(conditions);
+    for (final Condition condition : conditions) {
+      add(condition);
+    }
+
+    return this;
+  }
+
+  @Override
+  public Combination add(final Collection<Condition> conditions) {
     requireNonNull(conditions);
     for (final Condition condition : conditions) {
       add(condition);
