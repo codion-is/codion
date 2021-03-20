@@ -99,7 +99,7 @@ public interface Control extends Action {
      * Performes the work.
      * @param actionEvent the action event
      */
-    void perform(ActionEvent actionEvent);
+    void perform(ActionEvent actionEvent) throws Exception;
   }
 
   /**
@@ -145,12 +145,14 @@ public interface Control extends Action {
     /**
      * @param command the {@link Control.Command} on which to base this control
      * @return this Builder instance
+     * @throws IllegalStateException in case an actionCommand has already been set
      */
     Builder command(Command command);
 
     /**
      * @param actionCommand the {@link Control.ActionCommand} on which to base this control
      * @return this Builder instance
+     * @throws IllegalStateException in case a command has already been set
      */
     Builder actionCommand(ActionCommand actionCommand);
 
@@ -192,6 +194,7 @@ public interface Control extends Action {
 
     /**
      * @return a new Control instance
+     * @throws IllegalStateException in case no command has been set
      */
     Control build();
   }

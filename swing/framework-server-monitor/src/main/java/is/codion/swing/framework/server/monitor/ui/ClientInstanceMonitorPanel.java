@@ -5,6 +5,7 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.user.User;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -33,8 +34,6 @@ import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.control.Controls.popupMenu;
 import static java.util.Objects.requireNonNull;
@@ -114,8 +113,16 @@ public final class ClientInstanceMonitorPanel extends JPanel {
                     .name("Save to file..."))
             .build()));
 
-    addKeyEvent(searchField, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, control(this::scrollToNextSearchPosition));
-    addKeyEvent(searchField, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, control(this::scrollToPreviousSearchPosition));
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_DOWN)
+            .onKeyPressed()
+            .action(control(this::scrollToNextSearchPosition))
+            .enable(searchField);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_UP)
+            .onKeyPressed()
+            .action(control(this::scrollToPreviousSearchPosition))
+            .enable(searchField);
 
     final JPanel searchPanel = new JPanel(Layouts.borderLayout());
     searchPanel.add(new JLabel("Search"), BorderLayout.WEST);

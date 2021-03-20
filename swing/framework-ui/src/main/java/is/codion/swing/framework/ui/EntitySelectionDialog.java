@@ -74,7 +74,11 @@ public final class EntitySelectionDialog extends JDialog {
       tableModel.getEditModel().setReadOnly(true);
     }
     this.entityTablePanel = initializeTablePanel(tableModel, preferredSize);
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(cancelControl)
+            .enable(getRootPane());
     setLayout(new BorderLayout());
     final JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
     final JButton okButton = new JButton(okControl);

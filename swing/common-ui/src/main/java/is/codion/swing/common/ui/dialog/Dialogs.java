@@ -45,10 +45,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -406,16 +406,24 @@ public final class Dialogs {
     final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal == Modal.YES ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (enterAction != null) {
-      KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, enterAction);
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_ENTER)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .onKeyPressed()
+              .action(enterAction)
+              .enable(dialog.getRootPane());
     }
 
     final Action disposeAction = new DisposeDialogAction(dialog);
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape == DisposeOnEscape.YES) {
-        KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new DisposeDialogOnEscapeAction(dialog));
+        KeyEvents.builder()
+                .keyEvent(KeyEvent.VK_ESCAPE)
+                .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .onKeyPressed()
+                .action(new DisposeDialogOnEscapeAction(dialog))
+                .enable(dialog.getRootPane());
       }
     }
     else {
@@ -445,10 +453,10 @@ public final class Dialogs {
    * Displays a dialog for selecting one of a collection of values
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
-   * @return the selected value, null if none was selected
+   * @return the selected value, {@link Optional#empty()} if none was selected
    * @param <T> the type of values being selected
    */
-  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values) {
+  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values) {
     return selectValue(dialogOwner, values, MESSAGES.getString("select_value"));
   }
 
@@ -457,10 +465,10 @@ public final class Dialogs {
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
    * @param dialogTitle the dialog title
-   * @return the selected value, null if none was selected
+   * @return the selected value, {@link Optional#empty()} if none was selected
    * @param <T> the type of values being selected
    */
-  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
+  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
     return selectValue(dialogOwner, values, dialogTitle, null);
   }
 
@@ -470,18 +478,18 @@ public final class Dialogs {
    * @param values the values to choose from
    * @param dialogTitle the dialog title
    * @param defaultSelection the item selected by default
-   * @return the selected value, null if none was selected
+   * @return the selected value, {@link Optional#empty()} if none was selected
    * @param <T> the type of values being selected
    */
-  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
-                                  final T defaultSelection) {
+  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
+                                            final T defaultSelection) {
     final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
             defaultSelection == null ? emptyList() : singletonList(defaultSelection));
     if (selected.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
 
-    return selected.get(0);
+    return Optional.of(selected.get(0));
   }
 
   /**
@@ -521,10 +529,16 @@ public final class Dialogs {
   public static void prepareOkCancelDialog(final JDialog dialog, final JComponent component,
                                            final Action okAction, final Action cancelAction) {
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-            JComponent.WHEN_IN_FOCUSED_WINDOW, cancelAction);
-    KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0,
-            JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, okAction);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .action(cancelAction)
+            .enable(dialog.getRootPane());
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER).condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .onKeyPressed()
+            .action(okAction)
+            .enable(dialog.getRootPane());
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));

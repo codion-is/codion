@@ -259,15 +259,19 @@ public final class TextFields {
    */
   public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
     requireNonNull(valueProvider);
-    KeyEvents.addKeyEvent(textField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("TextFields.lookupValue") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final Object value = Dialogs.selectValue(textField, valueProvider.get());
-        if (value != null) {
-          textField.setText(value.toString());
-        }
-      }
-    });
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_SPACE)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(new AbstractAction("TextFields.lookupValue") {
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                final Object value = Dialogs.selectValue(textField, valueProvider.get());
+                if (value != null) {
+                  textField.setText(value.toString());
+                }
+              }
+            })
+            .enable(textField);
   }
 
   /**

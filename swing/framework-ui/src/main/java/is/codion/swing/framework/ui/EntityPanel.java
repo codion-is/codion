@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
@@ -57,8 +58,6 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -1112,76 +1111,178 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       final Control selectTablePanelControl = Control.control(getTablePanel().getTable()::requestFocus);
       final Control selectSearchFieldControl = Control.control(getTablePanel().getTable().getSearchField()::requestFocus);
       final Control selectConditionPanelAction = Control.control(getTablePanel()::selectConditionPanel);
-      addKeyEvent(this, KeyEvent.VK_T, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectTablePanelControl);
-      addKeyEvent(this, KeyEvent.VK_F, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectSearchFieldControl);
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_T)
+              .modifiers(CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(selectTablePanelControl)
+              .enable(this);
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_F)
+              .modifiers(CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(selectSearchFieldControl)
+              .enable(this);
       if (tablePanel.getConditionPanel() != null) {
-        addKeyEvent(this, KeyEvent.VK_S, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                selectConditionPanelAction);
+        KeyEvents.builder()
+                .keyEvent(KeyEvent.VK_S)
+                .modifiers(CTRL_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(selectConditionPanelAction)
+                .enable(this);
       }
       if (containsEditPanel()) {
-        addKeyEvent(editControlPanel, KeyEvent.VK_T, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                selectTablePanelControl);
-        addKeyEvent(editControlPanel, KeyEvent.VK_F, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                selectSearchFieldControl);
+        KeyEvents.builder()
+                .keyEvent(KeyEvent.VK_T)
+                .modifiers(CTRL_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(selectTablePanelControl)
+                .enable(editControlPanel);
+        KeyEvents.builder()
+                .keyEvent(KeyEvent.VK_F)
+                .modifiers(CTRL_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(selectSearchFieldControl)
+                .enable(editControlPanel);
         if (tablePanel.getConditionPanel() != null) {
-          addKeyEvent(editControlPanel, KeyEvent.VK_S, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                  selectConditionPanelAction);
+          KeyEvents.builder()
+                  .keyEvent(KeyEvent.VK_S)
+                  .modifiers(CTRL_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(selectConditionPanelAction)
+                  .enable(editControlPanel);
         }
       }
     }
     if (containsEditPanel()) {
       final Control selectEditPanelControl = Control.control(this::selectEditPanel);
       final Control selectInputComponentControl = Control.control(this::selectInputComponent);
-      addKeyEvent(this, KeyEvent.VK_E, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectEditPanelControl);
-      addKeyEvent(this, KeyEvent.VK_I, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectInputComponentControl);
-      addKeyEvent(editControlPanel, KeyEvent.VK_I, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectInputComponentControl);
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_E)
+              .modifiers(CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(selectEditPanelControl)
+              .enable(this);
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_I)
+              .modifiers(CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(selectInputComponentControl)
+              .enable(this);
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_I)
+              .modifiers(CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(selectInputComponentControl)
+              .enable(editControlPanel);
     }
   }
 
   protected final void initializeResizing() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new ResizeHorizontallyAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new ResizeHorizontallyAction(this, LEFT));
+    KeyEvents.builder()
+            .keyEvent(VK_UP)
+            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(new ResizeVerticallyAction(this, UP))
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(VK_DOWN)
+            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(new ResizeVerticallyAction(this, DOWN))
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(VK_RIGHT)
+            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .onKeyPressed()
+            .action(new ResizeHorizontallyAction(this, RIGHT))
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(VK_LEFT)
+            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .onKeyPressed()
+            .action(new ResizeHorizontallyAction(this, LEFT))
+            .enable(this);
     if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
+      KeyEvents.builder()
+              .keyEvent(VK_UP)
+              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new ResizeVerticallyAction(this, UP))
+              .enable(editControlPanel);
+      KeyEvents.builder()
+              .keyEvent(VK_DOWN)
+              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new ResizeVerticallyAction(this, DOWN))
+              .enable(editControlPanel);
+      KeyEvents.builder()
+              .keyEvent(VK_RIGHT)
+              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new ResizeHorizontallyAction(this, RIGHT))
+              .enable(editControlPanel);
+      KeyEvents.builder()
+              .keyEvent(VK_LEFT)
+              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new ResizeHorizontallyAction(this, LEFT))
+              .enable(editControlPanel);
     }
   }
 
   protected final void initializeNavigation() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
+    KeyEvents.builder()
+            .keyEvent(VK_UP)
+            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(new NavigateAction(this, UP))
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(VK_DOWN)
+            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(new NavigateAction(this, DOWN))
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(VK_RIGHT)
+            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(new NavigateAction(this, RIGHT))
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(VK_LEFT)
+            .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(new NavigateAction(this, LEFT))
+            .enable(this);
     if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
-              WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
+      KeyEvents.builder()
+              .keyEvent(VK_UP)
+              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new NavigateAction(this, UP))
+              .enable(editControlPanel);
+      KeyEvents.builder()
+              .keyEvent(VK_DOWN)
+              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new NavigateAction(this, DOWN))
+              .enable(editControlPanel);
+      KeyEvents.builder()
+              .keyEvent(VK_RIGHT)
+              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new NavigateAction(this, RIGHT))
+              .enable(editControlPanel);
+      KeyEvents.builder()
+              .keyEvent(VK_LEFT)
+              .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(new NavigateAction(this, LEFT))
+              .enable(editControlPanel);
     }
   }
 

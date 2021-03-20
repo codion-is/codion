@@ -4,18 +4,15 @@
 package is.codion.swing.common.ui.checkbox;
 
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Control;
 
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.ActionMapUIResource;
-import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import static java.util.Objects.requireNonNull;
 
@@ -53,22 +50,11 @@ public class NullableCheckBox extends JCheckBox {
   public NullableCheckBox(final NullableToggleButtonModel model, final String caption, final Icon icon) {
     super(caption, icon);
     super.setModel(requireNonNull(model, "model"));
-    super.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        requestFocusInWindow();
-        model.nextState();
-      }
-    });
-    final ActionMap actions = new ActionMapUIResource();
-    actions.put("pressed", new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        model.nextState();
-      }
-    });
-    actions.put("released", null);
-    SwingUtilities.replaceUIActionMap(this, actions);
+    addMouseListener(new NullableMouseListener());
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_SPACE)
+            .action(Control.control(model::nextState))
+            .enable(this);
   }
 
   /**
@@ -94,15 +80,22 @@ public class NullableCheckBox extends JCheckBox {
   @Override
   public final void setModel(final ButtonModel model) {
     if (getModel() instanceof NullableToggleButtonModel) {
-      throw new UnsupportedOperationException("Setting the model of a NullableCheckBox is not supported");
+      throw new UnsupportedOperationException("Setting the model of a NullableCheckBox after construction is not supported");
     }
     super.setModel(model);
   }
 
-  /**
-   * Does nothing.
-   * @param listener the listener
-   */
-  @Override
-  public final synchronized void addMouseListener(final MouseListener listener) {/*Disabled*/}
+  private final class NullableMouseListener extends MouseAdapter {
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+      if (e == null || notModified(e)) {
+        getNullableModel().nextState();
+      }
+    }
+
+    private boolean notModified(final MouseEvent e) {
+      return !e.isAltDown() && !e.isControlDown() && !e.isShiftDown() &&
+              !e.isAltGraphDown() && !e.isMetaDown() && !e.isPopupTrigger();
+    }
+  }
 }

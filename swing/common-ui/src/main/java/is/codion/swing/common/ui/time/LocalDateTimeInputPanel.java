@@ -123,7 +123,11 @@ public final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateT
     dateTimePanel.add(timePanel, BorderLayout.EAST);
     dateTimePanel.add(createOkCancelButtonPanel(okControl, cancelControl), BorderLayout.SOUTH);
 
-    KeyEvents.addKeyEvent(dateTimePanel, KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(cancelControl)
+            .enable(dateTimePanel);
     Dialogs.displayInDialog(parent, dateTimePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
 
     return cancel.get() ? null : LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime());
