@@ -6804,3 +6804,4 @@
   KeyEvents.KeyEventBuilder added, replaces utility methods
   Dialogs.selectValue() now returns an Optional instead of null
   Control.ActionCommand.perform() now throws Exception, like Command.perform()
+  KeyEvents.transferFocusOnEnter() moved to Components

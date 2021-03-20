@@ -93,8 +93,8 @@ public final class EntityLookupField extends JTextField {
   private final EntityLookupModel model;
   private final TextFields.Hint searchHint;
   private final SettingsPanel settingsPanel;
-  private final Action transferFocusAction = KeyEvents.transferFocusForwardAction(this);
-  private final Action transferFocusBackwardAction = KeyEvents.transferFocusBackwardAction(this);
+  private final Action transferFocusAction = Components.transferFocusForwardAction(this);
+  private final Action transferFocusBackwardAction = Components.transferFocusBackwardAction(this);
 
   private SelectionProvider selectionProvider;
 

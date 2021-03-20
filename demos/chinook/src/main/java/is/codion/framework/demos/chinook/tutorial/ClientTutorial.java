@@ -34,7 +34,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
+import static is.codion.swing.common.ui.Components.removeTransferFocusOnEnter;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
