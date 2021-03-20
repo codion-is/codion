@@ -196,18 +196,6 @@ final class ExceptionDialog extends JDialog {
             .description(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ESCAPE)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .onKeyPressed()
-            .action(closeControl)
-            .enable(getRootPane());
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .onKeyPressed()
-            .action(closeControl)
-            .enable(getRootPane());
     final Control saveControl = Control.builder()
             .command(() -> Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                     Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
@@ -221,6 +209,19 @@ final class ExceptionDialog extends JDialog {
             .description(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
             .build();
+
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .onKeyPressed()
+            .action(closeControl)
+            .enable(getRootPane());
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .onKeyPressed()
+            .action(closeControl)
+            .enable(getRootPane());
 
     final JButton closeButton = new JButton(closeControl);
     printButton = new JButton(printControl);

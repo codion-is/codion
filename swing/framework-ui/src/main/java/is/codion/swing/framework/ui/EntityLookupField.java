@@ -304,8 +304,7 @@ public final class EntityLookupField extends JTextField {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder()
-            .command(() ->
-                    Dialogs.displayInDialog(EntityLookupField.this, settingsPanel, FrameworkMessages.get(FrameworkMessages.SETTINGS)))
+            .command(() -> Dialogs.displayInDialog(EntityLookupField.this, settingsPanel, FrameworkMessages.get(FrameworkMessages.SETTINGS)))
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 

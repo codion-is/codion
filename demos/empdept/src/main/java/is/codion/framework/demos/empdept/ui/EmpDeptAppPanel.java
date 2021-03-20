@@ -61,13 +61,11 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   // tag::getToolsControls[]
   @Override
   protected ControlList getToolsControls() {
-    final ControlList toolsControls = super.getToolsControls();
-    toolsControls.add(Control.builder()
-            .command(this::importJSON)
-            .name("Import JSON")
-            .build());
-
-    return toolsControls;
+    return super.getToolsControls()
+            .add(Control.builder()
+                    .command(this::importJSON)
+                    .name("Import JSON")
+                    .build());
   }
   // end::getToolsControls[]
 

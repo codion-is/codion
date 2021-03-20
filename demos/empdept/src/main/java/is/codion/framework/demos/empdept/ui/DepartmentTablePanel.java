@@ -41,15 +41,15 @@ public class DepartmentTablePanel extends EntityTablePanel {
   // tag::createPrintControls[]
   @Override
   protected ControlList createPrintControls() {
-    final ControlList printControls = super.createPrintControls();
     final StateObserver selectionNotEmptyObserver =
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
-    printControls.add(Control.builder()
-            .command(this::viewEmployeeReport)
-            .name("Employee Report")
-            .enabledState(selectionNotEmptyObserver).build());
 
-    return printControls;
+    return super.createPrintControls()
+            .add(Control.builder()
+                    .command(this::viewEmployeeReport)
+                    .name("Employee Report")
+                    .enabledState(selectionNotEmptyObserver)
+                    .build());
   }
 }
 // end::createPrintControls[]

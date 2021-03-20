@@ -27,18 +27,13 @@ public final class LookupTablePanel extends EntityTablePanel {
 
   @Override
   protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
-    ControlList controls = super.getPopupControls(additionalPopupControls);
-    controls.addSeparatorAt(1);
-
-    Control exportControl = Control.builder()
-            .command(this::exportCSV)
-            .name("Export CSV...")
-            .icon(imageIcon(FontIcon.of(Foundation.PAGE_EXPORT_CSV, ICON_SIZE)))
-            .build();
-
-    controls.addAt(2, exportControl);
-
-    return controls;
+    return super.getPopupControls(additionalPopupControls)
+            .addSeparatorAt(1)
+            .addAt(2, Control.builder()
+                    .command(this::exportCSV)
+                    .name("Export CSV...")
+                    .icon(imageIcon(FontIcon.of(Foundation.PAGE_EXPORT_CSV, ICON_SIZE)))
+                    .build());
   }
 
   private void exportCSV() throws IOException {
