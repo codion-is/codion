@@ -6805,3 +6805,4 @@
   Dialogs.selectValue() now returns an Optional instead of null
   Control.ActionCommand.perform() now throws Exception, like Command.perform()
   KeyEvents.transferFocusOnEnter() moved to Components
+  EntityPanelBuilder.InsertEntityAction now handles exceptions during insert and allows retry
