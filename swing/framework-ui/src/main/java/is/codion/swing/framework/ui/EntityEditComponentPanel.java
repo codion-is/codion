@@ -53,7 +53,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
+import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static java.util.Objects.requireNonNull;
 
 /**

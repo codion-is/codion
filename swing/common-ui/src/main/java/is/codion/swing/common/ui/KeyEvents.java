@@ -3,13 +3,9 @@
  */
 package is.codion.swing.common.ui;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
-import javax.swing.text.JTextComponent;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -80,109 +76,6 @@ public final class KeyEvents {
      * @param component the component
      */
     void disable(JComponent component);
-  }
-
-  /**
-   * Adds a key event to the component which transfers focus
-   * on enter, and backwards if shift is down
-   * @param component the component
-   * @param <T> the component type
-   * @see #removeTransferFocusOnEnter(JTextComponent)
-   * @return the component
-   */
-  public static <T extends JComponent> T transferFocusOnEnter(final T component) {
-    builder().keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
-            .action(new TransferFocusAction(component))
-            .enable(component);
-    builder().keyEvent(KeyEvent.VK_ENTER)
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
-            .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
-            .action(new TransferFocusAction(component, true))
-            .enable(component);
-
-    return component;
-  }
-
-  /**
-   * Removes the transfer focus action added via {@link #transferFocusOnEnter(JComponent)}
-   * @param component the component
-   * @param <T> the component type
-   * @return the component
-   */
-  public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
-    builder().keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
-            .disable(component);
-    builder().keyEvent(KeyEvent.VK_ENTER)
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
-            .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
-            .disable(component);
-
-    return component;
-  }
-
-  /**
-   * Instantiates an Action for transferring keyboard focus forward.
-   * @param component the component
-   * @return an Action for transferring focus
-   */
-  public static Action transferFocusForwardAction(final JComponent component) {
-    return new TransferFocusAction(component);
-  }
-
-  /**
-   * Instantiates an Action for transferring keyboard focus backward.
-   * @param component the component
-   * @return an Action for transferring focus
-   */
-  public static Action transferFocusBackwardAction(final JComponent component) {
-    return new TransferFocusAction(component, true);
-  }
-
-  /**
-   * An action which transfers focus either forward or backward for a given component
-   */
-  private static final class TransferFocusAction extends AbstractAction {
-
-    private final JComponent component;
-    private final boolean backward;
-
-    /**
-     * Instantiates an Action for transferring keyboard focus.
-     * @param component the component
-     */
-    private TransferFocusAction(final JComponent component) {
-      this(component, false);
-    }
-
-    /**
-     * @param component the component
-     * @param backward if true the focus is transferred backward
-     */
-    private TransferFocusAction(final JComponent component, final boolean backward) {
-      super(backward ? "KeyEvents.transferFocusBackward" : "KeyEvents.transferFocusForward");
-      this.component = component;
-      this.backward = backward;
-    }
-
-    /**
-     * Transfers focus according the the value of {@code backward}
-     * @param e the action event
-     */
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (backward) {
-        component.transferFocusBackward();
-      }
-      else {
-        component.transferFocus();
-      }
-    }
   }
 
   private static final class DefaultKeyEventBuilder implements KeyEventBuilder {

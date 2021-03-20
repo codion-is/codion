@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
+import static is.codion.swing.common.ui.Components.removeTransferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 

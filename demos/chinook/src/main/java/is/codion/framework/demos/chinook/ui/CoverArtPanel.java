@@ -6,11 +6,12 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,7 +23,6 @@ import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * A panel for displaying a cover image, based on a byte array.
@@ -55,15 +55,14 @@ final class CoverArtPanel extends JPanel {
     coverPanel.setBorder(BorderFactory.createTitledBorder(BUNDLE.getString(COVER)));
     coverPanel.add(imagePanel, BorderLayout.CENTER);
 
-    final JPanel coverButtonPanel = new JPanel(gridLayout(1, 2));
-    coverButtonPanel.add(new JButton(Control.builder()
-            .command(this::setCover)
-            .name(BUNDLE.getString(SELECT_COVER))
-            .build()));
-    coverButtonPanel.add(new JButton(Control.builder()
-            .command(this::removeCover)
-            .name(BUNDLE.getString(REMOVE_COVER))
-            .build()));
+    final JPanel coverButtonPanel = Controls.horizontalButtonPanel(ControlList.builder()
+            .control(Control.builder()
+                    .command(this::setCover)
+                    .name(BUNDLE.getString(SELECT_COVER)))
+            .control(Control.builder()
+                    .command(this::removeCover)
+                    .name(BUNDLE.getString(REMOVE_COVER)))
+            .build());
 
     add(coverPanel, BorderLayout.CENTER);
     add(coverButtonPanel, BorderLayout.SOUTH);

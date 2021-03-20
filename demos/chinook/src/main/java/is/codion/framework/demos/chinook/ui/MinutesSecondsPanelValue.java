@@ -12,7 +12,7 @@ import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
-import static is.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
+import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;

@@ -420,19 +420,27 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         this.insertedEntities.clear();
         this.insertedEntities.addAll(inserted);
       });
-      final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-      final JDialog dialog = pane.createDialog(component, getCaption() == null ?
+      final JOptionPane optionPane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+      final JDialog dialog = optionPane.createDialog(component, getCaption() == null ?
               connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       Components.addInitialFocusHack(editPanel, Control.control(editPanel::requestInitialFocus));
-      dialog.setVisible(true);
-      if (pane.getValue() != null && pane.getValue().equals(0)) {
-        final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
-        if (insertPerformed && !insertedEntities.isEmpty()) {
-          insertListener.onEvent(insertedEntities);
+      try {
+        boolean insertPerformed = false;
+        while (!insertPerformed) {
+          dialog.setVisible(true);
+          if (optionPane.getValue() == null || !optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
+            return;//cancelled
+          }
+          insertPerformed = editPanel.insert();
+          if (insertPerformed && !insertedEntities.isEmpty()) {
+            insertListener.onEvent(insertedEntities);
+          }
         }
       }
-      component.requestFocusInWindow();
+      finally {
+        component.requestFocusInWindow();
+      }
     }
 
     private void addLookupKey() {

@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-import static is.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
+import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 

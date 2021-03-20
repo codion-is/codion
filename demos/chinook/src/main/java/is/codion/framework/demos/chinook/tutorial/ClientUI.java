@@ -14,7 +14,6 @@ import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.value.SelectedValues;
 import is.codion.swing.common.ui.value.TextValues;
@@ -95,7 +94,7 @@ public final class ClientUI {
     Components.setPreferredWidth(artistComboBox, 240);
 
     // move focus with Enter key
-    KeyEvents.transferFocusOnEnter(artistComboBox);
+    Components.transferFocusOnEnter(artistComboBox);
 
     // populate the combo box model
     artistComboBoxModel.refresh();
