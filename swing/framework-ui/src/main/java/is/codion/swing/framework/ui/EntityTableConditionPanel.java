@@ -70,10 +70,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
             .description(MESSAGES.getString("require_query_condition_description")).build();
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Control.builder()
-            .command(onSearchListener::onEvent)
-            .enabledState(getTableConditionModel().getConditionObserver())
-            .build());
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(Control.builder()
+                    .command(onSearchListener::onEvent)
+                    .enabledState(getTableConditionModel().getConditionObserver())
+                    .build())
+            .enable(this);
   }
 
   /**

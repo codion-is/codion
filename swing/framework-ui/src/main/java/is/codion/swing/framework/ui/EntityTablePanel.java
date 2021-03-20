@@ -1286,7 +1286,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired()).build();
 
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_F5, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_F5)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(refresh)
+            .enable(this);
 
     final JButton button = new JButton(refresh);
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
@@ -1349,11 +1353,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
-      KeyEvents.addKeyEvent(table, KeyEvent.VK_DELETE, createDeleteSelectedControl());
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_DELETE)
+              .action(createDeleteSelectedControl())
+              .enable(table);
     }
     if (INCLUDE_ENTITY_MENU.get()) {
-      KeyEvents.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-              control(this::showEntityMenu));
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_V)
+              .modifiers(KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK)
+              .action(control(this::showEntityMenu))
+              .enable(table);
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
@@ -1426,10 +1436,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    KeyEvents.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, control(() -> {
-      final Point location = getPopupLocation(table);
-      popupMenu.show(table, location.x, location.y);
-    }));
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_G)
+            .modifiers(KeyEvent.CTRL_DOWN_MASK)
+            .action(control(() -> {
+              final Point location = getPopupLocation(table);
+              popupMenu.show(table, location.x, location.y);
+            }))
+            .enable(table);
   }
 
   private void checkIfInitialized() {

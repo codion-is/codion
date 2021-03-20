@@ -801,8 +801,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private void bindEventsInternal() {
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Control.control(this::showEntityMenu));
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_V)
+            .modifiers(KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(Control.control(this::showEntityMenu))
+            .enable(this);
     getEditModel().addBeforeRefreshListener(() -> showWaitCursor(EntityEditPanel.this));
     getEditModel().addAfterRefreshListener(() -> hideWaitCursor(EntityEditPanel.this));
     getEditModel().addConfirmSetEntityObserver(confirmationState -> {

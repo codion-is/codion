@@ -42,7 +42,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 
 /**
@@ -197,8 +196,18 @@ final class ExceptionDialog extends JDialog {
             .description(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .onKeyPressed()
+            .action(closeControl)
+            .enable(getRootPane());
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .onKeyPressed()
+            .action(closeControl)
+            .enable(getRootPane());
     final Control saveControl = Control.builder()
             .command(() -> Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                     Arrays.asList(detailsArea.getText().split("\\r?\\n"))))

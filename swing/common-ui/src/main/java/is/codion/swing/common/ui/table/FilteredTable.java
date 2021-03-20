@@ -15,6 +15,7 @@ import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -63,8 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -467,13 +466,44 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final Control findPrevious = Control.control(() -> findPrevious(field.getText()));
     final Control findAndSelectPrevious = Control.control(() -> findAndSelectPrevious(field.getText()));
     final Control cancel = Control.control(this::requestFocusInWindow);
-    addKeyEvent(field, KeyEvent.VK_ENTER, 0, 0, ON_KEY_PRESSED, findNext);
-    addKeyEvent(field, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectNext);
-    addKeyEvent(field, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, findNext);
-    addKeyEvent(field, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectNext);
-    addKeyEvent(field, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, findPrevious);
-    addKeyEvent(field, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectPrevious);
-    addKeyEvent(field, KeyEvent.VK_ESCAPE, 0, 0, ON_KEY_PRESSED, cancel);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .onKeyPressed()
+            .action(findNext)
+            .enable(field);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .onKeyPressed()
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .action(findAndSelectNext)
+            .enable(field);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_DOWN)
+            .onKeyPressed()
+            .action(findNext)
+            .enable(field);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_DOWN)
+            .onKeyPressed()
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .action(findAndSelectNext)
+            .enable(field);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_UP)
+            .onKeyPressed()
+            .action(findPrevious)
+            .enable(field);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_UP)
+            .onKeyPressed()
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .action(findAndSelectPrevious)
+            .enable(field);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .onKeyPressed()
+            .action(cancel)
+            .enable(field);
 
     field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 

@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.checkbox;
 
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.ButtonModel;
@@ -13,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -51,7 +51,10 @@ public class NullableCheckBox extends JCheckBox {
     super(caption, icon);
     super.setModel(requireNonNull(model, "model"));
     addMouseListener(new NullableMouseListener());
-    addKeyEvent(this, KeyEvent.VK_SPACE, 0, Control.control(model::nextState));
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_SPACE)
+            .action(Control.control(model::nextState))
+            .enable(this);
   }
 
   /**

@@ -15,93 +15,71 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for key events.
+ * @see #builder()
  */
 public final class KeyEvents {
-
-  /**
-   * Specifies whether a keystroke should represent a key release or key pressed.
-   */
-  public enum KeyTrigger {
-    /**
-     * Key release.
-     */
-    ON_KEY_RELEASE,
-    /**
-     * Key pressed.
-     */
-    ON_KEY_PRESSED
-  }
 
   private KeyEvents() {}
 
   /**
-   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap, JComponent.WHEN_FOCUSED as condition, 0 as modifier and true for onKeyRelease.
-   * @param component the component
-   * @param keyEvent the key event
-   * @param action the action
-   * @throws NullPointerException in case {@code component}, {@code action} or the action name is null
-   * @see KeyStroke#getKeyStroke(int, int, boolean)
+   * Instantiates a new {@link KeyEventBuilder} instance.
+   * @return a {@link KeyEventBuilder} instance.
    */
-  public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
-    addKeyEvent(component, keyEvent, 0, action);
+  public static KeyEventBuilder builder() {
+    return new DefaultKeyEventBuilder();
   }
 
   /**
-   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap, JComponent.WHEN_FOCUSED as condition and true for onKeyRelease.
-   * @param component the component
-   * @param keyEvent the key event
-   * @param modifiers the modifiers
-   * @param action the action
-   * @throws NullPointerException in case {@code component}, {@code action} or the action name is null
-   * @see KeyStroke#getKeyStroke(int, int, boolean)
+   * A Builder for adding a key event to a component, with a default onKeyRelease trigger
+   * and condition {@link JComponent.WHEN_FOCUSED}.
    */
-  public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers,
-                                 final Action action) {
-    addKeyEvent(component, keyEvent, modifiers, JComponent.WHEN_FOCUSED, action);
-  }
+  public interface KeyEventBuilder {
 
-  /**
-   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap and {@link KeyTrigger#ON_KEY_RELEASE} as the action trigger.
-   * @param component the component
-   * @param keyEvent the key event
-   * @param modifiers the modifiers
-   * @param condition the condition
-   * @param action the action
-   * @throws NullPointerException in case {@code component}, {@code action} or the action name is null
-   * @see KeyStroke#getKeyStroke(int, int, boolean)
-   */
-  public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
-                                 final Action action) {
-    addKeyEvent(component, keyEvent, modifiers, condition, KeyTrigger.ON_KEY_RELEASE, action);
-  }
+    /**
+     * @param keyEvent the key event
+     * @return this builder instance
+     */
+    KeyEventBuilder keyEvent(int keyEvent);
 
-  /**
-   * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap, if {@code action} is null the binding is removed
-   * @param component the component
-   * @param keyEvent the key event
-   * @param modifiers the modifiers
-   * @param condition the condition
-   * @param keyTrigger specifies when the action is triggered
-   * @param action the action, if null then the action binding is removed
-   * @see KeyStroke#getKeyStroke(int, int, boolean)
-   */
-  public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
-                                 final KeyTrigger keyTrigger, final Action action) {
-    requireNonNull(component, "component");
-    Object actionName = null;
-    if (action != null) {
-      actionName = action.getValue(Action.NAME);
-      if (actionName == null) {
-        actionName = component.getClass().getSimpleName() + keyEvent + modifiers +
-                (keyTrigger == KeyTrigger.ON_KEY_RELEASE ? "keyReleased" : "keyPressed");
-      }
-      component.getActionMap().put(actionName, action);
-    }
-    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, keyTrigger == KeyTrigger.ON_KEY_RELEASE), actionName);
+    /**
+     * @param modifiers the modifiers
+     * @return this builder instance
+     */
+    KeyEventBuilder modifiers(int modifiers);
+
+    /**
+     * @param condition the condition
+     * @return this builder instance
+     */
+    KeyEventBuilder condition(int condition);
+
+    /**
+     * @return this builder instance
+     */
+    KeyEventBuilder onKeyPressed();
+
+    /**
+     * @return this builder instance
+     */
+    KeyEventBuilder onKeyReleased();
+
+    /**
+     * @param action the action, if null then the action binding is removed
+     * @return this builder instance
+     */
+    KeyEventBuilder action(Action action);
+
+    /**
+     * Builds the key event and enables it on the given component
+     * @param component the component
+     */
+    void enable(JComponent component);
+
+    /**
+     * Disables this key event on the given component
+     * @param component the component
+     */
+    void disable(JComponent component);
   }
 
   /**
@@ -113,10 +91,17 @@ public final class KeyEvents {
    * @return the component
    */
   public static <T extends JComponent> T transferFocusOnEnter(final T component) {
-    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
-            KeyTrigger.ON_KEY_PRESSED, new TransferFocusAction(component));
-    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED,
-            KeyTrigger.ON_KEY_PRESSED, new TransferFocusAction(component, true));
+    builder().keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_FOCUSED)
+            .onKeyPressed()
+            .action(new TransferFocusAction(component))
+            .enable(component);
+    builder().keyEvent(KeyEvent.VK_ENTER)
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .condition(JComponent.WHEN_FOCUSED)
+            .onKeyPressed()
+            .action(new TransferFocusAction(component, true))
+            .enable(component);
 
     return component;
   }
@@ -128,8 +113,15 @@ public final class KeyEvents {
    * @return the component
    */
   public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
-    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, KeyTrigger.ON_KEY_PRESSED, null);
-    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, KeyTrigger.ON_KEY_PRESSED, null);
+    builder().keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_FOCUSED)
+            .onKeyPressed()
+            .disable(component);
+    builder().keyEvent(KeyEvent.VK_ENTER)
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .condition(JComponent.WHEN_FOCUSED)
+            .onKeyPressed()
+            .disable(component);
 
     return component;
   }
@@ -190,6 +182,83 @@ public final class KeyEvents {
       else {
         component.transferFocus();
       }
+    }
+  }
+
+  private static final class DefaultKeyEventBuilder implements KeyEventBuilder {
+
+    private int keyEvent;
+    private int modifiers;
+    private int condition = JComponent.WHEN_FOCUSED;
+    private boolean onKeyRelease = true;
+    private Action action;
+
+    @Override
+    public KeyEventBuilder keyEvent(final int keyEvent) {
+      this.keyEvent = keyEvent;
+      return this;
+    }
+
+    @Override
+    public KeyEventBuilder modifiers(final int modifiers) {
+      this.modifiers = modifiers;
+      return this;
+    }
+
+    @Override
+    public KeyEventBuilder condition(final int condition) {
+      this.condition = condition;
+      return this;
+    }
+
+    @Override
+    public KeyEventBuilder onKeyPressed() {
+      this.onKeyRelease = false;
+      return this;
+    }
+
+    @Override
+    public KeyEventBuilder onKeyReleased() {
+      this.onKeyRelease = true;
+      return this;
+    }
+
+    @Override
+    public KeyEventBuilder action(final Action action) {
+      this.action = action;
+      return this;
+    }
+
+    @Override
+    public void enable(final JComponent component) {
+      requireNonNull(component, "component");
+      if (action == null) {
+        throw new IllegalStateException("Can not enable a key event without an action");
+      }
+      Object actionName = action.getValue(Action.NAME);
+      if (actionName == null) {
+        actionName = createDefaultActionName(component);
+      }
+      component.getActionMap().put(actionName, action);
+      component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), actionName);
+    }
+
+    @Override
+    public void disable(final JComponent component) {
+      requireNonNull(component, "component");
+      if (action == null) {
+        throw new IllegalStateException("Can not disable a key event without an action");
+      }
+      Object actionName = action.getValue(Action.NAME);
+      if (actionName == null) {
+        actionName = createDefaultActionName(component);
+      }
+      component.getActionMap().put(actionName, null);
+      component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), null);
+    }
+
+    private String createDefaultActionName(final JComponent component) {
+      return component.getClass().getSimpleName() + keyEvent + modifiers + (onKeyRelease ? "keyReleased" : "keyPressed");
     }
   }
 }

@@ -23,7 +23,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -136,13 +135,17 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
     final JButton cancelButton = new JButton(cancelAction);
     final JPanel panel = new JPanel(new GridLayout(1, 2));
     panel.add(okButton);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED,
-            new AbstractAction("cancelInput") {
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .onKeyPressed()
+            .action(new AbstractAction("cancelInput") {
               @Override
               public void actionPerformed(final ActionEvent e) {
                 cancelButton.doClick();
               }
-            });
+            })
+            .enable(this);
     panel.add(cancelButton);
 
     return panel;

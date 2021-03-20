@@ -1003,8 +1003,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Control.control(dialog::dispose));
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_ESCAPE)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(Control.control(dialog::dispose))
+              .enable(dialog.getRootPane());
       dialog.pack();
       dialog.setLocationRelativeTo(this);
       if (modalDialog) {

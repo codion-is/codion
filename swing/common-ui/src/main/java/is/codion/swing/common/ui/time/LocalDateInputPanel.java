@@ -109,7 +109,11 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
     datePanel.add(calendarPanel, BorderLayout.NORTH);
     datePanel.add(createOkCancelButtonPanel(okControl, cancelControl), BorderLayout.SOUTH);
 
-    KeyEvents.addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(cancelControl)
+            .enable(datePanel);
     Dialogs.displayInDialog(parent, datePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
 
     return cancel.get() ? null : calendarPanel.getSelectedDate();

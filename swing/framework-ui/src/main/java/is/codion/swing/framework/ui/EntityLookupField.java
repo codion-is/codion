@@ -66,7 +66,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -162,10 +161,19 @@ public final class EntityLookupField extends JTextField {
    * Activates the transferal of focus on ENTER
    */
   public void setTransferFocusOnEnter() {
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
-            ON_KEY_PRESSED, transferFocusAction);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED,
-            ON_KEY_PRESSED, transferFocusBackwardAction);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_FOCUSED)
+            .onKeyPressed()
+            .action(transferFocusAction)
+            .enable(this);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_FOCUSED)
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .onKeyPressed()
+            .action(transferFocusBackwardAction)
+            .enable(this);
   }
 
   /**
@@ -314,10 +322,16 @@ public final class EntityLookupField extends JTextField {
             .command(closeEvent::onEvent)
             .name(Messages.get(Messages.OK))
             .build());
-    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
-            ON_KEY_PRESSED, Control.control(okButton::doClick));
-    KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED,
-            ON_KEY_PRESSED, Control.control(closeEvent::onEvent));
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .onKeyPressed()
+            .action(Control.control(okButton::doClick))
+            .enable(okButton);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .onKeyPressed()
+            .action(Control.control(closeEvent::onEvent))
+            .enable(okButton);
     final JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));

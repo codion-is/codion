@@ -16,11 +16,27 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class KeyEventsTest {
 
   @Test
+  public void addRemoveKeyEvent() {
+    final JTextField textField = new JTextField();
+    final String actionName = "testing";
+    final Control control = Control.builder().command(() -> {}).name(actionName).build();
+    assertNull(textField.getActionMap().get(actionName));
+    final KeyEvents.KeyEventBuilder builder = KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER).action(control);
+    builder.enable(textField);
+    assertNotNull(textField.getActionMap().get(actionName));
+    builder.disable(textField);
+    assertNull(textField.getActionMap().get(actionName));
+  }
+
+  @Test
   public void addKeyEventWithoutName() {
     final JTextField textField = new JTextField();
     final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyReleased";
     assertNull(textField.getActionMap().get(actionName));
-    KeyEvents.addKeyEvent(textField, KeyEvent.VK_ENTER, Control.control(() -> {}));
+    final KeyEvents.KeyEventBuilder builder = KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER).action(Control.control(() -> {}));
+    builder.enable(textField);
     assertNotNull(textField.getActionMap().get(actionName));
+    builder.disable(textField);
+    assertNull(textField.getActionMap().get(actionName));
   }
 }

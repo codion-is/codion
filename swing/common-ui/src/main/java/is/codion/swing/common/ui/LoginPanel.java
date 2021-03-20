@@ -133,8 +133,11 @@ public final class LoginPanel extends JPanel {
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
-    KeyEvents.addKeyEvent(passwordField, KeyEvent.VK_BACK_SPACE, InputEvent.CTRL_DOWN_MASK,
-            Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())));
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_BACK_SPACE)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
+            .enable(passwordField);
 
     final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, FixRowHeights.YES, FixColumnWidths.NO));
     basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
