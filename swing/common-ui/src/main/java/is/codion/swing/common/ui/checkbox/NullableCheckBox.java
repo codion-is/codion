@@ -13,6 +13,7 @@ import javax.swing.JCheckBox;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import static java.util.Objects.requireNonNull;
 
@@ -83,6 +84,15 @@ public class NullableCheckBox extends JCheckBox {
       throw new UnsupportedOperationException("Setting the model of a NullableCheckBox after construction is not supported");
     }
     super.setModel(model);
+  }
+
+  /**
+   * Finalize this one since we call it in the constructor
+   * @param listener the listener
+   */
+  @Override
+  public final synchronized void addMouseListener(final MouseListener listener) {
+    super.addMouseListener(listener);
   }
 
   private final class NullableMouseListener extends MouseAdapter {
