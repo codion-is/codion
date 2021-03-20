@@ -74,7 +74,7 @@ public class EntityInputComponentsTest {
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
-    box.getMouseListeners()[0].mouseClicked(null);
+    box.getMouseListeners()[1].mouseClicked(null);
 
     assertNull(box.getState());
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
@@ -100,7 +100,7 @@ public class EntityInputComponentsTest {
 
   @Test
   public void createValueListComboBox() {
-    final JComboBox box = inputComponents.createValueListComboBox(TestDomain.DETAIL_INT_VALUE_LIST,
+    final JComboBox<Item<Integer>> box = inputComponents.createValueListComboBox(TestDomain.DETAIL_INT_VALUE_LIST,
             editModel.value(TestDomain.DETAIL_INT_VALUE_LIST));
 
     assertNull(editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
@@ -116,8 +116,8 @@ public class EntityInputComponentsTest {
 
   @Test
   public void createComboBox() {
-    final DefaultComboBoxModel boxModel = new DefaultComboBoxModel<>(new Object[] {0, 1, 2, 3});
-    final JComboBox box = inputComponents.createComboBox(TestDomain.DETAIL_INT, editModel.value(TestDomain.DETAIL_INT), boxModel);
+    final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
+    final JComboBox<Integer> box = inputComponents.createComboBox(TestDomain.DETAIL_INT, editModel.value(TestDomain.DETAIL_INT), boxModel);
 
     assertNull(editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(1);
@@ -132,9 +132,9 @@ public class EntityInputComponentsTest {
 
   @Test
   public void valueListComboBox() {
-    final Value value = Value.value();
-    final SteppedComboBox comboBox = inputComponents.createValueListComboBox(TestDomain.DETAIL_INT_VALUE_LIST, value);
-    final ItemComboBoxModel model = (ItemComboBoxModel) comboBox.getModel();
+    final Value<Integer> value = Value.value();
+    final SteppedComboBox<Item<Integer>> comboBox = inputComponents.createValueListComboBox(TestDomain.DETAIL_INT_VALUE_LIST, value);
+    final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));
   }

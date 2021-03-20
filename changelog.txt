@@ -6799,3 +6799,5 @@
   3d party dependencies upgraded
   EntityInputComponents bug fixed, did not handle ValueListProperty correctly
   Control.ActionCommand, DefaultActionControl added, allowing Controls based on ActionEvent
+  Controls.checkBoxMenuItem() and radioButtonMenuItem() now throw IllegalArgumentException in case the ToggleControl is based on a nullable value
+  NullableCheckBox refactored, improved even

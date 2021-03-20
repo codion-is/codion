@@ -84,8 +84,12 @@ public final class Controls {
   /**
    * @param toggleControl the toggle control
    * @return a check box menu item based on the control
+   * @throws IllegalArgumentException in case the toggle control value is nullable
    */
   public static JCheckBoxMenuItem checkBoxMenuItem(final ToggleControl toggleControl) {
+    if (toggleControl.getValue().isNullable()) {
+      throw new IllegalArgumentException("A check box menu item does not support a nullable value");
+    }
     final JCheckBoxMenuItem item = new JCheckBoxMenuItem(toggleControl);
     item.setModel(buttonModel(toggleControl));
 
@@ -95,8 +99,12 @@ public final class Controls {
   /**
    * @param toggleControl the toggle control
    * @return a radio button menu item based on the control
+   * @throws IllegalArgumentException in case the toggle control value is nullable
    */
   public static JRadioButtonMenuItem radioButtonMenuItem(final ToggleControl toggleControl) {
+    if (toggleControl.getValue().isNullable()) {
+      throw new IllegalArgumentException("A check box menu item does not support a nullable value");
+    }
     final JRadioButtonMenuItem item = new JRadioButtonMenuItem(toggleControl);
     item.setModel(buttonModel(toggleControl));
 

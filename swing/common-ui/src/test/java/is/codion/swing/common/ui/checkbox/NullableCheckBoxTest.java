@@ -7,6 +7,8 @@ import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.event.MouseListener;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NullableCheckBoxTest {
@@ -15,15 +17,16 @@ public class NullableCheckBoxTest {
   public void test() {
     final NullableCheckBox box = new NullableCheckBox(new NullableToggleButtonModel(false), "Test");
     assertFalse(box.getState());
-    box.getMouseListeners()[0].mouseClicked(null);
+    final MouseListener mouseListener = box.getMouseListeners()[1];
+    mouseListener.mouseClicked(null);
     assertTrue(box.getState());
-    box.getMouseListeners()[0].mouseClicked(null);
+    mouseListener.mouseClicked(null);
     assertNull(box.getState());
-    box.getMouseListeners()[0].mouseClicked(null);
+    mouseListener.mouseClicked(null);
     assertFalse(box.getState());
 
     box.getModel().setEnabled(false);
-    box.getMouseListeners()[0].mouseClicked(null);
+    mouseListener.mouseClicked(null);
     assertTrue(box.getState());
 
     box.getNullableModel().setState(null);
