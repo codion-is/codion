@@ -92,7 +92,7 @@ is.codion.common.db.reports.DefaultReportType
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion
-is.codion.framework.db.condition.AbstractCondition
+is.codion.framework.db.condition.DefaultCondition
 is.codion.framework.db.condition.DefaultConditionCombination
 is.codion.framework.db.condition.DefaultCustomCondition
 is.codion.framework.db.condition.DefaultSelectCondition
@@ -103,7 +103,7 @@ is.codion.framework.db.condition.DefaultAttributeGreaterThanCondition
 is.codion.framework.db.condition.DefaultAttributeLessThanCondition
 is.codion.framework.db.condition.DefaultAttributeBetweenCondition
 is.codion.framework.db.condition.DefaultAttributeNotBetweenCondition
-is.codion.framework.db.condition.Conditions$EmptyCondition
+is.codion.framework.db.condition.SelectAllCondition
 is.codion.framework.domain.DefaultDomainType
 is.codion.framework.domain.entity.DefaultConditionType
 is.codion.framework.domain.entity.DefaultEntity
