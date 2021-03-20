@@ -98,6 +98,7 @@ public interface Control extends Action {
     /**
      * Performes the work.
      * @param actionEvent the action event
+     * @throws Exception in case of an exception
      */
     void perform(ActionEvent actionEvent) throws Exception;
   }
