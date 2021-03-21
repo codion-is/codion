@@ -6810,3 +6810,4 @@
   Key.getAttributes() now returns a List, order matters
   Condition.Combination.add(List) added
   Conditions refactored, DefaultForeignKeyConditionBuilder and EmptyCondition moved up to package level, EmptyCondition renamed DefaultCondition
+0.17.13
