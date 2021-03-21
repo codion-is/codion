@@ -6811,3 +6811,4 @@
   Condition.Combination.add(List) added
   Conditions refactored, DefaultForeignKeyConditionBuilder and EmptyCondition moved up to package level, EmptyCondition renamed DefaultCondition
 0.17.13
+  EntityPanelBuilder.createEditPanelAction() now throws exception in case no edit panel class has been specified
