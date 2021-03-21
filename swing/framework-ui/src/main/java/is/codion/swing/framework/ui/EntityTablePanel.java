@@ -548,8 +548,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final ControlList controlList = ControlList.builder()
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
-            .icon(frameworkIcons().edit()).build();
-    controlList.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
+            .icon(frameworkIcons().edit())
+            .description(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP))
+            .build();
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
@@ -1201,7 +1202,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JToolBar initializeSouthToolBar() {
     final ControlList toolbarControlList = getToolBarControls(additionalToolBarControls);
     if (toolbarControlList != null) {
-      final JToolBar southToolBar = toolbarControlList.createToolBar(JToolBar.HORIZONTAL);
+      final JToolBar southToolBar = toolbarControlList.createHorizontalToolBar();
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }

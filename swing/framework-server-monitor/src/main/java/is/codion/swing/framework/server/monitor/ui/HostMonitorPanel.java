@@ -11,7 +11,6 @@ import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
@@ -37,7 +36,7 @@ public final class HostMonitorPanel extends JPanel {
 
   private void initializeUI() throws RemoteException {
     setLayout(Layouts.borderLayout());
-    add(getControls().createToolBar(JToolBar.HORIZONTAL), BorderLayout.NORTH);
+    add(getControls().createHorizontalButtonPanel(), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     add(serverPane, BorderLayout.CENTER);
     initializeServerTabs();

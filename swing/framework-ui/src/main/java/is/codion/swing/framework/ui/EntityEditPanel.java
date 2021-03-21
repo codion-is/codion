@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
@@ -431,13 +432,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @param orientation the orientation
    * @return the control toolbar, null if no controls are defined
    * @see #initializeControlPanelControls()
+   * @see SwingConstants#VERTICAL
+   * @see SwingConstants#HORIZONTAL
    */
   public final JToolBar createControlToolBar(final int orientation) {
     final ControlList controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }
-    return controlPanelControls.createToolBar(orientation);
+    if (orientation == SwingConstants.VERTICAL) {
+      return controlPanelControls.createVerticalToolBar();
+    }
+    else if (orientation == SwingConstants.HORIZONTAL) {
+       return controlPanelControls.createHorizontalToolBar();
+    }
+
+    throw new IllegalArgumentException("Unknown orientation value: " + orientation);
   }
 
   /**

@@ -66,6 +66,12 @@ public final class KeyEvents {
     KeyEventBuilder action(Action action);
 
     /**
+     * Returns a KeyStroke based on this builder
+     * @return a KeyStroke
+     */
+    KeyStroke getKeyStroke();
+
+    /**
      * Builds the key event and enables it on the given component
      * @param component the component
      */
@@ -123,6 +129,11 @@ public final class KeyEvents {
     }
 
     @Override
+    public KeyStroke getKeyStroke() {
+      return KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease);
+    }
+
+    @Override
     public void enable(final JComponent component) {
       requireNonNull(component, "component");
       if (action == null) {
@@ -133,7 +144,7 @@ public final class KeyEvents {
         actionName = createDefaultActionName(component);
       }
       component.getActionMap().put(actionName, action);
-      component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), actionName);
+      component.getInputMap(condition).put(getKeyStroke(), actionName);
     }
 
     @Override
@@ -147,7 +158,7 @@ public final class KeyEvents {
         actionName = createDefaultActionName(component);
       }
       component.getActionMap().put(actionName, null);
-      component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), null);
+      component.getInputMap(condition).put(getKeyStroke(), null);
     }
 
     private String createDefaultActionName(final JComponent component) {

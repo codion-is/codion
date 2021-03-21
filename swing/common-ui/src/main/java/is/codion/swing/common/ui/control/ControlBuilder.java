@@ -77,7 +77,7 @@ final class ControlBuilder implements Control.Builder {
 
   @Override
   public Control build() {
-    final AbstractControl control;
+    final Control control;
     if (command != null) {
       control = new DefaultControl(command, name, enabledState);
     }

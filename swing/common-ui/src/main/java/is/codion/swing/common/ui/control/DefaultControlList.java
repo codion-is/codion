@@ -13,6 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +127,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JPanel createVerticalButtonPanel() {
     final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
-    getActions().forEach(new ButtonControlHandler(panel, true));
+    actions.forEach(new ButtonControlHandler(panel, true));
 
     return panel;
   }
@@ -134,7 +135,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JPanel createHorizontalButtonPanel() {
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
-    getActions().forEach(new ButtonControlHandler(panel, false));
+    actions.forEach(new ButtonControlHandler(panel, false));
 
     return panel;
   }
@@ -147,39 +148,36 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JMenu createMenu() {
     final MenuControlHandler controlHandler = new MenuControlHandler(this);
-    getActions().forEach(controlHandler);
+    actions.forEach(controlHandler);
 
     return controlHandler.getMenu();
   }
 
   @Override
-  public JToolBar createToolBar(final int orientation) {
-    final JToolBar toolBar = new JToolBar(orientation);
-    populateToolBar(toolBar);
-
-    return toolBar;
+  public JToolBar createVerticalToolBar() {
+    return createToolBar(SwingConstants.VERTICAL);
   }
 
   @Override
-  public void populateToolBar(final JToolBar toolBar) {
-    actions.forEach(new ToolBarControlHandler(toolBar));
+  public JToolBar createHorizontalToolBar() {
+    return createToolBar(SwingConstants.HORIZONTAL);
   }
 
   @Override
   public JMenuBar createMenuBar() {
     final JMenuBar menuBar = new JMenuBar();
-    getControlLists().forEach(subControlList -> subControlList.populateMenuBar(menuBar));
-
-    return menuBar;
-  }
-
-  @Override
-  public JMenuBar populateMenuBar(final JMenuBar menuBar) {
-    menuBar.add(createMenu());
+    getControlLists().forEach(subControlList -> menuBar.add(subControlList.createMenu()));
 
     return menuBar;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {/*Not required*/}
+
+  private JToolBar createToolBar(final int orientation) {
+    final JToolBar toolBar = new JToolBar(orientation);
+    actions.forEach(new ToolBarControlHandler(toolBar));
+
+    return toolBar;
+  }
 }

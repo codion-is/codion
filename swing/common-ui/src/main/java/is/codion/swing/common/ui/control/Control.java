@@ -86,6 +86,15 @@ public interface Control extends Action {
   JButton createButton();
 
   /**
+   * Unsupported, the enabled state of Controls is based on their {@code enabledState}
+   * @param enabled the enabled status
+   * @throws UnsupportedOperationException always
+   * @see Builder#enabledState(StateObserver)
+   */
+  @Override
+  void setEnabled(boolean enabled);
+
+  /**
    * A simple command interface, allowing for Controls based on method references
    */
   interface Command {

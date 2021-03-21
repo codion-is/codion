@@ -134,27 +134,20 @@ public interface ControlList extends Control {
 
   /**
    * Creates a JToolBar populated with these controls.
-   * @param orientation the toolbar orientation
    * @return a toolbar based on these controls
    */
-  JToolBar createToolBar(final int orientation);
+  JToolBar createVerticalToolBar();
 
   /**
-   * Adds these controls to the given tool bar.
-   * @param toolBar the toolbar to add the controls to
+   * Creates a JToolBar populated with these controls.
+   * @return a toolbar based on these controls
    */
-  void populateToolBar(final JToolBar toolBar);
+  JToolBar createHorizontalToolBar();
 
   /**
    * @return a menu bar based on the given controls
    */
   JMenuBar createMenuBar();
-
-  /**
-   * @param menuBar the menubar to add the controls to
-   * @return the menu bar with the added controls
-   */
-  JMenuBar populateMenuBar(final JMenuBar menuBar);
 
   /**
    * Constructs a new ControlList.

@@ -12,27 +12,16 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class ControlsTest {
+public class DefaultToggleControlTest {
 
   private final State state = State.state();
   private final Event<Boolean> valueChangeEvent = Event.event();
   private Boolean value = false;
-
-  private final ControlList controlList = ControlList.builder().controls(
-          Control.builder().command(() -> {}).name("one"),
-          Control.builder().command(() -> {}).name("two"),
-          ToggleControl.builder().value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event())).name("three")).build();
   private boolean booleanValue;
   private Object selectedValue;
 
@@ -167,62 +156,6 @@ public final class ControlsTest {
   }
 
   @Test
-  public void eventControl() {
-    final State state = State.state();
-    final Event<ActionEvent> event = Event.event();
-    event.addListener(() -> state.set(true));
-    Control.control(event).actionPerformed(null);
-    assertTrue(state.get());
-  }
-
-  @Test
-  public void basics() throws Exception {
-    final Control test = Control.control(this::doNothing);
-    test.setName("test");
-    assertEquals("test", test.toString());
-    assertEquals("test", test.getName());
-    assertEquals(0, test.getMnemonic());
-    test.setMnemonic(10);
-    assertEquals(10, test.getMnemonic());
-    assertNull(test.getIcon());
-    test.setKeyStroke(null);
-    test.setDescription("description");
-    assertEquals("description", test.getDescription());
-    test.actionPerformed(null);
-  }
-
-  @Test
-  public void actionCommand() {
-    final ActionEvent event = new ActionEvent(this, -1, "test");
-    final Control test = Control.actionControl(actionEvent -> {
-      assertSame(this, actionEvent.getSource());
-      assertEquals(actionEvent.getActionCommand(), "test");
-      assertEquals(actionEvent.getID(), -1);
-    });
-    assertTrue(test instanceof DefaultActionControl);
-    test.actionPerformed(event);
-  }
-
-  @Test
-  public void setEnabled() {
-    final State enabledState = State.state();
-    final Control control = Control.builder().command(this::doNothing).name("control").enabledState(enabledState.getObserver()).build();
-    assertEquals("control", control.getName());
-    assertEquals(enabledState.getObserver(), control.getEnabledObserver());
-    assertFalse(control.isEnabled());
-    enabledState.set(true);
-    assertTrue(control.isEnabled());
-    enabledState.set(false);
-    assertFalse(control.isEnabled());
-  }
-
-  @Test
-  public void setEnabledViaMethod() {
-    final Control test = Control.control(this::doNothing);
-    assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
-  }
-
-  @Test
   public void checkBox() {
     final JCheckBox box = ToggleControl.builder().name("Test")
             .value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event())).build().createCheckBox();
@@ -236,48 +169,4 @@ public final class ControlsTest {
             .build().createCheckBoxMenuItem();
     assertEquals("Test", item.getText());
   }
-
-  @Test
-  public void menuBar() {
-    final ControlList base = ControlList.controlList();
-    base.add(controlList);
-
-    final JMenuBar menu = base.createMenuBar();
-    assertEquals(1, menu.getMenuCount());
-    assertEquals(3, menu.getMenu(0).getItemCount());
-    assertEquals("one", menu.getMenu(0).getItem(0).getText());
-    assertEquals("two", menu.getMenu(0).getItem(1).getText());
-    assertEquals("three", menu.getMenu(0).getItem(2).getText());
-
-    final List<ControlList> lists = new ArrayList<>();
-    lists.add(controlList);
-    lists.add(base);
-  }
-
-  @Test
-  public void popupMenu() {
-    final ControlList base = ControlList.controlList();
-    base.add(controlList);
-
-    base.createPopupMenu();
-  }
-
-  @Test
-  public void horizontalButtonPanel() {
-    final JPanel base = new JPanel();
-    base.add(controlList.createHorizontalButtonPanel());
-  }
-
-  @Test
-  public void verticalButtonPanel() {
-    final JPanel base = new JPanel();
-    base.add(controlList.createVerticalButtonPanel());
-  }
-
-  @Test
-  public void toolBar() {
-    controlList.createToolBar(JToolBar.VERTICAL);
-  }
-
-  private void doNothing() {}
 }
