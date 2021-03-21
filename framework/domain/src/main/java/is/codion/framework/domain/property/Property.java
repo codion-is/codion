@@ -182,21 +182,25 @@ public interface Property<T> {
   int getMaximumLength();
 
   /**
+   * Returns the mnemonic associated with this property.
    * @return the mnemonic to use when creating a label for this property
    */
   Character getMnemonic();
 
   /**
+   * Returns the Format used when presenting values for this property.
    * @return the Format object used to format the value of properties when being presented
    */
   Format getFormat();
 
   /**
+   * Returns the date time format pattern used when presenting and inputting values for this property.
    * @return the date/time format pattern
    */
   String getDateTimePattern();
 
   /**
+   * Returns the date time formatter used when presenting and inputting values for this property.
    * @return the DateTimeFormatter for this property or null if this is not a date/time based property
    */
   DateTimeFormatter getDateTimeFormatter();
@@ -208,6 +212,7 @@ public interface Property<T> {
   interface Builder<T> {
 
     /**
+     * Returns the underlying property.
      * @return the property
      */
     Property<T> get();
@@ -216,7 +221,7 @@ public interface Property<T> {
      * Specifies the resource bundle from which to retrieve the caption
      * for this property, assuming the resource key is the attribute name ({@link Attribute#getName()}).
      * Note that this sets the property to be not hidden.
-     * @param captionResourceKey the name of the resource bundle
+     * @param captionResourceKey the caption resource bundle key
      * @return this instance
      * @throws IllegalStateException in case the caption has already been set
      * @see EntityType#getResourceBundleName()
@@ -303,14 +308,15 @@ public interface Property<T> {
     Property.Builder<T> numberFormatGrouping(boolean numberFormatGrouping);
 
     /**
+     * Specifies the preferred column width when displaying this property in a table.
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
      * @return this instance
      */
     Property.Builder<T> preferredColumnWidth(int preferredColumnWidth);
 
     /**
-     * Specifies whether or not this property is nullable, in case of
-     * properties that are parts of a ForeignKeyProperty inherit the nullable state of that property.
+     * Specifies whether or not this property is nullable. Note that this will not prevent
+     * the value from being set to null, only prevent successful validation of the entity.
      * @param nullable specifies whether or not this property accepts a null value
      * @return this instance
      */
@@ -331,6 +337,7 @@ public interface Property<T> {
     Property.Builder<T> mnemonic(Character mnemonic);
 
     /**
+     * Sets the description for this property, used for tooltips f.ex.
      * @param description a String describing this property
      * @return this instance
      */
