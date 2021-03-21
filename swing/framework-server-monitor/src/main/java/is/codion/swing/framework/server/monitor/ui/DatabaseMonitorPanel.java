@@ -13,7 +13,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -69,10 +68,10 @@ public final class DatabaseMonitorPanel extends JPanel {
 
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
-    chartConfig.add(new JButton(Control.builder()
+    chartConfig.add(Control.builder()
             .command(model::clearStatistics)
             .name("Clear")
-            .build()));
+            .build().createButton());
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);

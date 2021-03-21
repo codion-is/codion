@@ -7,6 +7,11 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import java.util.List;
 
@@ -102,6 +107,54 @@ public interface ControlList extends Control {
    * @return this ControlList instance
    */
   ControlList addAll(ControlList controls);
+
+  /**
+   * Creates a vertically laid out panel of buttons from this control list
+   * @return the button panel
+   */
+  JPanel createVerticalButtonPanel();
+
+  /**
+   * Creates a horizontally laid out panel of buttons from this control list
+   * @return the button panel
+   */
+  JPanel createHorizontalButtonPanel();
+
+  /**
+   * Creates a popup menu from this control list
+   * @return a popup menu based on this control list
+   */
+  JPopupMenu createPopupMenu();
+
+  /**
+   * Creates a menu from this control list
+   * @return a menu based on this control list
+   */
+  JMenu createMenu();
+
+  /**
+   * Creates a JToolBar populated with these controls.
+   * @param orientation the toolbar orientation
+   * @return a toolbar based on these controls
+   */
+  JToolBar createToolBar(final int orientation);
+
+  /**
+   * Adds these controls to the given tool bar.
+   * @param toolBar the toolbar to add the controls to
+   */
+  void populateToolBar(final JToolBar toolBar);
+
+  /**
+   * @return a menu bar based on the given controls
+   */
+  JMenuBar createMenuBar();
+
+  /**
+   * @param menuBar the menubar to add the controls to
+   * @return the menu bar with the added controls
+   */
+  JMenuBar populateMenuBar(final JMenuBar menuBar);
 
   /**
    * Constructs a new ControlList.

@@ -7,7 +7,6 @@ import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.imageio.ImageIO;
@@ -55,14 +54,14 @@ final class CoverArtPanel extends JPanel {
     coverPanel.setBorder(BorderFactory.createTitledBorder(BUNDLE.getString(COVER)));
     coverPanel.add(imagePanel, BorderLayout.CENTER);
 
-    final JPanel coverButtonPanel = Controls.horizontalButtonPanel(ControlList.builder()
+    final JPanel coverButtonPanel = ControlList.builder()
             .control(Control.builder()
                     .command(this::setCover)
                     .name(BUNDLE.getString(SELECT_COVER)))
             .control(Control.builder()
                     .command(this::removeCover)
                     .name(BUNDLE.getString(REMOVE_COVER)))
-            .build());
+            .build().createHorizontalButtonPanel();
 
     add(coverPanel, BorderLayout.CENTER);
     add(coverButtonPanel, BorderLayout.SOUTH);

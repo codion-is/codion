@@ -24,7 +24,6 @@ import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -565,14 +564,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       togglePanel.add(columnCheckBox);
     });
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    southPanel.add(new JButton(Control.builder()
+    southPanel.add(Control.builder()
             .command(() -> setSelected(checkBoxes, true))
             .name(MESSAGES.getString("select_all"))
-            .build()));
-    southPanel.add(new JButton(Control.builder()
+            .build().createButton());
+    southPanel.add(Control.builder()
             .command(() -> setSelected(checkBoxes, false))
             .name(MESSAGES.getString("select_none"))
-            .build()));
+            .build().createButton());
 
     final JPanel base = new JPanel(Layouts.borderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);

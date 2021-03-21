@@ -36,7 +36,7 @@ public final class DefaultControlTest {
   public void test() throws Exception {
     final State enabledState = State.state();
     final Control control = Control.builder().command(this::method).enabledState(enabledState).build();
-    final JButton button = new JButton(control);
+    final JButton button = control.createButton();
     assertFalse(button.isEnabled());
     enabledState.set(true);
     assertTrue(button.isEnabled());

@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
@@ -1202,7 +1201,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JToolBar initializeSouthToolBar() {
     final ControlList toolbarControlList = getToolBarControls(additionalToolBarControls);
     if (toolbarControlList != null) {
-      final JToolBar southToolBar = Controls.toolBar(toolbarControlList, JToolBar.HORIZONTAL);
+      final JToolBar southToolBar = toolbarControlList.createToolBar(JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
@@ -1292,7 +1291,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .action(refresh)
             .enable(this);
 
-    final JButton button = new JButton(refresh);
+    final JButton button = refresh.createButton();
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
     button.setFocusable(false);
 
@@ -1430,7 +1429,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
-    final JPopupMenu popupMenu = Controls.popupMenu(popupControls);
+    final JPopupMenu popupMenu = popupControls.createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {

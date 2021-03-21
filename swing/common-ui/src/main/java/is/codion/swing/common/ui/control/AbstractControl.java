@@ -9,6 +9,7 @@ import is.codion.common.state.StateObserver;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.KeyStroke;
 
 /**
@@ -129,5 +130,10 @@ abstract class AbstractControl extends AbstractAction implements Control {
   @Override
   public final Icon getIcon() {
     return (Icon) getValue(SMALL_ICON);
+  }
+
+  @Override
+  public JButton createButton() {
+    return new JButton(this);
   }
 }

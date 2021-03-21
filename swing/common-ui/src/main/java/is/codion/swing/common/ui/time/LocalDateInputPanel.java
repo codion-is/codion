@@ -60,10 +60,10 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
                              final CalendarButton calendarButton, final StateObserver enabledState) {
     super(inputField, datePattern, LocalDate::parse, enabledState);
     if (calendarButton == CalendarButton.YES) {
-      this.button = new JButton(Control.builder()
+      this.button = Control.builder()
               .command(this::displayCalendar)
               .name("...")
-              .build());
+              .build().createButton();
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
         Components.linkToEnabledState(enabledState, button);

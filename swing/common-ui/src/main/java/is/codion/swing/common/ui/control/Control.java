@@ -8,6 +8,7 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 
@@ -77,6 +78,12 @@ public interface Control extends Action {
    * @return the icon
    */
   Icon getIcon();
+
+  /**
+   * Creates a button based on this Control
+   * @return a button based on this Control
+   */
+  JButton createButton();
 
   /**
    * A simple command interface, allowing for Controls based on method references

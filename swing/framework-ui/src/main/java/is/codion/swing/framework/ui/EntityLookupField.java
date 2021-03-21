@@ -317,10 +317,10 @@ public final class EntityLookupField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
-    final JButton okButton = new JButton(Control.builder()
+    final JButton okButton = Control.builder()
             .command(closeEvent::onEvent)
             .name(Messages.get(Messages.OK))
-            .build());
+            .build().createButton();
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_ENTER)
             .onKeyPressed()
