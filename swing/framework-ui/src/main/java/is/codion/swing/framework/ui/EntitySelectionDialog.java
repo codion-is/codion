@@ -81,10 +81,10 @@ public final class EntitySelectionDialog extends JDialog {
             .enable(getRootPane());
     setLayout(new BorderLayout());
     final JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
-    final JButton okButton = new JButton(okControl);
+    final JButton okButton = okControl.createButton();
     buttonPanel.add(okButton);
-    buttonPanel.add(new JButton(cancelControl));
-    buttonPanel.add(new JButton(searchControl));
+    buttonPanel.add(cancelControl.createButton());
+    buttonPanel.add(searchControl.createButton());
     getRootPane().setDefaultButton(okButton);
     add(entityTablePanel, BorderLayout.CENTER);
     add(buttonPanel, BorderLayout.SOUTH);

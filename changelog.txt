@@ -6840,3 +6840,8 @@
   Key.getAttributes() now returns a List, order matters
   Condition.Combination.add(List) added
   Conditions refactored, DefaultForeignKeyConditionBuilder and EmptyCondition moved up to package level, EmptyCondition renamed DefaultCondition
+0.17.13
+  EntityPanelBuilder.createEditPanelAction() now throws exception in case no edit panel class has been specified
+  Controls removed, utility methods made instance methods on relevant Control classes
+  ControlList.createToolBar(orientation) replaced with createHorizontalToolBar() and createVerticalToolbar()
+  ControlsTest removed, test moved to relevant Control test classes, some cleanup

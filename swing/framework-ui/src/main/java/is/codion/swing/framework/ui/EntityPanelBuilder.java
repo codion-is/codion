@@ -254,11 +254,19 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   @Override
   public Action createEditPanelAction(final EntityComboBox comboBox) {
+    if (editPanelClass == null) {
+      throw new IllegalStateException("Can not create a edit panel action when no edit panel class is specified");
+    }
+
     return new InsertEntityAction(comboBox);
   }
 
   @Override
   public Action createEditPanelAction(final EntityLookupField lookupField) {
+    if (editPanelClass == null) {
+      throw new IllegalStateException("Can not create a edit panel action when no edit panel class is specified");
+    }
+
     return new InsertEntityAction(lookupField);
   }
 
@@ -295,7 +303,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private EntityEditPanel initializeEditPanel(final SwingEntityEditModel editModel) {
     if (editPanelClass == null) {
-      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityType());
+      throw new IllegalArgumentException("No edit panel class has been specified for entity panel builder: " + getEntityType());
     }
     if (!editModel.getEntityType().equals(getEntityType())) {
       throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.getEntityType() + ", required: " + getEntityType());

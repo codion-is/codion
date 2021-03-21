@@ -36,7 +36,6 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
@@ -1263,7 +1262,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getMainMenuControls()
    */
   protected JMenuBar initializeMenuBar() {
-    return Controls.menuBar(getMainMenuControls());
+    return getMainMenuControls().createMenuBar();
   }
 
   /**

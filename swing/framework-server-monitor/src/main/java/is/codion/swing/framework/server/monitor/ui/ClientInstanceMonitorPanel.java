@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,7 +34,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.control.Controls.popupMenu;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -98,20 +96,20 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     infoBase.add(infoPanel, BorderLayout.CENTER);
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
-    settingsPanel.add(new JButton(Control.builder()
+    settingsPanel.add(Control.builder()
             .command(this::updateView)
             .name("Refresh log")
-            .build()));
+            .build().createButton());
     infoBase.add(settingsPanel, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(popupMenu(ControlList.builder()
+    logArea.setComponentPopupMenu(ControlList.builder()
             .control(Control.builder()
                     .command(this::saveLogToFile)
                     .name("Save to file..."))
-            .build()));
+            .build().createPopupMenu());
 
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_DOWN)

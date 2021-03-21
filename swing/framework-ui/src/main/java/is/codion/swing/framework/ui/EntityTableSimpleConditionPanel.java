@@ -68,7 +68,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
             .command(this::performSimpleSearch)
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .build();
-    final JButton simpleSearchButton = new JButton(simpleSearchControl);
+    final JButton simpleSearchButton = simpleSearchControl.createButton();
     simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(Layouts.borderLayout());
     TextValues.textValue(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());

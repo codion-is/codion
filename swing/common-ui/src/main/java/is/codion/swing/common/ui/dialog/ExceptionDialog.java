@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
@@ -223,10 +222,10 @@ final class ExceptionDialog extends JDialog {
             .action(closeControl)
             .enable(getRootPane());
 
-    final JButton closeButton = new JButton(closeControl);
-    printButton = new JButton(printControl);
-    saveButton = new JButton(saveControl);
-    copyButton = new JButton(copyControl);
+    final JButton closeButton = closeControl.createButton();
+    printButton = printControl.createButton();
+    saveButton = saveControl.createButton();
+    copyButton = copyControl.createButton();
 
     final JPanel baseButtonPanel = new JPanel(new BorderLayout());
     final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
@@ -236,7 +235,7 @@ final class ExceptionDialog extends JDialog {
     rightButtonPanel.add(printButton);
     rightButtonPanel.add(saveButton);
     rightButtonPanel.add(closeButton);
-    leftButtonPanel.add(Controls.checkBox(detailsControl));
+    leftButtonPanel.add(detailsControl.createCheckBox());
 
     baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
     baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);

@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
@@ -104,6 +103,6 @@ public class ProgressDialog extends JDialog {
   }
 
   private static JPanel initializeButtonPanel(final ControlList buttonControls) {
-    return Controls.horizontalButtonPanel(buttonControls);
+    return buttonControls.createHorizontalButtonPanel();
   }
 }

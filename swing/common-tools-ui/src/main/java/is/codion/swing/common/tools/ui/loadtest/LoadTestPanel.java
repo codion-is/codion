@@ -14,7 +14,6 @@ import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
@@ -231,14 +230,14 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = new JButton(Control.builder().command(() -> {
+    final JButton button = Control.builder().command(() -> {
       if (add) {
         loadTestModel.addApplicationBatch();
       }
       else {
         loadTestModel.removeApplicationBatch();
       }
-    }).name(add ? "+" : "-").build());
+    }).name(add ? "+" : "-").build().createButton();
     button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(0, 0, 0, 0));
     button.setToolTipText(add ? "Add application batch" : "Remove application batch");
@@ -249,10 +248,10 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(Controls.checkBox(ToggleControl.builder()
+    controlPanel.add(ToggleControl.builder()
             .state(loadTestModel.getCollectChartDataState())
             .name("Collect chart data")
-            .build()));
+            .build().createCheckBox());
     controlPanel.add(new JButton(Control.builder()
             .command(loadTestModel::resetChartData)
             .name("Reset")
@@ -357,7 +356,7 @@ public final class LoadTestPanel<T> extends JPanel {
     thinkTimePanel.add(maxThinkTimeSpinner);
     thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
     thinkTimePanel.add(minThinkTimeSpinner);
-    thinkTimePanel.add(Controls.toggleButton(pauseControl));
+    thinkTimePanel.add(pauseControl.createToggleButton());
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 

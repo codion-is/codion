@@ -25,7 +25,7 @@ import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 import static java.lang.String.valueOf;
@@ -130,7 +130,7 @@ public final class ChinookLoginProxy implements LoginProxy {
                       .maximumLength(20),
               columnProperty(User.PASSWORD_HASH)
                       .nullable(false))
-              .keyGenerator(automatic("chinook.user"));
+              .keyGenerator(identity());
     }
   }
 }

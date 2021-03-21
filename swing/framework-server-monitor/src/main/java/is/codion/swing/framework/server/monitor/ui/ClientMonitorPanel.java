@@ -6,13 +6,11 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -57,10 +55,10 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(new JButton(Control.builder()
+    clientInstanceBase.add(Control.builder()
             .command(this::refresh)
             .name("Refresh")
-            .build()), BorderLayout.SOUTH);
+            .build().createButton(), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -97,6 +95,6 @@ public final class ClientMonitorPanel extends JPanel {
       }
     }).name("Disconnect").build());
 
-    return Controls.popupMenu(controls);
+    return controls.createPopupMenu();
   }
 }

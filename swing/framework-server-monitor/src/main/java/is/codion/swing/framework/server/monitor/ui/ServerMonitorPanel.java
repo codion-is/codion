@@ -25,7 +25,6 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -134,10 +133,10 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    shutdownBasePanel.add(new JButton(Control.builder()
+    shutdownBasePanel.add(Control.builder()
             .command(this::shutdownServer)
             .name("Shutdown")
-            .build()), BorderLayout.EAST);
+            .build().createButton(), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
     northPanel.setBorder(BorderFactory.createTitledBorder("Server"));
 
@@ -168,10 +167,10 @@ public final class ServerMonitorPanel extends JPanel {
     intervalPanel.add(updateIntervalSpinner, BorderLayout.CENTER);
 
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
-    chartsPanel.add(new JButton(Control.builder()
+    chartsPanel.add(Control.builder()
             .command(model::clearStatistics)
             .name("Clear")
-            .build()), BorderLayout.EAST);
+            .build().createButton(), BorderLayout.EAST);
 
     controlPanel.add(chartsPanel);
 
@@ -179,10 +178,10 @@ public final class ServerMonitorPanel extends JPanel {
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
     BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
-    zoomPanel.add(new JButton(Control.builder()
+    zoomPanel.add(Control.builder()
             .command(this::resetZoom)
             .name("Reset zoom")
-            .build()), BorderLayout.EAST);
+            .build().createButton(), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
 
     final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
@@ -226,10 +225,10 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(new JButton(Control.builder()
+    refreshPanel.add(Control.builder()
             .command(model::refreshDomainList)
             .name("Refresh")
-            .build()));
+            .build().createButton());
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 

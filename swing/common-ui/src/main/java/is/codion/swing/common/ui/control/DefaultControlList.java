@@ -4,9 +4,16 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,5 +125,59 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
+  public JPanel createVerticalButtonPanel() {
+    final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
+    actions.forEach(new ButtonControlHandler(panel, true));
+
+    return panel;
+  }
+
+  @Override
+  public JPanel createHorizontalButtonPanel() {
+    final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
+    actions.forEach(new ButtonControlHandler(panel, false));
+
+    return panel;
+  }
+
+  @Override
+  public JPopupMenu createPopupMenu() {
+    return createMenu().getPopupMenu();
+  }
+
+  @Override
+  public JMenu createMenu() {
+    final MenuControlHandler controlHandler = new MenuControlHandler(this);
+    actions.forEach(controlHandler);
+
+    return controlHandler.getMenu();
+  }
+
+  @Override
+  public JToolBar createVerticalToolBar() {
+    return createToolBar(SwingConstants.VERTICAL);
+  }
+
+  @Override
+  public JToolBar createHorizontalToolBar() {
+    return createToolBar(SwingConstants.HORIZONTAL);
+  }
+
+  @Override
+  public JMenuBar createMenuBar() {
+    final JMenuBar menuBar = new JMenuBar();
+    getControlLists().forEach(subControlList -> menuBar.add(subControlList.createMenu()));
+
+    return menuBar;
+  }
+
+  @Override
   public void actionPerformed(final ActionEvent e) {/*Not required*/}
+
+  private JToolBar createToolBar(final int orientation) {
+    final JToolBar toolBar = new JToolBar(orientation);
+    actions.forEach(new ToolBarControlHandler(toolBar));
+
+    return toolBar;
+  }
 }

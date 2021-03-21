@@ -8,6 +8,7 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 
@@ -77,6 +78,21 @@ public interface Control extends Action {
    * @return the icon
    */
   Icon getIcon();
+
+  /**
+   * Creates a button based on this Control
+   * @return a button based on this Control
+   */
+  JButton createButton();
+
+  /**
+   * Unsupported, the enabled state of Controls is based on their {@code enabledState}
+   * @param enabled the enabled status
+   * @throws UnsupportedOperationException always
+   * @see Builder#enabledState(StateObserver)
+   */
+  @Override
+  void setEnabled(boolean enabled);
 
   /**
    * A simple command interface, allowing for Controls based on method references

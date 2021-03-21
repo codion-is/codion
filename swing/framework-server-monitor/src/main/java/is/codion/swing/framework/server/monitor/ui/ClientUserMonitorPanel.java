@@ -13,7 +13,6 @@ import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -89,10 +88,10 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(new JButton(Control.builder()
+    clientTypeBase.add(Control.builder()
             .command(model::refresh)
             .name("Refresh")
-            .build()), BorderLayout.SOUTH);
+            .build().createButton(), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
@@ -104,16 +103,16 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(connectionTimeoutSpinner);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(new JButton(Control.builder()
+    actionBase.add(Control.builder()
             .command(model::disconnectTimedOut)
             .name("Disconnect idle")
             .description("Disconnect those that have exceeded the allowed idle time")
-            .build()));
-    actionBase.add(new JButton(Control.builder()
+            .build().createButton());
+    actionBase.add(Control.builder()
             .command(this::disconnectAll)
             .name("Disconnect all")
             .description("Disconnect all clients")
-            .build()));
+            .build().createButton());
 
     setLayout(new BorderLayout());
 
@@ -145,10 +144,10 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
-    configBase.add(new JButton(Control.builder()
+    configBase.add(Control.builder()
             .command(model::resetHistory)
             .name("Reset")
-            .build()), BorderLayout.EAST);
+            .build().createButton(), BorderLayout.EAST);
 
     final FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
 
