@@ -4,6 +4,7 @@
 package is.codion.framework.demos.manual.common;
 
 import is.codion.common.item.Item;
+import is.codion.common.state.State;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
@@ -11,6 +12,9 @@ import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -23,21 +27,122 @@ import is.codion.swing.common.ui.value.SelectedValues;
 import is.codion.swing.common.ui.value.TemporalValues;
 import is.codion.swing.common.ui.value.TextValues;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public final class InputControls {
+
+  static void control() {
+    // tag::control[]
+    State somethingEnabledState = State.state(true);
+
+    Control control = Control.builder()
+            .name("Do something")
+            .command(() -> System.out.println("Doing something"))
+            .enabledState(somethingEnabledState)
+            .mnemonic('D')
+            .build();
+
+    JButton somethingButton = control.createButton();
+
+    Control actionControl = Control.builder()
+            .name("Do something else")
+            .actionCommand(actionEvent -> {
+              if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+                System.out.println("Doing something else");
+              }
+            })
+            .mnemonic('S')
+            .build();
+
+    JButton somethingElseButton = actionControl.createButton();
+    // end::control[]
+
+    // tag::toggleControl[]
+    State state = State.state();
+
+    ToggleControl stateControl = ToggleControl.builder()
+            .name("Change state")
+            .state(state)
+            .mnemonic('C')
+            .build();
+
+    JToggleButton toggleButton = stateControl.createToggleButton();
+
+    Value<Boolean> booleanValue = Value.value();
+
+    ToggleControl valueControl = ToggleControl.builder()
+            .name("Change value")
+            .value(booleanValue)
+            .mnemonic('V')
+            .build();
+
+    JCheckBox checkBox = valueControl.createCheckBox();
+    // end::toggleControl[]
+  }
+
+  void controlList() {
+    // tag::controlList[]
+    ControlList controlList = ControlList.builder()
+            .control(Control.builder()
+                    .name("First")
+                    .mnemonic('F')
+                    .command(this::doFirst))
+            .control(Control.builder()
+                    .name("Second")
+                    .mnemonic('S')
+                    .command(this::doSecond))
+            .control(ControlList.builder()
+                    .name("Submenu")
+                    .control(Control.builder()
+                            .name("Sub-first")
+                            .mnemonic('b')
+                            .command(this::doSubFirst))
+                    .control(Control.builder()
+                            .name("Sub-second")
+                            .mnemonic('u')
+                            .command(this::doSubSecond)))
+            .build();
+
+    JMenu menu = controlList.createMenu();
+
+    Control firstControl = Control.builder()
+            .name("First")
+            .mnemonic('F')
+            .command(this::doFirst)
+            .build();
+    Control secondControl = Control.builder()
+            .name("Second")
+            .mnemonic('S')
+            .command(this::doSecond)
+            .build();
+
+    ControlList flatControlList = ControlList.builder()
+            .controls(firstControl, secondControl)
+            .build();
+
+    JPanel buttonPanel = flatControlList.createHorizontalButtonPanel();
+    // end::controlList[]
+  }
+
+  void doFirst() {}
+  void doSecond() {}
+  void doSubFirst() {}
+  void doSubSecond() {}
 
   static void checkBox() {
     // tag::checkBox[]

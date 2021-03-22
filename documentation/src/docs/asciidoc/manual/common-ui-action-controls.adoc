@@ -1,0 +1,24 @@
+= Input Controls
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+== Control
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=control]
+----
+
+== ToggleControl
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=toggleControl]
+----
+
+== ControlList
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=controlList]
+----
