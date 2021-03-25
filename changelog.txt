@@ -6815,3 +6815,4 @@
   Controls removed, utility methods made instance methods on relevant Control classes
   ControlList.createToolBar(orientation) replaced with createHorizontalToolBar() and createVerticalToolbar()
   ControlsTest removed, test moved to relevant Control test classes, some cleanup
+  DefaultEntity bug fixed, revertAll now uses a copy of the value key set, since a removal of one value can trigger another, causing a ConcurrentModificationException
