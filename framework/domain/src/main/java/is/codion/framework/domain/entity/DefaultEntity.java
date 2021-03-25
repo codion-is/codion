@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -239,7 +240,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public void revertAll() {
-    for (final Attribute<?> attribute : values.keySet()) {
+    for (final Attribute<?> attribute : new ArrayList<>(values.keySet())) {
       revert(attribute);
     }
   }
