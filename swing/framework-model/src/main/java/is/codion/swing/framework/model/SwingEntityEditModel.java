@@ -28,8 +28,7 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
-   * Holds the ComboBoxModels used by this {@link EntityEditModel},
-   * @see is.codion.common.model.Refreshable
+   * Holds the ComboBoxModels used by this {@link EntityEditModel}
    */
   private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new ConcurrentHashMap<>();
 

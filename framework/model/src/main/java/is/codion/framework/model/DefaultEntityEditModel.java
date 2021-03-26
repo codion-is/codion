@@ -173,6 +173,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     setReadOnly(getEntityDefinition().isReadOnly());
     initializePersistentValues();
     bindEventsInternal();
+    setEntity(null);
   }
 
   @Override
