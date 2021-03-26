@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.tools.loadtest;
 
-import is.codion.common.Conjunction;
 import is.codion.common.Memory;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
@@ -61,7 +60,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final State pausedState = State.state();
   private final State collectChartDataState = State.state();
   private final State chartUpdateSchedulerEnabledState =
-          State.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
+          State.and(pausedState.getReversedObserver(), collectChartDataState);
 
   private final Value<Integer> loginDelayFactorValue;
   private final Value<Integer> applicationBatchSizeValue;

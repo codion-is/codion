@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.UpdateException;
 import is.codion.common.event.Event;
@@ -69,8 +68,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State insertEnabledState = State.state(true);
   private final State updateEnabledState = State.state(true);
   private final State deleteEnabledState = State.state(true);
-  private final State readOnlyState = State.combination(Conjunction.AND,
-          insertEnabledState.getReversedObserver(), updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
+  private final State readOnlyState = State.and(insertEnabledState.getReversedObserver(),
+          updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
    * The Entity being edited by this model

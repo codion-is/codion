@@ -3,7 +3,6 @@
  */
 package is.codion.javafx.framework.ui;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
@@ -296,7 +295,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createUpdateButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
     button.setOnAction(event -> update(true));
-    final State existingAndModifiedState = State.combination(Conjunction.AND,
+    final State existingAndModifiedState = State.and(
             editModel.getEntityNewObserver().getReversedObserver(),
             editModel.getModifiedObserver());
     FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());

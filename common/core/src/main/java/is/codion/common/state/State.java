@@ -92,13 +92,31 @@ public interface State extends StateObserver, Value<Boolean> {
   }
 
   /**
-   * Instantiates a new State.Combination object.
+   * Instantiates a new {@link State.Combination} instance.
    * @param conjunction the conjunction to use
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
   static Combination combination(final Conjunction conjunction, final StateObserver... stateObservers) {
     return new DefaultStateCombination(conjunction, stateObservers);
+  }
+
+  /**
+   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#AND}.
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination and(final StateObserver... stateObservers) {
+    return new DefaultStateCombination(Conjunction.AND, stateObservers);
+  }
+
+  /**
+   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#OR}.
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination or(final StateObserver... stateObservers) {
+    return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 
   /**

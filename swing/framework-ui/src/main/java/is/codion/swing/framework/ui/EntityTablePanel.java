@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.Conjunction;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -544,7 +543,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
-    final StateObserver enabled = State.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
+    final StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
     final ControlList controlList = ControlList.builder()
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
@@ -590,7 +589,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return Control.builder()
             .command(this::delete)
             .name(FrameworkMessages.get(FrameworkMessages.DELETE))
-            .enabledState(State.combination(Conjunction.AND,
+            .enabledState(State.and(
                     tableModel.getEditModel().getDeleteEnabledObserver(),
                     tableModel.getSelectionModel().getSelectionNotEmptyObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.DELETE_TIP))

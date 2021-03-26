@@ -6818,3 +6818,4 @@
   DefaultEntity bug fixed, revertAll now uses a copy of the value key set, since a removal of one value can trigger another, causing a ConcurrentModificationException
   DefaultEntityEditModel initializes its default entity during construction, moved from DefaultEntityModel constructor
   Database.LOGIN_TIMEOUT configuration value added
+  State.and() and or() factory methods for State.Combination added and used throughout

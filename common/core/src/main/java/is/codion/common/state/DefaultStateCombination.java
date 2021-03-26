@@ -18,12 +18,8 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   private final List<StateCombinationListener> stateListeners = new ArrayList<>();
   private final Conjunction conjunction;
 
-  private DefaultStateCombination(final Conjunction conjunction) {
-    this.conjunction = requireNonNull(conjunction, "conjunction");
-  }
-
   DefaultStateCombination(final Conjunction conjunction, final StateObserver... states) {
-    this(conjunction);
+    this.conjunction = requireNonNull(conjunction, "conjunction");
     if (states != null) {
       for (final StateObserver state : states) {
         addState(state);
