@@ -6816,3 +6816,4 @@
   ControlList.createToolBar(orientation) replaced with createHorizontalToolBar() and createVerticalToolbar()
   ControlsTest removed, test moved to relevant Control test classes, some cleanup
   DefaultEntity bug fixed, revertAll now uses a copy of the value key set, since a removal of one value can trigger another, causing a ConcurrentModificationException
+  DefaultEntityEditModel initializes its default entity during construction, moved from DefaultEntityModel constructor
