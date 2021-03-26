@@ -69,6 +69,13 @@ public interface Database extends ConnectionFactory {
   PropertyValue<Boolean> QUERY_COUNTER_ENABLED = Configuration.booleanValue("codion.db.queryCounterEnabled", true);
 
   /**
+   * Specifies the default login timeout (in seconds).
+   * Value type: Integer<br>
+   * Default value: 2
+   */
+  PropertyValue<Integer> LOGIN_TIMEOUT = Configuration.integerValue("codion.db.loginTimeout", 2);
+
+  /**
    * The constant used to denote the username value in the connection properties
    */
   String USER_PROPERTY = "user";
@@ -77,12 +84,6 @@ public interface Database extends ConnectionFactory {
    * The constant used to denote the password value in the connection properties
    */
   String PASSWORD_PROPERTY = "password";
-
-  /**
-   * The default connection login timeout in seconds.
-   * @see java.sql.DriverManager#setLoginTimeout(int)
-   */
-  int DEFAULT_LOGIN_TIMEOUT = 2;
 
   /**
    * @return a name identifying this database

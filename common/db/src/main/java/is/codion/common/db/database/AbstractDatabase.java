@@ -200,10 +200,10 @@ public abstract class AbstractDatabase implements Database {
 
   /**
    * @return the connection timeout in seconds
-   * @see Database#DEFAULT_LOGIN_TIMEOUT
+   * @see Database#LOGIN_TIMEOUT
    */
   protected int getLoginTimeout() {
-    return Database.DEFAULT_LOGIN_TIMEOUT;
+    return Database.LOGIN_TIMEOUT.getOrThrow();
   }
 
   protected static String removeUrlPrefixAndOptions(final String url, final String... prefixes) {
