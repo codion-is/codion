@@ -36,6 +36,5 @@ public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
    */
   public BooleanComboBoxModel(final String nullString, final String trueString, final String falseString) {
     super(null, asList(item(null, nullString), item(true, trueString), item(false, falseString)));
-    setSelectedItem(null);
   }
 }
