@@ -13,8 +13,8 @@ abstract class ControlHandler implements Consumer<Action> {
     if (action == null) {
       onSeparator();
     }
-    else if (action instanceof ControlList) {
-      onControlList((ControlList) action);
+    else if (action instanceof Controls) {
+      onControls((Controls) action);
     }
     else if (action instanceof Control) {
       onControl((Control) action);
@@ -28,7 +28,7 @@ abstract class ControlHandler implements Consumer<Action> {
 
   abstract void onControl(Control control);
 
-  abstract void onControlList(ControlList controls);
+  abstract void onControls(Controls controls);
 
   abstract void onAction(Action action);
 }

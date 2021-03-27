@@ -16,14 +16,9 @@ import javax.swing.KeyStroke;
 import java.util.List;
 
 /**
- * A list of controls and separator, note that these can be nested control lists.
+ * A collection of controls and separators, note that these can be nested controls.
  */
-public interface ControlList extends Control {
-
-  /**
-   * @return a list containing all ControlLists this ControlList contains
-   */
-  List<ControlList> getControlLists();
+public interface Controls extends Control {
 
   /**
    * @return an unmodifiable view of the actions in this set
@@ -31,41 +26,41 @@ public interface ControlList extends Control {
   List<Action> getActions();
 
   /**
-   * Adds the given action to this ControlList,
+   * Adds the given action to this Controls instance,
    * adding a null action has the same effect as addSeparator()
    * @param action the action to add
-   * @return this ControlList instance
+   * @return this Controls instance
    */
-  ControlList add(Action action);
+  Controls add(Action action);
 
   /**
-   * Adds the given action to this ControlList at the specified index,
+   * Adds the given action to this Controls instance at the specified index,
    * adding a null action has the same effect as addSeparator()
    * @param index the index
    * @param action the action to add at the specified index
-   * @return this ControlList instance
+   * @return this Controls instance
    */
-  ControlList addAt(int index, Action action);
+  Controls addAt(int index, Action action);
 
   /**
    * @param action the action to remove
-   * @return this ControlList instance
+   * @return this Controls instance
    */
-  ControlList remove(Action action);
+  Controls remove(Action action);
 
   /**
-   * Removes all actions from this control list
-   * @return this ControlList instance
+   * Removes all actions from this controls instance
+   * @return this Controls instance
    */
-  ControlList removeAll();
+  Controls removeAll();
 
   /**
-   * @return the number of controls in this list
+   * @return the number of controls in this controls instance
    */
   int size();
 
   /**
-   * @return true if this control list contains no controls
+   * @return true if this controls instance contains no controls
    */
   boolean isEmpty();
 
@@ -76,61 +71,49 @@ public interface ControlList extends Control {
   Action get(int index);
 
   /**
-   * @param controls the control list to add
-   * @return this ControlList instance
+   * @param controls the controls to add
+   * @return this Control instance
    */
-  ControlList add(ControlList controls);
+  Controls add(Controls controls);
 
   /**
    * @param index the index
-   * @param controls the control list to add at the specified index
-   * @return this ControlList instance
+   * @param controls the controls to add at the specified index
+   * @return this Controls instance
    */
-  ControlList addAt(int index, ControlList controls);
+  Controls addAt(int index, Controls controls);
 
   /**
-   * Adds a separator to the end of this control list
-   * @return this ControlList instance
+   * Adds a separator to the end of this controls instance
+   * @return this Controls instance
    */
-  ControlList addSeparator();
+  Controls addSeparator();
 
   /**
    * Adds a separator at the given index
    * @param index the index
-   * @return this ControlList instance
+   * @return this Controls instance
    */
-  ControlList addSeparatorAt(int index);
+  Controls addSeparatorAt(int index);
 
   /**
-   * Adds all actions found in {@code controls} to this control list
+   * Adds all actions found in {@code controls} to this controls instance
    * @param controls the source list
-   * @return this ControlList instance
+   * @return this Controls instance
    */
-  ControlList addAll(ControlList controls);
+  Controls addAll(Controls controls);
 
   /**
-   * Creates a vertically laid out panel of buttons from this control list
+   * Creates a vertically laid out panel of buttons from this controls instance
    * @return the button panel
    */
   JPanel createVerticalButtonPanel();
 
   /**
-   * Creates a horizontally laid out panel of buttons from this control list
+   * Creates a horizontally laid out panel of buttons from this controls instance
    * @return the button panel
    */
   JPanel createHorizontalButtonPanel();
-
-  /**
-   * Creates a popup menu from this control list
-   * @return a popup menu based on this control list
-   */
-  JPopupMenu createPopupMenu();
-
-  /**
-   * Creates a menu from this control list
-   * @return a menu based on this control list
-   */
-  JMenu createMenu();
 
   /**
    * Creates a JToolBar populated with these controls.
@@ -145,57 +128,69 @@ public interface ControlList extends Control {
   JToolBar createHorizontalToolBar();
 
   /**
-   * @return a menu bar based on the given controls
+   * Creates a popup menu from this controls instance
+   * @return a popup menu based on this controls instance
+   */
+  JPopupMenu createPopupMenu();
+
+  /**
+   * Creates a menu from this controls instance
+   * @return a menu based on this controls instance
+   */
+  JMenu createMenu();
+
+  /**
+   * @return a menu bar based on the controls instances contained in this controls instance
    */
   JMenuBar createMenuBar();
 
   /**
-   * Constructs a new ControlList.
-   * @return a new ControlList instance.
+   * Constructs a new Controls instance.
+   * @return a new Controls instance.
    */
-  static ControlList controlList() {
+  static Controls controls() {
     return builder().build();
   }
 
   /**
-   * @return a new ControlList.Builder instance
+   * @return a new Controls.Builder instance
    */
   static Builder builder() {
-    return new ControlListBuilder();
+    return new ControlsBuilder();
   }
 
   /**
-   * A builder for ControlList
-   * @see ControlList#builder()
+   * A builder for Controls
+   * @see Controls#builder()
    */
   interface Builder extends Control.Builder {
 
     /**
-     * @param name the control list name
+     * @param name the name for this controls instance
      * @return this Builder instance
      */
     Builder name(String name);
 
     /**
-     * @param description a description for the control list
+     * @param description a description for this controls instance
      * @return this Builder instance
      */
     Builder description(String description);
 
     /**
-     * @param mnenomic the mnemonic to assign to this control list
+     * @param mnenomic the mnemonic to assign to this controls instance
      * @return this Builder instance
      */
     Builder mnemonic(char mnenomic);
 
     /**
-     * @param keyStroke the keystroke to associate with the control
+     * @param keyStroke the keystroke to associate with this controls instance
      * @return this Builder instance
      */
     Builder keyStroke(KeyStroke keyStroke);
 
     /**
-     * @param enabledState the state observer dictating the enable state of this control
+     * @param enabledState the state observer dictating the enable state of this controls instance
      * @return this Builder instance
      */
     Builder enabledState(StateObserver enabledState);
@@ -207,13 +202,13 @@ public interface ControlList extends Control {
     Builder icon(Icon icon);
 
     /**
-     * @param control the control to add to this list
+     * @param control the control to add to this controls instance
      * @return this Builder instance
      */
     Builder control(Control control);
 
     /**
-     * @param controlBuilder the control builder to add to this list
+     * @param controlBuilder the control builder to add to this controls instance
      * @return this Builder instance
      */
     Builder control(Control.Builder controlBuilder);
@@ -231,27 +226,27 @@ public interface ControlList extends Control {
     Builder controls(Control.Builder... controlBuilders);
 
     /**
-     * @param action the Action to add to this list
+     * @param action the Action to add to this controls instance
      * @return this Builder instance
      */
     Builder action(Action action);
 
     /**
-     * @param actions the Actions to add to this list
+     * @param actions the Actions to add to this controls instance
      * @return this Builder instance
      */
     Builder actions(Action... actions);
 
     /**
-     * Adds a separator to the ControlList
+     * Adds a separator to the Controls
      * @return this Builder instance
      */
     Builder separator();
 
     /**
-     * Builds the ControlList
-     * @return a new ControlList
+     * Builds the Controls
+     * @return a new Controls instance
      */
-    ControlList build();
+    Controls build();
   }
 }

@@ -6847,3 +6847,10 @@
   ControlsTest removed, test moved to relevant Control test classes, some cleanup
   DefaultEntity bug fixed, revertAll now uses a copy of the value key set, since a removal of one value can trigger another, causing a ConcurrentModificationException
   DefaultEntityEditModel initializes its default entity during construction, moved from DefaultEntityModel constructor
+  Database.LOGIN_TIMEOUT configuration value added
+  State.and() and or() factory methods for State.Combination added and used throughout
+  ButtonControlHandler and MenuControlHandler refactored, JMenu now based on the ControlList instead of manually setting the action attributes
+  EntityLookupField bug fixed, settings combo box did not display the property caption
+  State.set(boolean) removed, redundant
+  ControlList.getControlLists() removed
+  ControlList renamed Controls, for better or worse

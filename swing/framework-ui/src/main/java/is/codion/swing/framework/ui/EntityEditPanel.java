@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
@@ -18,7 +17,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -292,8 +291,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Control.builder()
             .command(this::delete)
             .name(FrameworkMessages.get(FrameworkMessages.DELETE))
-            .enabledState(State.combination(Conjunction.AND,
-                    activeState,
+            .enabledState(State.and(activeState,
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")")
@@ -325,8 +323,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Control.builder()
             .command(this::update)
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
-            .enabledState(State.combination(Conjunction.AND,
-                    activeState,
+            .enabledState(State.and(activeState,
                     getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver(),
                     getEditModel().getModifiedObserver()))
@@ -343,7 +340,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return Control.builder()
             .command(this::insert)
             .name(FrameworkMessages.get(FrameworkMessages.INSERT))
-            .enabledState(State.combination(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()))
+            .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .icon(frameworkIcons().add())
@@ -356,13 +353,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    final State insertUpdateState = State.combination(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
-            State.combination(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
-                    getEditModel().getModifiedObserver()));
+    final State insertUpdateState = State.or(getEditModel().getInsertEnabledObserver(),
+            State.and(getEditModel().getUpdateEnabledObserver(), getEditModel().getModifiedObserver()));
     return Control.builder()
             .command(this::save)
             .name(FrameworkMessages.get(FrameworkMessages.SAVE))
-            .enabledState(State.combination(Conjunction.AND, activeState, insertUpdateState))
+            .enabledState(State.and(activeState, insertUpdateState))
             .description(FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .icon(frameworkIcons().add())
@@ -436,7 +432,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @see SwingConstants#HORIZONTAL
    */
   public final JToolBar createControlToolBar(final int orientation) {
-    final ControlList controlPanelControls = initializeControlPanelControls();
+    final Controls controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }
@@ -714,11 +710,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Initializes a ControlList on which to base the control panel
-   * @return the ControlList on which to base the control panel
+   * Initializes a Controls instance on which to base the control panel
+   * @return the Controls on which to base the control panel
    */
-  protected ControlList initializeControlPanelControls() {
-    final ControlList controlPanelControls = ControlList.controlList();
+  protected Controls initializeControlPanelControls() {
+    final Controls controlPanelControls = Controls.controls();
     if (this.controls.containsKey(ControlCode.SAVE)) {
       controlPanelControls.add(this.controls.get(ControlCode.SAVE));
     }
@@ -793,7 +789,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private JPanel createControlPanel(final boolean horizontal) {
-    final ControlList controlPanelControls = initializeControlPanelControls();
+    final Controls controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }

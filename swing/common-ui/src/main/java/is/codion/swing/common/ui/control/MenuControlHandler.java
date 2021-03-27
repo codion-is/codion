@@ -3,35 +3,16 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.StateObserver;
-
 import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.JMenu;
 
 final class MenuControlHandler extends ControlHandler {
 
   private final JMenu menu;
 
-  MenuControlHandler(final ControlList controls) {
-    menu = new JMenu(controls.getName());
-    final String description = controls.getDescription();
-    if (description != null) {
-      menu.setToolTipText(description);
-    }
-    final StateObserver enabledObserver = controls.getEnabledObserver();
-    if (enabledObserver != null) {
-      menu.setEnabled(enabledObserver.get());
-      enabledObserver.addListener(() -> menu.setEnabled(enabledObserver.get()));
-    }
-    final Icon icon = controls.getIcon();
-    if (icon != null) {
-      menu.setIcon(icon);
-    }
-    final int mnemonic = controls.getMnemonic();
-    if (mnemonic != -1) {
-      menu.setMnemonic(mnemonic);
-    }
+  MenuControlHandler(final JMenu menu, final Controls controls) {
+    this.menu = menu;
+    controls.getActions().forEach(this);
   }
 
   @Override
@@ -50,18 +31,14 @@ final class MenuControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControlList(final ControlList controls) {
-    final MenuControlHandler controlHandler = new MenuControlHandler(controls);
-    controls.getActions().forEach(controlHandler);
-    menu.add(controlHandler.menu);
+  public void onControls(final Controls controls) {
+    final JMenu subMenu = new JMenu(controls);
+    new MenuControlHandler(subMenu, controls);
+    this.menu.add(subMenu);
   }
 
   @Override
   public void onAction(final Action action) {
     menu.add(action);
-  }
-
-  public JMenu getMenu() {
-    return menu;
   }
 }

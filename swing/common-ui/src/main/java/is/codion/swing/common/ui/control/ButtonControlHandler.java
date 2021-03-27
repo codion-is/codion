@@ -13,9 +13,10 @@ final class ButtonControlHandler extends ControlHandler {
   private final JPanel panel;
   private final boolean vertical;
 
-  ButtonControlHandler(final JPanel panel, final boolean vertical) {
+  ButtonControlHandler(final JPanel panel, final Controls controls, final boolean vertical) {
     this.panel = panel;
     this.vertical = vertical;
+    controls.getActions().forEach(this);
   }
 
   @Override
@@ -34,7 +35,7 @@ final class ButtonControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControlList(final ControlList controls) {
+  public void onControls(final Controls controls) {
     panel.add(vertical ? controls.createVerticalButtonPanel() : controls.createHorizontalButtonPanel());
   }
 

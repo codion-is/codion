@@ -7,7 +7,7 @@ import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.value.TextValues;
@@ -105,7 +105,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(ControlList.builder()
+    logArea.setComponentPopupMenu(Controls.builder()
             .control(Control.builder()
                     .command(this::saveLogToFile)
                     .name("Save to file..."))

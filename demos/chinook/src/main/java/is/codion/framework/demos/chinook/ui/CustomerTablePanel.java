@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -24,8 +24,8 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlList createPrintControls() {
-    final ControlList printControls = super.createPrintControls();
+  protected Controls createPrintControls() {
+    final Controls printControls = super.createPrintControls();
     printControls.add(Control.builder()
             .command(this::viewCustomerReport)
             .name("Customer report")

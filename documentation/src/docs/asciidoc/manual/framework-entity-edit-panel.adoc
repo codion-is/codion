@@ -99,4 +99,4 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 ----
 
 == Custom actions
-The action mechanism used throughout the Codion framework is based on the {url-javadoc}/is/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/is/codion/swing/common/ui/control/ControlList.html[ControlList] class which, as the name suggests, represents a list of controls.
+The action mechanism used throughout the Codion framework is based on the {url-javadoc}/is/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/is/codion/swing/common/ui/control/Controls.html[Controls] class which represents a collection of controls.

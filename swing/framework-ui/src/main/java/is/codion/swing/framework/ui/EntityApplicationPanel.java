@@ -35,7 +35,7 @@ import is.codion.swing.common.ui.LoginPanel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
@@ -633,38 +633,38 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the control list on which to base the main menu
+   * @return the controls on which to base the main menu
    * @see #getFileControls()
    * @see #getSettingsControls()
    * @see #getViewControls()
    * @see #getToolsControls()
    * @see #getHelpControls()
    */
-  protected ControlList getMainMenuControls() {
-    final ControlList menuControls = ControlList.controlList();
-    final ControlList fileControls = getFileControls();
+  protected Controls getMainMenuControls() {
+    final Controls menuControls = Controls.controls();
+    final Controls fileControls = getFileControls();
     if (fileControls != null && !fileControls.isEmpty()) {
       menuControls.add(fileControls);
     }
-    final ControlList viewControls = getViewControls();
+    final Controls viewControls = getViewControls();
     if (viewControls != null && !viewControls.isEmpty()) {
       menuControls.add(viewControls);
     }
-    final ControlList toolsControls = getToolsControls();
+    final Controls toolsControls = getToolsControls();
     if (toolsControls != null && !toolsControls.isEmpty()) {
       menuControls.add(toolsControls);
     }
-    final ControlList supportTableControlList = getSupportTableControls();
-    if (supportTableControlList != null && !supportTableControlList.isEmpty()) {
-      menuControls.add(supportTableControlList);
+    final Controls supportTableControls = getSupportTableControls();
+    if (supportTableControls != null && !supportTableControls.isEmpty()) {
+      menuControls.add(supportTableControls);
     }
-    final List<ControlList> additionalMenus = getAdditionalMenuControls();
+    final List<Controls> additionalMenus = getAdditionalMenuControls();
     if (additionalMenus != null) {
-      for (final ControlList set : additionalMenus) {
+      for (final Controls set : additionalMenus) {
         menuControls.add(set);
       }
     }
-    final ControlList helpControls = getHelpControls();
+    final Controls helpControls = getHelpControls();
     if (helpControls != null && !helpControls.isEmpty()) {
       menuControls.add(helpControls);
     }
@@ -673,10 +673,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the ControlList specifying the items in the 'File' menu
+   * @return the Controls specifying the items in the 'File' menu
    */
-  protected ControlList getFileControls() {
-    return ControlList.builder()
+  protected Controls getFileControls() {
+    return Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.FILE))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0))
             .control(createExitControl())
@@ -684,20 +684,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the ControlList specifying the items in the 'Settings' menu
+   * @return the Controls specifying the items in the 'Settings' menu
    */
-  protected ControlList getSettingsControls() {
-    return ControlList.builder()
+  protected Controls getSettingsControls() {
+    return Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .control(createLogLevelControl())
             .build();
   }
 
   /**
-   * @return the ControlList specifying the items in the 'Tools' menu
+   * @return the Controls specifying the items in the 'Tools' menu
    */
-  protected ControlList getToolsControls() {
-    return ControlList.builder()
+  protected Controls getToolsControls() {
+    return Controls.builder()
             .name(resourceBundle.getString("tools"))
             .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
             .control(getSettingsControls())
@@ -705,10 +705,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the ControlList specifying the items in the 'View' menu
+   * @return the Controls specifying the items in the 'View' menu
    */
-  protected ControlList getViewControls() {
-    return ControlList.builder()
+  protected Controls getViewControls() {
+    return Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.VIEW))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
             .control(createRefreshAllControl())
@@ -723,10 +723,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the ControlList specifying the items in the 'Help' menu
+   * @return the Controls specifying the items in the 'Help' menu
    */
-  protected ControlList getHelpControls() {
-    return ControlList.builder()
+  protected Controls getHelpControls() {
+    return Controls.builder()
             .name(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
             .control(createHelpControl())
@@ -925,16 +925,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected void bindEvents() {}
 
   /**
-   * @return a List of ControlList objects which are to be added to the main menu bar
+   * @return a List of Controls instances which should be added to the main menu bar
    */
-  protected List<ControlList> getAdditionalMenuControls() {
+  protected List<Controls> getAdditionalMenuControls() {
     return new ArrayList<>(0);
   }
 
   /**
-   * @return the ControlList on which the Support Tables menu item is based on
+   * @return the Controls on which to base the Support Tables menu
    */
-  protected ControlList getSupportTableControls() {
+  protected Controls getSupportTableControls() {
     if (supportPanelBuilders.isEmpty()) {
       return null;
     }
@@ -947,7 +947,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return comparator.compare(thisCompare, thatCompare);
     });
-    final ControlList controls = ControlList.builder()
+    final Controls controls = Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0))
             .build();
@@ -1258,7 +1258,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Initializes the JMenuBar to use on the application Frame
-   * @return by default a JMenuBar based on the main menu control list
+   * @return by default a JMenuBar based on the main menu controls
    * @see #getMainMenuControls()
    */
   protected JMenuBar initializeMenuBar() {

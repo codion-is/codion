@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StatesTest {
+public class StateTest {
 
   @Test
   public void listeners() {
@@ -53,19 +53,19 @@ public class StatesTest {
     state.addListener(listener);
     reversed.addListener(reversedListener);
     reversedReversed.addListener(reversedReversedListener);
-    assertTrue(state.get() != reversed.get());
+    assertNotEquals(reversed.get(), state.get());
     assertEquals(state.get(), reversedReversed.get());
     state.set(true);
     assertEquals(1, stateCounter.get());
     assertEquals(1, reversedStateCounter.get());
     assertEquals(1, reversedReversedStateCounter.get());
-    assertTrue(state.get() != reversed.get());
+    assertNotEquals(state.get(), reversed.get());
     assertEquals(state.get(), reversedReversed.get());
     state.set(false);
     assertEquals(2, stateCounter.get());
     assertEquals(2, reversedStateCounter.get());
     assertEquals(2, reversedReversedStateCounter.get());
-    assertTrue(state.get() != reversed.get());
+    assertNotEquals(state.get(), reversed.get());
     assertEquals(state.get(), reversedReversed.get());
   }
 
@@ -107,13 +107,13 @@ public class StatesTest {
 
   @Test
   public void stateCombinationSetActive() {
-    final State.Combination orState = State.combination(Conjunction.OR);
+    final State.Combination orState = State.or();
     assertThrows(UnsupportedOperationException.class, () -> orState.set(true));
   }
 
   @Test
   public void stateCombination() {
-    State.Combination orState = State.combination(Conjunction.OR);
+    State.Combination orState = State.or();
     final State stateOne = State.state();
     final State stateTwo = State.state();
     final State stateThree = State.state();
@@ -121,7 +121,7 @@ public class StatesTest {
     orState.addState(stateTwo);
     orState.addState(stateThree);
 
-    State.Combination andState = State.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
+    State.Combination andState = State.and(stateOne, stateTwo, stateThree);
     assertEquals(Conjunction.AND, andState.getConjunction());
     assertEquals("Combination and false, false, false, false", andState.toString());
 
@@ -154,11 +154,11 @@ public class StatesTest {
     stateOne.set(false);
     stateTwo.set(false);
     stateThree.set(false);
-    orState = State.combination(Conjunction.OR);
+    orState = State.or();
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
-    andState = State.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
+    andState = State.and(stateOne, stateTwo, stateThree);
     assertEquals("Combination and false, false, false, false", andState.toString());
 
     assertFalse(orState.get(), "Or state should be inactive");
@@ -201,7 +201,7 @@ public class StatesTest {
     final State two = State.state();
     final State three = State.state();
 
-    final State combinationAnd = State.combination(Conjunction.AND, one, two, three);
+    final State combinationAnd = State.and(one, two, three);
     combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
     one.set(true);
     two.set(true);
@@ -210,7 +210,7 @@ public class StatesTest {
     two.set(false);
     three.set(false);
 
-    final State combinationOr = State.combination(Conjunction.OR, one, two, three);
+    final State combinationOr = State.or(one, two, three);
     combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
     one.set(true);
     one.set(false);
@@ -224,7 +224,7 @@ public class StatesTest {
   public void stateCombinationEvents() {
     final State stateOne = State.state(false);
     final State stateTwo = State.state(true);
-    final State.Combination combination = State.combination(Conjunction.OR, stateOne, stateTwo);
+    final State.Combination combination = State.or(stateOne, stateTwo);
     final AtomicInteger stateChangeEvents = new AtomicInteger();
     combination.addListener(stateChangeEvents::incrementAndGet);
     assertTrue(combination.get());

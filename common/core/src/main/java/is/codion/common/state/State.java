@@ -7,7 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
 
 /**
- * A class encapsulating a boolean state, non-nullable.
+ * A class encapsulating a boolean state, non-nullable with null values translated to false.
  * <pre>
  * State state = State.state();
  *
@@ -20,12 +20,6 @@ import is.codion.common.value.Value;
  * A factory class for {@link State} objects.
  */
 public interface State extends StateObserver, Value<Boolean> {
-
-  /**
-   * Sets the value of this {@link State}.
-   * @param value the new active state of this State instance
-   */
-  void set(boolean value);
 
   /**
    * Returns a StateObserver notified each time the state changes
@@ -92,13 +86,31 @@ public interface State extends StateObserver, Value<Boolean> {
   }
 
   /**
-   * Instantiates a new State.Combination object.
+   * Instantiates a new {@link State.Combination} instance.
    * @param conjunction the conjunction to use
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
   static Combination combination(final Conjunction conjunction, final StateObserver... stateObservers) {
     return new DefaultStateCombination(conjunction, stateObservers);
+  }
+
+  /**
+   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#AND}.
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination and(final StateObserver... stateObservers) {
+    return new DefaultStateCombination(Conjunction.AND, stateObservers);
+  }
+
+  /**
+   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#OR}.
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination or(final StateObserver... stateObservers) {
+    return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 
   /**

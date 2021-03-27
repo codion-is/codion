@@ -8,7 +8,7 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -40,7 +40,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
   // tag::createPrintControls[]
   @Override
-  protected ControlList createPrintControls() {
+  protected Controls createPrintControls() {
     final StateObserver selectionNotEmptyObserver =
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
 

@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -365,15 +366,16 @@ public final class EntityLookupField extends JTextField {
 
     private void initializeUI(final EntityLookupModel lookupModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
-      final SwingFilteredComboBoxModel<Attribute<String>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
+      final SwingFilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
+      final EntityDefinition definition = lookupModel.getConnectionProvider().getEntities().getDefinition(lookupModel.getEntityType());
       for (final Map.Entry<Attribute<String>, EntityLookupModel.LookupSettings> entry :
               lookupModel.getAttributeLookupSettings().entrySet()) {
-        propertyComboBoxModel.addItem(entry.getKey());
+        propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.getProperty(entry.getKey()).getCaption()));
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getName());
       }
       if (propertyComboBoxModel.getSize() > 0) {
         propertyComboBoxModel.addSelectionListener(selected ->
-                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getName()));
+                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getValue().getName()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 

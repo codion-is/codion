@@ -20,16 +20,15 @@ import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
-final class DefaultControlList extends AbstractControl implements ControlList {
+final class DefaultControls extends AbstractControl implements Controls {
 
   private static final String CONTROLS_PARAMETER = "controls";
 
   private final List<Action> actions = new ArrayList<>();
 
-  DefaultControlList(final String name, final char mnemonic, final StateObserver enabledState, final Icon icon,
-                     final List<Action> controls) {
+  DefaultControls(final String name, final char mnemonic, final StateObserver enabledState, final Icon icon,
+                  final List<Action> controls) {
     super(name, enabledState, icon);
     setMnemonic(mnemonic);
     for (final Action control : controls) {
@@ -43,30 +42,24 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public List<ControlList> getControlLists() {
-    return actions.stream().filter(control -> control instanceof DefaultControlList)
-            .map(control -> (DefaultControlList) control).collect(toList());
-  }
-
-  @Override
   public List<Action> getActions() {
     return unmodifiableList(actions);
   }
 
   @Override
-  public ControlList add(final Action action) {
+  public Controls add(final Action action) {
     actions.add(requireNonNull(action, "action"));
     return this;
   }
 
   @Override
-  public ControlList addAt(final int index, final Action action) {
+  public Controls addAt(final int index, final Action action) {
     actions.add(index, requireNonNull(action, "action"));
     return this;
   }
 
   @Override
-  public ControlList remove(final Action action) {
+  public Controls remove(final Action action) {
     if (action != null) {
       actions.remove(action);
     }
@@ -74,7 +67,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public ControlList removeAll() {
+  public Controls removeAll() {
     actions.clear();
     return this;
   }
@@ -95,31 +88,31 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public ControlList add(final ControlList controls) {
+  public Controls add(final Controls controls) {
     actions.add(requireNonNull(controls, CONTROLS_PARAMETER));
     return this;
   }
 
   @Override
-  public ControlList addAt(final int index, final ControlList controls) {
+  public Controls addAt(final int index, final Controls controls) {
     actions.add(index, requireNonNull(controls, CONTROLS_PARAMETER));
     return this;
   }
 
   @Override
-  public ControlList addSeparator() {
+  public Controls addSeparator() {
     actions.add(null);
     return this;
   }
 
   @Override
-  public ControlList addSeparatorAt(final int index) {
+  public Controls addSeparatorAt(final int index) {
     actions.add(index, null);
     return this;
   }
 
   @Override
-  public ControlList addAll(final ControlList controls) {
+  public Controls addAll(final Controls controls) {
     actions.addAll(requireNonNull(controls, CONTROLS_PARAMETER).getActions());
     return this;
   }
@@ -127,7 +120,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JPanel createVerticalButtonPanel() {
     final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
-    actions.forEach(new ButtonControlHandler(panel, true));
+    new ButtonControlHandler(panel, this, true);
 
     return panel;
   }
@@ -135,22 +128,9 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JPanel createHorizontalButtonPanel() {
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
-    actions.forEach(new ButtonControlHandler(panel, false));
+    new ButtonControlHandler(panel, this, false);
 
     return panel;
-  }
-
-  @Override
-  public JPopupMenu createPopupMenu() {
-    return createMenu().getPopupMenu();
-  }
-
-  @Override
-  public JMenu createMenu() {
-    final MenuControlHandler controlHandler = new MenuControlHandler(this);
-    actions.forEach(controlHandler);
-
-    return controlHandler.getMenu();
   }
 
   @Override
@@ -164,9 +144,25 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
+  public JPopupMenu createPopupMenu() {
+    return createMenu().getPopupMenu();
+  }
+
+  @Override
+  public JMenu createMenu() {
+    final JMenu menu = new JMenu(this);
+    new MenuControlHandler(menu, this);
+
+    return menu;
+  }
+
+  @Override
   public JMenuBar createMenuBar() {
     final JMenuBar menuBar = new JMenuBar();
-    getControlLists().forEach(subControlList -> menuBar.add(subControlList.createMenu()));
+    actions.stream()
+            .filter(control -> control instanceof Controls)
+            .map(control -> (Controls) control)
+            .forEach(subControls -> menuBar.add(subControls.createMenu()));
 
     return menuBar;
   }

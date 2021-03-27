@@ -5,7 +5,7 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
@@ -87,7 +87,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final ControlList controls = ControlList.controlList();
+    final Controls controls = Controls.controls();
     controls.add(Control.builder().command(() -> {
       for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
         model.getServer().disconnect(remoteClient.getClientId());

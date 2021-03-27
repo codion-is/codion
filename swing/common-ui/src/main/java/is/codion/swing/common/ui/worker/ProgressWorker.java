@@ -9,7 +9,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ProgressDialog;
@@ -90,11 +90,11 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * progress bar goes from 0 - 100 by default.
    * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
    * location of the progress dialog
-   * @param buttonControls if specified buttons based on the controls in this control list are added
+   * @param buttonControls if specified buttons based on these controls are added
    * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage,
-                        final Indeterminate indeterminate, final JPanel dialogNorthPanel, final ControlList buttonControls) {
+                        final Indeterminate indeterminate, final JPanel dialogNorthPanel, final Controls buttonControls) {
     this.progressDialog = new ProgressDialog(dialogOwner, progressMessage,
             indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS, dialogNorthPanel, buttonControls);
     addPropertyChangeListener(this::onPropertyChangeEvent);
@@ -139,7 +139,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
                                         final String progressBarTitle, final String successMessage,
-                                        final String failTitle, final ControlList buttonControls) {
+                                        final String failTitle, final Controls buttonControls) {
     runWithProgressBar(dialogParent, task, progressBarTitle, successMessage, failTitle, buttonControls, null);
   }
 
@@ -157,7 +157,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
                                         final String progressBarTitle, final String successMessage,
-                                        final String failTitle, final ControlList buttonControls,
+                                        final String failTitle, final Controls buttonControls,
                                         final JPanel northPanel) {
     runWithProgressBar(dialogParent, task, progressBarTitle, () -> {
       if (!nullOrEmpty(successMessage)) {
@@ -237,7 +237,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
                                         final String progressBarTitle, final Runnable onSuccess,
                                         final Consumer<Throwable> onException, final JPanel northPanel,
-                                        final ControlList buttonControls) {
+                                        final Controls buttonControls) {
     final Window dialogOwner = Windows.getParentWindow(dialogParent);
     final ProgressWorker<Object> worker = new ProgressWorker<Object>(dialogOwner, progressBarTitle, Indeterminate.YES, northPanel, buttonControls) {
       @Override

@@ -14,7 +14,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -60,7 +60,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   // tag::getToolsControls[]
   @Override
-  protected ControlList getToolsControls() {
+  protected Controls getToolsControls() {
     return super.getToolsControls()
             .add(Control.builder()
                     .command(this::importJSON)
