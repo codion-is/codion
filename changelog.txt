@@ -6819,3 +6819,4 @@
   DefaultEntityEditModel initializes its default entity during construction, moved from DefaultEntityModel constructor
   Database.LOGIN_TIMEOUT configuration value added
   State.and() and or() factory methods for State.Combination added and used throughout
+  ButtonControlHandler and MenuControlHandler refactored, JMenu now based on the ControlList instead of manually setting the action attributes

@@ -127,7 +127,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JPanel createVerticalButtonPanel() {
     final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
-    actions.forEach(new ButtonControlHandler(panel, true));
+    new ButtonControlHandler(panel, this, true);
 
     return panel;
   }
@@ -135,7 +135,7 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   @Override
   public JPanel createHorizontalButtonPanel() {
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
-    actions.forEach(new ButtonControlHandler(panel, false));
+    new ButtonControlHandler(panel, this, false);
 
     return panel;
   }
@@ -147,10 +147,10 @@ final class DefaultControlList extends AbstractControl implements ControlList {
 
   @Override
   public JMenu createMenu() {
-    final MenuControlHandler controlHandler = new MenuControlHandler(this);
-    actions.forEach(controlHandler);
+    final JMenu menu = new JMenu(this);
+    new MenuControlHandler(menu, this);
 
-    return controlHandler.getMenu();
+    return menu;
   }
 
   @Override
