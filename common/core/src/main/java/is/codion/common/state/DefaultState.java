@@ -33,16 +33,16 @@ class DefaultState implements State {
   }
 
   @Override
-  public void set(final boolean value) {
+  public Boolean get() {
     synchronized (this.value) {
-      this.value.set(value);
+      return this.value.get();
     }
   }
 
   @Override
-  public Boolean get() {
+  public void set(final Boolean value) {
     synchronized (this.value) {
-      return this.value.get();
+      this.value.set(value);
     }
   }
 
@@ -60,11 +60,6 @@ class DefaultState implements State {
   @Override
   public final StateObserver getReversedObserver() {
     return getObserver().getReversedObserver();
-  }
-
-  @Override
-  public final void set(final Boolean value) {
-    this.value.set(value);
   }
 
   @Override

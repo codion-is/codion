@@ -7,7 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
 
 /**
- * A class encapsulating a boolean state, non-nullable.
+ * A class encapsulating a boolean state, non-nullable with null values translated to false.
  * <pre>
  * State state = State.state();
  *
@@ -20,12 +20,6 @@ import is.codion.common.value.Value;
  * A factory class for {@link State} objects.
  */
 public interface State extends StateObserver, Value<Boolean> {
-
-  /**
-   * Sets the value of this {@link State}.
-   * @param value the new active state of this State instance
-   */
-  void set(boolean value);
 
   /**
    * Returns a StateObserver notified each time the state changes

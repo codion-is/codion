@@ -78,7 +78,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   @Override
-  public void set(final boolean value) {
+  public void set(final Boolean value) {
     throw new UnsupportedOperationException("The state of state combination can't be set");
   }
 
