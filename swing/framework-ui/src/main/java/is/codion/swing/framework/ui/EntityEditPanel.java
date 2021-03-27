@@ -17,7 +17,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -432,7 +432,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @see SwingConstants#HORIZONTAL
    */
   public final JToolBar createControlToolBar(final int orientation) {
-    final ControlList controlPanelControls = initializeControlPanelControls();
+    final Controls controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }
@@ -710,11 +710,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Initializes a ControlList on which to base the control panel
-   * @return the ControlList on which to base the control panel
+   * Initializes a Controls instance on which to base the control panel
+   * @return the Controls on which to base the control panel
    */
-  protected ControlList initializeControlPanelControls() {
-    final ControlList controlPanelControls = ControlList.controlList();
+  protected Controls initializeControlPanelControls() {
+    final Controls controlPanelControls = Controls.controls();
     if (this.controls.containsKey(ControlCode.SAVE)) {
       controlPanelControls.add(this.controls.get(ControlCode.SAVE));
     }
@@ -789,7 +789,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private JPanel createControlPanel(final boolean horizontal) {
-    final ControlList controlPanelControls = initializeControlPanelControls();
+    final Controls controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }

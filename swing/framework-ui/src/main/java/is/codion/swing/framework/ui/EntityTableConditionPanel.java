@@ -19,7 +19,7 @@ import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
@@ -127,8 +127,8 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
    */
   @Override
-  public ControlList getControls() {
-    final ControlList.Builder controls = ControlList.builder()
+  public Controls getControls() {
+    final Controls.Builder controls = Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter());
     if (hasAdvancedView()) {

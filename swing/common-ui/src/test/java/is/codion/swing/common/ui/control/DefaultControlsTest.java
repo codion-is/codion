@@ -16,7 +16,7 @@ import java.util.List;
 import static is.codion.common.Util.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultControlListTest {
+public class DefaultControlsTest {
 
   private boolean booleanValue;
 
@@ -28,7 +28,7 @@ public class DefaultControlListTest {
     this.booleanValue = booleanValue;
   }
 
-  private final ControlList controlList = ControlList.builder().controls(
+  private final Controls controls = Controls.builder().controls(
           Control.builder().command(() -> {}).name("one"),
           Control.builder().command(() -> {}).name("two"),
           ToggleControl.builder().value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
@@ -38,17 +38,17 @@ public class DefaultControlListTest {
   public void test() {
     final Control one = Control.control(() -> {});
     final Control two = Control.control(() -> {});
-    final ControlList list = ControlList.builder().name("list").controls(one, two).build();
+    final Controls list = Controls.builder().name("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
     assertFalse(nullOrEmpty(list.getName()));
     assertNull(list.getIcon());
     assertEquals("list", list.getName());
-    final ControlList list1 = ControlList.controlList();
+    final Controls list1 = Controls.controls();
     assertTrue(nullOrEmpty(list1.getName()));
     assertNull(list1.getName());
-    final ControlList list2 = ControlList.builder().control(two).build();
+    final Controls list2 = Controls.builder().control(two).build();
     list2.setName("list");
     assertFalse(nullOrEmpty(list2.getName()));
     assertEquals("list", list2.getName());
@@ -75,8 +75,8 @@ public class DefaultControlListTest {
 
   @Test
   public void menuBar() {
-    final ControlList base = ControlList.controlList();
-    base.add(controlList);
+    final Controls base = Controls.controls();
+    base.add(controls);
 
     final JMenuBar menu = base.createMenuBar();
     assertEquals(1, menu.getMenuCount());
@@ -85,15 +85,15 @@ public class DefaultControlListTest {
     assertEquals("two", menu.getMenu(0).getItem(1).getText());
     assertEquals("three", menu.getMenu(0).getItem(2).getText());
 
-    final List<ControlList> lists = new ArrayList<>();
-    lists.add(controlList);
+    final List<Controls> lists = new ArrayList<>();
+    lists.add(controls);
     lists.add(base);
   }
 
   @Test
   public void popupMenu() {
-    final ControlList base = ControlList.controlList();
-    base.add(controlList);
+    final Controls base = Controls.controls();
+    base.add(controls);
 
     base.createPopupMenu();
   }
@@ -101,18 +101,18 @@ public class DefaultControlListTest {
   @Test
   public void horizontalButtonPanel() {
     final JPanel base = new JPanel();
-    base.add(controlList.createHorizontalButtonPanel());
+    base.add(controls.createHorizontalButtonPanel());
   }
 
   @Test
   public void verticalButtonPanel() {
     final JPanel base = new JPanel();
-    base.add(controlList.createVerticalButtonPanel());
+    base.add(controls.createVerticalButtonPanel());
   }
 
   @Test
   public void toolBar() {
-    controlList.createVerticalToolBar();
-    controlList.createHorizontalToolBar();
+    controls.createVerticalToolBar();
+    controls.createHorizontalToolBar();
   }
 }

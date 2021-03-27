@@ -13,7 +13,7 @@ import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
@@ -95,9 +95,9 @@ public final class InputControls {
     // end::toggleControl[]
   }
 
-  void controlList() {
-    // tag::controlList[]
-    ControlList controlList = ControlList.builder()
+  void controls() {
+    // tag::controls[]
+    Controls controls = Controls.builder()
             .control(Control.builder()
                     .name("First")
                     .mnemonic('F')
@@ -106,7 +106,7 @@ public final class InputControls {
                     .name("Second")
                     .mnemonic('S')
                     .command(this::doSecond))
-            .control(ControlList.builder()
+            .control(Controls.builder()
                     .name("Submenu")
                     .control(Control.builder()
                             .name("Sub-first")
@@ -118,7 +118,7 @@ public final class InputControls {
                             .command(this::doSubSecond)))
             .build();
 
-    JMenu menu = controlList.createMenu();
+    JMenu menu = controls.createMenu();
 
     Control firstControl = Control.builder()
             .name("First")
@@ -131,12 +131,12 @@ public final class InputControls {
             .command(this::doSecond)
             .build();
 
-    ControlList flatControlList = ControlList.builder()
+    Controls flatControls = Controls.builder()
             .controls(firstControl, secondControl)
             .build();
 
-    JPanel buttonPanel = flatControlList.createHorizontalButtonPanel();
-    // end::controlList[]
+    JPanel buttonPanel = flatControls.createHorizontalButtonPanel();
+    // end::controls[]
   }
 
   void doFirst() {}

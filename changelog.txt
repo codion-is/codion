@@ -6823,3 +6823,4 @@
   EntityLookupField bug fixed, settings combo box did not display the property caption
   State.set(boolean) removed, redundant
   ControlList.getControlLists() removed
+  ControlList renamed Controls, for better or worse

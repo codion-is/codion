@@ -30,7 +30,7 @@ import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
@@ -236,8 +236,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   private final JLabel statusMessageLabel = initializeStatusMessageLabel();
 
-  private final List<ControlList> additionalPopupControls = new ArrayList<>();
-  private final List<ControlList> additionalToolBarControls = new ArrayList<>();
+  private final List<Controls> additionalPopupControls = new ArrayList<>();
+  private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
   /**
@@ -352,7 +352,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void addPopupControls(final ControlList additionalPopupControls) {
+  public final void addPopupControls(final Controls additionalPopupControls) {
     checkIfInitialized();
     this.additionalPopupControls.add(requireNonNull(additionalPopupControls));
   }
@@ -362,7 +362,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void addToolBarControls(final ControlList additionalToolBarControls) {
+  public final void addToolBarControls(final Controls additionalToolBarControls) {
     checkIfInitialized();
     this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
   }
@@ -528,23 +528,23 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Creates a {@link ControlList} containing controls for updating the value of a single property
+   * Creates a {@link Controls} containing controls for updating the value of a single property
    * for the selected entities. These controls are enabled as long as the selection is not empty
    * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
-   * @return a control list containing controls, one for each updatable property in the
+   * @return controls containing a control for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
    * @see #excludeFromUpdateMenu(Attribute)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
-  public final ControlList createUpdateSelectedControls() {
+  public final Controls createUpdateSelectedControls() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
-    final ControlList controlList = ControlList.builder()
+    final Controls controls = Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
             .icon(frameworkIcons().edit())
@@ -553,7 +553,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-        controlList.add(Control.builder()
+        controls.add(Control.builder()
                 .command(() -> updateSelectedEntities(property))
                 .name(caption)
                 .enabledState(enabled)
@@ -561,7 +561,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
     });
 
-    return controlList;
+    return controls;
   }
 
   /**
@@ -906,11 +906,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static EntityTablePanel createEntityTablePanel(final SwingEntityTableModel tableModel) {
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
       @Override
-      protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
+      protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
         return additionalPopupControls.get(0);
       }
     };
-    final ControlList popupControls = ControlList.controlList();
+    final Controls popupControls = Controls.controls();
     if (tablePanel.includeUpdateSelectedControls()) {
       popupControls.add(tablePanel.createUpdateSelectedControls());
     }
@@ -992,9 +992,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  protected ControlList getToolBarControls(final List<ControlList> additionalToolBarControlLists) {
-    requireNonNull(additionalToolBarControlLists);
-    final ControlList toolbarControls = ControlList.controlList();
+  protected Controls getToolBarControls(final List<Controls> additionalToolBarControls) {
+    requireNonNull(additionalToolBarControls);
+    final Controls toolbarControls = Controls.controls();
     if (controls.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controls.get(ControlCode.TOGGLE_SUMMARY_PANEL));
     }
@@ -1010,24 +1010,24 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     toolbarControls.addSeparator();
     toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_UP));
     toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_DOWN));
-    additionalToolBarControlLists.forEach(controlList -> {
+    additionalToolBarControls.forEach(controls -> {
       toolbarControls.addSeparator();
-      controlList.getActions().forEach(toolbarControls::add);
+      controls.getActions().forEach(toolbarControls::add);
     });
 
     return toolbarControls;
   }
 
   /**
-   * Constructs a ControlList containing the controls to include in the table popup menu.
-   * Returns null or an empty ControlList to indicate that no popup menu should be included.
+   * Constructs Controls containing the controls to include in the table popup menu.
+   * Returns null or an empty Controls instance to indicate that no popup menu should be included.
    * @param additionalPopupControls any additional controls to include in the popup menu
-   * @return the ControlList on which to base the table popup menu, null or an empty ControlList
+   * @return Controls on which to base the table popup menu, null or an empty Controls instance
    * if no popup menu should be included
    */
-  protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
+  protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
     requireNonNull(additionalPopupControls);
-    final ControlList popupControls = ControlList.controlList();
+    final Controls popupControls = Controls.controls();
     popupControls.add(controls.get(ControlCode.REFRESH));
     if (controls.containsKey(ControlCode.CLEAR)) {
       popupControls.add(controls.get(ControlCode.CLEAR));
@@ -1059,7 +1059,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       popupControls.addSeparator();
       separatorRequired = false;
     }
-    final ControlList printControls = createPrintControls();
+    final Controls printControls = createPrintControls();
     if (printControls != null) {
       popupControls.add(printControls);
       separatorRequired = true;
@@ -1093,9 +1093,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return popupControls;
   }
 
-  protected ControlList createPrintControls() {
+  protected Controls createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
-    return ControlList.builder()
+    return Controls.builder()
             .name(printCaption)
             .mnemonic(printCaption.charAt(0))
             .icon(frameworkIcons().print())
@@ -1110,8 +1110,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .build();
   }
 
-  protected final ControlList createCopyControls() {
-    return ControlList.builder()
+  protected final Controls createCopyControls() {
+    return Controls.builder()
             .name(Messages.get(Messages.COPY))
             .icon(frameworkIcons().copy())
             .controls(createCopyCellControl(), createCopyTableWithHeaderControl()).build();
@@ -1199,9 +1199,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the toolbar to add to the south panel
    */
   protected JToolBar initializeSouthToolBar() {
-    final ControlList toolbarControlList = getToolBarControls(additionalToolBarControls);
-    if (toolbarControlList != null) {
-      final JToolBar southToolBar = toolbarControlList.createHorizontalToolBar();
+    final Controls toolbarControls = getToolBarControls(additionalToolBarControls);
+    if (toolbarControls != null) {
+      final JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
@@ -1424,7 +1424,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void addTablePopupMenu() {
-    final ControlList popupControls = getPopupControls(additionalPopupControls);
+    final Controls popupControls = getPopupControls(additionalPopupControls);
     if (popupControls == null || popupControls.isEmpty()) {
       return;
     }
@@ -1451,19 +1451,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private void addConditionControls(final ControlList popupControls) {
-    final ControlList controlList = ControlList.builder()
+  private void addConditionControls(final Controls popupControls) {
+    final Controls controls = Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter()).build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
-      controlList.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
+      controls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
-    final ControlList searchPanelControls = conditionPanel.getControls();
+    final Controls searchPanelControls = conditionPanel.getControls();
     if (searchPanelControls != null && !searchPanelControls.isEmpty()) {
-      controlList.addAll(searchPanelControls);
+      controls.addAll(searchPanelControls);
     }
-    if (!controlList.isEmpty()) {
-      popupControls.add(controlList);
+    if (!controls.isEmpty()) {
+      popupControls.add(controls);
     }
   }
 
@@ -1480,13 +1480,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     table.repaint();
   }
 
-  private static void addAdditionalControls(final ControlList popupControls, final List<ControlList> additionalPopupControlLists) {
-    additionalPopupControlLists.forEach(controlList -> {
-      if (nullOrEmpty(controlList.getName())) {
-        popupControls.addAll(controlList);
+  private static void addAdditionalControls(final Controls popupControls, final List<Controls> additionalPopupControls) {
+    additionalPopupControls.forEach(controls -> {
+      if (nullOrEmpty(controls.getName())) {
+        popupControls.addAll(controls);
       }
       else {
-        popupControls.add(controlList);
+        popupControls.add(controls);
       }
       popupControls.addSeparator();
     });

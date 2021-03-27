@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-final class ControlListBuilder implements ControlList.Builder {
+final class ControlsBuilder implements Controls.Builder {
 
   private final List<Action> controls = new ArrayList<>();
 
@@ -27,95 +27,95 @@ final class ControlListBuilder implements ControlList.Builder {
   private KeyStroke keyStroke;
 
   @Override
-  public ControlList.Builder command(final Control.Command command) {
-    throw new UnsupportedOperationException("A ControlList can not have a Command");
+  public Controls.Builder command(final Control.Command command) {
+    throw new UnsupportedOperationException("Controls can not have a Command");
   }
 
   @Override
   public Control.Builder actionCommand(final Control.ActionCommand actionCommand) {
-    throw new UnsupportedOperationException("A ControlList can not have a ActionCommand");
+    throw new UnsupportedOperationException("Controls can not have a ActionCommand");
   }
 
   @Override
-  public ControlList.Builder name(final String name) {
+  public Controls.Builder name(final String name) {
     this.name = name;
     return this;
   }
 
   @Override
-  public ControlList.Builder description(final String description) {
+  public Controls.Builder description(final String description) {
     this.description = description;
     return this;
   }
 
   @Override
-  public ControlList.Builder mnemonic(final char mnenomic) {
+  public Controls.Builder mnemonic(final char mnenomic) {
     this.mnemonic = mnenomic;
     return this;
   }
 
   @Override
-  public ControlList.Builder keyStroke(final KeyStroke keyStroke) {
+  public Controls.Builder keyStroke(final KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
     return this;
   }
 
   @Override
-  public ControlList.Builder enabledState(final StateObserver enabledState) {
+  public Controls.Builder enabledState(final StateObserver enabledState) {
     this.enabledState = enabledState;
     return this;
   }
 
   @Override
-  public ControlList.Builder icon(final Icon icon) {
+  public Controls.Builder icon(final Icon icon) {
     this.icon = icon;
     return this;
   }
 
   @Override
-  public ControlList.Builder control(final Control control) {
+  public Controls.Builder control(final Control control) {
     controls.add(requireNonNull(control));
     return this;
   }
 
   @Override
-  public ControlList.Builder control(final Control.Builder controlBuilder) {
+  public Controls.Builder control(final Control.Builder controlBuilder) {
     controls.add(requireNonNull(controlBuilder).build());
     return this;
   }
 
   @Override
-  public ControlList.Builder controls(final Control... controls) {
+  public Controls.Builder controls(final Control... controls) {
     this.controls.addAll(Arrays.asList(requireNonNull(controls)));
     return this;
   }
 
   @Override
-  public ControlList.Builder controls(final Control.Builder... controlBuilders) {
+  public Controls.Builder controls(final Control.Builder... controlBuilders) {
     this.controls.addAll(Arrays.stream(controlBuilders).map(Control.Builder::build).collect(Collectors.toList()));
     return this;
   }
 
   @Override
-  public ControlList.Builder action(final Action action) {
+  public Controls.Builder action(final Action action) {
     this.controls.add(requireNonNull(action));
     return this;
   }
 
   @Override
-  public ControlList.Builder actions(final Action... actions) {
+  public Controls.Builder actions(final Action... actions) {
     this.controls.addAll(Arrays.asList(requireNonNull(actions)));
     return this;
   }
 
   @Override
-  public ControlList.Builder separator() {
+  public Controls.Builder separator() {
     this.controls.add(null);
     return this;
   }
 
   @Override
-  public ControlList build() {
-    return (ControlList) new DefaultControlList(name, mnemonic, enabledState, icon, controls).setDescription(description).setKeyStroke(keyStroke);
+  public Controls build() {
+    return (Controls) new DefaultControls(name, mnemonic, enabledState, icon, controls).setDescription(description).setKeyStroke(keyStroke);
   }
 }

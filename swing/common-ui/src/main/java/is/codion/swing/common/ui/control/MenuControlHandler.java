@@ -10,7 +10,7 @@ final class MenuControlHandler extends ControlHandler {
 
   private final JMenu menu;
 
-  MenuControlHandler(final JMenu menu, final ControlList controls) {
+  MenuControlHandler(final JMenu menu, final Controls controls) {
     this.menu = menu;
     controls.getActions().forEach(this);
   }
@@ -31,7 +31,7 @@ final class MenuControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControlList(final ControlList controls) {
+  public void onControls(final Controls controls) {
     final JMenu subMenu = new JMenu(controls);
     new MenuControlHandler(subMenu, controls);
     this.menu.add(subMenu);

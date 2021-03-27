@@ -13,7 +13,7 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -144,19 +144,19 @@ public final class EntityServerMonitorPanel extends JPanel {
     add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private ControlList initializeMainMenuControls() {
-    return ControlList.builder()
-            .control(ControlList.builder()
+  private Controls initializeMainMenuControls() {
+    return Controls.builder()
+            .control(Controls.builder()
                     .name("File")
                     .mnemonic('F')
                     .control(initializeExitControl()).build())
-            .control(ControlList.builder()
+            .control(Controls.builder()
                     .name("View")
                     .mnemonic('V')
                     .control(initializeRefreshControl())
                     .separator()
                     .control(initializeAlwaysOnTopControl()).build())
-            .control(ControlList.builder()
+            .control(Controls.builder()
                     .name("Tools")
                     .mnemonic('T')
                     .control(initializeUpateIntervalControl())

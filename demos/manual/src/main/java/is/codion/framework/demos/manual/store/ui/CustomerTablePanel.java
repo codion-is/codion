@@ -7,7 +7,7 @@ import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -27,8 +27,8 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlList createPrintControls() {
-    ControlList printControls = super.createPrintControls();
+  protected Controls createPrintControls() {
+    Controls printControls = super.createPrintControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
     printControls.add(Control.builder()

@@ -30,7 +30,7 @@ final class ToolBarControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControlList(final ControlList controls) {
+  public void onControls(final Controls controls) {
     controls.getActions().forEach(new ToolBarControlHandler(toolbar));
   }
 

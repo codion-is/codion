@@ -16,9 +16,9 @@ include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java
 include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=toggleControl]
 ----
 
-== ControlList
+== Controls
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=controlList]
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=controls]
 ----

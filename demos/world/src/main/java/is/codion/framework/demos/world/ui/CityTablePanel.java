@@ -3,7 +3,7 @@ package is.codion.framework.demos.world.ui;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -21,7 +21,7 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
+  protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
     return super.getPopupControls(additionalPopupControls)
             .addAt(0, createUpdateLocationControl())
             .addSeparatorAt(1);
@@ -45,7 +45,7 @@ public final class CityTablePanel extends EntityTablePanel {
     private final CityTableModel cityTableModel;
 
     private LocationUpdater(final Window dialogOwner, final CityTableModel cityTableModel) {
-      super(dialogOwner, "Updating locations", Indeterminate.NO, null, ControlList.builder()
+      super(dialogOwner, "Updating locations", Indeterminate.NO, null, Controls.builder()
               .control(Control.builder()
                       .command(cityTableModel::cancelLocationUpdate)
                       .name("Cancel")

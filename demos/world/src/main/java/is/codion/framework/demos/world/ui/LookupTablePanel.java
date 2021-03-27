@@ -2,7 +2,7 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -26,7 +26,7 @@ public final class LookupTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
+  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
     return super.getPopupControls(additionalPopupControls)
             .addSeparatorAt(1)
             .addAt(2, Control.builder()

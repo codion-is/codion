@@ -14,7 +14,7 @@ import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.DisposeOnEscape;
@@ -1303,7 +1303,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeTablePanel() {
-    final ControlList toolbarControls = ControlList.controlList();
+    final Controls toolbarControls = Controls.controls();
     if (showToggleEditPanelControl && editPanel != null) {
       toolbarControls.add(getToggleEditPanelControl());
     }
@@ -1385,16 +1385,16 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes a ControlList containing a control for setting the state to {@code status} on each detail panel.
+   * Initializes Controls containing a control for setting the state to {@code status} on each detail panel.
    * @param status the status
-   * @return a ControlList for controlling the state of the detail panels
+   * @return Controls for controlling the state of the detail panels
    */
-  private ControlList getDetailPanelControls(final PanelState status) {
+  private Controls getDetailPanelControls(final PanelState status) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
 
-    final ControlList controls = ControlList.builder()
+    final Controls controls = Controls.builder()
             .name(MESSAGES.getString(MSG_DETAIL_TABLES))
             .icon(frameworkIcons().detail()).build();
     for (final EntityPanel detailPanel : detailEntityPanels) {

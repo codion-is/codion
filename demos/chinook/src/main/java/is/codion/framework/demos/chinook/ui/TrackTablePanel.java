@@ -9,7 +9,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
@@ -32,7 +32,7 @@ public class TrackTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
+  protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
     return super.getPopupControls(additionalPopupControls)
             .addAt(0, Control.builder()
                     .command(this::raisePriceOfSelected)
