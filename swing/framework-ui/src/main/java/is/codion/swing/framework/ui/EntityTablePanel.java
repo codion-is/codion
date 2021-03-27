@@ -544,7 +544,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
-    final Controls controls = Controls.builder()
+    final Controls updateControls = Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
             .icon(frameworkIcons().edit())
@@ -553,7 +553,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-        controls.add(Control.builder()
+        updateControls.add(Control.builder()
                 .command(() -> updateSelectedEntities(property))
                 .name(caption)
                 .enabledState(enabled)
@@ -561,7 +561,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
     });
 
-    return controls;
+    return updateControls;
   }
 
   /**
@@ -1010,9 +1010,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     toolbarControls.addSeparator();
     toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_UP));
     toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_DOWN));
-    additionalToolBarControls.forEach(controls -> {
+    additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
-      controls.getActions().forEach(toolbarControls::add);
+      additionalControls.getActions().forEach(toolbarControls::add);
     });
 
     return toolbarControls;
@@ -1452,18 +1452,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void addConditionControls(final Controls popupControls) {
-    final Controls controls = Controls.builder()
+    final Controls conditionControls = Controls.builder()
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter()).build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
-      controls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
+      conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
     final Controls searchPanelControls = conditionPanel.getControls();
     if (searchPanelControls != null && !searchPanelControls.isEmpty()) {
-      controls.addAll(searchPanelControls);
+      conditionControls.addAll(searchPanelControls);
     }
-    if (!controls.isEmpty()) {
-      popupControls.add(controls);
+    if (!conditionControls.isEmpty()) {
+      popupControls.add(conditionControls);
     }
   }
 
