@@ -65,8 +65,6 @@ public class DefaultControlListTest {
     list2.addSeparator();
     assertEquals(4, list2.size());
 
-    assertEquals(0, list2.getControlLists().size());
-
     list2.remove(two);
     assertFalse(list2.getActions().contains(two));
 

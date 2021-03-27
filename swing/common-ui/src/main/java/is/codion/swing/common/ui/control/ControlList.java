@@ -21,11 +21,6 @@ import java.util.List;
 public interface ControlList extends Control {
 
   /**
-   * @return a list containing all ControlLists this ControlList contains
-   */
-  List<ControlList> getControlLists();
-
-  /**
    * @return an unmodifiable view of the actions in this set
    */
   List<Action> getActions();
@@ -121,18 +116,6 @@ public interface ControlList extends Control {
   JPanel createHorizontalButtonPanel();
 
   /**
-   * Creates a popup menu from this control list
-   * @return a popup menu based on this control list
-   */
-  JPopupMenu createPopupMenu();
-
-  /**
-   * Creates a menu from this control list
-   * @return a menu based on this control list
-   */
-  JMenu createMenu();
-
-  /**
    * Creates a JToolBar populated with these controls.
    * @return a toolbar based on these controls
    */
@@ -145,7 +128,19 @@ public interface ControlList extends Control {
   JToolBar createHorizontalToolBar();
 
   /**
-   * @return a menu bar based on the given controls
+   * Creates a popup menu from this control list
+   * @return a popup menu based on this control list
+   */
+  JPopupMenu createPopupMenu();
+
+  /**
+   * Creates a menu from this control list
+   * @return a menu based on this control list
+   */
+  JMenu createMenu();
+
+  /**
+   * @return a menu bar based on the control lists contained in this control list
    */
   JMenuBar createMenuBar();
 

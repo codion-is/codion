@@ -6822,3 +6822,4 @@
   ButtonControlHandler and MenuControlHandler refactored, JMenu now based on the ControlList instead of manually setting the action attributes
   EntityLookupField bug fixed, settings combo box did not display the property caption
   State.set(boolean) removed, redundant
+  ControlList.getControlLists() removed

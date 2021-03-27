@@ -20,7 +20,6 @@ import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultControlList extends AbstractControl implements ControlList {
 
@@ -40,12 +39,6 @@ final class DefaultControlList extends AbstractControl implements ControlList {
         addSeparator();
       }
     }
-  }
-
-  @Override
-  public List<ControlList> getControlLists() {
-    return actions.stream().filter(control -> control instanceof DefaultControlList)
-            .map(control -> (DefaultControlList) control).collect(toList());
   }
 
   @Override
@@ -141,6 +134,16 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
+  public JToolBar createVerticalToolBar() {
+    return createToolBar(SwingConstants.VERTICAL);
+  }
+
+  @Override
+  public JToolBar createHorizontalToolBar() {
+    return createToolBar(SwingConstants.HORIZONTAL);
+  }
+
+  @Override
   public JPopupMenu createPopupMenu() {
     return createMenu().getPopupMenu();
   }
@@ -154,19 +157,12 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
-  public JToolBar createVerticalToolBar() {
-    return createToolBar(SwingConstants.VERTICAL);
-  }
-
-  @Override
-  public JToolBar createHorizontalToolBar() {
-    return createToolBar(SwingConstants.HORIZONTAL);
-  }
-
-  @Override
   public JMenuBar createMenuBar() {
     final JMenuBar menuBar = new JMenuBar();
-    getControlLists().forEach(subControlList -> menuBar.add(subControlList.createMenu()));
+    actions.stream()
+            .filter(control -> control instanceof ControlList)
+            .map(control -> (ControlList) control)
+            .forEach(subControls -> menuBar.add(subControls.createMenu()));
 
     return menuBar;
   }
