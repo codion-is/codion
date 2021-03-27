@@ -620,29 +620,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Entity entity(final Function<Attribute<?>, Object> valueProvider) {
-    requireNonNull(valueProvider);
-    final Entity entity = entity();
-    for (@SuppressWarnings("rawtypes") final ColumnProperty property : entityProperties.columnProperties) {
-      if (!isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
-              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property.getAttribute(), valueProvider.apply(property.getAttribute()));
-      }
-    }
-    for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : entityProperties.transientProperties) {
-      if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty.getAttribute(), valueProvider.apply(transientProperty.getAttribute()));
-      }
-    }
-    for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
-      entity.put(foreignKeyProperty.getAttribute(), (Entity) valueProvider.apply(foreignKeyProperty.getAttribute()));
-    }
-    entity.saveAll();
-
-    return entity;
-  }
-
-  @Override
   public Entity entity(final Map<Attribute<?>, Object> values, final Map<Attribute<?>, Object> originalValues) {
     return new DefaultEntity(this, values, originalValues);
   }

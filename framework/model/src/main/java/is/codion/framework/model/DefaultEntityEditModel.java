@@ -23,8 +23,10 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.TransientProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -132,11 +133,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #isEntityNew()
    */
   private final State entityNewState = State.state(true);
-
-  /**
-   * Provides the default value for properties when a default entity is created
-   */
-  private final Function<Attribute<?>, Object> defaultValueProvider = this::getDefaultValue;
 
   /**
    * Specifies whether this edit model should warn about unsaved data
@@ -627,7 +623,25 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getDefaultEntity() {
-    return getEntityDefinition().entity(defaultValueProvider);
+    final EntityDefinition definition = getEntityDefinition();
+    final Entity entity = definition.entity();
+    for (@SuppressWarnings("rawtypes") final ColumnProperty property : definition.getColumnProperties()) {
+      if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
+              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
+        entity.put(property.getAttribute(), getDefaultValue(property.getAttribute()));
+      }
+    }
+    for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : definition.getTransientProperties()) {
+      if (!(transientProperty instanceof DerivedProperty)) {
+        entity.put(transientProperty.getAttribute(), getDefaultValue(transientProperty.getAttribute()));
+      }
+    }
+    for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+      entity.put(foreignKeyProperty.getAttribute(), getDefaultValue(foreignKeyProperty.getAttribute()));
+    }
+    entity.saveAll();
+
+    return entity;
   }
 
   @Override

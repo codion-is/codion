@@ -6824,3 +6824,4 @@
   State.set(boolean) removed, redundant
   ControlList.getControlLists() removed
   ControlList renamed Controls, for better or worse
+  EntityDefinition.entity(valueProvider) removed, inlined in DefaultEntityEditModel.getDefaultEntity()

@@ -65,7 +65,14 @@ public interface EntityEditModel {
   EntityConnectionProvider getConnectionProvider();
 
   /**
-   * @return an Entity instance populated with default values for all properties
+   * Instantiates a new {@link Entity} using the default values provided by {@link #getDefaultValue(Attribute)}.
+   * Values are set for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
+   * and {@link TransientProperty} (excluding its descendants).
+   * If a {@link ColumnProperty}s underlying column has a default value the property is
+   * skipped unless the property itself has a default value, which then overrides the columns default value.
+   * @return a entity instance populated with default values
+   * @see ColumnProperty.Builder#columnHasDefaultValue()
+   * @see ColumnProperty.Builder#defaultValue(Object)
    * @see #getDefaultValue(Attribute)
    */
   Entity getDefaultEntity();
