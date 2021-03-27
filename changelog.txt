@@ -6854,3 +6854,6 @@
   State.set(boolean) removed, redundant
   ControlList.getControlLists() removed
   ControlList renamed Controls, for better or worse
+  EntityDefinition.entity(valueProvider) removed, inlined in DefaultEntityEditModel.getDefaultEntity()
+  ItemComboBoxModel bug fixed, now selects the null item by default if one is available
+  EntityInputComponents.createValueListComboBoxModel() bug fixed, did not select null item by default if nullable

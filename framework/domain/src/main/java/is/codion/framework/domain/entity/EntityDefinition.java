@@ -399,19 +399,6 @@ public interface EntityDefinition {
   Entity entity(Key key);
 
   /**
-   * Instantiates a new {@link Entity} using the values provided by {@code valueProvider}.
-   * Values are fetched for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
-   * and {@link TransientProperty} (excluding its descendants).
-   * If a {@link ColumnProperty}s underlying column has a default value the property is
-   * skipped unless the property itself has a default value, which then overrides the columns default value.
-   * @param valueProvider provides the default value for a given property
-   * @return the populated entity
-   * @see ColumnProperty.Builder#columnHasDefaultValue()
-   * @see ColumnProperty.Builder#defaultValue(Object)
-   */
-  Entity entity(Function<Attribute<?>, Object> valueProvider);
-
-  /**
    * Creates a new {@link Entity} instance based on this definition
    * @param values the values
    * @param originalValues the original values

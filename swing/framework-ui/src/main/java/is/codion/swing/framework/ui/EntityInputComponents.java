@@ -891,8 +891,10 @@ public final class EntityInputComponents {
   private static <T> ItemComboBoxModel<T> createValueListComboBoxModel(final ValueListProperty<T> property, final Sorted sorted) {
     final ItemComboBoxModel<T> model = sorted == Sorted.YES ?
             new ItemComboBoxModel<>(property.getValues()) : new ItemComboBoxModel<>(null, property.getValues());
-    if (property.isNullable() && !model.containsItem(Item.item(null))) {
-      model.addItem(Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
+    final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    if (property.isNullable() && !model.containsItem(nullItem)) {
+      model.addItem(nullItem);
+      model.setSelectedItem(nullItem);
     }
 
     return model;
