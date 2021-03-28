@@ -126,7 +126,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public Entities getEntities() {
+  public final Entities getEntities() {
     return connectionProvider.getEntities();
   }
 

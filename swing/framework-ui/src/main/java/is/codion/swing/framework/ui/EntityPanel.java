@@ -762,14 +762,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @return true if keyboard navigation is enabled
    */
-  public boolean isUseKeyboardNavigation() {
+  public final boolean isUseKeyboardNavigation() {
     return useKeyboardNavigation;
   }
 
   /**
    * @param useKeyboardNavigation true if keyboard navigation should be enabled
    */
-  public void setUseKeyboardNavigation(final boolean useKeyboardNavigation) {
+  public final void setUseKeyboardNavigation(final boolean useKeyboardNavigation) {
     checkIfInitialized();
     this.useKeyboardNavigation = useKeyboardNavigation;
   }

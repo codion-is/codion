@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
  * A combo box model based on a the values of a single attribute.
  * @param <T> the type of values in this combo box model
  */
-public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
+public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
 
   private final Supplier<Collection<T>> valueSupplier;
 
@@ -28,7 +28,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    */
   public SwingPropertyComboBoxModel(final EntityConnectionProvider connectionProvider,
                                     final Attribute<T> attribute, final String nullString) {
-    this(new DefaultValueSupplier<>(connectionProvider, attribute), nullString);
+    this(new DefaultValueSupplier<>(requireNonNull(connectionProvider, "connectionProvider"), attribute), nullString);
   }
 
   /**
@@ -37,11 +37,11 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    */
   public SwingPropertyComboBoxModel(final Supplier<Collection<T>> valueSupplier, final String nullString) {
     super(nullString);
-    this.valueSupplier = valueSupplier;
+    this.valueSupplier = requireNonNull(valueSupplier, "valueSupplier");
   }
 
   @Override
-  protected final Collection<T> refreshItems() {
+  protected Collection<T> refreshItems() {
     return valueSupplier.get();
   }
 
@@ -51,7 +51,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
     private final Attribute<T> attribute;
 
     private DefaultValueSupplier(final EntityConnectionProvider connectionProvider, final Attribute<T> attribute) {
-      this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+      this.connectionProvider = connectionProvider;
       this.attribute = requireNonNull(attribute, "attribute");
     }
 

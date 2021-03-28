@@ -75,6 +75,11 @@ public final class DefaultEntityLookupModelTest {
   }
 
   @Test
+  public void wrongEntityType() {
+    assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntity(ENTITIES.entity(TestDomain.T_DEPARTMENT)));
+  }
+
+  @Test
   public void setMultipleSelectionNotEnabled() {
     lookupModel.getMultipleSelectionEnabledValue().set(false);
     final List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));

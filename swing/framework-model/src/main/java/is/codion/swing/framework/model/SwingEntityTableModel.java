@@ -397,22 +397,22 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public void addEntities(final List<Entity> entities) {
+  public final void addEntities(final List<Entity> entities) {
     addEntitiesAt(getVisibleItemCount(), entities);
   }
 
   @Override
-  public void addEntitiesSorted(final List<Entity> entities) {
+  public final void addEntitiesSorted(final List<Entity> entities) {
     addEntitiesAtSorted(getVisibleItemCount(), entities);
   }
 
   @Override
-  public void addEntitiesAt(final int index, final List<Entity> entities) {
+  public final void addEntitiesAt(final int index, final List<Entity> entities) {
     addItemsAt(index, entities);
   }
 
   @Override
-  public void addEntitiesAtSorted(final int index, final List<Entity> entities) {
+  public final void addEntitiesAtSorted(final int index, final List<Entity> entities) {
     addItemsAtSorted(index, entities);
   }
 

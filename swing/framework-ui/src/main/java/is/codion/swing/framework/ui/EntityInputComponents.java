@@ -394,7 +394,8 @@ public final class EntityInputComponents {
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
     new LookupUIValue(lookupField.getModel()).link(value);
     linkToEnabledState(enabledState, lookupField);
-    lookupField.setToolTipText(entityDefinition.getProperty(foreignKey).getDescription());
+    final String propertyDescription = entityDefinition.getProperty(foreignKey).getDescription();
+    lookupField.setToolTipText(propertyDescription == null ? lookupModel.getDescription() : propertyDescription);
     TextFields.selectAllOnFocusGained(lookupField);
 
     return lookupField;

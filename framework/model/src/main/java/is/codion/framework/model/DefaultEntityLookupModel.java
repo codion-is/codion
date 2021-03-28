@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -107,8 +106,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     this.connectionProvider = connectionProvider;
     this.entityType = entityType;
     this.lookupAttributes = lookupAttributes;
-    this.description = lookupAttributes.stream().map(Objects::toString).collect(joining(", "));
-    initializeDefaultSettings();
+    this.description = createDescription();
+    this.lookupAttributes.forEach(attribute -> attributeLookupSettings.put(attribute, new DefaultLookupSettings()));
     bindEventsInternal();
   }
 
@@ -153,8 +152,11 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
-    if (entities != null && entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
-      throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
+    if (entities != null) {
+      if (entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
+        throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
+      }
+      entities.forEach(this::validateType);
     }
     //todo handle non-loaded entities, select from db?
     this.selectedEntities.clear();
@@ -299,20 +301,26 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
             ((wildcardPrefix ? wildcard : "") + rawLookupText.trim() + (wildcardPostfix ? wildcard : ""));
   }
 
-  private void initializeDefaultSettings() {
-    for (final Attribute<String> attribute : lookupAttributes) {
-      attributeLookupSettings.put(attribute, new DefaultLookupSettings());
-    }
-  }
-
   private void bindEventsInternal() {
     searchStringValue.addListener(() ->
             searchStringRepresentsSelectedState.set(searchStringRepresentsSelected()));
     multipleItemSeparatorValue.addListener(this::refreshSearchText);
   }
 
+  private String createDescription() {
+    final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
+
+    return lookupAttributes.stream().map(attribute -> definition.getProperty(attribute).getCaption()).collect(joining(", "));
+  }
+
   private String toString(final List<Entity> entities) {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
+  }
+
+  private void validateType(final Entity entity) {
+    if (!entity.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.getEntityType());
+    }
   }
 
   private static void validateLookupProperties(final EntityType<?> entityType, final Collection<Attribute<String>> lookupAttributes) {

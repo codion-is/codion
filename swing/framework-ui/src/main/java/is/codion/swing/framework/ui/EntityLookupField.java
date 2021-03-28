@@ -114,7 +114,7 @@ public final class EntityLookupField extends JTextField {
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
     setValidBackgroundColor(getBackground());
-    setInvalidBackgroundColor(Color.LIGHT_GRAY);
+    setInvalidBackgroundColor(getBackground().darker());
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
@@ -222,8 +222,13 @@ public final class EntityLookupField extends JTextField {
 
   private void linkToModel() {
     TextValues.textValue(this).link(model.getSearchStringValue());
-    model.getSearchStringValue().addDataListener(data -> updateColors());
-    model.addSelectedEntitiesListener(data -> setCaretPosition(0));
+    model.getSearchStringValue().addDataListener(searchString -> updateColors());
+    model.addSelectedEntitiesListener(entities -> {
+      setCaretPosition(0);
+      if (entities.isEmpty()) {
+        searchHint.updateHint();
+      }
+    });
   }
 
   private void addEnterListener() {

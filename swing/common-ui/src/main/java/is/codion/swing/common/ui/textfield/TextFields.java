@@ -18,7 +18,6 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
@@ -150,18 +149,7 @@ public final class TextFields {
    * @return the {@link Hint} instance
    */
   public static Hint hint(final JTextField textField, final String hintText) {
-    return hint(textField, hintText, Color.LIGHT_GRAY);
-  }
-
-  /**
-   * Enables the hint text for the given field
-   * @param textField the text field
-   * @param hintText the hint text
-   * @param hintForegroundColor the font color for the hint text
-   * @return the {@link Hint} instance
-   */
-  public static Hint hint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
-    return new DefaultTextFieldHint(textField, hintText, hintForegroundColor);
+    return new DefaultTextFieldHint(textField, hintText);
   }
 
   /**
@@ -321,6 +309,13 @@ public final class TextFields {
      * @return true if the field does not have focus and is displayint the hint text
      */
     boolean isHintVisible();
+
+    /**
+     * Updates the hint state for the component, showing the hint text if the component
+     * contains no text and is not focused. This is done automatically on focus gained/lost events,
+     * but sometimes it may be necessary to update manually.
+     */
+    void updateHint();
   }
 
   /**

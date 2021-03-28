@@ -20,19 +20,18 @@ final class DefaultTextFieldHint implements TextFields.Hint {
   private final Color defaultForegroundColor;
   private final Color hintForegroundColor;
 
-  DefaultTextFieldHint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
+  DefaultTextFieldHint(final JTextField textField, final String hintText) {
     requireNonNull(textField, "textField");
     if (nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
     }
-    requireNonNull(hintForegroundColor, "hintForegroundColor");
     this.textField = textField;
     this.hintText = hintText;
     this.defaultForegroundColor = textField.getForeground();
-    this.hintForegroundColor = hintForegroundColor;
+    this.hintForegroundColor = defaultForegroundColor.brighter().brighter().brighter();
     this.textField.addFocusListener(initializeFocusListener());
     this.textField.getDocument().addDocumentListener((DocumentAdapter) e -> updateColor());
-    updateState();
+    updateHint();
   }
 
   @Override
@@ -45,26 +44,8 @@ final class DefaultTextFieldHint implements TextFields.Hint {
     return textField.getText().equals(hintText);
   }
 
-  private FocusListener initializeFocusListener() {
-    return new FocusListener() {
-      @Override
-      public void focusGained(final FocusEvent e) {
-        updateState();
-      }
-
-      @Override
-      public void focusLost(final FocusEvent e) {
-        updateState();
-      }
-    };
-  }
-
-  /**
-   * Updates the hint state for the component,
-   * showing the hint text if the component contains no text
-   * and is not focused.
-   */
-  private void updateState() {
+  @Override
+  public void updateHint() {
     final boolean hasFocus = textField.hasFocus();
     final boolean hideHint = hasFocus && textField.getText().equals(hintText);
     final boolean showHint = !hasFocus && textField.getText().isEmpty();
@@ -75,6 +56,20 @@ final class DefaultTextFieldHint implements TextFields.Hint {
       textField.setText(hintText);
     }
     updateColor();
+  }
+
+  private FocusListener initializeFocusListener() {
+    return new FocusListener() {
+      @Override
+      public void focusGained(final FocusEvent e) {
+        updateHint();
+      }
+
+      @Override
+      public void focusLost(final FocusEvent e) {
+        updateHint();
+      }
+    };
   }
 
   private void updateColor() {
