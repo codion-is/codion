@@ -50,6 +50,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static final String METHOD = "method";
   private static final String ATTRIBUTE = "attribute";
   private static final String ATTRIBUTES = "attributes";
+  private static final String FOREIGN_KEY = "foreignKey";
 
   /**
    * The domain name
@@ -481,7 +482,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public ForeignKeyProperty getForeignKeyProperty(final ForeignKey foreignKey) {
-    requireNonNull(foreignKey, "foreignKey");
+    requireNonNull(foreignKey, FOREIGN_KEY);
     final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(foreignKey);
     if (property == null) {
       throw new IllegalArgumentException("Foreign key: " + foreignKey + " not found in entity of type: " + entityType);
@@ -570,7 +571,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public EntityDefinition getForeignDefinition(final ForeignKey foreignKey) {
-    requireNonNull(foreignKey, "foreignKey");
+    requireNonNull(foreignKey, FOREIGN_KEY);
     final EntityDefinition definition = foreignEntityDefinitions.get(foreignKey);
     if (definition == null) {
       throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKey);
@@ -668,7 +669,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
   void setForeignDefinition(final ForeignKey foreignKey, final EntityDefinition definition) {
-    requireNonNull(foreignKey, "foreignKey");
+    requireNonNull(foreignKey, FOREIGN_KEY);
     requireNonNull(definition, "definition");
     final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKey);
     if (foreignEntityDefinitions.containsKey(foreignKey)) {
