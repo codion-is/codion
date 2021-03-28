@@ -96,8 +96,6 @@ public final class DefaultEntityEditModelTest {
     assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueEditListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
   }
 
-
-
   @Test
   public void getForeignKeyLookupModel() {
     assertFalse(employeeEditModel.containsLookupModel(TestDomain.EMP_DEPARTMENT_FK));
@@ -169,6 +167,18 @@ public final class DefaultEntityEditModelTest {
     assertNull(dept);
     dept = employeeEditModel.getDefaultValue(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(dept);
+  }
+
+  @Test
+  public void defaultValueSupplier() throws DatabaseException {
+    employeeEditModel.setDefaultValueSupplier(TestDomain.EMP_NAME, () -> "Scott");
+    assertTrue(employeeEditModel.isNull(TestDomain.EMP_NAME));
+    employeeEditModel.setEntity(null);
+    assertEquals("Scott", employeeEditModel.get(TestDomain.EMP_NAME));
+
+    employeeEditModel.setDefaultValueSupplier(TestDomain.EMP_NAME, () -> null);
+    employeeEditModel.setEntity(null);
+    assertTrue(employeeEditModel.isNull(TestDomain.EMP_NAME));
   }
 
   @Test

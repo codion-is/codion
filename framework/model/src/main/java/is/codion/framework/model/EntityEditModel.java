@@ -303,6 +303,7 @@ public interface EntityEditModel {
 
   /**
    * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.
+   * Use {@link #setEntity(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
    * @param valueProvider the value provider
    * @param <T> the value type
@@ -324,8 +325,9 @@ public interface EntityEditModel {
   boolean isPersistValue(Attribute<?> attribute);
 
   /**
+   * Specifies whether the value for the given attribute should be persisted when the model is cleared.
    * @param attribute the attribute
-   * @param persistValue true if this model should persist the value of the given property on clear
+   * @param persistValue true if this model should persist the value of the given attribute on clear
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
   void setPersistValue(Attribute<?> attribute, boolean persistValue);

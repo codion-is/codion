@@ -6828,3 +6828,4 @@
   ItemComboBoxModel bug fixed, now selects the null item by default if one is available
   EntityInputComponents.createValueListComboBoxModel() bug fixed, did not select null item by default if nullable
   EntityEditModel.setDefaultValueSupplier() added, DefaultEntityEditModel.getDefaultValue() now final
+  DefaultEntityEditModel, no longer uses setEntity(null) when initializing default values, thereby preventing a call to the overridable isPersistValue() during construction

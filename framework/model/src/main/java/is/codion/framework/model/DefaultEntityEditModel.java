@@ -135,6 +135,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Supplier<?>> defaultValueSupplierMap = new HashMap<>();
 
   /**
+   * Supplies default values based on {@link #getDefaultValue(Property)}
+   */
+  private final ValueSupplier defaultValueSupplier = this::getDefaultValue;
+
+  /**
    * A state indicating whether the entity being edited is new
    * @see #isEntityNew()
    */
@@ -174,7 +179,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     setReadOnly(getEntityDefinition().isReadOnly());
     initializePersistentValues();
     bindEventsInternal();
-    setEntity(null);
+    doSetEntity(getDefaultEntity(Property::getDefaultValue));
   }
 
   @Override
@@ -238,11 +243,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public boolean isPersistValue(final Attribute<?> attribute) {
     getEntityDefinition().getProperty(attribute);
-    if (persistentValues.containsKey(attribute)) {
-      return persistentValues.get(attribute);
-    }
 
-    return false;
+    return Boolean.TRUE.equals(persistentValues.get(attribute));
   }
 
   @Override
@@ -636,25 +638,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getDefaultEntity() {
-    final EntityDefinition definition = getEntityDefinition();
-    final Entity entity = definition.entity();
-    for (@SuppressWarnings("rawtypes") final ColumnProperty property : definition.getColumnProperties()) {
-      if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
-              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property.getAttribute(), getDefaultValue(property.getAttribute()));
-      }
-    }
-    for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : definition.getTransientProperties()) {
-      if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty.getAttribute(), getDefaultValue(transientProperty.getAttribute()));
-      }
-    }
-    for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-      entity.put(foreignKeyProperty.getAttribute(), getDefaultValue(foreignKeyProperty.getAttribute()));
-    }
-    entity.saveAll();
-
-    return entity;
+    return getDefaultEntity(defaultValueSupplier);
   }
 
   @Override
@@ -1035,6 +1019,40 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
+  private Entity getDefaultEntity(final ValueSupplier valueSupplier) {
+    final EntityDefinition definition = getEntityDefinition();
+    final Entity entity = definition.entity();
+    for (@SuppressWarnings("rawtypes") final ColumnProperty property : definition.getColumnProperties()) {
+      if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
+              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
+        entity.put(property.getAttribute(), valueSupplier.get(property));
+      }
+    }
+    for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : definition.getTransientProperties()) {
+      if (!(transientProperty instanceof DerivedProperty)) {
+        entity.put(transientProperty.getAttribute(), valueSupplier.get(transientProperty));
+      }
+    }
+    for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+      entity.put(foreignKeyProperty.getAttribute(), valueSupplier.get(foreignKeyProperty));
+    }
+    entity.saveAll();
+
+    return entity;
+  }
+
+  private <T> T getDefaultValue(final Property<T> property) {
+    if (isPersistValue(property.getAttribute())) {
+      if (property instanceof ForeignKeyProperty) {
+        return (T) entity.getForeignKey((ForeignKey) property.getAttribute());
+      }
+
+      return entity.get(property.getAttribute());
+    }
+
+    return (T) defaultValueSupplierMap.computeIfAbsent(property.getAttribute(), a -> property::getDefaultValue).get();
+  }
+
   private void bindEventsInternal() {
     afterDeleteEvent.addListener(entitiesEditedEvent);
     afterInsertEvent.addListener(entitiesEditedEvent);
@@ -1112,6 +1130,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
 
     return null;
+  }
+
+  private interface ValueSupplier {
+    <T> T get(Property<T> property);
   }
 
   private static final class EditModelValue<V> extends AbstractValue<V> {
