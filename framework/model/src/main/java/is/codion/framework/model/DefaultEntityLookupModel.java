@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -107,8 +106,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     this.connectionProvider = connectionProvider;
     this.entityType = entityType;
     this.lookupAttributes = lookupAttributes;
-    this.description = lookupAttributes.stream().map(Objects::toString).collect(joining(", "));
-    initializeDefaultSettings();
+    this.description = createDescription();
+    this.lookupAttributes.forEach(attribute -> attributeLookupSettings.put(attribute, new DefaultLookupSettings()));
     bindEventsInternal();
   }
 
@@ -302,16 +301,16 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
             ((wildcardPrefix ? wildcard : "") + rawLookupText.trim() + (wildcardPostfix ? wildcard : ""));
   }
 
-  private void initializeDefaultSettings() {
-    for (final Attribute<String> attribute : lookupAttributes) {
-      attributeLookupSettings.put(attribute, new DefaultLookupSettings());
-    }
-  }
-
   private void bindEventsInternal() {
     searchStringValue.addListener(() ->
             searchStringRepresentsSelectedState.set(searchStringRepresentsSelected()));
     multipleItemSeparatorValue.addListener(this::refreshSearchText);
+  }
+
+  private String createDescription() {
+    final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
+
+    return lookupAttributes.stream().map(attribute -> definition.getProperty(attribute).getCaption()).collect(joining(", "));
   }
 
   private String toString(final List<Entity> entities) {

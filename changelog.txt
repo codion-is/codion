@@ -6831,3 +6831,5 @@
   DefaultEntityEditModel, no longer uses setEntity(null) when initializing default values, thereby preventing a call to the overridable isPersistValue() during construction
   EntityDefinition.entityWithDefaultValues() added, based on Property.getDefaultValue()
   DefaultEntityLookupModel.setSelectedEntities() now throws IllegalArgumentException in case of entities of the wrong type
+  DefaultEntityLookupModel bug fixed, description was not based property captions
+  EntityInputComponents.createForeignKeyLookupField() now uses the lookupModel description as tooltip if property description is null
