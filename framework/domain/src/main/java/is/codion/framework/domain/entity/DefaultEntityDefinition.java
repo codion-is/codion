@@ -625,6 +625,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
+  public Entity entityWithDefaultValues() {
+    final Map<Attribute<?>, Object> values = new HashMap<>();
+    getProperties().forEach(property -> values.put(property.getAttribute(), property.getDefaultValue()));
+
+    return entity(values, null);
+  }
+
+  @Override
   public Key primaryKey() {
     if (hasPrimaryKey()) {
       return new DefaultKey(this, getPrimaryKeyAttributes(), true);

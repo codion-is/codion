@@ -408,6 +408,13 @@ public interface EntityDefinition {
   Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
 
   /**
+   * Creates a new {@link Entity} instance, with default values for all attributes.
+   * @return a default entity
+   * @see Property#getDefaultValue()
+   */
+  Entity entityWithDefaultValues();
+
+  /**
    * Creates a new {@link Key} instance based on this definition
    * @return a new {@link Key} instance
    */
