@@ -6841,3 +6841,4 @@
   EntityInputComponents.COMPLETION_MODE_NONE added, revealed a transferFocusOnEnter bug
   SteppedComboBox.setTransferFocusOnEnter() added along with getter
   EntityLookupField.setTransferFocusOnEnter() now takes boolean parameter, consistent with SteppedComboBox, some refactoring
+  EntityEditPanelBuilder.InsertEntityAction, INSERT key added as new entity action shortcut
