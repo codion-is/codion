@@ -153,12 +153,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public boolean isListenToEditEvents() {
+  public final boolean isListenToEditEvents() {
     return listenToEditEvents;
   }
 
   @Override
-  public void setListenToEditEvents(final boolean listenToEditEvents) {
+  public final void setListenToEditEvents(final boolean listenToEditEvents) {
     this.listenToEditEvents = listenToEditEvents;
     if (listenToEditEvents) {
       addEditEventListeners();
@@ -255,13 +255,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public <T> Value<T> selectorValue(final Attribute<T> attribute) {
+  public final <T> Value<T> selectorValue(final Attribute<T> attribute) {
     return selectorValue(attribute, (entities, theAttribute, value) -> entities.stream().filter(entity ->
             Objects.equals(value, entity.get(theAttribute))).findFirst().orElse(null));
   }
 
   @Override
-  public <T> Value<T> selectorValue(final Attribute<T> attribute, final Finder<T> finder) {
+  public final <T> Value<T> selectorValue(final Attribute<T> attribute, final Finder<T> finder) {
     return new SelectorValue<>(attribute, finder);
   }
 

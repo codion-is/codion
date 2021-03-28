@@ -6837,3 +6837,4 @@
   TextFields.Hint.updateHint() added, EntityLookupField uses it to display the hint when no entities are selected
   DefaultTextFieldHints now uses a 3x brighter variant of the default foreground color instead of hard coding Color.LIGHT_GREY
   DefaultEntityModel.getEntities() now final
+  SwingEntityTableModel.add... methods now final, SwingEntityComboBoxModel, finalized a few methods, SwingPropertyComboBoxModel now final
