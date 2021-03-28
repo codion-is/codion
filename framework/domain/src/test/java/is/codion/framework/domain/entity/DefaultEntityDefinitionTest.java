@@ -67,6 +67,30 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
+  public void entityWithDefaultValues() {
+    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("entityWithDefaultValues");
+    final Attribute<Integer> id = entityType.integerAttribute("id");
+    final Attribute<String> name = entityType.stringAttribute("name");
+    final Attribute<Integer> value = entityType.integerAttribute("value");
+
+    class TestDomain extends DefaultDomain {
+      public TestDomain() {
+        super(DOMAIN_TYPE);
+        define(entityType, "tableName",
+                primaryKeyProperty(id),
+                Properties.columnProperty(name)
+                        .defaultValue("DefName"),
+                Properties.columnProperty(value)
+                        .defaultValue(42));
+      }
+    }
+    final Entity entity = new TestDomain().getEntities().getDefinition(entityType).entityWithDefaultValues();
+    assertTrue(entity.isNull(id));
+    assertEquals("DefName", entity.get(name));
+    assertEquals(42, entity.get(value));
+  }
+
+  @Test
   public void entityWithoutProperties() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
     class TestDomain extends DefaultDomain {

@@ -21,6 +21,9 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.TransientProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,8 +69,7 @@ public interface EntityEditModel {
 
   /**
    * Instantiates a new {@link Entity} using the default values provided by {@link #getDefaultValue(Attribute)}.
-   * Values are set for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
-   * and {@link TransientProperty} (excluding its descendants).
+   * Values are set for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty} and {@link TransientProperty} (excluding its descendants).
    * If a {@link ColumnProperty}s underlying column has a default value the property is
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @return a entity instance populated with default values
@@ -300,6 +302,17 @@ public interface EntityEditModel {
   <T> T getDefaultValue(Attribute<T> attribute);
 
   /**
+   * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.
+   * Use {@link #setEntity(Entity)} with a null parameter to populate the model with the default values.
+   * @param attribute the attribute
+   * @param valueProvider the value provider
+   * @param <T> the value type
+   * @see #isPersistValue(Attribute)
+   * @see #setPersistValue(Attribute, boolean)
+   */
+  <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueProvider);
+
+  /**
    * Returns true if the last available value for this attribute should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
@@ -312,8 +325,9 @@ public interface EntityEditModel {
   boolean isPersistValue(Attribute<?> attribute);
 
   /**
+   * Specifies whether the value for the given attribute should be persisted when the model is cleared.
    * @param attribute the attribute
-   * @param persistValue true if this model should persist the value of the given property on clear
+   * @param persistValue true if this model should persist the value of the given attribute on clear
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
   void setPersistValue(Attribute<?> attribute, boolean persistValue);
