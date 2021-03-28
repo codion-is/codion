@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -252,10 +253,10 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             foreignKeyProperty(Invoice.CUSTOMER_FK),
             columnProperty(Invoice.INVOICEDATE)
                     .nullable(false)
+                    .defaultValueSupplier(LocalDate::now)
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDot()
                             .yearFourDigits()
-                            .hoursMinutes()
                             .build()),
             columnProperty(Invoice.BILLINGADDRESS)
                     .maximumLength(70),

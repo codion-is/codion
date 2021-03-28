@@ -8,8 +8,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.ValueChange;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import java.time.LocalDateTime;
-
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 
@@ -18,7 +16,6 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
   public InvoiceEditModel(final EntityConnectionProvider connectionProvider) {
     super(Invoice.TYPE, connectionProvider);
     setPersistValue(Invoice.CUSTOMER_FK, false);
-    setDefaultValueSupplier(Invoice.INVOICEDATE, LocalDateTime::now);
     bindEvents();
   }
 

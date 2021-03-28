@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static is.codion.common.model.table.SortingDirective.ASCENDING;
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -43,7 +43,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final EntityLookupField customerField = createForeignKeyLookupField(Invoice.CUSTOMER_FK);
     configureCustomerLookup(customerField);
     customerField.setColumns(16);
-    final TemporalInputPanel<LocalDateTime> datePanel = createTemporalInputPanel(Invoice.INVOICEDATE);
+    final TemporalInputPanel<LocalDate> datePanel = createTemporalInputPanel(Invoice.INVOICEDATE);
     datePanel.getInputField().setColumns(12);
     final JTextField addressField = createTextField(Invoice.BILLINGADDRESS);
     selectAllOnFocusGained(addressField);
