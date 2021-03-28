@@ -21,6 +21,9 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.TransientProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,8 +69,7 @@ public interface EntityEditModel {
 
   /**
    * Instantiates a new {@link Entity} using the default values provided by {@link #getDefaultValue(Attribute)}.
-   * Values are set for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
-   * and {@link TransientProperty} (excluding its descendants).
+   * Values are set for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty} and {@link TransientProperty} (excluding its descendants).
    * If a {@link ColumnProperty}s underlying column has a default value the property is
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @return a entity instance populated with default values
