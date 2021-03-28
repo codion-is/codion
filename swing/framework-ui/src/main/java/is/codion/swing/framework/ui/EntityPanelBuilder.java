@@ -422,6 +422,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+      if (component instanceof JComboBox && ((JComboBox<?>) component).isPopupVisible()) {
+        ((JComboBox<?>) component).hidePopup();
+      }
       final EntityEditPanel editPanel = buildEditPanel(connectionProvider);
       editPanel.initializePanel();
       editPanel.getEditModel().addAfterInsertListener(inserted -> {
