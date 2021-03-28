@@ -6868,3 +6868,8 @@
   DefaultTextFieldHints now uses a 3x brighter variant of the default foreground color instead of hard coding Color.LIGHT_GREY
   DefaultEntityModel.getEntities() now final
   SwingEntityTableModel.add... methods now final, SwingEntityComboBoxModel, finalized a few methods, SwingPropertyComboBoxModel now final
+  EntityInputComponents.COMPLETION_MODE_NONE added, revealed a transferFocusOnEnter bug
+  SteppedComboBox.setTransferFocusOnEnter() added along with getter
+  EntityLookupField.setTransferFocusOnEnter() now takes boolean parameter, consistent with SteppedComboBox, some refactoring
+  EntityEditPanelBuilder.InsertEntityAction, INSERT key added as new entity action shortcut
+  EntityEditPanelBuilder.InsertEntityAction now hides combo box popup in case it's visible

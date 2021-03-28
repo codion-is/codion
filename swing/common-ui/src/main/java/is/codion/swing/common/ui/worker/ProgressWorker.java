@@ -112,7 +112,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given {@link Control.Command} instance while displaying a simple indeterminate progress bar.
+   * Runs the given {@link Control.Command} instance while displaying an indeterminate progress bar.
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param task the task to run in the background
@@ -127,7 +127,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given {@link Control.Command} instance while displaying a simple indeterminate progress bar, along with buttons based
+   * Runs the given {@link Control.Command} instance while displaying an indeterminate progress bar, along with buttons based
    * on the {@code buttonControls} parameter, if specified
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
@@ -144,7 +144,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given {@link Control.Command} instance while displaying a simple indeterminate progress bar, along with buttons based
+   * Runs the given {@link Control.Command} instance while displaying an indeterminate progress bar, along with buttons based
    * on the {@code buttonControls} parameter, if specified.
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
@@ -171,7 +171,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given task while displaying a simple indeterminate progress bar, using the default
+   * Runs the given task while displaying an indeterminate progress bar, using the default
    * exception handler, which displays exceptions resulting from the task execution in an exception dialog.
    * @param dialogParent the dialog parent
    * @param task the task to run
@@ -183,7 +183,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given task while displaying a simple indeterminate progress bar, using the default
+   * Runs the given task while displaying an indeterminate progress bar, using the default
    * exception handler, which displays exceptions resulting from the task execution in an exception dialog.
    * @param dialogParent the dialog parent
    * @param task the task to run
@@ -196,7 +196,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given task while displaying a simple indeterminate progress bar.
+   * Runs the given task while displaying an indeterminate progress bar.
    * @param dialogParent the dialog parent
    * @param task the task to run
    * @param progressBarTitle the progress bar title
@@ -210,7 +210,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given task while displaying a simple indeterminate progress bar.
+   * Runs the given task while displaying an indeterminate progress bar.
    * @param dialogParent the dialog parent
    * @param task the task to run
    * @param progressBarTitle the progress bar title
@@ -225,7 +225,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given task while displaying a simple indeterminate progress bar.
+   * Runs the given task while displaying an indeterminate progress bar.
    * @param dialogParent the dialog parent
    * @param task the task to run
    * @param progressBarTitle the progress bar title

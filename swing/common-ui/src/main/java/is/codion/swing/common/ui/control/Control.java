@@ -95,7 +95,7 @@ public interface Control extends Action {
   void setEnabled(boolean enabled);
 
   /**
-   * A simple command interface, allowing for Controls based on method references
+   * A command interface, allowing Controls based on method references
    */
   interface Command {
 
@@ -107,7 +107,7 @@ public interface Control extends Action {
   }
 
   /**
-   * A simple command interface, allowing commands based on {@link ActionEvent}s.
+   * A command interface, allowing Controls based on {@link ActionEvent}s.
    */
   interface ActionCommand {
 

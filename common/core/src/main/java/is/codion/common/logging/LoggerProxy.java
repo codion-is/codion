@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 /**
- * A simple logging proxy facilitating the setting of log levels
+ * A logging proxy facilitating the setting of log levels
  */
 public interface LoggerProxy {
 

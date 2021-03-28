@@ -417,11 +417,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       this.insertListener = insertListener;
       this.component.addPropertyChangeListener("enabled", changeEvent -> setEnabled((Boolean) changeEvent.getNewValue()));
       setEnabled(component.isEnabled());
-      addLookupKey();
+      addShortcutKey();
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+      if (component instanceof JComboBox && ((JComboBox<?>) component).isPopupVisible()) {
+        ((JComboBox<?>) component).hidePopup();
+      }
       final EntityEditPanel editPanel = buildEditPanel(connectionProvider);
       editPanel.initializePanel();
       editPanel.getEditModel().addAfterInsertListener(inserted -> {
@@ -451,11 +454,15 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
     }
 
-    private void addLookupKey() {
+    private void addShortcutKey() {
       JComponent keyComponent = component;
       if (component instanceof JComboBox && ((JComboBox<?>) component).isEditable()) {
         keyComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
       }
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_INSERT)
+              .action(this)
+              .enable(keyComponent);
       KeyEvents.builder()
               .keyEvent(KeyEvent.VK_ADD)
               .modifiers(KeyEvent.CTRL_DOWN_MASK)

@@ -23,7 +23,7 @@ import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A simple Jetty based http file server
+ * A Jetty based http file server
  */
 public class HttpServer extends org.eclipse.jetty.server.Server {
 

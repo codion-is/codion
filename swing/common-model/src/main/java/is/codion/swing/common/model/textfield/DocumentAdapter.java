@@ -7,7 +7,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- * A simple document adapter, with default implementations for the {@link #insertUpdate(DocumentEvent)} and
+ * A document adapter, with default implementations for the {@link #insertUpdate(DocumentEvent)} and
  * {@link #removeUpdate(DocumentEvent)} calling {@link #contentsChanged(DocumentEvent)}.
  */
 public interface DocumentAdapter extends DocumentListener {
