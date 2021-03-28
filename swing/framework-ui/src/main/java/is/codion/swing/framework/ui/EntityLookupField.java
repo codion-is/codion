@@ -114,7 +114,7 @@ public final class EntityLookupField extends JTextField {
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
     setValidBackgroundColor(getBackground());
-    setInvalidBackgroundColor(Color.LIGHT_GRAY);
+    setInvalidBackgroundColor(getBackground().darker());
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());

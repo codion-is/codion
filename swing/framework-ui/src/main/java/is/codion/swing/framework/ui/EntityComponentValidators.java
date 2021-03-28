@@ -29,7 +29,7 @@ public final class EntityComponentValidators {
    * @param <T> the value type
    */
   public static <T> void addValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel) {
-    addValidator(attribute, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
+    addValidator(attribute, textComponent, editModel, textComponent.getToolTipText());
   }
 
   /**
@@ -41,7 +41,7 @@ public final class EntityComponentValidators {
    */
   public static <T> void addFormattedValidator(final Attribute<T> attribute, final JTextComponent textComponent,
                                                final EntityEditModel editModel) {
-    addFormattedValidator(attribute, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
+    addFormattedValidator(attribute, textComponent, editModel, textComponent.getToolTipText());
   }
 
   /**
@@ -49,14 +49,12 @@ public final class EntityComponentValidators {
    * @param attribute the attribute of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
-   * @param invalidBackgroundColor the background color indicating in invalid value
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <T> the value type
    */
   public static <T> void addValidator(final Attribute<T> attribute, final JTextComponent textComponent,
-                                      final EntityEditModel editModel, final Color invalidBackgroundColor,
-                                      final String defaultToolTip) {
-    new TextValidator<>(attribute, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
+                                      final EntityEditModel editModel, final String defaultToolTip) {
+    new TextValidator<>(attribute, textComponent, editModel, defaultToolTip).validate();
   }
 
   /**
@@ -64,14 +62,12 @@ public final class EntityComponentValidators {
    * @param attribute the attribute of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
-   * @param invalidBackgroundColor the background color indicating in invalid value
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <T> the value type
    */
   public static <T> void addFormattedValidator(final Attribute<T> attribute, final JTextComponent textComponent,
-                                               final EntityEditModel editModel, final Color invalidBackgroundColor,
-                                               final String defaultToolTip) {
-    new FormattedTextValidator<>(attribute, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
+                                               final EntityEditModel editModel, final String defaultToolTip) {
+    new FormattedTextValidator<>(attribute, textComponent, editModel, defaultToolTip).validate();
   }
 
   private abstract static class AbstractValidator<T> {
@@ -168,12 +164,9 @@ public final class EntityComponentValidators {
      * @param defaultToolTip the default tooltip to show when the field value is valid
      */
     protected TextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
-                            final Color invalidBackgroundColor, final String defaultToolTip) {
+                            final String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
-      if (invalidBackgroundColor.equals(VALID_ENABLED_BACKGROUND_COLOR)) {
-        throw new IllegalArgumentException("Invalid background color is the same as the valid background color");
-      }
-      this.invalidBackgroundColor = invalidBackgroundColor;
+      this.invalidBackgroundColor = VALID_ENABLED_BACKGROUND_COLOR.darker();
     }
 
     /**
@@ -198,9 +191,9 @@ public final class EntityComponentValidators {
 
     private final String maskString;
 
-    private FormattedTextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
-                                   final Color invalidBackgroundColor, final String defaultToolTip) {
-      super(attribute, textComponent, editModel, invalidBackgroundColor, defaultToolTip);
+    private FormattedTextValidator(final Attribute<T> attribute, final JTextComponent textComponent,
+                                   final EntityEditModel editModel, final String defaultToolTip) {
+      super(attribute, textComponent, editModel, defaultToolTip);
       this.maskString = textComponent.getText();
     }
 
