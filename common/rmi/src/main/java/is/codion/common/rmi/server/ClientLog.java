@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Encapsulates a simple collection of server access log entries and basic connection access info.
+ * Encapsulates a collection of server access log entries and basic connection access info.
  */
 public interface ClientLog {
 

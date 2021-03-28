@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 
 /**
- * A simple credentials server for one-time authentication tokens for applications running on localhost.
+ * A credentials server for one-time authentication tokens for applications running on localhost.
  * Setting the following before the server is constructed is recommended:
  * {@code System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);}
  * <pre>

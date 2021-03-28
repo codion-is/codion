@@ -52,7 +52,7 @@ public final class Formats {
   }
 
   /**
-   * A simple null format, which performs no formatting
+   * A null format, which performs no formatting
    */
   private static final class NullFormat extends Format {
 

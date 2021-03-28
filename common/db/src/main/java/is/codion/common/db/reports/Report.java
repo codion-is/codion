@@ -9,7 +9,7 @@ import is.codion.common.value.PropertyValue;
 import java.sql.Connection;
 
 /**
- * A simple wrapper for a report
+ * A wrapper for a report
  * @param <T> the report type
  * @param <R> the report result type
  * @param <P> the report parameters type

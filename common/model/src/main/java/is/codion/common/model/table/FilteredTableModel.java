@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 /**
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
- * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
+ * @param <C> type type used to identify columns in this table model, Integer for indexed identification for example
  * @param <T> the type representing table columns
  */
 public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
