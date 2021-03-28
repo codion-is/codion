@@ -1135,7 +1135,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
-  protected final boolean confirmDelete() {
+  protected boolean confirmDelete() {
     final String[] messages = getConfirmDeleteMessages();
     final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
