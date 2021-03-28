@@ -6830,3 +6830,4 @@
   EntityEditModel.setDefaultValueSupplier() added, DefaultEntityEditModel.getDefaultValue() now final
   DefaultEntityEditModel, no longer uses setEntity(null) when initializing default values, thereby preventing a call to the overridable isPersistValue() during construction
   EntityDefinition.entityWithDefaultValues() added, based on Property.getDefaultValue()
+  DefaultEntityLookupModel.setSelectedEntities() now throws IllegalArgumentException in case of entities of the wrong type

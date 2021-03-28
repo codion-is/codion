@@ -153,8 +153,11 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
-    if (entities != null && entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
-      throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
+    if (entities != null) {
+      if (entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
+        throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
+      }
+      entities.forEach(this::validateType);
     }
     //todo handle non-loaded entities, select from db?
     this.selectedEntities.clear();
@@ -313,6 +316,12 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private String toString(final List<Entity> entities) {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
+  }
+
+  private void validateType(final Entity entity) {
+    if (!entity.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.getEntityType());
+    }
   }
 
   private static void validateLookupProperties(final EntityType<?> entityType, final Collection<Attribute<String>> lookupAttributes) {
