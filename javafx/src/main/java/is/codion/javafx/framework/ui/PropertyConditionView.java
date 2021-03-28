@@ -214,7 +214,7 @@ public final class PropertyConditionView<T> extends BorderPane {
       case LESS_THAN_OR_EQUAL: return singleValuePane(upperBoundControl);
       case BETWEEN_EXCLUSIVE:
       case BETWEEN:
-      case NOT_BETWEEN_EXCLUSIVE:;
+      case NOT_BETWEEN_EXCLUSIVE:
       case NOT_BETWEEN: return rangePane();
       default:
         throw new IllegalArgumentException("Unknown operator: " + model.getOperator());

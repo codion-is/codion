@@ -1021,24 +1021,24 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private Entity getDefaultEntity(final ValueSupplier valueSupplier) {
     final EntityDefinition definition = getEntityDefinition();
-    final Entity entity = definition.entity();
+    final Entity newEntity = definition.entity();
     for (@SuppressWarnings("rawtypes") final ColumnProperty property : definition.getColumnProperties()) {
       if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property.getAttribute(), valueSupplier.get(property));
+        newEntity.put(property.getAttribute(), valueSupplier.get(property));
       }
     }
     for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : definition.getTransientProperties()) {
       if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty.getAttribute(), valueSupplier.get(transientProperty));
+        newEntity.put(transientProperty.getAttribute(), valueSupplier.get(transientProperty));
       }
     }
     for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-      entity.put(foreignKeyProperty.getAttribute(), valueSupplier.get(foreignKeyProperty));
+      newEntity.put(foreignKeyProperty.getAttribute(), valueSupplier.get(foreignKeyProperty));
     }
-    entity.saveAll();
+    newEntity.saveAll();
 
-    return entity;
+    return newEntity;
   }
 
   private <T> T getDefaultValue(final Property<T> property) {

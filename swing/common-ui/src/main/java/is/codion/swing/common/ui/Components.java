@@ -73,6 +73,7 @@ public final class Components {
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
+  private static final String COMPONENT = "component";
   private static JScrollBar verticalScrollBar;
 
   static {
@@ -131,7 +132,7 @@ public final class Components {
    * @return a {@link EventObserver} notified each time the value of the given property changes
    */
   public static <T> EventObserver<T> propertyChangeObserver(final JComponent component, final String property) {
-    requireNonNull(component, "component");
+    requireNonNull(component, COMPONENT);
     requireNonNull(property, "property");
     final Event<T> event = Event.event();
     component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
@@ -147,7 +148,7 @@ public final class Components {
    * @return the component
    */
   public static <T extends JComponent> T setPreferredWidth(final T component, final int preferredWidth) {
-    requireNonNull(component, "component");
+    requireNonNull(component, COMPONENT);
     component.setPreferredSize(new Dimension(preferredWidth, component.getPreferredSize().height));
 
     return component;
@@ -161,7 +162,7 @@ public final class Components {
    * @return the component
    */
   public static <T extends JComponent> T setPreferredHeight(final T component, final int preferredHeight) {
-    requireNonNull(component, "component");
+    requireNonNull(component, COMPONENT);
     component.setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
 
     return component;
@@ -234,7 +235,7 @@ public final class Components {
    * @param onFocusAction the action to run when the focus has been requested
    */
   public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {
-    requireNonNull(component, "component");
+    requireNonNull(component, COMPONENT);
     requireNonNull(onFocusAction, "onFocusAction");
     component.addHierarchyListener(e -> {
       if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
@@ -824,7 +825,7 @@ public final class Components {
      */
     private TransferFocusAction(final JComponent component, final boolean backward) {
       super(backward ? "KeyEvents.transferFocusBackward" : "KeyEvents.transferFocusForward");
-      this.component = requireNonNull(component, "component");
+      this.component = requireNonNull(component, COMPONENT);
       this.backward = backward;
     }
 
