@@ -64,11 +64,6 @@ public class TextFieldsTest {
   }
 
   @Test
-  public void enableNullForegroundColor() {
-    assertThrows(NullPointerException.class, () -> TextFields.hint(new JTextField(), "test", null));
-  }
-
-  @Test
   public void hint() {
     final JTextField textField = new JTextField();
     final TextFields.Hint hint = TextFields.hint(textField, "search");

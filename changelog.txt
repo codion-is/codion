@@ -6834,3 +6834,5 @@
   DefaultEntityLookupModel bug fixed, description was not based property captions
   EntityInputComponents.createForeignKeyLookupField() now uses the lookupModel description as tooltip if property description is null
   EntityComponentValues, EntityLookupField, invalid background color is now a darker variant of the default background color, instead of hard coding Color.LIGHT_GREY, which was not very Look&Feel friendly
+  TextFields.Hint.updateHint() added, EntityLookupField uses it to display the hint when no entities are selected
+  DefaultTextFieldHints now uses a 3x brighter variant of the default foreground color instead of hard coding Color.LIGHT_GREY
