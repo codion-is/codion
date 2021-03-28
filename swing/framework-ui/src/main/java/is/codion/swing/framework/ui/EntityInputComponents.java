@@ -92,6 +92,13 @@ public final class EntityInputComponents {
   public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
 
   /**
+   * No completion.
+   * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
+   * @see Completion#autoComplete(JComboBox)
+   */
+  public static final String COMPLETION_MODE_NONE = "none";
+
+  /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
    * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for maximum match
    * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for auto completion.<br>
@@ -923,6 +930,8 @@ public final class EntityInputComponents {
   private static void addComboBoxCompletion(final JComboBox<?> comboBox) {
     final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
+      case COMPLETION_MODE_NONE:
+        break;
       case COMPLETION_MODE_AUTOCOMPLETE:
         Completion.autoComplete(comboBox);
         break;

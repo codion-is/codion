@@ -771,9 +771,9 @@ public class EntityEditComponentPanel extends JPanel {
                                                         final StateObserver enabledState) {
     final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
             getEditModel().value(attribute), comboBoxModel, enabledState);
+    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-      transferFocusOnEnter(comboBox);
     }
     setComponent(attribute, comboBox);
 
@@ -830,15 +830,15 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Sorted sorted,
                                                                        final StateObserver enabledState) {
-    final SteppedComboBox<Item<T>> box = inputComponents.createValueListComboBox(attribute,
+    final SteppedComboBox<Item<T>> comboBox = inputComponents.createValueListComboBox(attribute,
             getEditModel().value(attribute), sorted, enabledState);
+    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
     if (transferFocusOnEnter) {
-      transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
-      transferFocusOnEnter(box);
+      transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
     }
-    setComponent(attribute, box);
+    setComponent(attribute, comboBox);
 
-    return box;
+    return comboBox;
   }
 
   /**
@@ -864,9 +864,9 @@ public class EntityEditComponentPanel extends JPanel {
                                                                 final StateObserver enabledState) {
     final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
             getEditModel().value(attribute), comboBoxModel, enabledState, Editable.YES);
+    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-      transferFocusOnEnter(comboBox);
     }
     setComponent(attribute, comboBox);
 
@@ -909,9 +909,9 @@ public class EntityEditComponentPanel extends JPanel {
                                                                  final Editable editable) {
     final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute, getEditModel().value(attribute),
             (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute), enabledState, editable);
+    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-      transferFocusOnEnter(comboBox);
     }
     setComponent(attribute, comboBox);
 
@@ -936,6 +936,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final EntityComboBox createForeignKeyComboBox(final ForeignKey foreignKey, final StateObserver enabledState) {
     final EntityComboBox comboBox = inputComponents.createForeignKeyComboBox(foreignKey,
             getEditModel().value(foreignKey), getEditModel().getForeignKeyComboBoxModel(foreignKey), enabledState);
+    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
     if (transferFocusOnEnter) {
       //getEditor().getEditorComponent() only required because the combo box is editable, due to AutoCompletion
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -965,7 +966,7 @@ public class EntityEditComponentPanel extends JPanel {
     final EntityLookupField lookupField = inputComponents.createForeignKeyLookupField(foreignKey,
             getEditModel().value(foreignKey), getEditModel().getForeignKeyLookupModel(foreignKey), enabledState);
     if (transferFocusOnEnter) {
-      lookupField.setTransferFocusOnEnter();
+      lookupField.setTransferFocusOnEnter(true);
     }
     setComponent(foreignKey, lookupField);
 

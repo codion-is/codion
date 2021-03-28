@@ -102,6 +102,7 @@ public final class EntityLookupField extends JTextField {
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
   private boolean performingLookup = false;
+  private boolean transferFocusOnEnter = false;
 
   /**
    * Initializes a new EntityLookupField.
@@ -118,8 +119,8 @@ public final class EntityLookupField extends JTextField {
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
-    addEnterListener();
-    addEscapeListener();
+    addKeyListener(new EnterKeyListener());
+    addKeyListener(new EscapeKeyListener());
     this.searchHint = TextFields.hint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
@@ -159,22 +160,25 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * Activates the transferal of focus on ENTER
+   * @return true if focus should be transferred on Enter
    */
-  public void setTransferFocusOnEnter() {
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
-            .action(transferFocusAction)
-            .enable(this);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_FOCUSED)
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
-            .onKeyPressed()
-            .action(transferFocusBackwardAction)
-            .enable(this);
+  public boolean isTransferFocusOnEnter() {
+    return transferFocusOnEnter;
+  }
+
+  /**
+   * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
+   */
+  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+    this.transferFocusOnEnter = transferFocusOnEnter;
+    if (transferFocusOnEnter) {
+      createForwardEvent().enable(this);
+      createBackwardEvent().enable(this);
+    }
+    else {
+      createForwardEvent().disable(this);
+      createBackwardEvent().disable(this);
+    }
   }
 
   /**
@@ -231,12 +235,21 @@ public final class EntityLookupField extends JTextField {
     });
   }
 
-  private void addEnterListener() {
-    addKeyListener(new EnterKeyListener());
+  private KeyEvents.KeyEventBuilder createForwardEvent() {
+    return KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_FOCUSED)
+            .onKeyPressed()
+            .action(transferFocusAction);
   }
 
-  private void addEscapeListener() {
-    addKeyListener(new EscapeKeyListener());
+  private KeyEvents.KeyEventBuilder createBackwardEvent() {
+    return KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ENTER)
+            .condition(JComponent.WHEN_FOCUSED)
+            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .onKeyPressed()
+            .action(transferFocusBackwardAction);
   }
 
   private FocusListener initializeFocusListener() {
