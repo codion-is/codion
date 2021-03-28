@@ -302,6 +302,16 @@ public interface EntityEditModel {
   <T> T getDefaultValue(Attribute<T> attribute);
 
   /**
+   * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.
+   * @param attribute the attribute
+   * @param valueProvider the value provider
+   * @param <T> the value type
+   * @see #isPersistValue(Attribute)
+   * @see #setPersistValue(Attribute, boolean)
+   */
+  <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueProvider);
+
+  /**
    * Returns true if the last available value for this attribute should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.

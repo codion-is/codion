@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.ValueChange;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -19,16 +18,8 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
   public InvoiceEditModel(final EntityConnectionProvider connectionProvider) {
     super(Invoice.TYPE, connectionProvider);
     setPersistValue(Invoice.CUSTOMER_FK, false);
+    setDefaultValueSupplier(Invoice.INVOICEDATE, LocalDateTime::now);
     bindEvents();
-  }
-
-  @Override
-  public <T> T getDefaultValue(final Attribute<T> attribute) {
-    if (attribute.equals(Invoice.INVOICEDATE)) {
-      return (T) LocalDateTime.now();
-    }
-
-    return super.getDefaultValue(attribute);
   }
 
   private void bindEvents() {

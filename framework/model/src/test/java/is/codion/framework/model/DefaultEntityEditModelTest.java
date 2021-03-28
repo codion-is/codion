@@ -16,7 +16,6 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -585,6 +584,7 @@ public final class DefaultEntityEditModelTest {
 
     public TestEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
+      setDefaultValueSupplier(TestDomain.EMP_HIREDATE, LocalDate::now);
     }
 
     @Override
@@ -595,14 +595,5 @@ public final class DefaultEntityEditModelTest {
 
     @Override
     public void clear() {}
-
-    @Override
-    public <T> T getDefaultValue(final Attribute<T> attribute) {
-      if (attribute.equals(TestDomain.EMP_HIREDATE)) {
-        return (T) LocalDate.now();
-      }
-
-      return super.getDefaultValue(attribute);
-    }
   }
 }

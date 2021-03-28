@@ -39,6 +39,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -129,6 +130,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Event<?>> valueChangeEventMap = new HashMap<>();
 
   /**
+   * Holds the default value suppliers for attributes
+   */
+  private final Map<Attribute<?>, Supplier<?>> defaultValueSupplierMap = new HashMap<>();
+
+  /**
    * A state indicating whether the entity being edited is new
    * @see #isEntityNew()
    */
@@ -187,17 +193,24 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public <T> T getDefaultValue(final Attribute<T> attribute) {
+  public final <T> T getDefaultValue(final Attribute<T> attribute) {
     final Property<T> property = getEntityDefinition().getProperty(attribute);
     if (isPersistValue(attribute)) {
-      if (property instanceof ForeignKeyProperty) {
-        return (T) entity.getForeignKey(((ForeignKeyProperty) property).getAttribute());
+      if (attribute instanceof ForeignKey) {
+        return (T) entity.getForeignKey((ForeignKey) attribute);
       }
 
       return entity.get(attribute);
     }
 
-    return property.getDefaultValue();
+    return (T) defaultValueSupplierMap.computeIfAbsent(attribute, a -> property::getDefaultValue).get();
+  }
+
+  @Override
+  public final <T> void setDefaultValueSupplier(final Attribute<T> attribute, final Supplier<T> valueSupplier) {
+    requireNonNull(valueSupplier, "valueSupplier");
+    getEntityDefinition().getProperty(attribute);
+    defaultValueSupplierMap.put(attribute, valueSupplier);
   }
 
   @Override
