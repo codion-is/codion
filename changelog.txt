@@ -6843,3 +6843,4 @@
   EntityLookupField.setTransferFocusOnEnter() now takes boolean parameter, consistent with SteppedComboBox, some refactoring
   EntityEditPanelBuilder.InsertEntityAction, INSERT key added as new entity action shortcut
   EntityEditPanelBuilder.InsertEntityAction now hides combo box popup in case it's visible
+  EntityEditModel.setModifiedSupplier() added, DefaultEntityEditModel.isModified() now final
