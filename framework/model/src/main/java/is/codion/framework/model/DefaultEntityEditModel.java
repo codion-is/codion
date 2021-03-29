@@ -146,6 +146,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State entityNewState = State.state(true);
 
   /**
+   * Provides whether the underlying entity is in a modified state
+   */
+  private Supplier<Boolean> modifiedSupplier;
+
+  /**
    * Specifies whether this edit model should warn about unsaved data
    */
   private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
@@ -176,6 +181,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     this.entity = connectionProvider.getEntities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
+    this.modifiedSupplier = entity::isModified;
     setReadOnly(getEntityDefinition().isReadOnly());
     initializePersistentValues();
     bindEventsInternal();
@@ -216,6 +222,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     requireNonNull(valueSupplier, "valueSupplier");
     getEntityDefinition().getProperty(attribute);
     defaultValueSupplierMap.put(attribute, valueSupplier);
+  }
+
+  @Override
+  public final void setModifiedSupplier(final Supplier<Boolean> modifiedSupplier) {
+    this.modifiedSupplier = requireNonNull(modifiedSupplier, "isModifiedSupplier");
   }
 
   @Override
@@ -352,8 +363,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public boolean isModified() {
-    return entity.isModified();
+  public final boolean isModified() {
+    return modifiedSupplier.get();
   }
 
   @Override
