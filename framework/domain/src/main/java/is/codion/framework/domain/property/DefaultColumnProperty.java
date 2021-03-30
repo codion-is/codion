@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -467,7 +466,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> defaultValueSupplier(final Supplier<T> supplier) {
+    public final ColumnProperty.Builder<T> defaultValueSupplier(final ValueSupplier<T> supplier) {
       super.defaultValueSupplier(supplier);
       return this;
     }
