@@ -36,7 +36,7 @@ public final class HostMonitorPanel extends JPanel {
 
   private void initializeUI() throws RemoteException {
     setLayout(Layouts.borderLayout());
-    add(getControls().createHorizontalButtonPanel(), BorderLayout.NORTH);
+    add(getControls().createHorizontalToolBar(), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     add(serverPane, BorderLayout.CENTER);
     initializeServerTabs();
