@@ -9,7 +9,7 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 
 Some highlights.
 
-* Simple domain modelling in plain Java code (no XML, no annotations).
+* Domain modelling in plain Java code (no XML, no annotations).
 * Integrated JUnit testing of the domain model.
 * A minimal but complete JDBC abstraction layer.
 * Wiring together a rich Swing client based on the domain model is very straight forward.
@@ -22,23 +22,33 @@ Some highlights.
 
 I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ($currentYear-2004) years, always with the aim of eventually open sourcing it.
 
-== Framework or library?
-
-Both actually. Codion is highly modular, so you can use as much or as little as you want.
-
 == License
 
 Codion is dual-licensed under the Open Source https://en.wikipedia.org/wiki/Affero_General_Public_License[AGPLv3] license and a commercial license.
 
-Keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed.
+*Keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed*.
 
 See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
+
+== Open-source, not open-contribution
+
+=== Pull requests
+
+*For copyright and managament overhead reasons, pull requests and code contributions will not be accepted*.
+
+=== Bug reports
+
+Bug reports are truly appreciated, please report bugs via https://github.com/bjorndarri/codion/issues[Issues].
+
+=== Discussions
+
+Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features, design, API and anything Codion related.
 
 == Dependencies
 
 Codion uses a very limited set of third-party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
-* *com.github.lgooddatepicker:LGoodDatePicker* for date input
+* *com.github.lgooddatepicker:LGoodDatePicker* for date/time input
 * *org.json:json* for persisting client preferences
 * *org.slf4j:slf4j-api* for your logging framework of choice
 * *JDBC driver*
@@ -48,7 +58,7 @@ A simple CRUD client pulls in ~15 Codion modules totalling ~1.2MB, so the combin
 
 == Rich Swing Client
 
-Here is a screenshot of the Chinook demo client (included in the project), a rather typical Codion client. Nothing spectacular here, it's just a Swing client after all.
+Here is a screenshot of the Chinook demo client (included in the project), a rather typical Codion client.
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
