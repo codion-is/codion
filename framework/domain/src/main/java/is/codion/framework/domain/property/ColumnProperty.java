@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.Format;
-import java.util.function.Supplier;
 
 /**
  * Specifies a property based on a table column
@@ -176,7 +175,7 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> defaultValue(T defaultValue);
 
     @Override
-    ColumnProperty.Builder<T> defaultValueSupplier(Supplier<T> supplier);
+    ColumnProperty.Builder<T> defaultValueSupplier(ValueSupplier<T> supplier);
 
     @Override
     ColumnProperty.Builder<T> hidden();

@@ -6877,3 +6877,4 @@
   DefaultReportType bug fixed, getName() returned null
   EntityEditModel.getDefaultEntity() and getDefaultValue() removed, setDefaultValues() added and used throughout
   DefaultEntityTableCellRenderer bug fixed, did not handle Boolean ValueListProperty correctly
+  Property.ValueSupplier added, making the default value supplier serializable

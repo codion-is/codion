@@ -9,6 +9,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
@@ -206,6 +207,12 @@ public interface Property<T> {
   DateTimeFormatter getDateTimeFormatter();
 
   /**
+   * Supplies values, for example default ones.
+   * @param <T> the value type
+   */
+  interface ValueSupplier<T> extends Supplier<T>, Serializable {}
+
+  /**
    * Builds a Property instance
    * @param <T> the property value type
    */
@@ -247,7 +254,7 @@ public interface Property<T> {
      * @param supplier the default value supplier
      * @return this instance
      */
-    Property.Builder<T> defaultValueSupplier(Supplier<T> supplier);
+    Property.Builder<T> defaultValueSupplier(ValueSupplier<T> supplier);
 
     /**
      * Specifies that this property should be hidden in table views

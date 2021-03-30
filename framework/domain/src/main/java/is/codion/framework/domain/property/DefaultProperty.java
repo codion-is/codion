@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -33,7 +32,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final Supplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
+  private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
   /**
    * The attribute this property is based on, should be unique within an Entity.
@@ -55,7 +54,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * The default value supplier for this property
    */
-  private Supplier<T> defaultValueSupplier = (Supplier<T>) DEFAULT_VALUE_SUPPLIER;
+  private ValueSupplier<T> defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 
   /**
    * The resource bundle key specifying the caption
@@ -371,7 +370,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {
+  static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -452,11 +451,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public Property.Builder<T> defaultValueSupplier(final Supplier<T> supplier) {
+    public Property.Builder<T> defaultValueSupplier(final ValueSupplier<T> supplier) {
       if (supplier != null) {
         property.attribute.validateType(supplier.get());
       }
-      property.defaultValueSupplier = supplier == null ? (Supplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
+      property.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
       return this;
     }
 
