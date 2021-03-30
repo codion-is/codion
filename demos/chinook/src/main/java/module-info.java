@@ -15,8 +15,6 @@ module is.codion.framework.demos.chinook {
 
   exports is.codion.framework.demos.chinook.ui
           to is.codion.swing.framework.ui;
-  exports is.codion.framework.demos.chinook.domain.impl
-          to is.codion.framework.db.local;
   exports is.codion.framework.demos.chinook.tutorial
           to is.codion.framework.db.local;
   //for loading of reports from classpath, accessing default methods in EntityType interfaces and resource bundles
