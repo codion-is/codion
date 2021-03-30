@@ -21,9 +21,7 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.TransientProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,22 +66,18 @@ public interface EntityEditModel {
   EntityConnectionProvider getConnectionProvider();
 
   /**
-   * Instantiates a new {@link Entity} using the default values provided by {@link #getDefaultValue(Attribute)}.
-   * Values are set for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty} and {@link TransientProperty} (excluding its descendants).
-   * If a {@link ColumnProperty}s underlying column has a default value the property is
-   * skipped unless the property itself has a default value, which then overrides the columns default value.
-   * @return a entity instance populated with default values
-   * @see ColumnProperty.Builder#columnHasDefaultValue()
-   * @see ColumnProperty.Builder#defaultValue(Object)
-   * @see #getDefaultValue(Attribute)
+   * Populates this edit model with default values.
+   * @see #setDefaultValueSupplier(Attribute, Supplier)
+   * @see Property#getDefaultValue()
    */
-  Entity getDefaultEntity();
+  void setDefaultValues();
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
-   * {@link Entity} being edited by this edit model. If {@code entity}
-   * is null then the entity being edited is populated with default values
+   * {@link Entity} being edited by this edit model. If {@code entity} is null
+   * the effect is the same as calling {@link #setDefaultValues()}.
    * @param entity the entity
+   * @see #setDefaultValues()
    */
   void setEntity(Entity entity);
 
@@ -286,22 +280,6 @@ public interface EntityEditModel {
   EntityLookupModel getForeignKeyLookupModel(ForeignKey foreignKey);
 
   /**
-   * Returns the default value for the given attribute, used when initializing a new default entity for this edit model.
-   * This method is only called for attributes that are non-denormalized and are not part of a foreign key.
-   * If the default value of an attribute should be the last value used, call {@link #setPersistValue(Attribute, boolean)}
-   * with {@code true} for the given attribute or override {@link #isPersistValue} so that it
-   * returns {@code true} for that attribute in case the value should persist.
-   * @param attribute the attribute
-   * @param <T> the value type
-   * @return the default value for the attribute
-   * @see is.codion.framework.domain.property.Property.Builder#defaultValue(Object)
-   * @see is.codion.framework.domain.property.Property.Builder#defaultValueSupplier(Supplier)
-   * @see #setPersistValue(Attribute, boolean)
-   * @see #isPersistValue(Attribute)
-   */
-  <T> T getDefaultValue(Attribute<T> attribute);
-
-  /**
    * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.
    * Use {@link #setEntity(Entity)} with a null parameter to populate the model with the default values.
    * @param attribute the attribute
@@ -317,6 +295,7 @@ public interface EntityEditModel {
    * the modified state of the underlying entity. The default supplier returns {@link Entity#isModified()}.
    * @param modifiedSupplier specifies whether the underlying entity is modified
    * @see Entity#isModified()
+   * @see #getModifiedObserver()
    */
   void setModifiedSupplier(Supplier<Boolean> modifiedSupplier);
 
