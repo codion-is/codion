@@ -51,8 +51,7 @@ public class EntityInputComponentsTest {
 
   @Test
   public void createCheckBox() {
-    //set default values
-    editModel.setEntity(null);
+    editModel.setDefaultValues();
     final JCheckBox box = inputComponents.createCheckBox(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN));
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN));
@@ -68,8 +67,7 @@ public class EntityInputComponentsTest {
 
   @Test
   public void createNullableCheckBox() {
-    //set default values
-    editModel.setEntity(null);
+    editModel.setDefaultValues();
     final NullableCheckBox box = inputComponents.createNullableCheckBox(TestDomain.DETAIL_BOOLEAN_NULLABLE, editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE), null, IncludeCaption.NO);
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
@@ -85,8 +83,7 @@ public class EntityInputComponentsTest {
 
   @Test
   public void createBooleanComboBox() {
-    //set default values
-    editModel.setEntity(null);
+    editModel.setDefaultValues();
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
             inputComponents.createBooleanComboBox(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN)).getModel();

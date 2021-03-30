@@ -135,11 +135,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Supplier<?>> defaultValueSupplierMap = new HashMap<>();
 
   /**
-   * Supplies default values based on {@link #getDefaultValue(Property)}
-   */
-  private final ValueSupplier defaultValueSupplier = this::getDefaultValue;
-
-  /**
    * A state indicating whether the entity being edited is new
    * @see #isEntityNew()
    */
@@ -201,20 +196,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final String toString() {
     return getClass().toString() + ", " + entity.getEntityType();
-  }
-
-  @Override
-  public final <T> T getDefaultValue(final Attribute<T> attribute) {
-    final Property<T> property = getEntityDefinition().getProperty(attribute);
-    if (isPersistValue(attribute)) {
-      if (attribute instanceof ForeignKey) {
-        return (T) entity.getForeignKey((ForeignKey) attribute);
-      }
-
-      return entity.get(attribute);
-    }
-
-    return (T) defaultValueSupplierMap.computeIfAbsent(attribute, a -> property::getDefaultValue).get();
   }
 
   @Override
@@ -323,6 +304,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void setEntity(final Entity entity) {
     if (isSetEntityAllowed()) {
       doSetEntity(entity);
+    }
+  }
+
+  @Override
+  public final void setDefaultValues() {
+    if (isSetEntityAllowed()) {
+      doSetEntity(null);
     }
   }
 
@@ -645,11 +633,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
       return lookupModel;
     }
-  }
-
-  @Override
-  public final Entity getDefaultEntity() {
-    return getDefaultEntity(defaultValueSupplier);
   }
 
   @Override
@@ -998,7 +981,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void doSetEntity(final Entity entity) {
-    final Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
+    final Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity(this::getDefaultValue) : entity);
     for (final Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
       final Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
       onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), entry.getValue()));
@@ -1030,6 +1013,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
+  /**
+   * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
+   * Values are populated for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
+   * and {@link TransientProperty} (excluding its descendants).
+   * If a {@link ColumnProperty}s underlying column has a default value the property is
+   * skipped unless the property itself has a default value, which then overrides the columns default value.
+   * @return a entity instance populated with default values
+   * @see ColumnProperty.Builder#columnHasDefaultValue()
+   * @see ColumnProperty.Builder#defaultValue(Object)
+   */
   private Entity getDefaultEntity(final ValueSupplier valueSupplier) {
     final EntityDefinition definition = getEntityDefinition();
     final Entity newEntity = definition.entity();
@@ -1050,6 +1043,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     newEntity.saveAll();
 
     return newEntity;
+  }
+
+  private <T> T getDefaultValue(final Attribute<T> attribute) {
+    return getDefaultValue(getEntityDefinition().getProperty(attribute));
   }
 
   private <T> T getDefaultValue(final Property<T> property) {

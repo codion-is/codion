@@ -214,7 +214,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @see #requestInitialFocus()
    */
   public final void clearAndRequestFocus() {
-    getEditModel().setEntity(null);
+    getEditModel().setDefaultValues();
     requestInitialFocus();
   }
 
@@ -527,7 +527,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
           hideWaitCursor(this);
         }
         if (clearAfterInsert) {
-          getEditModel().setEntity(null);
+          getEditModel().setDefaultValues();
         }
         if (requestFocusAfterInsert) {
           requestAfterInsertFocus();

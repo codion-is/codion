@@ -314,7 +314,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createClearButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
     button.setOnAction(event -> {
-      editModel.setEntity(null);
+      editModel.setDefaultValues();
       requestInitialFocus();
     });
 
@@ -362,7 +362,7 @@ public abstract class EntityEditView extends BorderPane {
     try {
       validateData();
       editModel.insert();
-      editModel.setEntity(null);
+      editModel.setDefaultValues();
       if (requestFocusAfterInsert) {
         requestInitialFocus(true);
       }
@@ -444,7 +444,7 @@ public abstract class EntityEditView extends BorderPane {
         event.consume();
       }
       else if (event.getCode().equals(CLEAR_KEY_CODE)) {
-        editModel.setEntity(null);
+        editModel.setDefaultValues();
         event.consume();
       }
       else if (event.getCode().equals(REFRESH_KEY_CODE)) {
