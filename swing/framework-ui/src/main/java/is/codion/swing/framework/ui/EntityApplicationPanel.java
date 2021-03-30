@@ -1026,7 +1026,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected void initializeUI() {
     setLayout(new BorderLayout());
     applicationTabPane = initializeApplicationTabPane();
-    add(applicationTabPane, BorderLayout.CENTER);
+    //base panel added for Look&Feel rendering
+    final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    basePanel.add(applicationTabPane, BorderLayout.CENTER);
+    add(basePanel, BorderLayout.CENTER);
 
     final JPanel northPanel = initializeNorthPanel();
     if (northPanel != null) {
