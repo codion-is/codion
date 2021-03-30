@@ -38,7 +38,7 @@ See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FA
 
 === Bug reports
 
-Bug reports are truly appreciated, please report bugs via https://github.com/bjorndarri/codion/issues[Issues].
+Bug reports are truly appreciated, please report bugs via https://github.com/bjorndarri/codion/issues[issues].
 
 === Discussions
 
