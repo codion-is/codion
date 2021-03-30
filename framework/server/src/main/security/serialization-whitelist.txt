@@ -92,6 +92,7 @@ is.codion.common.db.reports.DefaultReportType
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion
+is.codion.framework.db.condition.AbstractCondition
 is.codion.framework.db.condition.DefaultCondition
 is.codion.framework.db.condition.DefaultConditionCombination
 is.codion.framework.db.condition.DefaultCustomCondition
