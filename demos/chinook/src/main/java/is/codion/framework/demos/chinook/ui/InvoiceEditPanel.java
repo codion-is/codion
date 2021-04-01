@@ -43,7 +43,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final EntityLookupField customerField = createForeignKeyLookupField(Invoice.CUSTOMER_FK);
     configureCustomerLookup(customerField);
     customerField.setColumns(16);
-    final TemporalInputPanel<LocalDate> datePanel = createTemporalInputPanel(Invoice.INVOICEDATE);
+    final TemporalInputPanel<LocalDate> datePanel = createTemporalInputPanel(Invoice.DATE);
     datePanel.getInputField().setColumns(12);
     final JTextField addressField = createTextField(Invoice.BILLINGADDRESS);
     selectAllOnFocusGained(addressField);
@@ -63,7 +63,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
     final JPanel centerPanel = new JPanel(gridLayout(4, 2));
     centerPanel.add(createInputPanel(Invoice.CUSTOMER_FK));
-    centerPanel.add(createInputPanel(Invoice.INVOICEDATE));
+    centerPanel.add(createInputPanel(Invoice.DATE));
     centerPanel.add(createInputPanel(Invoice.BILLINGADDRESS));
     centerPanel.add(createInputPanel(Invoice.BILLINGCITY));
     centerPanel.add(createInputPanel(Invoice.BILLINGSTATE));
