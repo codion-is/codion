@@ -16,8 +16,11 @@ import net.sf.jasperreports.swing.JRViewer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class CustomerTablePanel extends EntityTablePanel {
+
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
 
   public CustomerTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel);
@@ -28,7 +31,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     final Controls printControls = super.createPrintControls();
     printControls.add(Control.builder()
             .command(this::viewCustomerReport)
-            .name("Customer report")
+            .name(BUNDLE.getString("customer_report"))
             .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver())
             .build());
 
