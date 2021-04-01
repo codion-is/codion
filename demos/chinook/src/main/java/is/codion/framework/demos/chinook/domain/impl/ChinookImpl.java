@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -251,9 +250,9 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Invoice.CUSTOMER_ID)
                     .nullable(false),
             foreignKeyProperty(Invoice.CUSTOMER_FK),
-            columnProperty(Invoice.INVOICEDATE)
+            columnProperty(Invoice.DATE)
                     .nullable(false)
-                    .defaultValueSupplier(LocalDate::now)
+                    .defaultValueSupplier(Invoice.DATE_DEFAULT_VALUE)
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDot()
                             .yearFourDigits()
@@ -276,7 +275,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                             "where invoiceid = invoice.invoiceid")
                     .maximumFractionDigits(2))
             .keyGenerator(identity())
-            .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.INVOICEDATE))
+            .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.DATE))
             .stringFactory(stringFactory(Invoice.ID));
 
     defineFunction(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());

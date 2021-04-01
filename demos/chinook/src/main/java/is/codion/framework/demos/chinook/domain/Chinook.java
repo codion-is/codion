@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -141,7 +142,7 @@ public interface Chinook {
 
     Attribute<Long> ID = TYPE.longAttribute("invoiceid");
     Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customerid");
-    Attribute<LocalDate> INVOICEDATE = TYPE.localDateAttribute("invoicedate");
+    Attribute<LocalDate> DATE = TYPE.localDateAttribute("invoicedate");
     Attribute<String> BILLINGADDRESS = TYPE.stringAttribute("billingaddress");
     Attribute<String> BILLINGCITY = TYPE.stringAttribute("billingcity");
     Attribute<String> BILLINGSTATE = TYPE.stringAttribute("billingstate");
@@ -153,6 +154,8 @@ public interface Chinook {
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
 
     FunctionType<EntityConnection, Object, List<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
+
+    Property.ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 
     default Invoice updateTotal() {
       put(TOTAL, get(TOTAL_SUBQUERY));
