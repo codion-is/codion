@@ -78,7 +78,7 @@ task runClientRMI(type: ModularJavaExec) {
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : 'localhost',
+            'codion.server.hostname'          : "${serverHostName}",
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -92,7 +92,7 @@ task runClientHttp(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : 'localhost',
+            'codion.client.http.hostname' : "${serverHostName}",
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }

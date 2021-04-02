@@ -129,7 +129,7 @@ task runClientRMI(type: ModularJavaExec) {
     mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : 'localhost',
+            'codion.server.hostname'          : "${serverHostName}",
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -142,7 +142,7 @@ task runClientHttp(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : 'localhost',
+            'codion.client.http.hostname' : "${serverHostName}",
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -152,7 +152,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
     mainClass = execLoadTestMainClass
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : 'localhost',
+            'codion.server.hostname'          : "${serverHostName}",
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -165,7 +165,7 @@ task runLoadTestHttp(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : 'localhost',
+            'codion.client.http.hostname' : "${serverHostName}",
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -222,7 +222,7 @@ task loadTestHttpScript(type: ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            '-Dcodion.client.http.hostname=localhost',
+            "-Dcodion.client.http.hostname=${serverHostName}",
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
