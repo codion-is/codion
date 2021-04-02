@@ -2,7 +2,7 @@ apply plugin: 'application'
 
 configurations {
     serverRuntime {
-        extendsFrom compile
+        extendsFrom runtimeClasspath
     }
 }
 
