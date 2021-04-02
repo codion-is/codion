@@ -7,6 +7,7 @@ import is.codion.common.Memory;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -408,10 +409,10 @@ public final class Components {
    * @return the selected look and feel provider, null if none was selected
    */
   public static LookAndFeelProvider selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
-    final JComboBox<LookAndFeelProvider> lookAndFeelComboBox = new JComboBox<>();
+    final JComboBox<Item<LookAndFeelProvider>> lookAndFeelComboBox = new JComboBox<>();
     final List<LookAndFeelProvider> providers = LOOK_AND_FEEL_PROVIDERS.values().stream()
             .sorted(Comparator.comparing(LookAndFeelProvider::getName)).collect(Collectors.toList());
-    providers.forEach(lookAndFeelComboBox::addItem);
+    providers.stream().map(provider -> Item.item(provider, provider.getName())).forEach(lookAndFeelComboBox::addItem);
     providers.stream().filter(provider ->
             provider.getClassName().equals(UIManager.getLookAndFeel().getClass().getName()))
             .findFirst().ifPresent(lookAndFeelComboBox::setSelectedItem);
@@ -420,7 +421,7 @@ public final class Components {
             dialogTitle, JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-    return option == JOptionPane.OK_OPTION ? (LookAndFeelProvider) lookAndFeelComboBox.getSelectedItem() : null;
+    return option == JOptionPane.OK_OPTION ? ((Item<LookAndFeelProvider>) lookAndFeelComboBox.getSelectedItem()).getValue() : null;
   }
 
   /**
