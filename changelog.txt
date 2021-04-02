@@ -6851,3 +6851,4 @@
   EntityApplicationPanel.initializeUI() bug fixed, now uses a base panel, for proper rendering of main panel (tabbed pane did not paint area right of tabs)
   Chinook demo bug fixed, default value supplier instance must be part of the API for serialization, when the implementation is not on classpath on the client side
   Components.selectLookAndFeel() bug fixed, now wraps LookAndFeelProvider in Item, using getName() as caption
+  Components.selectLookAndFeel() refactored

@@ -9,6 +9,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
@@ -58,7 +59,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.stream;
@@ -409,19 +409,22 @@ public final class Components {
    * @return the selected look and feel provider, null if none was selected
    */
   public static LookAndFeelProvider selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
-    final JComboBox<Item<LookAndFeelProvider>> lookAndFeelComboBox = new JComboBox<>();
-    final List<LookAndFeelProvider> providers = LOOK_AND_FEEL_PROVIDERS.values().stream()
-            .sorted(Comparator.comparing(LookAndFeelProvider::getName)).collect(Collectors.toList());
-    providers.stream().map(provider -> Item.item(provider, provider.getName())).forEach(lookAndFeelComboBox::addItem);
-    providers.stream().filter(provider ->
-            provider.getClassName().equals(UIManager.getLookAndFeel().getClass().getName()))
-            .findFirst().ifPresent(lookAndFeelComboBox::setSelectedItem);
+    final ItemComboBoxModel<LookAndFeelProvider> lookAndFeelModel = new ItemComboBoxModel<>();
+    final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+    LOOK_AND_FEEL_PROVIDERS.values().stream()
+            .sorted(Comparator.comparing(LookAndFeelProvider::getName))
+            .map(provider -> Item.item(provider, provider.getName()))
+            .forEach(item -> {
+      lookAndFeelModel.addItem(item);
+      if (currentLookAndFeelClassName.equals(item.getValue().getClassName())) {
+        lookAndFeelModel.setSelectedItem(item);
+      }
+    });
 
-    final int option = JOptionPane.showOptionDialog(dialogOwner, lookAndFeelComboBox,
-            dialogTitle, JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
+    final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(lookAndFeelModel),
+            dialogTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-    return option == JOptionPane.OK_OPTION ? ((Item<LookAndFeelProvider>) lookAndFeelComboBox.getSelectedItem()).getValue() : null;
+    return option == JOptionPane.OK_OPTION ? lookAndFeelModel.getSelectedValue().getValue() : null;
   }
 
   /**
