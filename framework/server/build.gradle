@@ -131,7 +131,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'codion.server.serializationFilterDryRun'   : 'false',
             'javax.net.ssl.keyStore'                    : 'src/main/security/keystore.jks',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
-            'java.rmi.server.hostname'                  : 'localhost',
+            'java.rmi.server.hostname'                  : "${serverHostName}",
             'logback.configurationFile'                 : 'src/main/config/logback.xml',
             'java.security.policy'                      : 'src/main/security/codion_server.policy'
     ]

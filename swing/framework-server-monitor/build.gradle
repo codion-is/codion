@@ -48,7 +48,7 @@ task runServerMonitor(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
     systemProperties = [
-            'codion.server.hostname'          : 'localhost',
+            'codion.server.hostname'          : "${serverHostName}",
             'codion.server.admin.user'        : 'scott:tiger',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
