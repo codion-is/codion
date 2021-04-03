@@ -154,12 +154,12 @@ public final class EntityServerMonitorPanel extends JPanel {
                     .name("View")
                     .mnemonic('V')
                     .control(initializeRefreshControl())
+                    .control(initializeUpateIntervalControl())
                     .separator()
                     .control(initializeAlwaysOnTopControl()).build())
             .control(Controls.builder()
                     .name("Tools")
                     .mnemonic('T')
-                    .control(initializeUpateIntervalControl())
                     .control(initializeSetJDKDirControl())
                     .control(initializeJConsoleControl()).build())
             .build();
@@ -184,7 +184,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private Control initializeUpateIntervalControl() {
     return Control.builder()
             .command(this::setUpdateInterval)
-            .name("Chart update interval")
+            .name("Chart update interval...")
             .build();
   }
 
