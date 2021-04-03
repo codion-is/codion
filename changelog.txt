@@ -6852,3 +6852,4 @@
   Chinook demo bug fixed, default value supplier instance must be part of the API for serialization, when the implementation is not on classpath on the client side
   Components.selectLookAndFeel() bug fixed, now wraps LookAndFeelProvider in Item, using getName() as caption
   Components.selectLookAndFeel() refactored
+  SerializationWhitelist, comments in whitelist file supported, # prefix

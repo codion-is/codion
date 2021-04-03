@@ -107,6 +107,7 @@ public final class SerializationWhitelist {
 
   static final class SerializationFilter implements sun.misc.ObjectInputFilter {
 
+    private static final String COMMENT = "#";
     private static final String WILDCARD = "*";
 
     private final Set<String> allowedClassnames = new HashSet<>();
@@ -147,11 +148,13 @@ public final class SerializationWhitelist {
 
     private void addWhitelistItems(final Collection<String> whitelistItems) {
       whitelistItems.forEach(whitelistItem -> {
-        if (whitelistItem.endsWith(WILDCARD)) {
-          allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
-        }
-        else {
-          allowedClassnames.add(whitelistItem);
+        if (!whitelistItem.startsWith(COMMENT)) {
+          if (whitelistItem.endsWith(WILDCARD)) {
+            allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
+          }
+          else {
+            allowedClassnames.add(whitelistItem);
+          }
         }
       });
     }
