@@ -18,6 +18,7 @@ public final class SerializationWhitelistTest {
     final List<String> whitelistItems = asList(
             "is.codion.common.value.Value",
             "is.codion.common.state.State*",
+            "#comment",
             "is.codion.common.i18n.*"
     );
     final SerializationWhitelist.SerializationFilter filter = new SerializationWhitelist.SerializationFilter(whitelistItems);
@@ -32,6 +33,7 @@ public final class SerializationWhitelistTest {
   @Test
   public void testNoWildcards() {
     final List<String> whitelistItems = asList(
+            "#comment",
             "is.codion.common.value.Value",
             "is.codion.common.state.State",
             "is.codion.common.state.StateObserver"

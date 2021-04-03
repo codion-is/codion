@@ -4,6 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityLookupField;
@@ -39,7 +40,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     final JTextField quantityField = createTextField(InvoiceLine.QUANTITY);
     selectAllOnFocusGained(quantityField);
     removeTransferFocusOnEnter(quantityField);//otherwise the action set below wont work
-    quantityField.setAction(createSaveControl());
+    quantityField.setAction(Control.control(this::save));
 
     setLayout(borderLayout());
     add(createInputPanel(InvoiceLine.TRACK_FK), BorderLayout.WEST);
