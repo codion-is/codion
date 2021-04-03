@@ -222,7 +222,7 @@ task loadTestHttpScript(type: ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=${serverHostName}",
+            '-Dcodion.client.http.hostname=localhost',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
