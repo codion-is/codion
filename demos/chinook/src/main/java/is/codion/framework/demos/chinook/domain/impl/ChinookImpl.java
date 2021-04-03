@@ -56,11 +56,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             subqueryProperty(Artist.NUMBER_OF_TRACKS,
                     "select count(*) " +
                             "from chinook.track " +
-                            "where track.albumid in (" +
-                            "  select albumid " +
-                            "  from chinook.album " +
-                            "  where album.artistid = artist.artistid" +
-                            ")"))
+                            "join chinook.album on track.albumid = album.albumid " +
+                            "where album.artistid = artist.artistid"))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Artist.NAME))
             .stringFactory(stringFactory(Artist.NAME));
