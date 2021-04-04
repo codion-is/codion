@@ -6884,3 +6884,4 @@
   Components.selectLookAndFeel() refactored
   SerializationWhitelist, comments in whitelist file supported, # prefix
   kordamp.ikonli upgraded to 12.2.0
+  servlet dependency on jersey, common-rmi and common-http is now implementation instead of api, jerseyVersion centralized
