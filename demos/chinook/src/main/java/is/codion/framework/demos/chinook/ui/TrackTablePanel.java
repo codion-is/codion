@@ -24,8 +24,11 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class TrackTablePanel extends EntityTablePanel {
+
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel, new TrackComponentValues());
@@ -36,7 +39,7 @@ public class TrackTablePanel extends EntityTablePanel {
     return super.getPopupControls(additionalPopupControls)
             .addAt(0, Control.builder()
                     .command(this::raisePriceOfSelected)
-                    .name("Raise price...")
+                    .name(BUNDLE.getString("raise_price") + "...")
                     .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
                     .build())
             .addSeparatorAt(1);
@@ -50,9 +53,9 @@ public class TrackTablePanel extends EntityTablePanel {
 
   private BigDecimal getAmountFromUser() {
     final ComponentValuePanel<BigDecimal, BigDecimalField> inputPanel =
-            new ComponentValuePanel<>("Amount",
+            new ComponentValuePanel<>(BUNDLE.getString("amount"),
                     NumericalValues.bigDecimalValue());
-    Dialogs.displayInDialog(this, inputPanel, "Price Raise", Modal.YES,
+    Dialogs.displayInDialog(this, inputPanel, BUNDLE.getString("raise_price"), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted() && inputPanel.getValue() != null) {
       return inputPanel.getValue();
