@@ -6853,3 +6853,4 @@
   Components.selectLookAndFeel() bug fixed, now wraps LookAndFeelProvider in Item, using getName() as caption
   Components.selectLookAndFeel() refactored
   SerializationWhitelist, comments in whitelist file supported, # prefix
+  servlet dependency on jersey, common-rmi and common-http is now implementation instead of api, jerseyVersion centralized
