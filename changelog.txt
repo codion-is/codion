@@ -6883,3 +6883,4 @@
   Components.selectLookAndFeel() bug fixed, now wraps LookAndFeelProvider in Item, using getName() as caption
   Components.selectLookAndFeel() refactored
   SerializationWhitelist, comments in whitelist file supported, # prefix
+  kordamp.ikonli upgraded to 12.2.0
