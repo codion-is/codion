@@ -57,8 +57,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static is.codion.swing.common.ui.icons.Icons.icons;
@@ -93,7 +91,6 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private static final int ENABLED_BUTTON_SIZE = 20;
 
   private final ColumnConditionModel<R, C, T> conditionModel;
-  private final Collection<Operator> operators;
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
   private final SteppedComboBox<Operator> operatorCombo;
@@ -140,32 +137,17 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final BoundFieldFactory boundFieldFactory, final List<Operator> operators) {
-    this(conditionModel, toggleAdvancedButton, boundFieldFactory.createEqualField(),
-            boundFieldFactory.createUpperBoundField(), boundFieldFactory.createLowerBoundField(), operators);
-  }
-
-  /**
-   * Instantiates a new ColumnConditionPanel.
-   * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
-   * @param equalField the equal value field
-   * @param upperBoundField the upper bound input field
-   * @param lowerBoundField the lower bound input field
-   * @param operators the search operators available to this condition panel
-   */
-  public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel,
-                              final ToggleAdvancedButton toggleAdvancedButton, final JComponent equalField,
-                              final JComponent upperBoundField, final JComponent lowerBoundField, final List<Operator> operators) {
     requireNonNull(conditionModel, "conditionModel");
     if (requireNonNull(operators, "operators").isEmpty()) {
       throw new IllegalArgumentException("One or more operators must be specified");
     }
     this.conditionModel = conditionModel;
-    this.operators = Collections.unmodifiableList(operators);
-    this.operatorCombo = initializeOperatorComboBox();
-    this.equalField = equalField;
-    this.upperBoundField = upperBoundField;
-    this.lowerBoundField = lowerBoundField;
+    final boolean modelLocked = conditionModel.isLocked();
+    conditionModel.setLocked(false);//otherwise the validator checking the locked state kicks in during value linking
+    this.equalField = boundFieldFactory.createEqualField();
+    this.upperBoundField = boundFieldFactory.createUpperBoundField();
+    this.lowerBoundField = boundFieldFactory.createLowerBoundField();
+    this.operatorCombo = initializeOperatorComboBox(operators);
     this.toggleEnabledButton = ToggleControl.builder()
             .state(conditionModel.getEnabledState())
             .icon(icons().filter())
@@ -174,6 +156,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
             .state(advancedConditionState)
             .icon(icons().configure())
             .build().createToggleButton() : null;
+    conditionModel.setLocked(modelLocked);
     initializeUI();
     bindEvents();
   }
@@ -578,7 +561,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     revalidate();
   }
 
-  private SteppedComboBox<Operator> initializeOperatorComboBox() {
+  private SteppedComboBox<Operator> initializeOperatorComboBox(final List<Operator> operators) {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);

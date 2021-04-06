@@ -6885,3 +6885,4 @@
   SerializationWhitelist, comments in whitelist file supported, # prefix
   kordamp.ikonli upgraded to 12.2.0
   servlet dependency on jersey, common-rmi and common-http is now implementation instead of api, jerseyVersion centralized
+  ColumnConditionPanel bug fixed, could not initialize when model was locked, lock now temporarily disabled during initialization, minor refactoring, one constructor removed
