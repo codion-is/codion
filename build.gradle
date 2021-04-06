@@ -92,6 +92,7 @@ configure(project.frameworkModules) {
                     username "${artifactoryUsername}"
                     password "${artifactoryPassword}"
                 }
+                allowInsecureProtocol = true
                 if (project.version.endsWith('-SNAPSHOT')) {
                     url "${artifactorySnapshotUrl}"
                 } else {

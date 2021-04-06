@@ -35,4 +35,11 @@ public class ColumnConditionPanelTest {
     assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String, String>(null, ToggleAdvancedButton.YES, null));
     assertThrows(IllegalArgumentException.class, () -> new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES, Collections.emptyList()));
   }
+
+  @Test
+  public void lockedModel() {
+    final ColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("key", String.class, "%");
+    model.setLocked(true);
+    new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
+  }
 }
