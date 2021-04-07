@@ -6855,3 +6855,6 @@
   SerializationWhitelist, comments in whitelist file supported, # prefix
   servlet dependency on jersey, common-rmi and common-http is now implementation instead of api, jerseyVersion centralized
   ColumnConditionPanel bug fixed, could not initialize when model was locked, lock now temporarily disabled during initialization, minor refactoring, one constructor removed
+  Entity.put(destination, source) added
+  ProgressWorker.setMaximum() now respects the 0 - 100 progress limit of SwingWorker
+  LengthValidationException, added offending value to the exception message

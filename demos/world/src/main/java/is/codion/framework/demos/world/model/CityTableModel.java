@@ -38,13 +38,14 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   public List<Entity> updateLocationForSelected(EventDataListener<Integer> progressListener)
           throws IOException, DatabaseException, ValidationException {
-    final List<Entity> updatedCities = new ArrayList<>();
+    List<Entity> updatedCities = new ArrayList<>();
     locationUpdateCancelledState.set(false);
-    for (Entity city : getSelectionModel().getSelectedItems()) {
+    List<Entity> selectedCities = getSelectionModel().getSelectedItems();
+    for (Entity city : selectedCities) {
       if (!locationUpdateCancelledState.get()) {
         updateLocation(city);
         updatedCities.add(city);
-        progressListener.onEvent(updatedCities.size());
+        progressListener.onEvent(100 * updatedCities.size() / selectedCities.size());
       }
     }
 

@@ -264,11 +264,15 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Sets the maximum progress.
+   * Sets the maximum progress (max 100).
    * @param maximumProgress the maximum progress
    * @return this ProgressWorker instance
+   * @throws IllegalArgumentException in case the value not between 1 and 100 (inclusive)
    */
   public final ProgressWorker<T> setMaximum(final int maximumProgress) {
+    if (maximumProgress <= 0 || maximumProgress > 100) {
+      throw new IllegalArgumentException("maximumProgress should be between 1 and 100");
+    }
     progressDialog.getProgressModel().setMaximum(maximumProgress);
     return this;
   }

@@ -53,7 +53,6 @@ public final class CityTablePanel extends EntityTablePanel {
               .build());
       this.dialogOwner = dialogOwner;
       this.cityTableModel = cityTableModel;
-      setMaximum(cityTableModel.getSelectionModel().getSelectionCount());
       addOnSuccessListener(cityTableModel::replaceEntities);
     }
 
