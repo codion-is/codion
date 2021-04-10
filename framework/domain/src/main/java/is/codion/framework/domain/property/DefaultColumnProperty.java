@@ -28,9 +28,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private static final long serialVersionUID = 1;
 
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
-  private static final ValueConverter<LocalDate, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
-  private static final ValueConverter<LocalDateTime, java.sql.Timestamp> TIMESTAMP_VALUE_CONVERTER = new TimestampValueConverter();
-  private static final ValueConverter<LocalTime, java.sql.Time> TIME_VALUE_CONVERTER = new TimeValueConverter();
 
   private int columnType;
   private int primaryKeyIndex = -1;
@@ -51,7 +48,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     super(attribute, caption);
     this.columnType = getSqlType(attribute.getTypeClass());
     this.columnName = attribute.getName();
-    this.valueConverter = initializeValueConverter();
+    this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
     this.valueFetcher = initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();
   }
@@ -146,20 +143,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
    */
   ColumnProperty.Builder<T> builder() {
     return new DefaultColumnPropertyBuilder<>(this);
-  }
-
-  private <C> ValueConverter<T, C> initializeValueConverter() {
-    if (getAttribute().isLocalDate()) {
-      return (ValueConverter<T, C>) DATE_VALUE_CONVERTER;
-    }
-    else if (getAttribute().isLocalDateTime()) {
-      return (ValueConverter<T, C>) TIMESTAMP_VALUE_CONVERTER;
-    }
-    else if (getAttribute().isLocalTime()) {
-      return (ValueConverter<T, C>) TIME_VALUE_CONVERTER;
-    }
-
-    return (ValueConverter<T, C>) DEFAULT_VALUE_CONVERTER;
   }
 
   private ValueFetcher<T> initializeValueFetcher() {
@@ -276,15 +259,15 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return (T) resultSet.getDate(columnIndex);
+    return (T) resultSet.getObject(columnIndex, LocalDate.class);
   }
 
   private static <T> T getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return (T) resultSet.getTimestamp(columnIndex);
+    return (T) resultSet.getObject(columnIndex, LocalDateTime.class);
   }
 
   private static <T> T getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return (T) resultSet.getTime(columnIndex);
+    return (T) resultSet.getObject(columnIndex, LocalTime.class);
   }
 
   private static <T> T getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -359,66 +342,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public Object fromColumnValue(final Object columnValue) {
       return columnValue;
-    }
-  }
-
-  private static final class DateValueConverter implements ValueConverter<LocalDate, java.sql.Date> {
-    @Override
-    public java.sql.Date toColumnValue(final LocalDate value, final Statement statement) {
-      if (value == null) {
-        return null;
-      }
-
-      return java.sql.Date.valueOf(value);
-    }
-
-    @Override
-    public LocalDate fromColumnValue(final java.sql.Date columnValue) {
-      if (columnValue == null) {
-        return null;
-      }
-
-      return columnValue.toLocalDate();
-    }
-  }
-
-  private static final class TimestampValueConverter implements ValueConverter<LocalDateTime, java.sql.Timestamp> {
-    @Override
-    public java.sql.Timestamp toColumnValue(final LocalDateTime value, final Statement statement) {
-      if (value == null) {
-        return null;
-      }
-
-      return java.sql.Timestamp.valueOf(value);
-    }
-
-    @Override
-    public LocalDateTime fromColumnValue(final java.sql.Timestamp columnValue) {
-      if (columnValue == null) {
-        return null;
-      }
-
-      return columnValue.toLocalDateTime();
-    }
-  }
-
-  private static final class TimeValueConverter implements ValueConverter<LocalTime, java.sql.Time> {
-    @Override
-    public java.sql.Time toColumnValue(final LocalTime value, final Statement statement) {
-      if (value == null) {
-        return null;
-      }
-
-      return java.sql.Time.valueOf(value);
-    }
-
-    @Override
-    public LocalTime fromColumnValue(final java.sql.Time columnValue) {
-      if (columnValue == null) {
-        return null;
-      }
-
-      return columnValue.toLocalTime();
     }
   }
 

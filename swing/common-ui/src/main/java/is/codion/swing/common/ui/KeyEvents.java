@@ -10,7 +10,18 @@ import javax.swing.KeyStroke;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility class for key events.
+ * A factory for key event builders.
+ * <pre>
+ * JTextField textField = new JTextField();
+
+ * KeyEvents.builder()
+ *          .keyEvent(VK_UP)
+ *          .onKeyPressed()
+ *          .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
+ *          .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+ *          .action(new NavigateUpAction())
+ *          .enable(textField);
+ * </pre>
  * @see #builder()
  */
 public final class KeyEvents {
@@ -28,6 +39,7 @@ public final class KeyEvents {
   /**
    * A Builder for adding a key event to a component, with a default onKeyRelease trigger
    * and condition {@link JComponent#WHEN_FOCUSED}.
+   * @see KeyEvents#builder()
    */
   public interface KeyEventBuilder {
 
