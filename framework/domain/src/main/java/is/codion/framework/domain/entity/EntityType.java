@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -95,6 +96,13 @@ public interface EntityType<T extends Entity> {
    * @return a new LocalDateTime based attribute.
    */
   Attribute<LocalDateTime> localDateTimeAttribute(String name);
+
+  /**
+   * Creates a new ZonedDateTime based attribute, associated with this EntityType.
+   * @param name the attribute name.
+   * @return a new ZonedDateTime based attribute.
+   */
+  Attribute<ZonedDateTime> zonedDateTimeAttribute(String name);
 
   /**
    * Creates a new String based attribute, associated with this EntityType.

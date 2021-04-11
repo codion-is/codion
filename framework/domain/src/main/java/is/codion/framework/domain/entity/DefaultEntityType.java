@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -104,6 +105,11 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   @Override
   public Attribute<LocalDateTime> localDateTimeAttribute(final String name) {
     return attribute(name, LocalDateTime.class);
+  }
+
+  @Override
+  public Attribute<ZonedDateTime> zonedDateTimeAttribute(final String name) {
+    return attribute(name, ZonedDateTime.class);
   }
 
   @Override

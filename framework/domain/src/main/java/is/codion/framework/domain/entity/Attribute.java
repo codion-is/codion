@@ -67,6 +67,11 @@ public interface Attribute<T> {
   boolean isLocalTime();
 
   /**
+   * @return true if this is a zoned date time attribute
+   */
+  boolean isZonedDateTime();
+
+  /**
    * @return true if this is a character attribute
    */
   boolean isCharacter();

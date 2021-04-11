@@ -18,6 +18,7 @@ import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -159,6 +160,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
         return DefaultColumnProperty::getDate;
       case Types.TIMESTAMP:
         return DefaultColumnProperty::getTimestamp;
+      case Types.TIMESTAMP_WITH_TIMEZONE:
+        return DefaultColumnProperty::getTimestampWithTimezone;
       case Types.TIME:
         return DefaultColumnProperty::getTime;
       case Types.VARCHAR:
@@ -204,6 +207,9 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
     if (clazz.equals(LocalDateTime.class)) {
       return Types.TIMESTAMP;
+    }
+    if (clazz.equals(ZonedDateTime.class)) {
+      return Types.TIMESTAMP_WITH_TIMEZONE;
     }
     if (clazz.equals(String.class)) {
       return Types.VARCHAR;
@@ -264,6 +270,10 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   private static <T> T getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
     return (T) resultSet.getObject(columnIndex, LocalDateTime.class);
+  }
+
+  private static <T> T getTimestampWithTimezone(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return (T) resultSet.getObject(columnIndex, ZonedDateTime.class);
   }
 
   private static <T> T getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {

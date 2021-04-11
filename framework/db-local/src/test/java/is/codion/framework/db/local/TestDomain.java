@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -118,7 +118,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
   public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
   public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
-  public static final Attribute<LocalDateTime> EMP_HIRETIME = T_EMP.localDateTimeAttribute("hiretime");
+  public static final Attribute<ZonedDateTime> EMP_HIRETIME = T_EMP.zonedDateTimeAttribute("hiretime");
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");

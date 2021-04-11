@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.local.TestDomain.*;
@@ -418,13 +420,14 @@ public class DefaultLocalEntityConnectionTest {
     emp.put(EMP_SALARY, salary);
     final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     emp.put(EMP_HIREDATE, hiredate);
-    final LocalDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+    final ZonedDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+            .atZone(TimeZone.getDefault().toZoneId());
     emp.put(EMP_HIRETIME, hiretime);
 
     emp = connection.selectSingle(connection.insert(emp));
 
     assertEquals(hiredate, emp.get(EMP_HIREDATE));
-    assertEquals(hiretime, emp.get(EMP_HIRETIME));
+    assertEquals(hiretime.toOffsetDateTime(), emp.get(EMP_HIRETIME).toOffsetDateTime());
 
     connection.delete(emp.getPrimaryKey());
   }

@@ -6860,3 +6860,4 @@
   LengthValidationException, added offending value to the exception message
   DefaultColumnProperty no longer converts from java.sql types to java.time types
   EntityDefinition, selectQuery now a SelectQuery instead of String, allowing dynamic column clauses for custom queries
+  DefaultColumnProperty, added basic ZonedDateTime support for Types.TIMESTAMP_WITH_TIMEZONE
