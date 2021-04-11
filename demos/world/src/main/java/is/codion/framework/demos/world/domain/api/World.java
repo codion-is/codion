@@ -114,26 +114,26 @@ public interface World {
   }
 
   interface Lookup {
-    EntityType<Entity> TYPE = DOMAIN.entityType("world.country_city_v");
+    EntityType<Entity> TYPE = DOMAIN.entityType("world.country_city_lookup");
 
-    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("countryname");
-    Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("continent");
-    Attribute<String> COUNTRY_REGION = TYPE.stringAttribute("region");
-    Attribute<Double> COUNTRY_SURFACEAREA = TYPE.doubleAttribute("surfacearea");
-    Attribute<Integer> COUNTRY_INDEPYEAR = TYPE.integerAttribute("indepyear");
-    Attribute<Integer> COUNTRY_POPULATION = TYPE.integerAttribute("countrypopulation");
-    Attribute<Double> COUNTRY_LIFEEXPECTANCY = TYPE.doubleAttribute("lifeexpectancy");
-    Attribute<Double> COUNTRY_GNP = TYPE.doubleAttribute("gnp");
-    Attribute<Double> COUNTRY_GNPOLD = TYPE.doubleAttribute("gnpold");
-    Attribute<String> COUNTRY_LOCALNAME = TYPE.stringAttribute("localname");
-    Attribute<String> COUNTRY_GOVERNMENTFORM = TYPE.stringAttribute("governmentform");
-    Attribute<String> COUNTRY_HEADOFSTATE = TYPE.stringAttribute("headofstate");
-    Attribute<String> COUNTRY_CODE2 = TYPE.stringAttribute("code2");
-    Attribute<byte[]> COUNTRY_FLAG = TYPE.byteArrayAttribute("flag");
-    Attribute<Integer> CITY_ID = TYPE.integerAttribute("cityid");
-    Attribute<String> CITY_NAME = TYPE.stringAttribute("cityname");
-    Attribute<String> CITY_DISTRICT = TYPE.stringAttribute("district");
-    Attribute<Integer> CITY_POPULATION = TYPE.integerAttribute("citypopulation");
+    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("country.code");
+    Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("country.name");
+    Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("country.continent");
+    Attribute<String> COUNTRY_REGION = TYPE.stringAttribute("country.region");
+    Attribute<Double> COUNTRY_SURFACEAREA = TYPE.doubleAttribute("country.surfacearea");
+    Attribute<Integer> COUNTRY_INDEPYEAR = TYPE.integerAttribute("country.indepyear");
+    Attribute<Integer> COUNTRY_POPULATION = TYPE.integerAttribute("country.population");
+    Attribute<Double> COUNTRY_LIFEEXPECTANCY = TYPE.doubleAttribute("country.lifeexpectancy");
+    Attribute<Double> COUNTRY_GNP = TYPE.doubleAttribute("country.gnp");
+    Attribute<Double> COUNTRY_GNPOLD = TYPE.doubleAttribute("country.gnpold");
+    Attribute<String> COUNTRY_LOCALNAME = TYPE.stringAttribute("country.localname");
+    Attribute<String> COUNTRY_GOVERNMENTFORM = TYPE.stringAttribute("country.governmentform");
+    Attribute<String> COUNTRY_HEADOFSTATE = TYPE.stringAttribute("country.headofstate");
+    Attribute<String> COUNTRY_CODE2 = TYPE.stringAttribute("country.code2");
+    Attribute<byte[]> COUNTRY_FLAG = TYPE.byteArrayAttribute("country.flag");
+    Attribute<Integer> CITY_ID = TYPE.integerAttribute("city.id");
+    Attribute<String> CITY_NAME = TYPE.stringAttribute("city.name");
+    Attribute<String> CITY_DISTRICT = TYPE.stringAttribute("city.district");
+    Attribute<Integer> CITY_POPULATION = TYPE.integerAttribute("city.population");
   }
 }

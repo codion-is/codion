@@ -7,6 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
@@ -34,6 +35,11 @@ public final class WorldImplTest extends EntityTestUnit {
   @Test
   public void countryLanguage() throws DatabaseException {
     test(CountryLanguage.TYPE);
+  }
+
+  @Test
+  public void lookup() throws DatabaseException {
+    getConnection().selectSingle(Lookup.CITY_NAME, "Reykjavík");
   }
 
   @Override

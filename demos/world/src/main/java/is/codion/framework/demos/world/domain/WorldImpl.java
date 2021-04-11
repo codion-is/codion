@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.DerivedProperty;
 
 import java.awt.Color;
@@ -198,6 +199,9 @@ public final class WorldImpl extends DefaultDomain {
             columnProperty(Lookup.CITY_DISTRICT, "District"),
             columnProperty(Lookup.CITY_POPULATION, "City population")
                     .numberFormatGrouping(true))
+            .selectQuery(SelectQuery.builder()
+                    .fromClause("world.country join world.city on city.countrycode = country.code")
+                    .build())
             .orderBy(orderBy().ascending(Lookup.COUNTRY_NAME).descending(Lookup.CITY_POPULATION))
             .readOnly()
             .caption("Lookup");
