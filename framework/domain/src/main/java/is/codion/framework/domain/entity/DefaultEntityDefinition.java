@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Text;
+import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -166,14 +167,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private transient KeyGenerator keyGenerator = new KeyGenerator() {};
 
   /**
-   * A custom sql query used when selecting entities of this type
+   * Provides a custom sql query used when selecting entities of this type
    */
-  private transient String selectQuery;
-
-  /**
-   * Specifies whether or not the select query, if any, contains a where clause
-   */
-  private transient boolean selectQueryContainsWhereClause = false;
+  private transient SelectQuery selectQuery;
 
   /**
    * The {@link ConditionProvider}s mapped to their respective conditionIds
@@ -327,13 +323,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public String getSelectQuery() {
+  public SelectQuery getSelectQuery() {
     return selectQuery;
-  }
-
-  @Override
-  public boolean selectQueryContainsWhereClause() {
-    return selectQueryContainsWhereClause;
   }
 
   @Override
@@ -1114,9 +1105,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder selectQuery(final String selectQuery, final boolean containsWhereClause) {
+    public Builder selectQuery(final SelectQuery selectQuery) {
       definition.selectQuery = requireNonNull(selectQuery, "selectQuery");
-      definition.selectQueryContainsWhereClause = containsWhereClause;
       return this;
     }
 

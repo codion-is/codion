@@ -6859,3 +6859,4 @@
   ProgressWorker.setMaximum() now respects the 0 - 100 progress limit of SwingWorker
   LengthValidationException, added offending value to the exception message
   DefaultColumnProperty no longer converts from java.sql types to java.time types
+  EntityDefinition, selectQuery now a SelectQuery instead of String, allowing dynamic column clauses for custom queries

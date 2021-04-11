@@ -8,6 +8,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
@@ -105,16 +106,20 @@ final class Queries {
   static String selectQuery(final String columnsClause, final Condition condition,
                             final EntityDefinition entityDefinition, final Database database) {
     final boolean isForUpdate = condition instanceof SelectCondition && ((SelectCondition) condition).isForUpdate();
+    final SelectQuery selectQuery = entityDefinition.getSelectQuery();
     boolean containsWhereClause = false;
-    String selectQuery = entityDefinition.getSelectQuery();
+    String selectQueryString = selectQuery == null ? null : selectQuery.getQuery();
     if (selectQuery == null) {
-      selectQuery = selectQuery(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName(), columnsClause);
+      selectQueryString = selectQuery(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName(), columnsClause);
     }
     else {
-      containsWhereClause = entityDefinition.selectQueryContainsWhereClause();
+      if (!selectQuery.containsColumnsClause()) {
+        selectQueryString = "select " + columnsClause + "\n" + selectQuery.getQuery();
+      }
+      containsWhereClause = selectQuery.containsWhereClause();
     }
 
-    final StringBuilder queryBuilder = new StringBuilder(selectQuery);
+    final StringBuilder queryBuilder = new StringBuilder(selectQueryString);
     final String whereClause = condition.getWhereClause(entityDefinition);
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);

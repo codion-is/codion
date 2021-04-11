@@ -5,6 +5,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
+import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -119,12 +120,7 @@ public interface EntityDefinition {
   /**
    * @return the select query to use when selecting entities of this type
    */
-  String getSelectQuery();
-
-  /**
-   * @return true if the select query, if any, contains a where clause
-   */
-  boolean selectQueryContainsWhereClause();
+  SelectQuery getSelectQuery();
 
   /**
    * @return the object responsible for providing toString values for this entity type
@@ -583,13 +579,12 @@ public interface EntityDefinition {
 
     /**
      * Sets the select query to use when selecting entities of this type,
-     * use with care. The order of the properties when defining the entity
-     * must match the column order in the given query.
+     * use with care. If the query contains a columns clause, the order
+     * of the properties when defining the entity  must match the column order in the given query.
      * @param selectQuery the select query to use for this entity type
-     * @param containsWhereClause true if the given query contains a where clause
      * @return this {@link Builder} instance
      */
-    Builder selectQuery(String selectQuery, boolean containsWhereClause);
+    Builder selectQuery(SelectQuery selectQuery);
 
     /**
      * Sets the string factory builder, that is, the builder responsible for supplying the object creating toString() values for this entity type
