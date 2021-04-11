@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
@@ -26,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -117,7 +118,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
   public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
   public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
-  public static final Attribute<LocalDateTime> EMP_HIRETIME = T_EMP.localDateTimeAttribute("hiretime");
+  public static final Attribute<ZonedDateTime> EMP_HIRETIME = T_EMP.zonedDateTimeAttribute("hiretime");
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
@@ -244,9 +245,12 @@ public final class TestDomain extends DefaultDomain {
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_TYPE,
-            primaryKeyProperty(JOINED_EMPNO),
-            columnProperty(JOINED_DEPTNO))
-            .selectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
+            columnProperty(JOINED_DEPTNO),
+            primaryKeyProperty(JOINED_EMPNO))
+            .selectQuery(SelectQuery.builder().
+                    fromClause("scott.emp e, scott.dept d")
+                    .whereClause("e.deptno = d.deptno")
+                    .build())
             .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");
   }
 }

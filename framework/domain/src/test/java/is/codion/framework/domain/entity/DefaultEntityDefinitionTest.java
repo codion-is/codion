@@ -9,6 +9,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.Detail;
+import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ public class DefaultEntityDefinitionTest {
         define(entityType, "tableName",
                 primaryKeyProperty(id),
                 Properties.columnProperty(name))
-                .selectQuery("select * from dual", false)
+                .selectQuery(SelectQuery.builder().query("select * from dual").build())
                 .orderBy(orderBy().descending(name))
                 .readOnly().selectTableName("selectTableName").groupByClause("name")
                 .stringFactory(stringFactory).comparator(comparator);
@@ -57,7 +58,7 @@ public class DefaultEntityDefinitionTest {
     assertEquals("tableName", definition.getTableName());
     assertNotNull(definition.getKeyGenerator());
     assertFalse(definition.isKeyGenerated());
-    assertEquals("select * from dual", definition.getSelectQuery());
+    assertEquals("select * from dual", definition.getSelectQuery().getQuery());
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());

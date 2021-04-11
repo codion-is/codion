@@ -42,17 +42,23 @@ NOTE: Typically, the *attribute* name is the underlying column name, but as with
 
 The following data types are supported out of the box:
 
-* Integer (java.sql.Types.INTEGER)
-* Double (java.sql.Types.DOUBLE)
-* Long (java.sql.Types.BIGINT)
-* BigDecimal (java.sql.Types.DECIMAL)
-* LocalDateTime (java.sql.Types.TIMESTAMP)
-* LocalDate (java.sql.Types.DATE)
-* LocalTime (java.sql.Types.TIME)
-* String (java.sql.Types.VARCHAR)
-* Boolean (java.sql.Types.BOOLEAN)
-* Character (java.sql.Types.CHAR)
-* byte[] (java.sql.Types.BLOB)
+[cols="1,3"]
+|===
+|Java type|SQL type
+
+|Integer|java.sql.Types.INTEGER
+|Double|java.sql.Types.DOUBLE
+|Long|java.sql.Types.BIGINT
+|BigDecimal|java.sql.Types.DECIMAL
+|LocalDateTime|java.sql.Types.TIMESTAMP
+|LocalDate|java.sql.Types.DATE
+|LocalTime|java.sql.Types.TIME
+|ZonedDateTime|java.sql.Types.TIMESTAMP_WITH_TIMEZONE
+|String|java.sql.Types.VARCHAR
+|Boolean|java.sql.Types.BOOLEAN
+|Character|java.sql.Types.CHAR
+|byte[]|java.sql.Types.BLOB
+|===
 
 == Foreign keys
 

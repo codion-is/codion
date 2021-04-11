@@ -14,7 +14,7 @@ CREATE TABLE scott.emp (
   job VARCHAR(9),
   mgr INT,
   hiredate DATE,
-  hiretime TIMESTAMP,
+  hiretime TIMESTAMP WITH TIME ZONE,
   sal DECIMAL(7, 2) NOT NULL,
   comm DECIMAL(7, 2) DEFAULT 200,
   deptno INT NOT NULL,
