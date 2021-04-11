@@ -4,7 +4,7 @@
 package is.codion.framework.domain.entity.query;
 
 /**
- * Specifies a select query building blocks, either a full query or a from clause with an optional where clause.
+ * Specifies a select query, either a full query or a from clause with an optional where clause.
  */
 public interface SelectQuery {
 
