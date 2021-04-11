@@ -173,7 +173,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
       case Types.BLOB:
         return DefaultColumnProperty::getBlob;
       case Types.OTHER:
-        return DefaultColumnProperty::getObject;
+        return this::getObject;
       default:
         throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
                 ", attribute type class: " + getAttribute().getTypeClass().getName());
@@ -298,13 +298,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return (T) blob.getBytes(1, (int) blob.length());
   }
 
-  private static <T> T getObject(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final Object object = resultSet.getObject(columnIndex);
+  private <T> T getObject(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    final T object = (T) resultSet.getObject(columnIndex, getAttribute().getTypeClass());
     if (object == null) {
       return null;
     }
 
-    return (T) object;
+    return object;
   }
 
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
