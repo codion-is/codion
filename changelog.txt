@@ -6863,3 +6863,4 @@
   DefaultColumnProperty, added basic ZonedDateTime support for Types.TIMESTAMP_WITH_TIMEZONE
   DefaultColumnProperty.getObject() now passes the Attribute type class to ResultSet.getObject()
   SelectQuery, added a couple of convenience methods bypassing the Builder for the simplest cases, javadoc improvements
+  swing-framework-ui, swing-framework-model, removed redundant implementation dependency on framework-db-core, which is already a transitive api dependency
