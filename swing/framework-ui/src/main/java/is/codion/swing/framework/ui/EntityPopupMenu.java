@@ -17,6 +17,7 @@ import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -29,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static is.codion.swing.common.ui.Components.setClipboard;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -70,12 +72,14 @@ final class EntityPopupMenu extends JPopupMenu {
     Text.collate(primaryKeyProperties);
     for (final ColumnProperty<?> property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getAttribute());
+      final String value = entity.getAsString(property.getAttribute());
       final StringBuilder builder = new StringBuilder("[PK] ")
-              .append(property.getAttribute()).append(": ").append(entity.getAsString(property.getAttribute()));
+              .append(property.getAttribute()).append(": ").append(value);
       if (modified) {
         builder.append(getOriginalValue(entity, property));
       }
       final JMenuItem menuItem = new JMenuItem(builder.toString());
+      menuItem.addActionListener(Control.control(() -> setClipboard(value)));
       setInvalidModified(menuItem, true, modified);
       menuItem.setToolTipText(property.getAttribute().getName());
       rootMenu.add(menuItem);
@@ -170,6 +174,7 @@ final class EntityPopupMenu extends JPopupMenu {
           builder.append(getOriginalValue(entity, property));
         }
         final JMenuItem menuItem = new JMenuItem(builder.toString());
+        menuItem.addActionListener(Control.control(() -> setClipboard(value)));
         setInvalidModified(menuItem, valid, modified);
         final StringBuilder toolTipBuilder = new StringBuilder();
         if (property instanceof ColumnProperty) {
