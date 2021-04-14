@@ -12,8 +12,6 @@ final class DefaultVersion implements Version, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final int MAGIC_NUMBER = 23;
-
   static final Version VERSION;
 
   static {
@@ -88,21 +86,43 @@ final class DefaultVersion implements Version, Serializable {
 
   @Override
   public boolean equals(final Object obj) {
-    return obj instanceof Version && compareTo((Version) obj) == 0 && Objects.equals(metadata, ((Version) obj).getMetadata());
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    final DefaultVersion that = (DefaultVersion) obj;
+
+    return major == that.major && minor == that.minor && patch == that.patch && Objects.equals(metadata, that.metadata);
   }
 
   @Override
   public int hashCode() {
-    return MAGIC_NUMBER * major + MAGIC_NUMBER * minor + MAGIC_NUMBER * patch;
+    return Objects.hash(major, minor, patch, metadata);
   }
 
   @Override
   public int compareTo(final Version version) {
-    int result = major - version.getMajor();
+    int result = Integer.compare(major, version.getMajor());
     if (result == 0) {
-      result = minor - version.getMinor();
+      result = Integer.compare(minor, version.getMinor());
       if (result == 0) {
-        result = patch - version.getPatch();
+        result = Integer.compare(patch, version.getPatch());
+      }
+      if (result == 0) {
+        if (metadata == null && version.getMetadata() == null) {
+          result = 0;
+        }
+        else if (metadata != null && version.getMetadata() == null) {
+          result = -1;
+        }
+        else if (metadata == null && version.getMetadata() != null) {
+          result = 1;
+        }
+        else {
+          result = metadata.compareToIgnoreCase(version.getMetadata());
+        }
       }
     }
 
