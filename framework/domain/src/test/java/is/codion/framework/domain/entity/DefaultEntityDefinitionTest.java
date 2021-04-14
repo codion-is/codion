@@ -45,7 +45,7 @@ public class DefaultEntityDefinitionTest {
         define(entityType, "tableName",
                 primaryKeyProperty(id),
                 Properties.columnProperty(name))
-                .selectQuery(SelectQuery.builder().query("select * from dual").build())
+                .selectQuery(SelectQuery.selectQuery("select * from dual"))
                 .orderBy(orderBy().descending(name))
                 .readOnly().selectTableName("selectTableName").groupByClause("name")
                 .stringFactory(stringFactory).comparator(comparator);
