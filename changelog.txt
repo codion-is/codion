@@ -6893,3 +6893,4 @@
   EntityDefinition, selectQuery now a SelectQuery instead of String, allowing dynamic column clauses for custom queries
   DefaultColumnProperty, added basic ZonedDateTime support for Types.TIMESTAMP_WITH_TIMEZONE
   DefaultColumnProperty.getObject() now passes the Attribute type class to ResultSet.getObject()
+  SelectQuery, added a couple of convenience methods bypassing the Builder for the simplest cases, javadoc improvements
