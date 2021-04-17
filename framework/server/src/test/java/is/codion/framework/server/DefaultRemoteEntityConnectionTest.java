@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collection;
 
@@ -74,9 +73,8 @@ public class DefaultRemoteEntityConnectionTest {
               .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
       adapter = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
 
-      Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
+      registry = Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
 
-      registry = LocateRegistry.getRegistry("localhost");
       registry.rebind(serviceName, adapter);
       final Collection<String> boundNames = asList(registry.list());
       assertTrue(boundNames.contains(serviceName));

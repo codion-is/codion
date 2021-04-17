@@ -39,7 +39,7 @@ public final class WorldImplTest extends EntityTestUnit {
 
   @Test
   public void lookup() throws DatabaseException {
-    getConnection().selectSingle(Lookup.CITY_NAME, "Reykjavík");
+    getConnection().selectSingle(Lookup.CITY_NAME, "Genova");
   }
 
   @Override
