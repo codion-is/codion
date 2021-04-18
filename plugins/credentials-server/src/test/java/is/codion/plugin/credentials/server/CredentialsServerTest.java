@@ -25,9 +25,10 @@ public final class CredentialsServerTest {
 
       System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
       final User scott = User.parseUser("scott:tiger");
-      final int registryPort = 2099;
+      final int registryPort = 1099;
+      final int serverPort = 1100;
 
-      final CredentialsServer server = new CredentialsServer(54321, registryPort, 900, 50);
+      final CredentialsServer server = new CredentialsServer(serverPort, registryPort, 900, 50);
 
       UUID token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
@@ -52,7 +53,7 @@ public final class CredentialsServerTest {
       System.clearProperty("java.rmi.server.hostname");
     }
     catch (final AlreadyBoundException | RemoteException | CredentialsException | InterruptedException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
       throw e;
     }
   }
