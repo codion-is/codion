@@ -1,6 +1,6 @@
 /**
  * A CredentialsProvider implementation with a server component
- * @provides is.codion.common.CredentialsProvider
+ * @provides is.codion.common.credentials.CredentialsProvider
  */
 module is.codion.credentials.server {
   requires org.slf4j;
