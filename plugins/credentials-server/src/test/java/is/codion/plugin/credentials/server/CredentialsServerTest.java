@@ -20,34 +20,40 @@ public final class CredentialsServerTest {
 
   @Test
   public void test() throws AlreadyBoundException, RemoteException, InterruptedException, CredentialsException {
-    final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
+    try {
+      final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
-    System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
-    final User scott = User.parseUser("scott:tiger");
-    final int registryPort = 2099;
+      System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
+      final User scott = User.parseUser("scott:tiger");
+      final int registryPort = 2099;
 
-    final CredentialsServer server = new CredentialsServer(54321, registryPort, 900, 50);
+      final CredentialsServer server = new CredentialsServer(54321, registryPort, 900, 50);
 
-    UUID token = UUID.randomUUID();
-    server.addAuthenticationToken(token, scott);
-    User userCredentials = provider.getCredentials(token, registryPort);
-    assertEquals(scott, userCredentials);
-    assertNull(provider.getCredentials(token, registryPort));
+      UUID token = UUID.randomUUID();
+      server.addAuthenticationToken(token, scott);
+      User userCredentials = provider.getCredentials(token, registryPort);
+      assertEquals(scott, userCredentials);
+      assertNull(provider.getCredentials(token, registryPort));
 
-    token = UUID.randomUUID();
-    server.addAuthenticationToken(token, scott);
-    userCredentials = provider.getCredentials(provider.getAuthenticationToken(
-            new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}), registryPort);
-    assertEquals(scott, userCredentials);
-    assertNull(provider.getCredentials(token, registryPort));
+      token = UUID.randomUUID();
+      server.addAuthenticationToken(token, scott);
+      userCredentials = provider.getCredentials(provider.getAuthenticationToken(
+              new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}), registryPort);
+      assertEquals(scott, userCredentials);
+      assertNull(provider.getCredentials(token, registryPort));
 
-    assertNull(provider.getCredentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
+      assertNull(provider.getCredentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
 
-    server.addAuthenticationToken(token, scott);
-    Thread.sleep(1300);
-    //token expired and cleaned up
-    assertNull(provider.getCredentials(token, registryPort));
-    server.exit();
-    System.clearProperty("java.rmi.server.hostname");
+      server.addAuthenticationToken(token, scott);
+      Thread.sleep(1300);
+      //token expired and cleaned up
+      assertNull(provider.getCredentials(token, registryPort));
+      server.exit();
+      System.clearProperty("java.rmi.server.hostname");
+    }
+    catch (final AlreadyBoundException | RemoteException | CredentialsException | InterruptedException e) {
+      System.out.println(e.getMessage());
+      throw e;
+    }
   }
 }
