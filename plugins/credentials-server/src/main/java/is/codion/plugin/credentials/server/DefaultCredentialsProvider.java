@@ -31,16 +31,11 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
 
   @Override
   public User getCredentials(final UUID authenticationToken) throws CredentialsException {
-    return getCredentials(authenticationToken, Registry.REGISTRY_PORT);
-  }
-
-  @Override
-  public User getCredentials(final UUID authenticationToken, final int registryPort) throws CredentialsException {
     LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
     if (authenticationToken == null) {
       return null;
     }
-    final Remote credentialsService = getCredentialsService(getRegistry(registryPort));
+    final Remote credentialsService = getCredentialsService(getRegistry(CredentialsService.REGISTRY_PORT.getOrThrow()));
     try {
       return ((CredentialsService) credentialsService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
     }

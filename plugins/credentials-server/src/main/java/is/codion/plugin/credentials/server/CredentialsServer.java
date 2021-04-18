@@ -62,7 +62,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
    */
   public CredentialsServer(final int port, final int tokenValidity,
                            final int cleanupInterval) throws AlreadyBoundException, RemoteException {
-    this(port, Registry.REGISTRY_PORT, tokenValidity, cleanupInterval);
+    this(port, CredentialsService.REGISTRY_PORT.getOrThrow(), tokenValidity, cleanupInterval);
   }
 
   /**

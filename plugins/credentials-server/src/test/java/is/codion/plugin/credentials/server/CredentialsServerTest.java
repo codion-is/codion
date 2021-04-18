@@ -25,30 +25,29 @@ public final class CredentialsServerTest {
 
       System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
       final User scott = User.parseUser("scott:tiger");
-      final int registryPort = 1099;
       final int serverPort = 1100;
 
-      final CredentialsServer server = new CredentialsServer(serverPort, registryPort, 900, 50);
+      final CredentialsServer server = new CredentialsServer(serverPort, 900, 50);
 
       UUID token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
-      User userCredentials = provider.getCredentials(token, registryPort);
+      User userCredentials = provider.getCredentials(token);
       assertEquals(scott, userCredentials);
-      assertNull(provider.getCredentials(token, registryPort));
+      assertNull(provider.getCredentials(token));
 
       token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
       userCredentials = provider.getCredentials(provider.getAuthenticationToken(
-              new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}), registryPort);
+              new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}));
       assertEquals(scott, userCredentials);
-      assertNull(provider.getCredentials(token, registryPort));
+      assertNull(provider.getCredentials(token));
 
       assertNull(provider.getCredentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
 
       server.addAuthenticationToken(token, scott);
       Thread.sleep(1300);
       //token expired and cleaned up
-      assertNull(provider.getCredentials(token, registryPort));
+      assertNull(provider.getCredentials(token));
       server.exit();
       System.clearProperty("java.rmi.server.hostname");
     }
