@@ -28,7 +28,7 @@ jobs:
       with:
         java-version: 11
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --stacktrace
   build-mac:
     runs-on: macOS-latest
     timeout-minutes: 15
@@ -39,4 +39,4 @@ jobs:
         with:
           java-version: 11
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace
