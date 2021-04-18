@@ -3,16 +3,26 @@
  */
 package is.codion.plugin.credentials.server;
 
+import is.codion.common.Configuration;
 import is.codion.common.user.User;
+import is.codion.common.value.PropertyValue;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.UUID;
 
 /**
  * A service for supplying user credentials for one-time authentication tokens.
+ * @see #REGISTRY_PORT
  */
 public interface CredentialsService extends Remote {
+
+  /**
+   * Specifies the RMI registry port to use when looking up the credentials service.
+   * Default value: {@link Registry#REGISTRY_PORT}
+   */
+  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.credentials.registryPort", Registry.REGISTRY_PORT);
 
   /**
    * @param authenticationToken the token
