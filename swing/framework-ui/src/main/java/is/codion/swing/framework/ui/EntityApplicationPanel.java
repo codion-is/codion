@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.Memory;
 import is.codion.common.Text;
+import is.codion.common.credentials.CredentialsException;
 import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
@@ -1482,6 +1483,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
 
       LOG.debug("No CredentialsProvider available");
+      return null;
+    }
+    catch (final CredentialsException e) {
+      LOG.debug("CredentialsService not reachable", e);
       return null;
     }
     catch (final IllegalArgumentException e) {

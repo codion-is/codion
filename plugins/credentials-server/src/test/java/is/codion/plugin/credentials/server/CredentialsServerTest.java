@@ -3,6 +3,7 @@
  */
 package is.codion.plugin.credentials.server;
 
+import is.codion.common.credentials.CredentialsException;
 import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.user.User;
 
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public final class CredentialsServerTest {
 
   @Test
-  public void test() throws AlreadyBoundException, RemoteException, InterruptedException {
+  public void test() throws AlreadyBoundException, RemoteException, InterruptedException, CredentialsException {
     final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
     System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
@@ -36,7 +37,7 @@ public final class CredentialsServerTest {
     token = UUID.randomUUID();
     server.addAuthenticationToken(token, scott);
     userCredentials = provider.getCredentials(provider.getAuthenticationToken(
-            new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token.toString(), "bla"}), registryPort);
+            new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}), registryPort);
     assertEquals(scott, userCredentials);
     assertNull(provider.getCredentials(token, registryPort));
 

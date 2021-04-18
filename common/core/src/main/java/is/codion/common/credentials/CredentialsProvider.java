@@ -38,8 +38,9 @@ public interface CredentialsProvider {
    * @param authenticationToken the authentication token
    * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
    * was null, the user credentials were not found, have expired or if no authentication service is running
+   * @throws CredentialsException in case of an exception while fetching credentials
    */
-  User getCredentials(UUID authenticationToken);
+  User getCredentials(UUID authenticationToken) throws CredentialsException;
 
   /**
    * Performs a authentication lookup.
@@ -47,8 +48,9 @@ public interface CredentialsProvider {
    * @param registryPort the port of the credentials server registry
    * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
    * was null, the user credentials were not found, have expired or if no authentication service is running
+   * @throws CredentialsException in case of an exception while fetching credentials
    */
-  User getCredentials(UUID authenticationToken, int registryPort);
+  User getCredentials(UUID authenticationToken, int registryPort) throws CredentialsException;
 
   /**
    * Returns the first {@link CredentialsProvider} implementation service found.
