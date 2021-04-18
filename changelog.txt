@@ -6897,3 +6897,5 @@
   swing-framework-ui, swing-framework-model, removed redundant implementation dependency on framework-db-core, which is already a transitive api dependency
   EntityPopupMenu, menu item action now copies the value to the clipboard
   DefaultVersion bug fixed, hashCode() and equals() did not include metadata field
+  CredentialsProvider moved to common.credentials package
+  CredentialsProvider.getCredentials() now throws NotBoundException and RemoteException, DefaultCredentialsProvider refactored, exception handling improved
