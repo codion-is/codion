@@ -4,9 +4,9 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.CredentialsProvider;
 import is.codion.common.Memory;
 import is.codion.common.Text;
+import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -1466,7 +1466,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Looks up user credentials via a {@link is.codion.common.CredentialsProvider} service using an authentication token
+   * Looks up user credentials via a {@link CredentialsProvider} service using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
    * <pre>javaws -open authenticationToken:123-123-123 http://codion.is/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>

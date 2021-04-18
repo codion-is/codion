@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.credentials.server;
 
-import is.codion.common.CredentialsProvider;
+import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.user.User;
 
 import org.slf4j.Logger;
