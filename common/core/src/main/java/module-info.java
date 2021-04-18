@@ -8,6 +8,7 @@
  */
 module is.codion.common.core {
   exports is.codion.common;
+  exports is.codion.common.credentials;
   exports is.codion.common.event;
   exports is.codion.common.formats;
   exports is.codion.common.item;
@@ -21,5 +22,5 @@ module is.codion.common.core {
   exports is.codion.common.version;
 
   uses is.codion.common.logging.LoggerProxy;
-  uses is.codion.common.CredentialsProvider;
+  uses is.codion.common.credentials.CredentialsProvider;
 }

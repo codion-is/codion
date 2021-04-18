@@ -9,6 +9,6 @@ module is.codion.credentials.server {
 
   exports is.codion.plugin.credentials.server;
 
-  provides is.codion.common.CredentialsProvider
+  provides is.codion.common.credentials.CredentialsProvider
           with is.codion.plugin.credentials.server.DefaultCredentialsProvider;
 }

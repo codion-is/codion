@@ -6,7 +6,6 @@ module is.codion.swing.framework.ui {
   exports is.codion.swing.framework.ui;
   exports is.codion.swing.framework.ui.icons;
 
-  uses is.codion.common.CredentialsProvider;
   uses is.codion.swing.framework.ui.icons.FrameworkIcons;
 
   provides is.codion.swing.framework.ui.icons.FrameworkIcons
