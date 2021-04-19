@@ -515,18 +515,29 @@ final class DefaultEntity implements Entity, Serializable {
     return property.prepareValue(property.getAttribute().validateType(value));
   }
 
-  private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity entity) {
+  private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity foreignKeyValue) {
     final EntityType<?> referencedEntityType = property.getReferencedEntityType();
-    if (!Objects.equals(referencedEntityType, entity.getEntityType())) {
+    if (!Objects.equals(referencedEntityType, foreignKeyValue.getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
-              " expected for property " + this + ", got: " + entity.getEntityType());
+              " expected for property " + property + ", got: " + foreignKeyValue.getEntityType());
     }
-    property.getReferences().forEach(reference -> {
-      if (property.isReadOnly(reference.getAttribute()) && contains(reference.getAttribute()) &&
-              !Objects.equals(get(reference.getAttribute()), entity.get(reference.getReferencedAttribute()))) {
-        throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify read-only attribute: " + reference.getAttribute());
+    property.getReferences().forEach(reference -> throwIfModifiesReadOnlyReference(property, foreignKeyValue, reference));
+  }
+
+  private void throwIfModifiesReadOnlyReference(final ForeignKeyProperty property, final Entity foreignKeyValue,
+                                                final ForeignKey.Reference<?> reference) {
+    final boolean readOnlyReference = property.isReadOnly(reference.getAttribute());
+    if (readOnlyReference) {
+      final boolean containsValue = contains(reference.getAttribute());
+      if (containsValue) {
+        final Object currentReferenceValue = get(reference.getAttribute());
+        final Object newReferenceValue = foreignKeyValue.get(reference.getReferencedAttribute());
+        if (!Objects.equals(currentReferenceValue, newReferenceValue)) {
+          throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify read-only reference: " +
+                  reference.getAttribute() + " from " + currentReferenceValue + " to " + newReferenceValue);
+        }
       }
-    });
+    }
   }
 
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {

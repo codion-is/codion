@@ -6901,3 +6901,4 @@
   CredentialsProvider.getCredentials() now throws NotBoundException and RemoteException, DefaultCredentialsProvider refactored, exception handling improved
   CredentialsProvider, removed getCredentials() overload with registryPort parameter, CredentialsService.REGISTRY_PORT configuration parameter added
   DefaultEntity bug fixed, validateForeignKeyValue() now prevents update of read-only foreign key value if a previous value actually exists
+  DefaultEntity.validateForeignKeyValue() refactored for readability
