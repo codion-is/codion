@@ -522,7 +522,8 @@ final class DefaultEntity implements Entity, Serializable {
               " expected for property " + this + ", got: " + entity.getEntityType());
     }
     property.getReferences().forEach(reference -> {
-      if (property.isReadOnly(reference.getAttribute()) && !Objects.equals(get(reference.getAttribute()), entity.get(reference.getReferencedAttribute()))) {
+      if (property.isReadOnly(reference.getAttribute()) && contains(reference.getAttribute()) &&
+              !Objects.equals(get(reference.getAttribute()), entity.get(reference.getReferencedAttribute()))) {
         throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify read-only attribute: " + reference.getAttribute());
       }
     });

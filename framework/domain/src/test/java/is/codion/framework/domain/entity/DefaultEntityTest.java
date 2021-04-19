@@ -259,7 +259,8 @@ public class DefaultEntityTest {
     master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
 
     final Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
-    //can not update read only attribute reference
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 1);
+    //can not update read only attribute reference, with a different value
     assertThrows(IllegalArgumentException.class, () -> detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master));
 
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 3);
