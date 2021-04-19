@@ -4,7 +4,7 @@
  * Configuration values:<br>
  * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
  * @uses is.codion.common.logging.LoggerProxy
- * @uses is.codion.common.CredentialsProvider
+ * @uses is.codion.common.credentials.CredentialsProvider
  */
 module is.codion.common.core {
   exports is.codion.common;
