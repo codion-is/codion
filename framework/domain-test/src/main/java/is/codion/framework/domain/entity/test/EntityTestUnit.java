@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -219,6 +220,9 @@ public class EntityTestUnit {
     }
     if (attribute.isLocalDateTime()) {
       return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
+    if (attribute.isOffsetDateTime()) {
+      return OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
     if (attribute.isLocalTime()) {
       return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);

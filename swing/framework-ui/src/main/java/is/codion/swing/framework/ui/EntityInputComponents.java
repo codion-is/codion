@@ -65,6 +65,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -725,6 +726,9 @@ public final class EntityInputComponents {
     }
     else if (attribute.isLocalDateTime()) {
       TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
+    }
+    else if (attribute.isOffsetDateTime()) {
+      TemporalValues.offsetDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<OffsetDateTime>) value);
     }
     else {
       throw new IllegalArgumentException("Text fields not implemented for attribute type: " + attribute);

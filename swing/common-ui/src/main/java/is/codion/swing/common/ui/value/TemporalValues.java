@@ -9,6 +9,7 @@ import javax.swing.JFormattedTextField;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
 /**
@@ -92,5 +93,28 @@ public final class TemporalValues {
                                                                                       final String dateFormat,
                                                                                       final UpdateOn updateOn) {
     return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalDateTime::parse);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<OffsetDateTime, JFormattedTextField> offsetDateTimeValue(final JFormattedTextField textComponent,
+                                                                                        final String dateFormat) {
+    return offsetDateTimeValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<OffsetDateTime, JFormattedTextField> offsetDateTimeValue(final JFormattedTextField textComponent,
+                                                                                        final String dateFormat,
+                                                                                        final UpdateOn updateOn) {
+    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, OffsetDateTime::parse);
   }
 }

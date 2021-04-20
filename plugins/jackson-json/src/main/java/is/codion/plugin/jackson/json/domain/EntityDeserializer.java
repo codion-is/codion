@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,6 +68,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     }
     else if (attribute.isLocalDateTime()) {
       return LocalDateTime.parse(jsonNode.asText());
+    }
+    else if (attribute.isOffsetDateTime()) {
+      return OffsetDateTime.parse(jsonNode.asText());
     }
     else if (attribute.isDouble()) {
       return jsonNode.asDouble();
