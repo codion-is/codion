@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.text.Collator;
-import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.List;
 
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
@@ -302,9 +302,10 @@ public final class Properties {
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
    * @param attribute the attribute
+   * @param <T> the Temporal type to base this property on
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<LocalDateTime> auditInsertTimeProperty(final Attribute<LocalDateTime> attribute) {
+  public static <T extends Temporal> ColumnProperty.Builder<T> auditInsertTimeProperty(final Attribute<T> attribute) {
     return auditInsertTimeProperty(attribute, null);
   }
 
@@ -312,18 +313,20 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
    * @param attribute the attribute
    * @param caption the property caption
+   * @param <T> the Temporal type to base this property on
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<LocalDateTime> auditInsertTimeProperty(final Attribute<LocalDateTime> attribute, final String caption) {
-    return new DefaultAuditTimeProperty(attribute, INSERT, caption).builder();
+  public static <T extends Temporal> ColumnProperty.Builder<T> auditInsertTimeProperty(final Attribute<T> attribute, final String caption) {
+    return new DefaultAuditTimeProperty<>(attribute, INSERT, caption).builder();
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
    * @param attribute the attribute
+   * @param <T> the Temporal type to base this property on
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<LocalDateTime> auditUpdateTimeProperty(final Attribute<LocalDateTime> attribute) {
+  public static <T extends Temporal> ColumnProperty.Builder<T> auditUpdateTimeProperty(final Attribute<T> attribute) {
     return auditUpdateTimeProperty(attribute, null);
   }
 
@@ -331,10 +334,11 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
    * @param attribute the attribute
    * @param caption the property caption
+   * @param <T> the Temporal type to base this property on
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<LocalDateTime> auditUpdateTimeProperty(final Attribute<LocalDateTime> attribute, final String caption) {
-    return new DefaultAuditTimeProperty(attribute, UPDATE, caption).builder();
+  public static <T extends Temporal> ColumnProperty.Builder<T> auditUpdateTimeProperty(final Attribute<T> attribute, final String caption) {
+    return new DefaultAuditTimeProperty<>(attribute, UPDATE, caption).builder();
   }
 
   /**
