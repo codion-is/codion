@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -420,14 +420,14 @@ public class DefaultLocalEntityConnectionTest {
     emp.put(EMP_SALARY, salary);
     final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     emp.put(EMP_HIREDATE, hiredate);
-    final ZonedDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
-            .atZone(TimeZone.getDefault().toZoneId());
+    final OffsetDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+            .atZone(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
     emp.put(EMP_HIRETIME, hiretime);
 
     emp = connection.selectSingle(connection.insert(emp));
 
     assertEquals(hiredate, emp.get(EMP_HIREDATE));
-    assertEquals(hiretime.toOffsetDateTime(), emp.get(EMP_HIRETIME).toOffsetDateTime());
+    assertEquals(hiretime, emp.get(EMP_HIRETIME));
 
     connection.delete(emp.getPrimaryKey());
   }

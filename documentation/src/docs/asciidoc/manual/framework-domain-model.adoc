@@ -53,7 +53,7 @@ The following data types are supported out of the box:
 |LocalDateTime|java.sql.Types.TIMESTAMP
 |LocalDate|java.sql.Types.DATE
 |LocalTime|java.sql.Types.TIME
-|ZonedDateTime|java.sql.Types.TIMESTAMP_WITH_TIMEZONE
+|OffsetDateTime|java.sql.Types.TIMESTAMP_WITH_TIMEZONE
 |String|java.sql.Types.VARCHAR
 |Boolean|java.sql.Types.BOOLEAN
 |Character|java.sql.Types.CHAR

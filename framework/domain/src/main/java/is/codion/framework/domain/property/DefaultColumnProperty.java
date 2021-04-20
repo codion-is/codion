@@ -18,7 +18,7 @@ import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -208,7 +208,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     if (clazz.equals(LocalDateTime.class)) {
       return Types.TIMESTAMP;
     }
-    if (clazz.equals(ZonedDateTime.class)) {
+    if (clazz.equals(OffsetDateTime.class)) {
       return Types.TIMESTAMP_WITH_TIMEZONE;
     }
     if (clazz.equals(String.class)) {
@@ -273,7 +273,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getTimestampWithTimezone(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return (T) resultSet.getObject(columnIndex, ZonedDateTime.class);
+    return (T) resultSet.getObject(columnIndex, OffsetDateTime.class);
   }
 
   private static <T> T getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {

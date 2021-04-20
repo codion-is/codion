@@ -47,7 +47,7 @@ public interface Attribute<T> {
   boolean isNumerical();
 
   /**
-   * @return true if this is a time based attribute, LocalDate, LocalDatetime, LocalTime or ZonedDateTime
+   * @return true if this is a time based attribute, LocalDate, LocalDatetime, LocalTime or OffsetDateTime
    */
   boolean isTemporal();
 
@@ -67,9 +67,9 @@ public interface Attribute<T> {
   boolean isLocalTime();
 
   /**
-   * @return true if this is a zoned date time attribute
+   * @return true if this is a offset date time attribute
    */
-  boolean isZonedDateTime();
+  boolean isOffsetDateTime();
 
   /**
    * @return true if this is a character attribute
