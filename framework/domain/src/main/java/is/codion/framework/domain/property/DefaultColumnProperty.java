@@ -486,7 +486,15 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
+      if (columnProperty.valueFetcher != null) {
+        columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
+      }
+      return this;
+    }
+
+    @Override
+    public ColumnProperty.Builder<T> valueFetcher(final ValueFetcher<T> valueFetcher) {
+      columnProperty.valueFetcher = requireNonNull(valueFetcher, "valueFetcher");
       return this;
     }
 
