@@ -38,7 +38,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private boolean searchProperty = false;
 
   private final transient ResultPacker<T> resultPacker;
-  private transient ValueFetcher<T> valueFetcher;
+  private transient ValueFetcher<Object> valueFetcher;
   private transient String columnName;
   private transient ValueConverter<T, Object> valueConverter;
   private transient boolean groupingColumn = false;
@@ -146,7 +146,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return new DefaultColumnPropertyBuilder<>(this);
   }
 
-  private ValueFetcher<T> initializeValueFetcher() {
+  private <T> ValueFetcher<T> initializeValueFetcher() {
     switch (columnType) {
       case Types.INTEGER:
         return DefaultColumnProperty::getInteger;
@@ -483,18 +483,20 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter) {
+    public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass,
+                                                     final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      if (columnProperty.valueFetcher != null) {
-        columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
-      }
+      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder<T> valueFetcher(final ValueFetcher<T> valueFetcher) {
-      columnProperty.valueFetcher = requireNonNull(valueFetcher, "valueFetcher");
+    public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
+                                                     final ValueFetcher<C> valueFetcher) {
+      columnProperty.columnType = getSqlType(columnClass);
+      columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
+      columnProperty.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
       return this;
     }
 
