@@ -98,7 +98,6 @@ public final class TemporalValues {
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
   public static ComponentValue<OffsetDateTime, JFormattedTextField> offsetDateTimeValue(final JFormattedTextField textComponent,
