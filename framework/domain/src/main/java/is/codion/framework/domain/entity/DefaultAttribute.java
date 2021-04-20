@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -70,7 +70,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final boolean isTemporal() {
-    return isLocalDate() || isLocalDateTime() || isLocalTime() || isZonedDateTime();
+    return isLocalDate() || isLocalDateTime() || isLocalTime() || isOffsetDateTime();
   }
 
   @Override
@@ -89,8 +89,8 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final boolean isZonedDateTime() {
-    return isType(ZonedDateTime.class);
+  public final boolean isOffsetDateTime() {
+    return isType(OffsetDateTime.class);
   }
 
   @Override
