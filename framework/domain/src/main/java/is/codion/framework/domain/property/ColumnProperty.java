@@ -232,6 +232,13 @@ public interface ColumnProperty<T> extends Property<T> {
     <C> ColumnProperty.Builder<T> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
 
     /**
+     * Sets the value fetcher used to retrieve the value from a ResultSet.
+     * @param valueFetcher the value fetcher
+     * @return this instance
+     */
+    ColumnProperty.Builder<T> valueFetcher(ValueFetcher<T> valueFetcher);
+
+    /**
      * Sets the actual string used as column when querying
      * @param columnName the column name
      * @return this instance
