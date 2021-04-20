@@ -6903,3 +6903,4 @@
   DefaultEntity bug fixed, validateForeignKeyValue() now prevents update of read-only foreign key value if a previous value actually exists
   DefaultEntity.validateForeignKeyValue() refactored for readability
   TIMESTAMP_WITH_TIMEZONE now mapped to OffsetDateTime instead of ZonedDateTime, did not work on PostgreSQL
+  AuditProperty now with a generic type parameter, so that LocalDateTime or OffsetDateTime can be used

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 
 /**
  * A property representing an audit column
@@ -25,8 +25,9 @@ public interface AuditProperty<T> extends ColumnProperty<T> {
 
   /**
    * Specifies a audit property with a timestamp value
+   * @param <T> the Temporal type to base this property on
    */
-  interface AuditTimeProperty extends AuditProperty<LocalDateTime> {}
+  interface AuditTimeProperty<T extends Temporal> extends AuditProperty<T> {}
 
   /**
    * Specifies a audit property with a username value

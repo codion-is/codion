@@ -5,14 +5,14 @@ package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Attribute;
 
-import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 
-public final class DefaultAuditTimeProperty extends DefaultAuditProperty<LocalDateTime>
-        implements AuditProperty.AuditTimeProperty {
+public final class DefaultAuditTimeProperty<T extends Temporal> extends DefaultAuditProperty<T>
+        implements AuditProperty.AuditTimeProperty<T> {
 
   private static final long serialVersionUID = 1;
 
-  DefaultAuditTimeProperty(final Attribute<LocalDateTime> attribute, final AuditAction auditAction, final String caption) {
+  DefaultAuditTimeProperty(final Attribute<T> attribute, final AuditAction auditAction, final String caption) {
     super(attribute, auditAction, caption);
   }
 }
