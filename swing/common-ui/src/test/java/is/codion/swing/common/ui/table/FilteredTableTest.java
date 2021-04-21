@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.table;
 
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
 
@@ -35,8 +35,8 @@ public class FilteredTableTest {
   public void searchField() throws AWTException {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<List<String>, Integer, String> filterModel =
-            new DefaultColumnConditionModel<>(0, String.class, "%");
+    final ColumnFilterModel<List<String>, Integer, String> filterModel =
+            new DefaultColumnFilterModel<>(0, String.class, "%");
 
     final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(
             new TestAbstractTableSortModel(singletonList(column)), singletonList(filterModel)) {
@@ -96,7 +96,7 @@ public class FilteredTableTest {
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
-                                           final List<ColumnConditionModel<List<String>, Integer, String>> columnFilterModels) {
+                                           final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
@@ -118,12 +118,12 @@ public class FilteredTableTest {
     }
 
     @Override
-    public Class getColumnClass(final Integer columnIdentifier) {
+    public Class<String> getColumnClass(final Integer columnIdentifier) {
       return String.class;
     }
 
     @Override
-    protected Comparable getComparable(final List<String> row, final Integer columnIdentifier) {
+    protected Comparable<String> getComparable(final List<String> row, final Integer columnIdentifier) {
       return row.get(columnIdentifier);
     }
   }

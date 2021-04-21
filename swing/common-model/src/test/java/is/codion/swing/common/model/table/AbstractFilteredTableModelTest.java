@@ -7,7 +7,8 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.common.model.table.RowColumn;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
@@ -51,7 +52,7 @@ public final class AbstractFilteredTableModelTest {
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
-                                           final List<ColumnConditionModel<List<String>, Integer, String>> columnFilterModels) {
+                                           final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
@@ -77,7 +78,7 @@ public final class AbstractFilteredTableModelTest {
   private static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<List<String>, Integer, String> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
+    final ColumnFilterModel<List<String>, Integer, String> filterModel = new DefaultColumnFilterModel<>(0, String.class, "%");
     filterModel.setComparableFunction(row -> row.get(0));
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<List<String>, Integer>(singletonList(column)) {
       @Override
@@ -184,7 +185,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
-    final ColumnConditionModel<List<String>, Integer, String> columnFilterModel =
+    final ColumnConditionModel<Integer, String> columnFilterModel =
             tableModel.getColumnModel().getColumnFilterModel(0);
     columnFilterModel.setEqualValue("a");
     tableModel.removeItem(B);
@@ -757,7 +758,7 @@ public final class AbstractFilteredTableModelTest {
   public void getValues() {
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndexes(asList(0, 2));
-    Collection values = tableModel.getSelectedValues(0);
+    Collection<String> values = tableModel.getSelectedValues(0);
     assertEquals(2, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("c"));

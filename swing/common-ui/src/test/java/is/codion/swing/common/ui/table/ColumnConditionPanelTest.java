@@ -18,8 +18,8 @@ public class ColumnConditionPanelTest {
   @Test
   public void test() {
     final String key = "key";
-    final ColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
-    final ColumnConditionPanel<String, String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
+    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
+    final ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
     assertEquals(model, panel.getModel());
     assertNotNull(panel.getEqualField());
     assertNotNull(panel.getUpperBoundField());
@@ -32,13 +32,13 @@ public class ColumnConditionPanelTest {
     assertTrue(panel.isAdvanced());
     panel.setAdvanced(false);
     assertFalse(panel.isAdvanced());
-    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String, String>(null, ToggleAdvancedButton.YES, null));
+    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, ToggleAdvancedButton.YES, null));
     assertThrows(IllegalArgumentException.class, () -> new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES, Collections.emptyList()));
   }
 
   @Test
   public void lockedModel() {
-    final ColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("key", String.class, "%");
+    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("key", String.class, "%");
     model.setLocked(true);
     new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
   }

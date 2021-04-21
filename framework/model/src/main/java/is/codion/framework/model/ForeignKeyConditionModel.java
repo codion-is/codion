@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 /**
  * A condition model based on a foreign key, using one or more {@link Entity} instances as condition values.
  */
-public interface ForeignKeyConditionModel extends ColumnConditionModel<Entity, ForeignKey, Entity> {
+public interface ForeignKeyConditionModel extends ColumnConditionModel<ForeignKey, Entity> {
 
   /**
    * @return the EntityLookupModel used by this ForeignKeyConditionModel, if any

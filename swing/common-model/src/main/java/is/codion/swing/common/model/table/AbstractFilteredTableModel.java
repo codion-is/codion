@@ -7,6 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.model.table.FilteredTableModel;
@@ -120,7 +121,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @throws NullPointerException in case {@code sortModel} is null
    */
   public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel,
-                                    final Collection<? extends ColumnConditionModel<R, C, ?>> columnFilterModels) {
+                                    final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.sortModel = requireNonNull(sortModel, "sortModel");
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
@@ -623,7 +624,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
-    for (final ColumnConditionModel<R, C, ?> conditionModel : columnModel.getColumnFilterModels()) {
+    for (final ColumnConditionModel<C, ?> conditionModel : columnModel.getColumnFilterModels()) {
       conditionModel.addConditionChangedListener(this::filterContents);
     }
     sortModel.addSortingChangedListener(this::sort);
@@ -707,9 +708,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {
 
-    private final Collection<? extends ColumnConditionModel<R, C, ?>> columnFilters;
+    private final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters;
 
-    private DefaultIncludeCondition(final Collection<? extends ColumnConditionModel<R, C, ?>> columnFilters) {
+    private DefaultIncludeCondition(final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 

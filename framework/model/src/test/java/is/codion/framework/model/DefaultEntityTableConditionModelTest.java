@@ -79,7 +79,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void setEqualFilterValue() {
     conditionModel.setEqualFilterValue(TestDomain.EMP_COMMISSION, 1400d);
-    final ColumnConditionModel<?, ?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
+    final ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Operator.EQUAL, propertyConditionModel.getOperator());
@@ -118,7 +118,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
-    final ColumnConditionModel<?, ?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
+    final ColumnConditionModel<?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
@@ -158,14 +158,14 @@ public class DefaultEntityTableConditionModelTest {
     final String value = "test";
     final String wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.getSimpleConditionStringValue().set(value);
-    for (final ColumnConditionModel<?, ?, ?> model : conditionModel.getConditionModels()) {
+    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels()) {
       if (model.getTypeClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
     conditionModel.getSimpleConditionStringValue().set(null);
-    for (final ColumnConditionModel<?, ?, ?> model : conditionModel.getConditionModels()) {
+    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels()) {
       if (model.getTypeClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());

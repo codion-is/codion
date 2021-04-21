@@ -7,6 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.condition.Condition;
@@ -130,7 +131,7 @@ public interface EntityTableConditionModel {
   /**
    * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, ? extends Attribute<?>, ?>> getConditionModels();
+  Collection<ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
@@ -140,7 +141,7 @@ public interface EntityTableConditionModel {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsConditionModel(Attribute)
    */
-  <T> ColumnConditionModel<Entity, ? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
+  <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and
@@ -151,16 +152,16 @@ public interface EntityTableConditionModel {
   /**
    * @return a Collection containing the filter models available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, Attribute<?>, ?>> getFilterModels();
+  Collection<ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels();
 
   /**
    * The filter model associated with {@code attribute}
    * @param <C> the property type
    * @param <T> the column value type
-   * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
-   * @return the {@link ColumnConditionModel} for the {@code attribute}, null if none is found
+   * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
+   * @return the {@link ColumnFilterModel} for the {@code attribute}, null if none is found
    */
-  <C extends Attribute<T>, T> ColumnConditionModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
+  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
 
   /**
    * @param attribute column attribute

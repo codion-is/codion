@@ -3,7 +3,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
@@ -14,10 +14,10 @@ import is.codion.framework.domain.property.Property;
 public interface FilterModelFactory {
 
   /**
-   * Initializes a ColumnConditionModel for the given property
+   * Initializes a ColumnFilterModel for the given property
    * @param <T> the column value type
-   * @param property the Property for which to initialize a ColumnConditionModel
-   * @return a ColumnConditionModel for the given property
+   * @param property the Property for which to initialize a ColumnFilterModel
+   * @return a ColumnFilterModel for the given property
    */
-  <T> ColumnConditionModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
+  <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
 }

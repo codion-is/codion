@@ -61,7 +61,7 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
 
   private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel, final Property<T> property) {
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
-      final ColumnConditionModel<Entity, ? extends Attribute<?>, T> conditionModel =
+      final ColumnConditionModel<? extends Attribute<?>, T> conditionModel =
               listModel.getTableConditionModel().getConditionModel(property.getAttribute());
       if (conditionModel != null) {
         final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
