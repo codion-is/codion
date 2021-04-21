@@ -16,9 +16,6 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -46,7 +43,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final Format format;
   private final String dateTimePattern;
 
-  private Function<R, Comparable<T>> comparableFunction = value -> (Comparable<T>) value;
   private boolean autoEnable = true;
   private AutomaticWildcard automaticWildcard;
   private boolean caseSensitive = CASE_SENSITIVE.get();
@@ -139,11 +135,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   @Override
   public final Class<T> getTypeClass() {
     return typeClass;
-  }
-
-  @Override
-  public final void setComparableFunction(final Function<R, Comparable<T>> comparableFunction) {
-    this.comparableFunction = requireNonNull(comparableFunction);
   }
 
   @Override
@@ -350,43 +341,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return operatorValue;
   }
 
-  @Override
-  public final boolean include(final R row) {
-    return !enabledState.get() || include(comparableFunction.apply(row));
-  }
-
-  @Override
-  public final boolean include(final Comparable<T> comparable) {
-    if (!enabledState.get()) {
-      return true;
-    }
-
-    switch (operatorValue.get()) {
-      case EQUAL:
-        return includeEqual(comparable);
-      case NOT_EQUAL:
-        return includeNotEqual(comparable);
-      case LESS_THAN:
-        return includeLessThan(comparable);
-      case LESS_THAN_OR_EQUAL:
-        return includeLessThanOrEqual(comparable);
-      case GREATER_THAN:
-        return includeGreaterThan(comparable);
-      case GREATER_THAN_OR_EQUAL:
-        return includeGreaterThanOrEqual(comparable);
-      case BETWEEN_EXCLUSIVE:
-        return includeBetweenExclusive(comparable);
-      case BETWEEN:
-        return includeBetweenInclusive(comparable);
-      case NOT_BETWEEN_EXCLUSIVE:
-        return includeNotBetweenExclusive(comparable);
-      case NOT_BETWEEN:
-        return includeNotBetween(comparable);
-      default:
-        throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
-    }
-  }
-
   private T getBoundValue(final Object bound) {
     if (typeClass.equals(String.class)) {
       if (bound == null || (bound instanceof String && ((String) bound).isEmpty())) {
@@ -400,174 +354,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     }
 
     return (T) bound;
-  }
-
-  private boolean includeEqual(final Comparable<T> comparable) {
-    if (comparable == null) {
-      return this.getEqualValue() == null;
-    }
-    if (this.getEqualValue() == null) {
-      return comparable == null;
-    }
-
-    if (comparable instanceof String) {//for Entity and String values
-      return includeExactWildcard((String) comparable);
-    }
-
-    return comparable.compareTo(this.getEqualValue()) == 0;
-  }
-
-  private boolean includeNotEqual(final Comparable<T> comparable) {
-    if (comparable == null) {
-      return this.getEqualValue() != null;
-    }
-    if (this.getEqualValue() == null) {
-      return comparable != null;
-    }
-
-    if (comparable instanceof String && ((String) comparable).contains(wildcard)) {
-      return !includeExactWildcard((String) comparable);
-    }
-
-    return comparable.compareTo(this.getEqualValue()) != 0;
-  }
-
-  private boolean includeExactWildcard(final String value) {
-    String equalsValue = (String) getEqualValue();
-    if (equalsValue == null) {
-      equalsValue = "";
-    }
-    if (equalsValue.equals(wildcard)) {
-      return true;
-    }
-    if (value == null) {
-      return false;
-    }
-
-    String realValue = value;
-    if (!caseSensitive) {
-      equalsValue = equalsValue.toUpperCase(Locale.getDefault());
-      realValue = realValue.toUpperCase(Locale.getDefault());
-    }
-
-    if (!equalsValue.contains(wildcard)) {
-      return realValue.compareTo(equalsValue) == 0;
-    }
-
-    return Pattern.matches(prepareForRegex(equalsValue), realValue);
-  }
-
-  private String prepareForRegex(final String string) {
-    //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replace(wildcard, ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
-  }
-
-  private boolean includeLessThan(final Comparable<T> comparable) {
-    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) < 0;
-  }
-
-  private boolean includeLessThanOrEqual(final Comparable<T> comparable) {
-    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
-  }
-
-  private boolean includeGreaterThan(final Comparable<T> comparable) {
-    return getLowerBound() == null || comparable != null && comparable.compareTo(getLowerBound()) > 0;
-  }
-
-  private boolean includeGreaterThanOrEqual(final Comparable<T> comparable) {
-    return getLowerBound() == null || comparable != null && comparable.compareTo(getLowerBound()) >= 0;
-  }
-
-  private boolean includeBetweenExclusive(final Comparable<T> comparable) {
-    if (getLowerBound() == null && getUpperBound() == null) {
-      return true;
-    }
-
-    if (comparable == null) {
-      return false;
-    }
-
-    if (getLowerBound() == null) {
-      return comparable.compareTo(getUpperBound()) < 0;
-    }
-
-    if (getUpperBound() == null) {
-      return comparable.compareTo(getLowerBound()) > 0;
-    }
-
-    final int lowerCompareResult = comparable.compareTo(getLowerBound());
-    final int upperCompareResult = comparable.compareTo(getUpperBound());
-
-    return lowerCompareResult > 0 && upperCompareResult < 0;
-  }
-
-  private boolean includeBetweenInclusive(final Comparable<T> comparable) {
-    if (getLowerBound() == null && getUpperBound() == null) {
-      return true;
-    }
-
-    if (comparable == null) {
-      return false;
-    }
-
-    if (getLowerBound() == null) {
-      return comparable.compareTo(getUpperBound()) <= 0;
-    }
-
-    if (getUpperBound() == null) {
-      return comparable.compareTo(getLowerBound()) >= 0;
-    }
-
-    final int lowerCompareResult = comparable.compareTo(getLowerBound());
-    final int upperCompareResult = comparable.compareTo(getUpperBound());
-
-    return lowerCompareResult >= 0 && upperCompareResult <= 0;
-  }
-
-  private boolean includeNotBetweenExclusive(final Comparable<T> comparable) {
-    if (getLowerBound() == null && getUpperBound() == null) {
-      return true;
-    }
-
-    if (comparable == null) {
-      return false;
-    }
-
-    if (getLowerBound() == null) {
-      return comparable.compareTo(getUpperBound()) > 0;
-    }
-
-    if (getUpperBound() == null) {
-      return comparable.compareTo(getLowerBound()) < 0;
-    }
-
-    final int lowerCompareResult = comparable.compareTo(getLowerBound());
-    final int upperCompareResult = comparable.compareTo(getUpperBound());
-
-    return lowerCompareResult < 0 || upperCompareResult > 0;
-  }
-
-  private boolean includeNotBetween(final Comparable<T> comparable) {
-    if (getLowerBound() == null && getUpperBound() == null) {
-      return true;
-    }
-
-    if (comparable == null) {
-      return false;
-    }
-
-    if (getLowerBound() == null) {
-      return comparable.compareTo(getUpperBound()) >= 0;
-    }
-
-    if (getUpperBound() == null) {
-      return comparable.compareTo(getLowerBound()) <= 0;
-    }
-
-    final int lowerCompareResult = comparable.compareTo(getLowerBound());
-    final int upperCompareResult = comparable.compareTo(getUpperBound());
-
-    return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
   private String addWildcard(final String value) {

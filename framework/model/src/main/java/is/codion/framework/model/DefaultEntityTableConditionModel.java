@@ -8,6 +8,7 @@ import is.codion.common.Util;
 import is.codion.common.db.Operator;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -42,7 +43,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private final State conditionChangedState = State.state();
   private final EntityType<?> entityType;
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Attribute<?>, ColumnConditionModel<Entity, Attribute<?>, ?>> filterModels = new LinkedHashMap<>();
+  private final Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> filterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<Entity, ? extends Attribute<?>, ?>> conditionModels = new HashMap<>();
   private final Value<String> simpleConditionStringValue = Value.value();
   private Condition.Provider additionalConditionProvider;
@@ -90,16 +91,16 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnConditionModel<Entity, C, T> getFilterModel(final Attribute<T> attribute) {
+  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(final Attribute<T> attribute) {
     if (filterModels.containsKey(attribute)) {
-      return (ColumnConditionModel<Entity, C, T>) filterModels.get(attribute);
+      return (ColumnFilterModel<Entity, C, T>) filterModels.get(attribute);
     }
 
     throw new IllegalArgumentException("No property filter model found for attribute " + attribute);
   }
 
   @Override
-  public Collection<ColumnConditionModel<Entity, Attribute<?>, ?>> getFilterModels() {
+  public Collection<ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels() {
     return unmodifiableCollection(filterModels.values());
   }
 
@@ -293,7 +294,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     if (filterModelProvider != null) {
       for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
         if (!property.isHidden()) {
-          final ColumnConditionModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
+          final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
           filterModels.put(filterModel.getColumnIdentifier(), filterModel);
         }
       }

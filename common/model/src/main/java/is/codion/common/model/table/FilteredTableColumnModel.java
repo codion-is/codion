@@ -93,7 +93,7 @@ public interface FilteredTableColumnModel<R, C, T> {
   /**
    * @return the ColumnFilterModel instances
    */
-  Collection<ColumnConditionModel<R, C, ?>> getColumnFilterModels();
+  Collection<ColumnFilterModel<R, C, ?>> getColumnFilterModels();
 
   /**
    * @param listener a listener to be notified each time a column is hidden

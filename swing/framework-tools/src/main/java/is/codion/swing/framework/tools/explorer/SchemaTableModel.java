@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.tools.explorer;
 
-import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.framework.tools.metadata.Schema;
@@ -18,8 +18,8 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
 
   SchemaTableModel(final Collection<Schema> schemas) {
     super(new SchemaSortModel(),
-            asList(new DefaultColumnConditionModel<>(0, String.class, "%"),
-                    new DefaultColumnConditionModel<>(0, Boolean.class, "%")));
+            asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
+                    new DefaultColumnFilterModel<>(0, Boolean.class, "%")));
     this.schemas = schemas;
     getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
   }

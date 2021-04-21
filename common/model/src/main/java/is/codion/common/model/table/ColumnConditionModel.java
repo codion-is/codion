@@ -15,7 +15,6 @@ import is.codion.common.value.ValueSet;
 
 import java.text.Format;
 import java.util.Collection;
-import java.util.function.Function;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -91,12 +90,6 @@ public interface ColumnConditionModel<R, C, T> {
   String getDateTimePattern();
 
   /**
-   * @param row the row
-   * @return true if the row should be included or if this model is not enabled
-   */
-  boolean include(R row);
-
-  /**
    * Sets the automatic wildcard type.
    * Note that this is only applicable to string based condition models and only used for
    * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
@@ -108,12 +101,6 @@ public interface ColumnConditionModel<R, C, T> {
    * @return the automatic wildcard type being used by this model
    */
   AutomaticWildcard getAutomaticWildcard();
-
-  /**
-   * @param comparable the value to check
-   * @return true if the given value should be included or if this model is not enabled
-   */
-  boolean include(Comparable<T> comparable);
 
   /**
    * @param locked true to lock this model, false to unlock
@@ -129,12 +116,6 @@ public interface ColumnConditionModel<R, C, T> {
    * @return the data type this condition model is based on
    */
   Class<T> getTypeClass();
-
-  /**
-   * The default implementation simply returns the row, assuming it is a Comparable instance.
-   * @param comparableFunction the function converting from a Row object to a Comparable for the underlying column
-   */
-  void setComparableFunction(Function<R, Comparable<T>> comparableFunction);
 
   /**
    * Sets the values used when the {@link Operator#EQUAL} is enabled.

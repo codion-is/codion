@@ -4,8 +4,8 @@
 package is.codion.swing.common.model.table;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.model.table.DefaultColumnFilterModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void testModel() {
-    final SwingFilteredTableColumnModel testModel = createTestModel();
+    final SwingFilteredTableColumnModel<String, Integer> testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<>();
     final Collection<Object> shown = new ArrayList<>();
     final EventDataListener<Integer> hideListener = hidden::add;
@@ -49,7 +49,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void getTableColumnNotFound() {
-    final SwingFilteredTableColumnModel testModel = createTestModel();
+    final SwingFilteredTableColumnModel<String, Integer> testModel = createTestModel();
     assertThrows(IllegalArgumentException.class, () -> testModel.getTableColumn(42));
   }
 
@@ -139,10 +139,10 @@ public class SwingFilteredTableColumnModelTest {
     assertThrows(IllegalStateException.class, () -> columnModel.setColumns(1, 0, 2));
   }
 
-  private SwingFilteredTableColumnModel createTestModel() {
+  private static SwingFilteredTableColumnModel<String, Integer> createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<String, Integer, String> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
+    final ColumnFilterModel<String, Integer, String> filterModel = new DefaultColumnFilterModel<>(0, String.class, "%");
 
     return new SwingFilteredTableColumnModel<>(singletonList(column), singletonList(filterModel));
   }

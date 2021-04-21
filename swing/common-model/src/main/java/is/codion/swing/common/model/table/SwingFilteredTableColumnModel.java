@@ -6,6 +6,7 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.FilteredTableColumnModel;
 import is.codion.common.state.State;
 
@@ -49,9 +50,9 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   private final Map<C, TableColumn> hiddenColumns = new HashMap<>();
 
   /**
-   * The ColumnConditionModels used for filtering
+   * The ColumnFilterModels used for filtering
    */
-  private final Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels = new HashMap<>();
+  private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
 
   /**
    * A lock which prevents adding or removing columns from this column model
@@ -69,7 +70,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
    * @param columnFilterModels the filter models if any
    */
   public SwingFilteredTableColumnModel(final List<TableColumn> columns,
-                                       final Collection<? extends ColumnConditionModel<R, C, ?>> columnFilterModels) {
+                                       final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -80,7 +81,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
       addColumn(column);
     }
     if (columnFilterModels != null) {
-      for (final ColumnConditionModel<R, C, ?> columnFilterModel : columnFilterModels) {
+      for (final ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
       }
     }
@@ -174,7 +175,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   }
 
   @Override
-  public Collection<ColumnConditionModel<R, C, ?>> getColumnFilterModels() {
+  public Collection<ColumnFilterModel<R, C, ?>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 
