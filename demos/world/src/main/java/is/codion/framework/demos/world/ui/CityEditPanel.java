@@ -22,7 +22,6 @@ import java.awt.Dimension;
 import static is.codion.swing.common.ui.Components.setPreferredWidth;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static java.lang.Double.parseDouble;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static javax.swing.BorderFactory.createRaisedBevelBorder;
@@ -71,7 +70,7 @@ public final class CityEditPanel extends EntityEditPanel {
     return mapKit;
   }
 
-  private static final class LocationListener implements EventDataListener<ValueChange<String>> {
+  private static final class LocationListener implements EventDataListener<ValueChange<GeoPosition>> {
 
     private final JXMapViewer mapViewer;
 
@@ -80,10 +79,10 @@ public final class CityEditPanel extends EntityEditPanel {
     }
 
     @Override
-    public void onEvent(final ValueChange<String> locationChange) {
+    public void onEvent(final ValueChange<GeoPosition> locationChange) {
       final WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
       if (locationChange.getValue() != null) {
-        final GeoPosition position = parsePosition(locationChange.getValue());
+        final GeoPosition position = locationChange.getValue();
         overlayPainter.setWaypoints(singleton((new DefaultWaypoint(position.getLatitude(), position.getLongitude()))));
         mapViewer.setCenterPosition(position);
       }
@@ -91,12 +90,6 @@ public final class CityEditPanel extends EntityEditPanel {
         overlayPainter.setWaypoints(emptySet());
         mapViewer.repaint();
       }
-    }
-
-    private static GeoPosition parsePosition(final String pointGeometry) {
-      final String[] latLon = pointGeometry.replace("POINT (", "").replace(")", "").split(" ");
-
-      return new GeoPosition(parseDouble(latLon[0]), parseDouble(latLon[1]));
     }
   }
 }

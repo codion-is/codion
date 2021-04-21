@@ -10,21 +10,26 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 import is.codion.framework.domain.property.DerivedProperty;
+
+import org.jxmapviewer.viewer.GeoPosition;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static is.codion.common.Util.notNull;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
+import static java.lang.Double.parseDouble;
 
 public final class WorldImpl extends DefaultDomain {
 
@@ -61,14 +66,17 @@ public final class WorldImpl extends DefaultDomain {
             columnProperty(City.POPULATION, "Population")
                     .nullable(false)
                     .numberFormatGrouping(true),
-            columnProperty(City.LOCATION, "Location"))
+            // tag::columnClass[]
+            columnProperty(City.LOCATION, "Location")
+                    .columnClass(String.class, new LocationConverter()))
+            // end::columnClass[]
             // tag::sequence[]
             .keyGenerator(sequence("world.city_seq"))
             // end::sequence[]
             .validator(new CityValidator())
             .orderBy(orderBy().ascending(City.NAME))
             .stringFactory(stringFactory(City.NAME))
-            .colorProvider(new CityColorProvider(getEntities()))
+            .colorProvider(new CityColorProvider())
             .caption("City");
   }
   // end::defineCity[]
@@ -243,12 +251,6 @@ public final class WorldImpl extends DefaultDomain {
 
     private static final long serialVersionUID = 1;
 
-    private final Entities entities;
-
-    public CityColorProvider(Entities entities) {
-      this.entities = entities;
-    }
-
     @Override
     public Object getColor(Entity cityEntity, Attribute<?> attribute) {
       if (attribute.equals(City.POPULATION) &&
@@ -305,4 +307,31 @@ public final class WorldImpl extends DefaultDomain {
     }
   }
   // end::validator[]
+
+  // tag::converter[]
+  private static final class LocationConverter implements ValueConverter<GeoPosition, String> {
+
+    @Override
+    public String toColumnValue(GeoPosition geoPosition,
+                                Statement statement) throws SQLException {
+      if (geoPosition == null) {
+        return null;
+      }
+
+      return "POINT (" + geoPosition.getLatitude() + " " + geoPosition.getLongitude() + ")";
+    }
+
+    @Override
+    public GeoPosition fromColumnValue(String columnValue) throws SQLException {
+      if (columnValue == null) {
+        return null;
+      }
+
+      String[] latLon = columnValue.replace("POINT (", "")
+              .replace(")", "").split(" ");
+
+      return new GeoPosition(parseDouble(latLon[0]), parseDouble(latLon[1]));
+    }
+  }
+  // end::converter[]
 }
