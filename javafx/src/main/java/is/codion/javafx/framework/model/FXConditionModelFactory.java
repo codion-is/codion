@@ -17,7 +17,7 @@ import is.codion.framework.model.DefaultConditionModelFactory;
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKey, Entity> createForeignKeyConditionModel(
+  public ColumnConditionModel<ForeignKey, Entity> createForeignKeyConditionModel(
           final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       return new FXForeignKeyConditionListModel(foreignKey,

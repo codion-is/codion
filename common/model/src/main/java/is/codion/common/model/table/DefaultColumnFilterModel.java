@@ -13,10 +13,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default ColumnFilterModel model implementation.
  * @param <R> the type of the rows
- * @param <K> the type of the column identifier
+ * @param <C> the type of the column identifier
  * @param <T> the column value type
  */
-public final class DefaultColumnFilterModel<R, K, T> extends DefaultColumnConditionModel<R, K, T> implements ColumnFilterModel<R, K, T> {
+public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnConditionModel<C, T> implements ColumnFilterModel<R, C, T> {
 
   private Function<R, Comparable<T>> comparableFunction = value -> (Comparable<T>) value;
 
@@ -26,7 +26,7 @@ public final class DefaultColumnFilterModel<R, K, T> extends DefaultColumnCondit
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnFilterModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard) {
+  public DefaultColumnFilterModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard) {
     this(columnIdentifier, typeClass, wildcard, null, null);
   }
 
@@ -38,7 +38,7 @@ public final class DefaultColumnFilterModel<R, K, T> extends DefaultColumnCondit
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnFilterModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
+  public DefaultColumnFilterModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard,
                                   final Format format, final String dateTimePattern) {
     super(columnIdentifier, typeClass, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
@@ -53,8 +53,7 @@ public final class DefaultColumnFilterModel<R, K, T> extends DefaultColumnCondit
     return !isEnabled() || include(comparableFunction.apply(row));
   }
 
-  @Override
-  public boolean include(final Comparable<T> comparable) {
+  boolean include(final Comparable<T> comparable) {
     if (!isEnabled()) {
       return true;
     }

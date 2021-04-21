@@ -88,7 +88,7 @@ public interface FilteredTableColumnModel<R, C, T> {
    * @param columnIdentifier the column identifier
    * @return the ColumnConditionModel for the column with the given identifier, null if none exists.
    */
-  <T> ColumnConditionModel<R, C, T> getColumnFilterModel(C columnIdentifier);
+  <T> ColumnConditionModel<C, T> getColumnFilterModel(C columnIdentifier);
 
   /**
    * @return the ColumnFilterModel instances

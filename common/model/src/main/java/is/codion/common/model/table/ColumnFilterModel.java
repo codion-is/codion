@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
  */
-public interface ColumnFilterModel<R, C, T> extends ColumnConditionModel<R, C, T> {
+public interface ColumnFilterModel<R, C, T> extends ColumnConditionModel<C, T> {
 
   /**
    * The default implementation simply returns the row, assuming it is a Comparable instance.
@@ -25,10 +25,4 @@ public interface ColumnFilterModel<R, C, T> extends ColumnConditionModel<R, C, T
    * @return true if the row should be included or if this model is not enabled
    */
   boolean include(R row);
-
-  /**
-   * @param comparable the value to check
-   * @return true if the given value should be included or if this model is not enabled
-   */
-  boolean include(Comparable<T> comparable);
 }

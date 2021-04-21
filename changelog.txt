@@ -6877,3 +6877,5 @@
   ColumnProperty.Builder.valueFetcher() added
   EntityTableConditionPanel.initializeConditionPanel() now returns null and logs error in case the attribute type is not supported
   ColumnFilterModel split from ColumnConditionModel
+  ColumnConditionModel, unnecessary generic parameter R (row type) removed
+  ColumnFilterModel.include(Comparable<T>) removed

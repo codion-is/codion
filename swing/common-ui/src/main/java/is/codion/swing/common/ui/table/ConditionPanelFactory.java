@@ -18,5 +18,5 @@ public interface ConditionPanelFactory<R, C, T> {
    * @param column the column
    * @return a ColumnConditionPanel
    */
-  ColumnConditionPanel<R, C, T> createConditionPanel(TableColumn column);
+  ColumnConditionPanel<C, T> createConditionPanel(TableColumn column);
 }

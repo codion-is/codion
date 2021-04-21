@@ -168,10 +168,10 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   }
 
   @Override
-  public <T> ColumnConditionModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
+  public <T> ColumnConditionModel<C, T> getColumnFilterModel(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
-    return (ColumnConditionModel<R, C, T>) columnFilterModels.get(columnIdentifier);
+    return (ColumnConditionModel<C, T>) columnFilterModels.get(columnIdentifier);
   }
 
   @Override

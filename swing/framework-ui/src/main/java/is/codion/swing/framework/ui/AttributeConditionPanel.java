@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 
@@ -24,7 +23,7 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the attribute type
  * @param <T> the column value type
  */
-public final class AttributeConditionPanel<C extends Attribute<T>, T> extends ColumnConditionPanel<Entity, C, T> {
+public final class AttributeConditionPanel<C extends Attribute<T>, T> extends ColumnConditionPanel<C, T> {
 
   /**
    * Instantiates a new AttributeConditionPanel.
@@ -32,14 +31,14 @@ public final class AttributeConditionPanel<C extends Attribute<T>, T> extends Co
    * @param entityDefinition the entity definition
    * @param attribute the underlying attribute
    */
-  public AttributeConditionPanel(final ColumnConditionModel<Entity, C, T> columnConditionModel,
+  public AttributeConditionPanel(final ColumnConditionModel<C, T> columnConditionModel,
           final EntityDefinition entityDefinition, final Attribute<T> attribute) {
     super(columnConditionModel, ToggleAdvancedButton.NO,
             new PropertyBoundFieldFactory<>(columnConditionModel, new EntityInputComponents(entityDefinition), attribute),
             getOperators(columnConditionModel));
   }
 
-  private static <C extends Attribute<T>, T> List<Operator> getOperators(final ColumnConditionModel<Entity, C, T> model) {
+  private static <C extends Attribute<T>, T> List<Operator> getOperators(final ColumnConditionModel<C, T> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return Collections.singletonList(Operator.EQUAL);
     }
@@ -49,11 +48,11 @@ public final class AttributeConditionPanel<C extends Attribute<T>, T> extends Co
 
   private static final class PropertyBoundFieldFactory<C extends Attribute<T>, T> implements BoundFieldFactory {
 
-    private final ColumnConditionModel<Entity, C, T> conditionModel;
+    private final ColumnConditionModel<C, T> conditionModel;
     private final EntityInputComponents inputComponents;
     private final Attribute<T> attribute;
 
-    private PropertyBoundFieldFactory(final ColumnConditionModel<Entity, C, T> conditionModel,
+    private PropertyBoundFieldFactory(final ColumnConditionModel<C, T> conditionModel,
             final EntityInputComponents inputComponents, final Attribute<T> attribute) {
       this.conditionModel = requireNonNull(conditionModel);
       this.inputComponents = inputComponents;

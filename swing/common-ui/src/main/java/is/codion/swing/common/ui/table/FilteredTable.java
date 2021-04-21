@@ -123,7 +123,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * the property filter panels
    */
-  private final Map<TableColumn, ColumnConditionPanel<R, C, ?>> columnFilterPanels = new HashMap<>();
+  private final Map<TableColumn, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
 
   /**
    * The text field used for entering the search condition
@@ -581,7 +581,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnConditionModel<R, C, ?> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+    final ColumnConditionModel<C, ?> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
     if (model != null) {
       model.addConditionChangedListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
@@ -610,7 +610,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), this);
   }
 
-  private static void toggleFilterPanel(final Point position, final ColumnConditionPanel<?, ?, ?> columnFilterPanel,
+  private static void toggleFilterPanel(final Point position, final ColumnConditionPanel<?, ?> columnFilterPanel,
                                         final Container parent) {
     if (columnFilterPanel.isDialogEnabled()) {
       columnFilterPanel.disableDialog();

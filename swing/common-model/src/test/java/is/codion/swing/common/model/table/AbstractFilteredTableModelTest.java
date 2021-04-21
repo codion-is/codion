@@ -185,7 +185,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
-    final ColumnConditionModel<List<String>, Integer, String> columnFilterModel =
+    final ColumnConditionModel<Integer, String> columnFilterModel =
             tableModel.getColumnModel().getColumnFilterModel(0);
     columnFilterModel.setEqualValue("a");
     tableModel.removeItem(B);

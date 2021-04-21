@@ -8,7 +8,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
@@ -27,7 +26,7 @@ public class PropertySearchPanelTest {
   public void createWithInitializedModel() {
     final EntityDefinition definition = DOMAIN.getEntities().getDefinition(TestDomain.T_DEPARTMENT);
     final ColumnProperty<String> property = definition.getColumnProperty(TestDomain.DEPARTMENT_NAME);
-    final ColumnConditionModel<Entity, Attribute<String>, String> conditionModel =
+    final ColumnConditionModel<Attribute<String>, String> conditionModel =
             new DefaultColumnConditionModel<>(property.getAttribute(), property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
                     property.getFormat(), property.getDateTimePattern());
     conditionModel.setEqualValue("DALLAS");

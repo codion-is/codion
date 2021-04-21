@@ -131,7 +131,7 @@ public interface EntityTableConditionModel {
   /**
    * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, ? extends Attribute<?>, ?>> getConditionModels();
+  Collection<ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
@@ -141,7 +141,7 @@ public interface EntityTableConditionModel {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsConditionModel(Attribute)
    */
-  <T> ColumnConditionModel<Entity, ? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
+  <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and

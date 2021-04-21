@@ -19,7 +19,7 @@ public class CountryTableModel extends SwingEntityTableModel {
             .forEach(CountryTableModel::configureConditionModel);
   }
 
-  private static void configureConditionModel(ColumnConditionModel<?, ?, ?> model) {
+  private static void configureConditionModel(ColumnConditionModel<?, ?> model) {
     model.setCaseSensitive(false);
     model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
   }

@@ -19,7 +19,7 @@ import java.util.Arrays;
 /**
  * A column condition panel based on a foreign key.
  */
-public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity, ForeignKey, Entity> {
+public final class ForeignKeyConditionPanel extends ColumnConditionPanel<ForeignKey, Entity> {
 
   /**
    * Instantiates a new ForeignKeyConditionPanel.
@@ -32,9 +32,9 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
 
   private static final class ForeignKeyBoundFieldFactory implements BoundFieldFactory {
 
-    private final ColumnConditionModel<Entity, ForeignKey, Entity> model;
+    private final ColumnConditionModel<ForeignKey, Entity> model;
 
-    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<Entity, ForeignKey, Entity> model) {
+    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<ForeignKey, Entity> model) {
       this.model = model;
     }
 

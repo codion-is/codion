@@ -22,11 +22,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnConditionModel model implementation.
- * @param <R> the type of the rows
  * @param <K> the type of the column identifier
  * @param <T> the column value type
  */
-public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionModel<R, K, T> {
+public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K, T> {
 
   private final ValueSet<T> equalValues = Value.valueSet();
   private final Value<T> upperBoundValue = Value.value();
