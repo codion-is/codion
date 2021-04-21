@@ -7,6 +7,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import org.jxmapviewer.viewer.GeoPosition;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +36,9 @@ public interface World {
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
-    Attribute<String> LOCATION = TYPE.stringAttribute("location");
+    // tag::customType[]
+    Attribute<GeoPosition> LOCATION = TYPE.attribute("location", GeoPosition.class);
+    // end::customType[]
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
 

@@ -182,6 +182,7 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param <T> the attribute type
    * @return the component handling input for {@code attribute}
+   * @throws IllegalArgumentException in case the attribute type is not supported
    */
   public <T> JComponent createInputComponent(final Attribute<T> attribute, final Value<T> value) {
     return createInputComponent(attribute, value, null);
@@ -193,6 +194,7 @@ public final class EntityInputComponents {
    * @param enabledState the enabled state
    * @param <T> the attribute type
    * @return the component handling input for {@code attribute}
+   * @throws IllegalArgumentException in case the attribute type is not supported
    */
   public <T> JComponent createInputComponent(final Attribute<T> attribute, final Value<T> value,
                                              final StateObserver enabledState) {

@@ -6906,3 +6906,4 @@
   AuditProperty now with a generic type parameter, so that LocalDateTime or OffsetDateTime can be used
   OffsetDateTime support improved, not finished, input component missing
   ColumnProperty.Builder.valueFetcher() added
+  EntityTableConditionPanel.initializeConditionPanel() now returns null and logs error in case the attribute type is not supported

@@ -378,6 +378,28 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 * <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>>
 * <<{dir-tutorials}/petstore.adoc#_domain, Petstore domain model>>
 
+== Conversion
+
+Custom conversion of values is performed by setting the *columnClass* of a ColumnProperty and
+implementing a {url-javadoc}/is/codion/framework/domain/property/ColumnProperty.ValueConverter.html[ValueConverter].
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=customType]
+----
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnClass]
+----
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=converter]
+----
+
+* <<{dir-tutorials}/world.adoc#_domain, World domain model>>
+
 == Entities in action
 
 Using the Entity class is rather straight forward.

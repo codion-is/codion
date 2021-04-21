@@ -13,6 +13,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jxmapviewer.viewer.GeoPosition;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   }
 
   private void updateLocation(Entity city, JSONObject cityInformation) throws DatabaseException, ValidationException {
-    city.put(City.LOCATION, toGeometry(cityInformation));
+    city.put(City.LOCATION, new GeoPosition(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
     getEditModel().update(singletonList(city)).get(0);
   }
 
@@ -79,9 +80,5 @@ public final class CityTableModel extends SwingEntityTableModel {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream(), UTF_8))) {
       return new JSONArray(reader.lines().collect(joining()));
     }
-  }
-
-  private static String toGeometry(JSONObject cityInformation) {
-    return "POINT (" + cityInformation.getDouble("lat") + " " + cityInformation.getDouble("lon") + ")";
   }
 }

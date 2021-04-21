@@ -25,6 +25,9 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JComponent;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
@@ -44,6 +47,8 @@ import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
  * @see AttributeConditionPanel
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EntityTableConditionPanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName());
 
@@ -171,7 +176,11 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     columnModel.getAllColumns().forEach(column -> {
       final Attribute<Object> attribute = (Attribute<Object>) column.getIdentifier();
       if (conditionModel.containsConditionModel(attribute)) {
-        components.put(column, initializeConditionPanel(conditionModel.getConditionModel(attribute), definition, attribute));
+        final ColumnConditionPanel<Entity, ?, ?> conditionPanel =
+                initializeConditionPanel(conditionModel.getConditionModel(attribute), definition, attribute);
+        if (conditionPanel != null) {
+          components.put(column, conditionPanel);
+        }
       }
     });
 
@@ -189,6 +198,12 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
       return (ColumnConditionPanel<Entity, C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
     }
 
-    return new AttributeConditionPanel<>(propertyConditionModel, entityDefinition, attribute);
+    try {
+      return new AttributeConditionPanel<>(propertyConditionModel, entityDefinition, attribute);
+    }
+    catch (final IllegalArgumentException e) {
+      LOG.error("Unable to create AttributeConditionPanel for attribute: " + attribute, e);
+      return null;
+    }
   }
 }
