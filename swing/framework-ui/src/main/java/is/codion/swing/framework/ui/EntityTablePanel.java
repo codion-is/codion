@@ -299,8 +299,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param componentValues the component value provider for this table panel
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues) {
-    this(tableModel, componentValues, new EntityTableConditionPanel(tableModel.getTableConditionModel(),
-            tableModel.getColumnModel(), tableModel::refresh, tableModel.getQueryConditionRequiredState()));
+    this(tableModel, componentValues, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel()));
   }
 
   /**
@@ -1378,6 +1377,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     }
     if (conditionPanel != null) {
+      KeyEvents.builder()
+              .keyEvent(KeyEvent.VK_ENTER)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(Control.builder()
+                      .command(tableModel::refresh)
+                      .enabledState(tableModel.getTableConditionModel().getConditionObserver())
+                      .build())
+              .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
       if (conditionPanel.hasAdvancedView()) {
         conditionPanel.addAdvancedListener(advanced -> {
@@ -1459,9 +1466,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
     final Controls searchPanelControls = conditionPanel.getControls();
-    if (searchPanelControls != null && !searchPanelControls.isEmpty()) {
+    if (!searchPanelControls.isEmpty()) {
       conditionControls.addAll(searchPanelControls);
+      conditionControls.addSeparator();
     }
+    conditionControls.add(ToggleControl.builder()
+            .state(tableModel.getQueryConditionRequiredState())
+            .name(MESSAGES.getString("require_query_condition"))
+            .description(MESSAGES.getString("require_query_condition_description")).build());
     if (!conditionControls.isEmpty()) {
       popupControls.add(conditionControls);
     }

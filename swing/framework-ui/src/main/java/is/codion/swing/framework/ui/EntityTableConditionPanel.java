@@ -4,10 +4,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -17,7 +15,6 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -28,16 +25,13 @@ import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JComponent;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
@@ -50,40 +44,22 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTableConditionPanel.class);
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName());
-
   private final TableColumnComponentPanel<ColumnConditionPanel<?, ?>> conditionPanel;
   private final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel;
-  private final ToggleControl conditionRequiredControl;
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
    * an {@link TableColumnComponentPanel} containing {@link AttributeConditionPanel}s
    * @param tableConditionModel the table condition model
    * @param columnModel the column model
-   * @param onSearchListener notified when this condition panel triggers a search
-   * @param queryConditionRequiredState the state indicating whether a condition is required
    */
   public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                   final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel,
-                                   final EventListener onSearchListener, final State queryConditionRequiredState) {
+                                   final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel) {
     super(tableConditionModel, columnModel.getAllColumns());
     this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createPropertyConditionPanels(tableConditionModel, columnModel));
     this.columnModel = columnModel;
-    this.conditionRequiredControl = ToggleControl.builder()
-            .state(queryConditionRequiredState)
-            .name(MESSAGES.getString("require_query_condition"))
-            .description(MESSAGES.getString("require_query_condition_description")).build();
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(Control.builder()
-                    .command(onSearchListener::onEvent)
-                    .enabledState(getTableConditionModel().getConditionObserver())
-                    .build())
-            .enable(this);
   }
 
   /**
@@ -144,8 +120,6 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     controls.control(Control.builder()
             .command(getTableConditionModel()::clearConditionModels)
             .name(FrameworkMessages.get(FrameworkMessages.CLEAR)));
-    controls.separator();
-    controls.control(conditionRequiredControl);
 
     return controls.build();
   }
