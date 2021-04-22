@@ -1263,7 +1263,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> initializeFilteredTable() {
     final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
-            new FilteredTable<>(tableModel, new DefaultConditionPanelFactory(tableModel));
+            new FilteredTable<>(tableModel, new DefaultFilterPanelFactory(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -1598,21 +1598,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private static final class DefaultConditionPanelFactory<C extends Attribute<T>, T> implements ConditionPanelFactory<Entity, C, T> {
+  private static final class DefaultFilterPanelFactory implements ConditionPanelFactory {
 
     private final SwingEntityTableModel tableModel;
 
-    private DefaultConditionPanelFactory(final SwingEntityTableModel tableModel) {
+    private DefaultFilterPanelFactory(final SwingEntityTableModel tableModel) {
       this.tableModel = requireNonNull(tableModel);
     }
 
     @Override
-    public ColumnConditionPanel<C, T> createConditionPanel(final TableColumn column) {
-      final Attribute<T> identifier = (Attribute<T>) column.getIdentifier();
-      final ColumnConditionModel<Attribute<T>, T> filterModel =
-              tableModel.getTableConditionModel().getFilterModel(identifier);
+    public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
+      final Attribute<?> identifier = (Attribute<?>) column.getIdentifier();
+      final ColumnConditionModel<?, ?> filterModel = tableModel.getTableConditionModel().getFilterModel(identifier);
 
-      return (ColumnConditionPanel<C, T>) new AttributeFilterPanel<>(filterModel);
+      return new AttributeFilterPanel<>((ColumnConditionModel<Attribute<Object>, Object>) filterModel);
     }
   }
 }
