@@ -21,7 +21,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
-import is.codion.swing.framework.ui.EntityLookupField;
+import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -79,7 +79,7 @@ public final class EntityEditPanels {
       // tag::foreignKeyValue[]
       EntityComboBox comboBox = createForeignKeyComboBox(Demo.FOREIGN_KEY);
 
-      EntityLookupField lookupField = createForeignKeyLookupField(Demo.FOREIGN_KEY);
+      EntitySearchField searchField = createForeignKeySearchField(Demo.FOREIGN_KEY);
 
       //readOnly
       JTextField textField = createForeignKeyField(Demo.FOREIGN_KEY);

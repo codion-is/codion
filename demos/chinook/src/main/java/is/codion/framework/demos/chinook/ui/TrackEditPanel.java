@@ -32,7 +32,7 @@ public class TrackEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Track.ALBUM_FK);
 
-    createForeignKeyLookupField(Track.ALBUM_FK).setColumns(18);
+    createForeignKeySearchField(Track.ALBUM_FK).setColumns(18);
     createTextField(Track.NAME).setColumns(18);
     final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK);
     setPreferredHeight(mediaTypeBox, getPreferredTextFieldHeight());

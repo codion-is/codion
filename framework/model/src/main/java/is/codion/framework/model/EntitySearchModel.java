@@ -19,17 +19,17 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * A interface responsible for doing entity lookups based on a set of condition attributes.
+ * Responsible for performing entity searches based on a search text and set of condition attributes.
  */
-public interface EntityLookupModel {
+public interface EntitySearchModel {
 
   /**
-   * @return the type of the entity this lookup model is based on
+   * @return the type of the entity this search model is based on
    */
   EntityType<?> getEntityType();
 
   /**
-   * @return the connection provider used by this lookup model
+   * @return the connection provider used by this search model
    */
   EntityConnectionProvider getConnectionProvider();
 
@@ -47,27 +47,27 @@ public interface EntityLookupModel {
   /**
    * Sets the selected entities
    * @param entities the entities to set as selected
-   * @throws IllegalArgumentException if this lookup model does not allow multiple selections and entities.size() is larger than 1
+   * @throws IllegalArgumentException if this search model does not allow multiple selections and entities.size() is larger than 1
    */
   void setSelectedEntities(List<Entity> entities);
 
   /**
-   * @return a string describing this lookup model, by default a comma separated list of search attribute names
+   * @return a string describing this search model, by default a comma separated list of search attribute names
    */
   String getDescription();
 
   /**
-   * @param description a string describing this lookup model
+   * @param description a string describing this search model
    */
   void setDescription(String description);
 
   /**
-   * @return the attributes used when performing a lookup
+   * @return the attributes used when performing a search
    */
-  Collection<Attribute<String>> getLookupAttributes();
+  Collection<Attribute<String>> getSearchAttributes();
 
   /**
-   * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted
+   * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
    */
   void setResultSorter(Comparator<Entity> resultSorter);
 
@@ -77,7 +77,7 @@ public interface EntityLookupModel {
   void refreshSearchText();
 
   /**
-   * Sets the search string to use when performing the next lookup
+   * Sets the search string to use when performing the next search
    * @param searchString the search string
    */
   void setSearchString(String searchString);
@@ -106,20 +106,20 @@ public interface EntityLookupModel {
   /**
    * Performs a query based on the select condition
    * @return a list containing the entities fulfilling the current condition
-   * @throws IllegalStateException in case no lookup attributes are specified
+   * @throws IllegalStateException in case no search attributes are specified
    */
   List<Entity> performQuery();
 
   /**
-   * Sets the additional lookup condition provider to use when performing the next lookup.
-   * This condition is AND'ed to the actual lookup condition.
+   * Sets the additional search condition provider to use when performing the next search.
+   * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @param additionalConditionProvider the additional lookup condition provider
+   * @param additionalConditionProvider the additional search condition provider
    */
   void setAdditionalConditionProvider(Condition.Provider additionalConditionProvider);
 
   /**
-   * Override the default toString() for lookup elements when displayed
+   * Override the default toString() for search elements when displayed
    * in a field based on this model
    * @param toStringProvider provides string representations
    */
@@ -141,9 +141,9 @@ public interface EntityLookupModel {
   StateObserver getSearchStringRepresentsSelectedObserver();
 
   /**
-   * @return the settings associated with the lookup attributes
+   * @return the settings associated with the search attributes
    */
-  Map<Attribute<String>, LookupSettings> getAttributeLookupSettings();
+  Map<Attribute<String>, SearchSettings> getAttributeSearchSettings();
 
   /**
    * @return the Value representing the search string
@@ -161,9 +161,9 @@ public interface EntityLookupModel {
   Value<Boolean> getMultipleSelectionEnabledValue();
 
   /**
-   * Attribute lookup settings
+   * Attribute search settings
    */
-  interface LookupSettings {
+  interface SearchSettings {
 
     /**
      * @return a Value representing whether or not a wildcard is automatically prepended to the search string

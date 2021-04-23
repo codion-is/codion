@@ -13,8 +13,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.DefaultEntityLookupModel;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.DefaultEntitySearchModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
@@ -71,27 +71,27 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A UI component based on the EntityLookupModel.
+ * A UI component based on the EntitySearchModel.
  *
- * The lookup is triggered by the ENTER key and behaves in the following way:
- * If the lookup result is empty a message is shown, if a single entity fits the
+ * The search is triggered by the ENTER key and behaves in the following way:
+ * If the search result is empty a message is shown, if a single entity fits the
  * condition then that entity is selected, otherwise a component displaying the entities
  * fitting the condition is shown in a dialog allowing either a single or multiple
- * selection based on the lookup model settings.
+ * selection based on the search model settings.
  *
  * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
  *
- * @see EntityLookupModel
+ * @see EntitySearchModel
  * @see #setSelectionProvider(SelectionProvider)
  */
-public final class EntityLookupField extends JTextField {
+public final class EntitySearchField extends JTextField {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityLookupField.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
 
-  private static final String LOOKUP_MODEL = "lookupModel";
+  private static final String SEARCH_MODEL = "searchModel";
   private static final int BORDER_SIZE = 15;
 
-  private final EntityLookupModel model;
+  private final EntitySearchModel model;
   private final TextFields.Hint searchHint;
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = Components.transferFocusForwardAction(this);
@@ -101,42 +101,42 @@ public final class EntityLookupField extends JTextField {
 
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
-  private boolean performingLookup = false;
+  private boolean performingSearch = false;
   private boolean transferFocusOnEnter = false;
 
   /**
-   * Initializes a new EntityLookupField.
-   * @param lookupModel the lookup model on which to base this lookup field
+   * Initializes a new EntitySearchField.
+   * @param searchModel the search model on which to base this search field
    */
-  public EntityLookupField(final EntityLookupModel lookupModel) {
-    requireNonNull(lookupModel, LOOKUP_MODEL);
-    this.model = lookupModel;
-    this.settingsPanel = new SettingsPanel(lookupModel);
+  public EntitySearchField(final EntitySearchModel searchModel) {
+    requireNonNull(searchModel, SEARCH_MODEL);
+    this.model = searchModel;
+    this.settingsPanel = new SettingsPanel(searchModel);
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
     setValidBackgroundColor(getBackground());
     setInvalidBackgroundColor(getBackground().darker());
-    setToolTipText(lookupModel.getDescription());
+    setToolTipText(searchModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
     this.searchHint = TextFields.hint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
-    Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
-    Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
+    Components.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
+    Components.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
 
   /**
-   * @return the lookup model this lookup field is based on
+   * @return the search model this search field is based on
    */
-  public EntityLookupModel getModel() {
+  public EntitySearchModel getModel() {
     return model;
   }
 
   /**
    * Sets the SelectionProvider, that is, the object responsible for providing the component used
-   * for selecting items from the lookup result.
+   * for selecting items from the search result.
    * @param selectionProvider the {@link SelectionProvider} implementation to use when presenting
    * a selection dialog to the user
    * @throws NullPointerException in case {@code selectionProvider} is null
@@ -182,15 +182,15 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * Performs a lookup for the given entity type, using a EntityLookupField displayed
+   * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
    * in a dialog, using the default search attributes for the given entityType.
-   * @param entityType the entityType of the entity to perform a lookup for
+   * @param entityType the entityType of the entity to perform a search for
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
    * @return the selected entity or null in case no entity was selected
-   * @see EntityLookupField
+   * @see EntitySearchField
    * @see EntityDefinition#getSearchAttributes()
    */
   public static Entity lookupEntity(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
@@ -201,15 +201,15 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * Performs a lookup for the given entity type, using a EntityLookupField displayed
+   * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
    * in a dialog, using the default search attributes for the given entityType.
-   * @param entityType the entityType of the entity to perform a lookup for
+   * @param entityType the entityType of the entity to perform a search for
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
    * @return the selected entities or an empty list in case no entity was selected
-   * @see EntityLookupField
+   * @see EntitySearchField
    * @see EntityDefinition#getSearchAttributes()
    */
   public static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
@@ -264,8 +264,8 @@ public final class EntityLookupField extends JTextField {
           if (getText().isEmpty()) {
             getModel().setSelectedEntity(null);
           }
-          else if (!searchHint.isHintVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
-            performLookup(false);
+          else if (!searchHint.isHintVisible() && !performingSearch && !model.searchStringRepresentsSelected()) {
+            performSearch(false);
           }
         }
         updateColors();
@@ -278,9 +278,9 @@ public final class EntityLookupField extends JTextField {
     setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 
-  private void performLookup(final boolean promptUser) {
+  private void performSearch(final boolean promptUser) {
     try {
-      performingLookup = true;
+      performingSearch = true;
       if (nullOrEmpty(model.getSearchString())) {
         model.setSelectedEntities(null);
       }
@@ -316,14 +316,14 @@ public final class EntityLookupField extends JTextField {
       updateColors();
     }
     finally {
-      performingLookup = false;
+      performingSearch = false;
     }
   }
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder()
-            .command(() -> Dialogs.displayInDialog(EntityLookupField.this, settingsPanel, FrameworkMessages.get(FrameworkMessages.SETTINGS)))
+            .command(() -> Dialogs.displayInDialog(EntitySearchField.this, settingsPanel, FrameworkMessages.get(FrameworkMessages.SETTINGS)))
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 
@@ -332,7 +332,7 @@ public final class EntityLookupField extends JTextField {
 
   /**
    * Necessary due to a bug on windows, where pressing Enter to dismiss this message
-   * triggers another lookup, resulting in a loop
+   * triggers another search, resulting in a loop
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
@@ -363,14 +363,14 @@ public final class EntityLookupField extends JTextField {
   private static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                              final boolean singleSelection, final JComponent dialogParent,
                                              final String lookupCaption, final String dialogTitle) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityType, connectionProvider);
-    lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
-    final ComponentValuePanel<Entity, EntityLookupField> inputPanel = new ComponentValuePanel<>(lookupCaption,
-            new ComponentValue(lookupModel, null));
+    final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
+    searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
+    final ComponentValuePanel<Entity, EntitySearchField> inputPanel = new ComponentValuePanel<>(lookupCaption,
+            new ComponentValue(searchModel, null));
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      return lookupModel.getSelectedEntities();
+      return searchModel.getSelectedEntities();
     }
 
     return emptyList();
@@ -378,16 +378,16 @@ public final class EntityLookupField extends JTextField {
 
   private static final class SettingsPanel extends JPanel {
 
-    private SettingsPanel(final EntityLookupModel lookupModel) {
-      initializeUI(lookupModel);
+    private SettingsPanel(final EntitySearchModel searchModel) {
+      initializeUI(searchModel);
     }
 
-    private void initializeUI(final EntityLookupModel lookupModel) {
+    private void initializeUI(final EntitySearchModel searchModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
       final SwingFilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
-      final EntityDefinition definition = lookupModel.getConnectionProvider().getEntities().getDefinition(lookupModel.getEntityType());
-      for (final Map.Entry<Attribute<String>, EntityLookupModel.LookupSettings> entry :
-              lookupModel.getAttributeLookupSettings().entrySet()) {
+      final EntityDefinition definition = searchModel.getConnectionProvider().getEntities().getDefinition(searchModel.getEntityType());
+      for (final Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
+              searchModel.getAttributeSearchSettings().entrySet()) {
         propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.getProperty(entry.getKey()).getCaption()));
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getName());
       }
@@ -398,11 +398,11 @@ public final class EntityLookupField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()).link(lookupModel.getMultipleSelectionEnabledValue());
+      BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()).link(searchModel.getMultipleSelectionEnabledValue());
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      TextValues.textValue(multipleValueSeparatorField).link(lookupModel.getMultipleItemSeparatorValue());
+      TextValues.textValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -421,7 +421,7 @@ public final class EntityLookupField extends JTextField {
       add(generalSettingsPanel, BorderLayout.SOUTH);
     }
 
-    private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
+    private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
       BooleanValues.booleanButtonModelValue(boxCaseSensitive.getModel()).link(settings.getCaseSensitiveValue());
@@ -456,7 +456,7 @@ public final class EntityLookupField extends JTextField {
     void setPreferredSize(Dimension preferredSize);
 
     /**
-     * @return a Control which sets the selected entities in the underlying {@link EntityLookupModel}
+     * @return a Control which sets the selected entities in the underlying {@link EntitySearchModel}
      * and disposes the selection dialog
      */
     Control getSelectControl();
@@ -474,15 +474,15 @@ public final class EntityLookupField extends JTextField {
 
     /**
      * Instantiates a new {@link JList} based {@link SelectionProvider}.
-     * @param lookupModel the {@link EntityLookupModel}
+     * @param searchModel the {@link EntitySearchModel}
      */
-    public ListSelectionProvider(final EntityLookupModel lookupModel) {
-      requireNonNull(lookupModel, LOOKUP_MODEL);
+    public ListSelectionProvider(final EntitySearchModel searchModel) {
+      requireNonNull(searchModel, SEARCH_MODEL);
       this.selectControl = Control.builder().command(() -> {
-        lookupModel.setSelectedEntities(list.getSelectedValuesList());
+        searchModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
       }).name(Messages.get(Messages.OK)).build();
-      list.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
+      list.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
@@ -529,11 +529,11 @@ public final class EntityLookupField extends JTextField {
 
     /**
      * Instantiates a new {@link FilteredTable} based {@link SelectionProvider}.
-     * @param lookupModel the {@link EntityLookupModel}
+     * @param searchModel the {@link EntitySearchModel}
      */
-    public TableSelectionProvider(final EntityLookupModel lookupModel) {
-      requireNonNull(lookupModel, LOOKUP_MODEL);
-      final SwingEntityTableModel tableModel = new SwingEntityTableModel(lookupModel.getEntityType(), lookupModel.getConnectionProvider()) {
+    public TableSelectionProvider(final EntitySearchModel searchModel) {
+      requireNonNull(searchModel, SEARCH_MODEL);
+      final SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.getEntityType(), searchModel.getConnectionProvider()) {
         @Override
         protected Collection<Entity> refreshItems() {
           return emptyList();
@@ -541,17 +541,17 @@ public final class EntityLookupField extends JTextField {
       };
       table = new FilteredTable<>(tableModel);
       selectControl = Control.builder().command(() -> {
-        lookupModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
+        searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         Windows.getParentDialog(table).dispose();
       }).name(Messages.get(Messages.OK)).build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-      final String enterActionKey = "EntityLookupField.enter";
+      final String enterActionKey = "EntitySearchField.enter";
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<Attribute<String>> lookupAttributes = lookupModel.getLookupAttributes();
-      tableModel.getColumnModel().setColumns(lookupAttributes.toArray(new Attribute[0]));
-      tableModel.getSortModel().setSortingDirective(lookupAttributes.iterator().next(), SortingDirective.ASCENDING);
-      table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
+      final Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
+      tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
+      tableModel.getSortModel().setSortingDirective(searchAttributes.iterator().next(), SortingDirective.ASCENDING);
+      table.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
       scrollPane = new JScrollPane(table);
@@ -586,35 +586,35 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a EntityLookupField.
-   * @see EntityLookupField
+   * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntitySearchField}.
+   * @see EntitySearchField
    */
-  public static final class ComponentValue extends AbstractComponentValue<Entity, EntityLookupField> {
+  public static final class ComponentValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
     /**
      * Instantiates a new ComponentValue
-     * @param lookupModel the lookup model to base the lookup field on
+     * @param searchModel the search model to base the search field on
      * @param initialValue the initial value
      */
-    public ComponentValue(final EntityLookupModel lookupModel, final Entity initialValue) {
-      super(createEntityLookupField(lookupModel, initialValue));
+    public ComponentValue(final EntitySearchModel searchModel, final Entity initialValue) {
+      super(createEntitySearchField(searchModel, initialValue));
     }
 
     @Override
-    protected Entity getComponentValue(final EntityLookupField component) {
+    protected Entity getComponentValue(final EntitySearchField component) {
       final List<Entity> selectedEntities = getComponent().getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
-    protected void setComponentValue(final EntityLookupField component, final Entity value) {
+    protected void setComponentValue(final EntitySearchField component, final Entity value) {
       component.getModel().setSelectedEntity(value);
     }
 
-    private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {
-      final EntityLookupField field = new EntityLookupField(lookupModel);
-      lookupModel.setSelectedEntity(initialValue);
+    private static EntitySearchField createEntitySearchField(final EntitySearchModel searchModel, final Entity initialValue) {
+      final EntitySearchField field = new EntitySearchField(searchModel);
+      searchModel.setSelectedEntity(initialValue);
 
       return field;
     }
@@ -625,7 +625,7 @@ public final class EntityLookupField extends JTextField {
     public void keyPressed(final KeyEvent e) {
       if (!model.searchStringRepresentsSelected() && e.getKeyCode() == KeyEvent.VK_ENTER) {
         e.consume();
-        performLookup(true);
+        performSearch(true);
       }
     }
   }

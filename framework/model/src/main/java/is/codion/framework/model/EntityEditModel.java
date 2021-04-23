@@ -255,29 +255,29 @@ public interface EntityEditModel {
   void setPostEditEvents(boolean postEditEvents);
 
   /**
-   * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
+   * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key property,
    * using the search properties defined for that entity type, or if none are defined all string based searchable
    * properties in that entity.
-   * @param foreignKey the foreign key for which to create a {@link EntityLookupModel}
-   * @return a {@link EntityLookupModel} for looking up entities of the type referenced by the given foreign key attribute,
+   * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
+   * @return a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
    * given foreign key property
    */
-  EntityLookupModel createForeignKeyLookupModel(ForeignKey foreignKey);
+  EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey);
 
   /**
-   * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key
+   * Returns true if this edit model contains a {@link EntitySearchModel} for the given foreign key
    * @param foreignKey the foreign key
-   * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key
+   * @return true if a {@link EntitySearchModel} has been initialized for the given foreign key
    */
-  boolean containsLookupModel(ForeignKey foreignKey);
+  boolean containsSearchModel(ForeignKey foreignKey);
 
   /**
-   * @param foreignKey the foreign key for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} associated with the {@code foreignKey}, if no lookup model
+   * @param foreignKey the foreign key for which to retrieve the {@link EntitySearchModel}
+   * @return the {@link EntitySearchModel} associated with the {@code foreignKey}, if no search model
    * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(ForeignKey foreignKey);
+  EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey);
 
   /**
    * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.

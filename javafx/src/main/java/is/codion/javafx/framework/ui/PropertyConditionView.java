@@ -122,7 +122,7 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private Control createEqualsValueControl(final Property<T> property) {
     final Control control = createControl(property);
-    if (!(control instanceof EntityLookupField)) {
+    if (!(control instanceof EntitySearchField)) {
       final ValueSet<T> valueSet = model.getEqualValueSet();
       final Value<T> value = Value.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
@@ -163,12 +163,12 @@ public final class PropertyConditionView<T> extends BorderPane {
       listModel.getListModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
     }
     else if (model instanceof DefaultForeignKeyConditionModel) {
-      control = new EntityLookupField(((DefaultForeignKeyConditionModel) model).getEntityLookupModel());
+      control = new EntitySearchField(((DefaultForeignKeyConditionModel) model).getEntitySearchModel());
     }
     else {
       control = FXUiUtil.createControl(property, null);
     }
-    if (!(control instanceof EntityLookupField)) {
+    if (!(control instanceof EntitySearchField)) {
       control.setOnKeyReleased(event -> {
         if (event.getCode().equals(KeyCode.ENTER)) {
           model.setEnabled(!model.isEnabled());

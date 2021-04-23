@@ -13,9 +13,9 @@ import is.codion.framework.domain.entity.ForeignKey;
 public interface ForeignKeyConditionModel extends ColumnConditionModel<ForeignKey, Entity> {
 
   /**
-   * @return the EntityLookupModel used by this ForeignKeyConditionModel, if any
+   * @return the {@link EntitySearchModel} used by this ForeignKeyConditionModel, if any
    */
-  EntityLookupModel getEntityLookupModel();
+  EntitySearchModel getEntitySearchModel();
 
   /**
    * Refreshes any data bound models in this condition model

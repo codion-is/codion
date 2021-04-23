@@ -164,18 +164,18 @@ public abstract class EntityEditView extends BorderPane {
   protected void validateData() throws ValidationException {}
 
   /**
-   * Creates a {@link EntityLookupField} based on the entities referenced by the given foreign key
+   * Creates a {@link EntitySearchField} based on the entities referenced by the given foreign key
    * @param foreignKey the foreign key
-   * @return a {@link EntityLookupField} based on the given foreign key
+   * @return a {@link EntitySearchField} based on the given foreign key
    */
-  protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey) {
+  protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey) {
     checkControl(foreignKey);
     getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
-    final EntityLookupField lookupField = FXUiUtil.createLookupField(foreignKey, editModel);
+    final EntitySearchField searchField = FXUiUtil.createSearchField(foreignKey, editModel);
 
-    controls.put(foreignKey, lookupField);
+    controls.put(foreignKey, searchField);
 
-    return lookupField;
+    return searchField;
   }
 
   /**

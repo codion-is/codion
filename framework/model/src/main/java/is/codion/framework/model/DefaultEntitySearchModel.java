@@ -37,9 +37,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
- * A default EntityLookupModel implementation
+ * A default EntitySearchModel implementation
  */
-public final class DefaultEntityLookupModel implements EntityLookupModel {
+public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 
@@ -47,14 +47,14 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final State searchStringRepresentsSelectedState = State.state(true);
 
   /**
-   * The type of the entity this lookup model is based on
+   * The type of the entity this search model is based on
    */
   private final EntityType<?> entityType;
 
   /**
-   * The attributes to use when doing the lookup
+   * The attributes to use when doing the search
    */
-  private final Collection<Attribute<String>> lookupAttributes;
+  private final Collection<Attribute<String>> searchAttributes;
 
   /**
    * The selected entities
@@ -62,14 +62,14 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final List<Entity> selectedEntities = new ArrayList<>();
 
   /**
-   * The EntityConnectionProvider instance used by this EntityLookupModel
+   * The EntityConnectionProvider instance used by this EntitySearchModel
    */
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * Contains the search settings for lookup properties
+   * Contains the search settings for search properties
    */
-  private final Map<Attribute<String>, LookupSettings> attributeLookupSettings = new HashMap<>();
+  private final Map<Attribute<String>, SearchSettings> attributeSearchSettings = new HashMap<>();
 
   private final Value<String> searchStringValue = Value.value("");
   private final Value<String> multipleItemSeparatorValue = Value.value(",");
@@ -82,32 +82,32 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private String description;
 
   /**
-   * Instantiates a new EntityLookupModel, using the search properties for the given entity type
-   * @param entityType the type of the entity to lookup
-   * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
+   * Instantiates a new DefaultEntitySearchModel, using the search properties for the given entity type
+   * @param entityType the type of the entity to search
+   * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @see EntityDefinition#getSearchAttributes()
    */
-  public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntitySearchModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes());
   }
 
   /**
-   * Instantiates a new EntityLookupModel
-   * @param entityType the type of the entity to lookup
-   * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
-   * @param lookupAttributes the attributes to search by
+   * Instantiates a new EntitySearchModel
+   * @param entityType the type of the entity to search
+   * @param connectionProvider the EntityConnectionProvider to use when performing the search
+   * @param searchAttributes the attributes to search by
    */
-  public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                  final Collection<Attribute<String>> lookupAttributes) {
+  public DefaultEntitySearchModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+                                  final Collection<Attribute<String>> searchAttributes) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
-    requireNonNull(lookupAttributes, "lookupAttributes");
-    validateLookupProperties(entityType, lookupAttributes);
+    requireNonNull(searchAttributes, "searchAttributes");
+    validateSearchAttributes(entityType, searchAttributes);
     this.connectionProvider = connectionProvider;
     this.entityType = entityType;
-    this.lookupAttributes = lookupAttributes;
+    this.searchAttributes = searchAttributes;
     this.description = createDescription();
-    this.lookupAttributes.forEach(attribute -> attributeLookupSettings.put(attribute, new DefaultLookupSettings()));
+    this.searchAttributes.forEach(attribute -> attributeSearchSettings.put(attribute, new DefaultSearchSettings()));
     bindEventsInternal();
   }
 
@@ -122,8 +122,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Collection<Attribute<String>> getLookupAttributes() {
-    return unmodifiableCollection(lookupAttributes);
+  public Collection<Attribute<String>> getSearchAttributes() {
+    return unmodifiableCollection(searchAttributes);
   }
 
   @Override
@@ -154,7 +154,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     }//no change
     if (entities != null) {
       if (entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
-        throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
+        throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
       }
       entities.forEach(this::validateType);
     }
@@ -173,8 +173,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Map<Attribute<String>, LookupSettings> getAttributeLookupSettings() {
-    return attributeLookupSettings;
+  public Map<Attribute<String>, SearchSettings> getAttributeSearchSettings() {
+    return attributeSearchSettings;
   }
 
   @Override
@@ -267,23 +267,23 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /**
-   * @return a condition based on this lookup model including any additional lookup condition
-   * @throws IllegalStateException in case no lookup properties are specified
+   * @return a condition based on this search model including any additional search condition
+   * @throws IllegalStateException in case no search properties are specified
    * @see #setAdditionalConditionProvider(Condition.Provider)
    */
   private SelectCondition getEntitySelectCondition() {
-    if (lookupAttributes.isEmpty()) {
-      throw new IllegalStateException("No search attributes provided for lookup model: " + entityType);
+    if (searchAttributes.isEmpty()) {
+      throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
     final Condition.Combination conditionCombination = combination(Conjunction.OR);
-    final String[] lookupTexts = multipleSelectionEnabledValue.get() ?
+    final String[] searchTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
-    for (final Attribute<String> lookupAttribute : lookupAttributes) {
-      final LookupSettings lookupSettings = attributeLookupSettings.get(lookupAttribute);
-      for (final String rawLookupText : lookupTexts) {
-        final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final AttributeCondition<String> condition = condition(lookupAttribute)
-                .equalTo(lookupText).caseSensitive(lookupSettings.getCaseSensitiveValue().get());
+    for (final Attribute<String> searchAttribute : searchAttributes) {
+      final SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
+      for (final String rawSearchText : searchTexts) {
+        final String searchText = prepareSearchText(rawSearchText, searchSettings);
+        final AttributeCondition<String> condition = condition(searchAttribute)
+                .equalTo(searchText).caseSensitive(searchSettings.getCaseSensitiveValue().get());
         conditionCombination.add(condition);
       }
     }
@@ -293,12 +293,12 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
             .select().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 
-  private String prepareLookupText(final String rawLookupText, final LookupSettings lookupSettings) {
-    final boolean wildcardPrefix = lookupSettings.getWildcardPrefixValue().get();
-    final boolean wildcardPostfix = lookupSettings.getWildcardPostfixValue().get();
+  private String prepareSearchText(final String rawSearchText, final SearchSettings searchSettings) {
+    final boolean wildcardPrefix = searchSettings.getWildcardPrefixValue().get();
+    final boolean wildcardPostfix = searchSettings.getWildcardPostfixValue().get();
 
-    return rawLookupText.equals(wildcard) ? wildcard :
-            ((wildcardPrefix ? wildcard : "") + rawLookupText.trim() + (wildcardPostfix ? wildcard : ""));
+    return rawSearchText.equals(wildcard) ? wildcard :
+            ((wildcardPrefix ? wildcard : "") + rawSearchText.trim() + (wildcardPostfix ? wildcard : ""));
   }
 
   private void bindEventsInternal() {
@@ -310,7 +310,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private String createDescription() {
     final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
 
-    return lookupAttributes.stream().map(attribute -> definition.getProperty(attribute).getCaption()).collect(joining(", "));
+    return searchAttributes.stream().map(attribute -> definition.getProperty(attribute).getCaption()).collect(joining(", "));
   }
 
   private String toString(final List<Entity> entities) {
@@ -323,15 +323,15 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  private static void validateLookupProperties(final EntityType<?> entityType, final Collection<Attribute<String>> lookupAttributes) {
-    for (final Attribute<String> attribute : lookupAttributes) {
+  private static void validateSearchAttributes(final EntityType<?> entityType, final Collection<Attribute<String>> searchAttributes) {
+    for (final Attribute<String> attribute : searchAttributes) {
       if (!entityType.equals(attribute.getEntityType())) {
         throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
       }
     }
   }
 
-  private static final class DefaultLookupSettings implements LookupSettings {
+  private static final class DefaultSearchSettings implements SearchSettings {
 
     private final Value<Boolean> wildcardPrefixValue = Value.value(true, false);
     private final Value<Boolean> wildcardPostfixValue = Value.value(true, false);

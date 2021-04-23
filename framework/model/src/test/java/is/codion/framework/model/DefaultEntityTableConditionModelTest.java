@@ -58,7 +58,7 @@ public class DefaultEntityTableConditionModelTest {
             CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
     //no search properties defined for master entity
     assertThrows(IllegalStateException.class, () ->
-            ((DefaultForeignKeyConditionModel) model.getConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery());
+            ((DefaultForeignKeyConditionModel) model.getConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntitySearchModel().performQuery());
   }
 
   @Test

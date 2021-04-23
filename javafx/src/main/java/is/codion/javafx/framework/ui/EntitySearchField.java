@@ -6,7 +6,7 @@ package is.codion.javafx.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.javafx.framework.ui.values.PropertyValues;
 
 import javafx.application.Platform;
@@ -23,36 +23,36 @@ import java.util.List;
 import static is.codion.common.Util.nullOrEmpty;
 
 /**
- * A {@link TextField} allowing entity lookup based on the text entered
+ * A {@link TextField} allowing entity search based on the text entered
  */
-public final class EntityLookupField extends TextField {
+public final class EntitySearchField extends TextField {
 
-  private final EntityLookupModel model;
+  private final EntitySearchModel model;
   //todo used during focus lost, todo implement
-  private boolean performingLookup = false;
+  private boolean performingSearch = false;
 
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
 
   /**
-   * Instantiates a new {@link EntityLookupField} based on the given model
-   * @param model the {@link EntityLookupModel} model to base this lookup field on
+   * Instantiates a new {@link EntitySearchField} based on the given model
+   * @param model the {@link EntitySearchModel} model to base this search field on
    */
-  public EntityLookupField(final EntityLookupModel model) {
+  public EntitySearchField(final EntitySearchModel model) {
     this.model = model;
     linkToModel();
     setInvalidBackgroundColor(Color.DARKGRAY);
     setPromptText(Messages.get(Messages.SEARCH_FIELD_HINT));
     tooltipProperty().setValue(new Tooltip(model.getDescription()));
-    setOnKeyPressed(new LookupKeyHandler());
+    setOnKeyPressed(new SearchKeyHandler());
     focusedProperty().addListener((observable, oldValue, newValue) -> onFocusChanged(newValue));
     updateColors();
   }
 
   /**
-   * @return the lookup model
+   * @return the search model
    */
-  public EntityLookupModel getModel() {
+  public EntitySearchModel getModel() {
     return model;
   }
 
@@ -70,9 +70,9 @@ public final class EntityLookupField extends TextField {
     this.invalidBackgroundColor = invalidBackgroundColor;
   }
 
-  private void performLookup(final boolean promptUser) {
+  private void performSearch(final boolean promptUser) {
     try {
-      performingLookup = true;
+      performingSearch = true;
       if (nullOrEmpty(model.getSearchString())) {
         model.setSelectedEntities(null);
       }
@@ -94,7 +94,7 @@ public final class EntityLookupField extends TextField {
       updateColors();
     }
     finally {
-      performingLookup = false;
+      performingSearch = false;
     }
   }
 
@@ -124,8 +124,8 @@ public final class EntityLookupField extends TextField {
       if (getText().isEmpty()) {
         getModel().setSelectedEntity(null);
       }
-      else if (!performingLookup && !model.searchStringRepresentsSelected()) {
-        performLookup(false);
+      else if (!performingSearch && !model.searchStringRepresentsSelected()) {
+        performSearch(false);
       }
       updateColors();
     }
@@ -136,7 +136,7 @@ public final class EntityLookupField extends TextField {
             FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION), ButtonType.OK)::showAndWait);
   }
 
-  private class LookupKeyHandler implements EventHandler<KeyEvent> {
+  private class SearchKeyHandler implements EventHandler<KeyEvent> {
 
     @Override
     public void handle(final KeyEvent event) {
@@ -154,7 +154,7 @@ public final class EntityLookupField extends TextField {
 
     private void onEnter() {
       if (!model.getSearchStringRepresentsSelectedObserver().get()) {
-        performLookup(true);
+        performSearch(true);
       }
     }
 

@@ -18,7 +18,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
 import is.codion.javafx.framework.model.ObservableEntityList;
@@ -241,8 +241,8 @@ public final class FXUiUtil {
 
         return (Value<T>) entityValue;
       }
-      else if (control instanceof EntityLookupField) {
-        final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue(((EntityLookupField) control).getModel());
+      else if (control instanceof EntitySearchField) {
+        final Value<Collection<Entity>> entityValue = PropertyValues.searchValue(((EntitySearchField) control).getModel());
         entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
 
         return (Value<T>) entityValue;
@@ -680,17 +680,17 @@ public final class FXUiUtil {
   }
 
   /**
-   * Instantiates a {@link EntityLookupField} based on the given foreign key and linked to the given edit model
+   * Instantiates a {@link EntitySearchField} based on the given foreign key and linked to the given edit model
    * @param foreignKey the foreign key
    * @param editModel the edit model
-   * @return a {@link EntityLookupField} based on the given property
+   * @return a {@link EntitySearchField} based on the given property
    */
-  public static EntityLookupField createLookupField(final ForeignKey foreignKey, final FXEntityEditModel editModel) {
-    final EntityLookupModel lookupModel = requireNonNull(editModel).getForeignKeyLookupModel(requireNonNull(foreignKey));
-    final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    PropertyValues.lookupValue(lookupModel).link(editModel.value(foreignKey));
+  public static EntitySearchField createSearchField(final ForeignKey foreignKey, final FXEntityEditModel editModel) {
+    final EntitySearchModel searchModel = requireNonNull(editModel).getForeignKeySearchModel(requireNonNull(foreignKey));
+    final EntitySearchField searchField = new EntitySearchField(searchModel);
+    PropertyValues.searchValue(searchModel).link(editModel.value(foreignKey));
 
-    return lookupField;
+    return searchField;
   }
 
   /**

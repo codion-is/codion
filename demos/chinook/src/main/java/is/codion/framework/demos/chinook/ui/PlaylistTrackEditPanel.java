@@ -7,7 +7,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityLookupField;
+import is.codion.swing.framework.ui.EntitySearchField;
 
 import static is.codion.swing.common.ui.Components.setPreferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
@@ -25,9 +25,9 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
 
     final EntityComboBox playlistComboBox = createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
     setPreferredHeight(playlistComboBox, getPreferredTextFieldHeight());
-    final EntityLookupField trackLookupField = createForeignKeyLookupField(PlaylistTrack.TRACK_FK);
-    trackLookupField.setSelectionProvider(new TrackSelectionProvider(trackLookupField.getModel()));
-    trackLookupField.setColumns(30);
+    final EntitySearchField trackSearchField = createForeignKeySearchField(PlaylistTrack.TRACK_FK);
+    trackSearchField.setSelectionProvider(new TrackSelectionProvider(trackSearchField.getModel()));
+    trackSearchField.setColumns(30);
 
     setLayout(gridLayout(2, 1));
     addInputPanel(PlaylistTrack.PLAYLIST_FK);

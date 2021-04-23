@@ -8,8 +8,8 @@ import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityLookupField;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -40,8 +40,8 @@ public class InvoiceEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
-    final EntityLookupField customerField = createForeignKeyLookupField(Invoice.CUSTOMER_FK);
-    configureCustomerLookup(customerField);
+    final EntitySearchField customerField = createForeignKeySearchField(Invoice.CUSTOMER_FK);
+    configureCustomerSearch(customerField);
     customerField.setColumns(16);
     final TemporalInputPanel<LocalDate> datePanel = createTemporalInputPanel(Invoice.DATE);
     datePanel.getInputField().setColumns(12);
@@ -80,9 +80,9 @@ public class InvoiceEditPanel extends EntityEditPanel {
     add(invoiceLinePanel, BorderLayout.EAST);
   }
 
-  private static void configureCustomerLookup(final EntityLookupField customerField) {
-    final EntityLookupField.TableSelectionProvider customerSelectionProvider =
-            new EntityLookupField.TableSelectionProvider(customerField.getModel());
+  private static void configureCustomerSearch(final EntitySearchField customerField) {
+    final EntitySearchField.TableSelectionProvider customerSelectionProvider =
+            new EntitySearchField.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
     tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
     tableModel.getSortModel().setSortingDirective(Customer.LASTNAME, ASCENDING);

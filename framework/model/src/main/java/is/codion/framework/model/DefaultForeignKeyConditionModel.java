@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity>
         implements ForeignKeyConditionModel {
 
-  private final EntityLookupModel entityLookupModel;
+  private final EntitySearchModel entitySearchModel;
 
   private boolean updatingModel = false;
 
@@ -31,19 +31,19 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
    * @param foreignKey the foreign key
-   * @param entityLookupModel a EntityLookupModel
+   * @param entitySearchModel a EntitySearchModel
    */
-  public DefaultForeignKeyConditionModel(final ForeignKey foreignKey, final EntityLookupModel entityLookupModel) {
+  public DefaultForeignKeyConditionModel(final ForeignKey foreignKey, final EntitySearchModel entitySearchModel) {
     super(foreignKey, Entity.class, Property.WILDCARD_CHARACTER.get());
-    this.entityLookupModel = entityLookupModel;
-    if (entityLookupModel != null) {
-      bindLookupModelEvents();
+    this.entitySearchModel = entitySearchModel;
+    if (entitySearchModel != null) {
+      bindSearchModelEvents();
     }
   }
 
   @Override
-  public final EntityLookupModel getEntityLookupModel() {
-    return entityLookupModel;
+  public final EntitySearchModel getEntitySearchModel() {
+    return entitySearchModel;
   }
 
   @Override
@@ -57,8 +57,8 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     this.updatingModel = updatingModel;
   }
 
-  private void bindLookupModelEvents() {
-    entityLookupModel.addSelectedEntitiesListener(selectedEntities -> {
+  private void bindSearchModelEvents() {
+    entitySearchModel.addSelectedEntitiesListener(selectedEntities -> {
       try {
         setUpdatingModel(true);
         setEqualValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
@@ -70,7 +70,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     });
     addEqualsValueListener(() -> {
       if (!isUpdatingModel()) {
-        entityLookupModel.setSelectedEntities(new ArrayList<>(getEqualValues()));
+        entitySearchModel.setSelectedEntities(new ArrayList<>(getEqualValues()));
       }
     });
   }

@@ -58,7 +58,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Foreign
         return Completion.maximumMatch(new EntityComboBox(((SwingForeignKeyConditionModel) model).getEntityComboBoxModel()).refreshOnSetVisible());
       }
 
-      return TextFields.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));
+      return TextFields.selectAllOnFocusGained(new EntitySearchField(((ForeignKeyConditionModel) model).getEntitySearchModel()));
     }
   }
 }

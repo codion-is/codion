@@ -97,17 +97,17 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void getForeignKeyLookupModel() {
-    assertFalse(employeeEditModel.containsLookupModel(TestDomain.EMP_DEPARTMENT_FK));
-    final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK);
-    assertTrue(employeeEditModel.containsLookupModel(TestDomain.EMP_DEPARTMENT_FK));
+  public void getForeignKeySearchModel() {
+    assertFalse(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
+    final EntitySearchModel model = employeeEditModel.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
+    assertTrue(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.getForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(model, employeeEditModel.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test
-  public void createForeignKeyLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK);
+  public void createForeignKeySearchModel() {
+    final EntitySearchModel model = employeeEditModel.createForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityType());
   }

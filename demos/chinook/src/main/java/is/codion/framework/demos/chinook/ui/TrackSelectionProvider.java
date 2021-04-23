@@ -3,19 +3,19 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityLookupField;
+import is.codion.swing.framework.ui.EntitySearchField;
 
 import java.awt.Dimension;
 
 import static is.codion.common.model.table.SortingDirective.ASCENDING;
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 
-final class TrackSelectionProvider extends EntityLookupField.TableSelectionProvider {
+final class TrackSelectionProvider extends EntitySearchField.TableSelectionProvider {
 
-  TrackSelectionProvider(final EntityLookupModel trackLookupModel) {
-    super(trackLookupModel);
+  TrackSelectionProvider(final EntitySearchModel trackSearchModel) {
+    super(trackSearchModel);
     final SwingEntityTableModel tableModel = getTable().getModel();
     tableModel.getColumnModel().setColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
     tableModel.getSortModel().setSortingDirective(Track.ARTIST_DENORM, ASCENDING);
