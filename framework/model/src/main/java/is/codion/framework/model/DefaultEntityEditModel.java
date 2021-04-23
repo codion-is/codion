@@ -84,9 +84,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * Holds the EntityLookupModels used by this {@link EntityEditModel}
+   * Holds the {@link EntitySearchModel}s used by this {@link EntityEditModel}
    */
-  private final Map<ForeignKey, EntityLookupModel> entityLookupModels = new ConcurrentHashMap<>();
+  private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new ConcurrentHashMap<>();
 
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
@@ -601,13 +601,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsLookupModel(final ForeignKey foreignKey) {
+  public final boolean containsSearchModel(final ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    return entityLookupModels.containsKey(foreignKey);
+    return entitySearchModels.containsKey(foreignKey);
   }
 
   @Override
-  public EntityLookupModel createForeignKeyLookupModel(final ForeignKey foreignKey) {
+  public EntitySearchModel createForeignKeySearchModel(final ForeignKey foreignKey) {
     final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
     final Collection<Attribute<String>> searchAttributes = getEntities()
             .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
@@ -615,23 +615,23 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       throw new IllegalStateException("No search attributes defined for entity: " + property.getReferencedEntityType());
     }
 
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityType(), connectionProvider, searchAttributes);
-    lookupModel.getMultipleSelectionEnabledValue().set(false);
+    final EntitySearchModel searchModel = new DefaultEntitySearchModel(property.getReferencedEntityType(), connectionProvider, searchAttributes);
+    searchModel.getMultipleSelectionEnabledValue().set(false);
 
-    return lookupModel;
+    return searchModel;
   }
 
   @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final ForeignKey foreignKey) {
+  public final EntitySearchModel getForeignKeySearchModel(final ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    synchronized (entityLookupModels) {
-      EntityLookupModel lookupModel = entityLookupModels.get(foreignKey);
-      if (lookupModel == null) {
-        lookupModel = createForeignKeyLookupModel(foreignKey);
-        entityLookupModels.put(foreignKey, lookupModel);
+    synchronized (entitySearchModels) {
+      EntitySearchModel searchModel = entitySearchModels.get(foreignKey);
+      if (searchModel == null) {
+        searchModel = createForeignKeySearchModel(foreignKey);
+        entitySearchModels.put(foreignKey, searchModel);
       }
 
-      return lookupModel;
+      return searchModel;
     }
   }
 

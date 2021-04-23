@@ -28,7 +28,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultEntityLookupModelTest {
+public final class DefaultEntitySearchModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -36,181 +36,181 @@ public final class DefaultEntityLookupModelTest {
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
-  private EntityLookupModel lookupModel;
-  private Collection<Attribute<String>> lookupAttributes;
+  private EntitySearchModel searchModel;
+  private Collection<Attribute<String>> searchAttributes;
 
   @Test
   public void constructorNullEntityType() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(null, CONNECTION_PROVIDER, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(null, CONNECTION_PROVIDER, new ArrayList<>()));
   }
 
   @Test
   public void constructorNullConnectionProvider() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, null, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, null, new ArrayList<>()));
   }
 
   @Test
-  public void constructorNullLookupProperties() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null));
+  public void constructorNullSearchProperties() {
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null));
   }
 
   @Test
-  public void lookupWithNoLookupProperties() {
-    assertThrows(IllegalStateException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, emptyList()).performQuery());
+  public void searchWithNoSearchProperties() {
+    assertThrows(IllegalStateException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, emptyList()).performQuery());
   }
 
   @Test
-  public void constructorIncorrectEntityLookupProperty() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
+  public void constructorIncorrectEntitySearchProperty() {
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
             singletonList(TestDomain.DEPARTMENT_NAME)));
   }
 
   @Test
   public void theRest() {
-    lookupModel.setDescription("description");
-    assertEquals("description", lookupModel.getDescription());
-    assertNotNull(lookupModel.getConnectionProvider());
-    assertTrue(lookupModel.getLookupAttributes().containsAll(lookupAttributes));
-    assertNotNull(lookupModel.getWildcard());
+    searchModel.setDescription("description");
+    assertEquals("description", searchModel.getDescription());
+    assertNotNull(searchModel.getConnectionProvider());
+    assertTrue(searchModel.getSearchAttributes().containsAll(searchAttributes));
+    assertNotNull(searchModel.getWildcard());
   }
 
   @Test
   public void wrongEntityType() {
-    assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntity(ENTITIES.entity(TestDomain.T_DEPARTMENT)));
+    assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntity(ENTITIES.entity(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void setMultipleSelectionNotEnabled() {
-    lookupModel.getMultipleSelectionEnabledValue().set(false);
+    searchModel.getMultipleSelectionEnabledValue().set(false);
     final List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
-    assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntities(entities));
+    assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntities(entities));
   }
 
   @Test
   public void setToStringProvider() {
     final Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
-    lookupModel.setToStringProvider(entity -> entity.getAsString(job.getAttribute()));
+    searchModel.setToStringProvider(entity -> entity.getAsString(job.getAttribute()));
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
     employee.put(TestDomain.EMP_JOB, "CLERK");
-    lookupModel.setSelectedEntities(singletonList(employee));
-    assertEquals(lookupModel.getSearchString(), "CLERK");
-    lookupModel.setToStringProvider(null);
-    lookupModel.setSelectedEntities(singletonList(employee));
-    assertEquals(lookupModel.getSearchString(), "Darri");
+    searchModel.setSelectedEntities(singletonList(employee));
+    assertEquals(searchModel.getSearchString(), "CLERK");
+    searchModel.setToStringProvider(null);
+    searchModel.setSelectedEntities(singletonList(employee));
+    assertEquals(searchModel.getSearchString(), "Darri");
   }
 
   @Test
-  public void lookupModel() throws Exception {
-    lookupModel.getMultipleSelectionEnabledValue().set(true);
-    lookupModel.setWildcard("%");
-    lookupModel.setSearchString("joh");
-    assertFalse(lookupModel.searchStringRepresentsSelected());
-    List<Entity> result = lookupModel.performQuery();
+  public void searchModel() throws Exception {
+    searchModel.getMultipleSelectionEnabledValue().set(true);
+    searchModel.setWildcard("%");
+    searchModel.setSearchString("joh");
+    assertFalse(searchModel.searchStringRepresentsSelected());
+    List<Entity> result = searchModel.performQuery();
     assertTrue(result.size() > 0);
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
     assertFalse(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
-    assertEquals(lookupModel.getSearchString(), "joh");
-    lookupModel.setSelectedEntities(result);
-    assertEquals("John" + lookupModel.getMultipleItemSeparatorValue().get() + "johnson", lookupModel.getSearchString());
+    assertEquals(searchModel.getSearchString(), "joh");
+    searchModel.setSelectedEntities(result);
+    assertEquals("John" + searchModel.getMultipleItemSeparatorValue().get() + "johnson", searchModel.getSearchString());
 
-    lookupModel.setSearchString("jo");
-    result = lookupModel.performQuery();
+    searchModel.setSearchString("jo");
+    result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
     assertFalse(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    lookupModel.setSearchString("le");
-    result = lookupModel.performQuery();
+    searchModel.setSearchString("le");
+    result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
-    lookupModel.setSearchString("jo,cl");
-    result = lookupModel.performQuery();
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
+    searchModel.setSearchString("jo,cl");
+    result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    lookupModel.setSearchString("Joh");
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
-    result = lookupModel.performQuery();
+    searchModel.setSearchString("Joh");
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
+    result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(false);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(false);
-    result = lookupModel.performQuery();
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(false);
+    result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
     assertFalse(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    lookupModel.getMultipleItemSeparatorValue().set(";");
-    lookupModel.setSearchString("andy ; Andrew ");//spaces should be trimmed away
-    result = lookupModel.performQuery();
+    searchModel.getMultipleItemSeparatorValue().set(";");
+    searchModel.setSearchString("andy ; Andrew ");//spaces should be trimmed away
+    result = searchModel.performQuery();
     assertEquals(2, result.size());
     assertTrue(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
-    lookupModel.setSearchString("andy;Andrew");
-    result = lookupModel.performQuery();
+    searchModel.setSearchString("andy;Andrew");
+    result = searchModel.performQuery();
     assertEquals(2, result.size());
     assertTrue(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
-    lookupModel.setSelectedEntities(result);
-    assertTrue(lookupModel.searchStringRepresentsSelected());
+    searchModel.setSelectedEntities(result);
+    assertTrue(searchModel.searchStringRepresentsSelected());
 
-    lookupModel.setSearchString("and; rew");
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(true);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(true);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(false);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(false);
-    result = lookupModel.performQuery();
+    searchModel.setSearchString("and; rew");
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(false);
+    result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertFalse(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
-    lookupModel.setSearchString("Joh");
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(true);
-    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(true);
-    lookupModel.setAdditionalConditionProvider(() ->
+    searchModel.setSearchString("Joh");
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(true);
+    searchModel.setAdditionalConditionProvider(() ->
             Conditions.condition(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
-    result = lookupModel.performQuery();
+    result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
   }
 
   @Test
-  public void setAdditionalLookupCondition() {
-    lookupModel.getMultipleSelectionEnabledValue().set(false);
-    lookupModel.setWildcard("%");
-    lookupModel.setSearchString("johnson");
-    List<Entity> result = lookupModel.performQuery();
+  public void setAdditionalConditionProvider() {
+    searchModel.getMultipleSelectionEnabledValue().set(false);
+    searchModel.setWildcard("%");
+    searchModel.setSearchString("johnson");
+    List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());
-    lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_1_TYPE));
-    assertEquals(1, lookupModel.getSelectedEntities().size());
-    result = lookupModel.performQuery();
+    searchModel.setSelectedEntities(result);
+    searchModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_1_TYPE));
+    assertEquals(1, searchModel.getSelectedEntities().size());
+    result = searchModel.performQuery();
     assertTrue(result.isEmpty());
   }
 
   @BeforeEach
   public void setUp() throws Exception {
-    lookupAttributes = asList(TestDomain.EMP_NAME, TestDomain.EMP_JOB);
-    lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupAttributes);
+    searchAttributes = asList(TestDomain.EMP_NAME, TestDomain.EMP_JOB);
+    searchModel = new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, searchAttributes);
 
     CONNECTION_PROVIDER.getConnection().beginTransaction();
     setupData();

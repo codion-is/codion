@@ -30,17 +30,17 @@ public class DefaultForeignKeyConditionModelTest {
 
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
+    final EntitySearchModel searchModel = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             singletonList(TestDomain.DEPARTMENT_NAME));
-    final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, lookupModel);
+    final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, searchModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    lookupModel.setSelectedEntity(sales);
+    searchModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
-    lookupModel.setSelectedEntities(salesAccounting);
+    searchModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getEqualValues().contains(sales));
     assertTrue(conditionModel.getEqualValues().contains(accounting));
     searchEntities = conditionModel.getEqualValues();
@@ -49,12 +49,12 @@ public class DefaultForeignKeyConditionModelTest {
     assertTrue(searchEntities.contains(accounting));
 
     conditionModel.setEqualValue(null);
-    assertTrue(lookupModel.getSelectedEntities().isEmpty());
+    assertTrue(searchModel.getSelectedEntities().isEmpty());
     conditionModel.setEqualValue(sales);
-    assertEquals(lookupModel.getSelectedEntities().iterator().next(), sales);
+    assertEquals(searchModel.getSelectedEntities().iterator().next(), sales);
     assertTrue(conditionModel.getEqualValues().contains(sales));
 
-    lookupModel.setSelectedEntity(null);
+    searchModel.setSelectedEntity(null);
 
     searchEntities = conditionModel.getEqualValues();
     assertTrue(searchEntities.isEmpty());

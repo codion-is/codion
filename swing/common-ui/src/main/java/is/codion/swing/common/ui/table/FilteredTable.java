@@ -118,7 +118,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * Provides filter panels
    */
-  private final ConditionPanelFactory<R, C, ?> conditionPanelFactory;
+  private final ConditionPanelFactory conditionPanelFactory;
 
   /**
    * the property filter panels
@@ -169,7 +169,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param tableModel the table model
    * @param conditionPanelFactory the column condition panel factory
    */
-  public FilteredTable(final T tableModel, final ConditionPanelFactory<R, C, ?> conditionPanelFactory) {
+  public FilteredTable(final T tableModel, final ConditionPanelFactory conditionPanelFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(), tableModel.getSelectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
@@ -604,7 +604,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final int index = columnModel.getColumnIndexAtX(event.getX());
     final TableColumn column = columnModel.getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
-      columnFilterPanels.put(column, conditionPanelFactory.createConditionPanel(column));
+      columnFilterPanels.put(column, (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column));
     }
 
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), this);

@@ -18,7 +18,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
@@ -199,7 +199,7 @@ public final class EntityInputComponents {
   public <T> JComponent createInputComponent(final Attribute<T> attribute, final Value<T> value,
                                              final StateObserver enabledState) {
     if (attribute instanceof ForeignKey) {
-      throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeyLookupField() for ForeignKeys");
+      throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeySearchField() for ForeignKeys");
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (property instanceof ValueListProperty) {
@@ -377,38 +377,38 @@ public final class EntityInputComponents {
   }
 
   /**
-   * Creates a EntityLookupField based on the given foreign key
-   * @param foreignKey the foreign key on which entity to base the lookup model
+   * Creates a {@link EntitySearchField} based on the given foreign key
+   * @param foreignKey the foreign key on which entity to base the search model
    * @param value the value to bind to the field
-   * @param lookupModel the {@link EntityLookupModel} to use and to bind with the value
-   * @return a lookup model based on the given foreign key
+   * @param searchModel the {@link EntitySearchModel} to use and to bind with the value
+   * @return a search model based on the given foreign key
    */
-  public EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey, final Value<Entity> value,
-                                                       final EntityLookupModel lookupModel) {
-    return createForeignKeyLookupField(foreignKey, value, lookupModel, null);
+  public EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey, final Value<Entity> value,
+                                                       final EntitySearchModel searchModel) {
+    return createForeignKeySearchField(foreignKey, value, searchModel, null);
   }
 
   /**
-   * Creates a EntityLookupField based on the given foreign key
-   * @param foreignKey the foreign key on which entity to base the lookup model
+   * Creates a {@link EntitySearchField} based on the given foreign key
+   * @param foreignKey the foreign key on which entity to base the search model
    * @param value the value to bind to the field
-   * @param lookupModel the {@link EntityLookupModel} to use and to bind with the value
-   * @param enabledState the state controlling the enabled state of the lookup field
-   * @return a lookup model based on the given foreign key
+   * @param searchModel the {@link EntitySearchModel} to use and to bind with the value
+   * @param enabledState the state controlling the enabled state of the search field
+   * @return a search model based on the given foreign key
    */
-  public EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey, final Value<Entity> value,
-                                                       final EntityLookupModel lookupModel, final StateObserver enabledState) {
+  public EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey, final Value<Entity> value,
+                                                       final EntitySearchModel searchModel, final StateObserver enabledState) {
     requireNonNull(foreignKey, FOREIGN_KEY_PROPERTY_PARAM_NAME);
-    requireNonNull(lookupModel, "lookupModel");
+    requireNonNull(searchModel, "searchModel");
     requireNonNull(value, VALUE_PARAM_NAME);
-    final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    new LookupUIValue(lookupField.getModel()).link(value);
-    linkToEnabledState(enabledState, lookupField);
+    final EntitySearchField searchField = new EntitySearchField(searchModel);
+    new SearchUIValue(searchField.getModel()).link(value);
+    linkToEnabledState(enabledState, searchField);
     final String propertyDescription = entityDefinition.getProperty(foreignKey).getDescription();
-    lookupField.setToolTipText(propertyDescription == null ? lookupModel.getDescription() : propertyDescription);
-    TextFields.selectAllOnFocusGained(lookupField);
+    searchField.setToolTipText(propertyDescription == null ? searchModel.getDescription() : propertyDescription);
+    TextFields.selectAllOnFocusGained(searchField);
 
-    return lookupField;
+    return searchField;
   }
 
   /**
@@ -949,23 +949,23 @@ public final class EntityInputComponents {
     }
   }
 
-  private static final class LookupUIValue extends AbstractValue<Entity> {
-    private final EntityLookupModel lookupModel;
+  private static final class SearchUIValue extends AbstractValue<Entity> {
+    private final EntitySearchModel searchModel;
 
-    private LookupUIValue(final EntityLookupModel lookupModel) {
-      this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selected -> notifyValueChange());
+    private SearchUIValue(final EntitySearchModel searchModel) {
+      this.searchModel = searchModel;
+      this.searchModel.addSelectedEntitiesListener(selected -> notifyValueChange());
     }
 
     @Override
     public Entity get() {
-      final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
+      final List<Entity> selectedEntities = searchModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
     protected void setValue(final Entity value) {
-      lookupModel.setSelectedEntity(value);
+      searchModel.setSelectedEntity(value);
     }
   }
 }

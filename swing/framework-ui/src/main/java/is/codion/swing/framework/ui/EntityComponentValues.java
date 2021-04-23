@@ -109,6 +109,6 @@ public class EntityComponentValues {
       return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
     }
 
-    return (ComponentValue<Entity, T>) new EntityLookupField.ComponentValue(editModel.createForeignKeyLookupModel(foreignKey), initialValue);
+    return (ComponentValue<Entity, T>) new EntitySearchField.ComponentValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
   }
 }

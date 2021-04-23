@@ -18,8 +18,8 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityLookupField;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntitySearchField;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
@@ -118,8 +118,8 @@ public final class ClientTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Album.ARTIST_FK);
-      EntityLookupField artistLookupField = createForeignKeyLookupField(Album.ARTIST_FK);
-      artistLookupField.setColumns(15);
+      EntitySearchField artistSearchField = createForeignKeySearchField(Album.ARTIST_FK);
+      artistSearchField.setColumns(15);
       JTextField titleField = createTextField(Album.TITLE);
       removeTransferFocusOnEnter(titleField);
       titleField.setAction(createInsertControl());

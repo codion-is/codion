@@ -8,8 +8,8 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.DefaultEntityLookupModel;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.DefaultEntitySearchModel;
+import is.codion.framework.model.EntitySearchModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * Date: 17.4.2010
  * Time: 12:06:44
  */
-public class EntityLookupFieldTest {
+public class EntitySearchFieldTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -30,8 +30,8 @@ public class EntityLookupFieldTest {
 
   @Test
   public void inputProvider() throws Exception {
-    final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final EntityLookupField.ComponentValue provider = new EntityLookupField.ComponentValue(model, null);
+    final EntitySearchModel model = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    final EntitySearchField.ComponentValue provider = new EntitySearchField.ComponentValue(model, null);
 
     assertNull(provider.get());
 

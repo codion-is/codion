@@ -26,9 +26,9 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   @Override
   public ColumnConditionModel<ForeignKey, Entity> createForeignKeyConditionModel(
           final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(foreignKey.getReferencedEntityType(), connectionProvider);
-    lookupModel.getMultipleSelectionEnabledValue().set(true);
+    final EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
+    searchModel.getMultipleSelectionEnabledValue().set(true);
 
-    return new DefaultForeignKeyConditionModel(foreignKey, lookupModel);
+    return new DefaultForeignKeyConditionModel(foreignKey, searchModel);
   }
 }

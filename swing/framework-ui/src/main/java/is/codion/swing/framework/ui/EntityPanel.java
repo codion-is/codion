@@ -1778,11 +1778,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     /**
      * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
-     * selects the new entity in the {@code lookupField}.
-     * @param lookupField the lookup field in which to select the new entity, if created
+     * selects the new entity in the {@code searchField}.
+     * @param searchField the search field in which to select the new entity, if created
      * @return the Action
      */
-    Action createEditPanelAction(EntityLookupField lookupField);
+    Action createEditPanelAction(EntitySearchField searchField);
 
     /**
      * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed

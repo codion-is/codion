@@ -59,7 +59,8 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
+   * @return the controls provided by this condition panel, such as toggling the advanced mode and clearing the condition,
+   * an empty {@link Controls} instance in case of no controls.
    */
   public Controls getControls() {
     return Controls.controls();

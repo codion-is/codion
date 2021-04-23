@@ -8,7 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.EntitySearchModel;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -66,15 +66,15 @@ public final class PropertyValues {
   }
 
   /**
-   * @param lookupModel the lookup model
-   * @return a {@link Value} based on the entities selected in the given lookup model
+   * @param searchModel the search model
+   * @return a {@link Value} based on the entities selected in the given search model
    */
-  public static Value lookupValue(final EntityLookupModel lookupModel) {
-    if (lookupModel.getMultipleSelectionEnabledValue().get()) {
-      return new EntityLookupMultiValue(lookupModel);
+  public static Value searchValue(final EntitySearchModel searchModel) {
+    if (searchModel.getMultipleSelectionEnabledValue().get()) {
+      return new EntitySearchMultiValue(searchModel);
     }
     else {
-      return new EntityLookupSingleValue(lookupModel);
+      return new EntitySearchSingleValue(searchModel);
     }
   }
 
@@ -440,45 +440,45 @@ public final class PropertyValues {
     }
   }
 
-  private static final class EntityLookupSingleValue extends AbstractValue<Entity> {
+  private static final class EntitySearchSingleValue extends AbstractValue<Entity> {
 
-    private final EntityLookupModel lookupModel;
+    private final EntitySearchModel searchModel;
 
-    private EntityLookupSingleValue(final EntityLookupModel lookupModel) {
-      this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(selected -> notifyValueChange());
+    private EntitySearchSingleValue(final EntitySearchModel searchModel) {
+      this.searchModel = searchModel;
+      this.searchModel.addSelectedEntitiesListener(selected -> notifyValueChange());
     }
 
     @Override
     public Entity get() {
-      final List<Entity> selected = lookupModel.getSelectedEntities();
+      final List<Entity> selected = searchModel.getSelectedEntities();
 
       return selected.isEmpty() ? null : selected.iterator().next();
     }
 
     @Override
     protected void setValue(final Entity value) {
-      lookupModel.setSelectedEntity(value);
+      searchModel.setSelectedEntity(value);
     }
   }
 
-  private static final class EntityLookupMultiValue extends AbstractValue<List<Entity>> {
+  private static final class EntitySearchMultiValue extends AbstractValue<List<Entity>> {
 
-    private final EntityLookupModel lookupModel;
+    private final EntitySearchModel searchModel;
 
-    private EntityLookupMultiValue(final EntityLookupModel lookupModel) {
-      this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(entities -> notifyValueChange());
+    private EntitySearchMultiValue(final EntitySearchModel searchModel) {
+      this.searchModel = searchModel;
+      this.searchModel.addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override
     public List<Entity> get() {
-      return lookupModel.getSelectedEntities();
+      return searchModel.getSelectedEntities();
     }
 
     @Override
     protected void setValue(final List<Entity> value) {
-      lookupModel.setSelectedEntities(value);
+      searchModel.setSelectedEntities(value);
     }
   }
 }

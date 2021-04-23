@@ -9,14 +9,14 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityLookupModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LookupValueLinkTest {
+public class SearchValueLinkTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -28,16 +28,16 @@ public class LookupValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final EntityLookupModel lookupModel = inputComponents.createForeignKeyLookupField(TestDomain.EMP_DEPARTMENT_FK,
+    final EntitySearchModel searchModel = inputComponents.createForeignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
             model.value(TestDomain.EMP_DEPARTMENT_FK),
-            model.getForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK)).getModel();
-    assertEquals(0, lookupModel.getSelectedEntities().size());
+            model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).getModel();
+    assertEquals(0, searchModel.getSelectedEntities().size());
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     model.put(TestDomain.EMP_DEPARTMENT_FK, department);
-    assertEquals(lookupModel.getSelectedEntities().size(), 1);
-    assertEquals(lookupModel.getSelectedEntities().iterator().next(), department);
+    assertEquals(searchModel.getSelectedEntities().size(), 1);
+    assertEquals(searchModel.getSelectedEntities().iterator().next(), department);
     department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
-    lookupModel.setSelectedEntity(department);
+    searchModel.setSelectedEntity(department);
     assertEquals(model.get(TestDomain.EMP_DEPARTMENT_FK), department);
   }
 }

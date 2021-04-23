@@ -48,7 +48,7 @@ public final class EntityEditViewTest {
       createTextField(TestDomain.EMP_ID);
       createTextField(TestDomain.EMP_NAME);
       createTextField(TestDomain.EMP_SALARY);
-      createForeignKeyLookupField(TestDomain.EMP_DEPARTMENT_FK);
+      createForeignKeySearchField(TestDomain.EMP_DEPARTMENT_FK);
       createDatePicker(TestDomain.EMP_HIREDATE);
       createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
 

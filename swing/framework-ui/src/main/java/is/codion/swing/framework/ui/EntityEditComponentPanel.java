@@ -947,30 +947,30 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates an EntityLookupField bound to {@code foreignKey}
+   * Creates an {@link EntitySearchField} bound to {@code foreignKey}
    * @param foreignKey the foreign key
-   * @return an EntityLookupField bound the foreign key
+   * @return an {@link EntitySearchField} bound the foreign key
    */
-  protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey) {
-    return createForeignKeyLookupField(foreignKey, null);
+  protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey) {
+    return createForeignKeySearchField(foreignKey, null);
   }
 
   /**
-   * Creates an EntityLookupField bound to {@code foreignKey}
+   * Creates an {@link EntitySearchField} bound to {@code foreignKey}
    * @param foreignKey the foreign key
    * @param enabledState a state for controlling the enabled state of the component
-   * @return an EntityLookupField bound the foreign key
+   * @return an {@link EntitySearchField} bound the foreign key
    */
-  protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey,
+  protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey,
                                                                 final StateObserver enabledState) {
-    final EntityLookupField lookupField = inputComponents.createForeignKeyLookupField(foreignKey,
-            getEditModel().value(foreignKey), getEditModel().getForeignKeyLookupModel(foreignKey), enabledState);
+    final EntitySearchField searchField = inputComponents.createForeignKeySearchField(foreignKey,
+            getEditModel().value(foreignKey), getEditModel().getForeignKeySearchModel(foreignKey), enabledState);
     if (transferFocusOnEnter) {
-      lookupField.setTransferFocusOnEnter(true);
+      searchField.setTransferFocusOnEnter(true);
     }
-    setComponent(foreignKey, lookupField);
+    setComponent(foreignKey, searchField);
 
-    return lookupField;
+    return searchField;
   }
 
   /**

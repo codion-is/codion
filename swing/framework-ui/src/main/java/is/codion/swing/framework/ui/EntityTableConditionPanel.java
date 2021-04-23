@@ -4,42 +4,32 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.JComponent;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on the EntityTableConditionModel
@@ -48,42 +38,36 @@ import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityTableConditionPanel.class);
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName());
-
   private final TableColumnComponentPanel<ColumnConditionPanel<?, ?>> conditionPanel;
   private final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel;
-  private final ToggleControl conditionRequiredControl;
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
    * an {@link TableColumnComponentPanel} containing {@link AttributeConditionPanel}s
    * @param tableConditionModel the table condition model
    * @param columnModel the column model
-   * @param onSearchListener notified when this condition panel triggers a search
-   * @param queryConditionRequiredState the state indicating whether a condition is required
+   */
+  public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
+                                   final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel) {
+    this(tableConditionModel, columnModel, new EntityConditionPanelFactory(tableConditionModel));
+  }
+
+  /**
+   * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
+   * an {@link TableColumnComponentPanel} containing {@link AttributeConditionPanel}s
+   * @param tableConditionModel the table condition model
+   * @param columnModel the column model
+   * @param conditionPanelFactory the condition panel factory
    */
   public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
                                    final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel,
-                                   final EventListener onSearchListener, final State queryConditionRequiredState) {
-    super(tableConditionModel, columnModel.getAllColumns());
-    this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createPropertyConditionPanels(tableConditionModel, columnModel));
+                                   final ConditionPanelFactory conditionPanelFactory) {
+    super(tableConditionModel, requireNonNull(columnModel).getAllColumns());
+    requireNonNull(conditionPanelFactory);
+    this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
     this.columnModel = columnModel;
-    this.conditionRequiredControl = ToggleControl.builder()
-            .state(queryConditionRequiredState)
-            .name(MESSAGES.getString("require_query_condition"))
-            .description(MESSAGES.getString("require_query_condition_description")).build();
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(Control.builder()
-                    .command(onSearchListener::onEvent)
-                    .enabledState(getTableConditionModel().getConditionObserver())
-                    .build())
-            .enable(this);
   }
 
   /**
@@ -111,7 +95,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
       final Optional<Property<?>> optionalProperty = conditionProperties.size() == 1 ? Optional.of(conditionProperties.get(0)) :
               Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
       optionalProperty.ifPresent(property -> {
-        final ColumnConditionPanel<Attribute<?>, ?> panel = getConditionPanel(property.getAttribute());
+        final ColumnConditionPanel<?, ?> panel = getConditionPanel(property.getAttribute());
         if (panel != null) {
           panel.requestInputFocus();
         }
@@ -144,20 +128,19 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     controls.control(Control.builder()
             .command(getTableConditionModel()::clearConditionModels)
             .name(FrameworkMessages.get(FrameworkMessages.CLEAR)));
-    controls.separator();
-    controls.control(conditionRequiredControl);
 
     return controls.build();
   }
 
   /**
    * @param attribute the attribute
+   * @param <T> the value type
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel<Attribute<?>, ?> getConditionPanel(final Attribute<?> attribute) {
+  public <T> ColumnConditionPanel<Attribute<T>, T> getConditionPanel(final Attribute<T> attribute) {
     for (final TableColumn column : getTableColumns()) {
       if (column.getIdentifier().equals(attribute)) {
-        return (ColumnConditionPanel<Attribute<?>, ?>) conditionPanel.getColumnComponents().get(column);
+        return (ColumnConditionPanel<Attribute<T>, T>) conditionPanel.getColumnComponents().get(column);
       }
     }
 
@@ -169,41 +152,15 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     conditionPanel.getColumnComponents().forEach((column, panel) -> panel.setAdvanced(advanced));
   }
 
-  private static Map<TableColumn, ColumnConditionPanel<?, ?>> createPropertyConditionPanels(final EntityTableConditionModel conditionModel,
-                                                                                            final SwingFilteredTableColumnModel<?, ?> columnModel) {
-    final EntityDefinition definition = conditionModel.getEntityDefinition();
-    final Map<TableColumn, ColumnConditionPanel<?, ?>> components = new HashMap<>();
+  private static Map<TableColumn, ColumnConditionPanel<?, ?>> createConditionPanels(
+          final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
+    final Map<TableColumn, ColumnConditionPanel<?, ?>> conditionPanels = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> {
-      final Attribute<Object> attribute = (Attribute<Object>) column.getIdentifier();
-      if (conditionModel.containsConditionModel(attribute)) {
-        final ColumnConditionPanel<?, ?> conditionPanel =
-                initializeConditionPanel(conditionModel.getConditionModel(attribute), definition, attribute);
-        if (conditionPanel != null) {
-          components.put(column, conditionPanel);
-        }
+      final ColumnConditionPanel<?, ?> conditionPanel = conditionPanelFactory.createConditionPanel(column);
+      if (conditionPanel != null) {
+        conditionPanels.put(column, conditionPanel);
       }
     });
-
-    return components;
-  }
-
-  /**
-   * Initializes a ColumnConditionPanel for the given model
-   * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
-   * @return a ColumnConditionPanel based on the given model
-   */
-  private static <C extends Attribute<T>, T> ColumnConditionPanel<C, T> initializeConditionPanel(
-          final ColumnConditionModel<C, T> propertyConditionModel, final EntityDefinition entityDefinition, final Attribute<T> attribute) {
-    if (propertyConditionModel instanceof ForeignKeyConditionModel) {
-      return (ColumnConditionPanel<C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
-    }
-
-    try {
-      return new AttributeConditionPanel<>(propertyConditionModel, entityDefinition, attribute);
-    }
-    catch (final IllegalArgumentException e) {
-      LOG.error("Unable to create AttributeConditionPanel for attribute: " + attribute, e);
-      return null;
-    }
+    return conditionPanels;
   }
 }

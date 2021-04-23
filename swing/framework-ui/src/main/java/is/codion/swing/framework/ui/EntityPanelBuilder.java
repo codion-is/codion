@@ -262,12 +262,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public Action createEditPanelAction(final EntityLookupField lookupField) {
+  public Action createEditPanelAction(final EntitySearchField searchField) {
     if (editPanelClass == null) {
       throw new IllegalStateException("Can not create a edit panel action when no edit panel class is specified");
     }
 
-    return new InsertEntityAction(lookupField);
+    return new InsertEntityAction(searchField);
   }
 
   @Override
@@ -404,9 +404,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       });
     }
 
-    private InsertEntityAction(final EntityLookupField lookupField) {
-      this(requireNonNull(lookupField, "lookupField"), lookupField.getModel().getConnectionProvider(), inserted ->
-              lookupField.getModel().setSelectedEntities(inserted));
+    private InsertEntityAction(final EntitySearchField searchField) {
+      this(requireNonNull(searchField, "searchField"), searchField.getModel().getConnectionProvider(), inserted ->
+              searchField.getModel().setSelectedEntities(inserted));
     }
 
     private InsertEntityAction(final JComponent component, final EntityConnectionProvider connectionProvider,

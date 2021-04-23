@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.model.DefaultEntityLookupModel;
+import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JComponent;
@@ -39,7 +39,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
               new SwingEntityComboBoxModel(foreignEntityType, connectionProvider));
     }
 
-    return getInputComponents().createForeignKeyLookupField(foreignKey, getCellValue(),
-            new DefaultEntityLookupModel(foreignEntityType, connectionProvider));
+    return getInputComponents().createForeignKeySearchField(foreignKey, getCellValue(),
+            new DefaultEntitySearchModel(foreignEntityType, connectionProvider));
   }
 }

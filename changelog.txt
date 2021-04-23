@@ -6910,3 +6910,6 @@
   ColumnFilterModel split from ColumnConditionModel
   ColumnConditionModel, unnecessary generic parameter R (row type) removed
   ColumnFilterModel.include(Comparable<T>) removed
+  EntityTableConditionPanel refactored, onSearchListener and condition required state functionality moved to EntityTablePanel
+  EntityConditionPanelFactory added for customizable ColumnConditionPanels
+  EntityLookupModel and EntityLookupField renamed EntitySearchModel and EntitySearchField respectively
