@@ -39,7 +39,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
     final Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
     if (tableConditionModel.containsConditionModel(attribute)) {
-      return createDefaultConditionPanel(tableConditionModel.getConditionModel(attribute), attribute);
+      return createDefaultConditionPanel(tableConditionModel.getConditionModel(attribute));
     }
 
     return null;
@@ -50,12 +50,12 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * @param conditionModel the {@link ColumnConditionModel} for which to create a condition panel
    * @return a ColumnConditionPanel based on the given model
    */
-  protected final ColumnConditionPanel<?, ?> createDefaultConditionPanel(final ColumnConditionModel<?, ?> conditionModel,
-                                                                         final Attribute<?> attribute) {
+  protected final ColumnConditionPanel<?, ?> createDefaultConditionPanel(final ColumnConditionModel<?, ?> conditionModel) {
     if (conditionModel instanceof ForeignKeyConditionModel) {
       return new ForeignKeyConditionPanel((ForeignKeyConditionModel) conditionModel);
     }
 
+    final Attribute<?> attribute = (Attribute<?>) conditionModel.getColumnIdentifier();
     try {
       return new AttributeConditionPanel<>((ColumnConditionModel<Attribute<Object>, Object>) conditionModel,
               tableConditionModel.getEntityDefinition(), (Attribute<Object>) attribute);
