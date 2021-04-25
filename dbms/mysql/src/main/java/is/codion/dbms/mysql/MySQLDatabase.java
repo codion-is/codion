@@ -26,7 +26,7 @@ final class MySQLDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    String name = removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX);
+    String name = removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX);
     if (name.contains("/")) {
       name = name.substring(name.lastIndexOf('/') + 1);
     }

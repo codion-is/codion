@@ -6913,3 +6913,4 @@
   EntityTableConditionPanel refactored, onSearchListener and condition required state functionality moved to EntityTablePanel
   EntityConditionPanelFactory added for customizable ColumnConditionPanels
   EntityLookupModel and EntityLookupField renamed EntitySearchModel and EntitySearchField respectively
+  AbstractDatabase.removeUrlPrefixAndOptions() renamed removeUrlPrefixOptionsAndParameters(), now removes connection parameters clause prefixed with ?

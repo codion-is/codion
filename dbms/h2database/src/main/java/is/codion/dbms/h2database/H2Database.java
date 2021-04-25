@@ -70,7 +70,7 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public String getName() {
-    final String name= removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
+    final String name= removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
             JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;
@@ -120,7 +120,7 @@ final class H2Database extends AbstractDatabase {
   }
 
   private String getDatabasePath() {
-    return removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
+    return removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
   }
 
   private boolean isEmbeddedInMemory() {

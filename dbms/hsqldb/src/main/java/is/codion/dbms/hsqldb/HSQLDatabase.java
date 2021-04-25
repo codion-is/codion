@@ -26,7 +26,7 @@ final class HSQLDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    final String name= removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX_MEM,
+    final String name= removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX_MEM,
             JDBC_URL_PREFIX_RES, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;
