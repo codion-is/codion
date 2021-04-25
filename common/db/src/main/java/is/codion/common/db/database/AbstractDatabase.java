@@ -206,7 +206,7 @@ public abstract class AbstractDatabase implements Database {
     return Database.LOGIN_TIMEOUT.getOrThrow();
   }
 
-  protected static String removeUrlPrefixAndOptions(final String url, final String... prefixes) {
+  protected static String removeUrlPrefixOptionsAndParameters(final String url, final String... prefixes) {
     String result = url;
     for (final String prefix : prefixes) {
       if (url.toLowerCase().startsWith(prefix.toLowerCase())) {
@@ -216,6 +216,9 @@ public abstract class AbstractDatabase implements Database {
     }
     if (result.contains(";")) {
       result = result.substring(0, result.indexOf(';'));
+    }
+    if (result.contains("?")) {
+      result = result.substring(0, result.indexOf('?'));
     }
 
     return result;

@@ -23,7 +23,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    return removeUrlPrefixAndOptions(getUrl(), JDBC_URL_PREFIX);
+    return removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX);
   }
 
   @Override

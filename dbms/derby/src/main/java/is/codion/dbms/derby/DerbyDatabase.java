@@ -31,7 +31,7 @@ final class DerbyDatabase extends AbstractDatabase {
   public String getName() {
     String name = getUrl();
     final boolean tcp = name.startsWith(JDBC_URL_PREFIX_TCP);
-    name = removeUrlPrefixAndOptions(name, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE);
+    name = removeUrlPrefixOptionsAndParameters(name, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE);
     if (tcp && name.contains("/")) {
       name = name.substring(name.indexOf('/') + 1);
     }
