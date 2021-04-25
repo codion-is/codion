@@ -13,7 +13,7 @@ module is.codion.common.db {
   exports is.codion.common.db.exception;
   exports is.codion.common.db.operation;
   exports is.codion.common.db.pool;
-  exports is.codion.common.db.reports;
+  exports is.codion.common.db.report;
   exports is.codion.common.db.result;
   exports is.codion.common.db;
 
