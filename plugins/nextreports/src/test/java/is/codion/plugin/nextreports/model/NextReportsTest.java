@@ -5,8 +5,8 @@ package is.codion.plugin.nextreports.model;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.reports.Report;
-import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.report.Report;
+import is.codion.common.db.report.ReportException;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;

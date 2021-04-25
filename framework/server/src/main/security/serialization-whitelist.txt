@@ -87,8 +87,8 @@ is.codion.common.Conjunction
 is.codion.common.db.Operator
 is.codion.common.db.operation.DefaultFunctionType
 is.codion.common.db.operation.DefaultProcedureType
-is.codion.common.db.reports.AbstractReport
-is.codion.common.db.reports.DefaultReportType
+is.codion.common.db.report.AbstractReport
+is.codion.common.db.report.DefaultReportType
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion

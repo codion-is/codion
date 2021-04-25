@@ -5,9 +5,9 @@ package is.codion.framework.domain;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.Report;
-import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportType;
+import is.codion.common.db.report.Report;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;

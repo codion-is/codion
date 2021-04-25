@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.store;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.report.ReportException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;

@@ -6914,3 +6914,4 @@
   EntityConditionPanelFactory added for customizable ColumnConditionPanels
   EntityLookupModel and EntityLookupField renamed EntitySearchModel and EntitySearchField respectively
   AbstractDatabase.removeUrlPrefixAndOptions() renamed removeUrlPrefixOptionsAndParameters(), now removes connection parameters clause prefixed with ?
+  common.db.reports package renamed report

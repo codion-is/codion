@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.jasperreports.model;
 
-import is.codion.common.db.reports.AbstractReport;
-import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.report.AbstractReport;
+import is.codion.common.db.report.ReportException;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;

@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.reports.ReportType;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
