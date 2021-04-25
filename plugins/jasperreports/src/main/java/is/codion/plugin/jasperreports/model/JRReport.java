@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jasperreports.model;
 
-import is.codion.common.db.reports.Report;
+import is.codion.common.db.report.Report;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;

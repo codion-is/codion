@@ -6,9 +6,9 @@ package is.codion.framework.db;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.Report;
-import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportType;
+import is.codion.common.db.report.Report;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
@@ -330,7 +330,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <P> the report parameters type
    * @return the filled result object
    * @throws DatabaseException in case of a database exception
-   * @throws is.codion.common.db.reports.ReportException in case of a report exception
+   * @throws is.codion.common.db.report.ReportException in case of a report exception
    * @see Report#fillReport(java.sql.Connection, Object)
    */
   <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;

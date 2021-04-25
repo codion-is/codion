@@ -3,9 +3,9 @@
  */
 package is.codion.plugin.nextreports.model;
 
-import is.codion.common.db.reports.AbstractReport;
-import is.codion.common.db.reports.Report;
-import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.report.AbstractReport;
+import is.codion.common.db.report.Report;
+import is.codion.common.db.report.ReportException;
 
 import ro.nextreports.engine.FluentReportRunner;
 import ro.nextreports.engine.querybuilder.sql.dialect.DialectFactory;

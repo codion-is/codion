@@ -215,7 +215,7 @@ Executing procedures is the same as executing functions, except without a return
 
 === fillReport
 
-** {url-entity-connection}#fillReport-is.codion.common.db.reports.ReportType-P-[fillReport(ReportType reportType, P reportParameters)]
+** {url-entity-connection}#fillReport-is.codion.common.db.report.ReportType-P-[fillReport(ReportType reportType, P reportParameters)]
 
 [source,java,indent=0]
 ----

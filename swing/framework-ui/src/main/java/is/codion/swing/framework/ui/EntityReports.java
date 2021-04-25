@@ -4,9 +4,9 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.reports.ReportComponentProvider;
-import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportType;
+import is.codion.common.db.report.ReportComponentProvider;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;

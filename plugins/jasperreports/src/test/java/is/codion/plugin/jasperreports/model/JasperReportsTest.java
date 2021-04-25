@@ -5,9 +5,9 @@ package is.codion.plugin.jasperreports.model;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.reports.Report;
-import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportType;
+import is.codion.common.db.report.Report;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;

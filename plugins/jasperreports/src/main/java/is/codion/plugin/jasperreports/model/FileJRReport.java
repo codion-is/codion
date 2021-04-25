@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jasperreports.model;
 
-import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.report.ReportException;
 
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;

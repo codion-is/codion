@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.db.reports;
+package is.codion.common.db.report;
 
 /**
  * An exception occurring during report generation.

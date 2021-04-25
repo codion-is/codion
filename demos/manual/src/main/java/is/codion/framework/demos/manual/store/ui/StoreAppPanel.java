@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.common.db.reports.Report;
+import is.codion.common.db.report.Report;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;

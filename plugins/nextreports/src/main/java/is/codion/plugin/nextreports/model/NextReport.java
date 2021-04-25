@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.nextreports.model;
 
-import is.codion.common.db.reports.Report;
+import is.codion.common.db.report.Report;
 
 import java.util.Map;
 
