@@ -18,7 +18,7 @@ public interface HierarchyPanel {
   /**
    * @return the child panels, an empty list if no child panels exist
    */
-  List<HierarchyPanel> getChildPanels();
+  List<? extends HierarchyPanel> getChildPanels();
 
   /**
    * @return a child panel, if one exists, which child panel exactly is up the implementation

@@ -6884,3 +6884,4 @@
   EntityLookupModel and EntityLookupField renamed EntitySearchModel and EntitySearchField respectively
   AbstractDatabase.removeUrlPrefixAndOptions() renamed removeUrlPrefixOptionsAndParameters(), now removes connection parameters clause prefixed with ?
   common.db.reports package renamed report
+  HierarchyPanel.getChildPanels() return type now List<? extends HierarchyPanel> instead of List<HierarchyPanel>
