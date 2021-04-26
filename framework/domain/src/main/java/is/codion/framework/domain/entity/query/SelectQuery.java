@@ -74,12 +74,14 @@ public interface SelectQuery {
     Builder queryContainingWhereClause(String queryContainingWhereClause);
 
     /**
+     * Specifies the from clause to use.
      * @param fromClause the from clause
      * @return this Builder instance
      */
     Builder fromClause(String fromClause);
 
     /**
+     * Specifies the where clause to use.
      * @param whereClause the where clause
      * @return this Builder instance
      */
