@@ -111,21 +111,24 @@ final class DefaultVersion implements Version, Serializable {
         result = Integer.compare(patch, version.getPatch());
       }
       if (result == 0) {
-        if (metadata == null && version.getMetadata() == null) {
-          result = 0;
-        }
-        else if (metadata != null && version.getMetadata() == null) {
-          result = -1;
-        }
-        else if (metadata == null && version.getMetadata() != null) {
-          result = 1;
-        }
-        else {
-          result = metadata.compareToIgnoreCase(version.getMetadata());
-        }
+        result = compareMetadata(metadata, version.getMetadata());
       }
     }
 
     return result;
+  }
+
+  private static int compareMetadata(final String metadata, final String toCompare) {
+    if (metadata != null && toCompare != null) {
+      return metadata.compareToIgnoreCase(toCompare);
+    }
+    if (metadata != null && toCompare == null) {
+      return -1;
+    }
+    if (metadata == null && toCompare != null) {
+      return 1;
+    }
+
+    return 0;
   }
 }
