@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A UI component based on the EntityTableConditionModel
  * @see EntityTableConditionModel
- * @see AttributeConditionPanel
+ * @see ColumnConditionPanel
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
@@ -43,7 +43,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
-   * an {@link TableColumnComponentPanel} containing {@link AttributeConditionPanel}s
+   * an {@link TableColumnComponentPanel} containing {@link ColumnConditionPanel}s
    * @param tableConditionModel the table condition model
    * @param columnModel the column model
    */
@@ -54,7 +54,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
-   * an {@link TableColumnComponentPanel} containing {@link AttributeConditionPanel}s
+   * an {@link TableColumnComponentPanel} containing {@link ColumnConditionPanel}s
    * @param tableConditionModel the table condition model
    * @param columnModel the column model
    * @param conditionPanelFactory the condition panel factory

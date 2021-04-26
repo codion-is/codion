@@ -626,7 +626,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final List<HierarchyPanel> getChildPanels() {
+  public final List<? extends HierarchyPanel> getChildPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
   }
 

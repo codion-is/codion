@@ -1505,19 +1505,19 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
 
-  private static DefaultTreeModel createApplicationTree(final Collection<? extends HierarchyPanel> entityPanels) {
+  private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
     final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
 
     return applicationTreeModel;
   }
 
-  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends HierarchyPanel> panels) {
-    for (final HierarchyPanel entityPanel : panels) {
-      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel);
+  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends EntityPanel> panels) {
+    for (final EntityPanel entityPanel : panels) {
+      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
       root.add(node);
       if (!entityPanel.getChildPanels().isEmpty()) {
-        addModelsToTree(node, entityPanel.getChildPanels());
+        addModelsToTree(node, (Collection<? extends EntityPanel>) entityPanel.getChildPanels());
       }
     }
   }
