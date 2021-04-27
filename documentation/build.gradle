@@ -27,10 +27,10 @@ asciidoctor {
             revnumber: documentationVersion, toc: 'left', sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
-        version = '2.4.2'
+        version = '2.5.0'
         modules {
             diagram.use()
-            diagram.version '2.0.5'
+            diagram.version '2.1.2'
         }
         attributes 'source-highlighter': 'prettify'
     }
@@ -41,13 +41,16 @@ asciidoctor {
 task combinedJavadoc(type: Javadoc) {
     group 'documentation'
     title "Codion Framework API ${documentationVersion}"
-    failOnError = false
     options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     options.addBooleanOption "-no-module-directories", true
     destinationDir = file("${buildDir}/docs/javadoc")
-    source frameworkModules.collect { it.sourceSets.main.allJava }
+	frameworkModules.each { module ->
+		module.tasks.withType(Javadoc).each { javadocTask ->
+			source += javadocTask.source
+			classpath += javadocTask.classpath
+		}
+	}
     exclude '**/module-info.java'//temporary fix for 'too many module declarations found' error
-    classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
 }
 
 task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
