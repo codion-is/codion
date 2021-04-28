@@ -456,7 +456,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                        final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
                                        final User silentLoginUser) {
     try {
-      return startApplicationInternal(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, displayFrame, silentLoginUser);
+      final ImageIcon icon = iconName != null ? loadIcon(getClass(), iconName) : icons().logoTransparent();
+
+      return startApplicationInternal(frameCaption, icon, maximizeFrame, frameSize, defaultUser, displayFrame, silentLoginUser);
     }
     catch (final CancelException e) {
       System.exit(0);
@@ -892,8 +894,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    return EntityConnectionProvider.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
-            .setClientTypeId(clientTypeId).setClientVersion(getClientVersion()).setUser(user);
+    return EntityConnectionProvider.connectionProvider()
+            .setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+            .setClientTypeId(clientTypeId)
+            .setClientVersion(getClientVersion())
+            .setUser(user);
   }
 
   /**
@@ -1371,7 +1376,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
   }
 
-  private JFrame startApplicationInternal(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+  private JFrame startApplicationInternal(final String frameCaption, final ImageIcon applicationIcon, final MaximizeFrame maximizeFrame,
                                           final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
                                           final User silentLoginUser) {
     LOG.debug("{} application starting", frameCaption);
@@ -1381,10 +1386,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final ImageIcon applicationIcon = iconName != null ? loadIcon(getClass(), iconName) : icons().logoTransparent();
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : User.user("");
+      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : null;
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
@@ -1410,12 +1414,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         return frame;
       }
       catch (final Throwable exception) {
-        onStartupException(startupDialog, connectionProvider, exception);
+        if (startupDialog != null) {
+          startupDialog.dispose();
+        }
+        onStartupException(connectionProvider, exception);
       }
     }
   }
 
-  private void onStartupException(final JDialog startupDialog, final EntityConnectionProvider connectionProvider, final Throwable e) {
+  private void onStartupException(final EntityConnectionProvider connectionProvider, final Throwable throwable) {
     try {
       if (connectionProvider != null) {
         connectionProvider.close();
@@ -1425,13 +1432,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.debug("Exception while disconnecting after a failed startup", ex);
     }
     //todo EDT mess
-    displayException(e, null);
+    displayException(throwable, null);
     if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
             resourceBundle.getString("retry"), resourceBundle.getString("retry_title"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-      if (startupDialog != null) {
-        startupDialog.dispose();
-      }
       throw new CancelException();
     }
   }
