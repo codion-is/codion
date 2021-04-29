@@ -19,7 +19,9 @@ final class OracleDatabase extends AbstractDatabase {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(OracleDatabase.class.getName());
 
-  private static final String JDBC_URL_PREFIX = "jdbc:oracle:thin:@";
+  private static final String JDBC_URL_DRIVER_PREFIX = "jdbc:oracle:thin:";
+  private static final String JDBC_URL_PREFIX = JDBC_URL_DRIVER_PREFIX + "@";
+  private static final String JDBC_URL_WALLET_PREFIX = JDBC_URL_DRIVER_PREFIX + "/@";
 
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
 
@@ -59,7 +61,7 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String getName() {
-    String name = removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX);
+    String name = removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX, JDBC_URL_WALLET_PREFIX);
     if (name.contains("/")) {//pluggable database
       name = name.substring(name.lastIndexOf('/') + 1);
     }

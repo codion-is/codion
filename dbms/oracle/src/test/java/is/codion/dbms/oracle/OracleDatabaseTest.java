@@ -19,6 +19,8 @@ public class OracleDatabaseTest {
     assertEquals("sid", database.getName());
     database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234/sid;option=true;option2=false");
     assertEquals("sid", database.getName());
+    database = new OracleDatabase("jdbc:oracle:thin:/@sid");
+    assertEquals("sid", database.getName());
   }
 
   @Test

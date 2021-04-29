@@ -6918,3 +6918,4 @@
   HierarchyPanel.getChildPanels() return type now List<? extends HierarchyPanel> instead of List<HierarchyPanel>
   AttributeConditionPanel and AttributeFilterPanel removed, related refactoring
   DefaultVersion.compareTo() refactored to prevent NullPointerException
+  OracleDatabase.getName() now handles Oracle Wallet JDBC URLs
