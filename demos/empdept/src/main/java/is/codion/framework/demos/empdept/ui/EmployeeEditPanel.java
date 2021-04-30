@@ -49,7 +49,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     addInputPanel(Employee.NAME);
     addInputPanel(Employee.JOB);
-    add(createInputPanel(Employee.DEPARTMENT_FK, initializeDepartmentPanel()));
+    addInputPanel(Employee.DEPARTMENT_FK, initializeDepartmentPanel());
 
     addInputPanel(Employee.MGR_FK);
     addInputPanel(Employee.SALARY);

@@ -65,9 +65,9 @@ public class TrackEditPanel extends EntityEditPanel {
     setLayout(flexibleGridLayout(4, 2));
     addInputPanel(Track.ALBUM_FK);
     addInputPanel(Track.NAME);
-    add(createInputPanel(Track.GENRE_FK, genrePanel));
+    addInputPanel(Track.GENRE_FK, genrePanel);
     addInputPanel(Track.COMPOSER);
-    add(createInputPanel(Track.MEDIATYPE_FK, mediaTypePanel));
+    addInputPanel(Track.MEDIATYPE_FK, mediaTypePanel);
     addInputPanel(Track.BYTES);
     addInputPanel(Track.UNITPRICE);
     add(durationPanel);

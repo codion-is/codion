@@ -32,7 +32,7 @@ public final class VisitEditPanel extends EntityEditPanel {
 
     setLayout(new BorderLayout(5, 5));
     add(northPanel, BorderLayout.NORTH);
-    add(createInputPanel(Visit.DESCRIPTION,
-            new JScrollPane(getComponent(Visit.DESCRIPTION))), BorderLayout.CENTER);
+    addInputPanel(Visit.DESCRIPTION,
+            new JScrollPane(getComponent(Visit.DESCRIPTION)), BorderLayout.CENTER);
   }
 }

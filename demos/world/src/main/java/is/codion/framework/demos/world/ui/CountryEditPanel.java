@@ -77,7 +77,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     addInputPanel(Country.LOCALNAME);
     addInputPanel(Country.GOVERNMENTFORM);
     addInputPanel(Country.HEADOFSTATE);
-    add(createInputPanel(Country.CAPITAL_FK, capitalPanel));
+    addInputPanel(Country.CAPITAL_FK, capitalPanel);
     add(createInputPanel(new JLabel("Avg. city population"), averageCityPopulationField));
   }
 

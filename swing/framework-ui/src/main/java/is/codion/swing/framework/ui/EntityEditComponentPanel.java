@@ -301,6 +301,37 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * Adds a panel for the given attribute to this panel using the given layout constraints
+   * @param attribute the attribute
+   * @param constraints the layout constraints
+   * @see #createInputPanel(Attribute)
+   */
+  protected final void addInputPanel(final Attribute<?> attribute, final Object constraints) {
+    add(createInputPanel(attribute), constraints);
+  }
+
+  /**
+   * Adds a panel for the given attribute to this panel
+   * @param attribute the attribute
+   * @param inputComponent a component bound to {@code attribute}
+   * @see #createInputPanel(Attribute, JComponent)
+   */
+  protected final void addInputPanel(final Attribute<?> attribute, final JComponent inputComponent) {
+    add(createInputPanel(attribute, inputComponent));
+  }
+
+  /**
+   * Adds a panel for the given attribute to this panel using the given layout constraints
+   * @param attribute the attribute
+   * @param inputComponent a component bound to {@code attribute}
+   * @param constraints the layout constraints
+   * @see #createInputPanel(Attribute, JComponent)
+   */
+  protected final void addInputPanel(final Attribute<?> attribute, final JComponent inputComponent, final Object constraints) {
+    add(createInputPanel(attribute, inputComponent), constraints);
+  }
+
+  /**
    * Creates a panel containing a label and the component associated with the given attribute.
    * The label text is the caption of the property based on {@code attribute}.
    * The default layout of the resulting panel is with the label on top and inputComponent below.

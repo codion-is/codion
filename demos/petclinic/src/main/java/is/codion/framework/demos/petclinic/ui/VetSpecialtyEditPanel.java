@@ -36,6 +36,6 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
     setLayout(Layouts.gridLayout(1, 2));
 
     addInputPanel(VetSpecialty.VET_FK);
-    add(createInputPanel(VetSpecialty.SPECIALTY_FK, specialtyPanel));
+    addInputPanel(VetSpecialty.SPECIALTY_FK, specialtyPanel);
   }
 }

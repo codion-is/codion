@@ -6888,3 +6888,4 @@
   AttributeConditionPanel and AttributeFilterPanel removed, related refactoring
   DefaultVersion.compareTo() refactored to prevent NullPointerException
   OracleDatabase.getName() now handles Oracle Wallet JDBC URLs
+  EntityEditComponentPanel.addInputPanel() overloaded with input component and layout constraints

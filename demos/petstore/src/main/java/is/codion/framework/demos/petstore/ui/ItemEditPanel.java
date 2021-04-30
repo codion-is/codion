@@ -45,16 +45,16 @@ public class ItemEditPanel extends EntityEditPanel {
     setLayout(Layouts.flexibleGridLayout(3, 3));
     addInputPanel(Item.PRODUCT_FK);
     addInputPanel(Item.NAME);
-    add(createInputPanel(Item.DESCRIPTION));
+    addInputPanel(Item.DESCRIPTION);
     addInputPanel(Item.PRICE);
-    add(createInputPanel(Item.CONTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
+    addInputPanel(Item.CONTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
             EntityPanel.builder(SellerContactInfo.TYPE)
                     .editPanelClass(ContactInfoEditPanel.class)
-                    .createEditPanelAction(contactInfoBox))));
-    add(createInputPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,
+                    .createEditPanelAction(contactInfoBox)));
+    addInputPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class)
-                    .createEditPanelAction(addressBox))));
+                    .createEditPanelAction(addressBox)));
     addInputPanel(Item.IMAGE_URL);
     addInputPanel(Item.IMAGE_THUMB_URL);
     addInputPanel(Item.DISABLED);
