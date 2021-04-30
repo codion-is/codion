@@ -40,6 +40,6 @@ public final class PetEditPanel extends EntityEditPanel {
     addInputPanel(Pet.OWNER_FK);
     addInputPanel(Pet.NAME);
     addInputPanel(Pet.BIRTH_DATE);
-    add(createInputPanel(Pet.PET_TYPE_FK, petTypePanel));
+    addInputPanel(Pet.PET_TYPE_FK, petTypePanel);
   }
 }
