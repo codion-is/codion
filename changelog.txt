@@ -6897,3 +6897,4 @@
   TemporalValues.TemporalFieldValueBuilder added, related refactoring
   maxLength renamed maximumLength throughout
   SizedDocument constructor overloaded with maximumLength parameter
+  Nullable enum removed, no longer necessary due to builders

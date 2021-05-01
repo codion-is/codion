@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.common;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
-import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
@@ -381,7 +380,7 @@ public final class InputControls {
     Value<Integer> fieldValue =
             NumericalValues.integerValueBuilder()
                     .component(horizontalAlignmentField)
-                    .nullable(Nullable.NO)
+                    .nullable(false)
                     .build();
 
     fieldValue.link(horizontalAlignmentValue);

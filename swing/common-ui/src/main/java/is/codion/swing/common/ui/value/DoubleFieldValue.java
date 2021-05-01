@@ -3,13 +3,12 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.textfield.DoubleField;
 
 final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
 
-  DoubleFieldValue(final DoubleField doubleField, final Nullable nullable, final UpdateOn updateOn) {
-    super(doubleField, nullable == Nullable.YES ? null : 0d, updateOn);
+  DoubleFieldValue(final DoubleField doubleField, final boolean nullable, final UpdateOn updateOn) {
+    super(doubleField, nullable ? null : 0d, updateOn);
     if (!isNullable() && doubleField.getDouble() == null) {
       doubleField.setDouble(0d);
     }

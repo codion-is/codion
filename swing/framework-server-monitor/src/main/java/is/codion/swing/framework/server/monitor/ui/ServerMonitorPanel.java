@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -253,7 +252,7 @@ public final class ServerMonitorPanel extends JPanel {
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
     NumericalValues.integerValueBuilder()
             .component(connectionCountField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build()
             .link(model.getConnectionCountObserver());
 

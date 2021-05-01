@@ -5,7 +5,6 @@ package is.codion.swing.common.tools.ui.loadtest;
 
 import is.codion.common.Util;
 import is.codion.common.user.User;
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.tools.loadtest.LoadTest;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
@@ -204,7 +203,7 @@ public final class LoadTestPanel<T> extends JPanel {
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
     NumericalValues.integerValueBuilder()
             .component(applicationCountField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build()
             .link(loadTestModel.applicationCountObserver());
     final JPanel applicationPanel = new JPanel(Layouts.borderLayout());

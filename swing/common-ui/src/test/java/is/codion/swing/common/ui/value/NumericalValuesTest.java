@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -115,7 +114,7 @@ public class NumericalValuesTest {  private Long longValue;
             long.class, longPrimitiveValueChangedEvent);
     final ComponentValue<Long, LongField> componentValue = NumericalValues.longValueBuilder()
             .component(longField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build();
     componentValue.link(longPrimitivePropertyValue);
     assertEquals(0L, longField.getLong());
@@ -149,7 +148,7 @@ public class NumericalValuesTest {  private Long longValue;
     final Value<Integer> integerPropertyValue = Value.propertyValue(this, "intValue", int.class, intValueChangedEvent);
     final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValueBuilder()
             .component(integerField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build();
     componentValue.link(integerPropertyValue);
     assertEquals(0, integerField.getInteger());
@@ -201,7 +200,7 @@ public class NumericalValuesTest {  private Long longValue;
             double.class, doublePrimitiveValueValueChangedEvent);
     final ComponentValue<Double, DoubleField> componentValue = NumericalValues.doubleValueBuilder()
             .component(doubleField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build();
     componentValue.link(doublePrimitivePropertyValue);
     assertEquals(0d, doubleField.getDouble());
@@ -335,7 +334,7 @@ public class NumericalValuesTest {  private Long longValue;
     final IntegerField integerField = new IntegerField();
     final Value<Integer> value = NumericalValues.integerValueBuilder()
             .component(integerField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build();
 
     assertEquals(Integer.valueOf(0), value.get());
@@ -383,7 +382,7 @@ public class NumericalValuesTest {  private Long longValue;
     final LongField longField = new LongField();
     final Value<Long> value = NumericalValues.longValueBuilder()
             .component(longField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build();
 
     assertEquals(Long.valueOf(0), value.get());
@@ -418,7 +417,7 @@ public class NumericalValuesTest {  private Long longValue;
     doubleField.setSeparators('.', ',');
     final Value<Double> value = NumericalValues.doubleValueBuilder()
             .component(doubleField)
-            .nullable(Nullable.NO)
+            .nullable(false)
             .build();
 
     assertEquals(Double.valueOf(0), value.get());

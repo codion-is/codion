@@ -3,13 +3,12 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.textfield.IntegerField;
 
 final class IntegerFieldValue extends AbstractTextComponentValue<Integer, IntegerField> {
 
-  IntegerFieldValue(final IntegerField integerField, final Nullable nullable, final UpdateOn updateOn) {
-    super(integerField, nullable == Nullable.YES ? null : 0, updateOn);
+  IntegerFieldValue(final IntegerField integerField, final boolean nullable, final UpdateOn updateOn) {
+    super(integerField, nullable ? null : 0, updateOn);
     if (!isNullable() && integerField.getInteger() == null) {
       integerField.setInteger(0);
     }

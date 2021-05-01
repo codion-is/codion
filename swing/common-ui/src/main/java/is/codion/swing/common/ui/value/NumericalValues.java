@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.EventObserver;
-import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -243,10 +242,10 @@ public final class NumericalValues {
     NumberFieldValueBuilder<V, C, F> initalValue(V initialValue);
 
     /**
-     * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
+     * @param nullable if false then the resulting Value translates null to 0
      * @return this builder instace
      */
-    NumberFieldValueBuilder<V, C, F> nullable(Nullable nullable);
+    NumberFieldValueBuilder<V, C, F> nullable(boolean nullable);
 
     /**
      * @param updateOn specifies when the underlying value should be updated
@@ -270,7 +269,7 @@ public final class NumericalValues {
   private static abstract class AbstractNumberFieldValueBuilder<F extends NumberFormat, V extends Number, C extends NumberField<V>>
           extends AbstractComponentValueBuilder<V, C> implements NumberFieldValueBuilder<V, C, F> {
 
-    protected Nullable nullable = Nullable.YES;
+    protected boolean nullable = true;
     protected UpdateOn updateOn = UpdateOn.KEYSTROKE;
     protected F format;
     protected int columns;
@@ -286,8 +285,8 @@ public final class NumericalValues {
     }
 
     @Override
-    public NumberFieldValueBuilder<V, C, F> nullable(final Nullable nullable) {
-      this.nullable = requireNonNull(nullable);
+    public NumberFieldValueBuilder<V, C, F> nullable(final boolean nullable) {
+      this.nullable = nullable;
       return this;
     }
 
