@@ -15,10 +15,10 @@ final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponen
   private final DateTimeFormatter formatter;
   private final DateTimeParser<V> dateTimeParser;
 
-  TemporalFieldValue(final JFormattedTextField textComponent, final String dateFormat,
+  TemporalFieldValue(final JFormattedTextField textComponent, final String dateTimePattern,
                      final UpdateOn updateOn, final DateTimeParser<V> dateTimeParser) {
     super(textComponent, null, updateOn);
-    this.formatter = DateTimeFormatter.ofPattern(dateFormat);
+    this.formatter = DateTimeFormatter.ofPattern(dateTimePattern);
     this.dateTimeParser = dateTimeParser;
   }
 

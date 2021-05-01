@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.manual.common;
 
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Nullable;
@@ -248,9 +249,16 @@ public final class InputControls {
     // tag::localTime[]
     Value<LocalTime> localTimeValue = Value.value();
 
-    JFormattedTextField textField = new JFormattedTextField();
+    String dateTimePattern = "HH:mm:ss";
 
-    TemporalValues.localTimeValue(textField, "HH:mm:ss").link(localTimeValue);
+    JFormattedTextField textField =
+            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+
+    TemporalValues.localTimeValueBuilder()
+            .component(textField)
+            .dateTimePattern(dateTimePattern)
+            .build()
+            .link(localTimeValue);
     // end::localTime[]
   }
 
@@ -258,9 +266,16 @@ public final class InputControls {
     // tag::localDate[]
     Value<LocalDate> localDateValue = Value.value();
 
-    JFormattedTextField textField = new JFormattedTextField();
+    String dateTimePattern = "dd-MM-yyyy";
 
-    TemporalValues.localDateValue(textField, "dd-MM-yyyy").link(localDateValue);
+    JFormattedTextField textField =
+            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+
+    TemporalValues.localDateValueBuilder()
+            .component(textField)
+            .dateTimePattern(dateTimePattern)
+            .build()
+            .link(localDateValue);
     // end::localDate[]
   }
 
@@ -268,9 +283,16 @@ public final class InputControls {
     // tag::localDateTime[]
     Value<LocalDateTime> localDateTimeValue = Value.value();
 
-    JFormattedTextField textField = new JFormattedTextField();
+    String dateTimePattern = "dd-MM-yyyy HH:mm";
 
-    TemporalValues.localDateTimeValue(textField, "dd-MM-yyyy HH:mm").link(localDateTimeValue);
+    JFormattedTextField textField =
+            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+
+    TemporalValues.localDateTimeValueBuilder()
+            .component(textField)
+            .dateTimePattern(dateTimePattern)
+            .build()
+            .link(localDateTimeValue);
     // end::localDateTime[]
   }
 

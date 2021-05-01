@@ -56,6 +56,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -432,21 +433,44 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(LocalTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimePattern()).link((Value<LocalTime>) value);
+        TemporalValues.localTimeValueBuilder()
+                .component(formattedField)
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .build()
+                .link((Value<LocalTime>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDate.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimePattern()).link((Value<LocalDate>) value);
+        TemporalValues.localDateValueBuilder()
+                .component(formattedField)
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .build()
+                .link((Value<LocalDate>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimePattern()).link((Value<LocalDateTime>) value);
+        TemporalValues.localDateTimeValueBuilder()
+                .component(formattedField)
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .build()
+                .link((Value<LocalDateTime>) value);
+
+        return formattedField;
+      }
+      else if (typeClass.equals(OffsetDateTime.class)) {
+        final JFormattedTextField formattedField =
+                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
+        TemporalValues.offsetDateTimeValueBuilder()
+                .component(formattedField)
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .build()
+                .link((Value<OffsetDateTime>) value);
 
         return formattedField;
       }

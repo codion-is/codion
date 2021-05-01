@@ -226,13 +226,21 @@ public final class NumericalValues {
    * @param <C> the component type
    * @param <F> the format type
    */
-  public interface NumberFieldValueBuilder<V extends Number, C extends NumberField<V>, F extends NumberFormat> {
+  public interface NumberFieldValueBuilder<V extends Number, C extends NumberField<V>, F extends NumberFormat> extends ComponentValueBuilder<V, C> {
 
     /**
      * @param component the component
      * @return this builder instace
      */
+    @Override
     NumberFieldValueBuilder<V, C, F> component(C component);
+
+    /**
+     * @param initialValue the initial value
+     * @return this builder instace
+     */
+    @Override
+    NumberFieldValueBuilder<V, C, F> initalValue(V initialValue);
 
     /**
      * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
@@ -257,33 +265,24 @@ public final class NumericalValues {
      * @return this builder instace
      */
     NumberFieldValueBuilder<V, C, F> columns(int columns);
-
-    /**
-     * @param initialValue the initial value
-     * @return this builder instace
-     */
-    NumberFieldValueBuilder<V, C, F> initalValue(V initialValue);
-
-    /**
-     * @return a ComponentValue
-     */
-    ComponentValue<V, C> build();
   }
 
   private static abstract class AbstractNumberFieldValueBuilder<F extends NumberFormat, V extends Number, C extends NumberField<V>>
-          implements NumberFieldValueBuilder<V, C, F> {
+          extends AbstractComponentValueBuilder<V, C> implements NumberFieldValueBuilder<V, C, F> {
 
-    protected C component;
     protected Nullable nullable = Nullable.YES;
     protected UpdateOn updateOn = UpdateOn.KEYSTROKE;
     protected F format;
     protected int columns;
-    protected V initialValue;
 
     @Override
     public NumberFieldValueBuilder<V, C, F> component(final C component) {
-      this.component = requireNonNull(component);
-      return this;
+      return (NumberFieldValueBuilder<V, C, F>) super.component(component);
+    }
+
+    @Override
+    public NumberFieldValueBuilder<V, C, F> initalValue(final V initialValue) {
+      return (NumberFieldValueBuilder<V, C, F>) super.initalValue(initialValue);
     }
 
     @Override
@@ -314,12 +313,6 @@ public final class NumericalValues {
       }
       this.columns = columns;
       return null;
-    }
-
-    @Override
-    public NumberFieldValueBuilder<V, C, F> initalValue(final V initialValue) {
-      this.initialValue = initialValue;
-      return this;
     }
   }
 

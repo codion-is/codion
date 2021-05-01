@@ -568,15 +568,33 @@ public final class EntityInputComponents {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState,
             LocaleDateTimePattern.getMask(dateTimePattern), ValueContainsLiterals.YES);
     if (attribute.isLocalDate()) {
-      TemporalValues.localDateValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
+      TemporalValues.localDateValueBuilder()
+              .component(textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDate>) value);
+
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
+      TemporalValues.localDateTimeValueBuilder()
+              .component(textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDateTime>) value);
+
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
+      TemporalValues.localTimeValueBuilder()
+              .component(textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalTime>) value);
+
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, dateTimePattern, enabledState);
     }
 
@@ -736,16 +754,36 @@ public final class EntityInputComponents {
               .link((Value<Long>) value);
     }
     else if (attribute.isLocalDate()) {
-      TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
+      TemporalValues.localDateValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDate>) value);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
+      TemporalValues.localTimeValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalTime>) value);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
+      TemporalValues.localDateTimeValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDateTime>) value);
     }
     else if (attribute.isOffsetDateTime()) {
-      TemporalValues.offsetDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<OffsetDateTime>) value);
+      TemporalValues.offsetDateTimeValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<OffsetDateTime>) value);
     }
     else {
       throw new IllegalArgumentException("Text fields not implemented for attribute type: " + attribute);
