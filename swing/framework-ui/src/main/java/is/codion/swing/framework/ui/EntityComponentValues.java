@@ -70,16 +70,28 @@ public class EntityComponentValues {
       return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimePattern()));
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
+      return (ComponentValue<T, C>) NumericalValues.doubleValueBuilder()
+              .initalValue((Double) initialValue)
+              .format((DecimalFormat) property.getFormat())
+              .build();
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
+      return (ComponentValue<T, C>) NumericalValues.bigDecimalValueBuilder()
+              .initalValue((BigDecimal) initialValue)
+              .format((DecimalFormat) property.getFormat())
+              .build();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
+      return (ComponentValue<T, C>) NumericalValues.integerValueBuilder()
+              .initalValue((Integer) initialValue)
+              .format((NumberFormat) property.getFormat())
+              .build();
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>) NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
+      return (ComponentValue<T, C>)  NumericalValues.longValueBuilder()
+              .initalValue((Long) initialValue)
+              .format((NumberFormat) property.getFormat())
+              .build();
     }
     if (attribute.isCharacter()) {
       return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, 1);

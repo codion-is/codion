@@ -202,7 +202,11 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    NumericalValues.integerValue(applicationCountField, Nullable.NO).link(loadTestModel.applicationCountObserver());
+    NumericalValues.integerValueBuilder()
+            .component(applicationCountField)
+            .nullable(Nullable.NO)
+            .build()
+            .link(loadTestModel.applicationCountObserver());
     final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 

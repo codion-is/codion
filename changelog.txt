@@ -6892,3 +6892,4 @@
   Title capitalization for menus used throughout
   EntitySearchField and EntityComboBox.ComponentValue renamed SearchFieldValue and ComboBoxValue respectively
   DefaultEntitySearchModel bug fixed, multipleItemSeparatorValue now has a null value configured, therwise when a text field bound to the value was cleared, setting the value to null, caused a delimiter missing exception when refreshing the search text
+  NumericalValues.NumberFieldValueBuilder added, implemented for Integer, Double, Long and BigDecimal

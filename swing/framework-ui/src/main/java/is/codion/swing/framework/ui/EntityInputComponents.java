@@ -9,7 +9,6 @@ import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Nullable;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
@@ -709,16 +708,32 @@ public final class EntityInputComponents {
       TextValues.characterValue(textField, updateOn).link((Value<Character>) value);
     }
     else if (attribute.isInteger()) {
-      NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn).link((Value<Integer>) value);
+      NumericalValues.integerValueBuilder()
+              .component((IntegerField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Integer>) value);
     }
     else if (attribute.isDouble()) {
-      NumericalValues.doubleValue((DoubleField) textField, Nullable.YES, updateOn).link((Value<Double>) value);
+      NumericalValues.doubleValueBuilder()
+              .component((DoubleField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Double>) value);
     }
     else if (attribute.isBigDecimal()) {
-      NumericalValues.bigDecimalValue((BigDecimalField) textField, updateOn).link((Value<BigDecimal>) value);
+      NumericalValues.bigDecimalValueBuilder()
+              .component((BigDecimalField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<BigDecimal>) value);
     }
     else if (attribute.isLong()) {
-      NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn).link((Value<Long>) value);
+      NumericalValues.longValueBuilder()
+              .component((LongField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Long>) value);
     }
     else if (attribute.isLocalDate()) {
       TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
