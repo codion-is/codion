@@ -411,8 +411,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> maximumLength(final int maxLength) {
-      super.maximumLength(maxLength);
+    public final ColumnProperty.Builder<T> maximumLength(final int maximumLength) {
+      super.maximumLength(maximumLength);
       return this;
     }
 

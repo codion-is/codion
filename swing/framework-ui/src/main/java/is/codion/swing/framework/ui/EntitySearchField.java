@@ -399,9 +399,7 @@ public final class EntitySearchField extends JTextField {
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
       BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()).link(searchModel.getMultipleSelectionEnabledValue());
-      final SizedDocument document = new SizedDocument();
-      document.setMaxLength(1);
-      final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
+      final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
       TextValues.textValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));

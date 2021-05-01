@@ -21,8 +21,8 @@ public class SizedDocumentTest {
     textField.setText("hello");
     assertEquals("hello", textField.getText());
 
-    document.setMaxLength(10);
-    assertEquals(10, document.getMaxLength());
+    document.setMaximumLength(10);
+    assertEquals(10, document.getMaximumLength());
 
     textField.setText("hellohello");
     assertEquals("hellohello", textField.getText());

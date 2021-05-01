@@ -88,11 +88,11 @@ public final class TextValues {
    * Instantiates a new String based ComponentValue.
    * @param inputDialogTitle the title to use for the lookup input dialog
    * @param initialValue the initial value
-   * @param maxLength the maximum input length, -1 for no limit
+   * @param maximumLength the maximum input length, -1 for no limit
    * @return a String based ComponentValue
    */
   public static ComponentValue<String, TextInputPanel> textValue(final String inputDialogTitle, final String initialValue,
-                                                                 final int maxLength) {
-    return new TextInputPanelValue(inputDialogTitle, initialValue, maxLength);
+                                                                 final int maximumLength) {
+    return new TextInputPanelValue(inputDialogTitle, initialValue, maximumLength);
   }
 }

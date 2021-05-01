@@ -6895,3 +6895,5 @@
   NumericalValues.NumberFieldValueBuilder added, implemented for Integer, Double, Long and BigDecimal
   ComponentValueBuilder added along with AbstractComponentValueBuilder
   TemporalValues.TemporalFieldValueBuilder added, related refactoring
+  maxLength renamed maximumLength throughout
+  SizedDocument constructor overloaded with maximumLength parameter

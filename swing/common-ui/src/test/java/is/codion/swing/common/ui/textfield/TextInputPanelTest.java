@@ -17,8 +17,8 @@ public class TextInputPanelTest {
     final TextInputPanel panel = new TextInputPanel(textField, "title");
     assertEquals(textField, panel.getTextField());
     assertNotNull(panel.getButton());
-    panel.setMaxLength(10);
-    assertEquals(10, panel.getMaxLength());
+    panel.setMaximumLength(10);
+    assertEquals(10, panel.getMaximumLength());
     textField.setText("hello");
     assertEquals("hello", panel.getText());
     panel.setText("just");
@@ -34,7 +34,7 @@ public class TextInputPanelTest {
   public void setTextExceedMaxLength() {
     final JTextField textField = new JTextField();
     final TextInputPanel panel = new TextInputPanel(textField, "title");
-    panel.setMaxLength(5);
+    panel.setMaximumLength(5);
     assertThrows(IllegalArgumentException.class, () -> panel.setText("123456"));
   }
 }

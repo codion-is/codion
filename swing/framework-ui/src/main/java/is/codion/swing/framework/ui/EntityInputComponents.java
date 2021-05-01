@@ -616,7 +616,7 @@ public final class EntityInputComponents {
     final Property<?> property = entityDefinition.getProperty(attribute);
     final JTextField field = createTextField(attribute, value, updateOn);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
-    panel.setMaxLength(property.getMaximumLength());
+    panel.setMaximumLength(property.getMaximumLength());
 
     return panel;
   }
@@ -864,11 +864,13 @@ public final class EntityInputComponents {
     final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
     linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
-    if (attribute.isCharacter()) {
-      ((SizedDocument) field.getDocument()).setMaxLength(1);
-    }
-    if (property.getMaximumLength() > 0 && field.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) field.getDocument()).setMaxLength(property.getMaximumLength());
+    if (field.getDocument() instanceof SizedDocument) {
+      if (attribute.isCharacter()) {
+        ((SizedDocument) field.getDocument()).setMaximumLength(1);
+      }
+      else if (property.getMaximumLength() > 0) {
+        ((SizedDocument) field.getDocument()).setMaximumLength(property.getMaximumLength());
+      }
     }
 
     return field;
@@ -896,7 +898,7 @@ public final class EntityInputComponents {
       return initializeStringField(formatMaskString, valueContainsLiterals);
     }
     else if (attribute.isCharacter()) {
-      return new JTextField(new SizedDocument(), "", 0);
+      return new JTextField(new SizedDocument(1), "", 1);
     }
 
     throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");

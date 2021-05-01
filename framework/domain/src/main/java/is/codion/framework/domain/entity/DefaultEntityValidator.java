@@ -147,11 +147,11 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    final int maxLength = property.getMaximumLength();
+    final int maximumLength = property.getMaximumLength();
     final String value = entity.get(property.getAttribute());
-    if (maxLength != -1 && value.length() > maxLength) {
+    if (maximumLength != -1 && value.length() > maximumLength) {
       throw new LengthValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
-              MESSAGES.getString("property_value_too_long") + " " + maxLength + "\n:'" + value + "'");
+              MESSAGES.getString("property_value_too_long") + " " + maximumLength + "\n:'" + value + "'");
     }
   }
 

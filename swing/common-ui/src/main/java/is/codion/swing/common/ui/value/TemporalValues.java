@@ -62,7 +62,6 @@ public final class TemporalValues {
   /**
    * A builder for Values based on a numerical field
    * @param <V> the value type
-   * @param <C> the component type
    */
   public interface TemporalFieldValueBuilder<V extends Temporal> extends ComponentValueBuilder<V, JFormattedTextField> {
 

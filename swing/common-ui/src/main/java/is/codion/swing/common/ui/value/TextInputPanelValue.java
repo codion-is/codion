@@ -13,8 +13,8 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
 
   private static final int DEFAULT_COLUMNS = 16;
 
-  TextInputPanelValue(final String inputDialogTitle, final String initialValue, final int maxLength) {
-    super(new TextInputPanel(createDefaultTextField(initialValue, maxLength), inputDialogTitle));
+  TextInputPanelValue(final String inputDialogTitle, final String initialValue, final int maximumLength) {
+    super(new TextInputPanel(createDefaultTextField(initialValue, maximumLength), inputDialogTitle));
     getComponent().getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
   }
 
@@ -30,10 +30,10 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
     component.setText(value);
   }
 
-  private static JTextField createDefaultTextField(final String initialValue, final int maxLength) {
+  private static JTextField createDefaultTextField(final String initialValue, final int maximumLength) {
     final SizedDocument document = new SizedDocument();
-    if (maxLength > 0) {
-      document.setMaxLength(maxLength);
+    if (maximumLength > 0) {
+      document.setMaximumLength(maximumLength);
     }
 
     return new JTextField(document, initialValue != null ? initialValue : "", DEFAULT_COLUMNS);

@@ -25,7 +25,16 @@ public final class SizedDocument extends PlainDocument {
    * Instantiates a new SizedDocument
    */
   public SizedDocument() {
+    this(-1);
+  }
+
+  /**
+   * Instantiates a new SizedDocument
+   * @param maximumLength the maximum text length
+   */
+  public SizedDocument(final int maximumLength) {
     super.setDocumentFilter(new SizedParsingDocumentFilter());
+    setMaximumLength(maximumLength);
   }
 
   /**
@@ -55,15 +64,15 @@ public final class SizedDocument extends PlainDocument {
   /**
    * @return the maximum length of the text to allow, -1 if unlimited
    */
-  public int getMaxLength() {
-    return ((SizedParsingDocumentFilter) getDocumentFilter()).getStringLengthValidator().getMaxLength();
+  public int getMaximumLength() {
+    return ((SizedParsingDocumentFilter) getDocumentFilter()).getStringLengthValidator().getMaximumLength();
   }
 
   /**
-   * @param maxLength the maximum length of the text to allow, -1 if unlimited
+   * @param maximumLength the maximum length of the text to allow, -1 if unlimited
    */
-  public void setMaxLength(final int maxLength) {
-    ((SizedParsingDocumentFilter) getDocumentFilter()).getStringLengthValidator().setMaxLength(maxLength);
+  public void setMaximumLength(final int maximumLength) {
+    ((SizedParsingDocumentFilter) getDocumentFilter()).getStringLengthValidator().setMaximumLength(maximumLength);
   }
 
   private static final class SizedParsingDocumentFilter extends ParsingDocumentFilter<String> {
