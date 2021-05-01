@@ -6890,3 +6890,4 @@
   OracleDatabase.getName() now handles Oracle Wallet JDBC URLs
   EntityEditComponentPanel.addInputPanel() overloaded with input component and layout constraints
   Title capitalization for menus used throughout
+  EntitySearchField and EntityComboBox.ComponentValue renamed SearchFieldValue and ComboBoxValue respectively

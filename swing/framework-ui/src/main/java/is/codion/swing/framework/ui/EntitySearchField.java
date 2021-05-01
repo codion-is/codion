@@ -366,7 +366,7 @@ public final class EntitySearchField extends JTextField {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel<Entity, EntitySearchField> inputPanel = new ComponentValuePanel<>(lookupCaption,
-            new ComponentValue(searchModel, null));
+            new SearchFieldValue(searchModel, null));
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
@@ -589,14 +589,14 @@ public final class EntitySearchField extends JTextField {
    * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntitySearchField}.
    * @see EntitySearchField
    */
-  public static final class ComponentValue extends AbstractComponentValue<Entity, EntitySearchField> {
+  public static final class SearchFieldValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
     /**
      * Instantiates a new ComponentValue
      * @param searchModel the search model to base the search field on
      * @param initialValue the initial value
      */
-    public ComponentValue(final EntitySearchModel searchModel, final Entity initialValue) {
+    public SearchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
       super(createEntitySearchField(searchModel, initialValue));
     }
 

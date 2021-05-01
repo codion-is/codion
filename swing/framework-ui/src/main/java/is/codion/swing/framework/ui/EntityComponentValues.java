@@ -100,15 +100,15 @@ public class EntityComponentValues {
    * @param editModel the edit model involved in the updating
    * @param initialValue the current value to initialize the ComponentValue with
    * @param <T> the component type
-   * @return a Entity InputProvider
+   * @return a {@link ComponentValue} for the given foreign key
    */
   protected <T extends JComponent> ComponentValue<Entity, T> createEntityComponentValue(final ForeignKey foreignKey,
                                                                                         final SwingEntityEditModel editModel,
                                                                                         final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
+      return (ComponentValue<Entity, T>) new EntityComboBox.ComboBoxValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
     }
 
-    return (ComponentValue<Entity, T>) new EntitySearchField.ComponentValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
+    return (ComponentValue<Entity, T>) new EntitySearchField.SearchFieldValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
   }
 }

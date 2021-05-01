@@ -157,14 +157,14 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
    * @see SwingEntityComboBoxModel
    */
-  public static final class ComponentValue extends AbstractComponentValue<Entity, EntityComboBox> {
+  public static final class ComboBoxValue extends AbstractComponentValue<Entity, EntityComboBox> {
 
     /**
      * Instantiates a new component value based on the EntityComboBoxModel class
      * @param comboBoxModel the combo box model
      * @param initialValue the initial value to display
      */
-    public ComponentValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
+    public ComboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
       super(createComboBox(comboBoxModel, initialValue));
     }
 

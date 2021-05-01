@@ -31,15 +31,15 @@ public class EntitySearchFieldTest {
   @Test
   public void inputProvider() throws Exception {
     final EntitySearchModel model = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final EntitySearchField.ComponentValue provider = new EntitySearchField.ComponentValue(model, null);
+    final EntitySearchField.SearchFieldValue value = new EntitySearchField.SearchFieldValue(model, null);
 
-    assertNull(provider.get());
+    assertNull(value.get());
 
     final Entity dept = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
-    assertEquals(dept, provider.get());
+    assertEquals(dept, value.get());
     model.setSelectedEntity(null);
-    assertNull(provider.get());
+    assertNull(value.get());
   }
 }
