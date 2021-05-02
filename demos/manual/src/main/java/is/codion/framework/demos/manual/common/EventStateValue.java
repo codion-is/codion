@@ -96,7 +96,7 @@ public final class EventStateValue {
     IntegerField integerField = new IntegerField();
 
     ComponentValue<Integer, IntegerField> fieldValue =
-            NumericalValues.integerValue(integerField);
+            NumericalValues.integerFieldValue(integerField);
 
     fieldValue.link(value);
 

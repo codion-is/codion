@@ -27,16 +27,16 @@ public final class NumericalValues {
   /**
    * @return a BigDecimal based ComponentValue
    */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue() {
-    return bigDecimalValue((BigDecimal) null);
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalFieldValue() {
+    return bigDecimalFieldValue((BigDecimal) null);
   }
 
   /**
    * @param initialValue the initial value
    * @return a BigDecimal based ComponentValue
    */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue(final BigDecimal initialValue) {
-    return bigDecimalValueBuilder()
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalFieldValue(final BigDecimal initialValue) {
+    return bigDecimalFieldValueBuilder()
             .initalValue(initialValue)
             .build();
   }
@@ -45,8 +45,8 @@ public final class NumericalValues {
    * @param bigDecimalField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue(final BigDecimalField bigDecimalField) {
-    return bigDecimalValueBuilder()
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalFieldValue(final BigDecimalField bigDecimalField) {
+    return bigDecimalFieldValueBuilder()
             .component(bigDecimalField)
             .build();
   }
@@ -54,7 +54,7 @@ public final class NumericalValues {
   /**
    * @return a BigDecimal based NumberFieldValueBuilder
    */
-  public static NumberFieldValueBuilder<BigDecimal, BigDecimalField, DecimalFormat> bigDecimalValueBuilder() {
+  public static NumberFieldValueBuilder<BigDecimal, BigDecimalField, DecimalFormat> bigDecimalFieldValueBuilder() {
     return new DefaultBigDecimalFieldValueBuilder();
   }
 
@@ -62,7 +62,7 @@ public final class NumericalValues {
    * @param spinner the spinner
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, JSpinner> doubleValue(final JSpinner spinner) {
+  public static ComponentValue<Double, JSpinner> doubleSpinnerValue(final JSpinner spinner) {
     return new SpinnerNumberValue<>(spinner);
   }
 
@@ -70,8 +70,8 @@ public final class NumericalValues {
    * Instantiates a new Double based ComponentValue.
    * @return a Double based ComponentValue
    */
-  public static ComponentValue<Double, DoubleField> doubleValue() {
-    return doubleValue((Double) null);
+  public static ComponentValue<Double, DoubleField> doubleFieldValue() {
+    return doubleFieldValue((Double) null);
   }
 
   /**
@@ -79,8 +79,8 @@ public final class NumericalValues {
    * @param initialValue the initial value
    * @return a Double based ComponentValue
    */
-  public static ComponentValue<Double, DoubleField> doubleValue(final Double initialValue) {
-    return doubleValueBuilder()
+  public static ComponentValue<Double, DoubleField> doubleFieldValue(final Double initialValue) {
+    return doubleFieldValueBuilder()
             .initalValue(initialValue)
             .build();
   }
@@ -89,8 +89,8 @@ public final class NumericalValues {
    * @param doubleField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DoubleField> doubleValue(final DoubleField doubleField) {
-    return doubleValueBuilder()
+  public static ComponentValue<Double, DoubleField> doubleFieldValue(final DoubleField doubleField) {
+    return doubleFieldValueBuilder()
             .component(doubleField)
             .build();
   }
@@ -98,7 +98,7 @@ public final class NumericalValues {
   /**
    * @return a Double based NumberFieldValueBuilder
    */
-  public static NumberFieldValueBuilder<Double, DoubleField, DecimalFormat> doubleValueBuilder() {
+  public static NumberFieldValueBuilder<Double, DoubleField, DecimalFormat> doubleFieldValueBuilder() {
     return new DefaultDoubleValueFieldBuilder();
   }
 
@@ -106,8 +106,8 @@ public final class NumericalValues {
    * Instantiates a new Integer based ComponentValue.
    * @return a Integer based ComponentValue
    */
-  public static ComponentValue<Integer, IntegerField> integerValue() {
-    return integerValue((Integer) null);
+  public static ComponentValue<Integer, IntegerField> integerFieldValue() {
+    return integerFieldValue((Integer) null);
   }
 
   /**
@@ -115,8 +115,8 @@ public final class NumericalValues {
    * @param initialValue the initial value
    * @return a Integer based ComponentValue
    */
-  public static ComponentValue<Integer, IntegerField> integerValue(final Integer initialValue) {
-    return integerValueBuilder()
+  public static ComponentValue<Integer, IntegerField> integerFieldValue(final Integer initialValue) {
+    return integerFieldValueBuilder()
             .initalValue(initialValue)
             .build();
   }
@@ -125,8 +125,8 @@ public final class NumericalValues {
    * @param integerField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Integer, IntegerField> integerValue(final IntegerField integerField) {
-    return integerValueBuilder()
+  public static ComponentValue<Integer, IntegerField> integerFieldValue(final IntegerField integerField) {
+    return integerFieldValueBuilder()
             .component(integerField)
             .build();
   }
@@ -134,7 +134,7 @@ public final class NumericalValues {
   /**
    * @return a Integer based NumberFieldValueBuilder
    */
-  public static NumberFieldValueBuilder<Integer, IntegerField, NumberFormat> integerValueBuilder() {
+  public static NumberFieldValueBuilder<Integer, IntegerField, NumberFormat> integerFieldValueBuilder() {
     return new DefaultIntegerFieldValueBuilder();
   }
 
@@ -142,7 +142,7 @@ public final class NumericalValues {
    * @param spinner the spinner
    * @return a Value bound to the given spinner
    */
-  public static ComponentValue<Integer, JSpinner> integerValue(final JSpinner spinner) {
+  public static ComponentValue<Integer, JSpinner> integerSpinnerValue(final JSpinner spinner) {
     return new SpinnerNumberValue<>(spinner);
   }
 
@@ -150,7 +150,7 @@ public final class NumericalValues {
    * @param progressBar the progress bar
    * @return a Value bound to the given progress bar
    */
-  public static ComponentValue<Integer, JProgressBar> integerValue(final JProgressBar progressBar) {
+  public static ComponentValue<Integer, JProgressBar> integerProgressBarValue(final JProgressBar progressBar) {
     return new IntegerProgressBarValue(progressBar);
   }
 
@@ -158,8 +158,8 @@ public final class NumericalValues {
    * Instantiates a new Long based ComponentValue.
    * @return a Long based ComponentValue
    */
-  public static ComponentValue<Long, LongField> longValue() {
-    return longValue((Long) null);
+  public static ComponentValue<Long, LongField> longFieldValue() {
+    return longFieldValue((Long) null);
   }
 
   /**
@@ -167,8 +167,8 @@ public final class NumericalValues {
    * @param initialValue the initial value
    * @return a Long based ComponentValue
    */
-  public static ComponentValue<Long, LongField> longValue(final Long initialValue) {
-    return longValueBuilder()
+  public static ComponentValue<Long, LongField> longFieldValue(final Long initialValue) {
+    return longFieldValueBuilder()
             .initalValue(initialValue)
             .build();
   }
@@ -177,8 +177,8 @@ public final class NumericalValues {
    * @param longField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Long, LongField> longValue(final LongField longField) {
-    return longValueBuilder()
+  public static ComponentValue<Long, LongField> longFieldValue(final LongField longField) {
+    return longFieldValueBuilder()
             .component(longField)
             .build();
   }
@@ -186,7 +186,7 @@ public final class NumericalValues {
   /**
    * @return a Long based NumberFieldValueBuilder
    */
-  public static NumberFieldValueBuilder<Long, LongField, NumberFormat> longValueBuilder() {
+  public static NumberFieldValueBuilder<Long, LongField, NumberFormat> longFieldValueBuilder() {
     return new DefaultLongValueFieldBuilder();
   }
 

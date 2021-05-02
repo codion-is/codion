@@ -206,7 +206,7 @@ public final class InputControls {
 
     IntegerField integerField = new IntegerField();
 
-    NumericalValues.integerValue(integerField).link(integerValue);
+    NumericalValues.integerFieldValue(integerField).link(integerValue);
     // end::integerField[]
   }
 
@@ -216,7 +216,7 @@ public final class InputControls {
 
     LongField longField = new LongField();
 
-    NumericalValues.longValue(longField).link(longValue);
+    NumericalValues.longFieldValue(longField).link(longValue);
     // end::longField[]
   }
 
@@ -226,7 +226,7 @@ public final class InputControls {
 
     DoubleField doubleField = new DoubleField();
 
-    NumericalValues.doubleValue(doubleField).link(doubleValue);
+    NumericalValues.doubleFieldValue(doubleField).link(doubleValue);
     // end::doubleField[]
   }
 
@@ -236,7 +236,7 @@ public final class InputControls {
 
     BigDecimalField bigDecimalField = new BigDecimalField();
 
-    NumericalValues.bigDecimalValue(bigDecimalField).link(bigDecimalValue);
+    NumericalValues.bigDecimalFieldValue(bigDecimalField).link(bigDecimalValue);
     // end::bigDecimalField[]
   }
 
@@ -374,7 +374,7 @@ public final class InputControls {
                     int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
-            NumericalValues.integerValueBuilder()
+            NumericalValues.integerFieldValueBuilder()
                     .component(horizontalAlignmentField)
                     .nullable(false)
                     .build();

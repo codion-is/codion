@@ -408,25 +408,25 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       }
       if (typeClass.equals(Integer.class)) {
         final IntegerField integerField = new IntegerField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        NumericalValues.integerValue(integerField).link((Value<Integer>) value);
+        NumericalValues.integerFieldValue(integerField).link((Value<Integer>) value);
 
         return integerField;
       }
       else if (typeClass.equals(Double.class)) {
         final DoubleField doubleField = new DoubleField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        NumericalValues.doubleValue(doubleField).link((Value<Double>) value);
+        NumericalValues.doubleFieldValue(doubleField).link((Value<Double>) value);
 
         return doubleField;
       }
       else if (typeClass.equals(BigDecimal.class)) {
         final BigDecimalField bigDecimalField = new BigDecimalField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        NumericalValues.bigDecimalValue(bigDecimalField).link((Value<BigDecimal>) value);
+        NumericalValues.bigDecimalFieldValue(bigDecimalField).link((Value<BigDecimal>) value);
 
         return bigDecimalField;
       }
       else if (typeClass.equals(Long.class)) {
         final LongField longField = new LongField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        NumericalValues.longValue(longField).link((Value<Long>) value);
+        NumericalValues.longFieldValue(longField).link((Value<Long>) value);
 
         return longField;
       }

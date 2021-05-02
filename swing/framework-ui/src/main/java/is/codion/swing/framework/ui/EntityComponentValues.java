@@ -70,25 +70,25 @@ public class EntityComponentValues {
       return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimePattern()));
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) NumericalValues.doubleValueBuilder()
+      return (ComponentValue<T, C>) NumericalValues.doubleFieldValueBuilder()
               .initalValue((Double) initialValue)
               .format((DecimalFormat) property.getFormat())
               .build();
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) NumericalValues.bigDecimalValueBuilder()
+      return (ComponentValue<T, C>) NumericalValues.bigDecimalFieldValueBuilder()
               .initalValue((BigDecimal) initialValue)
               .format((DecimalFormat) property.getFormat())
               .build();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) NumericalValues.integerValueBuilder()
+      return (ComponentValue<T, C>) NumericalValues.integerFieldValueBuilder()
               .initalValue((Integer) initialValue)
               .format((NumberFormat) property.getFormat())
               .build();
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>)  NumericalValues.longValueBuilder()
+      return (ComponentValue<T, C>)  NumericalValues.longFieldValueBuilder()
               .initalValue((Long) initialValue)
               .format((NumberFormat) property.getFormat())
               .build();

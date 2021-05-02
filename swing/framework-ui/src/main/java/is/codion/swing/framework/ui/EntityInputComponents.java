@@ -726,28 +726,28 @@ public final class EntityInputComponents {
       TextValues.characterValue(textField, updateOn).link((Value<Character>) value);
     }
     else if (attribute.isInteger()) {
-      NumericalValues.integerValueBuilder()
+      NumericalValues.integerFieldValueBuilder()
               .component((IntegerField) textField)
               .updateOn(updateOn)
               .build()
               .link((Value<Integer>) value);
     }
     else if (attribute.isDouble()) {
-      NumericalValues.doubleValueBuilder()
+      NumericalValues.doubleFieldValueBuilder()
               .component((DoubleField) textField)
               .updateOn(updateOn)
               .build()
               .link((Value<Double>) value);
     }
     else if (attribute.isBigDecimal()) {
-      NumericalValues.bigDecimalValueBuilder()
+      NumericalValues.bigDecimalFieldValueBuilder()
               .component((BigDecimalField) textField)
               .updateOn(updateOn)
               .build()
               .link((Value<BigDecimal>) value);
     }
     else if (attribute.isLong()) {
-      NumericalValues.longValueBuilder()
+      NumericalValues.longFieldValueBuilder()
               .component((LongField) textField)
               .updateOn(updateOn)
               .build()

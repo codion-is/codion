@@ -121,7 +121,7 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner connectionLimitSpinner = new JSpinner();
-    NumericalValues.integerValue(connectionLimitSpinner).link(model.getConnectionLimitValue());
+    NumericalValues.integerSpinnerValue(connectionLimitSpinner).link(model.getConnectionLimitValue());
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     serverPanel.add(connectionLimitSpinner);
     serverPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -155,7 +155,7 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
     final JSpinner updateIntervalSpinner = new JSpinner();
-    NumericalValues.integerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
+    NumericalValues.integerSpinnerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
@@ -251,7 +251,7 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    NumericalValues.integerValueBuilder()
+    NumericalValues.integerFieldValueBuilder()
             .component(connectionCountField)
             .nullable(false)
             .build()

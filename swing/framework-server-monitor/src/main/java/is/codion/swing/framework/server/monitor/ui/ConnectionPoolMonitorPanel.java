@@ -147,17 +147,17 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
 
     final JSpinner timeoutSpinner = new JSpinner();
-    NumericalValues.integerValue(timeoutSpinner).link(model.getPooledConnectionTimeoutValue());
+    NumericalValues.integerSpinnerValue(timeoutSpinner).link(model.getPooledConnectionTimeoutValue());
     final JSpinner cleanupIntervalSpinner = new JSpinner();
-    NumericalValues.integerValue(cleanupIntervalSpinner).link(model.getPoolCleanupIntervalValue());
+    NumericalValues.integerSpinnerValue(cleanupIntervalSpinner).link(model.getPoolCleanupIntervalValue());
     final JSpinner maximumSizeSpinner = new JSpinner();
-    NumericalValues.integerValue(maximumSizeSpinner).link(model.getMaximumPoolSizeValue());
+    NumericalValues.integerSpinnerValue(maximumSizeSpinner).link(model.getMaximumPoolSizeValue());
     final JSpinner minimumSizeSpinner = new JSpinner();
-    NumericalValues.integerValue(minimumSizeSpinner).link(model.getMinimumPoolSizeValue());
+    NumericalValues.integerSpinnerValue(minimumSizeSpinner).link(model.getMinimumPoolSizeValue());
     final SpinnerNumberModel maximumCheckOutTimeModel = new SpinnerNumberModel();
     maximumCheckOutTimeModel.setStepSize(100);
     final JSpinner maximumCheckOutTimeSpinner = new JSpinner(maximumCheckOutTimeModel);
-    NumericalValues.integerValue(maximumCheckOutTimeSpinner).link(model.getMaximumCheckOutTimeValue());
+    NumericalValues.integerSpinnerValue(maximumCheckOutTimeSpinner).link(model.getMaximumCheckOutTimeValue());
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setColumns(3);
@@ -199,7 +199,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     final JSpinner updateIntervalSpinner = new JSpinner();
-    NumericalValues.integerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
+    NumericalValues.integerSpinnerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);

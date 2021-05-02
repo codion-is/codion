@@ -201,7 +201,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    NumericalValues.integerValueBuilder()
+    NumericalValues.integerFieldValueBuilder()
             .component(applicationCountField)
             .nullable(false)
             .build()
@@ -209,8 +209,8 @@ public final class LoadTestPanel<T> extends JPanel {
     final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner batchSizeSpinner = new JSpinner(new SpinnerNumberModel());
-    NumericalValues.integerValue(batchSizeSpinner).link(loadTestModel.getApplicationBatchSizeValue());
+    final JSpinner batchSizeSpinner = new JSpinner();
+    NumericalValues.integerSpinnerValue(batchSizeSpinner).link(loadTestModel.getApplicationBatchSizeValue());
     batchSizeSpinner.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
@@ -340,13 +340,13 @@ public final class LoadTestPanel<T> extends JPanel {
     final SpinnerNumberModel maxSpinnerModel = new SpinnerNumberModel();
     maxSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner maxThinkTimeSpinner = new JSpinner(maxSpinnerModel);
-    NumericalValues.integerValue(maxThinkTimeSpinner).link(loadTestModel.getMaximumThinkTimeValue());
+    NumericalValues.integerSpinnerValue(maxThinkTimeSpinner).link(loadTestModel.getMaximumThinkTimeValue());
     ((JSpinner.DefaultEditor) maxThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final SpinnerNumberModel minSpinnerModel = new SpinnerNumberModel();
     minSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
-    NumericalValues.integerValue(minThinkTimeSpinner).link(loadTestModel.getMinimumThinkTimeValue());
+    NumericalValues.integerSpinnerValue(minThinkTimeSpinner).link(loadTestModel.getMinimumThinkTimeValue());
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final ToggleControl pauseControl = ToggleControl.builder()

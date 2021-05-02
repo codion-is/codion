@@ -213,7 +213,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerValue(5);
+    final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerFieldValue(5);
     final IntegerField field = componentValue.getComponent();
     field.setColumns(6);
     field.setHorizontalAlignment(SwingConstants.CENTER);

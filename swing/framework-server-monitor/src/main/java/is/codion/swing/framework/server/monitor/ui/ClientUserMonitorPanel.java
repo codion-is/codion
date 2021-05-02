@@ -97,8 +97,8 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    final JSpinner connectionTimeoutSpinner = new JSpinner(new SpinnerNumberModel());
-    NumericalValues.integerValue(connectionTimeoutSpinner).link(model.getConnectionTimeoutValue());
+    final JSpinner connectionTimeoutSpinner = new JSpinner();
+    NumericalValues.integerSpinnerValue(connectionTimeoutSpinner).link(model.getConnectionTimeoutValue());
     ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
     actionBase.add(connectionTimeoutSpinner);
 
@@ -134,7 +134,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     final JSpinner updateIntervalSpinner = new JSpinner(new SpinnerNumberModel());
-    NumericalValues.integerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
+    NumericalValues.integerSpinnerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
