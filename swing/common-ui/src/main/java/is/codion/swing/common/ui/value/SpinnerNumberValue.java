@@ -3,22 +3,22 @@
  */
 package is.codion.swing.common.ui.value;
 
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JSpinner;
 
-final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<V, SpinnerNumberModel> {
+final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<V, JSpinner> {
 
-  SpinnerNumberValue(final SpinnerNumberModel spinnerModel) {
-    super(spinnerModel);
-    spinnerModel.addChangeListener(e -> notifyValueChange());
+  SpinnerNumberValue(final JSpinner spinner) {
+    super(spinner);
+    spinner.getModel().addChangeListener(e -> notifyValueChange());
   }
 
   @Override
-  protected V getComponentValue(final SpinnerNumberModel component) {
+  protected V getComponentValue(final JSpinner component) {
     return (V) component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final SpinnerNumberModel component, final V value) {
+  protected void setComponentValue(final JSpinner component, final V value) {
     component.setValue(value);
   }
 }

@@ -43,7 +43,6 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 import static java.util.Arrays.asList;
 
 /**
@@ -121,7 +120,8 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", JLabel.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", JLabel.RIGHT));
-    final JSpinner connectionLimitSpinner = new JSpinner(integerValueSpinnerModel(model.getConnectionLimitValue()));
+    final JSpinner connectionLimitSpinner = new JSpinner();
+    NumericalValues.integerValue(connectionLimitSpinner).link(model.getConnectionLimitValue());
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     serverPanel.add(connectionLimitSpinner);
     serverPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -154,7 +154,8 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
-    final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
+    final JSpinner updateIntervalSpinner = new JSpinner();
+    NumericalValues.integerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);

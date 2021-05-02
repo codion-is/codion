@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -11,7 +10,7 @@ import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.NumberField;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.JSpinner;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -60,11 +59,11 @@ public final class NumericalValues {
   }
 
   /**
-   * @param spinnerModel the spinner model
+   * @param spinner the spinner
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, SpinnerNumberModel> doubleValue(final SpinnerNumberModel spinnerModel) {
-    return new SpinnerNumberValue<>(spinnerModel);
+  public static ComponentValue<Double, JSpinner> doubleValue(final JSpinner spinner) {
+    return new SpinnerNumberValue<>(spinner);
   }
 
   /**
@@ -140,11 +139,11 @@ public final class NumericalValues {
   }
 
   /**
-   * @param spinnerModel the spinner model
-   * @return a Value bound to the given model
+   * @param spinner the spinner
+   * @return a Value bound to the given spinner
    */
-  public static ComponentValue<Integer, SpinnerNumberModel> integerValue(final SpinnerNumberModel spinnerModel) {
-    return new SpinnerNumberValue<>(spinnerModel);
+  public static ComponentValue<Integer, JSpinner> integerValue(final JSpinner spinner) {
+    return new SpinnerNumberValue<>(spinner);
   }
 
   /**
@@ -153,18 +152,6 @@ public final class NumericalValues {
    */
   public static ComponentValue<Integer, BoundedRangeModel> integerValue(final BoundedRangeModel boundedRangeModel) {
     return new IntegerBoundedRangeModelValue(boundedRangeModel);
-  }
-
-  /**
-   * Creates a SpinnerNumberModel based on an integer value
-   * @param integerValue the value
-   * @return a SpinnerNumberModel based on the value
-   */
-  public static SpinnerNumberModel integerValueSpinnerModel(final Value<Integer> integerValue) {
-    final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerValue(numberModel).link(integerValue);
-
-    return numberModel;
   }
 
   /**

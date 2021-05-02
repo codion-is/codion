@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
+import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -28,8 +29,6 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-
-import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A ClientUserMonitorPanel
@@ -98,7 +97,8 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    final JSpinner connectionTimeoutSpinner = new JSpinner(integerValueSpinnerModel(model.getConnectionTimeoutValue()));
+    final JSpinner connectionTimeoutSpinner = new JSpinner(new SpinnerNumberModel());
+    NumericalValues.integerValue(connectionTimeoutSpinner).link(model.getConnectionTimeoutValue());
     ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
     actionBase.add(connectionTimeoutSpinner);
 
@@ -133,7 +133,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
+    final JSpinner updateIntervalSpinner = new JSpinner(new SpinnerNumberModel());
+    NumericalValues.integerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -272,7 +273,8 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void integerSpinnerUiValue() {
     final SpinnerNumberModel model = new SpinnerNumberModel();
-    final Value<Integer> value = NumericalValues.integerValue(model);
+    final JSpinner spinner = new JSpinner(model);
+    final Value<Integer> value = NumericalValues.integerValue(spinner);
 
     assertEquals(Integer.valueOf(0), value.get());
     model.setValue(122);
@@ -302,7 +304,8 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void doubleSpinnerUiValue() {
     final SpinnerNumberModel model = new SpinnerNumberModel(0d, 0d, 130d, 1d);
-    final Value<Double> value = NumericalValues.doubleValue(model);
+    final JSpinner spinner = new JSpinner(model);
+    final Value<Double> value = NumericalValues.doubleValue(spinner);
 
     assertEquals(Double.valueOf(0d), value.get());
     model.setValue(122.2);
