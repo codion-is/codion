@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.event.EventObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -88,13 +87,6 @@ public final class NumericalValues {
   }
 
   /**
-   * @return a Double based NumberFieldValueBuilder
-   */
-  public static NumberFieldValueBuilder<Double, DoubleField, DecimalFormat> doubleValueBuilder() {
-    return new DefaultDoubleValueFieldBuilder();
-  }
-
-  /**
    * @param doubleField the component
    * @return a Value bound to the given component
    */
@@ -102,6 +94,13 @@ public final class NumericalValues {
     return doubleValueBuilder()
             .component(doubleField)
             .build();
+  }
+
+  /**
+   * @return a Double based NumberFieldValueBuilder
+   */
+  public static NumberFieldValueBuilder<Double, DoubleField, DecimalFormat> doubleValueBuilder() {
+    return new DefaultDoubleValueFieldBuilder();
   }
 
   /**
@@ -154,21 +153,6 @@ public final class NumericalValues {
    */
   public static ComponentValue<Integer, BoundedRangeModel> integerValue(final BoundedRangeModel boundedRangeModel) {
     return new IntegerBoundedRangeModelValue(boundedRangeModel);
-  }
-
-  /**
-   * Creates a SpinnerNumberModel based on an integer property value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @return a SpinnerNumberModel based on the value
-   */
-  public static SpinnerNumberModel integerValueSpinnerModel(final Object owner, final String propertyName,
-                                                            final EventObserver<Integer> valueChangeEvent) {
-    final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerValue(numberModel).link(Value.propertyValue(owner, propertyName, int.class, valueChangeEvent));
-
-    return numberModel;
   }
 
   /**
