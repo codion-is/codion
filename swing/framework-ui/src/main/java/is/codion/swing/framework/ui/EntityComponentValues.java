@@ -11,13 +11,7 @@ import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.ui.time.LocalDateInputPanel;
 import is.codion.swing.common.ui.time.LocalDateTimeInputPanel;
 import is.codion.swing.common.ui.time.LocalTimeInputPanel;
-import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.FileValues;
-import is.codion.swing.common.ui.value.NumericalValues;
-import is.codion.swing.common.ui.value.SelectedValues;
-import is.codion.swing.common.ui.value.StringValues;
-import is.codion.swing.common.ui.value.TemporalValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComponent;
@@ -55,52 +49,52 @@ public class EntityComponentValues {
     }
     final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) SelectedValues.selectedItemValue(initialValue, ((ValueListProperty<T>) property).getValues());
+      return (ComponentValue<T, C>) ComponentValue.selectedItemComboBox(initialValue, ((ValueListProperty<T>) property).getValues());
     }
     if (attribute.isBoolean()) {
-      return (ComponentValue<T, C>) BooleanValues.booleanComboBoxValue((Boolean) initialValue);
+      return (ComponentValue<T, C>) ComponentValue.booleanComboBox((Boolean) initialValue);
     }
     if (attribute.isLocalDate()) {
-      return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimePattern()));
+      return (ComponentValue<T, C>) ComponentValue.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimePattern()));
     }
     if (attribute.isLocalDateTime()) {
-      return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimePattern()));
+      return (ComponentValue<T, C>) ComponentValue.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimePattern()));
     }
     if (attribute.isLocalTime()) {
-      return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimePattern()));
+      return (ComponentValue<T, C>) ComponentValue.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimePattern()));
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) NumericalValues.doubleFieldValueBuilder()
+      return (ComponentValue<T, C>) ComponentValue.doubleFieldBuilder()
               .initalValue((Double) initialValue)
               .format((DecimalFormat) property.getFormat())
               .build();
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) NumericalValues.bigDecimalFieldValueBuilder()
+      return (ComponentValue<T, C>) ComponentValue.bigDecimalFieldBuilder()
               .initalValue((BigDecimal) initialValue)
               .format((DecimalFormat) property.getFormat())
               .build();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) NumericalValues.integerFieldValueBuilder()
+      return (ComponentValue<T, C>) ComponentValue.integerFieldBuilder()
               .initalValue((Integer) initialValue)
               .format((NumberFormat) property.getFormat())
               .build();
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>)  NumericalValues.longFieldValueBuilder()
+      return (ComponentValue<T, C>)  ComponentValue.longFieldBuilder()
               .initalValue((Long) initialValue)
               .format((NumberFormat) property.getFormat())
               .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) StringValues.stringTextInputPanelValue(property.getCaption(), (String) initialValue, 1);
+      return (ComponentValue<T, C>) ComponentValue.stringTextInputPanel(property.getCaption(), (String) initialValue, 1);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) StringValues.stringTextInputPanelValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      return (ComponentValue<T, C>) ComponentValue.stringTextInputPanel(property.getCaption(), (String) initialValue, property.getMaximumLength());
     }
     if (attribute.isByteArray()) {
-      return (ComponentValue<T, C>) FileValues.fileInputPanelValue();
+      return (ComponentValue<T, C>) ComponentValue.fileInputPanel();
     }
 
     throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + attribute.getTypeClass() + ")");

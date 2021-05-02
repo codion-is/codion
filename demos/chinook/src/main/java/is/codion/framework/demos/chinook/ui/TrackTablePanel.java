@@ -15,7 +15,6 @@ import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
-import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityComponentValues;
@@ -54,7 +53,7 @@ public class TrackTablePanel extends EntityTablePanel {
   private BigDecimal getAmountFromUser() {
     final ComponentValuePanel<BigDecimal, BigDecimalField> inputPanel =
             new ComponentValuePanel<>(BUNDLE.getString("amount"),
-                    NumericalValues.bigDecimalFieldValue());
+                    ComponentValue.bigDecimalField());
     Dialogs.displayInDialog(this, inputPanel, BUNDLE.getString("raise_price"), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted() && inputPanel.getValue() != null) {

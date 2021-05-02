@@ -14,8 +14,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.NumericalValues;
-import is.codion.swing.common.ui.value.StringValues;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
@@ -97,7 +96,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerFieldValue(integerField).link(getModel().selectorValue(attribute));
+    ComponentValue.integerField(integerField).link(getModel().selectorValue(attribute));
 
     return integerField;
   }
@@ -111,7 +110,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerFieldValue(integerField).link(getModel().selectorValue(attribute, finder));
+    ComponentValue.integerField(integerField).link(getModel().selectorValue(attribute, finder));
 
     return integerField;
   }
@@ -124,7 +123,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute) {
     final JTextField textField = new JTextField(2);
     TextFields.selectAllOnFocusGained(textField);
-    StringValues.stringTextComponentValue(textField).link(getModel().selectorValue(attribute));
+    ComponentValue.stringTextComponent(textField).link(getModel().selectorValue(attribute));
 
     return textField;
   }
@@ -138,7 +137,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
     final JTextField textField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(textField);
-    StringValues.stringTextComponentValue(textField).link(getModel().selectorValue(attribute, finder));
+    ComponentValue.stringTextComponent(textField).link(getModel().selectorValue(attribute, finder));
 
     return textField;
   }

@@ -35,9 +35,9 @@ public class BooleanValuesTest {
   }
 
   @Test
-  public void test() throws Exception {
+  public void booleanToggleButtonCheckBox() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    BooleanValues.booleanToggleButtonValue(checkBox)
+    ComponentValue.booleanToggleButton(checkBox)
             .link(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
@@ -47,8 +47,8 @@ public class BooleanValuesTest {
   }
 
   @Test
-  public void booleanValue() {
-    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = BooleanValues.booleanComboBoxValue(false);
+  public void booleanComboBox() {
+    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = ComponentValue.booleanComboBox(false);
     assertEquals(false, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(true);
     assertEquals(true, componentValue.get());
@@ -59,11 +59,11 @@ public class BooleanValuesTest {
   }
 
   @Test
-  public void toggleUiValue() {
+  public void booleanToggleButton() {
     final ButtonModel model = new DefaultButtonModel();
     final JToggleButton button = new JToggleButton();
     button.setModel(model);
-    final Value<Boolean> value = BooleanValues.booleanToggleButtonValue(button);
+    final Value<Boolean> value = ComponentValue.booleanToggleButton(button);
 
     assertFalse(value.get());
     model.setSelected(true);
@@ -76,10 +76,10 @@ public class BooleanValuesTest {
   }
 
   @Test
-  public void nullableToggleUiValue() {
+  public void booleanNullableToggleButton() {
     final NullableToggleButtonModel model = new NullableToggleButtonModel();
     final NullableCheckBox checkBox = new NullableCheckBox(model);
-    final Value<Boolean> value = BooleanValues.booleanToggleButtonValue(checkBox);
+    final Value<Boolean> value = ComponentValue.booleanToggleButton(checkBox);
 
     assertNull(value.get());
     model.setSelected(true);
