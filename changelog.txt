@@ -6936,3 +6936,4 @@
   NumericalValues, methods renamed to reflect component type
   FileValues, TemporalValues, TextValues, methods renamed to reflect component type
   TextValues renamed StringValues, methods renamed
+  All ComponentValue factory methods moved to ComponentValue

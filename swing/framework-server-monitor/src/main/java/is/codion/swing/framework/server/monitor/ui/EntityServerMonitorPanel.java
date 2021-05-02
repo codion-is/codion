@@ -20,7 +20,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
@@ -213,7 +212,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    final ComponentValue<Integer, IntegerField> componentValue = NumericalValues.integerFieldValue(5);
+    final ComponentValue<Integer, IntegerField> componentValue = ComponentValue.integerField(5);
     final IntegerField field = componentValue.getComponent();
     field.setColumns(6);
     field.setHorizontalAlignment(SwingConstants.CENTER);

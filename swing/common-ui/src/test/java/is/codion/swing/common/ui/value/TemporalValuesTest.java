@@ -63,7 +63,7 @@ public class TemporalValuesTest {
     final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask(format));
     final Value<LocalTime> timePropertyValue = Value.propertyValue(this, "time",
             LocalTime.class, timeValueChangedEvent);
-    TemporalValues.localTimeFieldValueBuilder()
+    ComponentValue.localTimeFieldBuilder()
             .component(textField)
             .dateTimePattern(format)
             .build()
@@ -87,7 +87,7 @@ public class TemporalValuesTest {
     final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd.MM.yyyy"));
     final Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
-    TemporalValues.localDateFieldValueBuilder()
+    ComponentValue.localDateFieldBuilder()
             .component(textField)
             .dateTimePattern("dd.MM.yyyy")
             .build()
@@ -111,7 +111,7 @@ public class TemporalValuesTest {
     final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd-MM-yy HH:mm"));
     final Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
-    TemporalValues.localDateFieldTimeValueBuilder()
+    ComponentValue.localDateFieldTimeBuilder()
             .component(textField)
             .dateTimePattern("dd-MM-yy HH:mm")
             .build()
@@ -132,7 +132,7 @@ public class TemporalValuesTest {
   public void localTimeUiValue() {
     final String format = "HH:mm";
     final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask(format));//HH:mm
-    final Value<LocalTime> value = TemporalValues.localTimeFieldValueBuilder()
+    final Value<LocalTime> value = ComponentValue.localTimeFieldBuilder()
             .component(textField)
             .dateTimePattern(format)
             .build();
@@ -157,7 +157,7 @@ public class TemporalValuesTest {
   @Test
   public void localDateUiValue() {
     final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd-MM-yyyy"));
-    final Value<LocalDate> value = TemporalValues.localDateFieldValueBuilder()
+    final Value<LocalDate> value = ComponentValue.localDateFieldBuilder()
             .component(textField)
             .dateTimePattern("dd-MM-yyyy")
             .build();
@@ -181,7 +181,7 @@ public class TemporalValuesTest {
   @Test
   public void localDateTimeUiValue() {
     final JFormattedTextField textField = TextFields.createFormattedField(LocaleDateTimePattern.getMask("dd-MM-yyyy HH:mm"));
-    final Value<LocalDateTime> value = TemporalValues.localDateFieldTimeValueBuilder()
+    final Value<LocalDateTime> value = ComponentValue.localDateFieldTimeBuilder()
             .component(textField)
             .dateTimePattern("dd-MM-yyyy HH:mm")
             .build();
@@ -206,7 +206,7 @@ public class TemporalValuesTest {
   public void temporalValue() {
     final LocalDate date = LocalDate.now();
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            TemporalValues.temporalValue(new LocalDateInputPanel(date, "dd-MM-yyyy"));
+            ComponentValue.temporalValue(new LocalDateInputPanel(date, "dd-MM-yyyy"));
     assertEquals(date, componentValue.get());
 
     componentValue = new TemporalInputPanelValue<>(new LocalDateInputPanel(null, "dd-MM-yyyy"));
