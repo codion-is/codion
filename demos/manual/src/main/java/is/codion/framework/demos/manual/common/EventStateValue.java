@@ -11,6 +11,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -95,7 +96,7 @@ public final class EventStateValue {
     IntegerField integerField = new IntegerField();
 
     ComponentValue<Integer, IntegerField> fieldValue =
-            ComponentValue.integerField(integerField);
+            ComponentValues.integerField(integerField);
 
     fieldValue.link(value);
 

@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -98,7 +98,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner connectionTimeoutSpinner = new JSpinner();
-    ComponentValue.integerSpinner(connectionTimeoutSpinner).link(model.getConnectionTimeoutValue());
+    ComponentValues.integerSpinner(connectionTimeoutSpinner).link(model.getConnectionTimeoutValue());
     ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
     actionBase.add(connectionTimeoutSpinner);
 
@@ -134,7 +134,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     final JSpinner updateIntervalSpinner = new JSpinner(new SpinnerNumberModel());
-    ComponentValue.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
+    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);

@@ -8,7 +8,7 @@ import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -146,17 +146,17 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
 
     final JSpinner timeoutSpinner = new JSpinner();
-    ComponentValue.integerSpinner(timeoutSpinner).link(model.getPooledConnectionTimeoutValue());
+    ComponentValues.integerSpinner(timeoutSpinner).link(model.getPooledConnectionTimeoutValue());
     final JSpinner cleanupIntervalSpinner = new JSpinner();
-    ComponentValue.integerSpinner(cleanupIntervalSpinner).link(model.getPoolCleanupIntervalValue());
+    ComponentValues.integerSpinner(cleanupIntervalSpinner).link(model.getPoolCleanupIntervalValue());
     final JSpinner maximumSizeSpinner = new JSpinner();
-    ComponentValue.integerSpinner(maximumSizeSpinner).link(model.getMaximumPoolSizeValue());
+    ComponentValues.integerSpinner(maximumSizeSpinner).link(model.getMaximumPoolSizeValue());
     final JSpinner minimumSizeSpinner = new JSpinner();
-    ComponentValue.integerSpinner(minimumSizeSpinner).link(model.getMinimumPoolSizeValue());
+    ComponentValues.integerSpinner(minimumSizeSpinner).link(model.getMinimumPoolSizeValue());
     final SpinnerNumberModel maximumCheckOutTimeModel = new SpinnerNumberModel();
     maximumCheckOutTimeModel.setStepSize(100);
     final JSpinner maximumCheckOutTimeSpinner = new JSpinner(maximumCheckOutTimeModel);
-    ComponentValue.integerSpinner(maximumCheckOutTimeSpinner).link(model.getMaximumCheckOutTimeValue());
+    ComponentValues.integerSpinner(maximumCheckOutTimeSpinner).link(model.getMaximumCheckOutTimeValue());
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setColumns(3);
@@ -198,7 +198,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     final JSpinner updateIntervalSpinner = new JSpinner();
-    ComponentValue.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
+    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
@@ -208,7 +208,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(updateIntervalSpinner);
 
     final JCheckBox collectSnapshotCheckBox = new JCheckBox("Snapshot");
-    ComponentValue.booleanToggleButton(collectSnapshotCheckBox)
+    ComponentValues.booleanToggleButton(collectSnapshotCheckBox)
             .link(model.getCollectSnapshotStatisticsState());
     collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(collectSnapshotCheckBox);

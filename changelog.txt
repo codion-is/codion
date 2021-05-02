@@ -6908,3 +6908,4 @@
   All ComponentValue factory methods moved to ComponentValue
   ComponentValueBuilder moved to ComponentValue, renamed Builder
   TaskScheduler.Builder added, factory methods replaced
+  ComponentValues added, factory methods moved from ComponentValue, removing a horrible mess of cyclic dependencies within the value package
