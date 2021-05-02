@@ -13,7 +13,7 @@ import java.text.NumberFormat;
  * @param <C> the component type
  * @param <F> the format type
  */
-public interface NumberFieldValueBuilder<V extends Number, C extends NumberField<V>, F extends NumberFormat> extends ComponentValueBuilder<V, C> {
+public interface NumberFieldValueBuilder<V extends Number, C extends NumberField<V>, F extends NumberFormat> extends ComponentValue.Builder<V, C> {
 
   /**
    * @param component the component

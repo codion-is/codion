@@ -7,19 +7,19 @@ import javax.swing.JComponent;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractComponentValueBuilder<V, C extends JComponent> implements ComponentValueBuilder<V, C> {
+abstract class AbstractComponentValueBuilder<V, C extends JComponent> implements ComponentValue.Builder<V, C> {
 
   protected C component;
   protected V initialValue;
 
   @Override
-  public ComponentValueBuilder<V, C> component(final C component) {
+  public ComponentValue.Builder<V, C> component(final C component) {
     this.component = requireNonNull(component);
     return this;
   }
 
   @Override
-  public ComponentValueBuilder<V, C> initalValue(final V initialValue) {
+  public ComponentValue.Builder<V, C> initalValue(final V initialValue) {
     this.initialValue = initialValue;
     return this;
   }
