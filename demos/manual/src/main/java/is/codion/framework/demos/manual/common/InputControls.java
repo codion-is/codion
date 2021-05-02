@@ -23,8 +23,8 @@ import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -186,7 +186,7 @@ public final class InputControls {
 
     JTextField textField = new JTextField();
 
-    TextValues.textComponentValue(textField).link(stringValue);
+    StringValues.stringTextComponentValue(textField).link(stringValue);
     // end::textField[]
   }
 
@@ -196,7 +196,7 @@ public final class InputControls {
 
     JTextArea textArea = new JTextArea();
 
-    TextValues.textComponentValue(textArea).link(stringValue);
+    StringValues.stringTextComponentValue(textArea).link(stringValue);
     // end::textArea[]
   }
 

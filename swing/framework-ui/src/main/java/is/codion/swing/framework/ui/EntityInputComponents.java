@@ -43,8 +43,8 @@ import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
@@ -675,7 +675,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    TextValues.textComponentValue(textArea, null, updateOn).link(value);
+    StringValues.stringTextComponentValue(textArea, null, updateOn).link(value);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -720,10 +720,10 @@ public final class EntityInputComponents {
     final Property<?> property = entityDefinition.getProperty(attribute);
     final JTextField textField = createTextField(attribute, enabledState, null, null);
     if (attribute.isString()) {
-      TextValues.textComponentValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
+      StringValues.stringTextComponentValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
     }
     else if (attribute.isCharacter()) {
-      TextValues.characterTextFieldValue(textField, updateOn).link((Value<Character>) value);
+      StringValues.characterTextFieldValue(textField, updateOn).link((Value<Character>) value);
     }
     else if (attribute.isInteger()) {
       NumericalValues.integerFieldValueBuilder()
@@ -836,7 +836,7 @@ public final class EntityInputComponents {
                                                    final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
                                                    final StateObserver enabledState) {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState, formatMaskString, valueContainsLiterals);
-    TextValues.textComponentValue(textField, null, updateOn).link(value);
+    StringValues.stringTextComponentValue(textField, null, updateOn).link(value);
 
     return textField;
   }

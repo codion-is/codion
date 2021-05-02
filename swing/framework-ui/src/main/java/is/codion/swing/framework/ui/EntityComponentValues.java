@@ -16,8 +16,8 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.FileValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComponent;
@@ -94,10 +94,10 @@ public class EntityComponentValues {
               .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) TextValues.textInputPanelValue(property.getCaption(), (String) initialValue, 1);
+      return (ComponentValue<T, C>) StringValues.stringTextInputPanelValue(property.getCaption(), (String) initialValue, 1);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) TextValues.textInputPanelValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      return (ComponentValue<T, C>) StringValues.stringTextInputPanelValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) FileValues.fileInputPanelValue();

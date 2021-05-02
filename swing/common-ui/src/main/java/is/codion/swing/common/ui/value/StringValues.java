@@ -14,16 +14,16 @@ import static is.codion.common.Util.nullOrEmpty;
 /**
  * Utility class for text based {@link ComponentValue} instances.
  */
-public final class TextValues {
+public final class StringValues {
 
-  private TextValues() {}
+  private StringValues() {}
 
   /**
    * @param textComponent the component
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponentValue(final C textComponent) {
+  public static <C extends JTextComponent> ComponentValue<String, C> stringTextComponentValue(final C textComponent) {
     return new AbstractTextComponentValue<String, C>(textComponent, null, UpdateOn.KEYSTROKE) {
       @Override
       protected String getComponentValue(final C component) {
@@ -44,8 +44,8 @@ public final class TextValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponentValue(final C textComponent, final Format format) {
-    return textComponentValue(textComponent, format, UpdateOn.KEYSTROKE);
+  public static <C extends JTextComponent> ComponentValue<String, C> stringTextComponentValue(final C textComponent, final Format format) {
+    return stringTextComponentValue(textComponent, format, UpdateOn.KEYSTROKE);
   }
 
   /**
@@ -55,8 +55,8 @@ public final class TextValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponentValue(final C textComponent, final Format format,
-                                                                                        final UpdateOn updateOn) {
+  public static <C extends JTextComponent> ComponentValue<String, C> stringTextComponentValue(final C textComponent, final Format format,
+                                                                                              final UpdateOn updateOn) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
@@ -84,8 +84,8 @@ public final class TextValues {
    * @param maximumLength the maximum input length, -1 for no limit
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> textInputPanelValue(final String inputDialogTitle, final String initialValue,
-                                                                           final int maximumLength) {
+  public static ComponentValue<String, TextInputPanel> stringTextInputPanelValue(final String inputDialogTitle, final String initialValue,
+                                                                                 final int maximumLength) {
     return new TextInputPanelValue(inputDialogTitle, initialValue, maximumLength);
   }
 }

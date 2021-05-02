@@ -10,7 +10,7 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -264,7 +264,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    TextValues.textComponentValue(memoryField).link(model.getMemoryUsageObserver());
+    StringValues.stringTextComponentValue(memoryField).link(model.getMemoryUsageObserver());
 
     return memoryField;
   }

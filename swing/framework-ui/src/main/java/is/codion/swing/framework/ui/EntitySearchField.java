@@ -31,7 +31,7 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -225,7 +225,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void linkToModel() {
-    TextValues.textComponentValue(this).link(model.getSearchStringValue());
+    StringValues.stringTextComponentValue(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
@@ -400,7 +400,7 @@ public final class EntitySearchField extends JTextField {
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
       BooleanValues.booleanToggleButtonValue(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
       final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
-      TextValues.textComponentValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
+      StringValues.stringTextComponentValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));

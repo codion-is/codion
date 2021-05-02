@@ -6904,3 +6904,4 @@
   ComponentValue, component generic type now extends JComponent
   NumericalValues, methods renamed to reflect component type
   FileValues, TemporalValues, TextValues, methods renamed to reflect component type
+  TextValues renamed StringValues, methods renamed

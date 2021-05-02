@@ -27,8 +27,8 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -476,7 +476,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       }
       else if (typeClass.equals(String.class)) {
         final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
-        TextValues.textComponentValue(textField).link((Value<String>) value);
+        StringValues.stringTextComponentValue(textField).link((Value<String>) value);
 
         return textField;
       }
