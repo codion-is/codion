@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
@@ -289,7 +290,8 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void integerBoundedRangeModelUiValue() {
     final BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 150);
-    final Value<Integer> value = NumericalValues.integerValue(model);
+    final JProgressBar progressBar = new JProgressBar(model);
+    final Value<Integer> value = NumericalValues.integerValue(progressBar);
 
     assertEquals(Integer.valueOf(0), value.get());
     model.setValue(122);

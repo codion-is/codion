@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.NumberField;
 
-import javax.swing.BoundedRangeModel;
+import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -147,11 +147,11 @@ public final class NumericalValues {
   }
 
   /**
-   * @param boundedRangeModel the bounded range model
-   * @return a Value bound to the given model
+   * @param progressBar the progress bar
+   * @return a Value bound to the given progress bar
    */
-  public static ComponentValue<Integer, BoundedRangeModel> integerValue(final BoundedRangeModel boundedRangeModel) {
-    return new IntegerBoundedRangeModelValue(boundedRangeModel);
+  public static ComponentValue<Integer, JProgressBar> integerValue(final JProgressBar progressBar) {
+    return new IntegerProgressBarValue(progressBar);
   }
 
   /**
