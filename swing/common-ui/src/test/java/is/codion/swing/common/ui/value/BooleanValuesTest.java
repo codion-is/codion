@@ -8,6 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,7 @@ import javax.swing.ButtonModel;
 import javax.swing.DefaultButtonModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JToggleButton;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +37,7 @@ public class BooleanValuesTest {
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    BooleanValues.booleanButtonModelValue(checkBox.getModel())
+    BooleanValues.booleanToggleButtonValue(checkBox)
             .link(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
@@ -59,7 +61,9 @@ public class BooleanValuesTest {
   @Test
   public void toggleUiValue() {
     final ButtonModel model = new DefaultButtonModel();
-    final Value<Boolean> value = BooleanValues.booleanButtonModelValue(model);
+    final JToggleButton button = new JToggleButton();
+    button.setModel(model);
+    final Value<Boolean> value = BooleanValues.booleanToggleButtonValue(button);
 
     assertFalse(value.get());
     model.setSelected(true);
@@ -74,7 +78,8 @@ public class BooleanValuesTest {
   @Test
   public void nullableToggleUiValue() {
     final NullableToggleButtonModel model = new NullableToggleButtonModel();
-    final Value<Boolean> value = BooleanValues.booleanButtonModelValue(model);
+    final NullableCheckBox checkBox = new NullableCheckBox(model);
+    final Value<Boolean> value = BooleanValues.booleanToggleButtonValue(checkBox);
 
     assertNull(value.get());
     model.setSelected(true);

@@ -27,6 +27,13 @@ public class NullableCheckBox extends JCheckBox {
 
   /**
    * Instantiates a new NullableCheckBox with no caption.
+   */
+  public NullableCheckBox() {
+    this(new NullableToggleButtonModel());
+  }
+
+  /**
+   * Instantiates a new NullableCheckBox with no caption.
    * @param model the model
    */
   public NullableCheckBox(final NullableToggleButtonModel model) {

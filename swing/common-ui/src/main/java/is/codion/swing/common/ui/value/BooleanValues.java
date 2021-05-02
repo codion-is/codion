@@ -4,11 +4,11 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.item.Item;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 
-import javax.swing.ButtonModel;
 import javax.swing.JComboBox;
+import javax.swing.JToggleButton;
 
 /**
  * Utility class for boolean {@link ComponentValue} instances.
@@ -18,18 +18,18 @@ public final class BooleanValues {
   private BooleanValues() {}
 
   /**
-   * Creates a boolean value based on the given button model.
-   * If the button model is a {@link NullableToggleButtonModel} the value will be nullable otherwise not
-   * @param buttonModel the button model
+   * Creates a boolean value based on the given toggle button.
+   * If the button is a {@link NullableCheckBox} the value will be nullable otherwise not
+   * @param button the button
    * @param <T> the attribute type
-   * @return a Value bound to the given button model
+   * @return a Value bound to the given button
    */
-  public static <T extends ButtonModel> ComponentValue<Boolean, T> booleanButtonModelValue(final ButtonModel buttonModel) {
-    if (buttonModel instanceof NullableToggleButtonModel) {
-      return (ComponentValue<Boolean, T>) new BooleanNullableButtonModelValue((NullableToggleButtonModel) buttonModel);
+  public static <T extends JToggleButton> ComponentValue<Boolean, T> booleanToggleButtonValue(final JToggleButton button) {
+    if (button instanceof NullableCheckBox) {
+      return (ComponentValue<Boolean, T>) new BooleanNullableCheckBoxValue((NullableCheckBox) button);
     }
 
-    return (ComponentValue<Boolean, T>) new BooleanButtonModelValue(buttonModel);
+    return (ComponentValue<Boolean, T>) new BooleanToggleButtonValue(button);
   }
 
   /**

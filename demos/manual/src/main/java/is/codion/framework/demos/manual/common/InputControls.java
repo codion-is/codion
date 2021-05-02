@@ -7,7 +7,6 @@ import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
@@ -152,12 +151,10 @@ public final class InputControls {
 
     Value<Boolean> booleanValue = Value.value(initialValue, nullValue);
 
-    JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-
-    BooleanValues.booleanButtonModelValue(buttonModel).link(booleanValue);
-
     JCheckBox checkBox = new JCheckBox();
-    checkBox.setModel(buttonModel);
+
+    BooleanValues.booleanToggleButtonValue(checkBox).link(booleanValue);
+
     // end::checkBox[]
   }
 
@@ -166,11 +163,10 @@ public final class InputControls {
     //nullable boolean value
     Value<Boolean> booleanValue = Value.value();
 
-    NullableToggleButtonModel buttonModel = new NullableToggleButtonModel();
+    NullableCheckBox checkBox = new NullableCheckBox();
 
-    BooleanValues.booleanButtonModelValue(buttonModel).link(booleanValue);
+    BooleanValues.booleanToggleButtonValue(checkBox).link(booleanValue);
 
-    NullableCheckBox checkBox = new NullableCheckBox(buttonModel);
     // end::nullableCheckBox[]
   }
 

@@ -176,7 +176,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
-    BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(synchronizedZoomState);
+    BooleanValues.booleanToggleButtonValue(synchronizedZoomCheckBox).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
     zoomPanel.add(Control.builder()
             .command(this::resetZoom)

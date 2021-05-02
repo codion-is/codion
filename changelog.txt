@@ -6900,3 +6900,4 @@
   Nullable enum removed, no longer necessary due to builders
   NumericalValues.integerValueSpinnerModel() removed, integerValue(SpinnerNumberModel) removed, integerValue(JSpinner) added
   NumericalValues.integerValue(BoundedRangeModel) replaced with integerValue(JProgressBar)
+  BooleanValues.booleanButtonModelValue() renamed booleanToggleButtonValue(), parameter now JToggleButton instead of ButtonModel

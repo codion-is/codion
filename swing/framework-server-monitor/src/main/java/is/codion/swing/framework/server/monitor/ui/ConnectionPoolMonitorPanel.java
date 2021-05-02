@@ -209,7 +209,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(updateIntervalSpinner);
 
     final JCheckBox collectSnapshotCheckBox = new JCheckBox("Snapshot");
-    BooleanValues.booleanButtonModelValue(collectSnapshotCheckBox.getModel())
+    BooleanValues.booleanToggleButtonValue(collectSnapshotCheckBox)
             .link(model.getCollectSnapshotStatisticsState());
     collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(collectSnapshotCheckBox);

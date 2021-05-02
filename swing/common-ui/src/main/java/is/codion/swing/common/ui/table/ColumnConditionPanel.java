@@ -402,7 +402,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
         checkBox.setHorizontalAlignment(CENTER);
-        BooleanValues.booleanButtonModelValue(checkBox.getModel()).link((Value<Boolean>) value);
+        BooleanValues.booleanToggleButtonValue(checkBox).link((Value<Boolean>) value);
 
         return checkBox;
       }
