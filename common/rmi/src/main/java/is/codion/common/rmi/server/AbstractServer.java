@@ -41,7 +41,6 @@ import static is.codion.common.rmi.server.AuxiliaryServerFactory.auxiliaryServer
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -87,8 +86,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.configuration = configuration;
       this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
               configuration.getServerPort(), ZonedDateTime.now());
-      this.connectionMaintenanceScheduler = taskScheduler(new MaintenanceTask(),
-              configuration.getConnectionMaintenanceInterval(), configuration.getConnectionMaintenanceInterval(), TimeUnit.MILLISECONDS).start();
+      this.connectionMaintenanceScheduler = TaskScheduler.builder()
+              .task(new MaintenanceTask())
+              .interval(configuration.getConnectionMaintenanceInterval())
+              .initialDelay(configuration.getConnectionMaintenanceInterval())
+              .timeUnit(TimeUnit.MILLISECONDS)
+              .build().start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
       loadLoginProxies();

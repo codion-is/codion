@@ -6938,3 +6938,4 @@
   TextValues renamed StringValues, methods renamed
   All ComponentValue factory methods moved to ComponentValue
   ComponentValueBuilder moved to ComponentValue, renamed Builder
+  TaskScheduler.Builder added, factory methods replaced

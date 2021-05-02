@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
@@ -137,7 +136,11 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
     this.scenarioChooser = initializeScenarioChooser();
     initializeChartModels();
-    this.chartUpdateScheduler = taskScheduler(new ChartUpdateTask(), DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+    this.chartUpdateScheduler = TaskScheduler.builder()
+            .task(new ChartUpdateTask())
+            .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS)
+            .timeUnit(TimeUnit.MILLISECONDS)
+            .build();
     bindEvents();
   }
 

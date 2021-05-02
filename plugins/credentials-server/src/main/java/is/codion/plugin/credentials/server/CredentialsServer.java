@@ -22,8 +22,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
-
 /**
  * A credentials server for one-time authentication tokens for applications running on localhost.
  * Setting the following before the server is constructed is recommended:
@@ -78,7 +76,11 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
                            final int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
-    this.expiredCleaner = taskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
+    this.expiredCleaner = TaskScheduler.builder()
+            .task(this::removeExpired)
+            .interval(cleanupInterval)
+            .timeUnit(TimeUnit.MILLISECONDS)
+            .build().start();
     this.registry = Server.Locator.locator().initializeRegistry(registryPort);
     this.registry.bind(CredentialsService.class.getSimpleName(), this);
   }

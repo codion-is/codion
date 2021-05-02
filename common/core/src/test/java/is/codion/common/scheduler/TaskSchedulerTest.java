@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskSchedulerTest {
@@ -17,38 +16,38 @@ public class TaskSchedulerTest {
 
   @Test
   public void constructorNegativeInterval() {
-    assertThrows(IllegalArgumentException.class, () -> taskScheduler(runnable, -1, TimeUnit.SECONDS));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().interval(-1));
   }
 
   @Test
   public void constructorNegativeInitialDelay() {
-    assertThrows(IllegalArgumentException.class, () -> taskScheduler(runnable, 1, -1, TimeUnit.SECONDS));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().initialDelay(-1));
   }
 
   @Test
   public void constructorNullTask() {
-    assertThrows(NullPointerException.class, () -> taskScheduler(null, 1, 1, TimeUnit.SECONDS));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(null));
   }
 
   @Test
   public void constructorNullTimUnit() {
-    assertThrows(NullPointerException.class, () -> taskScheduler(runnable, 1, 1, null));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder().timeUnit(null));
   }
 
   @Test
   public void constructorNullThreadFactory() {
-    assertThrows(NullPointerException.class, () -> taskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder().threadFactory(null));
   }
 
   @Test
   public void setIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> taskScheduler(runnable, 1, TimeUnit.SECONDS).setInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().task(runnable).interval(1).timeUnit(TimeUnit.SECONDS).build().setInterval(-1));
   }
 
   @Test
   public void startStop() throws InterruptedException {
     final AtomicInteger counter = new AtomicInteger();
-    final TaskScheduler scheduler = taskScheduler(counter::incrementAndGet, 1, TimeUnit.MILLISECONDS);
+    final TaskScheduler scheduler = TaskScheduler.builder().task(counter::incrementAndGet).interval(1).timeUnit(TimeUnit.MILLISECONDS).build();
     assertFalse(scheduler.isRunning());
     scheduler.start();
     assertTrue(scheduler.isRunning());

@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -60,7 +61,6 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -355,8 +355,11 @@ public final class Components {
     final JTextField textField = new JTextField(8);
     textField.setEditable(false);
     textField.setHorizontalAlignment(JTextField.CENTER);
-    taskScheduler(() -> SwingUtilities.invokeLater(() ->
-            textField.setText(Memory.getMemoryUsage())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
+    TaskScheduler.builder()
+            .task(() -> SwingUtilities.invokeLater(() -> textField.setText(Memory.getMemoryUsage())))
+            .interval(updateIntervalMilliseconds)
+            .timeUnit(TimeUnit.MILLISECONDS)
+            .build().start();
 
     return textField;
   }
