@@ -48,6 +48,31 @@ public interface ComponentValue<V, C extends JComponent> extends Value<V> {
   C getComponent();
 
   /**
+   * A builder for Values based on an input component
+   * @param <V> the value type
+   * @param <C> the component type
+   */
+  interface Builder<V, C extends JComponent> {
+
+    /**
+     * @param component the component to base this value on
+     * @return this builder instace
+     */
+    Builder<V, C> component(C component);
+
+    /**
+     * @param initialValue the initial value
+     * @return this builder instace
+     */
+    Builder<V, C> initalValue(V initialValue);
+
+    /**
+     * @return a ComponentValue
+     */
+    ComponentValue<V, C> build();
+  }
+
+  /**
    * @param textComponent the component
    * @param <C> the text component type
    * @return a Value bound to the given component

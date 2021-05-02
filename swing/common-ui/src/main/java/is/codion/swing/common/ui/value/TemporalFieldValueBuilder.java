@@ -10,7 +10,7 @@ import java.time.temporal.Temporal;
  * A builder for Values based on a numerical field
  * @param <V> the value type
  */
-public interface TemporalFieldValueBuilder<V extends Temporal> extends ComponentValueBuilder<V, JFormattedTextField> {
+public interface TemporalFieldValueBuilder<V extends Temporal> extends ComponentValue.Builder<V, JFormattedTextField> {
 
   @Override
   TemporalFieldValueBuilder<V> component(JFormattedTextField component);
