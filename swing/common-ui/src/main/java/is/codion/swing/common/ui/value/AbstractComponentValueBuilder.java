@@ -3,9 +3,11 @@
  */
 package is.codion.swing.common.ui.value;
 
+import javax.swing.JComponent;
+
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractComponentValueBuilder<V, C> implements ComponentValueBuilder<V, C> {
+abstract class AbstractComponentValueBuilder<V, C extends JComponent> implements ComponentValueBuilder<V, C> {
 
   protected C component;
   protected V initialValue;

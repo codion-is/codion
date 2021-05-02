@@ -6901,3 +6901,4 @@
   NumericalValues.integerValueSpinnerModel() removed, integerValue(SpinnerNumberModel) removed, integerValue(JSpinner) added
   NumericalValues.integerValue(BoundedRangeModel) replaced with integerValue(JProgressBar)
   BooleanValues.booleanButtonModelValue() renamed booleanToggleButtonValue(), parameter now JToggleButton instead of ButtonModel
+  ComponentValue, component generic type now extends JComponent

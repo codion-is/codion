@@ -5,12 +5,14 @@ package is.codion.swing.common.ui.value;
 
 import is.codion.common.value.Value;
 
+import javax.swing.JComponent;
+
 /**
  * A {@link Value} represented by an input component of some sort.
  * @param <V> the value type
  * @param <C> the component type
  */
-public interface ComponentValue<V, C> extends Value<V> {
+public interface ComponentValue<V, C extends JComponent> extends Value<V> {
 
   /**
    * @return the input component representing the value

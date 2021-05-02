@@ -3,12 +3,14 @@
  */
 package is.codion.swing.common.ui.value;
 
+import javax.swing.JComponent;
+
 /**
  * A builder for Values based on a input component
  * @param <V> the value type
  * @param <C> the component type
  */
-public interface ComponentValueBuilder<V, C> {
+public interface ComponentValueBuilder<V, C extends JComponent> {
 
   /**
    * @param component the component to base this value on
