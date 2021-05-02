@@ -264,7 +264,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    TextValues.textValue(memoryField).link(model.getMemoryUsageObserver());
+    TextValues.textComponentValue(memoryField).link(model.getMemoryUsageObserver());
 
     return memoryField;
   }

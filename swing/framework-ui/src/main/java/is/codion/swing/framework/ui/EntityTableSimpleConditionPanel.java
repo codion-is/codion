@@ -71,7 +71,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
     final JButton simpleSearchButton = simpleSearchControl.createButton();
     simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    TextValues.textValue(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());
+    TextValues.textComponentValue(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
     panel.add(simpleSearchTextField, BorderLayout.WEST);
     panel.add(simpleSearchButton, BorderLayout.EAST);

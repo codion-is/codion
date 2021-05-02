@@ -225,7 +225,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void linkToModel() {
-    TextValues.textValue(this).link(model.getSearchStringValue());
+    TextValues.textComponentValue(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
@@ -400,7 +400,7 @@ public final class EntitySearchField extends JTextField {
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
       BooleanValues.booleanToggleButtonValue(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
       final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
-      TextValues.textValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
+      TextValues.textComponentValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));

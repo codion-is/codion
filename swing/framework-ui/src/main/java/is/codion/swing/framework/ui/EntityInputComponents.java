@@ -568,7 +568,7 @@ public final class EntityInputComponents {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState,
             LocaleDateTimePattern.getMask(dateTimePattern), ValueContainsLiterals.YES);
     if (attribute.isLocalDate()) {
-      TemporalValues.localDateValueBuilder()
+      TemporalValues.localDateFieldValueBuilder()
               .component(textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -578,7 +578,7 @@ public final class EntityInputComponents {
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValueBuilder()
+      TemporalValues.localDateFieldTimeValueBuilder()
               .component(textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -588,7 +588,7 @@ public final class EntityInputComponents {
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValueBuilder()
+      TemporalValues.localTimeFieldValueBuilder()
               .component(textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -675,7 +675,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    TextValues.textValue(textArea, null, updateOn).link(value);
+    TextValues.textComponentValue(textArea, null, updateOn).link(value);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -720,10 +720,10 @@ public final class EntityInputComponents {
     final Property<?> property = entityDefinition.getProperty(attribute);
     final JTextField textField = createTextField(attribute, enabledState, null, null);
     if (attribute.isString()) {
-      TextValues.textValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
+      TextValues.textComponentValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
     }
     else if (attribute.isCharacter()) {
-      TextValues.characterValue(textField, updateOn).link((Value<Character>) value);
+      TextValues.characterTextFieldValue(textField, updateOn).link((Value<Character>) value);
     }
     else if (attribute.isInteger()) {
       NumericalValues.integerFieldValueBuilder()
@@ -754,7 +754,7 @@ public final class EntityInputComponents {
               .link((Value<Long>) value);
     }
     else if (attribute.isLocalDate()) {
-      TemporalValues.localDateValueBuilder()
+      TemporalValues.localDateFieldValueBuilder()
               .component((JFormattedTextField) textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -762,7 +762,7 @@ public final class EntityInputComponents {
               .link((Value<LocalDate>) value);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValueBuilder()
+      TemporalValues.localTimeFieldValueBuilder()
               .component((JFormattedTextField) textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -770,7 +770,7 @@ public final class EntityInputComponents {
               .link((Value<LocalTime>) value);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValueBuilder()
+      TemporalValues.localDateFieldTimeValueBuilder()
               .component((JFormattedTextField) textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -778,7 +778,7 @@ public final class EntityInputComponents {
               .link((Value<LocalDateTime>) value);
     }
     else if (attribute.isOffsetDateTime()) {
-      TemporalValues.offsetDateTimeValueBuilder()
+      TemporalValues.offsetDateFieldTimeValueBuilder()
               .component((JFormattedTextField) textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -836,7 +836,7 @@ public final class EntityInputComponents {
                                                    final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
                                                    final StateObserver enabledState) {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState, formatMaskString, valueContainsLiterals);
-    TextValues.textValue(textField, null, updateOn).link(value);
+    TextValues.textComponentValue(textField, null, updateOn).link(value);
 
     return textField;
   }

@@ -433,7 +433,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(LocalTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.localTimeValueBuilder()
+        TemporalValues.localTimeFieldValueBuilder()
                 .component(formattedField)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .build()
@@ -444,7 +444,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(LocalDate.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.localDateValueBuilder()
+        TemporalValues.localDateFieldValueBuilder()
                 .component(formattedField)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .build()
@@ -455,7 +455,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(LocalDateTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.localDateTimeValueBuilder()
+        TemporalValues.localDateFieldTimeValueBuilder()
                 .component(formattedField)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .build()
@@ -466,7 +466,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(OffsetDateTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        TemporalValues.offsetDateTimeValueBuilder()
+        TemporalValues.offsetDateFieldTimeValueBuilder()
                 .component(formattedField)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .build()
@@ -476,7 +476,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       }
       else if (typeClass.equals(String.class)) {
         final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
-        TextValues.textValue(textField).link((Value<String>) value);
+        TextValues.textComponentValue(textField).link((Value<String>) value);
 
         return textField;
       }

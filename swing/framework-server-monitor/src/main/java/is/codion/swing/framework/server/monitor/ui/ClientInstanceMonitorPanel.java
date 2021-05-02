@@ -66,7 +66,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     logArea.setDocument(model.getLogDocument());
     logArea.setHighlighter(model.getLogHighlighter());
     treeLog.setModel(model.getLogTreeModel());
-    model.getSearchStringValue().link(TextValues.textValue(searchField));
+    model.getSearchStringValue().link(TextValues.textComponentValue(searchField));
     model.getCurrentSearchTextPosition().addDataListener(currentSearchPosition -> {
       if (currentSearchPosition != null) {
         try {

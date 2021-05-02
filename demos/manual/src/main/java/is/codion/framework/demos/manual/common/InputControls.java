@@ -186,7 +186,7 @@ public final class InputControls {
 
     JTextField textField = new JTextField();
 
-    TextValues.textValue(textField).link(stringValue);
+    TextValues.textComponentValue(textField).link(stringValue);
     // end::textField[]
   }
 
@@ -196,7 +196,7 @@ public final class InputControls {
 
     JTextArea textArea = new JTextArea();
 
-    TextValues.textValue(textArea).link(stringValue);
+    TextValues.textComponentValue(textArea).link(stringValue);
     // end::textArea[]
   }
 
@@ -249,7 +249,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    TemporalValues.localTimeValueBuilder()
+    TemporalValues.localTimeFieldValueBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()
@@ -266,7 +266,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    TemporalValues.localDateValueBuilder()
+    TemporalValues.localDateFieldValueBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()
@@ -283,7 +283,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    TemporalValues.localDateTimeValueBuilder()
+    TemporalValues.localDateFieldTimeValueBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()

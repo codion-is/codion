@@ -19,18 +19,11 @@ public final class TextValues {
   private TextValues() {}
 
   /**
-   * @return a Value bound to a JTextField
-   */
-  public static ComponentValue<String, JTextField> textValue() {
-    return textValue(new JTextField());
-  }
-
-  /**
    * @param textComponent the component
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponentValue(final C textComponent) {
     return new AbstractTextComponentValue<String, C>(textComponent, null, UpdateOn.KEYSTROKE) {
       @Override
       protected String getComponentValue(final C component) {
@@ -51,8 +44,8 @@ public final class TextValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format) {
-    return textValue(textComponent, format, UpdateOn.KEYSTROKE);
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponentValue(final C textComponent, final Format format) {
+    return textComponentValue(textComponent, format, UpdateOn.KEYSTROKE);
   }
 
   /**
@@ -62,8 +55,8 @@ public final class TextValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent, final Format format,
-                                                                               final UpdateOn updateOn) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponentValue(final C textComponent, final Format format,
+                                                                                        final UpdateOn updateOn) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
@@ -71,8 +64,8 @@ public final class TextValues {
    * @param textField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Character, JTextField> characterValue(final JTextField textField) {
-    return characterValue(textField, UpdateOn.KEYSTROKE);
+  public static ComponentValue<Character, JTextField> characterTextFieldValue(final JTextField textField) {
+    return characterTextFieldValue(textField, UpdateOn.KEYSTROKE);
   }
 
   /**
@@ -80,7 +73,7 @@ public final class TextValues {
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Character, JTextField> characterValue(final JTextField textField, final UpdateOn updateOn) {
+  public static ComponentValue<Character, JTextField> characterTextFieldValue(final JTextField textField, final UpdateOn updateOn) {
     return new CharacterFieldValue(textField, updateOn);
   }
 
@@ -91,8 +84,8 @@ public final class TextValues {
    * @param maximumLength the maximum input length, -1 for no limit
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> textValue(final String inputDialogTitle, final String initialValue,
-                                                                 final int maximumLength) {
+  public static ComponentValue<String, TextInputPanel> textInputPanelValue(final String inputDialogTitle, final String initialValue,
+                                                                           final int maximumLength) {
     return new TextInputPanelValue(inputDialogTitle, initialValue, maximumLength);
   }
 }

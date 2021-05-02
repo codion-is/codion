@@ -47,7 +47,7 @@ public final class ClientUI {
     Value<String> editModelNameValue = editModel.value(Artist.NAME);
 
     // create a String Value based on the text field
-    Value<String> textFieldNameValue = TextValues.textValue(nameField);
+    Value<String> textFieldNameValue = TextValues.textComponentValue(nameField);
 
     // link the two values
     textFieldNameValue.link(editModelNameValue);
@@ -115,7 +115,7 @@ public final class ClientUI {
     Value<String> editModelNameValue = editModel.value(Album.TITLE);
 
     // create a String Value based on the text field
-    Value<String> textFieldTitleValue = TextValues.textValue(titleField);
+    Value<String> textFieldTitleValue = TextValues.textComponentValue(titleField);
 
     // link the two values
     textFieldTitleValue.link(editModelNameValue);

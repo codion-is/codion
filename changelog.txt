@@ -6903,3 +6903,4 @@
   BooleanValues.booleanButtonModelValue() renamed booleanToggleButtonValue(), parameter now JToggleButton instead of ButtonModel
   ComponentValue, component generic type now extends JComponent
   NumericalValues, methods renamed to reflect component type
+  FileValues, TemporalValues, TextValues, methods renamed to reflect component type

@@ -94,13 +94,13 @@ public class EntityComponentValues {
               .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, 1);
+      return (ComponentValue<T, C>) TextValues.textInputPanelValue(property.getCaption(), (String) initialValue, 1);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      return (ComponentValue<T, C>) TextValues.textInputPanelValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
     }
     if (attribute.isByteArray()) {
-      return (ComponentValue<T, C>) FileValues.fileInputValue();
+      return (ComponentValue<T, C>) FileValues.fileInputPanelValue();
     }
 
     throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + attribute.getTypeClass() + ")");

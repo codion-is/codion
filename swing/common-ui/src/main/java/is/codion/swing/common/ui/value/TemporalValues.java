@@ -34,28 +34,28 @@ public final class TemporalValues {
   /**
    * @return a LocalTime based TemporalFieldValueBuilder
    */
-  public static TemporalFieldValueBuilder<LocalTime> localTimeValueBuilder() {
+  public static TemporalFieldValueBuilder<LocalTime> localTimeFieldValueBuilder() {
     return new LocalTimeFieldValueBuilder();
   }
 
   /**
    * @return a LocalDate based TemporalFieldValueBuilder
    */
-  public static TemporalFieldValueBuilder<LocalDate> localDateValueBuilder() {
+  public static TemporalFieldValueBuilder<LocalDate> localDateFieldValueBuilder() {
     return new LocalDateFieldValueBuilder();
   }
 
   /**
    * @return a LocalDateTime based TemporalFieldValueBuilder
    */
-  public static TemporalFieldValueBuilder<LocalDateTime> localDateTimeValueBuilder() {
+  public static TemporalFieldValueBuilder<LocalDateTime> localDateFieldTimeValueBuilder() {
     return new LocalDateTimeFieldValueBuilder();
   }
 
   /**
    * @return a OffsetDateTime based TemporalFieldValueBuilder
    */
-  public static TemporalFieldValueBuilder<OffsetDateTime> offsetDateTimeValueBuilder() {
+  public static TemporalFieldValueBuilder<OffsetDateTime> offsetDateFieldTimeValueBuilder() {
     return new OffsetDateTimeFieldValueBuilder();
   }
 
