@@ -10,7 +10,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.BooleanValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -61,11 +62,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
    */
   public ClientInstanceMonitorPanel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = requireNonNull(model);
-    loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
+    BooleanValues.booleanToggleButtonValue(loggingEnabledCheckBox).link(model.getLoggingEnabledValue());
     logArea.setDocument(model.getLogDocument());
     logArea.setHighlighter(model.getLogHighlighter());
     treeLog.setModel(model.getLogTreeModel());
-    model.getSearchStringValue().link(TextValues.textValue(searchField));
+    model.getSearchStringValue().link(StringValues.stringTextComponentValue(searchField));
     model.getCurrentSearchTextPosition().addDataListener(currentSearchPosition -> {
       if (currentSearchPosition != null) {
         try {

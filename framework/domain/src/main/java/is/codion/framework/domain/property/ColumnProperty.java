@@ -205,7 +205,7 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> nullable(boolean nullable);
 
     @Override
-    ColumnProperty.Builder<T> maximumLength(int maxLength);
+    ColumnProperty.Builder<T> maximumLength(int maximumLength);
 
     @Override
     ColumnProperty.Builder<T> mnemonic(Character mnemonic);

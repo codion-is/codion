@@ -14,30 +14,30 @@ public final class StringLengthValidator implements Value.Validator<String> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(StringLengthValidator.class.getName());
 
-  private int maxLength;
+  private int maximumLength;
 
-  private StringLengthValidator(final int maxLength) {
-    setMaxLength(maxLength);
+  private StringLengthValidator(final int maximumLength) {
+    setMaximumLength(maximumLength);
   }
 
   /**
    * @return the max length used by this validator
    */
-  public int getMaxLength() {
-    return maxLength;
+  public int getMaximumLength() {
+    return maximumLength;
   }
 
   /**
-   * @param maxLength the maximum length of the string to allow, -1 if unlimited
+   * @param maximumLength the maximum length of the string to allow, -1 if unlimited
    */
-  public void setMaxLength(final int maxLength) {
-    this.maxLength = maxLength < 0 ? -1 : maxLength;
+  public void setMaximumLength(final int maximumLength) {
+    this.maximumLength = maximumLength < 0 ? -1 : maximumLength;
   }
 
   @Override
   public void validate(final String text) {
-    if (maxLength >= 0 && text.length() > maxLength) {
-      throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + " " + maxLength);
+    if (maximumLength >= 0 && text.length() > maximumLength) {
+      throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + " " + maximumLength);
     }
   }
 
@@ -49,10 +49,10 @@ public final class StringLengthValidator implements Value.Validator<String> {
   }
 
   /**
-   * @param maxLength the maximum string length
+   * @param maximumLength the maximum string length
    * @return a new StringLengthValidator instance
    */
-  public static StringLengthValidator stringLengthValidator(final int maxLength) {
-    return new StringLengthValidator(maxLength);
+  public static StringLengthValidator stringLengthValidator(final int maximumLength) {
+    return new StringLengthValidator(maximumLength);
   }
 }

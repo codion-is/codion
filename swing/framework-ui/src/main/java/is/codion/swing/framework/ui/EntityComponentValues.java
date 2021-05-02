@@ -16,8 +16,8 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.FileValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComponent;
@@ -70,25 +70,37 @@ public class EntityComponentValues {
       return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimePattern()));
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
+      return (ComponentValue<T, C>) NumericalValues.doubleFieldValueBuilder()
+              .initalValue((Double) initialValue)
+              .format((DecimalFormat) property.getFormat())
+              .build();
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
+      return (ComponentValue<T, C>) NumericalValues.bigDecimalFieldValueBuilder()
+              .initalValue((BigDecimal) initialValue)
+              .format((DecimalFormat) property.getFormat())
+              .build();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
+      return (ComponentValue<T, C>) NumericalValues.integerFieldValueBuilder()
+              .initalValue((Integer) initialValue)
+              .format((NumberFormat) property.getFormat())
+              .build();
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>) NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
+      return (ComponentValue<T, C>)  NumericalValues.longFieldValueBuilder()
+              .initalValue((Long) initialValue)
+              .format((NumberFormat) property.getFormat())
+              .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, 1);
+      return (ComponentValue<T, C>) StringValues.stringTextInputPanelValue(property.getCaption(), (String) initialValue, 1);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      return (ComponentValue<T, C>) StringValues.stringTextInputPanelValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
     }
     if (attribute.isByteArray()) {
-      return (ComponentValue<T, C>) FileValues.fileInputValue();
+      return (ComponentValue<T, C>) FileValues.fileInputPanelValue();
     }
 
     throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + attribute.getTypeClass() + ")");
@@ -100,15 +112,15 @@ public class EntityComponentValues {
    * @param editModel the edit model involved in the updating
    * @param initialValue the current value to initialize the ComponentValue with
    * @param <T> the component type
-   * @return a Entity InputProvider
+   * @return a {@link ComponentValue} for the given foreign key
    */
   protected <T extends JComponent> ComponentValue<Entity, T> createEntityComponentValue(final ForeignKey foreignKey,
                                                                                         final SwingEntityEditModel editModel,
                                                                                         final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
+      return (ComponentValue<Entity, T>) new EntityComboBox.ComboBoxValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
     }
 
-    return (ComponentValue<Entity, T>) new EntitySearchField.ComponentValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
+    return (ComponentValue<Entity, T>) new EntitySearchField.SearchFieldValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
   }
 }

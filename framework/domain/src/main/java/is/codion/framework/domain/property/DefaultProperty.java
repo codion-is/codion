@@ -469,14 +469,14 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public Property.Builder<T> maximumLength(final int maxLength) {
+    public Property.Builder<T> maximumLength(final int maximumLength) {
       if (!property.attribute.isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string properties: " + property.attribute);
       }
-      if (maxLength <= 0) {
-        throw new IllegalArgumentException("Maximum length must be a positive integer: " + property.attribute);
+      if (maximumLength <= 0) {
+        throw new IllegalArgumentException("maximumLength must be a positive integer: " + property.attribute);
       }
-      property.maximumLength = maxLength;
+      property.maximumLength = maximumLength;
       return this;
     }
 
@@ -486,7 +486,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalStateException("maximumValue is only applicable to numerical properties: " + property.attribute);
       }
       if (property.minimumValue != null && property.minimumValue > maximumValue) {
-        throw new IllegalArgumentException("Maximum value must be larger than minimum value: " + property.attribute);
+        throw new IllegalArgumentException("maximumValue must be larger than minimum value: " + property.attribute);
       }
       property.maximumValue = maximumValue;
       return this;
@@ -498,7 +498,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalStateException("minimumValue is only applicable to numerical properties");
       }
       if (property.maximumValue != null && property.maximumValue < minimumValue) {
-        throw new IllegalArgumentException("Minimum value must be smaller than maximum value: " + property.attribute);
+        throw new IllegalArgumentException("minimumValue must be smaller than maximum value: " + property.attribute);
       }
       property.minimumValue = minimumValue;
       return this;

@@ -32,17 +32,17 @@ public class EntityComboBoxTest {
   public void inputProvider() throws Exception {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
-    final EntityComboBox.ComponentValue provider = new EntityComboBox.ComponentValue(model, operations);
+    final EntityComboBox.ComboBoxValue value = new EntityComboBox.ComboBoxValue(model, operations);
 
-    assertNotNull(provider.get());
+    assertNotNull(value.get());
 
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(
             TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedItem(sales);
-    assertEquals(sales, provider.get());
+    assertEquals(sales, value.get());
     model.setSelectedItem(null);
-    assertNull(provider.get());
+    assertNull(value.get());
   }
 
   @Test

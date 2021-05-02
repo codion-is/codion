@@ -48,7 +48,7 @@ public final class TextInputPanel extends JPanel {
   private final JButton button;
   private final String dialogTitle;
   private final Dimension textAreaSize;
-  private int maxLength = -1;
+  private int maximumLength = -1;
 
   /**
    * Instantiates a new TextInputPanel, with a focusable button.
@@ -92,26 +92,26 @@ public final class TextInputPanel extends JPanel {
 
   /**
    * Sets the maximum length of the string allowed in the text area
-   * @param maxLength the maximum length
+   * @param maximumLength the maximum length
    */
-  public void setMaxLength(final int maxLength) {
-    this.maxLength = maxLength;
+  public void setMaximumLength(final int maximumLength) {
+    this.maximumLength = maximumLength;
   }
 
   /**
    * @return the maximum length allowed for this text input panel
    */
-  public int getMaxLength() {
-    return maxLength;
+  public int getMaximumLength() {
+    return maximumLength;
   }
 
   /**
    * @param text the text to set
-   * @throws NullPointerException in case the text length exceeds maxLength
-   * @see #getMaxLength()
+   * @throws IllegalArgumentException in case the text length exceeds maximum length
+   * @see #getMaximumLength()
    */
   public void setText(final String text) {
-    if (maxLength > 0 && text.length() > maxLength) {
+    if (maximumLength > 0 && text.length() > maximumLength) {
       throw new IllegalArgumentException("Maximum allowed text length exceeded");
     }
     textField.setText(text);
@@ -169,10 +169,7 @@ public final class TextInputPanel extends JPanel {
     final JTextArea textArea = new JTextArea(textField.getText()) {
       @Override
       protected Document createDefaultModel() {
-        final SizedDocument document = new SizedDocument();
-        document.setMaxLength(getMaxLength());
-
-        return document;
+        return new SizedDocument(getMaximumLength());
       }
     };
     textArea.setPreferredSize(textAreaSize);

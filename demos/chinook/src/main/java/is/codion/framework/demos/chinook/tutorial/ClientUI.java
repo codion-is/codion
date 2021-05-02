@@ -16,7 +16,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.value.SelectedValues;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -47,7 +47,7 @@ public final class ClientUI {
     Value<String> editModelNameValue = editModel.value(Artist.NAME);
 
     // create a String Value based on the text field
-    Value<String> textFieldNameValue = TextValues.textValue(nameField);
+    Value<String> textFieldNameValue = StringValues.stringTextComponentValue(nameField);
 
     // link the two values
     textFieldNameValue.link(editModelNameValue);
@@ -112,13 +112,13 @@ public final class ClientUI {
     JTextField titleField = new JTextField(10);
 
     // create a String Value based on the album title in the edit model
-    Value<String> editModelNameValue = editModel.value(Album.TITLE);
+    Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
     // create a String Value based on the text field
-    Value<String> textFieldTitleValue = TextValues.textValue(titleField);
+    Value<String> textFieldTitleValue = StringValues.stringTextComponentValue(titleField);
 
     // link the two values
-    textFieldTitleValue.link(editModelNameValue);
+    textFieldTitleValue.link(editModelTitleValue);
 
     // add a insert action to the title field
     // so we can insert by pressing Enter

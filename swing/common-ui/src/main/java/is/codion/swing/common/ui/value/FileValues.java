@@ -13,7 +13,7 @@ public final class FileValues {
   /**
    * @return a file based ComponentValue
    */
-  public static ComponentValue<byte[], FileInputPanelValue.FileInputPanel> fileInputValue() {
+  public static ComponentValue<byte[], FileInputPanelValue.FileInputPanel> fileInputPanelValue() {
     return new FileInputPanelValue();
   }
 }

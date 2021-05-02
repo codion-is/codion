@@ -12,6 +12,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Utility class for temporal {@link ComponentValue} instances.
  */
@@ -30,90 +32,149 @@ public final class TemporalValues {
   }
 
   /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @return a Value bound to the given component
+   * @return a LocalTime based TemporalFieldValueBuilder
    */
-  public static ComponentValue<LocalTime, JFormattedTextField> localTimeValue(final JFormattedTextField textComponent,
-                                                                              final String dateFormat) {
-    return localTimeValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
+  public static TemporalFieldValueBuilder<LocalTime> localTimeFieldValueBuilder() {
+    return new LocalTimeFieldValueBuilder();
   }
 
   /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a Value bound to the given component
+   * @return a LocalDate based TemporalFieldValueBuilder
    */
-  public static ComponentValue<LocalTime, JFormattedTextField> localTimeValue(final JFormattedTextField textComponent,
-                                                                              final String dateFormat,
-                                                                              final UpdateOn updateOn) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalTime::parse);
+  public static TemporalFieldValueBuilder<LocalDate> localDateFieldValueBuilder() {
+    return new LocalDateFieldValueBuilder();
   }
 
   /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @return a Value bound to the given component
+   * @return a LocalDateTime based TemporalFieldValueBuilder
    */
-  public static ComponentValue<LocalDate, JFormattedTextField> localDateValue(final JFormattedTextField textComponent,
-                                                                              final String dateFormat) {
-    return localDateValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
+  public static TemporalFieldValueBuilder<LocalDateTime> localDateFieldTimeValueBuilder() {
+    return new LocalDateTimeFieldValueBuilder();
   }
 
   /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a Value bound to the given component
+   * @return a OffsetDateTime based TemporalFieldValueBuilder
    */
-  public static ComponentValue<LocalDate, JFormattedTextField> localDateValue(final JFormattedTextField textComponent,
-                                                                              final String dateFormat,
-                                                                              final UpdateOn updateOn) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalDate::parse);
+  public static TemporalFieldValueBuilder<OffsetDateTime> offsetDateFieldTimeValueBuilder() {
+    return new OffsetDateTimeFieldValueBuilder();
   }
 
   /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @return a Value bound to the given component
+   * A builder for Values based on a numerical field
+   * @param <V> the value type
    */
-  public static ComponentValue<LocalDateTime, JFormattedTextField> localDateTimeValue(final JFormattedTextField textComponent,
-                                                                                      final String dateFormat) {
-    return localDateTimeValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
+  public interface TemporalFieldValueBuilder<V extends Temporal> extends ComponentValueBuilder<V, JFormattedTextField> {
+
+    @Override
+    TemporalFieldValueBuilder<V> component(JFormattedTextField component);
+
+    @Override
+    TemporalFieldValueBuilder<V> initalValue(V initialValue);
+
+    /**
+     * @param dateTimePattern the date time pattern
+     * @return this builder instace
+     */
+    TemporalFieldValueBuilder<V> dateTimePattern(String dateTimePattern);
+
+    /**
+     * @param updateOn specifies when the underlying value should be updated
+     * @return this builder instace
+     */
+    TemporalFieldValueBuilder<V> updateOn(UpdateOn updateOn);
   }
 
-  /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a Value bound to the given component
-   */
-  public static ComponentValue<LocalDateTime, JFormattedTextField> localDateTimeValue(final JFormattedTextField textComponent,
-                                                                                      final String dateFormat,
-                                                                                      final UpdateOn updateOn) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, LocalDateTime::parse);
+  private static abstract class AbstractTemporalFieldBuilder<V extends Temporal>
+          extends AbstractComponentValueBuilder<V, JFormattedTextField> implements TemporalFieldValueBuilder<V> {
+
+    protected String dateTimePattern;
+    protected UpdateOn updateOn = UpdateOn.KEYSTROKE;
+
+    @Override
+    public final TemporalFieldValueBuilder<V> component(final JFormattedTextField component) {
+      return (TemporalFieldValueBuilder<V>) super.component(component);
+    }
+
+    @Override
+    public final TemporalFieldValueBuilder<V> initalValue(final V initialValue) {
+      return (TemporalFieldValueBuilder<V>) super.initalValue(initialValue);
+    }
+
+    @Override
+    public final TemporalFieldValueBuilder<V> dateTimePattern(final String dateTimePattern) {
+      this.dateTimePattern = requireNonNull(dateTimePattern);
+      return this;
+    }
+
+    @Override
+    public final TemporalFieldValueBuilder<V> updateOn(final UpdateOn updateOn) {
+      this.updateOn = requireNonNull(updateOn);
+      return this;
+    }
+
+    protected final void validate() {
+      if (component == null) {
+        throw new IllegalStateException("Component must bet set before building");
+      }
+      if (dateTimePattern == null) {
+        throw new IllegalStateException("DateTimePattern must bet set before building");
+      }
+    }
   }
 
-  /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @return a Value bound to the given component
-   */
-  public static ComponentValue<OffsetDateTime, JFormattedTextField> offsetDateTimeValue(final JFormattedTextField textComponent,
-                                                                                        final String dateFormat) {
-    return offsetDateTimeValue(textComponent, dateFormat, UpdateOn.KEYSTROKE);
+  private static final class LocalTimeFieldValueBuilder extends AbstractTemporalFieldBuilder<LocalTime> {
+
+    @Override
+    public ComponentValue<LocalTime, JFormattedTextField> build() {
+      validate();
+
+      final TemporalFieldValue<LocalTime> fieldValue = new TemporalFieldValue<>(component,
+              dateTimePattern, updateOn, LocalTime::parse);
+      fieldValue.set(initialValue);
+
+      return fieldValue;
+    }
   }
 
-  /**
-   * @param textComponent the component
-   * @param dateFormat the date format
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a Value bound to the given component
-   */
-  public static ComponentValue<OffsetDateTime, JFormattedTextField> offsetDateTimeValue(final JFormattedTextField textComponent,
-                                                                                        final String dateFormat,
-                                                                                        final UpdateOn updateOn) {
-    return new TemporalFieldValue<>(textComponent, dateFormat, updateOn, OffsetDateTime::parse);
+  private static final class LocalDateFieldValueBuilder extends AbstractTemporalFieldBuilder<LocalDate> {
+
+    @Override
+    public ComponentValue<LocalDate, JFormattedTextField> build() {
+      validate();
+
+      final TemporalFieldValue<LocalDate> fieldValue = new TemporalFieldValue<>(component,
+              dateTimePattern, updateOn, LocalDate::parse);
+      fieldValue.set(initialValue);
+
+      return fieldValue;
+    }
+  }
+
+  private static final class LocalDateTimeFieldValueBuilder extends AbstractTemporalFieldBuilder<LocalDateTime> {
+
+    @Override
+    public ComponentValue<LocalDateTime, JFormattedTextField> build() {
+      validate();
+
+      final TemporalFieldValue<LocalDateTime> fieldValue = new TemporalFieldValue<>(component,
+              dateTimePattern, updateOn, LocalDateTime::parse);
+      fieldValue.set(initialValue);
+
+      return fieldValue;
+    }
+  }
+
+  private static final class OffsetDateTimeFieldValueBuilder extends AbstractTemporalFieldBuilder<OffsetDateTime> {
+
+    @Override
+    public ComponentValue<OffsetDateTime, JFormattedTextField> build() {
+      validate();
+
+      final TemporalFieldValue<OffsetDateTime> fieldValue = new TemporalFieldValue<>(component,
+              dateTimePattern, updateOn, OffsetDateTime::parse);
+      fieldValue.set(initialValue);
+
+      return fieldValue;
+    }
   }
 }

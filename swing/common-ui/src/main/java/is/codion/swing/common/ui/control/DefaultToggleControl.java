@@ -4,10 +4,10 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.value.BooleanValues;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;
@@ -15,7 +15,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -72,7 +74,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     else {
       buttonModel = new JToggleButton.ToggleButtonModel();
     }
-    BooleanValues.booleanButtonModelValue(buttonModel).link(value);
+    new BooleanButtonModelValue(buttonModel).link(value);
     buttonModel.setEnabled(getEnabledObserver().get());
     getEnabledObserver().addDataListener(buttonModel::setEnabled);
     addPropertyChangeListener(changeEvent -> {
@@ -110,4 +112,62 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public void actionPerformed(final ActionEvent e) {/*Not required*/}
+
+  private static final class BooleanButtonModelValue extends AbstractValue<Boolean> {
+
+    private final ButtonModel buttonModel;
+
+    BooleanButtonModelValue(final ButtonModel buttonModel) {
+      this.buttonModel = buttonModel;
+      buttonModel.addItemListener(itemEvent -> notifyValueChange());
+    }
+
+    @Override
+    protected void setValue(final Boolean value) {
+      if (SwingUtilities.isEventDispatchThread()) {
+        setModelValue(value);
+      }
+      else {
+        try {
+          SwingUtilities.invokeAndWait(() -> setModelValue(value));
+        }
+        catch (final InterruptedException ex) {
+          Thread.currentThread().interrupt();
+          throw new RuntimeException(ex);
+        }
+        catch (final InvocationTargetException e) {
+          final Throwable cause = e.getCause();
+          if (cause instanceof RuntimeException) {
+            throw (RuntimeException) cause;
+          }
+
+          throw new RuntimeException(cause);
+        }
+        catch (final RuntimeException e) {
+          throw e;
+        }
+        catch (final Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+
+    @Override
+    public Boolean get() {
+      if (buttonModel instanceof NullableToggleButtonModel) {
+        return ((NullableToggleButtonModel) buttonModel).getState();
+      }
+
+      return buttonModel.isSelected();
+    }
+
+    private void setModelValue(final Boolean value) {
+      if (buttonModel instanceof NullableToggleButtonModel) {
+        ((NullableToggleButtonModel) buttonModel).setState(value);
+      }
+      else {
+        buttonModel.setSelected(value);
+      }
+    }
+  }
 }

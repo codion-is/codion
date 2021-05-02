@@ -31,7 +31,7 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -225,7 +225,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void linkToModel() {
-    TextValues.textValue(this).link(model.getSearchStringValue());
+    StringValues.stringTextComponentValue(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
@@ -366,7 +366,7 @@ public final class EntitySearchField extends JTextField {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel<Entity, EntitySearchField> inputPanel = new ComponentValuePanel<>(lookupCaption,
-            new ComponentValue(searchModel, null));
+            new SearchFieldValue(searchModel, null));
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
@@ -398,11 +398,9 @@ public final class EntitySearchField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()).link(searchModel.getMultipleSelectionEnabledValue());
-      final SizedDocument document = new SizedDocument();
-      document.setMaxLength(1);
-      final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      TextValues.textValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
+      BooleanValues.booleanToggleButtonValue(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
+      final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
+      StringValues.stringTextComponentValue(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -424,11 +422,11 @@ public final class EntitySearchField extends JTextField {
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      BooleanValues.booleanButtonModelValue(boxCaseSensitive.getModel()).link(settings.getCaseSensitiveValue());
+      BooleanValues.booleanToggleButtonValue(boxCaseSensitive).link(settings.getCaseSensitiveValue());
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      BooleanValues.booleanButtonModelValue(boxPrefixWildcard.getModel()).link(settings.getWildcardPrefixValue());
+      BooleanValues.booleanToggleButtonValue(boxPrefixWildcard).link(settings.getWildcardPrefixValue());
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      BooleanValues.booleanButtonModelValue(boxPostfixWildcard.getModel()).link(settings.getWildcardPostfixValue());
+      BooleanValues.booleanToggleButtonValue(boxPostfixWildcard).link(settings.getWildcardPostfixValue());
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);
@@ -589,14 +587,14 @@ public final class EntitySearchField extends JTextField {
    * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntitySearchField}.
    * @see EntitySearchField
    */
-  public static final class ComponentValue extends AbstractComponentValue<Entity, EntitySearchField> {
+  public static final class SearchFieldValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
     /**
      * Instantiates a new ComponentValue
      * @param searchModel the search model to base the search field on
      * @param initialValue the initial value
      */
-    public ComponentValue(final EntitySearchModel searchModel, final Entity initialValue) {
+    public SearchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
       super(createEntitySearchField(searchModel, initialValue));
     }
 

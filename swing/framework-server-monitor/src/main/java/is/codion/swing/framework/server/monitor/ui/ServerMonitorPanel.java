@@ -4,14 +4,13 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -44,7 +43,6 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 import static java.util.Arrays.asList;
 
 /**
@@ -122,7 +120,8 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", JLabel.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", JLabel.RIGHT));
-    final JSpinner connectionLimitSpinner = new JSpinner(integerValueSpinnerModel(model.getConnectionLimitValue()));
+    final JSpinner connectionLimitSpinner = new JSpinner();
+    NumericalValues.integerSpinnerValue(connectionLimitSpinner).link(model.getConnectionLimitValue());
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     serverPanel.add(connectionLimitSpinner);
     serverPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -155,7 +154,8 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
-    final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
+    final JSpinner updateIntervalSpinner = new JSpinner();
+    NumericalValues.integerSpinnerValue(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
@@ -176,7 +176,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
-    BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(synchronizedZoomState);
+    BooleanValues.booleanToggleButtonValue(synchronizedZoomCheckBox).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
     zoomPanel.add(Control.builder()
             .command(this::resetZoom)
@@ -251,7 +251,11 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    NumericalValues.integerValue(connectionCountField, Nullable.NO).link(model.getConnectionCountObserver());
+    NumericalValues.integerFieldValueBuilder()
+            .component(connectionCountField)
+            .nullable(false)
+            .build()
+            .link(model.getConnectionCountObserver());
 
     return connectionCountField;
   }
@@ -260,7 +264,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    TextValues.textValue(memoryField).link(model.getMemoryUsageObserver());
+    StringValues.stringTextComponentValue(memoryField).link(model.getMemoryUsageObserver());
 
     return memoryField;
   }

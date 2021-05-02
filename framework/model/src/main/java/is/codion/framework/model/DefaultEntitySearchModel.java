@@ -42,6 +42,7 @@ import static java.util.stream.Collectors.joining;
 public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
+  private static final String DEFAULT_SEPARATOR = ",";
 
   private final Event<List<Entity>> selectedEntitiesChangedEvent = Event.event();
   private final State searchStringRepresentsSelectedState = State.state(true);
@@ -72,7 +73,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Map<Attribute<String>, SearchSettings> attributeSearchSettings = new HashMap<>();
 
   private final Value<String> searchStringValue = Value.value("");
-  private final Value<String> multipleItemSeparatorValue = Value.value(",");
+  private final Value<String> multipleItemSeparatorValue = Value.value(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
   private final Value<Boolean> multipleSelectionEnabledValue = Value.value(true, false);
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;

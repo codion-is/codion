@@ -331,10 +331,10 @@ public interface Property<T> {
 
     /**
      * Sets the maximum length of this property value, this applies to String (varchar) based properties
-     * @param maxLength the maximum length
+     * @param maximumLength the maximum length
      * @return this instance
      */
-    Property.Builder<T> maximumLength(int maxLength);
+    Property.Builder<T> maximumLength(int maximumLength);
 
     /**
      * Sets the mnemonic to use when creating a label for this property

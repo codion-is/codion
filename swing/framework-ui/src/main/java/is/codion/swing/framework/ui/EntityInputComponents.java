@@ -9,7 +9,6 @@ import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Nullable;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
@@ -44,8 +43,8 @@ import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
@@ -569,15 +568,33 @@ public final class EntityInputComponents {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState,
             LocaleDateTimePattern.getMask(dateTimePattern), ValueContainsLiterals.YES);
     if (attribute.isLocalDate()) {
-      TemporalValues.localDateValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
+      TemporalValues.localDateFieldValueBuilder()
+              .component(textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDate>) value);
+
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
+      TemporalValues.localDateFieldTimeValueBuilder()
+              .component(textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDateTime>) value);
+
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValue(textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
+      TemporalValues.localTimeFieldValueBuilder()
+              .component(textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalTime>) value);
+
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, dateTimePattern, enabledState);
     }
 
@@ -599,7 +616,7 @@ public final class EntityInputComponents {
     final Property<?> property = entityDefinition.getProperty(attribute);
     final JTextField field = createTextField(attribute, value, updateOn);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
-    panel.setMaxLength(property.getMaximumLength());
+    panel.setMaximumLength(property.getMaximumLength());
 
     return panel;
   }
@@ -658,7 +675,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    TextValues.textValue(textArea, null, updateOn).link(value);
+    StringValues.stringTextComponentValue(textArea, null, updateOn).link(value);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -703,34 +720,70 @@ public final class EntityInputComponents {
     final Property<?> property = entityDefinition.getProperty(attribute);
     final JTextField textField = createTextField(attribute, enabledState, null, null);
     if (attribute.isString()) {
-      TextValues.textValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
+      StringValues.stringTextComponentValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
     }
     else if (attribute.isCharacter()) {
-      TextValues.characterValue(textField, updateOn).link((Value<Character>) value);
+      StringValues.characterTextFieldValue(textField, updateOn).link((Value<Character>) value);
     }
     else if (attribute.isInteger()) {
-      NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn).link((Value<Integer>) value);
+      NumericalValues.integerFieldValueBuilder()
+              .component((IntegerField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Integer>) value);
     }
     else if (attribute.isDouble()) {
-      NumericalValues.doubleValue((DoubleField) textField, Nullable.YES, updateOn).link((Value<Double>) value);
+      NumericalValues.doubleFieldValueBuilder()
+              .component((DoubleField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Double>) value);
     }
     else if (attribute.isBigDecimal()) {
-      NumericalValues.bigDecimalValue((BigDecimalField) textField, updateOn).link((Value<BigDecimal>) value);
+      NumericalValues.bigDecimalFieldValueBuilder()
+              .component((BigDecimalField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<BigDecimal>) value);
     }
     else if (attribute.isLong()) {
-      NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn).link((Value<Long>) value);
+      NumericalValues.longFieldValueBuilder()
+              .component((LongField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Long>) value);
     }
     else if (attribute.isLocalDate()) {
-      TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDate>) value);
+      TemporalValues.localDateFieldValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDate>) value);
     }
     else if (attribute.isLocalTime()) {
-      TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalTime>) value);
+      TemporalValues.localTimeFieldValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalTime>) value);
     }
     else if (attribute.isLocalDateTime()) {
-      TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<LocalDateTime>) value);
+      TemporalValues.localDateFieldTimeValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<LocalDateTime>) value);
     }
     else if (attribute.isOffsetDateTime()) {
-      TemporalValues.offsetDateTimeValue((JFormattedTextField) textField, property.getDateTimePattern(), updateOn).link((Value<OffsetDateTime>) value);
+      TemporalValues.offsetDateFieldTimeValueBuilder()
+              .component((JFormattedTextField) textField)
+              .dateTimePattern(property.getDateTimePattern())
+              .updateOn(updateOn)
+              .build()
+              .link((Value<OffsetDateTime>) value);
     }
     else {
       throw new IllegalArgumentException("Text fields not implemented for attribute type: " + attribute);
@@ -783,7 +836,7 @@ public final class EntityInputComponents {
                                                    final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
                                                    final StateObserver enabledState) {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState, formatMaskString, valueContainsLiterals);
-    TextValues.textValue(textField, null, updateOn).link(value);
+    StringValues.stringTextComponentValue(textField, null, updateOn).link(value);
 
     return textField;
   }
@@ -811,11 +864,13 @@ public final class EntityInputComponents {
     final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
     linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
-    if (attribute.isCharacter()) {
-      ((SizedDocument) field.getDocument()).setMaxLength(1);
-    }
-    if (property.getMaximumLength() > 0 && field.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) field.getDocument()).setMaxLength(property.getMaximumLength());
+    if (field.getDocument() instanceof SizedDocument) {
+      if (attribute.isCharacter()) {
+        ((SizedDocument) field.getDocument()).setMaximumLength(1);
+      }
+      else if (property.getMaximumLength() > 0) {
+        ((SizedDocument) field.getDocument()).setMaximumLength(property.getMaximumLength());
+      }
     }
 
     return field;
@@ -843,7 +898,7 @@ public final class EntityInputComponents {
       return initializeStringField(formatMaskString, valueContainsLiterals);
     }
     else if (attribute.isCharacter()) {
-      return new JTextField(new SizedDocument(), "", 0);
+      return new JTextField(new SizedDocument(1), "", 1);
     }
 
     throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");
@@ -895,7 +950,7 @@ public final class EntityInputComponents {
 
   private static JCheckBox initializeCheckBox(final Property<Boolean> property, final Value<Boolean> value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    BooleanValues.booleanButtonModelValue(checkBox.getModel()).link(value);
+    BooleanValues.booleanToggleButtonValue(checkBox).link(value);
     linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
 

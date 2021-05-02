@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 
 final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, BigDecimalField> {
 
-  BigDecimalFieldValue(final BigDecimalField doubleField, final UpdateOn updateOn) {
-    super(doubleField, null, updateOn);
+  BigDecimalFieldValue(final BigDecimalField doubleField, final boolean nullable, final UpdateOn updateOn) {
+    super(doubleField, nullable ? null : BigDecimal.ZERO, updateOn);
   }
 
   @Override

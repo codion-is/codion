@@ -15,7 +15,7 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.NumericalValues;
-import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
@@ -97,7 +97,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().selectorValue(attribute));
+    NumericalValues.integerFieldValue(integerField).link(getModel().selectorValue(attribute));
 
     return integerField;
   }
@@ -111,7 +111,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().selectorValue(attribute, finder));
+    NumericalValues.integerFieldValue(integerField).link(getModel().selectorValue(attribute, finder));
 
     return integerField;
   }
@@ -124,7 +124,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute) {
     final JTextField textField = new JTextField(2);
     TextFields.selectAllOnFocusGained(textField);
-    TextValues.textValue(textField).link(getModel().selectorValue(attribute));
+    StringValues.stringTextComponentValue(textField).link(getModel().selectorValue(attribute));
 
     return textField;
   }
@@ -138,7 +138,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
     final JTextField textField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(textField);
-    TextValues.textValue(textField).link(getModel().selectorValue(attribute, finder));
+    StringValues.stringTextComponentValue(textField).link(getModel().selectorValue(attribute, finder));
 
     return textField;
   }
@@ -157,14 +157,14 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
    * @see SwingEntityComboBoxModel
    */
-  public static final class ComponentValue extends AbstractComponentValue<Entity, EntityComboBox> {
+  public static final class ComboBoxValue extends AbstractComponentValue<Entity, EntityComboBox> {
 
     /**
      * Instantiates a new component value based on the EntityComboBoxModel class
      * @param comboBoxModel the combo box model
      * @param initialValue the initial value to display
      */
-    public ComponentValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
+    public ComboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
       super(createComboBox(comboBoxModel, initialValue));
     }
 

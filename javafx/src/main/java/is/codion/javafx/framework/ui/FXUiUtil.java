@@ -961,8 +961,8 @@ public final class FXUiUtil {
     }
 
     private static boolean isValid(final Property<?> property, final String value) {
-      final int maxLength = property.getMaximumLength();
-      if (maxLength > -1 && value != null && value.length() > maxLength) {
+      final int maximumLength = property.getMaximumLength();
+      if (maximumLength > -1 && value != null && value.length() > maximumLength) {
         return false;
       }
       if (property.getAttribute().isTemporal()) {

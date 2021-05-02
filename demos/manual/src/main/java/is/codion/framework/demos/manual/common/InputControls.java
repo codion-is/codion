@@ -3,11 +3,10 @@
  */
 package is.codion.framework.demos.manual.common;
 
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
-import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
@@ -24,8 +23,8 @@ import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.BooleanValues;
 import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.StringValues;
 import is.codion.swing.common.ui.value.TemporalValues;
-import is.codion.swing.common.ui.value.TextValues;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -152,12 +151,10 @@ public final class InputControls {
 
     Value<Boolean> booleanValue = Value.value(initialValue, nullValue);
 
-    JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-
-    BooleanValues.booleanButtonModelValue(buttonModel).link(booleanValue);
-
     JCheckBox checkBox = new JCheckBox();
-    checkBox.setModel(buttonModel);
+
+    BooleanValues.booleanToggleButtonValue(checkBox).link(booleanValue);
+
     // end::checkBox[]
   }
 
@@ -166,11 +163,10 @@ public final class InputControls {
     //nullable boolean value
     Value<Boolean> booleanValue = Value.value();
 
-    NullableToggleButtonModel buttonModel = new NullableToggleButtonModel();
+    NullableCheckBox checkBox = new NullableCheckBox();
 
-    BooleanValues.booleanButtonModelValue(buttonModel).link(booleanValue);
+    BooleanValues.booleanToggleButtonValue(checkBox).link(booleanValue);
 
-    NullableCheckBox checkBox = new NullableCheckBox(buttonModel);
     // end::nullableCheckBox[]
   }
 
@@ -190,7 +186,7 @@ public final class InputControls {
 
     JTextField textField = new JTextField();
 
-    TextValues.textValue(textField).link(stringValue);
+    StringValues.stringTextComponentValue(textField).link(stringValue);
     // end::textField[]
   }
 
@@ -200,7 +196,7 @@ public final class InputControls {
 
     JTextArea textArea = new JTextArea();
 
-    TextValues.textValue(textArea).link(stringValue);
+    StringValues.stringTextComponentValue(textArea).link(stringValue);
     // end::textArea[]
   }
 
@@ -210,7 +206,7 @@ public final class InputControls {
 
     IntegerField integerField = new IntegerField();
 
-    NumericalValues.integerValue(integerField).link(integerValue);
+    NumericalValues.integerFieldValue(integerField).link(integerValue);
     // end::integerField[]
   }
 
@@ -220,7 +216,7 @@ public final class InputControls {
 
     LongField longField = new LongField();
 
-    NumericalValues.longValue(longField).link(longValue);
+    NumericalValues.longFieldValue(longField).link(longValue);
     // end::longField[]
   }
 
@@ -230,7 +226,7 @@ public final class InputControls {
 
     DoubleField doubleField = new DoubleField();
 
-    NumericalValues.doubleValue(doubleField).link(doubleValue);
+    NumericalValues.doubleFieldValue(doubleField).link(doubleValue);
     // end::doubleField[]
   }
 
@@ -240,7 +236,7 @@ public final class InputControls {
 
     BigDecimalField bigDecimalField = new BigDecimalField();
 
-    NumericalValues.bigDecimalValue(bigDecimalField).link(bigDecimalValue);
+    NumericalValues.bigDecimalFieldValue(bigDecimalField).link(bigDecimalValue);
     // end::bigDecimalField[]
   }
 
@@ -248,9 +244,16 @@ public final class InputControls {
     // tag::localTime[]
     Value<LocalTime> localTimeValue = Value.value();
 
-    JFormattedTextField textField = new JFormattedTextField();
+    String dateTimePattern = "HH:mm:ss";
 
-    TemporalValues.localTimeValue(textField, "HH:mm:ss").link(localTimeValue);
+    JFormattedTextField textField =
+            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+
+    TemporalValues.localTimeFieldValueBuilder()
+            .component(textField)
+            .dateTimePattern(dateTimePattern)
+            .build()
+            .link(localTimeValue);
     // end::localTime[]
   }
 
@@ -258,9 +261,16 @@ public final class InputControls {
     // tag::localDate[]
     Value<LocalDate> localDateValue = Value.value();
 
-    JFormattedTextField textField = new JFormattedTextField();
+    String dateTimePattern = "dd-MM-yyyy";
 
-    TemporalValues.localDateValue(textField, "dd-MM-yyyy").link(localDateValue);
+    JFormattedTextField textField =
+            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+
+    TemporalValues.localDateFieldValueBuilder()
+            .component(textField)
+            .dateTimePattern(dateTimePattern)
+            .build()
+            .link(localDateValue);
     // end::localDate[]
   }
 
@@ -268,9 +278,16 @@ public final class InputControls {
     // tag::localDateTime[]
     Value<LocalDateTime> localDateTimeValue = Value.value();
 
-    JFormattedTextField textField = new JFormattedTextField();
+    String dateTimePattern = "dd-MM-yyyy HH:mm";
 
-    TemporalValues.localDateTimeValue(textField, "dd-MM-yyyy HH:mm").link(localDateTimeValue);
+    JFormattedTextField textField =
+            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+
+    TemporalValues.localDateFieldTimeValueBuilder()
+            .component(textField)
+            .dateTimePattern(dateTimePattern)
+            .build()
+            .link(localDateTimeValue);
     // end::localDateTime[]
   }
 
@@ -357,7 +374,10 @@ public final class InputControls {
                     int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
-            NumericalValues.integerValue(horizontalAlignmentField, Nullable.NO);
+            NumericalValues.integerFieldValueBuilder()
+                    .component(horizontalAlignmentField)
+                    .nullable(false)
+                    .build();
 
     fieldValue.link(horizontalAlignmentValue);
 

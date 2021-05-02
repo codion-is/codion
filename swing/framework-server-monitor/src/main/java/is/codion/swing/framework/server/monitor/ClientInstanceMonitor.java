@@ -10,10 +10,8 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.ui.value.BooleanValues;
 
 import javax.swing.ButtonModel;
-import javax.swing.JToggleButton;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultStyledDocument;
@@ -45,7 +43,6 @@ public final class ClientInstanceMonitor {
   private final StyledDocument logDocument = new DefaultStyledDocument();
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
-  private final ButtonModel loggingEnabledButtonModel = new JToggleButton.ToggleButtonModel();
   private final Value<String> searchStringValue = Value.value();
   private final Highlighter logHighlighter = new DefaultHighlighter();
   private final Highlighter.HighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
@@ -64,7 +61,6 @@ public final class ClientInstanceMonitor {
     this.remoteClient = remoteClient;
     this.server = server;
     this.loggingEnabledValue = Value.value(server.isLoggingEnabled(remoteClient.getClientId()));
-    BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel).link(loggingEnabledValue);
     bindEvents();
   }
 
@@ -78,8 +74,8 @@ public final class ClientInstanceMonitor {
   /**
    * @return the {@link ButtonModel} for controlling whether logging is enabled
    */
-  public ButtonModel getLoggingEnabledButtonModel() {
-    return loggingEnabledButtonModel;
+  public Value<Boolean> getLoggingEnabledValue() {
+    return loggingEnabledValue;
   }
 
   /**

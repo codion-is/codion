@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.value;
 
 import is.codion.common.value.AbstractValue;
 
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
 
@@ -15,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * @param <V> the value type
  * @param <C> the component type
  */
-public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> implements ComponentValue<V, C> {
+public abstract class AbstractComponentValue<V, C extends JComponent> extends AbstractValue<V> implements ComponentValue<V, C> {
 
   private final C component;
 
