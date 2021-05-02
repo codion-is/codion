@@ -27,7 +27,7 @@ import is.codion.swing.common.ui.time.LocalDateInputPanel;
 import is.codion.swing.common.ui.time.LocalDateTimeInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityInputComponents.Editable;
@@ -1017,7 +1017,7 @@ public class EntityEditComponentPanel extends JPanel {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    ComponentValue.stringTextComponent(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKey));
+    ComponentValues.stringTextComponent(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKey));
     if (transferFocusOnEnter) {
       transferFocusOnEnter(textField);
     }

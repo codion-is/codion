@@ -5,7 +5,7 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -60,7 +60,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     final JSpinner updateIntervalSpinner = new JSpinner();
-    ComponentValue.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
+    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
 
     ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);

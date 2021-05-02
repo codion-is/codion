@@ -20,7 +20,7 @@ import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -149,7 +149,7 @@ public final class InputControls {
 
     JCheckBox checkBox = new JCheckBox();
 
-    ComponentValue.booleanToggleButton(checkBox).link(booleanValue);
+    ComponentValues.booleanToggleButton(checkBox).link(booleanValue);
 
     // end::checkBox[]
   }
@@ -161,7 +161,7 @@ public final class InputControls {
 
     NullableCheckBox checkBox = new NullableCheckBox();
 
-    ComponentValue.booleanToggleButton(checkBox).link(booleanValue);
+    ComponentValues.booleanToggleButton(checkBox).link(booleanValue);
 
     // end::nullableCheckBox[]
   }
@@ -172,7 +172,7 @@ public final class InputControls {
 
     JComboBox<Item<Boolean>> comboBox = new JComboBox<>(new BooleanComboBoxModel());
 
-    ComponentValue.booleanComboBox(comboBox).link(booleanValue);
+    ComponentValues.booleanComboBox(comboBox).link(booleanValue);
     // end::booleanComboBox[]
   }
 
@@ -182,7 +182,7 @@ public final class InputControls {
 
     JTextField textField = new JTextField();
 
-    ComponentValue.stringTextComponent(textField).link(stringValue);
+    ComponentValues.stringTextComponent(textField).link(stringValue);
     // end::textField[]
   }
 
@@ -192,7 +192,7 @@ public final class InputControls {
 
     JTextArea textArea = new JTextArea();
 
-    ComponentValue.stringTextComponent(textArea).link(stringValue);
+    ComponentValues.stringTextComponent(textArea).link(stringValue);
     // end::textArea[]
   }
 
@@ -202,7 +202,7 @@ public final class InputControls {
 
     IntegerField integerField = new IntegerField();
 
-    ComponentValue.integerField(integerField).link(integerValue);
+    ComponentValues.integerField(integerField).link(integerValue);
     // end::integerField[]
   }
 
@@ -212,7 +212,7 @@ public final class InputControls {
 
     LongField longField = new LongField();
 
-    ComponentValue.longField(longField).link(longValue);
+    ComponentValues.longField(longField).link(longValue);
     // end::longField[]
   }
 
@@ -222,7 +222,7 @@ public final class InputControls {
 
     DoubleField doubleField = new DoubleField();
 
-    ComponentValue.doubleField(doubleField).link(doubleValue);
+    ComponentValues.doubleField(doubleField).link(doubleValue);
     // end::doubleField[]
   }
 
@@ -232,7 +232,7 @@ public final class InputControls {
 
     BigDecimalField bigDecimalField = new BigDecimalField();
 
-    ComponentValue.bigDecimalField(bigDecimalField).link(bigDecimalValue);
+    ComponentValues.bigDecimalField(bigDecimalField).link(bigDecimalValue);
     // end::bigDecimalField[]
   }
 
@@ -245,7 +245,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    ComponentValue.localTimeFieldBuilder()
+    ComponentValues.localTimeFieldBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()
@@ -262,7 +262,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    ComponentValue.localDateFieldBuilder()
+    ComponentValues.localDateFieldBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()
@@ -279,7 +279,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    ComponentValue.localDateFieldTimeBuilder()
+    ComponentValues.localDateFieldTimeBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()
@@ -293,7 +293,7 @@ public final class InputControls {
 
     JComboBox<String> comboBox = new JComboBox<>(new String[] {"one", "two", "three"});
 
-    ComponentValue.selectedComboBox(comboBox).link(stringValue);
+    ComponentValues.selectedComboBox(comboBox).link(stringValue);
     // end::selectionComboBox[]
   }
 
@@ -370,7 +370,7 @@ public final class InputControls {
                     int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
-            ComponentValue.integerFieldBuilder()
+            ComponentValues.integerFieldBuilder()
                     .component(horizontalAlignmentField)
                     .nullable(false)
                     .build();

@@ -15,7 +15,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -46,7 +46,7 @@ public final class ClientUI {
     Value<String> editModelNameValue = editModel.value(Artist.NAME);
 
     // create a String Value based on the text field
-    Value<String> textFieldNameValue = ComponentValue.stringTextComponent(nameField);
+    Value<String> textFieldNameValue = ComponentValues.stringTextComponent(nameField);
 
     // link the two values
     textFieldNameValue.link(editModelNameValue);
@@ -102,7 +102,7 @@ public final class ClientUI {
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
 
     // create a Entity Value based on the combobox
-    Value<Entity> comboBoxArtistValue = ComponentValue.selectedComboBox(artistComboBox);
+    Value<Entity> comboBoxArtistValue = ComponentValues.selectedComboBox(artistComboBox);
 
     // link the two values
     comboBoxArtistValue.link(editModelArtistValue);
@@ -114,7 +114,7 @@ public final class ClientUI {
     Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
     // create a String Value based on the text field
-    Value<String> textFieldTitleValue = ComponentValue.stringTextComponent(titleField);
+    Value<String> textFieldTitleValue = ComponentValues.stringTextComponent(titleField);
 
     // link the two values
     textFieldTitleValue.link(editModelTitleValue);

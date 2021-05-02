@@ -37,7 +37,7 @@ public class BooleanValuesTest {
   @Test
   public void booleanToggleButtonCheckBox() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    ComponentValue.booleanToggleButton(checkBox)
+    ComponentValues.booleanToggleButton(checkBox)
             .link(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
@@ -48,7 +48,7 @@ public class BooleanValuesTest {
 
   @Test
   public void booleanComboBox() {
-    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = ComponentValue.booleanComboBox(false);
+    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = ComponentValues.booleanComboBox(false);
     assertEquals(false, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(true);
     assertEquals(true, componentValue.get());
@@ -63,7 +63,7 @@ public class BooleanValuesTest {
     final ButtonModel model = new DefaultButtonModel();
     final JToggleButton button = new JToggleButton();
     button.setModel(model);
-    final Value<Boolean> value = ComponentValue.booleanToggleButton(button);
+    final Value<Boolean> value = ComponentValues.booleanToggleButton(button);
 
     assertFalse(value.get());
     model.setSelected(true);
@@ -79,7 +79,7 @@ public class BooleanValuesTest {
   public void booleanNullableToggleButton() {
     final NullableToggleButtonModel model = new NullableToggleButtonModel();
     final NullableCheckBox checkBox = new NullableCheckBox(model);
-    final Value<Boolean> value = ComponentValue.booleanToggleButton(checkBox);
+    final Value<Boolean> value = ComponentValues.booleanToggleButton(checkBox);
 
     assertNull(value.get());
     model.setSelected(true);

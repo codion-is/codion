@@ -29,8 +29,8 @@ import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -224,7 +224,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void linkToModel() {
-    ComponentValue.stringTextComponent(this).link(model.getSearchStringValue());
+    ComponentValues.stringTextComponent(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
@@ -397,9 +397,9 @@ public final class EntitySearchField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      ComponentValue.booleanToggleButton(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
+      ComponentValues.booleanToggleButton(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
       final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
-      ComponentValue.stringTextComponent(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
+      ComponentValues.stringTextComponent(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -421,11 +421,11 @@ public final class EntitySearchField extends JTextField {
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      ComponentValue.booleanToggleButton(boxCaseSensitive).link(settings.getCaseSensitiveValue());
+      ComponentValues.booleanToggleButton(boxCaseSensitive).link(settings.getCaseSensitiveValue());
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      ComponentValue.booleanToggleButton(boxPrefixWildcard).link(settings.getWildcardPrefixValue());
+      ComponentValues.booleanToggleButton(boxPrefixWildcard).link(settings.getWildcardPrefixValue());
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      ComponentValue.booleanToggleButton(boxPostfixWildcard).link(settings.getWildcardPostfixValue());
+      ComponentValues.booleanToggleButton(boxPostfixWildcard).link(settings.getWildcardPostfixValue());
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);
