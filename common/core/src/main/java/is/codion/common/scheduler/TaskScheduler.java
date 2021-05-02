@@ -14,11 +14,11 @@ import java.util.concurrent.TimeUnit;
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
  * <pre>
- *   TaskScheduler scheduler = TaskScheduler.taskScheduler(new Runnable() {
+ *   TaskScheduler scheduler = TaskScheduler.builder().task(new Runnable() {
  *     public void run() {
  *       System.out.println("Running wild...");
  *     }
- *   }, 2, TimeUnit.SECONDS);
+ *   }).interval(2).timeUnit(TimeUnit.SECONDS).build();
  *
  *   scheduler.start();
  *   ...
@@ -65,44 +65,50 @@ public interface TaskScheduler {
   void addIntervalListener(final EventDataListener<Integer> listener);
 
   /**
-   * Instantiates a new TaskScheduler instance, with no initial delay and a daemon thread
-   * @param task the task to run
-   * @param interval the interval
-   * @param timeUnit the time unit to use
-   * @return a new TaskScheduler instance
+   * @return a new {@link TaskScheduler.Builder} instance.
    */
-  static TaskScheduler taskScheduler(final Runnable task, final int interval, final TimeUnit timeUnit) {
-    return taskScheduler(task, interval, 0, timeUnit);
+  static TaskScheduler.Builder builder() {
+    return new DefaultTaskSchedulerBuilder();
   }
 
   /**
-   * Instantiates a new TaskScheduler instance with a daemon thread.
-   * @param task the task to run
-   * @param interval the interval
-   * @param initialDelay the initial start delay, used on restarts as well
-   * @param timeUnit the time unit to use
-   * @return a new TaskScheduler instance
+   * A builder for {@link TaskScheduler}
    */
-  static TaskScheduler taskScheduler(final Runnable task, final int interval, final int initialDelay, final TimeUnit timeUnit) {
-    return taskScheduler(task, interval, initialDelay, timeUnit, runnable -> {
-      final Thread thread = new Thread(runnable);
-      thread.setDaemon(true);
+  interface Builder {
 
-      return thread;
-    });
-  }
+    /**
+     * @param task the task to run
+     * @return this builder instance
+     */
+    Builder task(Runnable task);
 
-  /**
-   * Instantiates a new TaskScheduler instance.
-   * @param task the task to run
-   * @param interval the interval
-   * @param initialDelay the initial start delay, used on restarts as well
-   * @param timeUnit the time unit to use
-   * @param threadFactory the thread factory to use
-   * @return a new TaskScheduler instance
-   */
-  static TaskScheduler taskScheduler(final Runnable task, final int interval, final int initialDelay, final TimeUnit timeUnit,
-                                     final ThreadFactory threadFactory) {
-    return new DefaultTaskScheduler(task, interval, initialDelay, timeUnit, threadFactory);
+    /**
+     * @param interval the interval
+     * @return this builder instance
+     */
+    Builder interval(int interval);
+
+    /**
+     * @param initialDelay the initial start delay, used on restarts as well
+     * @return this builder instance
+     */
+    Builder initialDelay(int initialDelay);
+
+    /**
+     * @param timeUnit the time unit
+     * @return this builder instance
+     */
+    Builder timeUnit(TimeUnit timeUnit);
+
+    /**
+     * @param threadFactory the thread factory to use
+     * @return this builder instance
+     */
+    Builder threadFactory(ThreadFactory threadFactory);
+
+    /**
+     * @return a new {@link TaskScheduler}.
+     */
+    TaskScheduler build();
   }
 }

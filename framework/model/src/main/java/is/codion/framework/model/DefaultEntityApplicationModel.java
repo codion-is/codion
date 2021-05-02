@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,8 +36,12 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   private final State connectionValidState = State.state();
   private final Event<User> loginEvent = Event.event();
   private final Event<User> logoutEvent = Event.event();
-  private final TaskScheduler validityCheckScheduler = taskScheduler(this::checkConnectionValidity,
-          VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
+  private final TaskScheduler validityCheckScheduler = TaskScheduler.builder()
+          .task(this::checkConnectionValidity)
+          .interval(VALIDITY_CHECK_INTERVAL_SECONDS)
+          .initialDelay(VALIDITY_CHECK_INTERVAL_SECONDS)
+          .timeUnit(TimeUnit.SECONDS)
+          .build();
   private final List<M> entityModels = new ArrayList<>();
 
   private boolean warnAboutUnsavedData = EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get();

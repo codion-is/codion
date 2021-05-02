@@ -22,8 +22,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
-
 /**
  * A ConnectionPoolMonitor
  */
@@ -91,7 +89,11 @@ public final class ConnectionPoolMonitor {
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
-    this.updateScheduler = taskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateScheduler = TaskScheduler.builder()
+            .task(this::updateStatistics)
+            .interval(updateRate)
+            .timeUnit(TimeUnit.SECONDS)
+            .build().start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     bindEvents();
   }

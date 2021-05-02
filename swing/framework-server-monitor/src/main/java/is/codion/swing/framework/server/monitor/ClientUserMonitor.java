@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.asList;
 
 /**
@@ -76,14 +75,11 @@ public final class ClientUserMonitor {
         throw new IllegalArgumentException("Connection timeout must be a positive integer");
       }
     });
-    this.updateScheduler = taskScheduler(() -> {
-      try {
-        userHistoryTableModel.refresh();
-      }
-      catch (final Exception e) {
-        LOG.error("Error while refreshing user history table model", e);
-      }
-    }, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateScheduler = TaskScheduler.builder()
+            .task(this::refreshUserHistoryTableModel)
+            .interval(updateRate)
+            .timeUnit(TimeUnit.SECONDS)
+            .build().start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     bindEvents();
     refresh();
@@ -213,6 +209,15 @@ public final class ClientUserMonitor {
     }
     catch (final RemoteException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private void refreshUserHistoryTableModel() {
+    try {
+      userHistoryTableModel.refresh();
+    }
+    catch (final Exception e) {
+      LOG.error("Error while refreshing user history table model", e);
     }
   }
 

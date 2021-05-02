@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Collections.emptyList;
 
 /**
@@ -134,7 +133,11 @@ public final class ServerMonitor {
     this.systemLoadCollection.addSeries(processLoadSeries);
     this.databaseMonitor = new DatabaseMonitor(server, updateRate);
     this.clientMonitor = new ClientUserMonitor(server, updateRate);
-    this.updateScheduler = taskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateScheduler = TaskScheduler.builder()
+            .task(this::updateStatistics)
+            .interval(updateRate)
+            .timeUnit(TimeUnit.SECONDS)
+            .build().start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     refreshDomainList();
     bindEvents();

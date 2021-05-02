@@ -15,8 +15,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
-
 /**
  * A DatabaseMonitor
  */
@@ -47,12 +45,11 @@ public final class DatabaseMonitor {
     this.queriesPerSecondCollection.addSeries(insertsPerSecond);
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
-    this.updateScheduler = taskScheduler(() -> {
-      try {
-        updateStatistics();
-      }
-      catch (final RemoteException ignored) {/*ignored*/}
-    }, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateScheduler = TaskScheduler.builder()
+            .task(this::doUpdateStatistics)
+            .interval(updateRate)
+            .timeUnit(TimeUnit.SECONDS)
+            .build().start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
   }
 
@@ -107,5 +104,12 @@ public final class DatabaseMonitor {
    */
   public Value<Integer> getUpdateIntervalValue() {
     return updateIntervalValue;
+  }
+
+  private void doUpdateStatistics() {
+    try {
+      updateStatistics();
+    }
+    catch (final RemoteException ignored) {/*ignored*/}
   }
 }
