@@ -41,6 +41,21 @@ public final class ComponentValues {
   private ComponentValues() {}
 
   /**
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<String, JTextField> stringTextField() {
+    return stringTextComponent(new JTextField(), null, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<String, JTextField> stringTextField(final UpdateOn updateOn) {
+    return stringTextComponent(new JTextField(), null, updateOn);
+  }
+
+  /**
    * @param textComponent the component
    * @param <C> the text component type
    * @return a Value bound to the given component

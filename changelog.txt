@@ -6942,3 +6942,4 @@
   ComponentValues added, factory methods moved from ComponentValue, removing a horrible mess of cyclic dependencies within the value package
   ComponentValues.integerSlider() added
   ComponentValues, couple of incorrectly name methods fixed
+  ComponentValues.stringTextField() added
