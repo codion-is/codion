@@ -574,7 +574,7 @@ public final class EntityInputComponents {
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, dateTimePattern, calendarButton, enabledState);
     }
     else if (attribute.isLocalDateTime()) {
-      ComponentValues.localDateFieldTimeBuilder()
+      ComponentValues.localDateTimeFieldBuilder()
               .component(textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -766,7 +766,7 @@ public final class EntityInputComponents {
               .link((Value<LocalTime>) value);
     }
     else if (attribute.isLocalDateTime()) {
-      ComponentValues.localDateFieldTimeBuilder()
+      ComponentValues.localDateTimeFieldBuilder()
               .component((JFormattedTextField) textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
@@ -774,7 +774,7 @@ public final class EntityInputComponents {
               .link((Value<LocalDateTime>) value);
     }
     else if (attribute.isOffsetDateTime()) {
-      ComponentValues.offsetDateFieldTimeBuilder()
+      ComponentValues.offsetDateTimeFieldBuilder()
               .component((JFormattedTextField) textField)
               .dateTimePattern(property.getDateTimePattern())
               .updateOn(updateOn)
