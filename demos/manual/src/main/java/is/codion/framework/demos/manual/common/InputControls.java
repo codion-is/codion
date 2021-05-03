@@ -279,7 +279,7 @@ public final class InputControls {
     JFormattedTextField textField =
             new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
 
-    ComponentValues.localDateFieldTimeBuilder()
+    ComponentValues.localDateTimeFieldBuilder()
             .component(textField)
             .dateTimePattern(dateTimePattern)
             .build()

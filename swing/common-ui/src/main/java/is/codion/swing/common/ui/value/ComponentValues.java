@@ -141,14 +141,14 @@ public final class ComponentValues {
   /**
    * @return a LocalDateTime based TemporalFieldValueBuilder
    */
-  public static TemporalFieldValueBuilder<LocalDateTime> localDateFieldTimeBuilder() {
+  public static TemporalFieldValueBuilder<LocalDateTime> localDateTimeFieldBuilder() {
     return new LocalDateTimeFieldValueBuilder();
   }
 
   /**
    * @return a OffsetDateTime based TemporalFieldValueBuilder
    */
-  public static TemporalFieldValueBuilder<OffsetDateTime> offsetDateFieldTimeBuilder() {
+  public static TemporalFieldValueBuilder<OffsetDateTime> offsetDateTimeFieldBuilder() {
     return new OffsetDateTimeFieldValueBuilder();
   }
 

@@ -451,7 +451,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(LocalDateTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        ComponentValues.localDateFieldTimeBuilder()
+        ComponentValues.localDateTimeFieldBuilder()
                 .component(formattedField)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .build()
@@ -462,7 +462,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       else if (typeClass.equals(OffsetDateTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        ComponentValues.offsetDateFieldTimeBuilder()
+        ComponentValues.offsetDateTimeFieldBuilder()
                 .component(formattedField)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .build()
