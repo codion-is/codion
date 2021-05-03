@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.JComboBox;
 import javax.swing.JProgressBar;
+import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -360,6 +361,14 @@ public final class ComponentValues {
    */
   public static ComponentValue<Integer, JProgressBar> integerProgressBar(final JProgressBar progressBar) {
     return new IntegerProgressBarValue(progressBar);
+  }
+
+  /**
+   * @param slider the slider
+   * @return a Value bound to the given slider
+   */
+  public static ComponentValue<Integer, JSlider> integerSlider(final JSlider slider) {
+    return new IntegerSliderValue(slider);
   }
 
   /**
