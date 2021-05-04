@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
@@ -142,6 +143,16 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     return textField;
   }
 
+  /**
+   * Creates a {@link ComponentValue} based on a {@link EntityComboBox}.
+   * @param comboBoxModel the combo box model
+   * @param initialValue the initial value
+   * @return a new ComponentValue
+   */
+  public static ComponentValue<Entity, EntityComboBox> comboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
+    return new ComboBoxValue(comboBoxModel, initialValue);
+  }
+
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder()
@@ -156,14 +167,14 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
    * @see SwingEntityComboBoxModel
    */
-  public static final class ComboBoxValue extends AbstractComponentValue<Entity, EntityComboBox> {
+  private static final class ComboBoxValue extends AbstractComponentValue<Entity, EntityComboBox> {
 
     /**
      * Instantiates a new component value based on the EntityComboBoxModel class
      * @param comboBoxModel the combo box model
      * @param initialValue the initial value to display
      */
-    public ComboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
+    private ComboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
       super(createComboBox(comboBoxModel, initialValue));
     }
 
