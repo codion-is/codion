@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.temporal.Temporal;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -70,7 +71,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final boolean isTemporal() {
-    return isLocalDate() || isLocalDateTime() || isLocalTime() || isOffsetDateTime();
+    return Temporal.class.isAssignableFrom(typeClass);
   }
 
   @Override
