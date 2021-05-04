@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.manual.common;
 
-import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -19,13 +18,13 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.time.TemporalField;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -149,7 +148,7 @@ public final class InputControls {
 
     JCheckBox checkBox = new JCheckBox();
 
-    ComponentValues.booleanToggleButton(checkBox).link(booleanValue);
+    ComponentValues.toggleButton(checkBox).link(booleanValue);
 
     // end::checkBox[]
   }
@@ -161,7 +160,7 @@ public final class InputControls {
 
     NullableCheckBox checkBox = new NullableCheckBox();
 
-    ComponentValues.booleanToggleButton(checkBox).link(booleanValue);
+    ComponentValues.toggleButton(checkBox).link(booleanValue);
 
     // end::nullableCheckBox[]
   }
@@ -182,7 +181,7 @@ public final class InputControls {
 
     JTextField textField = new JTextField();
 
-    ComponentValues.stringTextComponent(textField).link(stringValue);
+    ComponentValues.textComponent(textField).link(stringValue);
     // end::textField[]
   }
 
@@ -192,7 +191,7 @@ public final class InputControls {
 
     JTextArea textArea = new JTextArea();
 
-    ComponentValues.stringTextComponent(textArea).link(stringValue);
+    ComponentValues.textComponent(textArea).link(stringValue);
     // end::textArea[]
   }
 
@@ -242,14 +241,10 @@ public final class InputControls {
 
     String dateTimePattern = "HH:mm:ss";
 
-    JFormattedTextField textField =
-            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+    TemporalField<LocalTime> textField =
+            new TemporalField<>(LocalTime.class, dateTimePattern);
 
-    ComponentValues.localTimeFieldBuilder()
-            .component(textField)
-            .dateTimePattern(dateTimePattern)
-            .build()
-            .link(localTimeValue);
+    ComponentValues.temporalField(textField).link(localTimeValue);
     // end::localTime[]
   }
 
@@ -259,14 +254,10 @@ public final class InputControls {
 
     String dateTimePattern = "dd-MM-yyyy";
 
-    JFormattedTextField textField =
-            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+    TemporalField<LocalDate> textField =
+            new TemporalField<>(LocalDate.class, dateTimePattern);
 
-    ComponentValues.localDateFieldBuilder()
-            .component(textField)
-            .dateTimePattern(dateTimePattern)
-            .build()
-            .link(localDateValue);
+    ComponentValues.temporalField(textField).link(localDateValue);
     // end::localDate[]
   }
 
@@ -276,14 +267,10 @@ public final class InputControls {
 
     String dateTimePattern = "dd-MM-yyyy HH:mm";
 
-    JFormattedTextField textField =
-            new JFormattedTextField(LocaleDateTimePattern.getMask(dateTimePattern));
+    TemporalField<LocalDateTime> textField =
+            new TemporalField<>(LocalDateTime.class, dateTimePattern);
 
-    ComponentValues.localDateTimeFieldBuilder()
-            .component(textField)
-            .dateTimePattern(dateTimePattern)
-            .build()
-            .link(localDateTimeValue);
+    ComponentValues.temporalField(textField).link(localDateTimeValue);
     // end::localDateTime[]
   }
 
@@ -293,7 +280,7 @@ public final class InputControls {
 
     JComboBox<String> comboBox = new JComboBox<>(new String[] {"one", "two", "three"});
 
-    ComponentValues.selectedComboBox(comboBox).link(stringValue);
+    ComponentValues.comboBox(comboBox).link(stringValue);
     // end::selectionComboBox[]
   }
 

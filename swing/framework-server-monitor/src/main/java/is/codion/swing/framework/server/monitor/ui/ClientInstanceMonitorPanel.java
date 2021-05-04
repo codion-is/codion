@@ -61,11 +61,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
    */
   public ClientInstanceMonitorPanel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = requireNonNull(model);
-    ComponentValues.booleanToggleButton(loggingEnabledCheckBox).link(model.getLoggingEnabledValue());
+    ComponentValues.toggleButton(loggingEnabledCheckBox).link(model.getLoggingEnabledValue());
     logArea.setDocument(model.getLogDocument());
     logArea.setHighlighter(model.getLogHighlighter());
     treeLog.setModel(model.getLogTreeModel());
-    ComponentValues.stringTextComponent(searchField).link(model.getSearchStringValue());
+    ComponentValues.textComponent(searchField).link(model.getSearchStringValue());
     model.getCurrentSearchTextPosition().addDataListener(currentSearchPosition -> {
       if (currentSearchPosition != null) {
         try {

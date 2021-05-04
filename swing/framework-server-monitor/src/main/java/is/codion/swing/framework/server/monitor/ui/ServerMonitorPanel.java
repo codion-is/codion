@@ -173,7 +173,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
-    ComponentValues.booleanToggleButton(synchronizedZoomCheckBox).link(synchronizedZoomState);
+    ComponentValues.toggleButton(synchronizedZoomCheckBox).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
     zoomPanel.add(Control.builder()
             .command(this::resetZoom)
@@ -261,7 +261,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    ComponentValues.stringTextComponent(memoryField).link(model.getMemoryUsageObserver());
+    ComponentValues.textComponent(memoryField).link(model.getMemoryUsageObserver());
 
     return memoryField;
   }
@@ -270,7 +270,7 @@ public final class ServerMonitorPanel extends JPanel {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
     final JComboBox<Object> box = new JComboBox<>(comboModel);
-    ComponentValues.selectedComboBox(box).link(model.getLogLevelValue());
+    ComponentValues.comboBox(box).link(model.getLogLevelValue());
 
     return box;
   }

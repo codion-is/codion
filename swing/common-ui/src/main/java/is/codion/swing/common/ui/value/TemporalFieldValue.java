@@ -3,34 +3,26 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.DateTimeParser;
+import is.codion.swing.common.ui.time.TemporalField;
 
-import javax.swing.JFormattedTextField;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 
-final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponentValue<V, JFormattedTextField> {
+final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponentValue<V, TemporalField<V>> {
 
-  private final DateTimeFormatter formatter;
-  private final DateTimeParser<V> dateTimeParser;
-
-  TemporalFieldValue(final JFormattedTextField textComponent, final String dateTimePattern,
-                     final UpdateOn updateOn, final DateTimeParser<V> dateTimeParser) {
+  TemporalFieldValue(final TemporalField<V> textComponent, final UpdateOn updateOn) {
     super(textComponent, null, updateOn);
-    this.formatter = DateTimeFormatter.ofPattern(dateTimePattern);
-    this.dateTimeParser = dateTimeParser;
   }
 
   @Override
   protected String formatTextFromValue(final V value) {
-    return formatter.format(value);
+    return getComponent().getDateTimeFormatter().format(value);
   }
 
   @Override
   protected V parseValueFromText(final String text) {
     try {
-      return dateTimeParser.parse(text, formatter);
+      return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
     }
     catch (final DateTimeParseException e) {
       return null;

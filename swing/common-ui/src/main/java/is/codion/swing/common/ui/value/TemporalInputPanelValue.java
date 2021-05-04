@@ -36,7 +36,7 @@ final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponen
       return null;
     }
     catch (final DateTimeParseException e) {
-      throw new IllegalArgumentException("Wrong date format " + component.getDateFormat() + " expected", e);
+      throw new IllegalArgumentException("Wrong date format " + component.getDateTimePattern() + " expected", e);
     }
   }
 

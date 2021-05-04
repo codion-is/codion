@@ -12,8 +12,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityInputComponents.CalendarButton;
 
 import org.junit.jupiter.api.Test;
 

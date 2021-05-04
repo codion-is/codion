@@ -46,7 +46,7 @@ public final class ClientUI {
     Value<String> editModelNameValue = editModel.value(Artist.NAME);
 
     // create a String Value based on the text field
-    Value<String> textFieldNameValue = ComponentValues.stringTextComponent(nameField);
+    Value<String> textFieldNameValue = ComponentValues.textComponent(nameField);
 
     // link the two values
     textFieldNameValue.link(editModelNameValue);
@@ -102,7 +102,7 @@ public final class ClientUI {
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
 
     // create a Entity Value based on the combobox
-    Value<Entity> comboBoxArtistValue = ComponentValues.selectedComboBox(artistComboBox);
+    Value<Entity> comboBoxArtistValue = ComponentValues.comboBox(artistComboBox);
 
     // link the two values
     comboBoxArtistValue.link(editModelArtistValue);
@@ -114,7 +114,7 @@ public final class ClientUI {
     Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
     // create a String Value based on the text field
-    Value<String> textFieldTitleValue = ComponentValues.stringTextComponent(titleField);
+    Value<String> textFieldTitleValue = ComponentValues.textComponent(titleField);
 
     // link the two values
     textFieldTitleValue.link(editModelTitleValue);

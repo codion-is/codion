@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.time.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.JComboBox;
@@ -24,14 +25,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
-
-import static is.codion.common.Util.nullOrEmpty;
 
 /**
  * A factory for {@link ComponentValue}.
@@ -43,16 +38,16 @@ public final class ComponentValues {
   /**
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextField> stringTextField() {
-    return stringTextComponent(new JTextField(), null, UpdateOn.KEYSTROKE);
+  public static ComponentValue<String, JTextField> textField() {
+    return textComponent(new JTextField(), null, UpdateOn.KEYSTROKE);
   }
 
   /**
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<String, JTextField> stringTextField(final UpdateOn updateOn) {
-    return stringTextComponent(new JTextField(), null, updateOn);
+  public static ComponentValue<String, JTextField> textField(final UpdateOn updateOn) {
+    return textComponent(new JTextField(), null, updateOn);
   }
 
   /**
@@ -60,19 +55,8 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> stringTextComponent(final C textComponent) {
-    return new AbstractTextComponentValue<String, C>(textComponent, null, UpdateOn.KEYSTROKE) {
-      @Override
-      protected String getComponentValue(final C component) {
-        final String text = component.getText();
-
-        return nullOrEmpty(text) ? null : text;
-      }
-      @Override
-      protected void setComponentValue(final C component, final String value) {
-        component.setText(value);
-      }
-    };
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent) {
+    return textComponent(textComponent, null, UpdateOn.KEYSTROKE);
   }
 
   /**
@@ -81,9 +65,20 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> stringTextComponent(final C textComponent,
-                                                                                         final Format format) {
-    return stringTextComponent(textComponent, format, UpdateOn.KEYSTROKE);
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
+                                                                                   final Format format) {
+    return textComponent(textComponent, format, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param updateOn specifies when the underlying value should be updated
+   * @param <C> the text component type
+   * @return a Value bound to the given component
+   */
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
+                                                                                   final UpdateOn updateOn) {
+    return textComponent(textComponent, null, updateOn);
   }
 
   /**
@@ -93,9 +88,9 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> stringTextComponent(final C textComponent,
-                                                                                         final Format format,
-                                                                                         final UpdateOn updateOn) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
+                                                                                   final Format format,
+                                                                                   final UpdateOn updateOn) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
@@ -123,9 +118,9 @@ public final class ComponentValues {
    * @param maximumLength the maximum input length, -1 for no limit
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> stringTextInputPanel(final String inputDialogTitle,
-                                                                            final String initialValue,
-                                                                            final int maximumLength) {
+  public static ComponentValue<String, TextInputPanel> textInputPanel(final String inputDialogTitle,
+                                                                      final String initialValue,
+                                                                      final int maximumLength) {
     return new TextInputPanelValue(inputDialogTitle, initialValue, maximumLength);
   }
 
@@ -135,46 +130,40 @@ public final class ComponentValues {
    * @param <V> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <V extends Temporal> ComponentValue<V, TemporalInputPanel<V>> temporalValue(final TemporalInputPanel<V> inputPanel) {
+  public static <V extends Temporal> ComponentValue<V, TemporalInputPanel<V>> temporalInputPanel(final TemporalInputPanel<V> inputPanel) {
     return new TemporalInputPanelValue<>(inputPanel);
   }
 
   /**
-   * @return a LocalTime based TemporalFieldValueBuilder
+   * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
+   * @param temporalField the temporal field to use
+   * @param <V> the temporal value type
+   * @return a Value bound to the given component
    */
-  public static TemporalFieldValueBuilder<LocalTime> localTimeFieldBuilder() {
-    return new LocalTimeFieldValueBuilder();
+  public static <V extends Temporal> ComponentValue<V, TemporalField<V>> temporalField(final TemporalField<V> temporalField) {
+    return temporalField(temporalField, UpdateOn.KEYSTROKE);
   }
 
   /**
-   * @return a LocalDate based TemporalFieldValueBuilder
+   * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
+   * @param temporalField the temporal field to use
+   * @param updateOn specifies when the underlying value should be updated
+   * @param <V> the temporal value type
+   * @return a Value bound to the given component
    */
-  public static TemporalFieldValueBuilder<LocalDate> localDateFieldBuilder() {
-    return new LocalDateFieldValueBuilder();
-  }
-
-  /**
-   * @return a LocalDateTime based TemporalFieldValueBuilder
-   */
-  public static TemporalFieldValueBuilder<LocalDateTime> localDateTimeFieldBuilder() {
-    return new LocalDateTimeFieldValueBuilder();
-  }
-
-  /**
-   * @return a OffsetDateTime based TemporalFieldValueBuilder
-   */
-  public static TemporalFieldValueBuilder<OffsetDateTime> offsetDateTimeFieldBuilder() {
-    return new OffsetDateTimeFieldValueBuilder();
+  public static <V extends Temporal> ComponentValue<V, TemporalField<V>> temporalField(final TemporalField<V> temporalField,
+                                                                                       final UpdateOn updateOn) {
+    return new TemporalFieldValue<>(temporalField, updateOn);
   }
 
   /**
    * Instantiates a Item based ComponentValue.
-   * @param initialValue the initial value
-   * @param values the available values
    * @param <V> the value type
+   * @param values the available values
+   * @param initialValue the initial value
    * @return a ComponentValue based on a combo box
    */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> selectedItemComboBox(final V initialValue, final List<Item<V>> values) {
+  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values, final V initialValue) {
     return new SelectedItemValue<>(initialValue, values);
   }
 
@@ -184,7 +173,7 @@ public final class ComponentValues {
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> selectedItemComboBox(final JComboBox<Item<V>> comboBox) {
+  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final JComboBox<Item<V>> comboBox) {
     return new SelectedItemValue<>(comboBox);
   }
 
@@ -193,7 +182,7 @@ public final class ComponentValues {
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> ComponentValue<V, JComboBox<V>> selectedComboBox(final JComboBox<V> comboBox) {
+  public static <V> ComponentValue<V, JComboBox<V>> comboBox(final JComboBox<V> comboBox) {
     return new SelectedValue<>(comboBox);
   }
 
@@ -211,7 +200,7 @@ public final class ComponentValues {
    * @param <T> the attribute type
    * @return a Value bound to the given button
    */
-  public static <T extends JToggleButton> ComponentValue<Boolean, T> booleanToggleButton(final JToggleButton button) {
+  public static <T extends JToggleButton> ComponentValue<Boolean, T> toggleButton(final JToggleButton button) {
     if (button instanceof NullableCheckBox) {
       return (ComponentValue<Boolean, T>) new BooleanNullableCheckBoxValue((NullableCheckBox) button);
     }
@@ -374,7 +363,7 @@ public final class ComponentValues {
    * @param progressBar the progress bar
    * @return a Value bound to the given progress bar
    */
-  public static ComponentValue<Integer, JProgressBar> integerProgressBar(final JProgressBar progressBar) {
+  public static ComponentValue<Integer, JProgressBar> progressBar(final JProgressBar progressBar) {
     return new IntegerProgressBarValue(progressBar);
   }
 
@@ -382,7 +371,7 @@ public final class ComponentValues {
    * @param slider the slider
    * @return a Value bound to the given slider
    */
-  public static ComponentValue<Integer, JSlider> integerSlider(final JSlider slider) {
+  public static ComponentValue<Integer, JSlider> slider(final JSlider slider) {
     return new IntegerSliderValue(slider);
   }
 

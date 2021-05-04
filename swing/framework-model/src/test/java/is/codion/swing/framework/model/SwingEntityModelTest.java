@@ -69,7 +69,7 @@ public final class SwingEntityModelTest
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     final SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
     final SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ComponentValues.selectedComboBox(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)))
+    ComponentValues.comboBox(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)))
             .link(employeeEditModel.<Entity>value(TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getItems()) {

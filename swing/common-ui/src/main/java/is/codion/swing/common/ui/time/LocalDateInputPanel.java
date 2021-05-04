@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.time;
 
 import is.codion.common.event.Event;
-import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
@@ -33,33 +32,21 @@ import static is.codion.swing.common.ui.Components.createOkCancelButtonPanel;
 /**
  * A panel for LocalDate input via a formatted text field and a button activating a calendar for date input.
  */
-public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
+final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalDateInputPanel.class.getName());
 
   private JButton button;
 
   /**
-   * Instantiates a new LocalDateInputPanel.
-   * @param initialValue the initial value to display
-   * @param datePattern the date format pattern
-   */
-  public LocalDateInputPanel(final LocalDate initialValue, final String datePattern) {
-    this(TextFields.createFormattedField(LocaleDateTimePattern.getMask(datePattern)), datePattern, CalendarButton.YES, null);
-    setTemporal(initialValue);
-  }
-
-  /**
    * Instantiates a new LocalTimeInputPanel.
    * @param inputField the input field
    * @param calendarButton if true a button for displaying a calendar is included
-   * @param datePattern the date format pattern
    * @param enabledState a StateObserver controlling the enabled state of the input field
    */
-  public LocalDateInputPanel(final JFormattedTextField inputField, final String datePattern,
-                             final CalendarButton calendarButton, final StateObserver enabledState) {
-    super(inputField, datePattern, LocalDate::parse, enabledState);
-    if (calendarButton == CalendarButton.YES) {
+  LocalDateInputPanel(final TemporalField<LocalDate> inputField, final boolean calendarButton, final StateObserver enabledState) {
+    super(inputField, enabledState);
+    if (calendarButton) {
       this.button = Control.builder()
               .command(this::displayCalendar)
               .name("...")
@@ -77,14 +64,6 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
    */
   public JButton getCalendarButton() {
     return button;
-  }
-
-  @Override
-  public void setEditable(final boolean editable) {
-    super.setEditable(editable);
-    if (button != null) {
-      button.setEnabled(editable);
-    }
   }
 
   /**
@@ -128,7 +107,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
     final JFormattedTextField inputField = getInputField();
     final LocalDate newValue = getLocalDateWithCalendar(currentValue, MESSAGES.getString("select_date"), inputField);
     if (newValue != null) {
-      inputField.setText(getFormatter().format(newValue));
+      inputField.setText(getInputField().getDateTimeFormatter().format(newValue));
       inputField.requestFocusInWindow();
     }
   }

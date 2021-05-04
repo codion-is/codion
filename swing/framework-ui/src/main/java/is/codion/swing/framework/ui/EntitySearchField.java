@@ -224,7 +224,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void linkToModel() {
-    ComponentValues.stringTextComponent(this).link(model.getSearchStringValue());
+    ComponentValues.textComponent(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
@@ -397,9 +397,9 @@ public final class EntitySearchField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      ComponentValues.booleanToggleButton(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
+      ComponentValues.toggleButton(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
       final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
-      ComponentValues.stringTextComponent(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
+      ComponentValues.textComponent(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -421,11 +421,11 @@ public final class EntitySearchField extends JTextField {
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      ComponentValues.booleanToggleButton(boxCaseSensitive).link(settings.getCaseSensitiveValue());
+      ComponentValues.toggleButton(boxCaseSensitive).link(settings.getCaseSensitiveValue());
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      ComponentValues.booleanToggleButton(boxPrefixWildcard).link(settings.getWildcardPrefixValue());
+      ComponentValues.toggleButton(boxPrefixWildcard).link(settings.getWildcardPrefixValue());
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      ComponentValues.booleanToggleButton(boxPostfixWildcard).link(settings.getWildcardPostfixValue());
+      ComponentValues.toggleButton(boxPostfixWildcard).link(settings.getWildcardPostfixValue());
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);

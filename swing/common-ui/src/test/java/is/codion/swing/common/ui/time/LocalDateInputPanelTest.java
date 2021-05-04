@@ -4,11 +4,9 @@
 package is.codion.swing.common.ui.time;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.SwingUtilities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,15 +17,18 @@ public class LocalDateInputPanelTest {
 
   @Test
   public void constructor() {
-    final LocalDateInputPanel panel = new LocalDateInputPanel(LocalDate.now(), "dd.MM.yyyy");
-    assertEquals("dd.MM.yyyy", panel.getDateFormat());
+    final TemporalField<LocalDate> field = new TemporalField<>(LocalDate.class, "dd.MM.yyyy");
+    field.setTemporal(LocalDate.now());
+    final LocalDateInputPanel panel = new LocalDateInputPanel(field, true, null);
+    assertEquals("dd.MM.yyyy", panel.getDateTimePattern());
     assertNotNull(panel.getInputField());
     assertNotNull(panel.getCalendarButton());
   }
 
   @Test
   public void setText() {
-    final TemporalInputPanel panel = new LocalDateInputPanel(null, "dd.MM.yyyy");
+    final TemporalField<LocalDate> field = new TemporalField<>(LocalDate.class, "dd.MM.yyyy");
+    final LocalDateInputPanel panel = new LocalDateInputPanel(field, false, null);
     panel.getInputField().setText("01.03.2010");
     assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
   }
@@ -35,7 +36,8 @@ public class LocalDateInputPanelTest {
   @Test
   public void setDate() {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    final LocalDateInputPanel panel = new LocalDateInputPanel(null, "dd.MM.yyyy");
+    final TemporalField<LocalDate> field = new TemporalField<>(LocalDate.class, "dd.MM.yyyy");
+    final LocalDateInputPanel panel = new LocalDateInputPanel(field, false, null);
     panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
     assertEquals("03.04.2010", panel.getInputField().getText());
     panel.setTemporal(null);
@@ -44,7 +46,8 @@ public class LocalDateInputPanelTest {
 
   @Test
   public void getDate() {
-    final LocalDateInputPanel panel = new LocalDateInputPanel(null, "dd.MM.yyyy");
+    final TemporalField<LocalDate> field = new TemporalField<>(LocalDate.class, "dd.MM.yyyy");
+    final LocalDateInputPanel panel = new LocalDateInputPanel(field, false, null);
     assertNull(panel.getTemporal());
     panel.getInputField().setText("03");
     assertNull(panel.getTemporal());
@@ -56,24 +59,19 @@ public class LocalDateInputPanelTest {
 
   @Test
   public void constructorNullInputField() {
-    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(null, "dd.MM.yyyy", CalendarButton.YES, null));
-  }
-
-  @Test
-  public void constructorNullDateFormat() {
-    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(new JFormattedTextField(), null, CalendarButton.YES, null));
+    assertThrows(NullPointerException.class, () -> new LocalDateInputPanel(null, true, null));
   }
 
   @Test
   public void enabledState() {
     final State enabledState = State.state();
-    final JFormattedTextField textField = new JFormattedTextField();
-    final LocalDateInputPanel inputPanel = new LocalDateInputPanel(textField, "dd.MM.yyyy", CalendarButton.YES, enabledState.getObserver());
-    assertFalse(textField.isEnabled());
+    final TemporalField<LocalDate> field = new TemporalField<>(LocalDate.class, "dd.MM.yyyy");
+    final LocalDateInputPanel inputPanel = new LocalDateInputPanel(field, true, enabledState.getObserver());
+    assertFalse(field.isEnabled());
     assertFalse(inputPanel.getCalendarButton().isEnabled());
     SwingUtilities.invokeLater(() -> {
       enabledState.set(true);
-      assertTrue(textField.isEnabled());
+      assertTrue(field.isEnabled());
       assertTrue(inputPanel.getCalendarButton().isEnabled());
     });
   }
