@@ -32,7 +32,7 @@ public class EntityComponentValues {
   /**
    * Provides value input components for multiple entity update, override to supply
    * specific {@link ComponentValue} implementations for attributes.
-   * Remember to return with a call to super.getComponentValue() after handling your case.
+   * Remember to return with a call to super.createComponentValue() after handling your case.
    * @param attribute the attribute for which to get the ComponentValue
    * @param editModel the edit model used to create foreign key input models
    * @param initialValue the initial value to display

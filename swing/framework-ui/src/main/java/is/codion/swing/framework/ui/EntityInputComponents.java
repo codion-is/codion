@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
@@ -32,7 +31,6 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
@@ -59,6 +57,8 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
 import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
+import static is.codion.swing.common.ui.textfield.TextFields.createFormattedField;
+import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -409,7 +409,7 @@ public final class EntityInputComponents {
     linkToEnabledState(enabledState, searchField);
     final String propertyDescription = entityDefinition.getProperty(foreignKey).getDescription();
     searchField.setToolTipText(propertyDescription == null ? searchModel.getDescription() : propertyDescription);
-    TextFields.selectAllOnFocusGained(searchField);
+    selectAllOnFocusGained(searchField);
 
     return searchField;
   }
@@ -567,17 +567,15 @@ public final class EntityInputComponents {
       throw new IllegalArgumentException("Property " + attribute + " is not a date or time attribute");
     }
 
-    final Property<T> property = entityDefinition.getProperty(attribute);
-    final TemporalField<Temporal> temporalField = (TemporalField<Temporal>) createTextField(attribute, enabledState,
-            LocaleDateTimePattern.getMask(property.getDateTimePattern()), ValueContainsLiterals.YES);
+    final TemporalField<Temporal> temporalField = (TemporalField<Temporal>) createTextField(attribute, enabledState);
 
     ComponentValues.temporalField(temporalField, updateOn).link((Value<Temporal>) value);
 
     return (TemporalInputPanel<T>) TemporalInputPanel.builder()
-              .temporalField(temporalField)
-              .calendarButton(calendarButton == CalendarButton.YES)
-              .enabledState(enabledState)
-              .build();
+            .temporalField(temporalField)
+            .calendarButton(calendarButton == CalendarButton.YES)
+            .enabledState(enabledState)
+            .build();
   }
 
   /**
@@ -697,7 +695,7 @@ public final class EntityInputComponents {
     requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final Property<?> property = entityDefinition.getProperty(attribute);
-    final JTextField textField = createTextField(attribute, enabledState, null, null);
+    final JTextField textField = createTextField(attribute, enabledState);
     if (attribute.isString()) {
       ComponentValues.textComponent(textField, property.getFormat(), updateOn).link((Value<String>) value);
     }
@@ -785,7 +783,7 @@ public final class EntityInputComponents {
   public JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final Value<String> value, final String formatMaskString,
                                                    final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
                                                    final StateObserver enabledState) {
-    final JFormattedTextField textField = (JFormattedTextField) createTextField(attribute, enabledState, formatMaskString, valueContainsLiterals);
+    final JFormattedTextField textField = (JFormattedTextField) createMaskedTextField(attribute, enabledState, formatMaskString, valueContainsLiterals);
     ComponentValues.textComponent(textField, null, updateOn).link(value);
 
     return textField;
@@ -808,26 +806,20 @@ public final class EntityInputComponents {
     return Components.createEastButtonPanel(entityComboBox, foreignKeyFilterControl);
   }
 
-  private JTextField createTextField(final Attribute<?> attribute, final StateObserver enabledState,
-                                     final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
+  private JTextField createTextField(final Attribute<?> attribute, final StateObserver enabledState) {
     final Property<?> property = entityDefinition.getProperty(attribute);
-    final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
-    linkToEnabledState(enabledState, field);
-    field.setToolTipText(property.getDescription());
-    if (field.getDocument() instanceof SizedDocument) {
-      if (attribute.isCharacter()) {
-        ((SizedDocument) field.getDocument()).setMaximumLength(1);
-      }
-      else if (property.getMaximumLength() > 0) {
-        ((SizedDocument) field.getDocument()).setMaximumLength(property.getMaximumLength());
-      }
-    }
 
-    return field;
+    return setDescriptionAndEnabledState(createTextField(property), property.getDescription(), enabledState);
   }
 
-  private static JTextField createTextField(final Property<?> property, final String formatMaskString,
-                                            final ValueContainsLiterals valueContainsLiterals) {
+  private JTextField createMaskedTextField(final Attribute<?> attribute, final StateObserver enabledState,
+                                           final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
+    final Property<?> property = entityDefinition.getProperty(attribute);
+
+    return setDescriptionAndEnabledState(createFormattedField(formatMaskString, valueContainsLiterals), property.getDescription(), enabledState);
+  }
+
+  private static JTextField createTextField(final Property<?> property) {
     final Attribute<?> attribute = property.getAttribute();
     if (attribute.isInteger()) {
       return initializeIntegerField((Property<Integer>) property);
@@ -845,7 +837,7 @@ public final class EntityInputComponents {
       return new TemporalField<>((Class<Temporal>) attribute.getTypeClass(), property.getDateTimePattern());
     }
     else if (attribute.isString()) {
-      return initializeStringField(formatMaskString, valueContainsLiterals);
+      return initializeStringField(property.getMaximumLength());
     }
     else if (attribute.isCharacter()) {
       return new JTextField(new SizedDocument(1), "", 1);
@@ -854,12 +846,20 @@ public final class EntityInputComponents {
     throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");
   }
 
-  private static JTextField initializeStringField(final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
-    if (formatMaskString == null) {
-      return new JTextField(new SizedDocument(), "", 0);
+  private static JTextField setDescriptionAndEnabledState(final JTextField textField, final String description, final StateObserver enabledState) {
+    textField.setToolTipText(description);
+    linkToEnabledState(enabledState, textField);
+
+    return textField;
+  }
+
+  private static JTextField initializeStringField(final int maximumLength) {
+    final SizedDocument sizedDocument = new SizedDocument();
+    if (maximumLength > 0) {
+      sizedDocument.setMaximumLength(maximumLength);
     }
 
-    return TextFields.createFormattedField(formatMaskString, valueContainsLiterals);
+    return new JTextField(sizedDocument, "", 0);
   }
 
   private static DoubleField initializeDoubleField(final Property<Double> property) {

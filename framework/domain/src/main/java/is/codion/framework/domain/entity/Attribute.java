@@ -47,7 +47,7 @@ public interface Attribute<T> {
   boolean isNumerical();
 
   /**
-   * @return true if this is a time based attribute, LocalDate, LocalDatetime, LocalTime or OffsetDateTime
+   * @return true if this is a Temporal based attribute
    */
   boolean isTemporal();
 
