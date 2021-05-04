@@ -6917,3 +6917,4 @@
   TemporalField moved to textfield package
   TemporalField constructor overloaded with DateTimeParser parameter
   ComponentValues, removed a bunch of unnecessary factory methods
+  TemporalInputPanel.Builder.textField() renamed temporalField()

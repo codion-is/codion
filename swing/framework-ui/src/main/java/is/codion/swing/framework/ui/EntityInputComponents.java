@@ -568,13 +568,13 @@ public final class EntityInputComponents {
     }
 
     final Property<T> property = entityDefinition.getProperty(attribute);
-    final TemporalField<Temporal> textField = (TemporalField<Temporal>) createTextField(attribute, enabledState,
+    final TemporalField<Temporal> temporalField = (TemporalField<Temporal>) createTextField(attribute, enabledState,
             LocaleDateTimePattern.getMask(property.getDateTimePattern()), ValueContainsLiterals.YES);
 
-    ComponentValues.temporalField(textField, updateOn).link((Value<Temporal>) value);
+    ComponentValues.temporalField(temporalField, updateOn).link((Value<Temporal>) value);
 
     return (TemporalInputPanel<T>) TemporalInputPanel.builder()
-              .textField(textField)
+              .temporalField(temporalField)
               .calendarButton(calendarButton == CalendarButton.YES)
               .enabledState(enabledState)
               .build();

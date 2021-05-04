@@ -110,10 +110,10 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   public interface Builder<T extends Temporal> {
 
     /**
-     * @param textField the input field
+     * @param temporalField the temporal input field
      * @return this builder instance
      */
-    Builder<T> textField(TemporalField<T> textField);
+    Builder<T> temporalField(TemporalField<T> temporalField);
 
     /**
      * @param initialValue the initial value to present
@@ -128,7 +128,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     Builder<T> enabledState(StateObserver enabledState);
 
     /**
-     * @param calendarButton true if a calendar button should be included, may not be supported
+     * @param calendarButton true if a calendar button should be included, has no effect if not supported
      * @return this builder instance
      */
     Builder<T> calendarButton(boolean calendarButton);
@@ -141,14 +141,14 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   private static final class TemporalPanelBuilder<T extends Temporal> implements Builder<T> {
 
-    protected TemporalField<T> textField;
+    protected TemporalField<T> temporalField;
     protected T initialValue;
     protected StateObserver enabledState;
     protected boolean calendarButton;
 
     @Override
-    public Builder<T> textField(final TemporalField<T> textField) {
-      this.textField = requireNonNull(textField);
+    public Builder<T> temporalField(final TemporalField<T> temporalField) {
+      this.temporalField = requireNonNull(temporalField);
       return this;
     }
 
@@ -172,22 +172,22 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     @Override
     public TemporalInputPanel<T> build() {
-      if (textField == null) {
-        throw new IllegalStateException("Temporal field must be set before building");
+      if (temporalField == null) {
+        throw new IllegalStateException("temporalField must be set before building");
       }
 
       final TemporalInputPanel<T> inputPanel;
-      final Class<T> temporalClass = textField.getTemporalClass();
+      final Class<T> temporalClass = temporalField.getTemporalClass();
       if (temporalClass.equals(LocalDate.class)) {
-        inputPanel = (TemporalInputPanel<T>) new LocalDateInputPanel((TemporalField<LocalDate>) textField,
+        inputPanel = (TemporalInputPanel<T>) new LocalDateInputPanel((TemporalField<LocalDate>) temporalField,
                 calendarButton, enabledState);
       }
       else if (temporalClass.equals(LocalDateTime.class)) {
-        inputPanel = (TemporalInputPanel<T>) new LocalDateTimeInputPanel((TemporalField<LocalDateTime>) textField,
+        inputPanel = (TemporalInputPanel<T>) new LocalDateTimeInputPanel((TemporalField<LocalDateTime>) temporalField,
                 calendarButton, enabledState);
       }
       else {
-        inputPanel = new TemporalInputPanel<>(textField, enabledState);
+        inputPanel = new TemporalInputPanel<>(temporalField, enabledState);
       }
 
       inputPanel.setTemporal(initialValue);

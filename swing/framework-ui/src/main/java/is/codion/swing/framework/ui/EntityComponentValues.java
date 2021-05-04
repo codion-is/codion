@@ -62,7 +62,7 @@ public class EntityComponentValues {
               new TemporalField<>((Class<Temporal>) attribute.getTypeClass(), property.getDateTimePattern());
 
       return (ComponentValue<T, C>) ComponentValues.temporalInputPanel(TemporalInputPanel.builder()
-              .textField(temporalField)
+              .temporalField(temporalField)
               .initialValue((Temporal) initialValue)
               .build());
     }
