@@ -66,6 +66,7 @@ final class LocalDateTimeInputPanel extends TemporalInputPanel<LocalDateTime> {
   /**
    * @return the button, if any
    */
+  @Override
   public JButton getCalendarButton() {
     return button;
   }
