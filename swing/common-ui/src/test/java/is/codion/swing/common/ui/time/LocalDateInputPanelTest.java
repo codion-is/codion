@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.time;
 
 import is.codion.common.state.State;
+import is.codion.swing.common.ui.textfield.TemporalField;
 
 import org.junit.jupiter.api.Test;
 

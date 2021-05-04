@@ -22,7 +22,7 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.time.TemporalField;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.DefaultComboBoxModel;

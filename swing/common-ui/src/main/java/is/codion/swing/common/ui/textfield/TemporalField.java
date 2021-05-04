@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.time;
+package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.formats.LocaleDateTimePattern;

@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.time;
 
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.textfield.TemporalField;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;

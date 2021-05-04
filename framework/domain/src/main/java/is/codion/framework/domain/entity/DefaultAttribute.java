@@ -60,7 +60,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final boolean isType(final Class<?> typeClass) {
-    return this.typeClass == typeClass;
+    return this.typeClass.equals(typeClass);
   }
 
   @Override
