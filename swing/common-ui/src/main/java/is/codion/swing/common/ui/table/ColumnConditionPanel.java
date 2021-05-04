@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.table;
 import is.codion.common.db.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -23,14 +22,13 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.time.TemporalField;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -49,10 +47,7 @@ import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -398,7 +393,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
         checkBox.setHorizontalAlignment(CENTER);
-        ComponentValues.booleanToggleButton(checkBox).link((Value<Boolean>) value);
+        ComponentValues.toggleButton(checkBox).link((Value<Boolean>) value);
 
         return checkBox;
       }
@@ -426,53 +421,15 @@ public class ColumnConditionPanel<C, T> extends JPanel {
 
         return longField;
       }
-      else if (typeClass.equals(LocalTime.class)) {
-        final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        ComponentValues.localTimeFieldBuilder()
-                .component(formattedField)
-                .dateTimePattern(columnConditionModel.getDateTimePattern())
-                .build()
-                .link((Value<LocalTime>) value);
+      else if (Temporal.class.isAssignableFrom(typeClass)) {
+        final TemporalField<Temporal> temporalField = new TemporalField<>((Class<Temporal>) typeClass, columnConditionModel.getDateTimePattern());
+        ComponentValues.temporalField(temporalField).link((Value<Temporal>) value);
 
-        return formattedField;
-      }
-      else if (typeClass.equals(LocalDate.class)) {
-        final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        ComponentValues.localDateFieldBuilder()
-                .component(formattedField)
-                .dateTimePattern(columnConditionModel.getDateTimePattern())
-                .build()
-                .link((Value<LocalDate>) value);
-
-        return formattedField;
-      }
-      else if (typeClass.equals(LocalDateTime.class)) {
-        final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        ComponentValues.localDateTimeFieldBuilder()
-                .component(formattedField)
-                .dateTimePattern(columnConditionModel.getDateTimePattern())
-                .build()
-                .link((Value<LocalDateTime>) value);
-
-        return formattedField;
-      }
-      else if (typeClass.equals(OffsetDateTime.class)) {
-        final JFormattedTextField formattedField =
-                TextFields.createFormattedField(LocaleDateTimePattern.getMask(columnConditionModel.getDateTimePattern()));
-        ComponentValues.offsetDateTimeFieldBuilder()
-                .component(formattedField)
-                .dateTimePattern(columnConditionModel.getDateTimePattern())
-                .build()
-                .link((Value<OffsetDateTime>) value);
-
-        return formattedField;
+        return temporalField;
       }
       else if (typeClass.equals(String.class)) {
         final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
-        ComponentValues.stringTextComponent(textField).link((Value<String>) value);
+        ComponentValues.textComponent(textField).link((Value<String>) value);
 
         return textField;
       }
@@ -584,7 +541,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    ComponentValues.selectedComboBox(comboBox).link(conditionModel.getOperatorValue());
+    ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
 
     return comboBox;

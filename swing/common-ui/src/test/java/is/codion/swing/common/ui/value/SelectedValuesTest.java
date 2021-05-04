@@ -31,7 +31,7 @@ public class SelectedValuesTest {
       }
     });
     final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
-    ComponentValues.selectedComboBox(box).link(originalValue);
+    ComponentValues.comboBox(box).link(originalValue);
 
     assertEquals("b", box.getSelectedItem());
     box.setSelectedItem("d");
@@ -43,7 +43,7 @@ public class SelectedValuesTest {
   @Test
   public void selectedItemValueLink() throws Exception {
     final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
-    ComponentValues.selectedComboBox(box).link(Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));
+    ComponentValues.comboBox(box).link(Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));
     assertNull(selectedItem);
     setSelectedItem("s");
     assertEquals("s", box.getSelectedItem());
@@ -55,12 +55,12 @@ public class SelectedValuesTest {
   public void selectedItemValue() {
     final List<Item<String>> items = asList(item(null), item("one"),
             item("two"), item("three"), item("four"));
-    ComponentValue<String, JComboBox<Item<String>>> componentValue = ComponentValues.selectedItemComboBox("two", items);
+    ComponentValue<String, JComboBox<Item<String>>> componentValue = ComponentValues.itemComboBox(items, "two");
     ItemComboBoxModel<String> boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());
     assertEquals("two", componentValue.get());
 
-    componentValue = ComponentValues.selectedItemComboBox(null, items);
+    componentValue = ComponentValues.itemComboBox(items, null);
     boxModel = (ItemComboBoxModel<String>) componentValue.getComponent().getModel();
     assertEquals(5, boxModel.getSize());
     assertNull(componentValue.get());
@@ -69,7 +69,7 @@ public class SelectedValuesTest {
   @Test
   public void selectedValue() {
     final JComboBox<String> box = new JComboBox<>(new String[] {null, "one", "two", "three"});
-    final Value<String> value = ComponentValues.selectedComboBox(box);
+    final Value<String> value = ComponentValues.comboBox(box);
 
     assertNull(value.get());
     box.setSelectedIndex(1);

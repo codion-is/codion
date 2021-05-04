@@ -9,10 +9,10 @@ import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityInputComponents.CalendarButton;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

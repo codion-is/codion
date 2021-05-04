@@ -23,13 +23,11 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
-import is.codion.swing.common.ui.time.LocalDateInputPanel;
-import is.codion.swing.common.ui.time.LocalDateTimeInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
-import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityInputComponents.CalendarButton;
 import is.codion.swing.framework.ui.EntityInputComponents.Editable;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import is.codion.swing.framework.ui.EntityInputComponents.Sorted;
@@ -557,20 +555,11 @@ public class EntityEditComponentPanel extends JPanel {
     final TemporalInputPanel<T> panel = inputComponents.createTemporalInputPanel(attribute,
             getEditModel().value(attribute), updateOn, calendarButton, enabledState);
     EntityComponentValidators.addFormattedValidator(attribute, panel.getInputField(), getEditModel());
-    if (panel instanceof LocalDateInputPanel) {
-      final LocalDateInputPanel localDateInputPanel = (LocalDateInputPanel) panel;
-      if (localDateInputPanel.getCalendarButton() != null && transferFocusOnEnter) {
-        transferFocusOnEnter(localDateInputPanel.getCalendarButton());
-      }
-    }
-    if (panel instanceof LocalDateTimeInputPanel) {
-      final LocalDateTimeInputPanel localDateTimeInputPanel = (LocalDateTimeInputPanel) panel;
-      if (localDateTimeInputPanel.getCalendarButton() != null && transferFocusOnEnter) {
-        transferFocusOnEnter(localDateTimeInputPanel.getCalendarButton());
-      }
-    }
     if (transferFocusOnEnter) {
       transferFocusOnEnter(panel.getInputField());
+      if (panel.getCalendarButton() != null) {
+        transferFocusOnEnter(panel.getCalendarButton());
+      }
     }
     setComponent(attribute, panel);
 
@@ -1017,7 +1006,7 @@ public class EntityEditComponentPanel extends JPanel {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    ComponentValues.stringTextComponent(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKey));
+    ComponentValues.textComponent(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKey));
     if (transferFocusOnEnter) {
       transferFocusOnEnter(textField);
     }

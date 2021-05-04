@@ -291,7 +291,7 @@ public class NumericalValuesTest {  private Long longValue;
   public void integerBoundedRangeModelUiValue() {
     final BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 150);
     final JProgressBar progressBar = new JProgressBar(model);
-    final Value<Integer> value = ComponentValues.integerProgressBar(progressBar);
+    final Value<Integer> value = ComponentValues.progressBar(progressBar);
 
     assertEquals(Integer.valueOf(0), value.get());
     model.setValue(122);

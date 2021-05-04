@@ -8,9 +8,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
-import is.codion.swing.common.ui.time.LocalDateInputPanel;
-import is.codion.swing.common.ui.time.LocalDateTimeInputPanel;
-import is.codion.swing.common.ui.time.LocalTimeInputPanel;
+import is.codion.swing.common.ui.time.TemporalField;
+import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -19,9 +18,7 @@ import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.temporal.Temporal;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,19 +47,19 @@ public class EntityComponentValues {
     }
     final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) ComponentValues.selectedItemComboBox(initialValue, ((ValueListProperty<T>) property).getValues());
+      return (ComponentValue<T, C>) ComponentValues.itemComboBox(((ValueListProperty<T>) property).getValues(), initialValue);
     }
     if (attribute.isBoolean()) {
       return (ComponentValue<T, C>) ComponentValues.booleanComboBox((Boolean) initialValue);
     }
-    if (attribute.isLocalDate()) {
-      return (ComponentValue<T, C>) ComponentValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimePattern()));
-    }
-    if (attribute.isLocalDateTime()) {
-      return (ComponentValue<T, C>) ComponentValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimePattern()));
-    }
-    if (attribute.isLocalTime()) {
-      return (ComponentValue<T, C>) ComponentValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimePattern()));
+    if (attribute.isTemporal()) {
+      final TemporalField<Temporal> temporalField =
+              new TemporalField<>((Class<Temporal>) attribute.getTypeClass(), property.getDateTimePattern());
+
+      return (ComponentValue<T, C>) ComponentValues.temporalInputPanel(TemporalInputPanel.builder()
+              .textField(temporalField)
+              .initialValue((Temporal) initialValue)
+              .build());
     }
     if (attribute.isDouble()) {
       return (ComponentValue<T, C>) ComponentValues.doubleFieldBuilder()
@@ -89,10 +86,10 @@ public class EntityComponentValues {
               .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) ComponentValues.stringTextInputPanel(property.getCaption(), (String) initialValue, 1);
+      return (ComponentValue<T, C>) ComponentValues.textInputPanel(property.getCaption(), (String) initialValue, 1);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) ComponentValues.stringTextInputPanel(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      return (ComponentValue<T, C>) ComponentValues.textInputPanel(property.getCaption(), (String) initialValue, property.getMaximumLength());
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) ComponentValues.fileInputPanel();

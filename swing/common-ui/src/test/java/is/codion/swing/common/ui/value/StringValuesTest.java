@@ -36,7 +36,7 @@ public class StringValuesTest {
       }
     });
     final JTextField textField = new JTextField();
-    final Value<String> textFieldValue = ComponentValues.stringTextComponent(textField);
+    final Value<String> textFieldValue = ComponentValues.textComponent(textField);
     textFieldValue.link(textValue);
 
     assertEquals("start", textFieldValue.get());
@@ -59,7 +59,7 @@ public class StringValuesTest {
     final JTextField textField = new JTextField();
     final Value<String> stringPropertyValue = Value.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
-    ComponentValues.stringTextComponent(textField).link(stringPropertyValue);
+    ComponentValues.textComponent(textField).link(stringPropertyValue);
     assertNull(this.stringValue);
     assertEquals("", textField.getText());
     setStringValue("hello");
@@ -71,7 +71,7 @@ public class StringValuesTest {
 
     final JTextField textField2 = new JTextField();
     this.stringValue = "test";
-    ComponentValues.stringTextComponent(textField2)
+    ComponentValues.textComponent(textField2)
             .link(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
     assertEquals("test", textField2.getText());
   }
@@ -80,7 +80,7 @@ public class StringValuesTest {
   public void nonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
-    ComponentValues.stringTextComponent(textField)
+    ComponentValues.textComponent(textField)
             .link(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
     assertEquals("name", textField.getText());
     textField.setText("darri");
@@ -95,15 +95,15 @@ public class StringValuesTest {
   @Test
   public void textValueField() {
     final String value = "hello";
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.stringTextInputPanel("none", value, 2));
+    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel("none", value, 2));
 
-    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.stringTextInputPanel("none", value, 5);
+    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textInputPanel("none", value, 5);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.stringTextInputPanel("none", value, 10);
+    componentValue = ComponentValues.textInputPanel("none", value, 10);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.stringTextInputPanel("none", null, 10);
+    componentValue = ComponentValues.textInputPanel("none", null, 10);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("tester");
@@ -112,17 +112,17 @@ public class StringValuesTest {
     componentValue.getComponent().setText("");
     assertNull(componentValue.get());
 
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.stringTextInputPanel("none", null, 10)
+    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel("none", null, 10)
             .getComponent().setText("asdfasdfasdfasdfasdf"));
 
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.stringTextInputPanel("none", null, 10).set("asdfasdfasdfasdfasdf"));
+    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel("none", null, 10).set("asdfasdfasdfasdfasdf"));
   }
 
   @Test
   public void textValue() {
     final JTextField textField = new JTextField();
 
-    final ComponentValue<String, JTextField> value = ComponentValues.stringTextComponent(textField);
+    final ComponentValue<String, JTextField> value = ComponentValues.textComponent(textField);
 
     assertNull(value.get());
     textField.setText("hello there");

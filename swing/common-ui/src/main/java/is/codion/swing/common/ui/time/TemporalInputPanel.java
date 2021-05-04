@@ -3,16 +3,17 @@
  */
 package is.codion.swing.common.ui.time;
 
-import is.codion.common.DateTimeParser;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
 
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 
@@ -24,51 +25,27 @@ import static java.util.Objects.requireNonNull;
  */
 public class TemporalInputPanel<T extends Temporal> extends JPanel {
 
-  /**
-   * Specifies whether a {@link TemporalInputPanel} should contain a button for opening a Calendar for input entry.
-   * Only applies to temporal values containing a date part, as in, not those that contain time only.
-   */
-  public enum CalendarButton {
-    /**
-     * Include a calendar button.
-     */
-    YES,
-    /**
-     * Don't include a calendar button.
-     */
-    NO
-  }
-
-  private final JFormattedTextField inputField;
-  private final String dateFormat;
-  private final DateTimeFormatter formatter;
-  private final DateTimeParser<T> dateTimeParser;
+  private final TemporalField<T> inputField;
 
   /**
    * Instantiates a new TemporalInputPanel.
-   * @param inputField the input field
-   * @param dateFormat the date format
-   * @param dateTimeParser the dateTimeParser
+   * @param temporalField the temporal input field
    * @param enabledState a StateObserver controlling the enabled state of the input field and button
    */
-  public TemporalInputPanel(final JFormattedTextField inputField, final String dateFormat,
-                            final DateTimeParser<T> dateTimeParser, final StateObserver enabledState) {
+  public TemporalInputPanel(final TemporalField<T> temporalField, final StateObserver enabledState) {
     super(new BorderLayout());
-    this.inputField = requireNonNull(inputField, "inputField");
-    this.dateFormat = requireNonNull(dateFormat, "dateFormat");
-    this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
-    this.formatter = DateTimeFormatter.ofPattern(dateFormat);
-    add(inputField, BorderLayout.CENTER);
-    addFocusListener(new InputFocusAdapter(inputField));
+    this.inputField = requireNonNull(temporalField, "temporalField");
+    add(temporalField, BorderLayout.CENTER);
+    addFocusListener(new InputFocusAdapter(temporalField));
     if (enabledState != null) {
-      Components.linkToEnabledState(enabledState, inputField);
+      Components.linkToEnabledState(enabledState, temporalField);
     }
   }
 
   /**
    * @return the input field
    */
-  public final JFormattedTextField getInputField() {
+  public final TemporalField<T> getInputField() {
     return inputField;
   }
 
@@ -77,41 +54,39 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @throws DateTimeParseException if unable to parse the text
    */
   public final T getTemporal() throws DateTimeParseException {
-    final String text = inputField.getText();
-    if (!text.contains("_")) {
-      return dateTimeParser.parse(text, formatter);
-    }
-
-    return null;
+    return inputField.getTemporal();
   }
 
   /**
    * Sets the date in the input field, clears the field if {@code date} is null.
-   * @param date the date to set
+   * @param temporal the temporal value to set
    */
-  public final void setTemporal(final Temporal date) {
-    inputField.setText(date == null ? "" : formatter.format(date));
+  public final void setTemporal(final Temporal temporal) {
+    inputField.setTemporal(temporal);
   }
 
   /**
    * @return the format pattern
    */
-  public final String getDateFormat() {
-    return dateFormat;
+  public final String getDateTimePattern() {
+    return inputField.getDateTimePattern();
   }
 
   /**
-   * @param editable if true then editing is enabled in this panel
+   * Returns null by default.
+   * @return the button, if any
    */
-  public void setEditable(final boolean editable) {
-    inputField.setEditable(editable);
+  public JButton getCalendarButton() {
+    return null;
   }
 
   /**
-   * @return the formatter
+   * A new Builder instance
+   * @param <T> the Temporal type
+   * @return a new builder
    */
-  protected final DateTimeFormatter getFormatter() {
-    return formatter;
+  public static <T extends Temporal> Builder<T> builder() {
+    return new TemporalPanelBuilder<>();
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
@@ -124,6 +99,99 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     @Override
     public void focusGained(final FocusEvent e) {
       inputField.requestFocusInWindow();
+    }
+  }
+
+  /**
+   * A builder for {@link TemporalInputPanel}s
+   * @param <T> the Temporal type
+   */
+  public interface Builder<T extends Temporal> {
+
+    /**
+     * @param textField the input field
+     * @return this builder instance
+     */
+    Builder<T> textField(TemporalField<T> textField);
+
+    /**
+     * @param initialValue the initial value to present
+     * @return this builder instance
+     */
+    Builder<T> initialValue(T initialValue);
+
+    /**
+     * @param enabledState the enabled state
+     * @return this builder instance
+     */
+    Builder<T> enabledState(StateObserver enabledState);
+
+    /**
+     * @param calendarButton true if a calendar button should be included, may not be supported
+     * @return this builder instance
+     */
+    Builder<T> calendarButton(boolean calendarButton);
+
+    /**
+     * @return a new {@link TemporalInputPanel} instance
+     */
+    TemporalInputPanel<T> build();
+  }
+
+  private static final class TemporalPanelBuilder<T extends Temporal> implements Builder<T> {
+
+    protected TemporalField<T> textField;
+    protected T initialValue;
+    protected StateObserver enabledState;
+    protected boolean calendarButton;
+
+    @Override
+    public Builder<T> textField(final TemporalField<T> textField) {
+      this.textField = requireNonNull(textField);
+      return this;
+    }
+
+    @Override
+    public Builder<T> initialValue(final T initialValue) {
+      this.initialValue = initialValue;
+      return this;
+    }
+
+    @Override
+    public Builder<T> enabledState(final StateObserver enabledState) {
+      this.enabledState = enabledState;
+      return this;
+    }
+
+    @Override
+    public Builder<T> calendarButton(final boolean calendarButton) {
+      this.calendarButton = calendarButton;
+      return this;
+    }
+
+    @Override
+    public TemporalInputPanel<T> build() {
+      if (textField == null) {
+        throw new IllegalStateException("Temporal field must be set before building");
+      }
+
+      final TemporalInputPanel<T> inputPanel;
+      final Class<T> temporalClass = textField.getTemporalClass();
+      if (temporalClass.equals(LocalDate.class)) {
+        inputPanel = (TemporalInputPanel<T>) new LocalDateInputPanel((TemporalField<LocalDate>) textField,
+                calendarButton, enabledState);
+      }
+      else if (temporalClass.equals(LocalDateTime.class)) {
+        inputPanel = (TemporalInputPanel<T>) new LocalDateTimeInputPanel((TemporalField<LocalDateTime>) textField,
+                calendarButton, enabledState);
+      }
+      else {
+        inputPanel = new TemporalInputPanel<>(textField, enabledState);
+      }
+
+      inputPanel.setTemporal(initialValue);
+
+      return inputPanel;
     }
   }
 }
