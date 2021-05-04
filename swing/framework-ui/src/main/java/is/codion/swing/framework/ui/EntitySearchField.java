@@ -29,6 +29,7 @@ import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -214,6 +215,16 @@ public final class EntitySearchField extends JTextField {
   public static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     return lookupEntities(entityType, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
+  }
+
+  /**
+   * Creates a {@link ComponentValue} based on a {@link EntitySearchField}.
+   * @param searchModel the search model
+   * @param initialValue the initial value
+   * @return a new ComponentValue
+   */
+  public static ComponentValue<Entity, EntitySearchField> searchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
+    return new SearchFieldValue(searchModel, initialValue);
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -586,14 +597,14 @@ public final class EntitySearchField extends JTextField {
    * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntitySearchField}.
    * @see EntitySearchField
    */
-  public static final class SearchFieldValue extends AbstractComponentValue<Entity, EntitySearchField> {
+  private static final class SearchFieldValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
     /**
      * Instantiates a new ComponentValue
      * @param searchModel the search model to base the search field on
      * @param initialValue the initial value
      */
-    public SearchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
+    private SearchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
       super(createEntitySearchField(searchModel, initialValue));
     }
 
