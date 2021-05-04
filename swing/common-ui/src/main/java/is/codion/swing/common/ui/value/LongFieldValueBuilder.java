@@ -17,8 +17,8 @@ final class LongFieldValueBuilder extends AbstractNumberFieldValueBuilder<Number
   public ComponentValue<Long, LongField> build() {
     if (component == null) {
       component = new LongField(format, columns);
+      component.setLong(initialValue);
     }
-    component.setLong(initialValue);
 
     return new LongFieldValue(component, nullable, updateOn);
   }

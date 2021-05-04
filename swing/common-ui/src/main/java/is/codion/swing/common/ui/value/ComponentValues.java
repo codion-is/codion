@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.item.Item;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -34,21 +33,6 @@ import java.util.List;
 public final class ComponentValues {
 
   private ComponentValues() {}
-
-  /**
-   * @return a Value bound to the given component
-   */
-  public static ComponentValue<String, JTextField> textField() {
-    return textComponent(new JTextField(), null, UpdateOn.KEYSTROKE);
-  }
-
-  /**
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a Value bound to the given component
-   */
-  public static ComponentValue<String, JTextField> textField(final UpdateOn updateOn) {
-    return textComponent(new JTextField(), null, updateOn);
-  }
 
   /**
    * @param textComponent the component
@@ -164,7 +148,7 @@ public final class ComponentValues {
    * @return a ComponentValue based on a combo box
    */
   public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values, final V initialValue) {
-    return new SelectedItemValue<>(initialValue, values);
+    return new SelectedItemValue<>(values, initialValue);
   }
 
   /**
@@ -196,36 +180,16 @@ public final class ComponentValues {
   /**
    * Creates a boolean value based on the given toggle button.
    * If the button is a {@link NullableCheckBox} the value will be nullable otherwise not
-   * @param button the button
+   * @param toggleButton the toggle button
    * @param <T> the attribute type
    * @return a Value bound to the given button
    */
-  public static <T extends JToggleButton> ComponentValue<Boolean, T> toggleButton(final JToggleButton button) {
-    if (button instanceof NullableCheckBox) {
-      return (ComponentValue<Boolean, T>) new BooleanNullableCheckBoxValue((NullableCheckBox) button);
+  public static <T extends JToggleButton> ComponentValue<Boolean, T> toggleButton(final JToggleButton toggleButton) {
+    if (toggleButton instanceof NullableCheckBox) {
+      return (ComponentValue<Boolean, T>) new BooleanNullableCheckBoxValue((NullableCheckBox) toggleButton);
     }
 
-    return (ComponentValue<Boolean, T>) new BooleanToggleButtonValue(button);
-  }
-
-  /**
-   * Instantiates a new Boolean based ComponentValue with a null initial value.
-   * @return a Boolean based ComponentValue
-   */
-  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBox() {
-    return booleanComboBox((Boolean) null);
-  }
-
-  /**
-   * Instantiates a new Boolean based ComponentValue.
-   * @param initialValue the initial value
-   * @return a Boolean based ComponentValue
-   */
-  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBox(final Boolean initialValue) {
-    final BooleanComboBoxModel model = new BooleanComboBoxModel();
-    model.setSelectedItem(initialValue);
-
-    return booleanComboBox(new JComboBox<>(model));
+    return (ComponentValue<Boolean, T>) new BooleanToggleButtonValue(toggleButton);
   }
 
   /**
@@ -235,23 +199,6 @@ public final class ComponentValues {
    */
   public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBox(final JComboBox<Item<Boolean>> comboBox) {
     return new BooleanComboBoxValue(comboBox);
-  }
-
-  /**
-   * @return a BigDecimal based ComponentValue
-   */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField() {
-    return bigDecimalField((BigDecimal) null);
-  }
-
-  /**
-   * @param initialValue the initial value
-   * @return a BigDecimal based ComponentValue
-   */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimal initialValue) {
-    return bigDecimalFieldBuilder()
-            .initalValue(initialValue)
-            .build();
   }
 
   /**
@@ -280,25 +227,6 @@ public final class ComponentValues {
   }
 
   /**
-   * Instantiates a new Double based ComponentValue.
-   * @return a Double based ComponentValue
-   */
-  public static ComponentValue<Double, DoubleField> doubleField() {
-    return doubleField((Double) null);
-  }
-
-  /**
-   * Instantiates a new Double based ComponentValue.
-   * @param initialValue the initial value
-   * @return a Double based ComponentValue
-   */
-  public static ComponentValue<Double, DoubleField> doubleField(final Double initialValue) {
-    return doubleFieldBuilder()
-            .initalValue(initialValue)
-            .build();
-  }
-
-  /**
    * @param doubleField the component
    * @return a Value bound to the given component
    */
@@ -313,25 +241,6 @@ public final class ComponentValues {
    */
   public static NumberFieldValueBuilder<Double, DoubleField, DecimalFormat> doubleFieldBuilder() {
     return new DoubleFieldValueBuilder();
-  }
-
-  /**
-   * Instantiates a new Integer based ComponentValue.
-   * @return a Integer based ComponentValue
-   */
-  public static ComponentValue<Integer, IntegerField> integerField() {
-    return integerField((Integer) null);
-  }
-
-  /**
-   * Instantiates a new Integer based ComponentValue.
-   * @param initialValue the initial value
-   * @return a Integer based ComponentValue
-   */
-  public static ComponentValue<Integer, IntegerField> integerField(final Integer initialValue) {
-    return integerFieldBuilder()
-            .initalValue(initialValue)
-            .build();
   }
 
   /**
@@ -373,25 +282,6 @@ public final class ComponentValues {
    */
   public static ComponentValue<Integer, JSlider> slider(final JSlider slider) {
     return new IntegerSliderValue(slider);
-  }
-
-  /**
-   * Instantiates a new Long based ComponentValue.
-   * @return a Long based ComponentValue
-   */
-  public static ComponentValue<Long, LongField> longField() {
-    return longField((Long) null);
-  }
-
-  /**
-   * Instantiates a new Long based ComponentValue.
-   * @param initialValue the initial value
-   * @return a Long based ComponentValue
-   */
-  public static ComponentValue<Long, LongField> longField(final Long initialValue) {
-    return longFieldBuilder()
-            .initalValue(initialValue)
-            .build();
   }
 
   /**

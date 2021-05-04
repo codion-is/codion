@@ -23,6 +23,8 @@ public interface NumberFieldValueBuilder<V extends Number, C extends NumberField
   NumberFieldValueBuilder<V, C, F> component(C component);
 
   /**
+   * Sets the initial value to use when creating the component.
+   * Does not apply if the component is set via {@link #component(NumberField)}.
    * @param initialValue the initial value
    * @return this builder instace
    */

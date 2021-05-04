@@ -213,11 +213,12 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    final ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(5);
-    final IntegerField field = componentValue.getComponent();
+    final IntegerField field = new IntegerField();
+    field.setInteger(5);
     field.setColumns(6);
     field.setHorizontalAlignment(SwingConstants.CENTER);
     field.selectAll();
+    final ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(field);
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
     final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
