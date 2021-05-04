@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.time;
+package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.formats.LocaleDateTimePattern;
@@ -21,7 +21,7 @@ import java.time.temporal.Temporal;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A JFormattedTextField for Temporal types.
+ * A JFormattedTextField for Temporal types.<br>
  * @param <T> the temporal type
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
@@ -32,16 +32,30 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
 
   /**
+   * Instantiates a new {@link TemporalField}.<br>
+   * This constructor supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
+   * for other {@link Temporal} types use {@link #TemporalField(Class, String, DateTimeParser)} and supply a {@link DateTimeParser} instance.
+   * @param temporalClass the Temporal type class
+   * @param dateTimePattern the date/time pattern
+   * @throws IllegalArgumentException in case the given temporal type is not supported
+   */
+  public TemporalField(final Class<T> temporalClass, final String dateTimePattern) {
+    this(temporalClass, dateTimePattern, initializeDateTimeParser(temporalClass));
+  }
+
+  /**
    * Instantiates a new {@link TemporalField}.
    * @param temporalClass the Temporal type class
    * @param dateTimePattern the date/time pattern
+   * @param dateTimeParser the date/time parser
    */
-  public TemporalField(final Class<T> temporalClass, final String dateTimePattern) {
+  public TemporalField(final Class<T> temporalClass, final String dateTimePattern,
+                       final DateTimeParser<T> dateTimeParser) {
     super(initializeFormatter(requireNonNull(dateTimePattern, "dateTimePattern")));
     this.temporalClass = requireNonNull(temporalClass, "temporalClass");
     this.dateTimePattern = dateTimePattern;
     this.formatter = DateTimeFormatter.ofPattern(dateTimePattern);
-    this.dateTimeParser = initializeDateTimeParser(temporalClass);
+    this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
     setFocusLostBehavior(JFormattedTextField.COMMIT);
   }
 
@@ -94,7 +108,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     return dateTimeParser;
   }
 
-  private DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
+  private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
     if (typeClass.equals(LocalTime.class)) {
       return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
     }

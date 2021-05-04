@@ -18,8 +18,8 @@ final class BigDecimalFieldValueBuilder extends AbstractNumberFieldValueBuilder<
   public ComponentValue<BigDecimal, BigDecimalField> build() {
     if (component == null) {
       component = new BigDecimalField(format, columns);
+      component.setBigDecimal(initialValue);
     }
-    component.setBigDecimal(initialValue);
 
     return new BigDecimalFieldValue(component, nullable, updateOn);
   }

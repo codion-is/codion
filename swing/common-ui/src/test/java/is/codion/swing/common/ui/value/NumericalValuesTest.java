@@ -218,15 +218,17 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void doubleComponentValue() {
     final Double value = 10.4;
-    ComponentValue<Double, DoubleField> componentValue = ComponentValues.doubleField(value);
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setDouble(value);
+    ComponentValue<Double, DoubleField> componentValue = ComponentValues.doubleField(doubleField);
     assertEquals(value, componentValue.get());
-    componentValue = ComponentValues.doubleField();
+    componentValue = ComponentValues.doubleField(new DoubleField());
     assertNull(componentValue.get());
   }
 
   @Test
   public void parseDouble() {
-    final ComponentValue<Double, DoubleField> componentValue = ComponentValues.doubleField();
+    final ComponentValue<Double, DoubleField> componentValue = ComponentValues.doubleField(new DoubleField());
     assertNull(componentValue.get());
 
     componentValue.getComponent().setGroupingUsed(false);
@@ -261,10 +263,12 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void integerValueField() {
     final Integer value = 10;
-    ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(value);
+    final IntegerField integerField = new IntegerField();
+    integerField.setInteger(value);
+    ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(integerField);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.integerField();
+    componentValue = ComponentValues.integerField(new IntegerField());
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("15");
@@ -360,7 +364,7 @@ public class NumericalValuesTest {  private Long longValue;
             .build();
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.longField();
+    componentValue = ComponentValues.longField(new LongField());
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("15");

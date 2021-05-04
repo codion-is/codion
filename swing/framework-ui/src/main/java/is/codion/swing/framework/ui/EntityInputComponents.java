@@ -31,11 +31,11 @@ import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.SizedDocument;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
-import is.codion.swing.common.ui.time.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -568,13 +568,13 @@ public final class EntityInputComponents {
     }
 
     final Property<T> property = entityDefinition.getProperty(attribute);
-    final TemporalField<Temporal> textField = (TemporalField<Temporal>) createTextField(attribute, enabledState,
+    final TemporalField<Temporal> temporalField = (TemporalField<Temporal>) createTextField(attribute, enabledState,
             LocaleDateTimePattern.getMask(property.getDateTimePattern()), ValueContainsLiterals.YES);
 
-    ComponentValues.temporalField(textField, updateOn).link((Value<Temporal>) value);
+    ComponentValues.temporalField(temporalField, updateOn).link((Value<Temporal>) value);
 
     return (TemporalInputPanel<T>) TemporalInputPanel.builder()
-              .textField(textField)
+              .temporalField(temporalField)
               .calendarButton(calendarButton == CalendarButton.YES)
               .enabledState(enabledState)
               .build();

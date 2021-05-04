@@ -17,8 +17,8 @@ final class IntegerFieldValueBuilder extends AbstractNumberFieldValueBuilder<Num
   public ComponentValue<Integer, IntegerField> build() {
     if (component == null) {
       component = new IntegerField(format, columns);
+      component.setInteger(initialValue);
     }
-    component.setInteger(initialValue);
 
     return new IntegerFieldValue(component, nullable, updateOn);
   }

@@ -38,10 +38,10 @@ final class SelectedItemValue<T> extends AbstractComponentValue<T, JComboBox<Ite
 
   /**
    * Instantiates a Item based ComponentValue.
-   * @param initialValue the initial value
    * @param values the available values
+   * @param initialValue the initial value
    */
-  SelectedItemValue(final T initialValue, final List<Item<T>> values) {
+  SelectedItemValue(final List<Item<T>> values, final T initialValue) {
     super(createComboBox(initialValue, values));
     getComponent().addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED) {

@@ -17,8 +17,8 @@ final class DoubleFieldValueBuilder extends AbstractNumberFieldValueBuilder<Deci
   public ComponentValue<Double, DoubleField> build() {
     if (component == null) {
       component = new DoubleField(format, columns);
+      component.setDouble(initialValue);
     }
-    component.setDouble(initialValue);
 
     return new DoubleFieldValue(component, nullable, updateOn);
   }

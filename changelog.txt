@@ -6945,3 +6945,7 @@
   ComponentValues.stringTextField() added
   ComponentValues, major renaming of methods, minor related refactoring
   TemporalField added, related refactoring
+  TemporalField moved to textfield package
+  TemporalField constructor overloaded with DateTimeParser parameter
+  ComponentValues, removed a bunch of unnecessary factory methods
+  TemporalInputPanel.Builder.textField() renamed temporalField()

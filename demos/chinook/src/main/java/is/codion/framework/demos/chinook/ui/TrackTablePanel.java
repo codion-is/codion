@@ -54,7 +54,7 @@ public class TrackTablePanel extends EntityTablePanel {
   private BigDecimal getAmountFromUser() {
     final ComponentValuePanel<BigDecimal, BigDecimalField> inputPanel =
             new ComponentValuePanel<>(BUNDLE.getString("amount"),
-                    ComponentValues.bigDecimalField());
+                    ComponentValues.bigDecimalField(new BigDecimalField()));
     Dialogs.displayInDialog(this, inputPanel, BUNDLE.getString("raise_price"), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted() && inputPanel.getValue() != null) {

@@ -8,12 +8,14 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
-import is.codion.swing.common.ui.time.TemporalField;
+import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -50,14 +52,17 @@ public class EntityComponentValues {
       return (ComponentValue<T, C>) ComponentValues.itemComboBox(((ValueListProperty<T>) property).getValues(), initialValue);
     }
     if (attribute.isBoolean()) {
-      return (ComponentValue<T, C>) ComponentValues.booleanComboBox((Boolean) initialValue);
+      final BooleanComboBoxModel model = new BooleanComboBoxModel();
+      model.setSelectedItem(initialValue);
+
+      return (ComponentValue<T, C>) ComponentValues.booleanComboBox(new JComboBox<>(model));
     }
     if (attribute.isTemporal()) {
       final TemporalField<Temporal> temporalField =
               new TemporalField<>((Class<Temporal>) attribute.getTypeClass(), property.getDateTimePattern());
 
       return (ComponentValue<T, C>) ComponentValues.temporalInputPanel(TemporalInputPanel.builder()
-              .textField(temporalField)
+              .temporalField(temporalField)
               .initialValue((Temporal) initialValue)
               .build());
     }
