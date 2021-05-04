@@ -306,7 +306,7 @@ public final class InputControls {
       final JTextField lastNameField = new JTextField();
 
       public PersonPanel() {
-        setLayout(new GridLayout(2, 2, 5, 5));
+        setLayout(new GridLayout(2, 2));
         add(new JLabel("First name"));
         add(new JLabel("Last name"));
         add(firstNameField);
