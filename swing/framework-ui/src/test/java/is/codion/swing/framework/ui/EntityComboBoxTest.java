@@ -32,8 +32,10 @@ public class EntityComboBoxTest {
   @Test
   public void inputProvider() throws Exception {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    model.refresh();
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
-    final ComponentValue<Entity, EntityComboBox> value = EntityComboBox.comboBoxValue(model, operations);
+    model.setSelectedItem(operations);
+    final ComponentValue<Entity, EntityComboBox> value = new EntityComboBox(model).componentValue();
 
     assertNotNull(value.get());
 

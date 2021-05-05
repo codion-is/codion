@@ -6922,3 +6922,4 @@
   Property.isTemporal() no longer restricted to LocalTime, LocalDate, LocalDateTime and OffsetDateTime
   EntityInputComponents refactored
   LocalDateInputPanel.getLocalDateWithCalendar() and LocalDateTimeInputPanel.getLocalDateTimeWithCalendar() moved to TemporalInputPanel
+  EntityComboBox.comboBoxValue() and EntitySearchField.searchFieldValue() now instance methods, renamed componentValue()

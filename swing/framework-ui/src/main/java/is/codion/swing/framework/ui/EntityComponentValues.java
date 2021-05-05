@@ -8,11 +8,13 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComboBox;
@@ -115,9 +117,16 @@ public class EntityComponentValues {
                                                                                         final SwingEntityEditModel editModel,
                                                                                         final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      return (ComponentValue<Entity, T>) EntityComboBox.comboBoxValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
+      final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
+      comboBoxModel.refresh();
+      comboBoxModel.setSelectedItem(initialValue);
+
+      return (ComponentValue<Entity, T>) new EntityComboBox(comboBoxModel).componentValue();
     }
 
-    return (ComponentValue<Entity, T>) EntitySearchField.searchFieldValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
+    final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
+    searchModel.setSelectedEntity(initialValue);
+
+    return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValue();
   }
 }

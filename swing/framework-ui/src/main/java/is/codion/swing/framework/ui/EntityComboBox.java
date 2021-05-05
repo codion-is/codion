@@ -144,22 +144,11 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   }
 
   /**
-   * Creates a {@link ComponentValue} based on a {@link EntityComboBox}.
-   * @param comboBoxModel the combo box model
+   * Creates a new {@link ComponentValue} based on this {@link EntityComboBox}.
    * @return a new ComponentValue
    */
-  public static ComponentValue<Entity, EntityComboBox> comboBoxValue(final SwingEntityComboBoxModel comboBoxModel) {
-    return comboBoxValue(comboBoxModel, null);
-  }
-
-  /**
-   * Creates a {@link ComponentValue} based on a {@link EntityComboBox}.
-   * @param comboBoxModel the combo box model
-   * @param initialValue the initial value
-   * @return a new ComponentValue
-   */
-  public static ComponentValue<Entity, EntityComboBox> comboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
-    return new ComboBoxValue(comboBoxModel, initialValue);
+  public ComponentValue<Entity, EntityComboBox> componentValue() {
+    return new ComboBoxValue(this);
   }
 
   private JPopupMenu initializePopupMenu() {
@@ -172,19 +161,10 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     return popupMenu;
   }
 
-  /**
-   * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
-   * @see SwingEntityComboBoxModel
-   */
   private static final class ComboBoxValue extends AbstractComponentValue<Entity, EntityComboBox> {
 
-    /**
-     * Instantiates a new component value based on the EntityComboBoxModel class
-     * @param comboBoxModel the combo box model
-     * @param initialValue the initial value to display
-     */
-    private ComboBoxValue(final SwingEntityComboBoxModel comboBoxModel, final Entity initialValue) {
-      super(createComboBox(comboBoxModel, initialValue));
+    private ComboBoxValue(final EntityComboBox comboBox) {
+      super(comboBox);
     }
 
     @Override
@@ -194,18 +174,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
     @Override
     protected void setComponentValue(final EntityComboBox component, final Entity value) {
-      component.setSelectedItem(value);
-    }
-
-    private static EntityComboBox createComboBox(final SwingEntityComboBoxModel comboBoxModel, final Object currentValue) {
-      if (comboBoxModel.isCleared()) {
-        comboBoxModel.refresh();
-      }
-      if (currentValue != null) {
-        comboBoxModel.setSelectedItem(currentValue);
-      }
-
-      return new EntityComboBox(comboBoxModel);
+      component.getModel().setSelectedItem(value);
     }
   }
 
