@@ -25,7 +25,6 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
-import java.util.List;
 
 /**
  * A factory for {@link ComponentValue}.
@@ -143,31 +142,10 @@ public final class ComponentValues {
   /**
    * Instantiates a Item based ComponentValue.
    * @param <V> the value type
-   * @param values the available values
-   * @return a ComponentValue based on a combo box
-   */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values) {
-    return itemComboBox(values, null);
-  }
-
-  /**
-   * Instantiates a Item based ComponentValue.
-   * @param <V> the value type
-   * @param values the available values
-   * @param initialValue the initial value
-   * @return a ComponentValue based on a combo box
-   */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values, final V initialValue) {
-    return new SelectedItemValue<>(values, initialValue);
-  }
-
-  /**
-   * Instantiates a Item based ComponentValue.
-   * @param <V> the value type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final JComboBox<Item<V>> comboBox) {
+  public static <V, C extends JComboBox<Item<V>>> ComponentValue<V, C> itemComboBox(final C comboBox) {
     return new SelectedItemValue<>(comboBox);
   }
 
@@ -176,7 +154,7 @@ public final class ComponentValues {
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> ComponentValue<V, JComboBox<V>> comboBox(final JComboBox<V> comboBox) {
+  public static <V, C extends JComboBox<V>> ComponentValue<V, C> comboBox(final C comboBox) {
     return new SelectedValue<>(comboBox);
   }
 

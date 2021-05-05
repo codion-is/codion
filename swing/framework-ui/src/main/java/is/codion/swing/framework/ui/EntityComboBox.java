@@ -13,8 +13,6 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
@@ -143,14 +141,6 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     return textField;
   }
 
-  /**
-   * Creates a new {@link ComponentValue} based on this {@link EntityComboBox}.
-   * @return a new ComponentValue
-   */
-  public ComponentValue<Entity, EntityComboBox> componentValue() {
-    return new ComboBoxValue(this);
-  }
-
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder()
@@ -159,23 +149,6 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
             .build());
 
     return popupMenu;
-  }
-
-  private static final class ComboBoxValue extends AbstractComponentValue<Entity, EntityComboBox> {
-
-    private ComboBoxValue(final EntityComboBox comboBox) {
-      super(comboBox);
-    }
-
-    @Override
-    protected Entity getComponentValue(final EntityComboBox component) {
-      return component.getModel().getSelectedValue();
-    }
-
-    @Override
-    protected void setComponentValue(final EntityComboBox component, final Entity value) {
-      component.getModel().setSelectedItem(value);
-    }
   }
 
   private static final class RefreshOnVisible implements AncestorListener {

@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -10,6 +11,9 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -23,6 +27,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,7 +56,7 @@ public class EntityComponentValues {
     }
     final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) ComponentValues.itemComboBox(((ValueListProperty<T>) property).getValues(), initialValue);
+      return (ComponentValue<T, C>) ComponentValues.itemComboBox(createValueListComboBox((ValueListProperty<T>) property, initialValue));
     }
     if (attribute.isBoolean()) {
       final BooleanComboBoxModel model = new BooleanComboBoxModel();
@@ -121,12 +126,25 @@ public class EntityComponentValues {
       comboBoxModel.refresh();
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<Entity, T>) new EntityComboBox(comboBoxModel).componentValue();
+      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel));
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
     return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValue();
+  }
+
+  private static <T> JComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final T initialValue) {
+    final List<Item<T>> values = property.getValues();
+    final ItemComboBoxModel<T> comboBoxModel = new ItemComboBoxModel<>(values);
+    final JComboBox<Item<T>> comboBox = Completion.maximumMatch(new SteppedComboBox<>(comboBoxModel));
+    final Item<T> currentItem = Item.item(initialValue, "");
+    final int currentValueIndex = values.indexOf(currentItem);
+    if (currentValueIndex >= 0) {
+      comboBoxModel.setSelectedItem(values.get(currentValueIndex));
+    }
+
+    return comboBox;
   }
 }
