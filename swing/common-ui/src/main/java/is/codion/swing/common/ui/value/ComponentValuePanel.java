@@ -42,10 +42,18 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
 
   /**
    * Instantiates a new ComponentValuePanel
-   * @param caption the input panel caption
    * @param componentValue the ComponentValue to display
    */
-  public ComponentValuePanel(final String caption, final ComponentValue<V, C> componentValue) {
+  public ComponentValuePanel(final ComponentValue<V, C> componentValue) {
+    this(componentValue, null);
+  }
+
+  /**
+   * Instantiates a new ComponentValuePanel
+   * @param componentValue the ComponentValue to display
+   * @param caption the panel caption
+   */
+  public ComponentValuePanel(final ComponentValue<V, C> componentValue, final String caption) {
     this.componentValue = requireNonNull(componentValue, "componentValue");
     this.okAction = createAction(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     this.cancelAction = createAction(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
@@ -55,21 +63,21 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
   /**
    * @return the value from the underlying {@link ComponentValue}
    */
-  public V getValue() {
+  public V get() {
     return componentValue.get();
   }
 
   /**
    * @param value the value to set in the underlying {@link ComponentValue}
    */
-  public void setValue(final V value) {
+  public void set(final V value) {
     componentValue.set(value);
   }
 
   /**
    * @return the input component from the underlying {@link ComponentValue}
    */
-  public C getInputComponent() {
+  public C getComponent() {
     return componentValue.getComponent();
   }
 
