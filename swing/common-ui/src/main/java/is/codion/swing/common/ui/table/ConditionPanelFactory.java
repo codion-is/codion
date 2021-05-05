@@ -12,8 +12,9 @@ public interface ConditionPanelFactory {
 
   /**
    * Creates a ColumnConditionPanel for the given column, returns null if none is available
+   * @param <T> the column value type
    * @param column the column
    * @return a ColumnConditionPanel or null if none is available for the given column
    */
-   ColumnConditionPanel<?, ?> createConditionPanel(TableColumn column);
+   <T> ColumnConditionPanel<?, T> createConditionPanel(TableColumn column);
 }
