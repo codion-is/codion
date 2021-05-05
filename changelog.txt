@@ -6921,3 +6921,4 @@
   EntitySearchField.SearchFieldValue and EntityComboBox.ComboBoxValue now private, replaced with factory methods
   Property.isTemporal() no longer restricted to LocalTime, LocalDate, LocalDateTime and OffsetDateTime
   EntityInputComponents refactored
+  LocalDateInputPanel.getLocalDateWithCalendar() and LocalDateTimeInputPanel.getLocalDateTimeWithCalendar() moved to TemporalInputPanel
