@@ -31,6 +31,14 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * Instantiates a new TemporalInputPanel.
    * @param temporalField the temporal input field
+   */
+  public TemporalInputPanel(final TemporalField<T> temporalField) {
+    this(temporalField, null);
+  }
+
+  /**
+   * Instantiates a new TemporalInputPanel.
+   * @param temporalField the temporal input field
    * @param enabledState a StateObserver controlling the enabled state of the input field and button
    */
   public TemporalInputPanel(final TemporalField<T> temporalField, final StateObserver enabledState) {

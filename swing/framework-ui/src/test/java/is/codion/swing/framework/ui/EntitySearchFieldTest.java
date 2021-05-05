@@ -32,7 +32,7 @@ public class EntitySearchFieldTest {
   @Test
   public void inputProvider() throws Exception {
     final EntitySearchModel model = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final ComponentValue<Entity, EntitySearchField> value = EntitySearchField.searchFieldValue(model, null);
+    final ComponentValue<Entity, EntitySearchField> value = EntitySearchField.searchFieldValue(model);
 
     assertNull(value.get());
 
