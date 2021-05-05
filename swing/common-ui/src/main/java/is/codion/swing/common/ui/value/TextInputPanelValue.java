@@ -4,18 +4,13 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.swing.common.model.textfield.DocumentAdapter;
-import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
-
-import javax.swing.JTextField;
 
 class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
 
-  private static final int DEFAULT_COLUMNS = 16;
-
-  TextInputPanelValue(final String inputDialogTitle, final String initialValue, final int maximumLength) {
-    super(new TextInputPanel(createDefaultTextField(initialValue, maximumLength), inputDialogTitle));
-    getComponent().getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+  TextInputPanelValue(final TextInputPanel textInputPanel) {
+    super(textInputPanel);
+    textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
   }
 
   @Override
@@ -28,14 +23,5 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
   @Override
   protected void setComponentValue(final TextInputPanel component, final String value) {
     component.setText(value);
-  }
-
-  private static JTextField createDefaultTextField(final String initialValue, final int maximumLength) {
-    final SizedDocument document = new SizedDocument();
-    if (maximumLength > 0) {
-      document.setMaximumLength(maximumLength);
-    }
-
-    return new JTextField(document, initialValue != null ? initialValue : "", DEFAULT_COLUMNS);
   }
 }

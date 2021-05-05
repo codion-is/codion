@@ -96,15 +96,11 @@ public final class ComponentValues {
 
   /**
    * Instantiates a new String based ComponentValue.
-   * @param inputDialogTitle the title to use for the lookup input dialog
-   * @param initialValue the initial value
-   * @param maximumLength the maximum input length, -1 for no limit
+   * @param textInputPanel the text input panel to base this component value on
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> textInputPanel(final String inputDialogTitle,
-                                                                      final String initialValue,
-                                                                      final int maximumLength) {
-    return new TextInputPanelValue(inputDialogTitle, initialValue, maximumLength);
+  public static ComponentValue<String, TextInputPanel> textInputPanel(final TextInputPanel textInputPanel) {
+    return new TextInputPanelValue(textInputPanel);
   }
 
   /**
@@ -142,6 +138,7 @@ public final class ComponentValues {
   /**
    * Instantiates a Item based ComponentValue.
    * @param <V> the value type
+   * @param <C> the combo box type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
@@ -151,6 +148,7 @@ public final class ComponentValues {
 
   /**
    * @param <V> the value type
+   * @param <C> the combo box type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */

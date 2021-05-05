@@ -6925,3 +6925,4 @@
   EntityComboBox.comboBoxValue() and EntitySearchField.searchFieldValue() now instance methods, renamed componentValue()
   EntityComboBox.ComboBoxValue and comboBoxValue() removed, ComponentValues.comboBox() works just fine
   ComponentValues.itemComboBox() overloads with List of Items removed
+  ComponentValues.textInputPanel() overload with multiple parameters removed

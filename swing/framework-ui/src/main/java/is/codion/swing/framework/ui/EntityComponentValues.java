@@ -14,7 +14,9 @@ import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -23,6 +25,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -35,6 +38,8 @@ import static java.util.Objects.requireNonNull;
  * Provides {@link ComponentValue} implementations.
  */
 public class EntityComponentValues {
+
+  private static final int DEFAULT_COLUMNS = 16;
 
   /**
    * Provides value input components for multiple entity update, override to supply
@@ -98,10 +103,16 @@ public class EntityComponentValues {
               .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) ComponentValues.textInputPanel(property.getCaption(), (String) initialValue, 1);
+      final TextInputPanel textInputPanel =
+              new TextInputPanel(createTextField((Character) initialValue, 1), property.getCaption());
+
+      return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) ComponentValues.textInputPanel(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      final TextInputPanel textInputPanel =
+              new TextInputPanel(createTextField((String) initialValue, property.getMaximumLength()), property.getCaption());
+
+      return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) ComponentValues.fileInputPanel();
@@ -146,5 +157,18 @@ public class EntityComponentValues {
     }
 
     return comboBox;
+  }
+
+  private static JTextField createTextField(final Character initialValue, final int maximumLength) {
+    return createTextField(initialValue == null ? null : String.valueOf(initialValue), maximumLength);
+  }
+
+  private static JTextField createTextField(final String initialValue, final int maximumLength) {
+    final SizedDocument document = new SizedDocument();
+    if (maximumLength > 0) {
+      document.setMaximumLength(maximumLength);
+    }
+
+    return new JTextField(document, initialValue, DEFAULT_COLUMNS);
   }
 }
