@@ -17,7 +17,7 @@ public class ComponentValuePanelTest {
   @Test
   public void componentValuePanel() {
     final JTextField textField = new JTextField();
-    final ComponentValuePanel panel = new ComponentValuePanel("Test", new AbstractComponentValue<String, JTextField>(textField) {
+    final ComponentValuePanel<String, JTextField> panel = new ComponentValuePanel<>(new AbstractComponentValue<String, JTextField>(textField) {
       @Override
       protected String getComponentValue(final JTextField component) {
         return component.getText();
@@ -27,9 +27,9 @@ public class ComponentValuePanelTest {
         component.setText(value);
       }
     });
-    assertEquals(textField, panel.getInputComponent());
+    assertSame(textField, panel.getComponent());
     textField.setText("hello");
-    assertEquals("hello", panel.getValue());
+    assertEquals("hello", panel.get());
     assertFalse(panel.isInputAccepted());
     final AtomicInteger eventCounter = new AtomicInteger();
     final EventDataListener<Integer> listener = data -> eventCounter.incrementAndGet();

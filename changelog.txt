@@ -6957,3 +6957,5 @@
   EntityComboBox.ComboBoxValue and comboBoxValue() removed, ComponentValues.comboBox() works just fine
   ComponentValues.itemComboBox() overloads with List of Items removed
   ComponentValues.textInputPanel() overload with multiple parameters removed
+  ComponentValuePanel, some renaming, constructor overloaded
+  ConditionPanelFactory, EntityConditionPanelFactory, added a bit of generic typing, related refactoring in FilteredTable

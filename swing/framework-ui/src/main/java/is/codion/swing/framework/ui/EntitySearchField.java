@@ -373,8 +373,8 @@ public final class EntitySearchField extends JTextField {
                                              final String lookupCaption, final String dialogTitle) {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
-    final ComponentValuePanel<Entity, EntitySearchField> inputPanel = new ComponentValuePanel<>(lookupCaption,
-            new EntitySearchField(searchModel).componentValue());
+    final ComponentValuePanel<Entity, EntitySearchField> inputPanel =
+            new ComponentValuePanel<>(new EntitySearchField(searchModel).componentValue(), lookupCaption);
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {

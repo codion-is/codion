@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.FilteredTableModel;
 import is.codion.common.model.table.RowColumn;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
@@ -20,6 +21,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
@@ -160,8 +162,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param tableModel the table model
    */
   public FilteredTable(final T tableModel) {
-    this(tableModel, column -> new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel(
-            (C) column.getIdentifier()), ColumnConditionPanel.ToggleAdvancedButton.YES));
+    this(tableModel, new DefaultConditionPanelFactory<>(tableModel));
   }
 
   /**
@@ -686,6 +687,25 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
     checkBoxes.forEach(box -> SwingUtilities.invokeLater(() -> box.setSelected(selected)));
+  }
+
+  private static final class DefaultConditionPanelFactory<C> implements ConditionPanelFactory {
+
+    private final FilteredTableModel<?, C, ?> tableModel;
+
+    private DefaultConditionPanelFactory(final FilteredTableModel<?, C, ?> tableModel) {
+      this.tableModel = tableModel;
+    }
+
+    @Override
+    public <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
+      final ColumnConditionModel<C, T> filterModel = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+      if (filterModel != null) {
+        return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES);
+      }
+
+      return null;
+    }
   }
 
   private final class SortableHeaderRenderer implements TableCellRenderer {
