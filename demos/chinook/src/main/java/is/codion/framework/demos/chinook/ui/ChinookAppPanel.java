@@ -232,19 +232,23 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
     addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), () -> {
       FlatLightLaf.install();
-      UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+      final Color background = (Color) UIManager.get("Table.background");
+      UIManager.put("Table.alternateRowColor", background.darker());
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatIntelliJLaf.class.getName(), () -> {
       FlatIntelliJLaf.install();
-      UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+      final Color background = (Color) UIManager.get("Table.background");
+      UIManager.put("Table.alternateRowColor", background.darker());
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), () -> {
       FlatDarkLaf.install();
-      UIManager.put("Table.alternateRowColor", null);
+      final Color background = (Color) UIManager.get("Table.background");
+      UIManager.put("Table.alternateRowColor", background.brighter());
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarculaLaf.class.getName(), () -> {
       FlatDarculaLaf.install();
-      UIManager.put("Table.alternateRowColor", null);
+      final Color background = (Color) UIManager.get("Table.background");
+      UIManager.put("Table.alternateRowColor", background.brighter());
     }));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());

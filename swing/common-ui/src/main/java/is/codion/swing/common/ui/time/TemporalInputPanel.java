@@ -3,21 +3,37 @@
  */
 package is.codion.swing.common.ui.time;
 
+import is.codion.common.event.Event;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.DisposeOnEscape;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TemporalField;
+
+import com.github.lgooddatepicker.components.CalendarPanel;
+import com.github.lgooddatepicker.components.TimePicker;
+import com.github.lgooddatepicker.components.TimePickerSettings;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.GridBagLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 
+import static is.codion.swing.common.ui.Components.createOkCancelButtonPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -96,6 +112,83 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public static <T extends Temporal> Builder<T> builder() {
     return new TemporalPanelBuilder<>();
+  }
+
+  /**
+   * Retrieves a LocalDate from the user.
+   * @param startDate the starting date, if null the current date is used
+   * @param message the message to display as dialog title
+   * @param parent the dialog parent
+   * @return a LocalDate from the user, null if the action was cancelled
+   */
+  public static LocalDate getLocalDateWithCalendar(final LocalDate startDate, final String message, final Container parent) {
+    final Event<?> closeEvent = Event.event();
+    final State cancel = State.state();
+    final Control okControl = Control.control(closeEvent::onEvent);
+    final Control cancelControl = Control.control(() -> {
+      cancel.set(true);
+      closeEvent.onEvent();
+    });
+
+    final CalendarPanel calendarPanel = new CalendarPanel();
+    calendarPanel.setSelectedDate(startDate);
+    final JPanel datePanel = new JPanel(Layouts.borderLayout());
+    datePanel.add(calendarPanel, BorderLayout.NORTH);
+    datePanel.add(createOkCancelButtonPanel(okControl, cancelControl), BorderLayout.SOUTH);
+
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(cancelControl)
+            .enable(datePanel);
+    Dialogs.displayInDialog(parent, datePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
+
+    return cancel.get() ? null : calendarPanel.getSelectedDate();
+  }
+
+
+
+  /**
+   * Retrieves a LocalDateTime from the user.
+   * @param startDateTime the starting date, if null the current date is used
+   * @param message the message to display as dialog title
+   * @param parent the dialog parent
+   * @return a LocalDateTime from the user, null if the action was cancelled
+   */
+  public static LocalDateTime getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String message, final Container parent) {
+    final Event<?> closeEvent = Event.event();
+    final State cancel = State.state();
+    final Control okControl = Control.control(closeEvent::onEvent);
+    final Control cancelControl = Control.control(() -> {
+      cancel.set(true);
+      closeEvent.onEvent();
+    });
+
+    final TimePickerSettings timeSettings = new TimePickerSettings();
+    timeSettings.use24HourClockFormat();
+    timeSettings.setDisplaySpinnerButtons(true);
+    timeSettings.setInitialTimeToNow();
+    final TimePicker timePicker = new TimePicker(timeSettings);
+    final CalendarPanel calendarPanel = new CalendarPanel();
+    if (startDateTime != null) {
+      calendarPanel.setSelectedDate(startDateTime.toLocalDate());
+      timePicker.setTime(startDateTime.toLocalTime());
+    }
+    final JPanel dateTimePanel = new JPanel(Layouts.borderLayout());
+    final JPanel timePanel = new JPanel(new GridBagLayout());
+    timePanel.add(timePicker);
+    dateTimePanel.add(calendarPanel, BorderLayout.CENTER);
+    dateTimePanel.add(timePanel, BorderLayout.EAST);
+    dateTimePanel.add(createOkCancelButtonPanel(okControl, cancelControl), BorderLayout.SOUTH);
+
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_ESCAPE)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(cancelControl)
+            .enable(dateTimePanel);
+    Dialogs.displayInDialog(parent, dateTimePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
+
+    return cancel.get() ? null : LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime());
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
