@@ -144,6 +144,16 @@ public final class ComponentValues {
    * Instantiates a Item based ComponentValue.
    * @param <V> the value type
    * @param values the available values
+   * @return a ComponentValue based on a combo box
+   */
+  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values) {
+    return itemComboBox(values, null);
+  }
+
+  /**
+   * Instantiates a Item based ComponentValue.
+   * @param <V> the value type
+   * @param values the available values
    * @param initialValue the initial value
    * @return a ComponentValue based on a combo box
    */
