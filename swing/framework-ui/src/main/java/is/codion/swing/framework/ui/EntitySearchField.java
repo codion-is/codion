@@ -220,6 +220,15 @@ public final class EntitySearchField extends JTextField {
   /**
    * Creates a {@link ComponentValue} based on a {@link EntitySearchField}.
    * @param searchModel the search model
+   * @return a new ComponentValue
+   */
+  public static ComponentValue<Entity, EntitySearchField> searchFieldValue(final EntitySearchModel searchModel) {
+    return searchFieldValue(searchModel, null);
+  }
+
+  /**
+   * Creates a {@link ComponentValue} based on a {@link EntitySearchField}.
+   * @param searchModel the search model
    * @param initialValue the initial value
    * @return a new ComponentValue
    */

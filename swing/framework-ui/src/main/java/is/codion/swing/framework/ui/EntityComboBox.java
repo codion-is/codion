@@ -146,6 +146,15 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   /**
    * Creates a {@link ComponentValue} based on a {@link EntityComboBox}.
    * @param comboBoxModel the combo box model
+   * @return a new ComponentValue
+   */
+  public static ComponentValue<Entity, EntityComboBox> comboBoxValue(final SwingEntityComboBoxModel comboBoxModel) {
+    return comboBoxValue(comboBoxModel, null);
+  }
+
+  /**
+   * Creates a {@link ComponentValue} based on a {@link EntityComboBox}.
+   * @param comboBoxModel the combo box model
    * @param initialValue the initial value
    * @return a new ComponentValue
    */
