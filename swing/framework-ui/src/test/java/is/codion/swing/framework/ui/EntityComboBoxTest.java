@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,10 @@ public class EntityComboBoxTest {
   @Test
   public void inputProvider() throws Exception {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    model.refresh();
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
-    final ComponentValue<Entity, EntityComboBox> value = EntityComboBox.comboBoxValue(model, operations);
+    model.setSelectedItem(operations);
+    final ComponentValue<Entity, EntityComboBox> value = ComponentValues.comboBox(new EntityComboBox(model));
 
     assertNotNull(value.get());
 

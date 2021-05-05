@@ -3,24 +3,34 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,6 +38,8 @@ import static java.util.Objects.requireNonNull;
  * Provides {@link ComponentValue} implementations.
  */
 public class EntityComponentValues {
+
+  private static final int DEFAULT_COLUMNS = 16;
 
   /**
    * Provides value input components for multiple entity update, override to supply
@@ -49,7 +61,7 @@ public class EntityComponentValues {
     }
     final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) ComponentValues.itemComboBox(((ValueListProperty<T>) property).getValues(), initialValue);
+      return (ComponentValue<T, C>) ComponentValues.itemComboBox(createValueListComboBox((ValueListProperty<T>) property, initialValue));
     }
     if (attribute.isBoolean()) {
       final BooleanComboBoxModel model = new BooleanComboBoxModel();
@@ -91,10 +103,16 @@ public class EntityComponentValues {
               .build();
     }
     if (attribute.isCharacter()) {
-      return (ComponentValue<T, C>) ComponentValues.textInputPanel(property.getCaption(), (String) initialValue, 1);
+      final TextInputPanel textInputPanel =
+              new TextInputPanel(createTextField((Character) initialValue, 1), property.getCaption());
+
+      return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
     }
     if (attribute.isString()) {
-      return (ComponentValue<T, C>) ComponentValues.textInputPanel(property.getCaption(), (String) initialValue, property.getMaximumLength());
+      final TextInputPanel textInputPanel =
+              new TextInputPanel(createTextField((String) initialValue, property.getMaximumLength()), property.getCaption());
+
+      return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) ComponentValues.fileInputPanel();
@@ -115,9 +133,42 @@ public class EntityComponentValues {
                                                                                         final SwingEntityEditModel editModel,
                                                                                         final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      return (ComponentValue<Entity, T>) EntityComboBox.comboBoxValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
+      final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
+      comboBoxModel.refresh();
+      comboBoxModel.setSelectedItem(initialValue);
+
+      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel));
     }
 
-    return (ComponentValue<Entity, T>) EntitySearchField.searchFieldValue(editModel.createForeignKeySearchModel(foreignKey), initialValue);
+    final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
+    searchModel.setSelectedEntity(initialValue);
+
+    return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValue();
+  }
+
+  private static <T> JComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final T initialValue) {
+    final List<Item<T>> values = property.getValues();
+    final ItemComboBoxModel<T> comboBoxModel = new ItemComboBoxModel<>(values);
+    final JComboBox<Item<T>> comboBox = Completion.maximumMatch(new SteppedComboBox<>(comboBoxModel));
+    final Item<T> currentItem = Item.item(initialValue, "");
+    final int currentValueIndex = values.indexOf(currentItem);
+    if (currentValueIndex >= 0) {
+      comboBoxModel.setSelectedItem(values.get(currentValueIndex));
+    }
+
+    return comboBox;
+  }
+
+  private static JTextField createTextField(final Character initialValue, final int maximumLength) {
+    return createTextField(initialValue == null ? null : String.valueOf(initialValue), maximumLength);
+  }
+
+  private static JTextField createTextField(final String initialValue, final int maximumLength) {
+    final SizedDocument document = new SizedDocument();
+    if (maximumLength > 0) {
+      document.setMaximumLength(maximumLength);
+    }
+
+    return new JTextField(document, initialValue, DEFAULT_COLUMNS);
   }
 }

@@ -182,6 +182,14 @@ public final class EntitySearchField extends JTextField {
   }
 
   /**
+   * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}.
+   * @return a new ComponentValue
+   */
+  public ComponentValue<Entity, EntitySearchField> componentValue() {
+    return new SearchFieldValue(this);
+  }
+
+  /**
    * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
    * in a dialog, using the default search attributes for the given entityType.
    * @param entityType the entityType of the entity to perform a search for
@@ -215,25 +223,6 @@ public final class EntitySearchField extends JTextField {
   public static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     return lookupEntities(entityType, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
-  }
-
-  /**
-   * Creates a {@link ComponentValue} based on a {@link EntitySearchField}.
-   * @param searchModel the search model
-   * @return a new ComponentValue
-   */
-  public static ComponentValue<Entity, EntitySearchField> searchFieldValue(final EntitySearchModel searchModel) {
-    return searchFieldValue(searchModel, null);
-  }
-
-  /**
-   * Creates a {@link ComponentValue} based on a {@link EntitySearchField}.
-   * @param searchModel the search model
-   * @param initialValue the initial value
-   * @return a new ComponentValue
-   */
-  public static ComponentValue<Entity, EntitySearchField> searchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
-    return new SearchFieldValue(searchModel, initialValue);
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -385,7 +374,7 @@ public final class EntitySearchField extends JTextField {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel<Entity, EntitySearchField> inputPanel = new ComponentValuePanel<>(lookupCaption,
-            new SearchFieldValue(searchModel, null));
+            new EntitySearchField(searchModel).componentValue());
     Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
@@ -602,24 +591,15 @@ public final class EntitySearchField extends JTextField {
     }
   }
 
-  /**
-   * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntitySearchField}.
-   * @see EntitySearchField
-   */
   private static final class SearchFieldValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
-    /**
-     * Instantiates a new ComponentValue
-     * @param searchModel the search model to base the search field on
-     * @param initialValue the initial value
-     */
-    private SearchFieldValue(final EntitySearchModel searchModel, final Entity initialValue) {
-      super(createEntitySearchField(searchModel, initialValue));
+    private SearchFieldValue(final EntitySearchField searchField) {
+      super(searchField);
     }
 
     @Override
     protected Entity getComponentValue(final EntitySearchField component) {
-      final List<Entity> selectedEntities = getComponent().getModel().getSelectedEntities();
+      final List<Entity> selectedEntities = component.getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
@@ -627,13 +607,6 @@ public final class EntitySearchField extends JTextField {
     @Override
     protected void setComponentValue(final EntitySearchField component, final Entity value) {
       component.getModel().setSelectedEntity(value);
-    }
-
-    private static EntitySearchField createEntitySearchField(final EntitySearchModel searchModel, final Entity initialValue) {
-      final EntitySearchField field = new EntitySearchField(searchModel);
-      searchModel.setSelectedEntity(initialValue);
-
-      return field;
     }
   }
 

@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.value;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 
 import org.junit.jupiter.api.Test;
@@ -95,15 +96,23 @@ public class StringValuesTest {
   @Test
   public void textValueField() {
     final String value = "hello";
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel("none", value, 2));
 
-    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textInputPanel("none", value, 5);
+    SizedDocument document = new SizedDocument();
+    document.setMaximumLength(5);
+
+    TextInputPanel inputPanel = new TextInputPanel(new JTextField(document, value, 0), "none");
+
+    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textInputPanel(inputPanel);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.textInputPanel("none", value, 10);
+    document.setMaximumLength(10);
+
+    componentValue = ComponentValues.textInputPanel(inputPanel);
     assertEquals(value, componentValue.get());
 
-    componentValue = ComponentValues.textInputPanel("none", null, 10);
+    inputPanel.setText("");
+
+    componentValue = ComponentValues.textInputPanel(inputPanel);
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("tester");
@@ -112,10 +121,8 @@ public class StringValuesTest {
     componentValue.getComponent().setText("");
     assertNull(componentValue.get());
 
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel("none", null, 10)
+    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel(inputPanel)
             .getComponent().setText("asdfasdfasdfasdfasdf"));
-
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel("none", null, 10).set("asdfasdfasdfasdfasdf"));
   }
 
   @Test

@@ -25,7 +25,6 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
-import java.util.List;
 
 /**
  * A factory for {@link ComponentValue}.
@@ -97,15 +96,11 @@ public final class ComponentValues {
 
   /**
    * Instantiates a new String based ComponentValue.
-   * @param inputDialogTitle the title to use for the lookup input dialog
-   * @param initialValue the initial value
-   * @param maximumLength the maximum input length, -1 for no limit
+   * @param textInputPanel the text input panel to base this component value on
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> textInputPanel(final String inputDialogTitle,
-                                                                      final String initialValue,
-                                                                      final int maximumLength) {
-    return new TextInputPanelValue(inputDialogTitle, initialValue, maximumLength);
+  public static ComponentValue<String, TextInputPanel> textInputPanel(final TextInputPanel textInputPanel) {
+    return new TextInputPanelValue(textInputPanel);
   }
 
   /**
@@ -143,40 +138,21 @@ public final class ComponentValues {
   /**
    * Instantiates a Item based ComponentValue.
    * @param <V> the value type
-   * @param values the available values
-   * @return a ComponentValue based on a combo box
-   */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values) {
-    return itemComboBox(values, null);
-  }
-
-  /**
-   * Instantiates a Item based ComponentValue.
-   * @param <V> the value type
-   * @param values the available values
-   * @param initialValue the initial value
-   * @return a ComponentValue based on a combo box
-   */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final List<Item<V>> values, final V initialValue) {
-    return new SelectedItemValue<>(values, initialValue);
-  }
-
-  /**
-   * Instantiates a Item based ComponentValue.
-   * @param <V> the value type
+   * @param <C> the combo box type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> ComponentValue<V, JComboBox<Item<V>>> itemComboBox(final JComboBox<Item<V>> comboBox) {
+  public static <V, C extends JComboBox<Item<V>>> ComponentValue<V, C> itemComboBox(final C comboBox) {
     return new SelectedItemValue<>(comboBox);
   }
 
   /**
    * @param <V> the value type
+   * @param <C> the combo box type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> ComponentValue<V, JComboBox<V>> comboBox(final JComboBox<V> comboBox) {
+  public static <V, C extends JComboBox<V>> ComponentValue<V, C> comboBox(final C comboBox) {
     return new SelectedValue<>(comboBox);
   }
 
