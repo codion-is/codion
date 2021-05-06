@@ -446,19 +446,6 @@ public final class Dialogs {
     return selectedFile;
   }
 
-  static void closeIfConfirmed(final EventDataListener<State> confirmCloseListener, final JDialog dialog) {
-    if (confirmCloseListener == null) {
-      dialog.dispose();
-    }
-    else {
-      final State confirmClose = State.state();
-      confirmCloseListener.onEvent(confirmClose);
-      if (confirmClose.get()) {
-        dialog.dispose();
-      }
-    }
-  }
-
   /**
    * Displays a dialog for selecting from of a collection of values
    * @param dialogOwner the dialog owner

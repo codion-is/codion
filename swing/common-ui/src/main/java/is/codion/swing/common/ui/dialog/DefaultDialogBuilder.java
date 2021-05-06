@@ -14,14 +14,11 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -142,19 +139,5 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
     }
 
     return dialog;
-  }
-
-  static <T extends Component> List<T> getComponentsOfType(final Container container, final Class<T> clazz) {
-    final List<T> components = new ArrayList<>();
-    for (final Component component : container.getComponents()) {
-      if (clazz.isAssignableFrom(component.getClass())) {
-        components.add((T) component);
-      }
-      if (component instanceof Container) {
-        components.addAll(getComponentsOfType((Container) component, clazz));
-      }
-    }
-
-    return components;
   }
 }
