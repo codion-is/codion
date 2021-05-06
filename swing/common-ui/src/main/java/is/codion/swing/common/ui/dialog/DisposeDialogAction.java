@@ -16,13 +16,26 @@ final class DisposeDialogAction extends AbstractAction {
   private final EventDataListener<State> confirmCloseListener;
 
   DisposeDialogAction(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
-    super("Dialogs.disposeDialogAction");
+    super("DisposeDialogAction");
     this.dialog = dialog;
     this.confirmCloseListener = confirmCloseListener;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    Dialogs.closeIfConfirmed(confirmCloseListener, dialog);
+    closeIfConfirmed(dialog, confirmCloseListener);
+  }
+
+  static void closeIfConfirmed(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
+    if (confirmCloseListener == null) {
+      dialog.dispose();
+    }
+    else {
+      final State confirmClose = State.state();
+      confirmCloseListener.onEvent(confirmClose);
+      if (confirmClose.get()) {
+        dialog.dispose();
+      }
+    }
   }
 }

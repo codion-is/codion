@@ -9,8 +9,11 @@ import is.codion.common.state.State;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JPopupMenu;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +25,7 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
   private final EventDataListener<State> confirmCloseListener;
 
   DisposeDialogOnEscapeAction(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
-    super("Dialogs.disposeDialogOnEscapeAction");
+    super("DisposeDialogOnEscapeAction");
     this.dialog = dialog;
     this.confirmCloseListener = confirmCloseListener;
   }
@@ -36,12 +39,26 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
 
       return;
     }
-    final List<JPopupMenu> popupMenus = DefaultDialogBuilder.getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
+    final List<JPopupMenu> popupMenus = getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
     if (popupMenus.isEmpty()) {
-      Dialogs.closeIfConfirmed(confirmCloseListener, dialog);
+      DisposeDialogAction.closeIfConfirmed(dialog, confirmCloseListener);
     }
     else {
       popupMenus.forEach(popupMenu -> popupMenu.setVisible(false));
     }
+  }
+
+  static <T extends Component> List<T> getComponentsOfType(final Container container, final Class<T> clazz) {
+    final List<T> components = new ArrayList<>();
+    for (final Component component : container.getComponents()) {
+      if (clazz.isAssignableFrom(component.getClass())) {
+        components.add((T) component);
+      }
+      if (component instanceof Container) {
+        components.addAll(getComponentsOfType((Container) component, clazz));
+      }
+    }
+
+    return components;
   }
 }
