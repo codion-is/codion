@@ -566,6 +566,7 @@ public final class Dialogs {
 
     /**
      * @return a new JDialog instance based on this builder.
+     * @throws IllegalStateException in case no component has been specified
      */
     JDialog build();
   }

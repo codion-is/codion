@@ -6931,3 +6931,4 @@
   Windows.getParentWindow(), getParentFrame() and getParentDialog() all return the component itself if it is of the given type
   Dialogs.Builder added along with builder() method, replaces a bunch of displayInDialog() methods (not all though)
   Dialogs.Builder.confirmCloseListener() added, remaining displayInDialog() methods removed
+  DefaultDialogBuilder.build() now throws IllegalStateException if no component has been specified
