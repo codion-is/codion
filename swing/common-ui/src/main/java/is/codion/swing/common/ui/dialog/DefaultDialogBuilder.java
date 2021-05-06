@@ -90,6 +90,10 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
 
   @Override
   public JDialog build() {
+    if (component == null) {
+      throw new IllegalStateException("A component to display in the dialog must be specified");
+    }
+
     final JDialog dialog = new JDialog(Windows.getParentWindow(owner), title);
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
