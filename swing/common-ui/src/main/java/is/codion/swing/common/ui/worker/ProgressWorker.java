@@ -5,13 +5,17 @@ package is.codion.swing.common.ui.worker;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ProgressDialog;
 
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -21,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -124,7 +129,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @return a new {@link Builder} instance
    */
   public static Builder builder() {
-    return new DefaultProgressWorkerBuilder();
+    return new DefaultBuilder();
   }
 
   @Override
@@ -245,5 +250,109 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
      * @throws IllegalStateException in case no task has been specified
      */
     ProgressWorker<?> build();
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private JComponent dialogOwner;
+    private Control.Command task;
+    private String progressBarTitle;
+    private Runnable onSuccess;
+    private Consumer<Throwable> onException;
+    private JPanel northPanel;
+    private Controls buttonControls;
+
+    @Override
+    public Builder dialogOwner(final JComponent dialogOwner) {
+      this.dialogOwner = dialogOwner;
+      return this;
+    }
+
+    @Override
+    public Builder task(final Control.Command task) {
+      this.task = task;
+      return this;
+    }
+
+    @Override
+    public Builder progressBarTitle(final String progressBarTitle) {
+      this.progressBarTitle = progressBarTitle;
+      return this;
+    }
+
+    @Override
+    public Builder onSuccess(final Runnable onSuccess) {
+      this.onSuccess = onSuccess;
+      return this;
+    }
+
+    @Override
+    public Builder successMessage(final String successMessage) {
+      return onSuccess(() -> {
+        if (!nullOrEmpty(successMessage)) {
+          JOptionPane.showMessageDialog(Windows.getParentWindow(dialogOwner), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
+        }
+      });
+    }
+
+    @Override
+    public Builder onException(final Consumer<Throwable> onException) {
+      this.onException = onException;
+      return this;
+    }
+
+    @Override
+    public Builder failTitle(final String failTitle) {
+      return onException(exception -> {
+        if (!(exception instanceof CancelException)) {
+          Dialogs.showExceptionDialog(Windows.getParentWindow(dialogOwner), failTitle, exception);
+        }
+      });
+    }
+
+    @Override
+    public Builder northPanel(final JPanel northPanel) {
+      this.northPanel = northPanel;
+      return this;
+    }
+
+    @Override
+    public Builder buttonControls(final Controls buttonControls) {
+      this.buttonControls = buttonControls;
+      return this;
+    }
+
+    @Override
+    public ProgressWorker<?> build() {
+      if (task == null) {
+        throw new IllegalStateException("No task has been specified");
+      }
+      final Window dialogOwner = Windows.getParentWindow(this.dialogOwner);
+      final ProgressWorker<?> worker = new ProgressWorker<Object>(dialogOwner, progressBarTitle,
+              Indeterminate.YES, northPanel, buttonControls) {
+        @Override
+        protected Object doInBackground() throws Exception {
+          task.perform();
+          return null;
+        }
+
+        @Override
+        protected void onException(final Throwable exception) {
+          if (!(exception instanceof CancelException)) {
+            if (onException != null) {
+              onException.accept(exception);
+            }
+            else {
+              Dialogs.showExceptionDialog(dialogOwner, Messages.get(Messages.EXCEPTION), exception);
+            }
+          }
+        }
+      };
+      if (onSuccess != null) {
+        worker.addOnSuccessListener(Void -> onSuccess.run());
+      }
+
+      return worker;
+    }
   }
 }
