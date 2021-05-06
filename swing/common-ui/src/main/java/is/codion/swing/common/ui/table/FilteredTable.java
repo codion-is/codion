@@ -549,7 +549,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
     popupMenu.add(Control.builder()
-            .command(() -> Dialogs.displayInDialog(FilteredTable.this, panel, settingsMessage, control))
+            .command(() -> Dialogs.builder()
+                    .owner(FilteredTable.this)
+                    .component(panel)
+                    .title(settingsMessage)
+                    .onClosedAction(control)
+                    .build()
+                    .setVisible(true))
             .name(settingsMessage)
             .build());
 

@@ -41,7 +41,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -337,14 +336,26 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    Dialogs.displayInDialog(this, initializeApplicationTree(), resourceBundle.getString("view_application_tree"), Modal.NO);
+    Dialogs.builder()
+            .owner(this)
+            .component(initializeApplicationTree())
+            .title(resourceBundle.getString("view_application_tree"))
+            .modal(false)
+            .build()
+            .setVisible(true);
   }
 
   /**
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    Dialogs.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), Modal.NO);
+    Dialogs.builder()
+            .owner(this)
+            .component(initializeDependencyTree())
+            .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
+            .modal(false)
+            .build()
+            .setVisible(true);
   }
 
   /**

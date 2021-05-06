@@ -10,8 +10,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.DisposeOnEscape;
-import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TemporalField;
 
@@ -141,12 +139,17 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(datePanel);
-    Dialogs.displayInDialog(parent, datePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
+    Dialogs.builder()
+            .owner(parent)
+            .component(datePanel)
+            .title(message)
+            .enterAction(okControl)
+            .closeEvent(closeEvent)
+            .build()
+            .setVisible(true);
 
     return cancel.get() ? null : calendarPanel.getSelectedDate();
   }
-
-
 
   /**
    * Retrieves a LocalDateTime from the user.
@@ -186,7 +189,14 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(dateTimePanel);
-    Dialogs.displayInDialog(parent, dateTimePanel, message, Modal.YES, okControl, closeEvent, DisposeOnEscape.YES);
+    Dialogs.builder()
+            .owner(parent)
+            .component(dateTimePanel)
+            .title(message)
+            .enterAction(okControl)
+            .closeEvent(closeEvent)
+            .build()
+            .setVisible(true);
 
     return cancel.get() ? null : LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime());
   }

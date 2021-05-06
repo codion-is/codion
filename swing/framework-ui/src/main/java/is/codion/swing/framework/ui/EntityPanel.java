@@ -17,8 +17,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.DisposeOnEscape;
-import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -1454,16 +1452,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
-    detailPanelDialog = Dialogs.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
-            caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), Modal.NO,
-            Control.control(() -> {
+    detailPanelDialog = Dialogs.builder()
+            .owner(EntityPanel.this)
+            .component(detailPanelTabbedPane)
+            .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+            .modal(false)
+            .onClosedAction(Control.control(() -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
               if (getDetailPanelState() != EMBEDDED) {
                 setDetailPanelState(HIDDEN);
               }
-            }));
+            }))
+            .build();
     detailPanelDialog.setSize(size);
     detailPanelDialog.setLocation(location);
+    detailPanelDialog.setVisible(true);
   }
 
   /**
@@ -1483,9 +1486,15 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (CENTER_APPLICATION_DIALOGS.get()) {
       dialogOwner = Windows.getParentWindow(this);
     }
-    editPanelDialog = Dialogs.displayInDialog(dialogOwner, editControlPanel, caption, Modal.NO,
-            disposeEditDialogOnEscape ? DisposeOnEscape.YES : DisposeOnEscape.NO,
-            Control.control(() -> setEditPanelState(HIDDEN)));
+    editPanelDialog = Dialogs.builder()
+            .owner(dialogOwner)
+            .component(editControlPanel)
+            .title(caption)
+            .modal(false)
+            .disposeOnEscape(disposeEditDialogOnEscape)
+            .onClosedAction(Control.control(() -> setEditPanelState(HIDDEN)))
+            .build();
+    editPanelDialog.setVisible(true);
   }
 
   /**

@@ -12,8 +12,6 @@ import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.demos.chinook.ui.EmployeeEditPanel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.DisposeOnEscape;
-import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
@@ -51,6 +49,11 @@ public final class MultiPanelDemo {
       basePanel.add(employeePanel);
     }
 
-    Dialogs.displayInDialog(null, basePanel, "Multi Panel Demo", Modal.NO, DisposeOnEscape.NO);
+    Dialogs.builder()
+            .component(basePanel)
+            .title("Multi Panel Demo")
+            .disposeOnEscape(false)
+            .build()
+            .setVisible(true);
   }
 }

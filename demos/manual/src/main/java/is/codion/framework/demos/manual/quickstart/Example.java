@@ -190,7 +190,11 @@ public final class Example {
     //populate the model with data from the database
     customerModel.refresh();
 
-    Dialogs.displayInDialog(null, customerPanel, "Customers");
+    Dialogs.builder()
+            .component(customerPanel)
+            .title("Customers")
+            .build()
+            .setVisible(true);
     // end::detailPanel[]
   }
 

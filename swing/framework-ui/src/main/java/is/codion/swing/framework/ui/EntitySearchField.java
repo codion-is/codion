@@ -23,7 +23,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.textfield.SizedDocument;
@@ -331,7 +330,12 @@ public final class EntitySearchField extends JTextField {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder()
-            .command(() -> Dialogs.displayInDialog(EntitySearchField.this, settingsPanel, FrameworkMessages.get(FrameworkMessages.SETTINGS)))
+            .command(() -> Dialogs.builder()
+                    .owner(EntitySearchField.this)
+                    .component(settingsPanel)
+                    .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+                    .build()
+                    .setVisible(true))
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 
@@ -365,7 +369,13 @@ public final class EntitySearchField extends JTextField {
     final JPanel messagePanel = new JPanel(Layouts.borderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(buttonPanel, BorderLayout.SOUTH);
-    Dialogs.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
+    Dialogs.builder()
+            .owner(this)
+            .component(messagePanel)
+            .title(SwingMessages.get("OptionPane.messageDialogTitle"))
+            .closeEvent(closeEvent)
+            .build()
+            .setVisible(true);
   }
 
   private static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
@@ -375,8 +385,14 @@ public final class EntitySearchField extends JTextField {
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel<Entity, EntitySearchField> inputPanel =
             new ComponentValuePanel<>(new EntitySearchField(searchModel).componentValue(), lookupCaption);
-    Dialogs.displayInDialog(dialogParent, inputPanel, dialogTitle, Modal.YES,
-            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
+    Dialogs.builder()
+            .owner(dialogParent)
+            .component(inputPanel)
+            .title(dialogTitle)
+            .enterAction(inputPanel.getOkAction())
+            .closeEvent(inputPanel.getButtonClickObserver())
+            .build()
+            .setVisible(true);
     if (inputPanel.isInputAccepted()) {
       return searchModel.getSelectedEntities();
     }

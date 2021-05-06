@@ -6959,3 +6959,5 @@
   ComponentValues.textInputPanel() overload with multiple parameters removed
   ComponentValuePanel, some renaming, constructor overloaded
   ConditionPanelFactory, EntityConditionPanelFactory, added a bit of generic typing, related refactoring in FilteredTable
+  Windows.getParentWindow(), getParentFrame() and getParentDialog() all return the component itself if it is of the given type
+  Dialogs.Builder added along with builder() method, replaces a bunch of displayInDialog() methods (not all though)
