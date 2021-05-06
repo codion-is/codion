@@ -60,8 +60,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             .owner(this)
             .component(tablePanel)
             .title("Import")
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
   }
   // end::importJSON[]
 

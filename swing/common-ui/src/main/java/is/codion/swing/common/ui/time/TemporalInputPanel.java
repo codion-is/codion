@@ -145,8 +145,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .title(message)
             .enterAction(okControl)
             .closeEvent(closeEvent)
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
 
     return cancel.get() ? null : calendarPanel.getSelectedDate();
   }
@@ -195,8 +194,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .title(message)
             .enterAction(okControl)
             .closeEvent(closeEvent)
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
 
     return cancel.get() ? null : LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime());
   }

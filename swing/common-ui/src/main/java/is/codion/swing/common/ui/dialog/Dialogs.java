@@ -35,8 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -110,21 +108,6 @@ public final class Dialogs {
   private Dialogs() {}
 
   /**
-   * @param owner the dialog owner
-   * @param component the component to display
-   * @param title the dialog title
-   * @param closeObserver the dialog will be closed when this observer notifies
-   * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
-   * the dialog is closed, using the State info object to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
-   * @return the dialog
-   */
-  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final EventObserver<?> closeObserver, final EventDataListener<State> confirmCloseListener) {
-    return displayInDialog(owner, component, title, Modal.YES, closeObserver, confirmCloseListener);
-  }
-
-  /**
    * Shows an exception dialog for the given throwable
    * @param window the dialog parent window
    * @param title the dialog title
@@ -143,25 +126,12 @@ public final class Dialogs {
    */
   public static void showExceptionDialog(final Window window, final String title, final String message,
                                          final Throwable throwable) {
-    showExceptionDialog(window, title, message, throwable, Modal.YES);
-  }
-
-  /**
-   * Shows an exception dialog for the given throwable
-   * @param window the dialog parent window
-   * @param message the message
-   * @param title the dialog title
-   * @param modal if true then the dialog will be modal
-   * @param throwable the exception to display
-   */
-  public static void showExceptionDialog(final Window window, final String title, final String message,
-                                         final Throwable throwable, final Modal modal) {
     try {
       if (SwingUtilities.isEventDispatchThread()) {
-        new ExceptionDialog(window).showForThrowable(title, message, throwable, modal).dispose();
+        new ExceptionDialog(window).showForThrowable(title, message, throwable, true).dispose();
       }
       else {
-        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, modal).dispose());
+        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, true).dispose());
       }
     }
     catch (final Exception e) {
@@ -174,42 +144,6 @@ public final class Dialogs {
    */
   public static Builder builder() {
     return new DefaultDialogBuilder();
-  }
-
-  /**
-   * @param owner the dialog owner
-   * @param component the component to display
-   * @param title the dialog title
-   * @param modal if true the dialog will be modal
-   * @param closeEvent the dialog will be closed when this observer notifies
-   * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
-   * the dialog is closed, using the State info object to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
-   * @return the dialog
-   */
-  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final Modal modal, final EventObserver<?> closeEvent,
-                                        final EventDataListener<State> confirmCloseListener) {
-    final JDialog dialog = new JDialog(Windows.getParentWindow(owner), title);
-    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    dialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        closeIfConfirmed(confirmCloseListener, dialog);
-      }
-    });
-    if (closeEvent != null) {
-      closeEvent.addListener(() -> closeIfConfirmed(confirmCloseListener, dialog));
-    }
-    dialog.setLayout(Layouts.borderLayout());
-    dialog.add(component, BorderLayout.CENTER);
-    dialog.pack();
-    dialog.setLocationRelativeTo(owner);
-    dialog.setModal(modal == Modal.YES);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
-
-    return dialog;
   }
 
   /**
@@ -512,7 +446,7 @@ public final class Dialogs {
     return selectedFile;
   }
 
-  private static void closeIfConfirmed(final EventDataListener<State> confirmCloseListener, final JDialog dialog) {
+  static void closeIfConfirmed(final EventDataListener<State> confirmCloseListener, final JDialog dialog) {
     if (confirmCloseListener == null) {
       dialog.dispose();
     }
@@ -542,7 +476,7 @@ public final class Dialogs {
     final JList<T> list = new JList<>(listModel);
     final Window owner = Windows.getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
-    final Action okAction = new DisposeDialogAction(dialog);
+    final Action okAction = new DisposeDialogAction(dialog, null);
     final Action cancelAction = new AbstractAction() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -621,10 +555,20 @@ public final class Dialogs {
     Builder onClosedAction(Action onClosedAction);
 
     /**
+     * Sets the Event which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
+     * has no effect if the closeEvent is specified.
      * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
      * @return this Builder instance
      */
     Builder closeEvent(EventObserver<?> closeEvent);
+
+    /**
+     * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
+     * the dialog is closed, using the State instance to signal confirmation, the dialog
+     * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
+     * @return this Builder instance
+     */
+    Builder confirmCloseListener(EventDataListener<State> confirmCloseListener);
 
     /**
      * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,

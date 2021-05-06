@@ -188,8 +188,7 @@ public final class TextInputPanel extends JPanel {
             .component(new JScrollPane(textArea))
             .title(dialogTitle)
             .onClosedAction(okAction)
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
     textField.requestFocusInWindow();
   }
 }
