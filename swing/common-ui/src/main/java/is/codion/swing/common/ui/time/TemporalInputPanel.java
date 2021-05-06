@@ -21,10 +21,12 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -101,6 +103,18 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public JButton getCalendarButton() {
     return null;
+  }
+
+  @Override
+  public final void add(final Component component, final Object constraints) {
+    //prevent override of method used in constructor
+    super.add(component, constraints);
+  }
+
+  @Override
+  public synchronized final void addFocusListener(final FocusListener listener) {
+    //prevent override of method used in constructor
+    super.addFocusListener(listener);
   }
 
   /**
