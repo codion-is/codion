@@ -3,6 +3,7 @@ package is.codion.framework.demos.world.ui;
 import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static is.codion.swing.common.ui.dialog.Dialogs.selectFileToSave;
-import static is.codion.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
 import static is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.ICON_SIZE;
 import static is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.imageIcon;
 
@@ -38,7 +38,12 @@ public final class LookupTablePanel extends EntityTablePanel {
 
   private void exportCSV() throws IOException {
     File fileToSave = selectFileToSave(this, null, "export.csv");
-    runWithProgressBar(this, () -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave),
-            "Exporting data", "Export successful", "Export failed");
+    ProgressWorker.builder()
+            .dialogOwner(this)
+            .task(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
+            .progressBarTitle("Exporting data")
+            .successMessage("Export successful")
+            .failTitle("Export failed")
+            .build().execute();
   }
 }

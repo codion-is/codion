@@ -5,17 +5,13 @@ package is.codion.swing.common.ui.worker;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ProgressDialog;
 
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -25,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -112,158 +107,6 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Runs the given {@link Control.Command} instance while displaying an indeterminate progress bar.
-   * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
-   * @param dialogParent the dialog parent
-   * @param task the task to run in the background
-   * @param progressBarTitle the progress bar title
-   * @param successMessage if specified then this message is displayed after the task has successfully run
-   * @param failTitle the title of the failure dialog
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final String successMessage,
-                                        final String failTitle) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, successMessage, failTitle, null);
-  }
-
-  /**
-   * Runs the given {@link Control.Command} instance while displaying an indeterminate progress bar, along with buttons based
-   * on the {@code buttonControls} parameter, if specified
-   * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
-   * @param dialogParent the dialog parent
-   * @param task the task to run in the background
-   * @param progressBarTitle the progress bar title
-   * @param successMessage if specified then this message is displayed after the task has successfully run
-   * @param failTitle the title of the failure dialog
-   * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final String successMessage,
-                                        final String failTitle, final Controls buttonControls) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, successMessage, failTitle, buttonControls, null);
-  }
-
-  /**
-   * Runs the given {@link Control.Command} instance while displaying an indeterminate progress bar, along with buttons based
-   * on the {@code buttonControls} parameter, if specified.
-   * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
-   * @param dialogParent the dialog parent
-   * @param task the task to run in the background
-   * @param progressBarTitle the progress bar title
-   * @param successMessage if specified then this message is displayed after the task has successfully run
-   * @param failTitle the title of the failure dialog
-   * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
-   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final String successMessage,
-                                        final String failTitle, final Controls buttonControls,
-                                        final JPanel northPanel) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, () -> {
-      if (!nullOrEmpty(successMessage)) {
-        JOptionPane.showMessageDialog(Windows.getParentWindow(dialogParent), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
-      }
-    }, exception -> {
-      if (!(exception instanceof CancelException)) {
-        Dialogs.showExceptionDialog(Windows.getParentWindow(dialogParent), failTitle, exception);
-      }
-    }, northPanel, buttonControls);
-  }
-
-  /**
-   * Runs the given task while displaying an indeterminate progress bar, using the default
-   * exception handler, which displays exceptions resulting from the task execution in an exception dialog.
-   * @param dialogParent the dialog parent
-   * @param task the task to run
-   * @param progressBarTitle the progress bar title
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, (Runnable) null, null);
-  }
-
-  /**
-   * Runs the given task while displaying an indeterminate progress bar, using the default
-   * exception handler, which displays exceptions resulting from the task execution in an exception dialog.
-   * @param dialogParent the dialog parent
-   * @param task the task to run
-   * @param progressBarTitle the progress bar title
-   * @param onSuccess executed on the EDT after a successful run
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final Runnable onSuccess) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, onSuccess, null);
-  }
-
-  /**
-   * Runs the given task while displaying an indeterminate progress bar.
-   * @param dialogParent the dialog parent
-   * @param task the task to run
-   * @param progressBarTitle the progress bar title
-   * @param onSuccess executed on the EDT after a successful run
-   * @param onException the exception handler
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final Runnable onSuccess,
-                                        final Consumer<Throwable> onException) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, onSuccess, onException, null, null);
-  }
-
-  /**
-   * Runs the given task while displaying an indeterminate progress bar.
-   * @param dialogParent the dialog parent
-   * @param task the task to run
-   * @param progressBarTitle the progress bar title
-   * @param onSuccess executed on the EDT after a successful run
-   * @param onException the exception handler
-   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final Runnable onSuccess,
-                                        final Consumer<Throwable> onException, final JPanel northPanel) {
-    runWithProgressBar(dialogParent, task, progressBarTitle, onSuccess, onException, northPanel, null);
-  }
-
-  /**
-   * Runs the given task while displaying an indeterminate progress bar.
-   * @param dialogParent the dialog parent
-   * @param task the task to run
-   * @param progressBarTitle the progress bar title
-   * @param onSuccess executed on the EDT after a successful run
-   * @param onException the exception handler, may be null
-   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-   * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
-   */
-  public static void runWithProgressBar(final JComponent dialogParent, final Control.Command task,
-                                        final String progressBarTitle, final Runnable onSuccess,
-                                        final Consumer<Throwable> onException, final JPanel northPanel,
-                                        final Controls buttonControls) {
-    final Window dialogOwner = Windows.getParentWindow(dialogParent);
-    final ProgressWorker<Object> worker = new ProgressWorker<Object>(dialogOwner, progressBarTitle, Indeterminate.YES, northPanel, buttonControls) {
-      @Override
-      protected Object doInBackground() throws Exception {
-        task.perform();
-        return null;
-      }
-      @Override
-      protected void onException(final Throwable exception) {
-        if (!(exception instanceof CancelException)) {
-          if (onException != null) {
-            onException.accept(exception);
-          }
-          else {
-            Dialogs.showExceptionDialog(dialogOwner, Messages.get(Messages.EXCEPTION), exception);
-          }
-        }
-      }
-    };
-    if (onSuccess != null) {
-      worker.addOnSuccessListener(Void -> onSuccess.run());
-    }
-    worker.execute();
-  }
-
-  /**
    * Sets the maximum progress (max 100).
    * @param maximumProgress the maximum progress
    * @return this ProgressWorker instance
@@ -275,6 +118,13 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
     progressDialog.getProgressModel().setMaximum(maximumProgress);
     return this;
+  }
+
+  /**
+   * @return a new {@link Builder} instance
+   */
+  public static Builder builder() {
+    return new DefaultProgressWorkerBuilder();
   }
 
   @Override
@@ -329,5 +179,71 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     catch (final ExecutionException e) {
       onException(e.getCause());
     }
+  }
+
+  /**
+   * A builder for a {@link ProgressWorker} with an indeterminate progress bar.
+   */
+  public interface Builder {
+
+    /**
+     * @param dialogOwner the dialog owner
+     * @return this Builder instance
+     */
+    Builder dialogOwner(JComponent dialogOwner);
+
+    /**
+     * @param task the task to run
+     * @return this Builder instance
+     */
+    Builder task(Control.Command task);
+
+    /**
+     * @param progressBarTitle the progress bar title
+     * @return this Builder instance
+     */
+    Builder progressBarTitle(String progressBarTitle);
+
+    /**
+     * @param onSuccess executed on the EDT after a successful run
+     * @return this Builder instance
+     */
+    Builder onSuccess(Runnable onSuccess);
+
+    /**
+     * @param successMessage if specified then this message is displayed after the task has successfully run
+     * @return this Builder instance
+     */
+    Builder successMessage(String successMessage);
+
+    /**
+     * @param onException the exception handler
+     * @return this Builder instance
+     */
+    Builder onException(Consumer<Throwable> onException);
+
+    /**
+     * @param failTitle the title of the failure dialog
+     * @return this Builder instance
+     */
+    Builder failTitle(String failTitle);
+
+    /**
+     * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
+     * @return this Builder instance
+     */
+    Builder northPanel(JPanel northPanel);
+
+    /**
+     * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
+     * @return this Builder instance
+     */
+    Builder buttonControls(Controls buttonControls);
+
+    /**
+     * @return a {@link ProgressWorker} based on this builder
+     * @throws IllegalStateException in case no task has been specified
+     */
+    ProgressWorker<?> build();
   }
 }
