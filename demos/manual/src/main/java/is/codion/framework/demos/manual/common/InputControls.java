@@ -369,7 +369,11 @@ public final class InputControls {
 
     fieldValue.addListener(panel::revalidate);
 
-    Dialogs.displayInDialog(null, panel, "test");
+    Dialogs.builder()
+            .component(panel)
+            .title("test")
+            .build()
+            .setVisible(true);
     // end::customTextFieldHorizontalAlignment[]
   }
 }

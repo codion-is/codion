@@ -37,7 +37,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
@@ -659,8 +658,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue);
     final ComponentValuePanel<T, JComponent> inputPanel =
             new ComponentValuePanel<>(componentValue, propertyToUpdate.getCaption());
-    Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), Modal.YES,
-            inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
+    Dialogs.builder()
+            .owner(this)
+            .component(inputPanel)
+            .title(FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE))
+            .enterAction(inputPanel.getOkAction())
+            .closeEvent(inputPanel.getButtonClickObserver())
+            .build()
+            .setVisible(true);
     if (inputPanel.isInputAccepted()) {
       Entity.put(propertyToUpdate.getAttribute(), inputPanel.get(), selectedEntities);
       try {
@@ -1522,7 +1527,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     finally {
       hideWaitCursor(dialogParent);
     }
-    Dialogs.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
+    Dialogs.builder()
+            .owner(getParentWindow(dialogParent))
+            .component(dependenciesPanel)
+            .title(title)
+            .build()
+            .setVisible(true);
   }
 
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Attribute<?>> tableModel) {

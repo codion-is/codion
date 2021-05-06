@@ -94,7 +94,11 @@ public class StoreDemo {
     customerModel.refresh();
     customerPanel.initializePanel();
 
-    Dialogs.displayInDialog(null, customerPanel, "Customers");
+    Dialogs.builder()
+            .component(customerPanel)
+            .title("Customers")
+            .build()
+            .setVisible(true);
 
     connectionProvider.close();
   }

@@ -6,7 +6,7 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.model.CountryOverviewTableModel;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -23,7 +23,6 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static is.codion.swing.common.ui.dialog.Dialogs.displayInDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static org.jfree.chart.ChartFactory.createPieChart;
@@ -107,7 +106,12 @@ public final class CountryOverviewPanel extends EntityPanel {
   private void displayEditPanel() {
     final JPanel editPanel = getEditControlPanel();
     if (!editPanel.isShowing()) {
-      displayInDialog(this, editPanel, Modal.NO);
+      Dialogs.builder()
+              .owner(this)
+              .component(editPanel)
+              .modal(false)
+              .build()
+              .setVisible(true);
     }
     getEditPanel().requestInitialFocus();
   }
