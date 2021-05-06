@@ -6964,3 +6964,4 @@
   Dialogs.Builder.confirmCloseListener() added, remaining displayInDialog() methods removed
   DefaultDialogBuilder.build() now throws IllegalStateException if no component has been specified
   ProgressWorker.Builder added, utility methods removed
+  ProgressWorker.Builder.progressBarTitle() renamed dialogTitle()
