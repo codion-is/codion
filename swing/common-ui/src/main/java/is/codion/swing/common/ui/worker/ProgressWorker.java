@@ -77,8 +77,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
    * progress bar goes from 0 - 100 by default.
    */
-  public ProgressWorker(final Window dialogOwner, final String progressMessage,
-                        final Indeterminate indeterminate) {
+  public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate) {
     this(dialogOwner, progressMessage, indeterminate, null, null);
   }
 
@@ -93,8 +92,8 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @param buttonControls if specified buttons based on these controls are added
    * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
    */
-  public ProgressWorker(final Window dialogOwner, final String progressMessage,
-                        final Indeterminate indeterminate, final JPanel dialogNorthPanel, final Controls buttonControls) {
+  public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate,
+                        final JPanel dialogNorthPanel, final Controls buttonControls) {
     this.progressDialog = new ProgressDialog(dialogOwner, progressMessage,
             indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS, dialogNorthPanel, buttonControls);
     addPropertyChangeListener(this::onPropertyChangeEvent);
@@ -204,10 +203,10 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     Builder task(Control.Command task);
 
     /**
-     * @param progressBarTitle the progress bar title
+     * @param dialogTitle the dialog title
      * @return this Builder instance
      */
-    Builder progressBarTitle(String progressBarTitle);
+    Builder dialogTitle(String dialogTitle);
 
     /**
      * @param onSuccess executed on the EDT after a successful run
@@ -256,7 +255,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
     private JComponent dialogOwner;
     private Control.Command task;
-    private String progressBarTitle;
+    private String dialogTitle;
     private Runnable onSuccess;
     private Consumer<Throwable> onException;
     private JPanel northPanel;
@@ -275,8 +274,8 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
 
     @Override
-    public Builder progressBarTitle(final String progressBarTitle) {
-      this.progressBarTitle = progressBarTitle;
+    public Builder dialogTitle(final String dialogTitle) {
+      this.dialogTitle = dialogTitle;
       return this;
     }
 
@@ -328,7 +327,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
         throw new IllegalStateException("No task has been specified");
       }
       final Window dialogOwner = Windows.getParentWindow(this.dialogOwner);
-      final ProgressWorker<?> worker = new ProgressWorker<Object>(dialogOwner, progressBarTitle,
+      final ProgressWorker<?> worker = new ProgressWorker<Object>(dialogOwner, dialogTitle,
               Indeterminate.YES, northPanel, buttonControls) {
         @Override
         protected Object doInBackground() throws Exception {
