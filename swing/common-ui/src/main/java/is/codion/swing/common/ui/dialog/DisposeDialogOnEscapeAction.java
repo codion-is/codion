@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
+
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JPopupMenu;
@@ -16,10 +19,12 @@ import static java.util.stream.Collectors.toList;
 final class DisposeDialogOnEscapeAction extends AbstractAction {
 
   private final JDialog dialog;
+  private final EventDataListener<State> confirmCloseListener;
 
-  DisposeDialogOnEscapeAction(final JDialog dialog) {
+  DisposeDialogOnEscapeAction(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
     super("Dialogs.disposeDialogOnEscapeAction");
     this.dialog = dialog;
+    this.confirmCloseListener = confirmCloseListener;
   }
 
   @Override
@@ -33,7 +38,7 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
     }
     final List<JPopupMenu> popupMenus = DefaultDialogBuilder.getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
     if (popupMenus.isEmpty()) {
-      dialog.dispose();
+      Dialogs.closeIfConfirmed(confirmCloseListener, dialog);
     }
     else {
       popupMenus.forEach(popupMenu -> popupMenu.setVisible(false));

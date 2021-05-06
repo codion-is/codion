@@ -664,8 +664,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .title(FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE))
             .enterAction(inputPanel.getOkAction())
             .closeEvent(inputPanel.getButtonClickObserver())
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
     if (inputPanel.isInputAccepted()) {
       Entity.put(propertyToUpdate.getAttribute(), inputPanel.get(), selectedEntities);
       try {
@@ -1531,8 +1530,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .owner(getParentWindow(dialogParent))
             .component(dependenciesPanel)
             .title(title)
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
   }
 
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Attribute<?>> tableModel) {

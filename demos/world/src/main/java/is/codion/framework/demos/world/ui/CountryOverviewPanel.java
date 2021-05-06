@@ -110,8 +110,7 @@ public final class CountryOverviewPanel extends EntityPanel {
               .owner(this)
               .component(editPanel)
               .modal(false)
-              .build()
-              .setVisible(true);
+              .build().setVisible(true);
     }
     getEditPanel().requestInitialFocus();
   }

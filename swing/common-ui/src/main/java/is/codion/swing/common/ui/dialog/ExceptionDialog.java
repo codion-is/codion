@@ -261,8 +261,8 @@ final class ExceptionDialog extends JDialog {
     setLocation(p);
   }
 
-  ExceptionDialog showForThrowable(final String title, final String message, final Throwable throwable, final Modal modal) {
-    setModal(modal == Modal.YES);
+  ExceptionDialog showForThrowable(final String title, final String message, final Throwable throwable, final boolean modal) {
+    setModal(modal);
     setTitle(title);
 
     final String name = translateExceptionClass(throwable.getClass());

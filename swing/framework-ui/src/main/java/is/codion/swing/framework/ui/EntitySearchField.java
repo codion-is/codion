@@ -334,8 +334,7 @@ public final class EntitySearchField extends JTextField {
                     .owner(EntitySearchField.this)
                     .component(settingsPanel)
                     .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
-                    .build()
-                    .setVisible(true))
+                    .build().setVisible(true))
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 
@@ -374,8 +373,7 @@ public final class EntitySearchField extends JTextField {
             .component(messagePanel)
             .title(SwingMessages.get("OptionPane.messageDialogTitle"))
             .closeEvent(closeEvent)
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
   }
 
   private static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
@@ -391,8 +389,7 @@ public final class EntitySearchField extends JTextField {
             .title(dialogTitle)
             .enterAction(inputPanel.getOkAction())
             .closeEvent(inputPanel.getButtonClickObserver())
-            .build()
-            .setVisible(true);
+            .build().setVisible(true);
     if (inputPanel.isInputAccepted()) {
       return searchModel.getSelectedEntities();
     }
