@@ -6,15 +6,12 @@ package is.codion.swing.framework.model;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
 
-import javax.swing.table.TableColumn;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default sort model implementation based on Entity
@@ -24,13 +21,11 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, At
   private final Entities entities;
 
   /**
-   * Instantiates a new DefaultEntityTableSortModel
-   * @param entities the domain model entities
-   * @param entityType the entityType
+   * Instantiates a new {@link SwingEntityTableSortModel}
+   * @param entities the domain entities
    */
-  public SwingEntityTableSortModel(final Entities entities, final EntityType<?> entityType) {
-    super(initializeColumns(entities.getDefinition(entityType).getVisibleProperties()));
-    this.entities = entities;
+  public SwingEntityTableSortModel(final Entities entities) {
+    this.entities = requireNonNull(entities, "entities");
   }
 
   @Override
@@ -48,22 +43,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, At
   }
 
   @Override
-  protected final Comparable<?> getComparable(final Entity row, final Attribute<?> attribute) {
+  protected Comparable<?> getComparable(final Entity row, final Attribute<?> attribute) {
     return (Comparable<?>) row.get(attribute);
-  }
-
-  private static List<TableColumn> initializeColumns(final List<Property<?>> visibleProperties) {
-    final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
-    for (final Property<?> property : visibleProperties) {
-      final TableColumn column = new TableColumn(columns.size());
-      column.setIdentifier(property.getAttribute());
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.getPreferredColumnWidth());
-      }
-      columns.add(column);
-    }
-
-    return columns;
   }
 }

@@ -83,7 +83,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The sort model
    */
-  private final TableSortModel<R, C, TableColumn> sortModel;
+  private final TableSortModel<R, C> sortModel;
 
   /**
    * Maps PropertySummaryModels to their respective properties
@@ -107,25 +107,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Instantiates a new table model.
+   * @param columns the table columns to base this table model on
    * @param sortModel the sort model to use
-   * @throws NullPointerException in case {@code sortModel} is null
+   * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
    */
-  public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel) {
-    this(sortModel, null);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param sortModel the sort model to use
-   * @param columnFilterModels the column filter models
-   * @throws NullPointerException in case {@code sortModel} is null
-   */
-  public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel,
-                                    final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
+  public AbstractFilteredTableModel(final SwingFilteredTableColumnModel<R, C> columnModel, final TableSortModel<R, C> sortModel) {
+    this.columnModel = requireNonNull(columnModel, "columnModel");
     this.sortModel = requireNonNull(sortModel, "sortModel");
-    this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
-    this.includeCondition = new DefaultIncludeCondition<>(this.columnModel.getColumnFilterModels());
+    this.includeCondition = new DefaultIncludeCondition<>(columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -257,7 +247,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final TableSortModel<R, C, TableColumn> getSortModel() {
+  public final TableSortModel<R, C> getSortModel() {
     return sortModel;
   }
 
@@ -615,6 +605,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @return a Predicate based on the given search text
    */
   private Predicate<String> getSearchCondition(final String searchText) {
+    requireNonNull(searchText, "searchText");
     if (regularExpressionSearch) {
       return new RegexSearchCondition(searchText);
     }
@@ -640,6 +631,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   private RowColumn findColumnValue(final int row, final Predicate<String> condition) {
+    requireNonNull(condition, "condition");
     final Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
     while (columnsToSearch.hasMoreElements()) {
       final TableColumn column = columnsToSearch.nextElement();
@@ -716,7 +708,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public boolean test(final R item) {
-      return columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
+      return columnFilters == null || columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
     }
   }
 

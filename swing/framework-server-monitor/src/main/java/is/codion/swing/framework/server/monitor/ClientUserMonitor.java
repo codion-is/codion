@@ -12,6 +12,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
+import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,10 +226,37 @@ public final class ClientUserMonitor {
     connectionTimeoutValue.addDataListener(this::setConnectionTimeout);
   }
 
+  private static List<TableColumn> createUserHistoryColumns() {
+    return asList(
+            createColumn(USERNAME_COLUMN, "Username"),
+            createColumn(CLIENT_TYPE_COLUMN, "Client type"),
+            createColumn(CLIENT_VERSION_COLUMN, "Client version"),
+            createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version"),
+            createColumn(CLIENT_HOST_COLUMN, "Host"),
+            createColumn(LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
+            createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
+  }
+
+  private static TableColumn createColumn(final Integer identifier, final String headerValue) {
+    return createColumn(identifier, headerValue, null);
+  }
+
+  private static TableColumn createColumn(final Integer identifier, final String headerValue,
+                                          final TableCellRenderer cellRenderer) {
+    final TableColumn column = new TableColumn(identifier);
+    column.setIdentifier(identifier);
+    column.setHeaderValue(headerValue);
+    if (cellRenderer != null) {
+      column.setCellRenderer(cellRenderer);
+    }
+
+    return column;
+  }
+
   private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(new UserHistoryTableSortModel());
+      super(new SwingFilteredTableColumnModel<>(createUserHistoryColumns()), new UserHistoryTableSortModel());
       setMergeOnRefresh(true);
     }
 
@@ -374,10 +402,6 @@ public final class ClientUserMonitor {
 
   private static final class UserHistoryTableSortModel extends AbstractTableSortModel<UserInfo, Integer> {
 
-    private UserHistoryTableSortModel() {
-      super(createUserHistoryColumns());
-    }
-
     @Override
     public Class<?> getColumnClass(final Integer columnIdentifier) {
       switch (columnIdentifier) {
@@ -404,33 +428,6 @@ public final class ClientUserMonitor {
         case CONNECTION_COUNT_COLUMN: return row.getConnectionCount();
         default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
-    }
-
-    private static List<TableColumn> createUserHistoryColumns() {
-      return asList(
-              createColumn(USERNAME_COLUMN, "Username"),
-              createColumn(CLIENT_TYPE_COLUMN, "Client type"),
-              createColumn(CLIENT_VERSION_COLUMN, "Client version"),
-              createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version"),
-              createColumn(CLIENT_HOST_COLUMN, "Host"),
-              createColumn(LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
-              createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
-    }
-
-    private static TableColumn createColumn(final Integer identifier, final String headerValue) {
-      return createColumn(identifier, headerValue, null);
-    }
-
-    private static TableColumn createColumn(final Integer identifier, final String headerValue,
-                                            final TableCellRenderer cellRenderer) {
-      final TableColumn column = new TableColumn(identifier);
-      column.setIdentifier(identifier);
-      column.setHeaderValue(headerValue);
-      if (cellRenderer != null) {
-        column.setCellRenderer(cellRenderer);
-      }
-
-      return column;
     }
   }
 

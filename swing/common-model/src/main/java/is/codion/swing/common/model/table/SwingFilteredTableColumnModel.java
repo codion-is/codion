@@ -67,11 +67,19 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   /**
    * Instantiates a new SwingFilteredTableColumnModel.
    * @param columns the columns to base this model on
+   */
+  public SwingFilteredTableColumnModel(final List<TableColumn> columns) {
+    this(columns, null);
+  }
+
+  /**
+   * Instantiates a new SwingFilteredTableColumnModel.
+   * @param columns the columns to base this model on
    * @param columnFilterModels the filter models if any
    */
   public SwingFilteredTableColumnModel(final List<TableColumn> columns,
                                        final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
-    if (columns == null || columns.isEmpty()) {
+    if (requireNonNull(columns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
     this.columns = unmodifiableList(columns);
@@ -100,7 +108,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
 
   @Override
   public void showColumn(final C columnIdentifier) {
-    final TableColumn column = hiddenColumns.get(columnIdentifier);
+    final TableColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       checkIfLocked();
       hiddenColumns.remove(columnIdentifier);
@@ -112,7 +120,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
 
   @Override
   public void hideColumn(final C columnIdentifier) {
-    if (!hiddenColumns.containsKey(columnIdentifier)) {
+    if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
       checkIfLocked();
       final TableColumn column = getTableColumn(columnIdentifier);
       removeColumn(column);
@@ -123,7 +131,7 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
 
   @Override
   public boolean isColumnVisible(final C columnIdentifier) {
-    return !hiddenColumns.containsKey(columnIdentifier);
+    return !hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
   }
 
   @Override

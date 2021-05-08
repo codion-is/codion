@@ -18,6 +18,7 @@ import java.util.stream.IntStream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -51,7 +52,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
    * @param tableModel the FilteredTableModel required for accessing table model items and size
    */
   public SwingTableSelectionModel(final FilteredTableModel<R, ?, ?> tableModel) {
-    this.tableModel = tableModel;
+    this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.addRowsDeletedListener(interval ->
             SwingTableSelectionModel.super.removeIndexInterval(interval.get(0), interval.get(1)));
     bindEvents();
@@ -109,7 +110,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   @Override
   public void addSelectedIndexes(final Collection<Integer> indexes) {
-    if (indexes.isEmpty()) {
+    if (requireNonNull(indexes).isEmpty()) {
       return;
     }
     checkIndexes(indexes);
@@ -122,6 +123,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   @Override
   public void setSelectedIndexes(final Collection<Integer> indexes) {
+    requireNonNull(indexes);
     checkIndexes(indexes);
     setValueIsAdjusting(true);
     clearSelection();
@@ -185,18 +187,19 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   @Override
   public void addSelectedItems(final Collection<R> items) {
+    requireNonNull(items, "items");
     addSelectedIndexes(items.stream().mapToInt(tableModel::indexOf)
             .filter(index -> index >= 0).boxed().collect(toList()));
   }
 
   @Override
   public void removeSelectedItem(final R item) {
-    removeSelectedItems(singletonList(item));
+    removeSelectedItems(singletonList(requireNonNull(item)));
   }
 
   @Override
   public void removeSelectedItems(final Collection<R> items) {
-    items.forEach(item -> removeSelectedIndex(tableModel.indexOf(item)));
+    requireNonNull(items).forEach(item -> removeSelectedIndex(tableModel.indexOf(item)));
   }
 
   @Override

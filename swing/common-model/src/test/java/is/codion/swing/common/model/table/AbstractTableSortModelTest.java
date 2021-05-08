@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractTableSortModelTest {
@@ -25,7 +24,7 @@ public class AbstractTableSortModelTest {
     secondColumn.setIdentifier(1);
     final TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    final TestTableSortModel model = new TestTableSortModel(asList(firstColumn, secondColumn, thirdColumn));
+    final TestTableSortModel model = new TestTableSortModel();
 
     final Row firstRow = new Row(1, 2, null);
     final Row secondRow = new Row(1, 2, 5);
@@ -77,9 +76,7 @@ public class AbstractTableSortModelTest {
 
   @Test
   public void nonComparableColumnClass() {
-    final TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
-    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>(singletonList(column)) {
+    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>() {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return ArrayList.class;
@@ -121,10 +118,6 @@ public class AbstractTableSortModelTest {
   }
 
   private static final class TestTableSortModel extends AbstractTableSortModel<Row, Integer> {
-
-    private TestTableSortModel(final List<TableColumn> columns) {
-      super(columns);
-    }
 
     @Override
     public Class getColumnClass(final Integer columnIdentifier) {

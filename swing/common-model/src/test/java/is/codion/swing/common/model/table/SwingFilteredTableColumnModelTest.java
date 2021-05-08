@@ -55,7 +55,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void constructorNullColumns() {
-    assertThrows(IllegalArgumentException.class, () -> new SwingFilteredTableColumnModel<>(null, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new SwingFilteredTableColumnModel<>(null, new ArrayList<>()));
   }
 
   @Test
@@ -75,7 +75,7 @@ public class SwingFilteredTableColumnModelTest {
     column3.setIdentifier(3);
 
     final SwingFilteredTableColumnModel<String, Integer> columnModel =
-            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3), null);
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.setColumns(1, 3);
     assertTrue(columnModel.isColumnVisible(1));
@@ -125,7 +125,7 @@ public class SwingFilteredTableColumnModelTest {
     column3.setIdentifier(3);
 
     final SwingFilteredTableColumnModel<String, Integer> columnModel =
-            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3), null);
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.getLockedState().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.hideColumn(0));

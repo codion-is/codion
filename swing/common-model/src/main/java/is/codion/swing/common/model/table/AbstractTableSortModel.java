@@ -9,8 +9,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
 
-import javax.swing.table.TableColumn;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,17 +22,12 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifier in the table model
  */
-public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C, TableColumn> {
+public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
   private static final Comparator<?> LEXICAL_COMPARATOR = Text.getSpaceAwareCollator();
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortingDirective.UNSORTED, -1);
-
-  /**
-   * The columns available for sorting
-   */
-  private final List<TableColumn> columns;
 
   /**
    * The comparators used to compare column values
@@ -51,33 +44,16 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    */
   private final Map<C, SortingState> sortingStates = new HashMap<>();
 
-  /**
-   * Instantiates a new AbstractTableSortModel
-   * @param columns the table columns
-   */
-  public AbstractTableSortModel(final List<TableColumn> columns) {
-    this.columns = Collections.unmodifiableList(columns);
-    resetSortingStates();
-  }
-
   @Override
   public final void sort(final List<R> items) {
-    items.sort(new RowComparator(getSortingStatesOrderedByPriority()));
-  }
-
-  @Override
-  public final List<TableColumn> getColumns() {
-    return columns;
+    requireNonNull(items, "items").sort(new RowComparator(getSortingStatesOrderedByPriority()));
   }
 
   @Override
   public final SortingState getSortingState(final C columnIdentifier) {
-    final SortingState state = sortingStates.get(columnIdentifier);
-    if (state == null) {
-      throw new IllegalArgumentException("Column not found: " + columnIdentifier);
-    }
+    requireNonNull(columnIdentifier, "columnIdentifier");
 
-    return state;
+    return sortingStates.getOrDefault(columnIdentifier, EMPTY_SORTING_STATE);
   }
 
   @Override
@@ -131,10 +107,10 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     requireNonNull(columnIdentifier, "columnIdentifier");
     requireNonNull(directive, "directive");
     if (!addColumnToSort) {
-      resetSortingStates();
+      sortingStates.clear();
     }
     if (directive == SortingDirective.UNSORTED) {
-      sortingStates.put(columnIdentifier, EMPTY_SORTING_STATE);
+      sortingStates.remove(columnIdentifier);
     }
     else {
       final SortingState state = getSortingState(columnIdentifier);
@@ -150,18 +126,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
-    return sortingStates.entrySet().stream().filter(entry -> !EMPTY_SORTING_STATE.equals(entry.getValue())).sorted((o1, o2) -> {
+    return sortingStates.entrySet().stream().sorted((o1, o2) -> {
       final Integer priorityOne = o1.getValue().getPriority();
       final Integer priorityTwo = o2.getValue().getPriority();
 
       return priorityOne.compareTo(priorityTwo);
     }).collect(Collectors.toList());
-  }
-
-  private void resetSortingStates() {
-    for (final TableColumn column : columns) {
-      sortingStates.put((C) column.getIdentifier(), EMPTY_SORTING_STATE);
-    }
   }
 
   private int getNextSortPriority() {
