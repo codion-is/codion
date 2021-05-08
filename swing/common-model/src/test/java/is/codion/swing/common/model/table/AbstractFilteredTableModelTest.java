@@ -54,7 +54,7 @@ public final class AbstractFilteredTableModelTest {
 
     private TestAbstractFilteredTableModel(final List<TableColumn> columns, final AbstractTableSortModel<List<String>, Integer> sortModel,
                                            final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(columns, sortModel, columnFilterModels);
+      super(new SwingFilteredTableColumnModel<>(columns, columnFilterModels), sortModel);
     }
 
     @Override
@@ -139,8 +139,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void nullSortModel() {
-    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(singletonList(new TableColumn()), null) {
-
+    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(singletonList(new TableColumn())), null) {
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
         return null;
@@ -150,7 +149,8 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void noColumns() {
-    assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(emptyList(), new AbstractTableSortModel<String, Integer>() {
+    assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
+            new AbstractTableSortModel<String, Integer>() {
       @Override
       protected Comparable<?> getComparable(final String row, final Integer columnIdentifier) {
         return null;
@@ -292,7 +292,7 @@ public final class AbstractFilteredTableModelTest {
     final List<Row> items = asList(new Row(0, "a"), new Row(1, "b"),
             new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
-    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(asList(columnId, columnValue),
+    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(new SwingFilteredTableColumnModel<>(asList(columnId, columnValue)),
             new AbstractTableSortModel<Row, Integer>() {
               @Override
               public Class getColumnClass(final Integer columnIdentifier) {
@@ -311,7 +311,7 @@ public final class AbstractFilteredTableModelTest {
 
                 return row.value;
               }
-            }, null) {
+            }) {
       @Override
       protected Collection<Row> refreshItems() {
         return items;

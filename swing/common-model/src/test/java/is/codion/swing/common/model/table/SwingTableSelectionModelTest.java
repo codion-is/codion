@@ -34,7 +34,8 @@ public class SwingTableSelectionModelTest {
         return row;
       }
     };
-    final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(singletonList(column), sortModel) {
+    final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(
+            new SwingFilteredTableColumnModel<>(singletonList(column)), sortModel) {
       @Override
       protected Collection<String> refreshItems() {
         return data;

@@ -109,25 +109,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Instantiates a new table model.
    * @param columns the table columns to base this table model on
    * @param sortModel the sort model to use
-   * @throws NullPointerException in case {@code sortModel} is null
+   * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
    */
-  public AbstractFilteredTableModel(final List<TableColumn> columns, final TableSortModel<R, C> sortModel) {
-    this(columns, sortModel, null);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param columns the table columns to base this table model on
-   * @param sortModel the sort model to use
-   * @param columnFilterModels the column filter models
-   * @throws NullPointerException in case {@code sortModel} is null
-   */
-  public AbstractFilteredTableModel(final List<TableColumn> columns, final TableSortModel<R, C> sortModel,
-                                    final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
+  public AbstractFilteredTableModel(final SwingFilteredTableColumnModel<R, C> columnModel, final TableSortModel<R, C> sortModel) {
+    this.columnModel = requireNonNull(columnModel, "columnModel");
     this.sortModel = requireNonNull(sortModel, "sortModel");
-    this.columnModel = new SwingFilteredTableColumnModel<>(columns, columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
-    this.includeCondition = new DefaultIncludeCondition<>(this.columnModel.getColumnFilterModels());
+    this.includeCondition = new DefaultIncludeCondition<>(columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -720,7 +708,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public boolean test(final R item) {
-      return columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
+      return columnFilters == null || columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
     }
   }
 

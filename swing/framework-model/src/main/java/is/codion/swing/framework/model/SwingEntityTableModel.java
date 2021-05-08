@@ -161,8 +161,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
-    super(initializeColumns(connectionProvider.getEntities().getDefinition(entityType).getVisibleProperties()), sortModel,
-            requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
+    super(new SwingFilteredTableColumnModel<>(initializeColumns(connectionProvider.getEntities().getDefinition(entityType).getVisibleProperties()),
+            requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels()), sortModel);
     if (!tableConditionModel.getEntityType().equals(requireNonNull(entityType, "entityType"))) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);

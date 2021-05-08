@@ -5,6 +5,7 @@ package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import javax.swing.table.TableColumn;
@@ -24,8 +25,9 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   private final SchemaTableModel schemaTableModel;
 
   DefinitionTableModel(final SchemaTableModel schemaTableModel, final DefinitionSortModel sortModel) {
-    super(createDefinitionColumns(), sortModel, asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
-            new DefaultColumnFilterModel<>(1, String.class, "%")));
+    super(new SwingFilteredTableColumnModel<>(createDefinitionColumns(),
+            asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
+                    new DefaultColumnFilterModel<>(1, String.class, "%"))), sortModel);
     this.schemaTableModel = schemaTableModel;
   }
 
