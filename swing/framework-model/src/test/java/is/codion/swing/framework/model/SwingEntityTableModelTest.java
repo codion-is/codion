@@ -107,7 +107,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
-            new SwingEntityTableSortModel(getConnectionProvider().getEntities(), TestDomain.T_EMP), conditionModel));
+            new SwingEntityTableSortModel(getConnectionProvider().getEntities()), conditionModel));
   }
 
   @Test

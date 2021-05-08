@@ -38,8 +38,8 @@ public class FilteredTableTest {
     final ColumnFilterModel<List<String>, Integer, String> filterModel =
             new DefaultColumnFilterModel<>(0, String.class, "%");
 
-    final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(
-            new TestAbstractTableSortModel(singletonList(column)), singletonList(filterModel)) {
+    final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column),
+            new TestAbstractTableSortModel(), singletonList(filterModel)) {
       @Override
       protected Collection<List<String>> refreshItems() {
         return asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo"));
@@ -95,9 +95,9 @@ public class FilteredTableTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
+    private TestAbstractFilteredTableModel(final List<TableColumn> columns, final AbstractTableSortModel<List<String>, Integer> sortModel,
                                            final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(sortModel, columnFilterModels);
+      super(columns, sortModel, columnFilterModels);
     }
 
     @Override
@@ -112,10 +112,6 @@ public class FilteredTableTest {
   }
 
   private static final class TestAbstractTableSortModel extends AbstractTableSortModel<List<String>, Integer> {
-
-    public TestAbstractTableSortModel(final List<TableColumn> columns) {
-      super(columns);
-    }
 
     @Override
     public Class<String> getColumnClass(final Integer columnIdentifier) {

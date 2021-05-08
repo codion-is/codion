@@ -11,9 +11,8 @@ import java.util.List;
  * Handles the column sorting states for table models
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
- * @param <T> the type representing table columns
  */
-public interface TableSortModel<R, C, T> {
+public interface TableSortModel<R, C> {
 
   /**
    * Sorts the given list according to the sort configuration
@@ -51,11 +50,6 @@ public interface TableSortModel<R, C, T> {
    * @return true if sorting is enabled for one or more columns
    */
   boolean isSortingEnabled();
-
-  /**
-   * @return a list containing all the columns this sort model is based on
-   */
-  List<T> getColumns();
 
   /**
    * Returns the class of the column with the given identifier

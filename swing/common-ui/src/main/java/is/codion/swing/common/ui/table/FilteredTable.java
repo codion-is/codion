@@ -819,7 +819,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       final int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        final TableSortModel<R, C, TableColumn> sortModel = getModel().getSortModel();
+        final TableSortModel<R, C> sortModel = getModel().getSortModel();
         SortingDirective status = sortModel.getSortingState(columnIdentifier).getDirective();
         final boolean shiftDown = e.isShiftDown();
         switch (status) {

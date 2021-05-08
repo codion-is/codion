@@ -144,7 +144,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
-    this(entityType, requireNonNull(connectionProvider), new SwingEntityTableSortModel(connectionProvider.getEntities(), entityType),
+    this(entityType, requireNonNull(connectionProvider), new SwingEntityTableSortModel(connectionProvider.getEntities()),
             new DefaultEntityTableConditionModel(entityType, connectionProvider,
                     new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
   }
@@ -159,9 +159,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                               final TableSortModel<Entity, Attribute<?>, TableColumn> sortModel,
+                               final TableSortModel<Entity, Attribute<?>> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
-    super(sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
+    super(initializeColumns(connectionProvider.getEntities().getDefinition(entityType).getVisibleProperties()), sortModel,
+            requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
     if (!tableConditionModel.getEntityType().equals(requireNonNull(entityType, "entityType"))) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);
@@ -819,5 +820,20 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
         }
       }
     }
+  }
+
+  private static List<TableColumn> initializeColumns(final List<Property<?>> visibleProperties) {
+    final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
+    for (final Property<?> property : visibleProperties) {
+      final TableColumn column = new TableColumn(columns.size());
+      column.setIdentifier(property.getAttribute());
+      column.setHeaderValue(property.getCaption());
+      if (property.getPreferredColumnWidth() > 0) {
+        column.setPreferredWidth(property.getPreferredColumnWidth());
+      }
+      columns.add(column);
+    }
+
+    return columns;
   }
 }

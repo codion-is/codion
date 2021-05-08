@@ -30,7 +30,7 @@ public class TableColumnComponentPanelTest {
   @Test
   public void wrongColumn() {
     final SwingFilteredTableColumnModel<?, Integer> columnModel =
-            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     final Map<TableColumn, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(new TableColumn(3), new JPanel());
     assertThrows(IllegalArgumentException.class, () -> new TableColumnComponentPanel<>(columnModel, columnComponents));
@@ -39,7 +39,7 @@ public class TableColumnComponentPanelTest {
   @Test
   public void showColumn() {
     final SwingFilteredTableColumnModel<?, Integer> columnModel =
-            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     columnModel.hideColumn(1);
 
     final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
@@ -57,7 +57,7 @@ public class TableColumnComponentPanelTest {
   @Test
   public void width() {
     final SwingFilteredTableColumnModel<?, Integer> columnModel =
-            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
     assertEquals(100, panel.getColumnComponents().get(column0).getPreferredSize().width);

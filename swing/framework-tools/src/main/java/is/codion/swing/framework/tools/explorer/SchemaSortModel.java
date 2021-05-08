@@ -6,23 +6,16 @@ package is.codion.swing.framework.tools.explorer;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
-import javax.swing.table.TableColumn;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-
 final class SchemaSortModel extends AbstractTableSortModel<Schema, Integer> {
 
-  SchemaSortModel() {
-    super(createSchemaColumns());
-  }
+  SchemaSortModel() {}
 
   @Override
   public Class<?> getColumnClass(final Integer columnIdentifier) {
     switch (columnIdentifier) {
-      case 0:
+      case SchemaTableModel.SCHEMA:
         return String.class;
-      case 1:
+      case SchemaTableModel.POPULATED:
         return Boolean.class;
       default:
         throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
@@ -32,23 +25,12 @@ final class SchemaSortModel extends AbstractTableSortModel<Schema, Integer> {
   @Override
   protected Comparable<?> getComparable(final Schema row, final Integer columnIdentifier) {
     switch (columnIdentifier) {
-      case 0:
+      case SchemaTableModel.SCHEMA:
         return row.getName();
-      case 1:
+      case SchemaTableModel.POPULATED:
         return row.isPopulated();
       default:
         throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
     }
-  }
-
-  private static List<TableColumn> createSchemaColumns() {
-    final TableColumn schemaColumn = new TableColumn(0);
-    schemaColumn.setIdentifier(0);
-    schemaColumn.setHeaderValue("Schema");
-    final TableColumn populatedColumn = new TableColumn(1);
-    populatedColumn.setIdentifier(1);
-    populatedColumn.setHeaderValue("Populated");
-
-    return asList(schemaColumn, populatedColumn);
   }
 }

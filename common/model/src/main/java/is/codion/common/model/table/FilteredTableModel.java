@@ -236,7 +236,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   /**
    * @return the sorting model
    */
-  TableSortModel<R, C, T> getSortModel();
+  TableSortModel<R, C> getSortModel();
 
   /**
    * Refreshes the items in this table model

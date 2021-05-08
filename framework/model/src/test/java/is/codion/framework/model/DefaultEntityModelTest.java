@@ -156,7 +156,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void sort() {}
     @Override
-    public TableSortModel<Entity, Property, Object> getSortModel() {return null;}
+    public TableSortModel<Entity, Property> getSortModel() {return null;}
     @Override
     public int indexOf(final Entity item) {return 0;}
     @Override

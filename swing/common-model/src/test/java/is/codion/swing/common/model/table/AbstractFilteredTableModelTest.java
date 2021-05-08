@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,9 +52,9 @@ public final class AbstractFilteredTableModelTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
+    private TestAbstractFilteredTableModel(final List<TableColumn> columns, final AbstractTableSortModel<List<String>, Integer> sortModel,
                                            final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(sortModel, columnFilterModels);
+      super(columns, sortModel, columnFilterModels);
     }
 
     @Override
@@ -80,7 +81,7 @@ public final class AbstractFilteredTableModelTest {
     column.setIdentifier(0);
     final ColumnFilterModel<List<String>, Integer, String> filterModel = new DefaultColumnFilterModel<>(0, String.class, "%");
     filterModel.setComparableFunction(row -> row.get(0));
-    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<List<String>, Integer>(singletonList(column)) {
+    return new TestAbstractFilteredTableModel(singletonList(column), new AbstractTableSortModel<List<String>, Integer>() {
       @Override
       public Class<?> getColumnClass(final Integer columnIdentifier) {
         return String.class;
@@ -138,7 +139,28 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void nullSortModel() {
-    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(null) {
+    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(singletonList(new TableColumn()), null) {
+
+      @Override
+      public Object getValueAt(final int rowIndex, final int columnIndex) {
+        return null;
+      }
+    });
+  }
+
+  @Test
+  public void noColumns() {
+    assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(emptyList(), new AbstractTableSortModel<String, Integer>() {
+      @Override
+      protected Comparable<?> getComparable(final String row, final Integer columnIdentifier) {
+        return null;
+      }
+
+      @Override
+      public Class<?> getColumnClass(final Integer columnIdentifier) {
+        return null;
+      }
+    }) {
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -270,8 +292,8 @@ public final class AbstractFilteredTableModelTest {
     final List<Row> items = asList(new Row(0, "a"), new Row(1, "b"),
             new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
-    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(
-            new AbstractTableSortModel<Row, Integer>(asList(columnId, columnValue)) {
+    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(asList(columnId, columnValue),
+            new AbstractTableSortModel<Row, Integer>() {
               @Override
               public Class getColumnClass(final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
@@ -380,7 +402,7 @@ public final class AbstractFilteredTableModelTest {
   public void customSorting() {
     final AbstractFilteredTableModel<List<String>, Integer> tableModel = createTestModel(Comparator.reverseOrder());
     tableModel.refresh();
-    final TableSortModel<List<String>, Integer, TableColumn> sortModel = tableModel.getSortModel();
+    final TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
     assertEquals(E, tableModel.getItemAt(0));
     sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
@@ -394,7 +416,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addSortListener(listener);
 
     tableModel.refresh();
-    final TableSortModel<List<String>, Integer, TableColumn> sortModel = tableModel.getSortModel();
+    final TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
     assertEquals(SortingDirective.DESCENDING, sortModel.getSortingState(0).getDirective());
     assertEquals(E, tableModel.getItemAt(0));
@@ -428,16 +450,6 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
     sortModel.setSortingDirective(0, SortingDirective.UNSORTED);
     tableModel.removeSortListener(listener);
-  }
-
-  @Test
-  public void getSortingDirectiveInvalidColumn() {
-    assertThrows(IllegalArgumentException.class, () -> tableModel.getSortModel().getSortingState(1).getDirective());
-  }
-
-  @Test
-  public void getSortingPriorityInvalidColumn() {
-    assertThrows(IllegalArgumentException.class, () -> tableModel.getSortModel().getSortingState(1).getPriority());
   }
 
   @Test
