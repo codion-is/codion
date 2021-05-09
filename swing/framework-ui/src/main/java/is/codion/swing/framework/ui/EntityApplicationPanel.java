@@ -43,7 +43,6 @@ import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
-import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1069,38 +1068,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes a {@link SwingEntityModel}, according to the given {@link SwingEntityModel.Builder},
-   * either by fetching it from the application model or creating one and adding it to the application model.
-   * @param applicationModel the application model
-   * @param modelBuilder the model builder
-   * @return an initialized {@link SwingEntityModel} instance.
-   */
-  protected final SwingEntityModel initializeEntityModel(final M applicationModel, final SwingEntityModel.Builder modelBuilder) {
-    final SwingEntityModel entityModel;
-    final Class<? extends SwingEntityModel> modelClass = modelBuilder.getModelClass();
-    if (!modelClass.equals(SwingEntityModel.class)) {
-      if (applicationModel.containsEntityModel(modelClass)) {
-        entityModel = applicationModel.getEntityModel(modelClass);
-      }
-      else {
-        entityModel = modelBuilder.buildModel(applicationModel.getConnectionProvider());
-        applicationModel.addEntityModel(entityModel);
-      }
-    }
-    else {
-      if (applicationModel.containsEntityModel(modelBuilder.getEntityType())) {
-        entityModel = applicationModel.getEntityModel(modelBuilder.getEntityType());
-      }
-      else {
-        entityModel = modelBuilder.buildModel(applicationModel.getConnectionProvider());
-        applicationModel.addEntityModel(entityModel);
-      }
-    }
-
-    return entityModel;
-  }
-
-  /**
    * @return true if a login dialog is required for this application,
    * false if the user is supplied differently
    */
@@ -1395,13 +1362,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
       final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : null;
+      EntityConnectionProvider connectionProvider = null;
+      final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      EntityConnectionProvider connectionProvider = null;
       try {
         connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
         connectionProvider.getConnection();//throws exception if the server is not reachable
