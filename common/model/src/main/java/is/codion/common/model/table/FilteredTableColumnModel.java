@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A TableColumnModel handling hidden columns
@@ -17,9 +16,9 @@ import java.util.List;
 public interface FilteredTableColumnModel<C, T> {
 
   /**
-   * @return all columns in this model, both hidden and visible
+   * @return all columns in this model, both hidden and visible, in no particular order
    */
-  List<T> getAllColumns();
+  Collection<T> getAllColumns();
 
   /**
    * @return an unmodifiable view of hidden table columns

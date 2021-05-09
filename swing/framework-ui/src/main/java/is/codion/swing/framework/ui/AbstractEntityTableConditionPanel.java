@@ -12,7 +12,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
-import java.util.List;
+import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractEntityTableConditionPanel extends JPanel {
 
   private final EntityTableConditionModel tableConditionModel;
-  private final List<TableColumn> tableColumns;
+  private final Collection<TableColumn> tableColumns;
   private final State advancedState = State.state();
 
   /**
@@ -31,7 +31,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @param tableColumns the table columns
    */
   public AbstractEntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                           final List<TableColumn> tableColumns) {
+                                           final Collection<TableColumn> tableColumns) {
     this.tableConditionModel = requireNonNull(tableConditionModel);
     this.tableColumns = requireNonNull(tableColumns);
     bindEvents();
@@ -47,7 +47,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   /**
    * @return all columns from the underlying column model
    */
-  public final List<TableColumn> getTableColumns() {
+  public final Collection<TableColumn> getTableColumns() {
     return tableColumns;
   }
 

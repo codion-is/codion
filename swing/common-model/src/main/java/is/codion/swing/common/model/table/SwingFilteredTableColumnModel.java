@@ -15,13 +15,15 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -38,7 +40,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   /**
    * All columns in this column model, visible and hidden
    */
-  private final List<TableColumn> columns;
+  private final Map<C, TableColumn> columns;
 
   /**
    * Contains columns that have been hidden
@@ -63,18 +65,19 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
     if (requireNonNull(columns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
-    this.columns = unmodifiableList(columns);
+    this.columns = new LinkedHashMap<>();
+    columns.forEach(column -> {
+      this.columns.put((C) column.getIdentifier(), column);
+      addColumn(column);
+    });
     this.columnIndexCache = new int[columns.size()];
     fill(this.columnIndexCache, -1);
-    for (final TableColumn column : columns) {
-      addColumn(column);
-    }
     bindEvents();
   }
 
   @Override
-  public List<TableColumn> getAllColumns() {
-    return columns;
+  public Collection<TableColumn> getAllColumns() {
+    return Collections.unmodifiableCollection(columns.values());
   }
 
   @Override
@@ -112,17 +115,17 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public void setColumns(final C... columnIdentifiers) {
-    if (columnIdentifiers != null) {
-      final List<C> identifiers = asList(columnIdentifiers);
-      int columnIndex = 0;
-      for (final C identifier : identifiers) {
-        showColumn(identifier);
-        moveColumn(getColumnIndex(identifier), columnIndex++);
-      }
-      for (final TableColumn column : getAllColumns()) {
-        if (!identifiers.contains(column.getIdentifier())) {
-          hideColumn((C) column.getIdentifier());
-        }
+    requireNonNull(columnIdentifiers);
+    checkIfLocked();
+    final List<C> identifiers = asList(columnIdentifiers);
+    int columnIndex = 0;
+    for (final C identifier : identifiers) {
+      showColumn(identifier);
+      moveColumn(getColumnIndex(identifier), columnIndex++);
+    }
+    for (final TableColumn column : getAllColumns()) {
+      if (!identifiers.contains(column.getIdentifier())) {
+        hideColumn((C) column.getIdentifier());
       }
     }
   }
@@ -134,11 +137,9 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public TableColumn getTableColumn(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
-    for (final TableColumn column : columns) {
-      if (columnIdentifier.equals(column.getIdentifier())) {
-        return column;
-      }
+    final TableColumn column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    if (column != null) {
+      return column;
     }
 
     throw new IllegalArgumentException("Column not found: " + columnIdentifier);
@@ -146,9 +147,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public boolean containsColumn(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
-
-    return columns.stream().anyMatch(column -> columnIdentifier.equals(column.getIdentifier()));
+    return columns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
   }
 
   @Override

@@ -131,6 +131,7 @@ public class SwingFilteredTableColumnModelTest {
     columnModel.hideColumn(0);
     columnModel.getLockedState().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.showColumn(0));
+    assertThrows(IllegalStateException.class, () -> columnModel.setColumns(0));
 
     columnModel.setColumns(3, 2, 1);
 
