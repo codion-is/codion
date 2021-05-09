@@ -131,9 +131,9 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void removeItems(int fromIndex, int toIndex);
 
   /**
-   * @return the TableColumnModel used by this TableModel
+   * @return the FilteredTableColumnModel used by this TableModel
    */
-  FilteredTableColumnModel<R, C, T> getColumnModel();
+  FilteredTableColumnModel<C, T> getColumnModel();
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
@@ -141,6 +141,14 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * @return the ColumnSummaryModel for the column identified by the given identifier, null if none is available
    */
   ColumnSummaryModel getColumnSummaryModel(C columnIdentifier);
+
+  /**
+   * Returns the {@link ColumnConditionModel} for the column with the given identifier.
+   * @param <T> the column value type
+   * @param columnIdentifier the column identifier
+   * @return the ColumnConditionModel for the column with the given identifier, null if none exists.
+   */
+  <T> ColumnFilterModel<R, C, T> getColumnFilterModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
@@ -220,7 +228,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
-   * Sorts the visible contents according to the  {@link TableSortModel}, keeping the selected items.
+   * Sorts the visible contents according to the {@link TableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
    * @see #getSortModel()
    * @see #addSortListener(EventListener)

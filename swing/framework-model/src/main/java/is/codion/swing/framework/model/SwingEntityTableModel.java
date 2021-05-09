@@ -161,8 +161,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
-    super(new SwingFilteredTableColumnModel<>(initializeColumns(connectionProvider.getEntities().getDefinition(entityType).getVisibleProperties()),
-            requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels()), sortModel);
+    super(new SwingFilteredTableColumnModel<>(initializeColumns(connectionProvider.getEntities().getDefinition(entityType).getVisibleProperties())),
+            sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
     if (!tableConditionModel.getEntityType().equals(requireNonNull(entityType, "entityType"))) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);
@@ -800,7 +800,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   private void applyColumnPreferences(final org.json.JSONObject preferences) {
-    final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel = getColumnModel();
+    final SwingFilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
     for (final TableColumn column : Collections.list(columnModel.getColumns())) {
       final Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       if (columnModel.containsColumn(attribute)) {

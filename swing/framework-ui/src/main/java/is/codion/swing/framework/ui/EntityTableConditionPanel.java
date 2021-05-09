@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -39,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
   private final TableColumnComponentPanel<ColumnConditionPanel<?, ?>> conditionPanel;
-  private final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel;
+  private final SwingFilteredTableColumnModel<Attribute<?>> columnModel;
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
@@ -48,7 +47,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param columnModel the column model
    */
   public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                   final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel) {
+                                   final SwingFilteredTableColumnModel<Attribute<?>> columnModel) {
     this(tableConditionModel, columnModel, new EntityConditionPanelFactory(tableConditionModel));
   }
 
@@ -60,7 +59,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param conditionPanelFactory the condition panel factory
    */
   public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                   final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel,
+                                   final SwingFilteredTableColumnModel<Attribute<?>> columnModel,
                                    final ConditionPanelFactory conditionPanelFactory) {
     super(tableConditionModel, requireNonNull(columnModel).getAllColumns());
     requireNonNull(conditionPanelFactory);
@@ -153,7 +152,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   private static Map<TableColumn, ColumnConditionPanel<?, ?>> createConditionPanels(
-          final SwingFilteredTableColumnModel<Entity, Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
+          final SwingFilteredTableColumnModel<Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
     final Map<TableColumn, ColumnConditionPanel<?, ?>> conditionPanels = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> {
       final ColumnConditionPanel<?, ?> conditionPanel = conditionPanelFactory.createConditionPanel(column);

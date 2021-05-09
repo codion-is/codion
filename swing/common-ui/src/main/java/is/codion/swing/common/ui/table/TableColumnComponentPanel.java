@@ -46,7 +46,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    * @param columnModel the column model
    * @param columnComponents the column components mapped to their respective column
    */
-  public TableColumnComponentPanel(final SwingFilteredTableColumnModel<?, ?> columnModel,
+  public TableColumnComponentPanel(final SwingFilteredTableColumnModel<?> columnModel,
                                    final Map<TableColumn, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.getAllColumns();

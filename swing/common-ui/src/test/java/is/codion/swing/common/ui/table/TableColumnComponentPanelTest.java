@@ -29,7 +29,7 @@ public class TableColumnComponentPanelTest {
 
   @Test
   public void wrongColumn() {
-    final SwingFilteredTableColumnModel<?, Integer> columnModel =
+    final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     final Map<TableColumn, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(new TableColumn(3), new JPanel());
@@ -38,7 +38,7 @@ public class TableColumnComponentPanelTest {
 
   @Test
   public void showColumn() {
-    final SwingFilteredTableColumnModel<?, Integer> columnModel =
+    final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     columnModel.hideColumn(1);
 
@@ -56,7 +56,7 @@ public class TableColumnComponentPanelTest {
 
   @Test
   public void width() {
-    final SwingFilteredTableColumnModel<?, Integer> columnModel =
+    final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
@@ -67,7 +67,7 @@ public class TableColumnComponentPanelTest {
     assertEquals(80, panel.getColumnComponents().get(column2).getPreferredSize().width);
   }
 
-  private static Map<TableColumn, JPanel> createColumnComponents(final SwingFilteredTableColumnModel<?, ?> columnModel) {
+  private static Map<TableColumn, JPanel> createColumnComponents(final SwingFilteredTableColumnModel<?> columnModel) {
     final Map<TableColumn, JPanel> columnComponents = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> columnComponents.put(column, new JPanel()));
 

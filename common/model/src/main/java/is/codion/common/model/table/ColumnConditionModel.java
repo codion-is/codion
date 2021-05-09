@@ -25,7 +25,7 @@ import java.util.Collection;
 public interface ColumnConditionModel<C, T> {
 
   /**
-   * Specifies whether wildcards are automatically added to string conditions<br>
+   * Specifies whether wildcards are automatically added to string conditions by default<br>
    * Value type: {@link AutomaticWildcard}<br>
    * Default value: {@link AutomaticWildcard#NONE}
    */
@@ -34,7 +34,7 @@ public interface ColumnConditionModel<C, T> {
           AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
 
   /**
-   * Specifies whether string based conditions are case sensitive or not
+   * Specifies whether string based conditions are case sensitive or not by default<br>
    * Value type: Boolean<br>
    * Default value: true
    */

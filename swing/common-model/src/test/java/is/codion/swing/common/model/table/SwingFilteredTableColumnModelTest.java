@@ -4,8 +4,6 @@
 package is.codion.swing.common.model.table;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.model.table.ColumnFilterModel;
-import is.codion.common.model.table.DefaultColumnFilterModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +19,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void testModel() {
-    final SwingFilteredTableColumnModel<String, Integer> testModel = createTestModel();
+    final SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<>();
     final Collection<Object> shown = new ArrayList<>();
     final EventDataListener<Integer> hideListener = hidden::add;
@@ -49,18 +47,18 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void getTableColumnNotFound() {
-    final SwingFilteredTableColumnModel<String, Integer> testModel = createTestModel();
+    final SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
     assertThrows(IllegalArgumentException.class, () -> testModel.getTableColumn(42));
   }
 
   @Test
   public void constructorNullColumns() {
-    assertThrows(NullPointerException.class, () -> new SwingFilteredTableColumnModel<>(null, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new SwingFilteredTableColumnModel<>(null));
   }
 
   @Test
   public void constructorNoColumns() {
-    assertThrows(IllegalArgumentException.class, () -> new SwingFilteredTableColumnModel<>(new ArrayList<>(), new ArrayList<>()));
+    assertThrows(IllegalArgumentException.class, () -> new SwingFilteredTableColumnModel<>(new ArrayList<>()));
   }
 
   @Test
@@ -74,7 +72,7 @@ public class SwingFilteredTableColumnModelTest {
     final TableColumn column3 = new TableColumn(3);
     column3.setIdentifier(3);
 
-    final SwingFilteredTableColumnModel<String, Integer> columnModel =
+    final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.setColumns(1, 3);
@@ -124,7 +122,7 @@ public class SwingFilteredTableColumnModelTest {
     final TableColumn column3 = new TableColumn(3);
     column3.setIdentifier(3);
 
-    final SwingFilteredTableColumnModel<String, Integer> columnModel =
+    final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.getLockedState().set(true);
@@ -139,11 +137,10 @@ public class SwingFilteredTableColumnModelTest {
     assertThrows(IllegalStateException.class, () -> columnModel.setColumns(1, 0, 2));
   }
 
-  private static SwingFilteredTableColumnModel<String, Integer> createTestModel() {
+  private static SwingFilteredTableColumnModel<Integer> createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnFilterModel<String, Integer, String> filterModel = new DefaultColumnFilterModel<>(0, String.class, "%");
 
-    return new SwingFilteredTableColumnModel<>(singletonList(column), singletonList(filterModel));
+    return new SwingFilteredTableColumnModel<>(singletonList(column));
   }
 }

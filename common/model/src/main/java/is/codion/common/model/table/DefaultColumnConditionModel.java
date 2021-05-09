@@ -22,10 +22,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnConditionModel model implementation.
- * @param <K> the type of the column identifier
+ * @param <C> the type of the column identifier
  * @param <T> the column value type
  */
-public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K, T> {
+public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
   private final ValueSet<T> equalValues = Value.valueSet();
   private final Value<T> upperBoundValue = Value.value();
@@ -37,7 +37,7 @@ public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K
   private final State enabledState = State.state();
   private final State lockedState = State.state();
 
-  private final K columnIdentifier;
+  private final C columnIdentifier;
   private final Class<T> typeClass;
   private final Format format;
   private final String dateTimePattern;
@@ -53,7 +53,7 @@ public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard) {
+  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard) {
     this(columnIdentifier, typeClass, wildcard, null, null);
   }
 
@@ -65,7 +65,7 @@ public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
+  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard,
                                      final Format format, final String dateTimePattern) {
     this(columnIdentifier, typeClass, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
@@ -79,7 +79,7 @@ public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
+  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard,
                                      final Format format, final String dateTimePattern,
                                      final AutomaticWildcard automaticWildcard) {
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
@@ -97,7 +97,7 @@ public class DefaultColumnConditionModel<K, T> implements ColumnConditionModel<K
   }
 
   @Override
-  public final K getColumnIdentifier() {
+  public final C getColumnIdentifier() {
     return columnIdentifier;
   }
 

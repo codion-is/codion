@@ -5,8 +5,6 @@ package is.codion.swing.common.model.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.FilteredTableColumnModel;
 import is.codion.common.state.State;
 
@@ -17,7 +15,6 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +26,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A TableColumnModel handling hidden columns
- * @param <R> the table model row type
  * @param <C> the type of column identifier
  */
-public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel implements FilteredTableColumnModel<R, C, TableColumn> {
+public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C, TableColumn> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -50,11 +46,6 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
   private final Map<C, TableColumn> hiddenColumns = new HashMap<>();
 
   /**
-   * The ColumnFilterModels used for filtering
-   */
-  private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
-
-  /**
    * A lock which prevents adding or removing columns from this column model
    */
   private final State lockedState = State.state();
@@ -69,16 +60,6 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
    * @param columns the columns to base this model on
    */
   public SwingFilteredTableColumnModel(final List<TableColumn> columns) {
-    this(columns, null);
-  }
-
-  /**
-   * Instantiates a new SwingFilteredTableColumnModel.
-   * @param columns the columns to base this model on
-   * @param columnFilterModels the filter models if any
-   */
-  public SwingFilteredTableColumnModel(final List<TableColumn> columns,
-                                       final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     if (requireNonNull(columns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -87,11 +68,6 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
     fill(this.columnIndexCache, -1);
     for (final TableColumn column : columns) {
       addColumn(column);
-    }
-    if (columnFilterModels != null) {
-      for (final ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
-        this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
-      }
     }
     bindEvents();
   }
@@ -173,18 +149,6 @@ public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColum
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
     return columns.stream().anyMatch(column -> columnIdentifier.equals(column.getIdentifier()));
-  }
-
-  @Override
-  public <T> ColumnConditionModel<C, T> getColumnFilterModel(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
-
-    return (ColumnConditionModel<C, T>) columnFilterModels.get(columnIdentifier);
-  }
-
-  @Override
-  public Collection<ColumnFilterModel<R, C, ?>> getColumnFilterModels() {
-    return columnFilterModels.values();
   }
 
   @Override

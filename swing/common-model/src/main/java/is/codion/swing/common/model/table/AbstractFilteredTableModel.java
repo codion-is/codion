@@ -52,6 +52,8 @@ import static java.util.stream.Collectors.toList;
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
+  private static final String COLUMN_IDENTIFIER = "columnIdentifier";
+
   private final Event<?> filterEvent = Event.event();
   private final Event<?> sortEvent = Event.event();
   private final Event<?> refreshStartedEvent = Event.event();
@@ -78,12 +80,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The TableColumnModel
    */
-  private final SwingFilteredTableColumnModel<R, C> columnModel;
+  private final SwingFilteredTableColumnModel<C> columnModel;
 
   /**
    * The sort model
    */
   private final TableSortModel<R, C> sortModel;
+
+  /**
+   * The ColumnFilterModels used for filtering
+   */
+  private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
 
   /**
    * Maps PropertySummaryModels to their respective properties
@@ -107,15 +114,32 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Instantiates a new table model.
-   * @param columns the table columns to base this table model on
+   * @param columnModel the table column model to base this table model on
    * @param sortModel the sort model to use
    * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
    */
-  public AbstractFilteredTableModel(final SwingFilteredTableColumnModel<R, C> columnModel, final TableSortModel<R, C> sortModel) {
+  public AbstractFilteredTableModel(final SwingFilteredTableColumnModel<C> columnModel, final TableSortModel<R, C> sortModel) {
+    this(columnModel, sortModel, null);
+  }
+
+  /**
+   * Instantiates a new table model.
+   * @param columnModel the table column model to base this table model on
+   * @param sortModel the sort model to use
+   * @param columnFilterModels the filter models if any
+   * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
+   */
+  public AbstractFilteredTableModel(final SwingFilteredTableColumnModel<C> columnModel, final TableSortModel<R, C> sortModel,
+                                    final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = requireNonNull(columnModel, "columnModel");
     this.sortModel = requireNonNull(sortModel, "sortModel");
     this.selectionModel = new SwingTableSelectionModel<>(this);
-    this.includeCondition = new DefaultIncludeCondition<>(columnModel.getColumnFilterModels());
+    if (columnFilterModels != null) {
+      for (final ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
+        this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
+      }
+    }
+    this.includeCondition = new DefaultIncludeCondition<>(columnFilterModels);
     bindEventsInternal();
   }
 
@@ -253,11 +277,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier) {
-    return columnSummaryModels.computeIfAbsent(columnIdentifier, identifier -> {
+    return columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier -> {
       final ColumnSummaryModel.ColumnValueProvider<Number> provider = createColumnValueProvider(columnIdentifier);
 
       return provider == null ? null : new DefaultColumnSummaryModel<>(provider);
     });
+  }
+
+  @Override
+  public <T> ColumnFilterModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
+    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
+
+    return (ColumnFilterModel<R, C, T>) columnFilterModels.get(columnIdentifier);
   }
 
   @Override
@@ -398,7 +429,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final SwingFilteredTableColumnModel<R, C> getColumnModel() {
+  public final SwingFilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
   }
 
@@ -615,7 +646,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
-    for (final ColumnConditionModel<C, ?> conditionModel : columnModel.getColumnFilterModels()) {
+    for (final ColumnConditionModel<C, ?> conditionModel : columnFilterModels.values()) {
       conditionModel.addConditionChangedListener(this::filterContents);
     }
     sortModel.addSortingChangedListener(this::sort);
