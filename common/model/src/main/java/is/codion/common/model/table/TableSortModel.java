@@ -64,6 +64,13 @@ public interface TableSortModel<R, C> {
   void addSortingChangedListener(EventListener listener);
 
   /**
+   * Specifies sorting directives.
+   */
+  enum SortingDirective {
+    DESCENDING, ASCENDING, UNSORTED
+  }
+
+  /**
    * Specifies a sorting state for a column.
    */
   interface SortingState {

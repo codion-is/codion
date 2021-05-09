@@ -3,7 +3,7 @@
  */
 package is.codion.common.model.table;
 
-final class DefaultRowColumn implements RowColumn {
+final class DefaultRowColumn implements FilteredTableModel.RowColumn {
 
   private final int row;
   private final int column;

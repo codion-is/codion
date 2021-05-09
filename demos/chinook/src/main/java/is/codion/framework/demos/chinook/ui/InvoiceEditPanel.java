@@ -18,7 +18,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.time.LocalDate;
 
-import static is.codion.common.model.table.SortingDirective.ASCENDING;
+import static is.codion.common.model.table.TableSortModel.SortingDirective.ASCENDING;
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;

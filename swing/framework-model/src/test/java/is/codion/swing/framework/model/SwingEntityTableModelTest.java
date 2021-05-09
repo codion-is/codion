@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;

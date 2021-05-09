@@ -11,7 +11,6 @@ import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.model.table.FilteredTableModel;
-import is.codion.common.model.table.RowColumn;
 import is.codion.common.model.table.TableSortModel;
 
 import javax.swing.event.TableModelEvent;
@@ -32,7 +31,6 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -60,7 +58,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event<?> refreshDoneEvent = Event.event();
   private final Event<?> tableDataChangedEvent = Event.event();
   private final Event<?> tableModelClearedEvent = Event.event();
-  private final Event<List<Integer>> rowsDeletedEvent = Event.event();
+  private final Event<Removal> rowsRemovedEvent = Event.event();
 
   /**
    * Holds visible items
@@ -419,13 +417,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
-    rowsDeletedEvent.addDataListener(listener);
+  public final void addRowsRemovedListener(final EventDataListener<Removal> listener) {
+    rowsRemovedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
-    rowsDeletedEvent.removeDataListener(listener);
+  public final void removeRowsRemovedListener(final EventDataListener<Removal> listener) {
+    rowsRemovedEvent.removeDataListener(listener);
   }
 
   @Override
@@ -652,7 +650,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortModel.addSortingChangedListener(this::sort);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsDeletedEvent.onEvent(asList(e.getFirstRow(), e.getLastRow()));
+        rowsRemovedEvent.onEvent(new DefaultRemoval(e.getFirstRow(), e.getLastRow()));
       }
     });
   }
@@ -740,6 +738,27 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     @Override
     public boolean test(final R item) {
       return columnFilters == null || columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
+    }
+  }
+
+  private static final class DefaultRemoval implements Removal {
+
+    private final int fromRow;
+    private final int toRow;
+
+    private DefaultRemoval(final int fromRow, final int toRow) {
+      this.fromRow = fromRow;
+      this.toRow = toRow;
+    }
+
+    @Override
+    public int getFromRow() {
+      return fromRow;
+    }
+
+    @Override
+    public int getToRow() {
+      return toRow;
     }
   }
 

@@ -5,7 +5,7 @@ package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.Text;
 import is.codion.common.db.database.DatabaseFactory;
-import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
