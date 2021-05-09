@@ -6943,3 +6943,4 @@
   SwingFilteredTableColumnModel.columns now maps columns to identifiers
   EntityInputComponents, some refactoring
   SwingFilteredTableColumnModel.columnIdentifiers maps columns identifiers to model indexes
+  AbstractFilteredTableModel, rows removed listener improved a bit

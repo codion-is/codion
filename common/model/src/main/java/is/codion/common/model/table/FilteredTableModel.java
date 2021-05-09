@@ -8,7 +8,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -71,15 +70,15 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void removeTableModelClearedListener(EventListener listener);
 
   /**
-   * Adds a listener that is notified each time rows are deleted from the data model.
-   * @param listener the listener, the data list contains the fromIndex and toIndex as items at index 0 and 1
+   * Adds a listener that is notified each time rows are removed from this model.
+   * @param listener the listener
    */
-  void addRowsDeletedListener(EventDataListener<List<Integer>> listener);
+  void addRowsRemovedListener(EventDataListener<Removal> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRowsDeletedListener(EventDataListener<List<Integer>> listener);
+  void removeRowsRemovedListener(EventDataListener<Removal> listener);
 
   /**
    * @return true if an impending selection change should be allowed
@@ -255,4 +254,20 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * Clears all items from this table model
    */
   void clear();
+
+  /**
+   * Specifies the from and to rows of a row removal operation.
+   */
+  interface Removal {
+
+    /**
+     * @return the from row index
+     */
+    int getFromRow();
+
+    /**
+     * @return the to row index
+     */
+    int getToRow();
+  }
 }

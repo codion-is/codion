@@ -53,8 +53,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
    */
   public SwingTableSelectionModel(final FilteredTableModel<R, ?, ?> tableModel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.tableModel.addRowsDeletedListener(interval ->
-            SwingTableSelectionModel.super.removeIndexInterval(interval.get(0), interval.get(1)));
+    this.tableModel.addRowsRemovedListener(removal ->
+            SwingTableSelectionModel.super.removeIndexInterval(removal.getFromRow(), removal.getToRow()));
     bindEvents();
   }
 
