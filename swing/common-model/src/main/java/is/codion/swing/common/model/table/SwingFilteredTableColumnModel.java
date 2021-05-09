@@ -90,7 +90,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
       hiddenColumns.remove(columnIdentifier);
       addColumn(column);
       moveColumn(getColumnCount() - 1, 0);
-      columnShownEvent.onEvent((C) column.getIdentifier());
+      columnShownEvent.onEvent(columnIdentifier);
     }
   }
 
@@ -100,8 +100,8 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
       checkIfLocked();
       final TableColumn column = getTableColumn(columnIdentifier);
       removeColumn(column);
-      hiddenColumns.put((C) column.getIdentifier(), column);
-      columnHiddenEvent.onEvent((C) column.getIdentifier());
+      hiddenColumns.put(columnIdentifier, column);
+      columnHiddenEvent.onEvent(columnIdentifier);
     }
   }
 
