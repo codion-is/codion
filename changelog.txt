@@ -6946,3 +6946,4 @@
   AbstractFilteredTableModel, rows removed listener improved a bit
   RowColumn moved to FilteredTableModel
   SortingDirective moved to FilteredTableModel
+  EntityInputComponents, EntityComponentValues now use EntityComboBox.refreshOnSetVisible() instead of refreshing right away

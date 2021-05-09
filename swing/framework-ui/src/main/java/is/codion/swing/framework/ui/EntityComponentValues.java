@@ -134,10 +134,9 @@ public class EntityComponentValues {
                                                                                         final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
-      comboBoxModel.refresh();
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel));
+      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel).refreshOnSetVisible());
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
