@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.model.table;
 
-import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel.SortingDirective;
 
 import org.junit.jupiter.api.Test;
 

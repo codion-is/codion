@@ -9,7 +9,7 @@ import is.codion.swing.framework.ui.EntitySearchField;
 
 import java.awt.Dimension;
 
-import static is.codion.common.model.table.SortingDirective.ASCENDING;
+import static is.codion.common.model.table.TableSortModel.SortingDirective.ASCENDING;
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 
 final class TrackSelectionProvider extends EntitySearchField.TableSelectionProvider {

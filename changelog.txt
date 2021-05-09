@@ -6945,3 +6945,4 @@
   SwingFilteredTableColumnModel.columnIdentifiers maps columns identifiers to model indexes
   AbstractFilteredTableModel, rows removed listener improved a bit
   RowColumn moved to FilteredTableModel
+  SortingDirective moved to FilteredTableModel

@@ -6,7 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;

@@ -10,8 +10,8 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.common.model.table.FilteredTableModel.RowColumn;
-import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
+import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.common.state.State;
 
 import org.junit.jupiter.api.BeforeEach;

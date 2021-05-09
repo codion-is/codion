@@ -4,7 +4,7 @@
 package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.model.table.DefaultColumnFilterModel;
-import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.framework.tools.metadata.Schema;
