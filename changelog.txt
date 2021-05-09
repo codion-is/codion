@@ -6947,3 +6947,4 @@
   RowColumn moved to FilteredTableModel
   SortingDirective moved to FilteredTableModel
   EntityInputComponents, EntityComponentValues now use EntityComboBox.refreshOnSetVisible() instead of refreshing right away
+  EntityComponentValues.createEntityComponentValue() renamed createForeignKeyComponentValue()
