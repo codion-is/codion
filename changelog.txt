@@ -6941,3 +6941,4 @@
   AbstractFilteredTableModel.getSearchValueAt() column parameter replaced with columnIdentifier
   FilteredTableColumnModel.getAllColumns() now returns Collection instead of List
   SwingFilteredTableColumnModel.columns now maps columns to identifiers
+  EntityInputComponents, some refactoring

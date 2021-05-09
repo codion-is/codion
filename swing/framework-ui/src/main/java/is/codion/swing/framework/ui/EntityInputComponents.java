@@ -284,11 +284,11 @@ public final class EntityInputComponents {
                                   final IncludeCaption includeCaption) {
     requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
+    final JCheckBox checkBox = includeCaption == IncludeCaption.YES ? new JCheckBox(property.getCaption()) : new JCheckBox();
+    ComponentValues.toggleButton(checkBox).link(value);
 
-    return initializeCheckBox(property, value, enabledState,
-            includeCaption == IncludeCaption.YES ? new JCheckBox(property.getCaption()) : new JCheckBox());
+    return setDescriptionAndEnabledState(checkBox, property.getDescription(), enabledState);
   }
 
   /**
@@ -306,11 +306,13 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
     if (!property.isNullable()) {
-      throw new IllegalArgumentException("Nullable boolean attribute required for createNullableCheckBox");
+      throw new IllegalArgumentException("Nullable boolean attribute required for createNullableCheckBox()");
     }
+    final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel(),
+            includeCaption == IncludeCaption.YES ? property.getCaption() : null);
+    ComponentValues.toggleButton(checkBox).link(value);
 
-    return (NullableCheckBox) initializeCheckBox(property, value, enabledState,
-            new NullableCheckBox(new NullableToggleButtonModel(), includeCaption == IncludeCaption.YES ? property.getCaption() : null));
+    return setDescriptionAndEnabledState(checkBox, property.getDescription(), enabledState);
   }
 
   /**
@@ -337,12 +339,10 @@ public final class EntityInputComponents {
     final BooleanComboBoxModel comboBoxModel = new BooleanComboBoxModel();
     final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
     ComponentValues.itemComboBox(comboBox).link(value);
-    linkToEnabledState(enabledState, comboBox);
-    comboBox.setToolTipText(entityDefinition.getProperty(attribute).getDescription());
     addComboBoxCompletion(comboBox);
     comboBox.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
-    return comboBox;
+    return setDescriptionAndEnabledState(comboBox, entityDefinition.getProperty(attribute).getDescription(), enabledState);
   }
 
   /**
@@ -372,11 +372,9 @@ public final class EntityInputComponents {
     comboBoxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
     ComponentValues.comboBox(comboBox).link(value);
-    linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
-    comboBox.setToolTipText(entityDefinition.getProperty(foreignKey).getDescription());
 
-    return comboBox;
+    return setDescriptionAndEnabledState(comboBox, entityDefinition.getProperty(foreignKey).getDescription(), enabledState);
   }
 
   /**
@@ -406,12 +404,11 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final EntitySearchField searchField = new EntitySearchField(searchModel);
     new SearchUIValue(searchField.getModel()).link(value);
-    linkToEnabledState(enabledState, searchField);
-    final String propertyDescription = entityDefinition.getProperty(foreignKey).getDescription();
-    searchField.setToolTipText(propertyDescription == null ? searchModel.getDescription() : propertyDescription);
     selectAllOnFocusGained(searchField);
 
-    return searchField;
+    final String propertyDescription = entityDefinition.getProperty(foreignKey).getDescription();
+
+    return setDescriptionAndEnabledState(searchField, propertyDescription == null ? searchModel.getDescription() : propertyDescription, enabledState);
   }
 
   /**
@@ -464,21 +461,18 @@ public final class EntityInputComponents {
    */
   public <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Value<T> value,
                                                               final Sorted sorted, final StateObserver enabledState) {
-
+    requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
+    requireNonNull(value, VALUE_PARAM_NAME);
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property based on '" + attribute + "' is not a ValueListProperty");
     }
     final ItemComboBoxModel<T> valueListComboBoxModel = createValueListComboBoxModel((ValueListProperty<T>) property, sorted);
-    requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
-    requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(valueListComboBoxModel);
     ComponentValues.itemComboBox(comboBox).link(value);
-    linkToEnabledState(enabledState, comboBox);
-    comboBox.setToolTipText(property.getDescription());
     addComboBoxCompletion(comboBox);
 
-    return comboBox;
+    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
   }
 
   /**
@@ -529,10 +523,8 @@ public final class EntityInputComponents {
     }
     comboBox.setEditable(editable == Editable.YES);
     ComponentValues.comboBox(comboBox).link(value);
-    linkToEnabledState(enabledState, comboBox);
-    comboBox.setToolTipText(entityDefinition.getProperty(attribute).getDescription());
 
-    return comboBox;
+    return setDescriptionAndEnabledState(comboBox, entityDefinition.getProperty(attribute).getDescription(), enabledState);
   }
 
   /**
@@ -563,6 +555,7 @@ public final class EntityInputComponents {
                                                                              final UpdateOn updateOn, final CalendarButton calendarButton,
                                                                              final StateObserver enabledState) {
     requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
+    requireNonNull(value, VALUE_PARAM_NAME);
     if (!attribute.isTemporal()) {
       throw new IllegalArgumentException("Property " + attribute + " is not a date or time attribute");
     }
@@ -650,12 +643,9 @@ public final class EntityInputComponents {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(
               parsingDocumentFilter(stringLengthValidator(property.getMaximumLength())));
     }
-    linkToEnabledState(enabledState, textArea);
-
     ComponentValues.textComponent(textArea, null, updateOn).link(value);
-    textArea.setToolTipText(property.getDescription());
 
-    return textArea;
+    return setDescriptionAndEnabledState(textArea, property.getDescription(), enabledState);
   }
 
   /**
@@ -846,13 +836,6 @@ public final class EntityInputComponents {
     throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");
   }
 
-  private static JTextField setDescriptionAndEnabledState(final JTextField textField, final String description, final StateObserver enabledState) {
-    textField.setToolTipText(description);
-    linkToEnabledState(enabledState, textField);
-
-    return textField;
-  }
-
   private static JTextField initializeStringField(final int maximumLength) {
     final SizedDocument sizedDocument = new SizedDocument();
     if (maximumLength > 0) {
@@ -898,15 +881,6 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JCheckBox initializeCheckBox(final Property<Boolean> property, final Value<Boolean> value,
-                                              final StateObserver enabledState, final JCheckBox checkBox) {
-    ComponentValues.toggleButton(checkBox).link(value);
-    linkToEnabledState(enabledState, checkBox);
-    checkBox.setToolTipText(property.getDescription());
-
-    return checkBox;
-  }
-
   private static <T> ItemComboBoxModel<T> createValueListComboBoxModel(final ValueListProperty<T> property, final Sorted sorted) {
     final ItemComboBoxModel<T> model = sorted == Sorted.YES ?
             new ItemComboBoxModel<>(property.getValues()) : new ItemComboBoxModel<>(null, property.getValues());
@@ -919,10 +893,16 @@ public final class EntityInputComponents {
     return model;
   }
 
-  private static void linkToEnabledState(final StateObserver enabledState, final JComponent component) {
+  private static <T extends JComponent> T setDescriptionAndEnabledState(final T component, final String description,
+                                                                        final StateObserver enabledState) {
+    if (description != null) {
+      component.setToolTipText(description);
+    }
     if (enabledState != null) {
       Components.linkToEnabledState(enabledState, component);
     }
+
+    return component;
   }
 
   private static NumberFormat cloneFormat(final NumberFormat format) {
