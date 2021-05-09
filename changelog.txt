@@ -6942,3 +6942,4 @@
   FilteredTableColumnModel.getAllColumns() now returns Collection instead of List
   SwingFilteredTableColumnModel.columns now maps columns to identifiers
   EntityInputComponents, some refactoring
+  SwingFilteredTableColumnModel.columnIdentifiers maps columns identifiers to model indexes
