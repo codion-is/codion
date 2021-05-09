@@ -602,13 +602,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Returns the value to use when searching through the table.
    * @param rowIndex the row index
-   * @param column the column
+   * @param columnIdentifier the column identifier
    * @return the search value
    * @see #findNext(int, String)
    * @see #findPrevious(int, String)
    */
-  protected String getSearchValueAt(final int rowIndex, final TableColumn column) {
-    final Object value = getValueAt(rowIndex, column.getModelIndex());
+  protected String getSearchValueAt(final int rowIndex, final C columnIdentifier) {
+    final Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
 
     return value == null ? "" : value.toString();
   }
@@ -665,9 +665,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     requireNonNull(condition, "condition");
     final Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
     while (columnsToSearch.hasMoreElements()) {
-      final TableColumn column = columnsToSearch.nextElement();
-      if (condition.test(getSearchValueAt(row, column))) {
-        return RowColumn.rowColumn(row, columnModel.getColumnIndex(column.getIdentifier()));
+      final C columnIdentifier = (C) columnsToSearch.nextElement().getIdentifier();
+      if (condition.test(getSearchValueAt(row, columnIdentifier))) {
+        return RowColumn.rowColumn(row, columnModel.getColumnIndex(columnIdentifier));
       }
     }
 

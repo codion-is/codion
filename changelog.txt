@@ -6938,3 +6938,4 @@
   AbstractFilteredTableModel, List<TableColumn> added as constructor parameter
   AbstractFilteredTableModel constructor now takes SwingFilteredTableColumnModel instead of List<TableColumn>
   FilteredTableColumnModel.getColumnFilterModel() moved to FilteredTableModel, related refactoring
+  AbstractFilteredTableModel.getSearchValueAt() column parameter replaced with columnIdentifier
