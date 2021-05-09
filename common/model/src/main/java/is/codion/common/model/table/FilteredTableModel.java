@@ -131,7 +131,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void removeItems(int fromIndex, int toIndex);
 
   /**
-   * @return the TableColumnModel used by this TableModel
+   * @return the FilteredTableColumnModel used by this TableModel
    */
   FilteredTableColumnModel<R, C, T> getColumnModel();
 
