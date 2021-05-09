@@ -369,8 +369,7 @@ public final class EntityInputComponents {
                                                  final SwingEntityComboBoxModel comboBoxModel, final StateObserver enabledState) {
     requireNonNull(foreignKey, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(comboBoxModel, "comboBoxModel");
-    comboBoxModel.refresh();
-    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel).refreshOnSetVisible();
     ComponentValues.comboBox(comboBox).link(value);
     addComboBoxCompletion(comboBox);
 

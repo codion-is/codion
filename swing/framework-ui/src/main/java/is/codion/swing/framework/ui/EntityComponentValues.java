@@ -57,7 +57,7 @@ public class EntityComponentValues {
     requireNonNull(attribute, "attribute");
     requireNonNull(editModel, "editModel");
     if (attribute instanceof ForeignKey) {
-      return (ComponentValue<T, C>) createEntityComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
+      return (ComponentValue<T, C>) createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
     final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
@@ -129,15 +129,14 @@ public class EntityComponentValues {
    * @param <T> the component type
    * @return a {@link ComponentValue} for the given foreign key
    */
-  protected <T extends JComponent> ComponentValue<Entity, T> createEntityComponentValue(final ForeignKey foreignKey,
-                                                                                        final SwingEntityEditModel editModel,
-                                                                                        final Entity initialValue) {
+  protected <T extends JComponent> ComponentValue<Entity, T> createForeignKeyComponentValue(final ForeignKey foreignKey,
+                                                                                            final SwingEntityEditModel editModel,
+                                                                                            final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
-      comboBoxModel.refresh();
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel));
+      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel).refreshOnSetVisible());
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
