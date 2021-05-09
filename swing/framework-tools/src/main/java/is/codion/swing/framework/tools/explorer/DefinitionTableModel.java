@@ -25,9 +25,9 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   private final SchemaTableModel schemaTableModel;
 
   DefinitionTableModel(final SchemaTableModel schemaTableModel, final DefinitionSortModel sortModel) {
-    super(new SwingFilteredTableColumnModel<>(createDefinitionColumns(),
+    super(new SwingFilteredTableColumnModel<>(createDefinitionColumns()), sortModel,
             asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
-                    new DefaultColumnFilterModel<>(1, String.class, "%"))), sortModel);
+                    new DefaultColumnFilterModel<>(1, String.class, "%")));
     this.schemaTableModel = schemaTableModel;
   }
 

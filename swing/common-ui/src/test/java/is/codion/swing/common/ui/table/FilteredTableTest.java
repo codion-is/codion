@@ -98,7 +98,7 @@ public class FilteredTableTest {
 
     private TestAbstractFilteredTableModel(final List<TableColumn> columns, final AbstractTableSortModel<List<String>, Integer> sortModel,
                                            final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(new SwingFilteredTableColumnModel<>(columns, columnFilterModels), sortModel);
+      super(new SwingFilteredTableColumnModel<>(columns), sortModel, columnFilterModels);
     }
 
     @Override

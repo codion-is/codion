@@ -275,7 +275,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectColumns() {
-    final SwingFilteredTableColumnModel<R, C> columnModel = tableModel.getColumnModel();
+    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
     final List<TableColumn> allColumns = new ArrayList<>(columnModel.getAllColumns());
     allColumns.sort(new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
@@ -587,7 +587,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnConditionModel<C, ?> model = getModel().getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+    final ColumnConditionModel<C, ?> model = getModel().getColumnFilterModel((C) column.getIdentifier());
     if (model != null) {
       model.addConditionChangedListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
@@ -606,7 +606,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
-    final SwingFilteredTableColumnModel<R, C> columnModel = getModel().getColumnModel();
+    final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
     final int index = columnModel.getColumnIndexAtX(event.getX());
     final TableColumn column = columnModel.getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
@@ -704,7 +704,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     @Override
     public <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
-      final ColumnConditionModel<C, T> filterModel = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+      final ColumnConditionModel<C, T> filterModel = tableModel.getColumnFilterModel((C) column.getIdentifier());
       if (filterModel != null) {
         return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES);
       }

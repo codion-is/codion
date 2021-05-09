@@ -35,7 +35,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
    * @param onSearchListener notified when this condition panel triggers a search
    */
   public EntityTableSimpleConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                         final SwingFilteredTableColumnModel<?, ?> columnModel,
+                                         final SwingFilteredTableColumnModel<?> columnModel,
                                          final EventListener onSearchListener) {
     super(tableConditionModel, columnModel.getAllColumns());
     this.onSearchListener = requireNonNull(onSearchListener);

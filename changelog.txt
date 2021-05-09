@@ -6937,3 +6937,4 @@
   TableSortModel.getColumns() removed, AbstractTableSortModel no longer keeps track of columns
   AbstractFilteredTableModel, List<TableColumn> added as constructor parameter
   AbstractFilteredTableModel constructor now takes SwingFilteredTableColumnModel instead of List<TableColumn>
+  FilteredTableColumnModel.getColumnFilterModel() moved to FilteredTableModel, related refactoring
