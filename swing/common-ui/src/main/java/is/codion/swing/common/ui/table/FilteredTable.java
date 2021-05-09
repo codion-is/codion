@@ -9,7 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.FilteredTableModel;
-import is.codion.common.model.table.RowColumn;
+import is.codion.common.model.table.FilteredTableModel.RowColumn;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.common.model.table.TableSortModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;

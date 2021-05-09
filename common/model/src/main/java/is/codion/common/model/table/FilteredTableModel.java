@@ -270,4 +270,30 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
      */
     int getToRow();
   }
+
+  /**
+   * Holds a row/column coordinate
+   */
+  interface RowColumn {
+
+    /**
+     * @return the row
+     */
+    int getRow();
+
+    /**
+     * @return the column
+     */
+    int getColumn();
+
+    /**
+     * Factory method for {@link RowColumn} instances.
+     * @param row the row index
+     * @param column the column index
+     * @return the RowColumn
+     */
+    static RowColumn rowColumn(final int row, final int column) {
+      return new DefaultRowColumn(row, column);
+    }
+  }
 }

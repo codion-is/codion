@@ -3,6 +3,8 @@
  */
 package is.codion.common.model.table;
 
+import is.codion.common.model.table.FilteredTableModel.RowColumn;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

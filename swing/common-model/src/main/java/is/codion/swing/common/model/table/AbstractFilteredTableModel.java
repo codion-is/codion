@@ -11,7 +11,6 @@ import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.model.table.FilteredTableModel;
-import is.codion.common.model.table.RowColumn;
 import is.codion.common.model.table.TableSortModel;
 
 import javax.swing.event.TableModelEvent;
