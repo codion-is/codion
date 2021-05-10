@@ -103,13 +103,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                     .tableModelClass(EmployeeTableModel.class))
                     .editPanelClass(EmployeeEditPanel.class)
                     .tablePanelClass(EmployeeTablePanel.class)
-                    .detailPanelBuilder(customerBuilder).detailPanelState(EntityPanel.PanelState.HIDDEN);
+                    .detailPanelBuilder(customerBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     return Arrays.asList(genreBuilder, mediaTypeBuilder, employeeBuilder);
   }
 
   @Override
-    protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
     final SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
     final EntityPanel customerPanel = new EntityPanel(customerModel, new CustomerEditPanel(customerModel.getEditModel()),
             new CustomerTablePanel(customerModel.getTableModel()));
