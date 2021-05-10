@@ -161,7 +161,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
-    super(new SwingFilteredTableColumnModel<>(initializeColumns(connectionProvider.getEntities().getDefinition(entityType).getVisibleProperties())),
+    super(new SwingFilteredTableColumnModel<>(createColumns(connectionProvider.getEntities().getDefinition(entityType))),
             sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
     if (!tableConditionModel.getEntityType().equals(requireNonNull(entityType, "entityType"))) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
@@ -565,6 +565,36 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     refreshEvent.removeListener(listener);
   }
 
+  /**
+   * Initializes default {@link TableColumn}s for all visible properties in the given entity type.
+   * @param definition the entity definition
+   * @return a list of TableColumns based on the given entity
+   */
+  public static List<TableColumn> createColumns(final EntityDefinition definition) {
+    return createColumns(requireNonNull(definition).getVisibleProperties());
+  }
+
+  /**
+   * Initializes default {@link TableColumn}s from the given properties.
+   * @param properties the properties
+   * @return a list of TableColumns based on the given properties
+   */
+  public static List<TableColumn> createColumns(final List<Property<?>> properties) {
+    requireNonNull(properties);
+    final List<TableColumn> columns = new ArrayList<>(properties.size());
+    for (final Property<?> property : properties) {
+      final TableColumn column = new TableColumn(columns.size());
+      column.setIdentifier(property.getAttribute());
+      column.setHeaderValue(property.getCaption());
+      if (property.getPreferredColumnWidth() > 0) {
+        column.setPreferredWidth(property.getPreferredColumnWidth());
+      }
+      columns.add(column);
+    }
+
+    return columns;
+  }
+
   @Override
   protected final <T extends Number> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final Attribute<?> attribute) {
     if (attribute.isNumerical()) {
@@ -820,20 +850,5 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
         }
       }
     }
-  }
-
-  private static List<TableColumn> initializeColumns(final List<Property<?>> visibleProperties) {
-    final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
-    for (final Property<?> property : visibleProperties) {
-      final TableColumn column = new TableColumn(columns.size());
-      column.setIdentifier(property.getAttribute());
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.getPreferredColumnWidth());
-      }
-      columns.add(column);
-    }
-
-    return columns;
   }
 }
