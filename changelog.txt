@@ -6980,3 +6980,4 @@
   EntityInputComponents, EntityComponentValues now use EntityComboBox.refreshOnSetVisible() instead of refreshing right away
   EntityComponentValues.createEntityComponentValue() renamed createForeignKeyComponentValue()
   SwingEntityTableModel.initializeColumns() renamed createColumns(), public and overloaded
+  DefaultDialogBuilder, dialogs with a closeEvent can now be closed via X decorator, prevent with confirmCloseListener

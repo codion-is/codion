@@ -112,6 +112,12 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
     }
 
     final Action disposeAction = new DisposeDialogAction(dialog, confirmCloseListener);
+    dialog.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(final WindowEvent e) {
+          disposeAction.actionPerformed(null);
+        }
+      });
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
@@ -122,15 +128,8 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
                 .action(new DisposeDialogOnEscapeAction(dialog, confirmCloseListener))
                 .enable(dialog.getRootPane());
       }
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(final WindowEvent e) {
-          disposeAction.actionPerformed(null);
-        }
-      });
     }
     else {
-      dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
       closeEvent.addListener(() -> disposeAction.actionPerformed(null));
     }
     if (onClosedAction != null) {
