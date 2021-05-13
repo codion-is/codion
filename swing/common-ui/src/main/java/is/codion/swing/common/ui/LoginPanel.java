@@ -118,6 +118,7 @@ public final class LoginPanel extends JPanel {
     if (dummyFrame != null) {
       dummyFrame.dispose();
     }
+    dialog.dispose();
 
     if (pane.getValue() != null && pane.getValue().equals(0)) {
       return getUser();
