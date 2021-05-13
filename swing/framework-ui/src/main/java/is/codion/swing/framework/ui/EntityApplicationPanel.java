@@ -152,50 +152,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement", JTabbedPane.TOP);
 
-  /**
-   * Specifies whether an application frame should be maximized on startup.
-   */
-  public enum MaximizeFrame {
-    /**
-     * Frame should be maximized on startup.
-     */
-    YES,
-    /**
-     * Frame should not be maximized on startup.
-     */
-    NO
-  }
-
-  /**
-   * Specifies whether an application frame should be displayed on startup.
-   */
-  public enum DisplayFrame {
-    /**
-     * Frame should be displayed on startup.
-     */
-    YES,
-    /**
-     * Frame should not be displayed on startup.
-     */
-    NO
-  }
-
-  /**
-   * Specifies whether a application frame should include a main menu.
-   * @see #getMainMenuControls()
-   * @see #initializeMenuBar()
-   */
-  public enum MainMenu {
-    /**
-     * Main menu should be included.
-     */
-    YES,
-    /**
-     * Main menu should not be included.
-     */
-    NO
-  }
-
   private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
@@ -408,118 +364,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  /**
-   * Starts this application.
-   * @param frameCaption the caption to display on the frame
-   * @param iconName the name of the icon to use
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param frameSize the frame size when not maximized
-   */
-  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                     final Dimension frameSize) {
-    startApplication(frameCaption, iconName, maximizeFrame, frameSize, null);
-  }
-
-  /**
-   * Starts this application.
-   * @param frameCaption the caption to display on the frame
-   * @param iconName the name of the icon to use
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param frameSize the frame size when not maximized
-   * @param defaultUser the default user to display in the login dialog
-   */
-  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                     final Dimension frameSize, final User defaultUser) {
-    startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, DisplayFrame.YES);
-  }
-
-  /**
-   * Starts this application.
-   * @param frameCaption the caption to display on the frame
-   * @param iconName the name of the icon to use
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param frameSize the frame size when not maximized
-   * @param defaultUser the default user to display in the login dialog
-   * @param displayFrame specifies whether the frame should be displayed or left invisible
-   */
-  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                     final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame) {
-    startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, displayFrame, null);
-  }
-
-  /**
-   * Starts this application.
-   * @param frameCaption the caption to display on the frame
-   * @param iconName the name of the icon to use
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param frameSize the frame size when not maximized
-   * @param defaultUser the default user to display in the login dialog
-   * @param displayFrame specifies whether the frame should be displayed or left invisible
-   * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
-   */
-  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                     final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
-                                     final User silentLoginUser) {
-    final ImageIcon icon = iconName != null ? loadIcon(getClass(), iconName) : icons().logoTransparent();
-
-    startApplication(frameCaption, icon, maximizeFrame, frameSize, defaultUser, displayFrame, silentLoginUser, true);
-  }
-
-  /**
-   * Starts this application.
-   * @param frameCaption the caption to display on the frame
-   * @param applicationIcon the icon to use
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param frameSize the frame size when not maximized
-   * @param defaultUser the default user to display in the login dialog
-   * @param displayFrame specifies whether the frame should be displayed or left invisible
-   * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
-   * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
-   */
-  public final void startApplication(final String frameCaption, final ImageIcon applicationIcon, final MaximizeFrame maximizeFrame,
-                                     final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
-                                     final User silentLoginUser, final boolean displayProgressDialog) {
-    LOG.debug("{} application starting", frameCaption);
-    FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
-    final Integer fontSize = getDefaultFontSize();
-    if (!Objects.equals(fontSize, 100)) {
-      Components.setFontSize(fontSize / 100f);
-    }
-    final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
-    while (connectionProviderValue.isNull()) {
-      try {
-        final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : null;
-        final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-        connectionProvider.getConnection();//throws exception if the server is not reachable
-        connectionProviderValue.set(connectionProvider);
-        frameTitle = getFrameTitle(frameCaption, connectionProvider);
-        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-          saveDefaultUsername(user.getUsername());
-        }
-      }
-      catch (final CancelException exception) {
-        return;
-      }
-      catch (final Throwable exception) {
-        onLoginException(exception);
-      }
-    }
-    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProviderValue.get(),
-            maximizeFrame, frameSize, applicationIcon, displayFrame);
-    if (displayProgressDialog) {
-      ProgressWorker.builder()
-              .task(applicationStarter)
-              .dialogTitle(frameTitle)
-              .westPanel(initializeStartupIconPanel(applicationIcon))
-              .build()
-              .execute();
-    }
-    else {
-      applicationStarter.perform();
-    }
-  }
-
   @Override
   public final HierarchyPanel getParentPanel() {
     return null;
@@ -675,6 +519,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     return new DefaultTreeModel(root);
+  }
+
+  /**
+   * @return a {@link Starter} for this application panel.
+   */
+  public Starter starter() {
+    return new EntityApplicationPanelStarter(this);
   }
 
   /**
@@ -1194,9 +1045,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param alwaysOnTop controls the always on top state of the resulting frame
    * @return an initialized, but non-visible JFrame
    */
-  protected final JFrame prepareFrame(final String title, final MaximizeFrame maximizeFrame,
-                                      final MainMenu mainMenu, final Dimension size,
-                                      final ImageIcon applicationIcon, final DisplayFrame displayFrame,
+  protected final JFrame prepareFrame(final String title, final boolean maximizeFrame,
+                                      final boolean mainMenu, final Dimension size,
+                                      final ImageIcon applicationIcon, final boolean displayFrame,
                                       final boolean alwaysOnTop) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1222,15 +1073,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       Windows.setSizeWithinScreenBounds(frame);
     }
     Windows.centerWindow(frame);
-    if (maximizeFrame == MaximizeFrame.YES) {
+    if (maximizeFrame) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     frame.setTitle(title);
-    if (mainMenu == MainMenu.YES) {
+    if (mainMenu) {
       frame.setJMenuBar(initializeMenuBar());
     }
     frame.setAlwaysOnTop(alwaysOnTop);
-    if (displayFrame == DisplayFrame.YES) {
+    if (displayFrame) {
       frame.setVisible(true);
     }
 
@@ -1315,6 +1166,50 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected void savePreferences() {
     getEntityPanels().forEach(EntityPanel::savePreferences);
     getModel().savePreferences();
+  }
+
+  final void startApplication(final String applicationName, final ImageIcon applicationIcon, final boolean maximizeFrame,
+                              final Dimension frameSize, final User defaultUser, final boolean displayFrame,
+                              final User silentLoginUser, final boolean includeMainMenu, final boolean displayProgressDialog) {
+    LOG.debug("{} application starting", applicationName);
+    FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
+    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
+    final Integer fontSize = getDefaultFontSize();
+    if (!Objects.equals(fontSize, 100)) {
+      Components.setFontSize(fontSize / 100f);
+    }
+    final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
+    while (connectionProviderValue.isNull()) {
+      try {
+        final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(applicationName, defaultUser, applicationIcon) : null;
+        final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+        connectionProvider.getConnection();//throws exception if the server is not reachable
+        connectionProviderValue.set(connectionProvider);
+        frameTitle = getFrameTitle(applicationName, connectionProvider);
+        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
+          saveDefaultUsername(user.getUsername());
+        }
+      }
+      catch (final CancelException exception) {
+        return;
+      }
+      catch (final Throwable exception) {
+        onLoginException(exception);
+      }
+    }
+    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProviderValue.get(),
+            maximizeFrame, frameSize, applicationIcon, displayFrame, includeMainMenu);
+    if (displayProgressDialog) {
+      ProgressWorker.builder()
+              .task(applicationStarter)
+              .dialogTitle(frameTitle)
+              .westPanel(initializeStartupIconPanel(applicationIcon))
+              .build()
+              .execute();
+    }
+    else {
+      applicationStarter.perform();
+    }
   }
 
   private JTabbedPane initializeApplicationTabPane() {
@@ -1496,6 +1391,77 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }
 
+  /**
+   * A starter for entity application panels.
+   */
+  public interface Starter {
+
+    /**
+     * @param applicationName the application name to display as the frame title
+     * @return this Starter instance
+     */
+    Starter applicationName(String applicationName);
+
+    /**
+     * @param applicationIconName the name of the application icon to use
+     * @return this Starter instance
+     */
+    Starter applicationIconName(String applicationIconName);
+
+    /**
+     * @param applicationIcon the icon to use
+     * @return this Starter instance
+     */
+    Starter applicationIcon(ImageIcon applicationIcon);
+
+    /**
+     * @param includeMainMenu if true then a main menu is included
+     * @return this Starter instance
+     */
+    Starter includeMainMenu(boolean includeMainMenu);
+
+    /**
+     * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
+     * @return this Starter instance
+     */
+    Starter maximizeFrame(boolean maximizeFrame);
+
+    /**
+     * @param displayFrame specifies whether the frame should be displayed or left invisible
+     * @return this Starter instance
+     */
+    Starter displayFrame(boolean displayFrame);
+
+    /**
+     * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
+     * @return this Starter instance
+     */
+    Starter displayProgressDialog(boolean displayProgressDialog);
+
+    /**
+     * @param frameSize the frame size when not maximized
+     * @return this Starter instance
+     */
+    Starter frameSize(Dimension frameSize);
+
+    /**
+     * @param defaultUser the default user to display in the login dialog
+     * @return this Starter instance
+     */
+    Starter defaultLoginUser(User defaultLoginUser);
+
+    /**
+     * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
+     * @return this Starter instance
+     */
+    Starter silentLoginUser(User silentLoginUser);
+
+    /**
+     * Starts the application
+     */
+    void start();
+  }
+
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
 
     private final Entities entities;
@@ -1551,18 +1517,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final class ApplicationStarter implements Control.Command {
 
     private final EntityConnectionProvider connectionProvider;
-    private final MaximizeFrame maximizeFrame;
+    private final boolean maximizeFrame;
     private final Dimension frameSize;
     private final ImageIcon applicationIcon;
-    private final DisplayFrame displayFrame;
+    private final boolean displayFrame;
+    private final boolean includeMainMenu;
 
-    private ApplicationStarter(final EntityConnectionProvider connectionProvider, final MaximizeFrame maximizeFrame,
-                               final Dimension frameSize, final ImageIcon applicationIcon, final DisplayFrame displayFrame) {
+    private ApplicationStarter(final EntityConnectionProvider connectionProvider, final boolean maximizeFrame,
+                               final Dimension frameSize, final ImageIcon applicationIcon, final boolean displayFrame,
+                               final boolean includeMainMenu) {
       this.connectionProvider = connectionProvider;
       this.maximizeFrame = maximizeFrame;
       this.frameSize = frameSize;
       this.applicationIcon = applicationIcon;
       this.displayFrame = displayFrame;
+      this.includeMainMenu = includeMainMenu;
     }
 
     @Override
@@ -1573,7 +1542,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
         refreshComboBoxModels();
         SwingUtilities.invokeAndWait(() -> applicationStartedEvent.onEvent(
-                prepareFrame(frameTitle, maximizeFrame, MainMenu.YES, frameSize,
+                prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
                         applicationIcon, displayFrame, alwaysOnTopState.get())));
         LOG.info(frameTitle + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }

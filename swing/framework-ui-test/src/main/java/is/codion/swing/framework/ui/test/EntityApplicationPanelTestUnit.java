@@ -6,8 +6,6 @@ package is.codion.swing.framework.ui.test;
 import is.codion.common.user.User;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
-import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class EntityApplicationPanelTestUnit {
 
-  private final Class<? extends EntityApplicationPanel> panelClass;
+  private final Class<? extends EntityApplicationPanel<?>> panelClass;
   private final User user;
 
   /**
@@ -24,7 +22,7 @@ public class EntityApplicationPanelTestUnit {
    * @param panelClass the panel class
    * @param user the user
    */
-  protected EntityApplicationPanelTestUnit(final Class<? extends EntityApplicationPanel> panelClass, final User user) {
+  protected EntityApplicationPanelTestUnit(final Class<? extends EntityApplicationPanel<?>> panelClass, final User user) {
     this.panelClass = requireNonNull(panelClass, "panelClass");
     this.user = requireNonNull(user, "user");
   }
@@ -36,9 +34,9 @@ public class EntityApplicationPanelTestUnit {
   protected final void testInitializePanel() throws Exception {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
-    final EntityApplicationPanel panel = createApplicationPanel();
+    final EntityApplicationPanel<?> panel = createApplicationPanel();
     panel.addApplicationStartedListener(frame -> panel.getModel().getConnectionProvider().close());
-    panel.startApplication(null, null, MaximizeFrame.NO, null, null, DisplayFrame.NO, user, false);
+    panel.starter().silentLoginUser(user).displayFrame(false).displayProgressDialog(false).start();
   }
 
   /**
@@ -46,7 +44,7 @@ public class EntityApplicationPanelTestUnit {
    * @return the panel to test
    * @throws Exception in case of an exception
    */
-  protected EntityApplicationPanel createApplicationPanel() throws Exception {
+  protected EntityApplicationPanel<?> createApplicationPanel() throws Exception {
     return panelClass.getConstructor().newInstance();
   }
 }

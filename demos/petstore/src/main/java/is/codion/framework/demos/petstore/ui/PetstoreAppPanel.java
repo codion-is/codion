@@ -91,7 +91,10 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
-    SwingUtilities.invokeLater(() -> new PetstoreAppPanel().startApplication("The Pet Store", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.8), User.parseUser("scott:tiger")));
+    SwingUtilities.invokeLater(() -> new PetstoreAppPanel().starter()
+            .applicationName("The Pet Store")
+            .frameSize(Windows.getScreenSizeRatio(0.8))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
 }

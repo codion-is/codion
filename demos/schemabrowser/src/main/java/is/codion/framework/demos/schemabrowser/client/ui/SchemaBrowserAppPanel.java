@@ -65,8 +65,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
-    SwingUtilities.invokeLater(() -> new SchemaBrowserAppPanel().startApplication("Schema Browser", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.5), User.parseUser("scott:tiger")));
+    SwingUtilities.invokeLater(() -> new SchemaBrowserAppPanel().starter()
+            .applicationName("Schema Browser")
+            .frameSize(Windows.getScreenSizeRatio(0.5))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {

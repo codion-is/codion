@@ -10,8 +10,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
-import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +39,7 @@ public class EntityApplicationPanelTest {
   public void getDependencyTreeModel() {
     final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(CONNECTION_PROVIDER.getEntities());
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-    final Enumeration tree = root.preorderEnumeration();
+    final Enumeration<?> tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
     assertNull(node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
@@ -74,7 +72,7 @@ public class EntityApplicationPanelTest {
       assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
       panel.logout();
     });
-    panel.startApplication("Test", null, MaximizeFrame.NO, null, null,
-            DisplayFrame.NO, UNIT_TEST_USER, false);
+    panel.startApplication("Test", null, false, null, null,
+            false, UNIT_TEST_USER, true, false);
   }
 }
