@@ -80,7 +80,10 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
-    SwingUtilities.invokeLater(() -> new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
-            new Dimension(1024, 720), User.parseUser("scott:tiger")));
+    SwingUtilities.invokeLater(() -> new WorldAppPanel().starter()
+            .applicationName("World")
+            .frameSize(new Dimension(1024, 720))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
 }

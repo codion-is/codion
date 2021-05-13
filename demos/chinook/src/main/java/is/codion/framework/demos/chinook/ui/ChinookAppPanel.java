@@ -261,9 +261,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
-    SwingUtilities.invokeLater(() ->
-            new ChinookAppPanel().startApplication("Chinook", null, MaximizeFrame.NO,
-                    new Dimension(1280, 720), User.parseUser("scott:tiger")));
+    SwingUtilities.invokeLater(() -> new ChinookAppPanel().starter()
+            .applicationName("Chinook")
+            .frameSize(new Dimension(1280, 720))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
 
   }
 }

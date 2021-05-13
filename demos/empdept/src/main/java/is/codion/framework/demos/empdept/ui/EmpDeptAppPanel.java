@@ -88,8 +88,12 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
-    SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().startApplication("Emp-Dept", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger")));
+    SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().starter()
+            .applicationName("Emp-Dept")
+            .maximizeFrame(false)
+            .frameSize(Windows.getScreenSizeRatio(0.6))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
   // end::main[]
 

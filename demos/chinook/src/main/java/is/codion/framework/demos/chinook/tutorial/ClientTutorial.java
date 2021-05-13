@@ -16,7 +16,6 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntitySearchField;
@@ -24,6 +23,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.util.List;
@@ -164,7 +164,10 @@ public final class ClientTutorial {
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    new ApplicationPanel().startApplication("Artists and Albums", null, MaximizeFrame.NO,
-            getScreenSizeRatio(0.5), User.parseUser("scott:tiger"));
+    SwingUtilities.invokeLater(() -> new ApplicationPanel().starter()
+            .applicationName("Artists and Albums")
+            .frameSize(getScreenSizeRatio(0.5))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
 }

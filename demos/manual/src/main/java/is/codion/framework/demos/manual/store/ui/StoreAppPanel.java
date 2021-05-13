@@ -19,6 +19,7 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
+import javax.swing.SwingUtilities;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -72,8 +73,11 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
     Report.REPORT_PATH.set("http://test.io");
-    new StoreAppPanel().startApplication("Store", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+    SwingUtilities.invokeLater(() -> new StoreAppPanel().starter()
+            .applicationName("Store")
+            .frameSize(Windows.getScreenSizeRatio(0.6))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
 }
 // end::storeAppPanel[]

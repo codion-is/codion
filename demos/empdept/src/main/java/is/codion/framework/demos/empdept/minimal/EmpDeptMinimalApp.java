@@ -19,10 +19,10 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.time.LocalDate;
@@ -277,7 +277,11 @@ public final class EmpDeptMinimalApp {
     System.setProperty("java.security.policy", "resources/security/codion_demos.policy");
 
     //we create an instance of our application panel and start it
-    new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, MaximizeFrame.NO,
-            new Dimension(800, 600), User.parseUser("scott:tiger"));
+    SwingUtilities.invokeLater(() -> new EmpDeptApplicationPanel().starter()
+            .applicationName("EmpDept Minimal")
+            .maximizeFrame(false)
+            .frameSize(new Dimension(800, 600))
+            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .start());
   }
 }
