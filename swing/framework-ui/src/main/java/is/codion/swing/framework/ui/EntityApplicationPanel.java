@@ -1197,18 +1197,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         onLoginException(exception);
       }
     }
-    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider,
-            maximizeFrame, frameSize, applicationIcon, displayFrame, includeMainMenu);
+    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
               .dialogTitle(frameTitle)
               .westPanel(initializeStartupIconPanel(applicationIcon))
+              .onSuccess(() -> applicationStartedEvent.onEvent(
+                      prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
+                              applicationIcon, displayFrame, alwaysOnTopState.get())))
               .build()
               .execute();
     }
     else {
       applicationStarter.perform();
+      applicationStartedEvent.onEvent(prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
+              applicationIcon, displayFrame, alwaysOnTopState.get()));
     }
   }
 
@@ -1532,21 +1536,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final class ApplicationStarter implements Control.Command {
 
     private final EntityConnectionProvider connectionProvider;
-    private final boolean maximizeFrame;
-    private final Dimension frameSize;
-    private final ImageIcon applicationIcon;
-    private final boolean displayFrame;
-    private final boolean includeMainMenu;
 
-    private ApplicationStarter(final EntityConnectionProvider connectionProvider, final boolean maximizeFrame,
-                               final Dimension frameSize, final ImageIcon applicationIcon, final boolean displayFrame,
-                               final boolean includeMainMenu) {
+    private ApplicationStarter(final EntityConnectionProvider connectionProvider) {
       this.connectionProvider = connectionProvider;
-      this.maximizeFrame = maximizeFrame;
-      this.frameSize = frameSize;
-      this.applicationIcon = applicationIcon;
-      this.displayFrame = displayFrame;
-      this.includeMainMenu = includeMainMenu;
     }
 
     @Override
@@ -1556,9 +1548,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         applicationModel = initializeApplicationModel(connectionProvider);
         SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
         refreshComboBoxModels();
-        SwingUtilities.invokeAndWait(() -> applicationStartedEvent.onEvent(
-                prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
-                        applicationIcon, displayFrame, alwaysOnTopState.get())));
         LOG.info(frameTitle + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }
       catch (final Throwable exception) {
