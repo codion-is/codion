@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.user.User;
+import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.Windows;
 
 import javax.swing.ImageIcon;
@@ -25,6 +26,7 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
   private boolean displayFrame = true;
   private boolean displayProgressDialog = true;
   private Dimension frameSize = Windows.getScreenSizeRatio(0.5);
+  private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
   private User defaultLoginUser;
   private User silentLoginUser;
 
@@ -81,6 +83,12 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
   }
 
   @Override
+  public EntityApplicationPanel.Starter loginRequired(final boolean loginRequired) {
+    this.loginRequired = loginRequired;
+    return this;
+  }
+
+  @Override
   public EntityApplicationPanel.Starter defaultLoginUser(final User defaultLoginUser) {
     this.defaultLoginUser = defaultLoginUser;
     return this;
@@ -94,8 +102,8 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
 
   @Override
   public void start() {
-    applicationPanel.startApplication(applicationName, applicationIcon, defaultLoginUser,
-            silentLoginUser, frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog);
+    applicationPanel.startApplication(applicationName, applicationIcon, defaultLoginUser, silentLoginUser,
+            loginRequired, frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog);
   }
 
   private ImageIcon loadIcon(final String resourceName) {

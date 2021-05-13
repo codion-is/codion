@@ -66,12 +66,10 @@ public class EntityApplicationPanelTest {
         return model;
       }
     };
-    panel.setLoginRequired(false);
-    panel.setShowStartupDialog(false);
     panel.addApplicationStartedListener(frame -> {
       assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
       panel.logout();
     });
-    panel.startApplication("Test", null, null, UNIT_TEST_USER, null, false, false, true, false);
+    panel.startApplication("Test", null, null, UNIT_TEST_USER, false, null, false, false, true, false);
   }
 }
