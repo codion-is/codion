@@ -1247,15 +1247,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     bindEvents();
   }
 
-  private void refreshComboBoxModels() {
-    this.applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
-  }
-
-  private void refreshComboBoxModels(final SwingEntityModel model) {
-    model.getEditModel().refreshForeignKeyComboBoxModels();
-    model.getDetailModels().forEach(this::refreshComboBoxModels);
-  }
-
   private JScrollPane initializeApplicationTree() {
     return initializeTree(createApplicationTree(entityPanels));
   }
@@ -1522,12 +1513,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         final long initializationStarted = System.currentTimeMillis();
         applicationModel = initializeApplicationModel(connectionProvider);
         SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
-        refreshComboBoxModels();
+        applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
         LOG.info(frameTitle + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }
       catch (final Throwable exception) {
         displayException(exception, null);
       }
+    }
+
+    private void refreshComboBoxModels(final SwingEntityModel model) {
+      model.getEditModel().refreshForeignKeyComboBoxModels();
+      model.getDetailModels().forEach(this::refreshComboBoxModels);
     }
   }
 }
