@@ -55,11 +55,25 @@ public class ProgressDialog extends JDialog {
    */
   public ProgressDialog(final Window dialogOwner, final String title, final int maxProgress,
                         final JPanel northPanel, final Controls buttonControls) {
+    this(dialogOwner, title, maxProgress, northPanel, null, buttonControls);
+  }
+
+  /**
+   * Instantiates a new progress bar dialog.
+   * @param dialogOwner the dialog owner
+   * @param title the title
+   * @param maxProgress the maximum progress for the progress bar, -1 for indeterminate,
+   * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
+   * @param westPanel if specified this panel is added to the {@link BorderLayout#WEST} position
+   * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
+   */
+  public ProgressDialog(final Window dialogOwner, final String title, final int maxProgress,
+                        final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     progressBar = initializeProgressBar(maxProgress);
-    initializeUI(northPanel, buttonControls);
+    initializeUI(northPanel, westPanel, buttonControls);
   }
 
   /**
@@ -72,12 +86,16 @@ public class ProgressDialog extends JDialog {
   /**
    * Initalizes the UI, override for a custom look
    * @param northPanel a panel to display at the {@link BorderLayout#NORTH} position
+   * @param westPanel a panel to display at the {@link BorderLayout#WEST} position
    * @param buttonControls if specified buttons based on these controls are added to this dialog
    */
-  protected void initializeUI(final JPanel northPanel, final Controls buttonControls) {
+  protected void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
+    }
+    if (westPanel != null) {
+      add(westPanel, BorderLayout.WEST);
     }
     add(progressBar, BorderLayout.CENTER);
     if (buttonControls != null) {

@@ -6951,3 +6951,4 @@
   SwingEntityTableModel.initializeColumns() renamed createColumns(), public and overloaded
   DefaultDialogBuilder, dialogs with a closeEvent can now be closed via X decorator, prevent with confirmCloseListener
   LoginPanel bug fixed, did not dispose dialog after use
+  EntityApplicationPanel.startApplicationInternal(), major refactoring to accommodate starting the application on the EDT

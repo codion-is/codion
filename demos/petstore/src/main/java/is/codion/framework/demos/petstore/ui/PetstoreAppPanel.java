@@ -12,6 +12,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+import javax.swing.SwingUtilities;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +91,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
-    new PetstoreAppPanel().startApplication("The Pet Store", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.8), User.parseUser("scott:tiger"));
+    SwingUtilities.invokeLater(() -> new PetstoreAppPanel().startApplication("The Pet Store", null, MaximizeFrame.NO,
+            Windows.getScreenSizeRatio(0.8), User.parseUser("scott:tiger")));
   }
 }
