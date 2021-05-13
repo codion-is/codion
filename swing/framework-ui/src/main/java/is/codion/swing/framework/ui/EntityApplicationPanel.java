@@ -19,6 +19,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -96,6 +97,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -261,8 +263,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the login is cancelled
    */
   public final void login() {
-    applicationModel.login(getUser(frameTitle, null, null,
-            new LoginValidator(applicationModel.getConnectionProvider())));
+    final User user = getUser(frameTitle, null, null, new LoginValidator(connectionProvider -> {}));
+    applicationModel.login(user);
   }
 
   /**
@@ -790,15 +792,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Initializes the entity connection provider
+   * @param user the user
    * @param clientTypeId a string specifying the client type
    * @return an initialized EntityConnectionProvider
    * @throws CancelException in case the initialization is cancelled
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final String clientTypeId) {
+  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
     return EntityConnectionProvider.connectionProvider()
             .setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
             .setClientTypeId(clientTypeId)
-            .setClientVersion(getClientVersion());
+            .setClientVersion(getClientVersion())
+            .setUser(user);
   }
 
   /**
@@ -1178,13 +1182,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final EntityConnectionProvider connectionProvider = initializeConnectionProvider(getApplicationIdentifier());
-    while (connectionProvider.getUser() == null) {
+    final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
+    while (connectionProviderValue.isNull()) {
       try {
         final User user = silentLoginUser != null ? silentLoginUser : loginRequired ?
-                getUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProvider)) : null;
-        connectionProvider.setUser(user);
-        frameTitle = getFrameTitle(applicationName, connectionProvider);
+                getUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProviderValue::set)) : null;
+        frameTitle = getFrameTitle(applicationName, connectionProviderValue.get());
         if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
           saveDefaultUsername(user.getUsername());
         }
@@ -1193,11 +1196,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         return;
       }
       catch (final Throwable exception) {
-        connectionProvider.setUser(null);
         onLoginException(exception);
       }
     }
-    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
+    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProviderValue.get());
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
@@ -1518,18 +1520,19 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static final class LoginValidator implements UserValidator {
+  private final class LoginValidator implements UserValidator {
 
-    private final EntityConnectionProvider connectionProvider;
+    private final Consumer<EntityConnectionProvider> connectionHandler;
 
-    private LoginValidator(final EntityConnectionProvider connectionProvider) {
-      this.connectionProvider = connectionProvider;
+    private LoginValidator(final Consumer<EntityConnectionProvider> connectionHandler) {
+      this.connectionHandler = connectionHandler;
     }
 
     @Override
     public void validate(final User user) throws Exception {
-      connectionProvider.setUser(user);
+      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable
+      connectionHandler.accept(connectionProvider);
     }
   }
 
