@@ -1445,7 +1445,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Starter frameSize(Dimension frameSize);
 
     /**
-     * @param defaultUser the default user to display in the login dialog
+     * @param defaultLoginUser the default user to display in the login dialog
      * @return this Starter instance
      */
     Starter defaultLoginUser(User defaultLoginUser);
