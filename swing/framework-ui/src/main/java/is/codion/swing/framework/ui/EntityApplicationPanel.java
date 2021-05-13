@@ -81,13 +81,11 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1390,13 +1388,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .allMatch(foreignKey -> foreignKey.getReferencedEntityType().equals(entityType));
   }
 
-  private static <T> ImageIcon loadIcon(final Class<T> resourceOwnerClass, final String resourceName) {
-    final URL url = resourceOwnerClass.getResource(resourceName);
-    requireNonNull(url, "Resource: " + resourceName + " for " + resourceOwnerClass);
-
-    return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
-  }
-
   /**
    * A starter for entity application panels.
    */
@@ -1463,7 +1454,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Starter silentLoginUser(User silentLoginUser);
 
     /**
-     * Starts the application
+     * Starts the application, should be called on the Event Dispatch Thread
      */
     void start();
   }
