@@ -6953,3 +6953,4 @@
   LoginPanel bug fixed, did not dispose dialog after use
   EntityApplicationPanel.startApplicationInternal(), major refactoring to accommodate starting the application on the EDT
   EntityApplicationPanel.Starter added, along with starter() factory method, related refactoring
+  LocalEntityConnectionProvider.getDescription() bug fixed, now uses getDatabase() instead of relying on the field being initialized
