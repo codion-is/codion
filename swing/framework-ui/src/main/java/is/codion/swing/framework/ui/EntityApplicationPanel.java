@@ -19,6 +19,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -42,12 +43,13 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -61,7 +63,6 @@ import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -213,7 +214,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private M applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event<?> applicationStartedEvent = Event.event();
+  private final Event<JFrame> applicationStartedEvent = Event.event();
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
 
@@ -413,11 +414,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param iconName the name of the icon to use
    * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param frameSize the frame size when not maximized
-   * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                       final Dimension frameSize) {
-    return startApplication(frameCaption, iconName, maximizeFrame, frameSize, null);
+  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                     final Dimension frameSize) {
+    startApplication(frameCaption, iconName, maximizeFrame, frameSize, null);
   }
 
   /**
@@ -427,11 +427,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
-   * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                       final Dimension frameSize, final User defaultUser) {
-    return startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, DisplayFrame.YES);
+  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                     final Dimension frameSize, final User defaultUser) {
+    startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, DisplayFrame.YES);
   }
 
   /**
@@ -442,11 +441,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
    * @param displayFrame specifies whether the frame should be displayed or left invisible
-   * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                       final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame) {
-    return startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, displayFrame, null);
+  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                     final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame) {
+    startApplication(frameCaption, iconName, maximizeFrame, frameSize, defaultUser, displayFrame, null);
   }
 
   /**
@@ -458,24 +456,68 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param defaultUser the default user to display in the login dialog
    * @param displayFrame specifies whether the frame should be displayed or left invisible
    * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
-   * @return the JFrame instance containing this application panel
    */
-  public final JFrame startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
-                                       final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
-                                       final User silentLoginUser) {
-    try {
-      final ImageIcon icon = iconName != null ? loadIcon(getClass(), iconName) : icons().logoTransparent();
+  public final void startApplication(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
+                                     final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
+                                     final User silentLoginUser) {
+    final ImageIcon icon = iconName != null ? loadIcon(getClass(), iconName) : icons().logoTransparent();
 
-      return startApplicationInternal(frameCaption, icon, maximizeFrame, frameSize, defaultUser, displayFrame, silentLoginUser);
+    startApplication(frameCaption, icon, maximizeFrame, frameSize, defaultUser, displayFrame, silentLoginUser, true);
+  }
+
+  /**
+   * Starts this application.
+   * @param frameCaption the caption to display on the frame
+   * @param applicationIcon the icon to use
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
+   * @param frameSize the frame size when not maximized
+   * @param defaultUser the default user to display in the login dialog
+   * @param displayFrame specifies whether the frame should be displayed or left invisible
+   * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
+   * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
+   */
+  public final void startApplication(final String frameCaption, final ImageIcon applicationIcon, final MaximizeFrame maximizeFrame,
+                                     final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
+                                     final User silentLoginUser, final boolean displayProgressDialog) {
+    LOG.debug("{} application starting", frameCaption);
+    FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
+    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
+    final Integer fontSize = getDefaultFontSize();
+    if (!Objects.equals(fontSize, 100)) {
+      Components.setFontSize(fontSize / 100f);
     }
-    catch (final CancelException e) {
-      System.exit(0);
+    final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
+    while (connectionProviderValue.isNull()) {
+      try {
+        final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : null;
+        final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+        connectionProvider.getConnection();//throws exception if the server is not reachable
+        connectionProviderValue.set(connectionProvider);
+        frameTitle = getFrameTitle(frameCaption, connectionProvider);
+        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
+          saveDefaultUsername(user.getUsername());
+        }
+      }
+      catch (final CancelException exception) {
+        return;
+      }
+      catch (final Throwable exception) {
+        onLoginException(exception);
+      }
     }
-    catch (final Exception e) {
-      displayException(e, null);
-      System.exit(1);
+    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProviderValue.get(),
+            maximizeFrame, frameSize, applicationIcon, displayFrame);
+    if (displayProgressDialog) {
+      ProgressWorker.builder()
+              .task(applicationStarter)
+              .dialogTitle(frameTitle)
+              .westPanel(initializeStartupIconPanel(applicationIcon))
+              .build()
+              .execute();
     }
-    return null;
+    else {
+      applicationStarter.perform();
+    }
   }
 
   @Override
@@ -608,25 +650,26 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @param listener a listener notified when to application has been successfully started
    */
-  public final void addApplicationStartedListener(final EventListener listener) {
-    applicationStartedEvent.addListener(listener);
+  public final void addApplicationStartedListener(final EventDataListener<JFrame> listener) {
+    applicationStartedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeApplicationStartedListener(final EventListener listener) {
-    applicationStartedEvent.removeListener(listener);
+  public final void removeApplicationStartedListener(final EventDataListener<JFrame> listener) {
+    applicationStartedEvent.removeDataListener(listener);
   }
 
   /**
+   * @param entities the entities
    * @return a tree model showing the dependencies between entities via foreign keys
    */
-  public final TreeModel getDependencyTreeModel() {
+  public static TreeModel getDependencyTreeModel(final Entities entities) {
+    requireNonNull(entities);
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    final Entities entities = applicationModel.getEntities();
     for (final EntityDefinition definition : entities.getDefinitions()) {
-      if (definition.getForeignKeys().isEmpty() || referencesOnlySelf(applicationModel.getEntities(), definition.getEntityType())) {
+      if (definition.getForeignKeys().isEmpty() || referencesOnlySelf(entities, definition.getEntityType())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
       }
     }
@@ -917,23 +960,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes this application panel
-   * @param applicationModel the application model
-   * @throws IllegalStateException if the application model has not been set
-   * @throws CancelException in case the initialization is cancelled
-   */
-  protected final void initialize(final M applicationModel) {
-    requireNonNull(applicationModel, "applicationModel");
-    this.applicationModel = applicationModel;
-    this.supportPanelBuilders.clear();
-    this.supportPanelBuilders.addAll(initializeSupportEntityPanelBuilders(applicationModel));
-    this.entityPanels.addAll(initializeEntityPanels(applicationModel));
-    initializeUI();
-    bindEventsInternal();
-    bindEvents();
-  }
-
-  /**
    * Override to add event bindings after initialization
    */
   protected void bindEvents() {}
@@ -1135,37 +1161,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes the startup dialog
+   * Initializes the icon panel to show in the startup dialog
    * @param icon the icon
-   * @param startupMessage the startup message
-   * @return the startup dialog
-   * @see #initializeStartupProgressPanel(javax.swing.Icon)
+   * @return an initialized startup icon panel
    */
-  protected final JDialog initializeStartupDialog(final Icon icon, final String startupMessage) {
-    final String message = startupMessage == null ? "Initializing Application" : startupMessage;
-    final JDialog initializationDialog = new JDialog((JFrame) null, message, false);
-    initializationDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    initializationDialog.getContentPane().add(initializeStartupProgressPanel(icon), BorderLayout.CENTER);
-    initializationDialog.pack();
-    Windows.centerWindow(initializationDialog);
-
-    return initializationDialog;
-  }
-
-  /**
-   * Initializes the progress panel to show in the startup dialog
-   * @param icon the icon
-   * @return an initialized startup progress panel
-   */
-  protected JPanel initializeStartupProgressPanel(final Icon icon) {
+  protected JPanel initializeStartupIconPanel(final Icon icon) {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
-    progressBar.setIndeterminate(true);
-    panel.add(progressBar, BorderLayout.CENTER);
     if (icon != null) {
-      final JLabel iconLabel = new JLabel(icon);
-      iconLabel.setBorder(BorderFactory.createRaisedBevelBorder());
-      panel.add(iconLabel, BorderLayout.WEST);
+      panel.add(new JLabel(icon), BorderLayout.CENTER);
     }
 
     return panel;
@@ -1197,7 +1200,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                       final boolean alwaysOnTop) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    frame.setIconImage(applicationIcon.getImage());
+    if (applicationIcon != null) {
+      frame.setIconImage(applicationIcon.getImage());
+    }
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -1352,62 +1357,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
   }
 
-  private JFrame startApplicationInternal(final String frameCaption, final ImageIcon applicationIcon, final MaximizeFrame maximizeFrame,
-                                          final Dimension frameSize, final User defaultUser, final DisplayFrame displayFrame,
-                                          final User silentLoginUser) {
-    LOG.debug("{} application starting", frameCaption);
-    FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
-    final Integer fontSize = getDefaultFontSize();
-    if (!Objects.equals(fontSize, 100)) {
-      Components.setFontSize(fontSize / 100f);
-    }
-    while (true) {
-      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : null;
-      EntityConnectionProvider connectionProvider = null;
-      final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
-      if (startupDialog != null) {
-        startupDialog.setVisible(true);
-      }
-      try {
-        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-        connectionProvider.getConnection();//throws exception if the server is not reachable
-        final long initializationStarted = System.currentTimeMillis();
-        initialize(initializeApplicationModel(connectionProvider));
-
-        if (startupDialog != null) {
-          startupDialog.dispose();
-        }
-        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-          saveDefaultUsername(connectionProvider.getUser().getUsername());
-        }
-        this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
-        final JFrame frame = prepareFrame(this.frameTitle, maximizeFrame, MainMenu.YES, frameSize, applicationIcon,
-                displayFrame, alwaysOnTopState.get());
-        this.applicationStartedEvent.onEvent();
-        LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
-                + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
-        return frame;
-      }
-      catch (final Throwable exception) {
-        if (startupDialog != null) {
-          startupDialog.dispose();
-        }
-        onStartupException(connectionProvider, exception);
-      }
-    }
-  }
-
-  private void onStartupException(final EntityConnectionProvider connectionProvider, final Throwable throwable) {
-    try {
-      if (connectionProvider != null) {
-        connectionProvider.close();
-      }
-    }
-    catch (final Exception ex) {
-      LOG.debug("Exception while disconnecting after a failed startup", ex);
-    }
-    //todo EDT mess
+  private void onLoginException(final Throwable throwable) {
     displayException(throwable, null);
     if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
             resourceBundle.getString("retry"), resourceBundle.getString("retry_title"),
@@ -1416,12 +1366,29 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
+  private void initializePanel() {
+    this.entityPanels.addAll(initializeEntityPanels(applicationModel));
+    this.supportPanelBuilders.addAll(initializeSupportEntityPanelBuilders(applicationModel));
+    initializeUI();
+    bindEventsInternal();
+    bindEvents();
+  }
+
+  private void refreshComboBoxModels() {
+    this.applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
+  }
+
+  private void refreshComboBoxModels(final SwingEntityModel model) {
+    model.getEditModel().refreshForeignKeyComboBoxModels();
+    model.getDetailModels().forEach(this::refreshComboBoxModels);
+  }
+
   private JScrollPane initializeApplicationTree() {
     return initializeTree(createApplicationTree(entityPanels));
   }
 
   private JScrollPane initializeDependencyTree() {
-    return initializeTree(getDependencyTreeModel());
+    return initializeTree(getDependencyTreeModel(applicationModel.getEntities()));
   }
 
   private void setParentWindowTitle(final String title) {
@@ -1578,6 +1545,41 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
 
       return false;
+    }
+  }
+
+  private final class ApplicationStarter implements Control.Command {
+
+    private final EntityConnectionProvider connectionProvider;
+    private final MaximizeFrame maximizeFrame;
+    private final Dimension frameSize;
+    private final ImageIcon applicationIcon;
+    private final DisplayFrame displayFrame;
+
+    private ApplicationStarter(final EntityConnectionProvider connectionProvider, final MaximizeFrame maximizeFrame,
+                               final Dimension frameSize, final ImageIcon applicationIcon, final DisplayFrame displayFrame) {
+      this.connectionProvider = connectionProvider;
+      this.maximizeFrame = maximizeFrame;
+      this.frameSize = frameSize;
+      this.applicationIcon = applicationIcon;
+      this.displayFrame = displayFrame;
+    }
+
+    @Override
+    public void perform() {
+      try {
+        final long initializationStarted = System.currentTimeMillis();
+        applicationModel = initializeApplicationModel(connectionProvider);
+        SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
+        refreshComboBoxModels();
+        SwingUtilities.invokeAndWait(() -> applicationStartedEvent.onEvent(
+                prepareFrame(frameTitle, maximizeFrame, MainMenu.YES, frameSize,
+                        applicationIcon, displayFrame, alwaysOnTopState.get())));
+        LOG.info(frameTitle + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+      }
+      catch (final Throwable exception) {
+        displayException(exception, null);
+      }
     }
   }
 }

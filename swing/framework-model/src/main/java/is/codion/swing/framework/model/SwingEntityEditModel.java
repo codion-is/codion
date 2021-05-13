@@ -57,6 +57,17 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
+   * Refreshes all foreign key combobox models
+   */
+  public final void refreshForeignKeyComboBoxModels() {
+    for (final FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+      if (comboBoxModel instanceof SwingEntityComboBoxModel) {
+        comboBoxModel.refresh();
+      }
+    }
+  }
+
+  /**
    * Refreshes all combobox models
    */
   public final void refreshComboBoxModels() {

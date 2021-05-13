@@ -27,6 +27,7 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
+import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Locale;
 
@@ -95,7 +96,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
-    new PetclinicAppPanel().startApplication("Petclinic", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger"));
+    SwingUtilities.invokeLater(() -> new PetclinicAppPanel().startApplication("Petclinic", null, MaximizeFrame.NO,
+            Windows.getScreenSizeRatio(0.6), User.parseUser("scott:tiger")));
   }
 }

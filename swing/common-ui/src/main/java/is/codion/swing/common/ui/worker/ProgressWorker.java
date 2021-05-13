@@ -94,8 +94,26 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate,
                         final JPanel dialogNorthPanel, final Controls buttonControls) {
-    this.progressDialog = new ProgressDialog(dialogOwner, progressMessage,
-            indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS, dialogNorthPanel, buttonControls);
+    this(dialogOwner, progressMessage, indeterminate, dialogNorthPanel, null, buttonControls);
+  }
+
+  /**
+   * Instantiates a {@link ProgressWorker}.
+   * @param dialogOwner the dialog owner
+   * @param progressMessage the message to display while work is in progress
+   * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
+   * progress bar goes from 0 - 100 by default.
+   * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
+   * location of the progress dialog
+   * @param dialogWestPanel if specified this panel will be added at the {@link java.awt.BorderLayout#WEST}
+   * location of the progress dialog
+   * @param buttonControls if specified buttons based on these controls are added
+   * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
+   */
+  public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate,
+                        final JPanel dialogNorthPanel, final JPanel dialogWestPanel, final Controls buttonControls) {
+    progressDialog = new ProgressDialog(dialogOwner, progressMessage,
+            indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS, dialogNorthPanel, dialogWestPanel, buttonControls);
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -122,6 +140,13 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
     progressDialog.getProgressModel().setMaximum(maximumProgress);
     return this;
+  }
+
+  /**
+   * @return the {@link ProgressDialog} used by this progress worker.
+   */
+  public final ProgressDialog getProgressDialog() {
+    return progressDialog;
   }
 
   /**
@@ -239,6 +264,12 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     Builder northPanel(JPanel northPanel);
 
     /**
+     * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
+     * @return this Builder instance
+     */
+    Builder westPanel(JPanel westPanel);
+
+    /**
      * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
      * @return this Builder instance
      */
@@ -259,6 +290,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     private Runnable onSuccess;
     private Consumer<Throwable> onException;
     private JPanel northPanel;
+    private JPanel westPanel;
     private Controls buttonControls;
 
     @Override
@@ -316,6 +348,12 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
 
     @Override
+    public Builder westPanel(final JPanel westPanel) {
+      this.westPanel = westPanel;
+      return this;
+    }
+
+    @Override
     public Builder buttonControls(final Controls buttonControls) {
       this.buttonControls = buttonControls;
       return this;
@@ -328,7 +366,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
       }
       final Window dialogOwner = Windows.getParentWindow(this.dialogOwner);
       final ProgressWorker<?> worker = new ProgressWorker<Object>(dialogOwner, dialogTitle,
-              Indeterminate.YES, northPanel, buttonControls) {
+              Indeterminate.YES, northPanel, westPanel, buttonControls) {
         @Override
         protected Object doInBackground() throws Exception {
           task.perform();

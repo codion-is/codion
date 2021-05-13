@@ -21,7 +21,6 @@ import javax.swing.tree.TreeModel;
 import java.util.Enumeration;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,20 +39,7 @@ public class EntityApplicationPanelTest {
 
   @Test
   public void getDependencyTreeModel() {
-    final EntityApplicationPanel panel = new EntityApplicationPanel() {
-      @Override
-      protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
-        return emptyList();
-      }
-
-      @Override
-      protected SwingEntityApplicationModel initializeApplicationModel(
-              final EntityConnectionProvider connectionProvider) {
-        return new SwingEntityApplicationModel(connectionProvider) {};
-      }
-    };
-    panel.initialize(panel.initializeApplicationModel(CONNECTION_PROVIDER));
-    final TreeModel model = panel.getDependencyTreeModel();
+    final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(CONNECTION_PROVIDER.getEntities());
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
@@ -84,9 +70,11 @@ public class EntityApplicationPanelTest {
     };
     panel.setLoginRequired(false);
     panel.setShowStartupDialog(false);
-    panel.startApplication("Test", null, MaximizeFrame.NO, null, null, DisplayFrame.NO, UNIT_TEST_USER);
-    assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
-
-    panel.logout();
+    panel.addApplicationStartedListener(frame -> {
+      assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
+      panel.logout();
+    });
+    panel.startApplication("Test", null, MaximizeFrame.NO, null, null,
+            DisplayFrame.NO, UNIT_TEST_USER, false);
   }
 }

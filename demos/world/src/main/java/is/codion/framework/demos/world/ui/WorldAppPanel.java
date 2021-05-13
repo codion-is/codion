@@ -19,6 +19,7 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -79,7 +80,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
-    new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
-            new Dimension(1024, 720), User.parseUser("scott:tiger"));
+    SwingUtilities.invokeLater(() -> new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
+            new Dimension(1024, 720), User.parseUser("scott:tiger")));
   }
 }
