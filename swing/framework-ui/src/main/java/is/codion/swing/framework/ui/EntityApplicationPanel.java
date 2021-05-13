@@ -176,10 +176,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final Map<EntityPanel.Builder, EntityPanel> persistentEntityPanels = new HashMap<>();
 
-  private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
-  private boolean showStartupDialog = SHOW_STARTUP_DIALOG.get();
-
-  private String frameTitle = "<no title>";
+  private String frameTitle = "";
 
   /**
    * A default constructor
@@ -261,7 +258,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the login is cancelled
    */
   public final void login() {
-    final User user = getUser(frameTitle, null, null, new LoginValidator(connectionProvider -> {}));
+    final User user = getLoginUser(frameTitle, null, null, new LoginValidator(connectionProvider -> {}));
     applicationModel.login(user);
   }
 
@@ -945,37 +942,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return true if a login dialog is required for this application,
-   * false if the user is supplied differently
-   */
-  protected final boolean isLoginRequired() {
-    return loginRequired;
-  }
-
-  /**
-   * Sets whether or not this application requires a login dialog, setting this value
-   * after the application has been started has no effect
-   * @param loginRequired the login required status
-   */
-  protected final void setLoginRequired(final boolean loginRequired) {
-    this.loginRequired = loginRequired;
-  }
-
-  /**
-   * @return true if a startup dialog should be shown
-   */
-  protected final boolean isShowStartupDialog() {
-    return showStartupDialog;
-  }
-
-  /**
-   * @param startupDialog true if a startup dialog should be shown
-   */
-  protected final void setShowStartupDialog(final boolean startupDialog) {
-    this.showStartupDialog = startupDialog;
-  }
-
-  /**
    * Returns the name of the default look and feel to use, this default implementation fetches
    * it from user preferences, if no preference is available the default system look and feel is used.
    * @return the look and feel name to use
@@ -1123,8 +1089,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the application user
    * @throws CancelException in case a login dialog is cancelled
    */
-  protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon,
-                         final UserValidator userValidator) {
+  protected User getLoginUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon,
+                              final UserValidator userValidator) {
     final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser, userValidator);
     final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
@@ -1171,7 +1137,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   final void startApplication(final String applicationName, final ImageIcon applicationIcon, final User defaultUser,
-                              final User silentLoginUser, final Dimension frameSize, final boolean maximizeFrame,
+                              final User silentLoginUser, final boolean loginRequired, final Dimension frameSize, final boolean maximizeFrame,
                               final boolean displayFrame, final boolean includeMainMenu, final boolean displayProgressDialog) {
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
@@ -1183,8 +1149,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
     while (connectionProviderValue.isNull()) {
       try {
-        final User user = silentLoginUser != null ? silentLoginUser : loginRequired ?
-                getUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProviderValue::set)) : null;
+        User user = null;
+        if (silentLoginUser != null) {
+          user = silentLoginUser;
+          final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+          connectionProvider.getConnection();//throws exception if the server is not reachable
+          connectionProviderValue.set(connectionProvider);
+        }
+        else if (loginRequired) {
+          user = getLoginUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProviderValue::set));
+        }
         frameTitle = getFrameTitle(applicationName, connectionProviderValue.get());
         if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
           saveDefaultUsername(user.getUsername());
@@ -1247,7 +1221,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void bindEventsInternal() {
     applicationModel.getConnectionValidObserver().addDataListener(active -> SwingUtilities.invokeLater(() ->
-            setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED))));
+            setParentWindowTitle(active ? frameTitle : frameTitle + (frameTitle.isEmpty() ? "" : " - ") + Messages.get(Messages.NOT_CONNECTED))));
     alwaysOnTopState.addDataListener(alwaysOnTop -> {
       final Window parent = getParentWindow();
       if (parent != null) {
@@ -1440,6 +1414,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
      * @return this Starter instance
      */
     Starter frameSize(Dimension frameSize);
+
+    /**
+     * @param loginRequired true if a login dialog is required for this application,
+     * false if the user is supplied differently
+     * @return this Starter instance
+     */
+    Starter loginRequired(boolean loginRequired);
 
     /**
      * @param defaultLoginUser the default user to display in the login dialog
