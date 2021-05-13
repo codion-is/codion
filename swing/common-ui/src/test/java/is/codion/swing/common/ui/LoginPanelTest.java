@@ -7,7 +7,6 @@ import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LoginPanelTest {
@@ -16,7 +15,6 @@ public class LoginPanelTest {
   public void test() {
     final User user = User.user("user", "pass".toCharArray());
     final LoginPanel panel = new LoginPanel(user);
-    assertEquals(user, panel.getUser());
     assertNotNull(panel.getPasswordField());
     assertNotNull(panel.getUsernameField());
   }

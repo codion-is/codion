@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
@@ -27,6 +28,7 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
   private Container owner;
   private JComponent component;
   private String title;
+  private ImageIcon icon;
   private boolean modal = true;
   private Action enterAction;
   private Action onClosedAction;
@@ -36,7 +38,7 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
 
   @Override
   public Dialogs.Builder owner(final Container owner) {
-    this.owner = requireNonNull(owner);
+    this.owner = owner;
     return this;
   }
 
@@ -49,6 +51,12 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
   @Override
   public Dialogs.Builder title(final String title) {
     this.title = title;
+    return this;
+  }
+
+  @Override
+  public Dialogs.Builder icon(final ImageIcon icon) {
+    this.icon = icon;
     return this;
   }
 
@@ -95,6 +103,9 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
     }
 
     final JDialog dialog = new JDialog(Windows.getParentWindow(owner), title);
+    if (icon != null) {
+      dialog.setIconImage(icon.getImage());
+    }
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();

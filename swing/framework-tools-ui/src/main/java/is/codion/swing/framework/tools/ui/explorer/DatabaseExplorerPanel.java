@@ -3,10 +3,10 @@
  */
 package is.codion.swing.framework.tools.ui.explorer;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.CancelException;
-import is.codion.common.user.User;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.LoginPanel;
 import is.codion.swing.common.ui.Windows;
@@ -115,8 +115,10 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   public static void main(final String[] arguments) {
     try {
-      final User user = new LoginPanel().showLoginPanel(null);
-      final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), user);
+      final Database database = DatabaseFactory.getDatabase();
+      final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
+              new LoginPanel(null, user -> database.createConnection(user).close())
+                      .showLoginPanel(null));
       new DatabaseExplorerPanel(explorerModel).showFrame();
     }
     catch (final CancelException ignored) {
