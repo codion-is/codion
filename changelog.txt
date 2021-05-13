@@ -6956,3 +6956,4 @@
   LocalEntityConnectionProvider.getDescription() bug fixed, now uses getDatabase() instead of relying on the field being initialized
   LoginPanel.UserValidator added, related refactoring
   EntityApplicationPanel.ApplicationStarter no longer displays the frame
+  EntityApplicationPanel.startApplication() refactored
