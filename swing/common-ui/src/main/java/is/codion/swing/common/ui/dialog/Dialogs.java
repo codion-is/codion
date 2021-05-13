@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -522,6 +523,12 @@ public final class Dialogs {
      * @return this Builder instance
      */
     Builder title(String title);
+
+    /**
+     * @param icon the dialog icon
+     * @return this Builder instance
+     */
+    Builder icon(ImageIcon icon);
 
     /**
      * @param modal true if the dialog should be modal

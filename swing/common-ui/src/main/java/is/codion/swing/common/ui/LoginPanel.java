@@ -5,27 +5,38 @@ package is.codion.swing.common.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A JPanel for retrieving login information.
@@ -42,6 +53,11 @@ public final class LoginPanel extends JPanel {
 
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
+  private final Value<User> userValue = Value.value();
+  private final UserValidator userValidator;
+  private final Control okControl;
+  private final Control cancelControl;
+  private final State validatingState = State.state();
 
   /**
    * Instantiates a new LoginPanel
@@ -55,14 +71,36 @@ public final class LoginPanel extends JPanel {
    * @param defaultUser the default user credentials to display
    */
   public LoginPanel(final User defaultUser) {
+    this(defaultUser, user -> {});
+  }
+
+  /**
+   * Instantiates a new LoginPanel
+   * @param defaultUser the default user credentials to display
+   * @param userValidator the user validator to use
+   */
+  public LoginPanel(final User defaultUser, final UserValidator userValidator) {
+    this.okControl = Control.builder()
+            .name(Messages.get(Messages.OK))
+            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+            .command(this::onOkPressed)
+            .enabledState(validatingState.getReversedObserver())
+            .build();
+    this.cancelControl = Control.builder()
+            .name(Messages.get(Messages.CANCEL))
+            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
+            .command(() -> Windows.getParentDialog(this).dispose())
+            .enabledState(validatingState.getReversedObserver())
+            .build();
+    this.userValidator = requireNonNull(userValidator);
     initializeUI(defaultUser);
   }
 
   /**
-   * @return a User object based on the values found in this LoginPanel
+   * @return an Optional containing a User instance, if the OK button was pressed and the user was valid
    */
-  public User getUser() {
-    return User.user(usernameField.getText(), passwordField.getPassword());
+  public Optional<User> getUser() {
+    return userValue.toOptional();
   }
 
   /**
@@ -98,21 +136,22 @@ public final class LoginPanel extends JPanel {
    * @throws CancelException in case the user cancels
    */
   public User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
-    final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
     Window parentWindow = Windows.getParentWindow(parent);
     JFrame dummyFrame = null;
     if (parentWindow == null && isWindows()) {
       dummyFrame = createDummyFrame(title, icon);
       parentWindow = dummyFrame;
     }
-    final JDialog dialog = pane.createDialog(parentWindow == null ? parentWindow : null,
-            title == null ? Messages.get(Messages.LOGIN) : title);
     if (icon != null) {
-      dialog.setIconImage(icon.getImage());
+      add(new JLabel(icon), BorderLayout.WEST);
     }
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.pack();
-    Windows.centerWindow(dialog);
+    final JDialog dialog = Dialogs.builder()
+            .component(this)
+            .owner(parentWindow)
+            .title(title == null ? Messages.get(Messages.LOGIN) : title)
+            .icon(icon)
+            .enterAction(okControl)
+            .build();
     dialog.setResizable(false);
     dialog.setVisible(true);
     if (dummyFrame != null) {
@@ -120,11 +159,25 @@ public final class LoginPanel extends JPanel {
     }
     dialog.dispose();
 
-    if (pane.getValue() != null && pane.getValue().equals(0)) {
-      return getUser();
+    final Optional<User> user = getUser();
+    if (!user.isPresent()) {
+      throw new CancelException();
     }
 
-    throw new CancelException();
+    return user.get();
+  }
+
+  /**
+   * Validates a login attempt.
+   */
+  public interface UserValidator {
+
+    /**
+     * Valdates a login with the given user
+     * @param user the user
+     * @throws Exception in case validation fails
+     */
+    void validate(User user) throws Exception;
   }
 
   private void initializeUI(final User defaultUser) {
@@ -150,12 +203,53 @@ public final class LoginPanel extends JPanel {
     centerPanel.add(basePanel);
     setLayout(Layouts.borderLayout());
     add(centerPanel, BorderLayout.CENTER);
+    centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     if (usernameField.getText().isEmpty()) {
       Components.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
       Components.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
+    add(Controls.builder()
+            .control(okControl)
+            .control(cancelControl)
+            .build()
+            .createHorizontalButtonPanel(), BorderLayout.SOUTH);
+  }
+
+  private void onOkPressed() {
+    final JDialog parentDialog = Windows.getParentDialog(this);
+    final User user = User.user(usernameField.getText(), passwordField.getPassword());
+    final SwingWorker<User, Object> worker = new SwingWorker<User, Object>() {
+      @Override
+      protected User doInBackground() throws Exception {
+        userValidator.validate(user);
+
+        return user;
+      }
+    };
+    usernameField.setEnabled(false);
+    passwordField.setEnabled(false);
+    validatingState.set(true);
+    SwingUtilities.invokeLater(() -> {
+      worker.execute();
+      try {
+        userValue.set(worker.get());
+        validatingState.set(false);
+        parentDialog.dispose();
+      }
+      catch (final ExecutionException exception) {
+        userValue.set(null);
+        validatingState.set(false);
+        usernameField.setEnabled(true);
+        passwordField.setEnabled(true);
+        DefaultDialogExceptionHandler.getInstance().displayException(exception.getCause(), parentDialog);
+      }
+      catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    });
   }
 
   private static JFrame createDummyFrame(final String title, final ImageIcon icon) {

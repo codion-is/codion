@@ -94,9 +94,8 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
 
   @Override
   public void start() {
-    applicationPanel.startApplication(applicationName, applicationIcon,
-            maximizeFrame, frameSize, defaultLoginUser, displayFrame,
-            silentLoginUser, includeMainMenu, displayProgressDialog);
+    applicationPanel.startApplication(applicationName, applicationIcon, defaultLoginUser,
+            silentLoginUser, frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog);
   }
 
   private ImageIcon loadIcon(final String resourceName) {

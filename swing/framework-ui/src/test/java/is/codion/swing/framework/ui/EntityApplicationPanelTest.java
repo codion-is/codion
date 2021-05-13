@@ -72,7 +72,6 @@ public class EntityApplicationPanelTest {
       assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
       panel.logout();
     });
-    panel.startApplication("Test", null, false, null, null,
-            false, UNIT_TEST_USER, true, false);
+    panel.startApplication("Test", null, null, UNIT_TEST_USER, null, false, false, true, false);
   }
 }
