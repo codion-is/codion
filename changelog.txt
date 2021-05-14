@@ -6992,3 +6992,5 @@
   EntityApplicationPanel.getUser() renamed getLoginUser()
   EntityApplicationPanel.loginRequired moved to Starter
   LoginPanel, constructor overloaded with southComponent parameter, button panel improved
+  EntityApplicationPanel.startApplication() bug fixed, initializeConnectionProvider() always called, even
+  EntityApplicationPanel.prepareFrame() now calls getFrameTitle() in order to not do it too early
