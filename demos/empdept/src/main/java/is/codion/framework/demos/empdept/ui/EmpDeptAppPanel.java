@@ -31,6 +31,10 @@ import java.util.List;
 // tag::initializeEntityPanels[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
+  public EmpDeptAppPanel() {
+    super("Emp-Dept");
+  }
+
   @Override
   protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
     final SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
@@ -89,7 +93,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().starter()
-            .applicationName("Emp-Dept")
             .frameSize(Windows.getScreenSizeRatio(0.6))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

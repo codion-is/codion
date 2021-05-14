@@ -30,6 +30,10 @@ import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
+  public WorldAppPanel() {
+    super("World");
+  }
+
   // tag::initializeEntityPanels[]
   @Override
   protected List<EntityPanel> initializeEntityPanels(final WorldAppModel applicationModel) {
@@ -81,7 +85,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     SwingUtilities.invokeLater(() -> new WorldAppPanel().starter()
-            .applicationName("World")
             .frameSize(new Dimension(1024, 720))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

@@ -27,6 +27,10 @@ import java.util.Locale;
 // tag::storeAppPanel[]
 public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
+  public StoreAppPanel() {
+    super("Store");
+  }
+
   @Override
   protected List<EntityPanel> initializeEntityPanels(StoreAppModel applicationModel) {
     CustomerModel customerModel =
@@ -74,7 +78,6 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
     Report.REPORT_PATH.set("http://test.io");
     SwingUtilities.invokeLater(() -> new StoreAppPanel().starter()
-            .applicationName("Store")
             .frameSize(Windows.getScreenSizeRatio(0.6))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

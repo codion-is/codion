@@ -240,6 +240,10 @@ public final class EmpDeptMinimalApp {
    */
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
+    private EmpDeptApplicationPanel() {
+      super("EmpDept Minimal");
+    }
+
     @Override
     protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
@@ -278,7 +282,6 @@ public final class EmpDeptMinimalApp {
 
     //we create an instance of our application panel and start it
     SwingUtilities.invokeLater(() -> new EmpDeptApplicationPanel().starter()
-            .applicationName("EmpDept Minimal")
             .frameSize(new Dimension(800, 600))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

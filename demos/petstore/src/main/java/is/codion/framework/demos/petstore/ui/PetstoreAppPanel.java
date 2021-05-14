@@ -22,6 +22,10 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
+  public PetstoreAppPanel() {
+    super("The Pet Store");
+  }
+
   @Override
   protected List<EntityPanel> initializeEntityPanels(final PetstoreAppModel applicationModel) {
     /* CATEGORY
@@ -92,7 +96,6 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
     SwingUtilities.invokeLater(() -> new PetstoreAppPanel().starter()
-            .applicationName("The Pet Store")
             .frameSize(Windows.getScreenSizeRatio(0.8))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

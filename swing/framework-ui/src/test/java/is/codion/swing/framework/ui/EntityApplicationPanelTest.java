@@ -53,7 +53,7 @@ public class EntityApplicationPanelTest {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(TestDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
-    final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>() {
+    final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>("Test") {
       @Override
       protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
         return singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
@@ -70,6 +70,6 @@ public class EntityApplicationPanelTest {
       assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
       panel.logout();
     });
-    panel.startApplication("Test", null, null, UNIT_TEST_USER, false, null, false, false, true, false);
+    panel.startApplication(null, UNIT_TEST_USER, false, null, false, false, true, false);
   }
 }
