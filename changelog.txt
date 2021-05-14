@@ -6998,3 +6998,6 @@
   EntityApplicationPanel, applicationName and applicationIcon fields added, removed from Starter, related refactoring
   Components.loadIcon() added
   EntityApplicationPanel, refactoring, code cleanup
+  LoginPanel.UserValidator renamed LoginValidator
+  LoginPanel constructor and showLoginDialog() replaced by Builder
+  EntityApplicationPanel.startApplication() bug fixed, did not set the font size before showing login dialog, refactored

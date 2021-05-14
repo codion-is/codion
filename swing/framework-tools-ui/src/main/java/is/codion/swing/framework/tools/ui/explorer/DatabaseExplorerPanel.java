@@ -117,8 +117,9 @@ public final class DatabaseExplorerPanel extends JPanel {
     try {
       final Database database = DatabaseFactory.getDatabase();
       final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
-              new LoginPanel(null, user -> database.createConnection(user).close())
-                      .showLoginPanel(null));
+              LoginPanel.builder()
+                      .validator(user -> database.createConnection(user).close())
+                      .show());
       new DatabaseExplorerPanel(explorerModel).showFrame();
     }
     catch (final CancelException ignored) {
