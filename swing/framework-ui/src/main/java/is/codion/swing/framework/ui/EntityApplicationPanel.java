@@ -19,7 +19,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -95,7 +94,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -258,7 +256,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the login is cancelled
    */
   public final void login() {
-    final User user = getLoginUser(frameTitle, null, null, new LoginValidator(connectionProvider -> {}));
+    final User user = getLoginUser(frameTitle, null, null, new LoginValidator(getModel().getConnectionProvider()));
     applicationModel.login(user);
   }
 
@@ -1146,30 +1144,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
-    while (connectionProviderValue.isNull()) {
-      try {
-        User user = silentLoginUser;
-        if (silentLoginUser != null || !loginRequired) {
-          final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-          connectionProvider.getConnection();//throws exception if the server is not reachable
-          connectionProviderValue.set(connectionProvider);
-        }
-        else {
-          user = getLoginUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProviderValue::set));
-        }
-        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-          saveDefaultUsername(user.getUsername());
-        }
-      }
-      catch (final CancelException exception) {
-        return;
-      }
-      catch (final Throwable exception) {
-        onLoginException(exception);
-      }
+    final EntityConnectionProvider connectionProvider = createConnectionProvider(applicationName,
+            applicationIcon, defaultUser, silentLoginUser, loginRequired);
+    if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
+      saveDefaultUsername(connectionProvider.getUser().getUsername());
     }
-    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProviderValue.get());
+
+    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
@@ -1186,6 +1167,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       applicationStartedEvent.onEvent(prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
               applicationIcon, displayFrame, alwaysOnTopState.get()));
     }
+  }
+
+  private EntityConnectionProvider createConnectionProvider(final String applicationName, final ImageIcon applicationIcon,
+                                                            final User defaultUser, final User silentLoginUser, final boolean loginRequired) {
+    if (silentLoginUser == null && loginRequired) {
+      final LoginValidator userValidator = new LoginValidator();
+      getLoginUser(applicationName, defaultUser, applicationIcon, userValidator);
+
+      return userValidator.connectionProvider;
+    }
+
+    final EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
+    connectionProvider.getConnection();//throws exception if the server is not reachable
+
+    return connectionProvider;
   }
 
   private JTabbedPane initializeApplicationTabPane() {
@@ -1483,17 +1479,25 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final class LoginValidator implements UserValidator {
 
-    private final Consumer<EntityConnectionProvider> connectionHandler;
+    private EntityConnectionProvider connectionProvider;
 
-    private LoginValidator(final Consumer<EntityConnectionProvider> connectionHandler) {
-      this.connectionHandler = connectionHandler;
+    private LoginValidator() {
+      this(null);
+    }
+
+    private LoginValidator(final EntityConnectionProvider connectionProvider) {
+      this.connectionProvider = connectionProvider;
     }
 
     @Override
     public void validate(final User user) throws Exception {
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      if (connectionProvider == null) {
+        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      }
+      else {
+        connectionProvider.setUser(user);
+      }
       connectionProvider.getConnection();//throws exception if the server is not reachable
-      connectionHandler.accept(connectionProvider);
     }
   }
 
