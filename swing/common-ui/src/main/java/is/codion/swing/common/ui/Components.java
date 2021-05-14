@@ -16,6 +16,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -51,6 +52,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -362,6 +364,19 @@ public final class Components {
             .build().start();
 
     return textField;
+  }
+
+  /**
+   * Loads an icon as a resource
+   * @param resourceClass the class owning the resource
+   * @param resourceName the resource name
+   * @return an icon
+   */
+  public static ImageIcon loadIcon(final Class<?> resourceClass, final String resourceName) {
+    final URL url = requireNonNull(resourceClass).getResource(resourceName);
+    requireNonNull(url, "Resource: " + resourceName + " for " + resourceClass);
+
+    return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }
 
   /**

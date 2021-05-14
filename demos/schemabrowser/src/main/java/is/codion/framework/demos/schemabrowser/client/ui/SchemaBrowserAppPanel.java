@@ -25,6 +25,10 @@ import java.util.List;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
+  public SchemaBrowserAppPanel() {
+    super("Schema Browser");
+  }
+
   @Override
   protected List<EntityPanel> initializeEntityPanels(final SchemaBrowserApplicationModel applicationModel) {
     final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
@@ -66,7 +70,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
     SwingUtilities.invokeLater(() -> new SchemaBrowserAppPanel().starter()
-            .applicationName("Schema Browser")
             .frameSize(Windows.getScreenSizeRatio(0.5))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

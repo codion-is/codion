@@ -7,20 +7,14 @@ import is.codion.common.user.User;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.Windows;
 
-import javax.swing.ImageIcon;
 import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.net.URL;
 
-import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
 final class EntityApplicationPanelStarter implements EntityApplicationPanel.Starter {
 
   private final EntityApplicationPanel<?> applicationPanel;
 
-  private String applicationName;
-  private ImageIcon applicationIcon = icons().logoTransparent();
   private boolean includeMainMenu = true;
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
@@ -32,24 +26,6 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
 
   EntityApplicationPanelStarter(final EntityApplicationPanel<?> applicationPanel) {
     this.applicationPanel = applicationPanel;
-  }
-
-  @Override
-  public EntityApplicationPanel.Starter applicationName(final String applicationName) {
-    this.applicationName = requireNonNull(applicationName);
-    return this;
-  }
-
-  @Override
-  public EntityApplicationPanel.Starter applicationIconName(final String applicationIconName) {
-    this.applicationIcon = loadIcon(requireNonNull(applicationIconName));
-    return this;
-  }
-
-  @Override
-  public EntityApplicationPanel.Starter applicationIcon(final ImageIcon applicationIcon) {
-    this.applicationIcon = requireNonNull(applicationIcon);
-    return this;
   }
 
   @Override
@@ -102,14 +78,7 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
 
   @Override
   public void start() {
-    applicationPanel.startApplication(applicationName, applicationIcon, defaultLoginUser, silentLoginUser,
-            loginRequired, frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog);
-  }
-
-  private ImageIcon loadIcon(final String resourceName) {
-    final URL url = applicationPanel.getClass().getResource(resourceName);
-    requireNonNull(url, "Resource: " + resourceName + " for " + applicationPanel.getClass());
-
-    return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
+    applicationPanel.startApplication(defaultLoginUser, silentLoginUser, loginRequired, frameSize, maximizeFrame,
+            displayFrame, includeMainMenu, displayProgressDialog);
   }
 }

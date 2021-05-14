@@ -132,6 +132,10 @@ public final class ClientTutorial {
 
   private static final class ApplicationPanel extends EntityApplicationPanel<SwingEntityApplicationModel> {
 
+    private ApplicationPanel() {
+      super("Artists and Albums");
+    }
+
     @Override
     protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
       SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
@@ -165,7 +169,6 @@ public final class ClientTutorial {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     SwingUtilities.invokeLater(() -> new ApplicationPanel().starter()
-            .applicationName("Artists and Albums")
             .frameSize(getScreenSizeRatio(0.5))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

@@ -72,6 +72,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   /* Non-static so this is not initialized before main(), which sets the locale */
   private final ResourceBundle bundle = ResourceBundle.getBundle(ChinookAppPanel.class.getName());
 
+  public ChinookAppPanel() {
+    super("Chinook");
+  }
+
   @Override
   protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final ChinookApplicationModel applicationModel) {
     final EntityPanel.Builder trackBuilder =
@@ -262,7 +266,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     SwingUtilities.invokeLater(() -> new ChinookAppPanel().starter()
-            .applicationName("Chinook")
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

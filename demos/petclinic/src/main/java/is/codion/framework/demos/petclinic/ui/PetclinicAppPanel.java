@@ -35,6 +35,10 @@ import static java.util.Arrays.asList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
+  public PetclinicAppPanel() {
+    super("Petclinic");
+  }
+
   @Override
   protected PetclinicAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
     return new PetclinicAppModel(connectionProvider);
@@ -97,7 +101,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     SwingUtilities.invokeLater(() -> new PetclinicAppPanel().starter()
-            .applicationName("Petclinic")
             .frameSize(Windows.getScreenSizeRatio(0.6))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());

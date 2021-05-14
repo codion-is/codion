@@ -19,7 +19,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -95,7 +94,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -176,17 +174,35 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final Map<EntityPanel.Builder, EntityPanel> persistentEntityPanels = new HashMap<>();
 
+  private final String applicationName;
+  private final ImageIcon applicationIcon;
+
   private String frameTitle = "";
 
   /**
-   * A default constructor
+   * @param applicationName the application name
    */
-  public EntityApplicationPanel() {
-    this(JFrame::new);
+  public EntityApplicationPanel(final String applicationName) {
+    this(applicationName, null);
   }
 
-  public EntityApplicationPanel(final Supplier<JFrame> frameProvider) {
+  /**
+   * @param applicationName the application name
+   * @param applicationIcon the application icon
+   */
+  public EntityApplicationPanel(final String applicationName, final ImageIcon applicationIcon) {
+    this(JFrame::new, applicationName, applicationIcon);
+  }
+
+  /**
+   * @param frameProvider the JFrame provider
+   * @param applicationName the application name
+   * @param applicationIcon the application icon
+   */
+  public EntityApplicationPanel(final Supplier<JFrame> frameProvider, final String applicationName, final ImageIcon applicationIcon) {
     this.frameProvider = frameProvider;
+    this.applicationName = applicationName == null ? "" : applicationName;
+    this.applicationIcon = applicationIcon == null ? icons().logoTransparent() : applicationIcon;
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
@@ -232,6 +248,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
+   * @return the application name
+   */
+  public final String getApplicationName() {
+    return applicationName;
+  }
+
+  /**
+   * @return the application icon, if any
+   */
+  public final ImageIcon getApplicationIcon() {
+    return applicationIcon;
+  }
+
+  /**
    * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
    */
   public final boolean isAlwaysOnTop() {
@@ -258,7 +288,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the login is cancelled
    */
   public final void login() {
-    final User user = getLoginUser(frameTitle, null, null, new LoginValidator(connectionProvider -> {}));
+    final User user = getLoginUser(null, new LoginValidator(getModel().getConnectionProvider()));
     applicationModel.login(user);
   }
 
@@ -1081,19 +1111,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
 
   /**
-   * Returns the user, either via a login dialog or via override, called during startup
-   * @param frameCaption the application frame caption
-   * @param defaultUser the default user
-   * @param applicationIcon the application icon
+   * Returns the user, either via a login dialog or via override, called during startup if login is required
+   * @param defaultUser the default user to display in the login dialog
    * @param userValidator the user login validator
    * @return the application user
    * @throws CancelException in case a login dialog is cancelled
    */
-  protected User getLoginUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon,
-                              final UserValidator userValidator) {
+  protected User getLoginUser(final User defaultUser, final UserValidator userValidator) {
     final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser, userValidator);
-    final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
-    final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
+    final String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
+    final User user = loginPanel.showLoginPanel(null, loginDialogTitle, applicationIcon);
     if (nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }
@@ -1136,9 +1163,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     getModel().savePreferences();
   }
 
-  final void startApplication(final String applicationName, final ImageIcon applicationIcon, final User defaultUser,
-                              final User silentLoginUser, final boolean loginRequired, final Dimension frameSize, final boolean maximizeFrame,
-                              final boolean displayFrame, final boolean includeMainMenu, final boolean displayProgressDialog) {
+  final void startApplication(final User defaultUser, final User silentLoginUser, final boolean loginRequired,
+                              final Dimension frameSize, final boolean maximizeFrame, final boolean displayFrame,
+                              final boolean includeMainMenu, final boolean displayProgressDialog) {
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
@@ -1146,30 +1173,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
-    while (connectionProviderValue.isNull()) {
-      try {
-        User user = silentLoginUser;
-        if (silentLoginUser != null || !loginRequired) {
-          final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-          connectionProvider.getConnection();//throws exception if the server is not reachable
-          connectionProviderValue.set(connectionProvider);
-        }
-        else {
-          user = getLoginUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProviderValue::set));
-        }
-        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-          saveDefaultUsername(user.getUsername());
-        }
-      }
-      catch (final CancelException exception) {
-        return;
-      }
-      catch (final Throwable exception) {
-        onLoginException(exception);
-      }
+    final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
+    if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
+      saveDefaultUsername(connectionProvider.getUser().getUsername());
     }
-    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProviderValue.get());
+
+    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
@@ -1186,6 +1195,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       applicationStartedEvent.onEvent(prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
               applicationIcon, displayFrame, alwaysOnTopState.get()));
     }
+  }
+
+  private EntityConnectionProvider createConnectionProvider(final User defaultUser, final User silentLoginUser,
+                                                            final boolean loginRequired) {
+    if (silentLoginUser == null && loginRequired) {
+      final LoginValidator userValidator = new LoginValidator();
+      getLoginUser(defaultUser, userValidator);
+
+      return userValidator.connectionProvider;
+    }
+
+    final EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
+    connectionProvider.getConnection();//throws exception if the server is not reachable
+
+    return connectionProvider;
   }
 
   private JTabbedPane initializeApplicationTabPane() {
@@ -1357,24 +1381,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public interface Starter {
 
     /**
-     * @param applicationName the application name to display as the frame title
-     * @return this Starter instance
-     */
-    Starter applicationName(String applicationName);
-
-    /**
-     * @param applicationIconName the name of the application icon to use
-     * @return this Starter instance
-     */
-    Starter applicationIconName(String applicationIconName);
-
-    /**
-     * @param applicationIcon the icon to use
-     * @return this Starter instance
-     */
-    Starter applicationIcon(ImageIcon applicationIcon);
-
-    /**
      * @param includeMainMenu if true then a main menu is included
      * @return this Starter instance
      */
@@ -1483,17 +1489,25 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final class LoginValidator implements UserValidator {
 
-    private final Consumer<EntityConnectionProvider> connectionHandler;
+    private EntityConnectionProvider connectionProvider;
 
-    private LoginValidator(final Consumer<EntityConnectionProvider> connectionHandler) {
-      this.connectionHandler = connectionHandler;
+    private LoginValidator() {
+      this(null);
+    }
+
+    private LoginValidator(final EntityConnectionProvider connectionProvider) {
+      this.connectionProvider = connectionProvider;
     }
 
     @Override
     public void validate(final User user) throws Exception {
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      if (connectionProvider == null) {
+        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      }
+      else {
+        connectionProvider.setUser(user);
+      }
       connectionProvider.getConnection();//throws exception if the server is not reachable
-      connectionHandler.accept(connectionProvider);
     }
   }
 
