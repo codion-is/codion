@@ -6997,3 +6997,4 @@
   EntityApplicationPanel.startApplication() refactored
   EntityApplicationPanel, applicationName and applicationIcon fields added, removed from Starter, related refactoring
   Components.loadIcon() added
+  EntityApplicationPanel, refactoring, code cleanup

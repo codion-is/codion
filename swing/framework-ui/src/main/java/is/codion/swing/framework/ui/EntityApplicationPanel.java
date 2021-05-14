@@ -177,8 +177,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final String applicationName;
   private final ImageIcon applicationIcon;
 
-  private String frameTitle = "";
-
   /**
    * @param applicationName the application name
    */
@@ -191,15 +189,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param applicationIcon the application icon
    */
   public EntityApplicationPanel(final String applicationName, final ImageIcon applicationIcon) {
-    this(JFrame::new, applicationName, applicationIcon);
+    this(applicationName, applicationIcon, JFrame::new);
   }
 
   /**
-   * @param frameProvider the JFrame provider
    * @param applicationName the application name
    * @param applicationIcon the application icon
+   * @param frameProvider the JFrame provider
    */
-  public EntityApplicationPanel(final Supplier<JFrame> frameProvider, final String applicationName, final ImageIcon applicationIcon) {
+  public EntityApplicationPanel(final String applicationName, final ImageIcon applicationIcon, final Supplier<JFrame> frameProvider) {
     this.frameProvider = frameProvider;
     this.applicationName = applicationName == null ? "" : applicationName;
     this.applicationIcon = applicationIcon == null ? icons().logoTransparent() : applicationIcon;
@@ -1022,29 +1020,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param applicationName the name of the application
-   * @param connectionProvider the EntityConnectionProvider this application is using
    * @return a frame title based on the application name and the logged in user
    */
-  protected String getFrameTitle(final String applicationName, final EntityConnectionProvider connectionProvider) {
-    return applicationName + " - " + getUserInfo(connectionProvider);
+  protected String getFrameTitle() {
+    return (applicationName.isEmpty() ? "" : (applicationName + " - ")) + getUserInfo(getModel().getConnectionProvider());
   }
 
   /**
    * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
-   * @param applicationName used in the title string for the JFrame
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param mainMenu yes if the main menu should be included
-   * @param size if the JFrame is not maximized then its preferredSize is set to this value
-   * @param applicationIcon the application icon
    * @param displayFrame specifies whether the frame should be displayed or left invisible
-   * @param alwaysOnTop controls the always on top state of the resulting frame
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
+   * @param frameSize if the JFrame is not maximized then its preferredSize is set to this value
+   * @param mainMenu yes if the main menu should be included
    * @return an initialized, but non-visible JFrame
    */
-  protected final JFrame prepareFrame(final String applicationName, final boolean maximizeFrame,
-                                      final boolean mainMenu, final Dimension size,
-                                      final ImageIcon applicationIcon, final boolean displayFrame,
-                                      final boolean alwaysOnTop) {
+  protected final JFrame prepareFrame(final boolean displayFrame, final boolean maximizeFrame, final Dimension frameSize,
+                                      final boolean mainMenu) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (applicationIcon != null) {
@@ -1061,8 +1052,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
     frame.getContentPane().setLayout(new BorderLayout());
     frame.getContentPane().add(this, BorderLayout.CENTER);
-    if (size != null) {
-      frame.setSize(size);
+    if (frameSize != null) {
+      frame.setSize(frameSize);
     }
     else {
       frame.pack();
@@ -1072,11 +1063,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (maximizeFrame) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
-    frame.setTitle(getFrameTitle(applicationName, getModel().getConnectionProvider()));
+    frame.setTitle(getFrameTitle());
     if (mainMenu) {
       frame.setJMenuBar(initializeMenuBar());
     }
-    frame.setAlwaysOnTop(alwaysOnTop);
+    frame.setAlwaysOnTop(alwaysOnTopState.get());
     if (displayFrame) {
       frame.setVisible(true);
     }
@@ -1169,11 +1160,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
+    final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
+
     final Integer fontSize = getDefaultFontSize();
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
     if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
       saveDefaultUsername(connectionProvider.getUser().getUsername());
     }
@@ -1184,16 +1176,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
               .task(applicationStarter)
               .dialogTitle(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
-              .onSuccess(() -> applicationStartedEvent.onEvent(
-                      prepareFrame(applicationName, maximizeFrame, includeMainMenu, frameSize,
-                              applicationIcon, displayFrame, alwaysOnTopState.get())))
+              .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
               .build()
               .execute();
     }
     else {
       applicationStarter.perform();
-      applicationStartedEvent.onEvent(prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
-              applicationIcon, displayFrame, alwaysOnTopState.get()));
+      applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu));
     }
   }
 
@@ -1243,7 +1232,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void bindEventsInternal() {
     applicationModel.getConnectionValidObserver().addDataListener(active -> SwingUtilities.invokeLater(() ->
-            setParentWindowTitle(active ? frameTitle : frameTitle + (frameTitle.isEmpty() ? "" : " - ") + Messages.get(Messages.NOT_CONNECTED))));
+            setParentWindowTitle(active ? getFrameTitle() : getFrameTitle() + " - " + Messages.get(Messages.NOT_CONNECTED))));
     alwaysOnTopState.addDataListener(alwaysOnTop -> {
       final Window parent = getParentWindow();
       if (parent != null) {
@@ -1526,7 +1515,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         applicationModel = initializeApplicationModel(connectionProvider);
         SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
         applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
-        LOG.info(frameTitle + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+        LOG.info(getFrameTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }
       catch (final Throwable exception) {
         displayException(exception, null);
