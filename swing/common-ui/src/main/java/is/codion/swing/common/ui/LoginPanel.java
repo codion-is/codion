@@ -80,6 +80,17 @@ public final class LoginPanel extends JPanel {
    * @param userValidator the user validator to use
    */
   public LoginPanel(final User defaultUser, final UserValidator userValidator) {
+    this(defaultUser, userValidator, null);
+  }
+
+  /**
+   * Instantiates a new LoginPanel
+   * @param defaultUser the default user credentials to display
+   * @param userValidator the user validator to use
+   * @param southComponent a component to add to the south of the credentials input fields
+   */
+  public LoginPanel(final User defaultUser, final UserValidator userValidator,
+                    final JComponent southComponent) {
     this.okControl = Control.builder()
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
@@ -93,7 +104,7 @@ public final class LoginPanel extends JPanel {
             .enabledState(validatingState.getReversedObserver())
             .build();
     this.userValidator = requireNonNull(userValidator);
-    initializeUI(defaultUser);
+    initializeUI(defaultUser, southComponent);
   }
 
   /**
@@ -180,7 +191,7 @@ public final class LoginPanel extends JPanel {
     void validate(User user) throws Exception;
   }
 
-  private void initializeUI(final User defaultUser) {
+  private void initializeUI(final User defaultUser, final JComponent southComponent) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(usernameField);
@@ -193,14 +204,19 @@ public final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
-    final JPanel basePanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, FixRowHeights.YES, FixColumnWidths.NO));
-    basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
-    basePanel.add(usernameField);
-    basePanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
-    basePanel.add(passwordField);
+    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, FixRowHeights.YES, FixColumnWidths.NO));
+    credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
+    credentialsPanel.add(usernameField);
+    credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
+    credentialsPanel.add(passwordField);
+    final JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
+    credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);
+    if (southComponent != null) {
+      credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
+    }
 
     final JPanel centerPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    centerPanel.add(basePanel);
+    centerPanel.add(credentialsPanel);
     setLayout(Layouts.borderLayout());
     add(centerPanel, BorderLayout.CENTER);
     centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -211,11 +227,13 @@ public final class LoginPanel extends JPanel {
     else {
       Components.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
-    add(Controls.builder()
+    final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+    buttonBasePanel.add(Controls.builder()
             .control(okControl)
             .control(cancelControl)
             .build()
-            .createHorizontalButtonPanel(), BorderLayout.SOUTH);
+            .createHorizontalButtonPanel());
+    add(buttonBasePanel, BorderLayout.SOUTH);
   }
 
   private void onOkPressed() {
