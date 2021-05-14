@@ -992,17 +992,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param frameCaption the caption for the frame
+   * @param applicationName the name of the application
    * @param connectionProvider the EntityConnectionProvider this application is using
-   * @return a frame title based on the logged in user
+   * @return a frame title based on the application name and the logged in user
    */
-  protected String getFrameTitle(final String frameCaption, final EntityConnectionProvider connectionProvider) {
-    return frameCaption + " - " + getUserInfo(connectionProvider);
+  protected String getFrameTitle(final String applicationName, final EntityConnectionProvider connectionProvider) {
+    return applicationName + " - " + getUserInfo(connectionProvider);
   }
 
   /**
    * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
-   * @param title the title string for the JFrame
+   * @param applicationName used in the title string for the JFrame
    * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
    * @param mainMenu yes if the main menu should be included
    * @param size if the JFrame is not maximized then its preferredSize is set to this value
@@ -1011,7 +1011,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param alwaysOnTop controls the always on top state of the resulting frame
    * @return an initialized, but non-visible JFrame
    */
-  protected final JFrame prepareFrame(final String title, final boolean maximizeFrame,
+  protected final JFrame prepareFrame(final String applicationName, final boolean maximizeFrame,
                                       final boolean mainMenu, final Dimension size,
                                       final ImageIcon applicationIcon, final boolean displayFrame,
                                       final boolean alwaysOnTop) {
@@ -1042,7 +1042,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (maximizeFrame) {
       frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
-    frame.setTitle(title);
+    frame.setTitle(getFrameTitle(applicationName, getModel().getConnectionProvider()));
     if (mainMenu) {
       frame.setJMenuBar(initializeMenuBar());
     }
@@ -1149,17 +1149,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Value<EntityConnectionProvider> connectionProviderValue = Value.value();
     while (connectionProviderValue.isNull()) {
       try {
-        User user = null;
-        if (silentLoginUser != null) {
-          user = silentLoginUser;
+        User user = silentLoginUser;
+        if (silentLoginUser != null || !loginRequired) {
           final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
           connectionProvider.getConnection();//throws exception if the server is not reachable
           connectionProviderValue.set(connectionProvider);
         }
-        else if (loginRequired) {
+        else {
           user = getLoginUser(applicationName, defaultUser, applicationIcon, new LoginValidator(connectionProviderValue::set));
         }
-        frameTitle = getFrameTitle(applicationName, connectionProviderValue.get());
         if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
           saveDefaultUsername(user.getUsername());
         }
@@ -1175,10 +1173,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
-              .dialogTitle(frameTitle)
+              .dialogTitle(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(
-                      prepareFrame(frameTitle, maximizeFrame, includeMainMenu, frameSize,
+                      prepareFrame(applicationName, maximizeFrame, includeMainMenu, frameSize,
                               applicationIcon, displayFrame, alwaysOnTopState.get())))
               .build()
               .execute();
