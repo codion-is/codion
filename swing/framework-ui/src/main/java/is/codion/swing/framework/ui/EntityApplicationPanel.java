@@ -33,7 +33,7 @@ import is.codion.swing.common.ui.Components.LookAndFeelProvider;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.LoginPanel;
-import is.codion.swing.common.ui.LoginPanel.UserValidator;
+import is.codion.swing.common.ui.LoginPanel.LoginValidator;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
@@ -286,8 +286,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the login is cancelled
    */
   public final void login() {
-    final User user = getLoginUser(null, new LoginValidator(getModel().getConnectionProvider()));
-    applicationModel.login(user);
+    applicationModel.login(getLoginUser(null, new EntityLoginValidator(getModel().getConnectionProvider())));
   }
 
   /**
@@ -1104,14 +1103,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Returns the user, either via a login dialog or via override, called during startup if login is required
    * @param defaultUser the default user to display in the login dialog
-   * @param userValidator the user login validator
+   * @param loginValidator the user login validator
    * @return the application user
    * @throws CancelException in case a login dialog is cancelled
    */
-  protected User getLoginUser(final User defaultUser, final UserValidator userValidator) {
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser, userValidator);
+  protected User getLoginUser(final User defaultUser, final LoginValidator loginValidator) {
     final String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
-    final User user = loginPanel.showLoginPanel(null, loginDialogTitle, applicationIcon);
+    final User user = LoginPanel.builder()
+            .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
+            .validator(loginValidator)
+            .dialogTitle(loginDialogTitle)
+            .icon(applicationIcon)
+            .show();
     if (nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }
@@ -1160,16 +1163,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
-    final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
-
     final Integer fontSize = getDefaultFontSize();
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
     }
+
+    final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
+
     if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
       saveDefaultUsername(connectionProvider.getUser().getUsername());
     }
 
+    startApplication(frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog, connectionProvider);
+  }
+
+  private void startApplication(final Dimension frameSize, final boolean maximizeFrame, final boolean displayFrame,
+                                final boolean includeMainMenu, final boolean displayProgressDialog,
+                                final EntityConnectionProvider connectionProvider) {
     final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
       ProgressWorker.builder()
@@ -1189,10 +1199,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private EntityConnectionProvider createConnectionProvider(final User defaultUser, final User silentLoginUser,
                                                             final boolean loginRequired) {
     if (silentLoginUser == null && loginRequired) {
-      final LoginValidator userValidator = new LoginValidator();
-      getLoginUser(defaultUser, userValidator);
+      final EntityLoginValidator loginValidator = new EntityLoginValidator();
+      getLoginUser(defaultUser, loginValidator);
 
-      return userValidator.connectionProvider;
+      return loginValidator.connectionProvider;
     }
 
     final EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
@@ -1476,15 +1486,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private final class LoginValidator implements UserValidator {
+  private final class EntityLoginValidator implements LoginValidator {
 
     private EntityConnectionProvider connectionProvider;
 
-    private LoginValidator() {
+    private EntityLoginValidator() {
       this(null);
     }
 
-    private LoginValidator(final EntityConnectionProvider connectionProvider) {
+    private EntityLoginValidator(final EntityConnectionProvider connectionProvider) {
       this.connectionProvider = connectionProvider;
     }
 
@@ -1513,7 +1523,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       try {
         final long initializationStarted = System.currentTimeMillis();
         applicationModel = initializeApplicationModel(connectionProvider);
-        SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
+        if (SwingUtilities.isEventDispatchThread()) {
+          initializePanel();
+        }
+        else {
+          SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
+        }
         applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
         LOG.info(getFrameTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }

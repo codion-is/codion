@@ -33,7 +33,6 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.Objects.requireNonNull;
@@ -54,7 +53,7 @@ public final class LoginPanel extends JPanel {
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
   private final Value<User> userValue = Value.value();
-  private final UserValidator userValidator;
+  private final LoginValidator loginValidator;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
@@ -62,35 +61,8 @@ public final class LoginPanel extends JPanel {
   /**
    * Instantiates a new LoginPanel
    */
-  public LoginPanel() {
-    this(null);
-  }
-
-  /**
-   * Instantiates a new LoginPanel
-   * @param defaultUser the default user credentials to display
-   */
-  public LoginPanel(final User defaultUser) {
-    this(defaultUser, user -> {});
-  }
-
-  /**
-   * Instantiates a new LoginPanel
-   * @param defaultUser the default user credentials to display
-   * @param userValidator the user validator to use
-   */
-  public LoginPanel(final User defaultUser, final UserValidator userValidator) {
-    this(defaultUser, userValidator, null);
-  }
-
-  /**
-   * Instantiates a new LoginPanel
-   * @param defaultUser the default user credentials to display
-   * @param userValidator the user validator to use
-   * @param southComponent a component to add to the south of the credentials input fields
-   */
-  public LoginPanel(final User defaultUser, final UserValidator userValidator,
-                    final JComponent southComponent) {
+  private LoginPanel(final User defaultUser, final LoginValidator loginValidator,
+                     final JComponent southComponent) {
     this.okControl = Control.builder()
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
@@ -103,50 +75,11 @@ public final class LoginPanel extends JPanel {
             .command(() -> Windows.getParentDialog(this).dispose())
             .enabledState(validatingState.getReversedObserver())
             .build();
-    this.userValidator = requireNonNull(userValidator);
+    this.loginValidator = requireNonNull(loginValidator);
     initializeUI(defaultUser, southComponent);
   }
 
-  /**
-   * @return an Optional containing a User instance, if the OK button was pressed and the user was valid
-   */
-  public Optional<User> getUser() {
-    return userValue.toOptional();
-  }
-
-  /**
-   * @return the username field
-   */
-  public JTextField getUsernameField() {
-    return usernameField;
-  }
-
-  /**
-   * @return the password field
-   */
-  public JPasswordField getPasswordField() {
-    return passwordField;
-  }
-
-  /**
-   * Displays a LoginPanel
-   * @param parent the dialog parent component
-   * @return a User object based on the values found in this LoginPanel
-   * @throws CancelException in case the user cancels
-   */
-  public User showLoginPanel(final JComponent parent) {
-    return showLoginPanel(parent, null, null);
-  }
-
-  /**
-   * Displays a LoginPanel
-   * @param parent the dialog parent component
-   * @param title the dialog title
-   * @param icon the dialog icon
-   * @return a User object based on the values found in this LoginPanel
-   * @throws CancelException in case the user cancels
-   */
-  public User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
+  private User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
     Window parentWindow = Windows.getParentWindow(parent);
     JFrame dummyFrame = null;
     if (parentWindow == null && isWindows()) {
@@ -170,25 +103,18 @@ public final class LoginPanel extends JPanel {
     }
     dialog.dispose();
 
-    final Optional<User> user = getUser();
-    if (!user.isPresent()) {
+    if (userValue.isNull()) {
       throw new CancelException();
     }
 
-    return user.get();
+    return userValue.get();
   }
 
   /**
-   * Validates a login attempt.
+   * @return a new login panel builder
    */
-  public interface UserValidator {
-
-    /**
-     * Valdates a login with the given user
-     * @param user the user
-     * @throws Exception in case validation fails
-     */
-    void validate(User user) throws Exception;
+  public static Builder builder() {
+    return new LoginPanelBuilder();
   }
 
   private void initializeUI(final User defaultUser, final JComponent southComponent) {
@@ -242,7 +168,7 @@ public final class LoginPanel extends JPanel {
     final SwingWorker<User, Object> worker = new SwingWorker<User, Object>() {
       @Override
       protected User doInBackground() throws Exception {
-        userValidator.validate(user);
+        loginValidator.validate(user);
 
         return user;
       }
@@ -284,5 +210,117 @@ public final class LoginPanel extends JPanel {
 
   private static boolean isWindows() {
     return System.getProperty("os.name").toLowerCase().contains("win");
+  }
+
+  /**
+   * A login panel builder
+   */
+  public interface Builder {
+
+    /**
+     * @param defaultUser the default user credentials to display
+     * @return this Builder instance
+     */
+    Builder defaultUser(User defaultUser);
+
+    /**
+     * @param validator the login validator to use
+     * @return this Builder instance
+     */
+    Builder validator(LoginValidator validator);
+
+    /**
+     * @param southComponent a component to add to the south of the credentials input fields
+     * @return this Builder instance
+     */
+    Builder southComponent(JComponent southComponent);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this Builder instance
+     */
+    Builder dialogParent(JComponent dialogParent);
+
+    /**
+     * @param dialogTitle the dialog title
+     * @return this Builder instance
+     */
+    Builder dialogTitle(String dialogTitle);
+
+    /**
+     * @param icon the dialog icon
+     * @return this Builder instance
+     */
+    Builder icon(ImageIcon icon);
+
+    /**
+     * @return the logged in user
+     * @throws CancelException in case the login is cancelled
+     */
+    User show();
+  }
+
+  /**
+   * Validates a login attempt.
+   */
+  public interface LoginValidator {
+
+    /**
+     * Valdates a login with the given user
+     * @param user the user
+     * @throws Exception in case validation fails
+     */
+    void validate(User user) throws Exception;
+  }
+
+  private static final class LoginPanelBuilder implements Builder {
+
+    private User defaultUser;
+    private LoginValidator validator = user -> {};
+    private JComponent southComponent;
+    private JComponent dialogParent;
+    private String dialogTitle;
+    private ImageIcon icon;
+
+    @Override
+    public Builder defaultUser(final User defaultUser) {
+      this.defaultUser = defaultUser;
+      return this;
+    }
+
+    @Override
+    public Builder validator(final LoginValidator validator) {
+      this.validator = requireNonNull(validator);
+      return this;
+    }
+
+    @Override
+    public Builder southComponent(final JComponent southComponent) {
+      this.southComponent = southComponent;
+      return this;
+    }
+
+    @Override
+    public Builder dialogParent(final JComponent dialogParent) {
+      this.dialogParent = dialogParent;
+      return this;
+    }
+
+    @Override
+    public Builder dialogTitle(final String dialogTitle) {
+      this.dialogTitle = dialogTitle;
+      return this;
+    }
+
+    @Override
+    public Builder icon(final ImageIcon icon) {
+      this.icon = icon;
+      return this;
+    }
+
+    @Override
+    public User show() {
+      return new LoginPanel(defaultUser, validator, southComponent).showLoginPanel(dialogParent, dialogTitle, icon);
+    }
   }
 }
