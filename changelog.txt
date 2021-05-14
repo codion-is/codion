@@ -6991,3 +6991,4 @@
   EntityApplicationPanel.startApplication() bug fixed, did not work correctly with silentLoginUser
   EntityApplicationPanel.getUser() renamed getLoginUser()
   EntityApplicationPanel.loginRequired moved to Starter
+  LoginPanel, constructor overloaded with southComponent parameter, button panel improved
