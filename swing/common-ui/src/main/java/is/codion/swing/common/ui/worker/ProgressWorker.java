@@ -145,7 +145,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     Builder<T> owner(Window owner);
 
     /**
-     * @param dialogParent the dialog parent component
+     * @param dialogOwner the dialog parent component
      * @return this Builder instance
      */
     Builder<T> dialogParent(JComponent dialogOwner);
