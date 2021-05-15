@@ -15,7 +15,7 @@ class DefaultProgressDialogBuilder implements ProgressDialogBuilder {
 
   private Window owner;
   private String title;
-  private int maxProgress = -1;
+  private boolean indeterminate = true;
   private JPanel northPanel;
   private JPanel westPanel;
   private Controls buttonControls;
@@ -42,8 +42,8 @@ class DefaultProgressDialogBuilder implements ProgressDialogBuilder {
   }
 
   @Override
-  public ProgressDialogBuilder maxProgress(final int maxProgress) {
-    this.maxProgress = maxProgress;
+  public ProgressDialogBuilder indeterminate(final boolean indeterminate) {
+    this.indeterminate = indeterminate;
     return this;
   }
 
@@ -67,6 +67,6 @@ class DefaultProgressDialogBuilder implements ProgressDialogBuilder {
 
   @Override
   public ProgressDialog build() {
-    return new ProgressDialog(owner, title, maxProgress, northPanel, westPanel, buttonControls);
+    return new ProgressDialog(owner, title, indeterminate, northPanel, westPanel, buttonControls);
   }
 }

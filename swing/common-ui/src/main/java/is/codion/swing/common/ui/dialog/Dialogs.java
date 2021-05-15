@@ -623,10 +623,10 @@ public final class Dialogs {
     ProgressDialogBuilder title(String title);
 
     /**
-     * @param maxProgress the maximum progress for the progress bar, -1 for indeterminate,
+     * @param indeterminate the indeterminate status of the progress bar
      * @return this ProgressDialogBuilder instance
      */
-    ProgressDialogBuilder maxProgress(int maxProgress);
+    ProgressDialogBuilder indeterminate(boolean indeterminate);
 
     /**
      * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position

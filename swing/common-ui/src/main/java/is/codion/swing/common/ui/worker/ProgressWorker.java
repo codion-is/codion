@@ -39,87 +39,14 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
-  /**
-   * Specifies whether a progress bar should be indeterminate.
-   */
-  public enum Indeterminate {
-    /**
-     * Progress bar should be indeterminate.
-     */
-    YES,
-    /**
-     * Progress bar should not be indeterminate.
-     */
-    NO
-  }
-
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
-  private static final int NO_PROGRESS = -1;
-  private static final int DEFAULT_MAX_PROGRESS = 100;
 
   private final ProgressDialog progressDialog;
   private final Event<T> onSuccessEvent = Event.event();
 
-  /**
-   * Instantiates a 'indeterminate' {@link ProgressWorker}.
-   * @param dialogOwner the dialog owner
-   * @param progressMessage the message to display while work is in progress
-   */
-  public ProgressWorker(final Window dialogOwner, final String progressMessage) {
-    this(dialogOwner, progressMessage, Indeterminate.YES);
-  }
-
-  /**
-   * Instantiates a {@link ProgressWorker}.
-   * @param dialogOwner the dialog owner
-   * @param progressMessage the message to display while work is in progress
-   * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
-   * progress bar goes from 0 - 100 by default.
-   */
-  public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate) {
-    this(dialogOwner, progressMessage, indeterminate, null, null);
-  }
-
-  /**
-   * Instantiates a {@link ProgressWorker}.
-   * @param dialogOwner the dialog owner
-   * @param progressMessage the message to display while work is in progress
-   * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
-   * progress bar goes from 0 - 100 by default.
-   * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
-   * location of the progress dialog
-   * @param buttonControls if specified buttons based on these controls are added
-   * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
-   */
-  public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate,
-                        final JPanel dialogNorthPanel, final Controls buttonControls) {
-    this(dialogOwner, progressMessage, indeterminate, dialogNorthPanel, null, buttonControls);
-  }
-
-  /**
-   * Instantiates a {@link ProgressWorker}.
-   * @param dialogOwner the dialog owner
-   * @param progressMessage the message to display while work is in progress
-   * @param indeterminate if yes the progress bar is of type 'indeterminate', otherwise the
-   * progress bar goes from 0 - 100 by default.
-   * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
-   * location of the progress dialog
-   * @param dialogWestPanel if specified this panel will be added at the {@link java.awt.BorderLayout#WEST}
-   * location of the progress dialog
-   * @param buttonControls if specified buttons based on these controls are added
-   * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
-   */
-  public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate,
-                        final JPanel dialogNorthPanel, final JPanel dialogWestPanel, final Controls buttonControls) {
-    progressDialog = Dialogs.progressDialogBuilder()
-            .owner(dialogOwner)
-            .title(progressMessage)
-            .maxProgress(indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS)
-            .northPanel(dialogNorthPanel)
-            .westPanel(dialogWestPanel)
-            .buttonControls(buttonControls)
-            .build();
+  public ProgressWorker(final ProgressDialog progressDialog) {
+    this.progressDialog = requireNonNull(progressDialog);
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -371,8 +298,13 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
         throw new IllegalStateException("No task has been specified");
       }
       final Window dialogOwner = Windows.getParentWindow(this.dialogOwner);
-      final ProgressWorker<?> worker = new ProgressWorker<Object>(dialogOwner, dialogTitle,
-              Indeterminate.YES, northPanel, westPanel, buttonControls) {
+      final ProgressWorker<?> worker = new ProgressWorker<Object>(Dialogs.progressDialogBuilder()
+            .owner(dialogOwner)
+            .title(dialogTitle)
+            .northPanel(northPanel)
+            .westPanel(westPanel)
+            .buttonControls(buttonControls)
+            .build()) {
         @Override
         protected Object doInBackground() throws Exception {
           task.perform();

@@ -16,6 +16,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -193,7 +194,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   private void updateInvoiceTotals() {
     final Window dialogOwner = Windows.getParentWindow(this);
 
-    new ProgressWorker<List<Entity>>(dialogOwner, bundle.getString(UPDATING_TOTALS)) {
+    new ProgressWorker<List<Entity>>(Dialogs.progressDialogBuilder()
+            .owner(dialogOwner)
+            .title(bundle.getString(UPDATING_TOTALS))
+            .build()) {
       @Override
       protected List<Entity> doInBackground() throws Exception {
         return getModel().updateInvoiceTotals();

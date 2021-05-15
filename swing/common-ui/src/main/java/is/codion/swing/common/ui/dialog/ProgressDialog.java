@@ -26,12 +26,12 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  ProgressDialog(final Window dialogOwner, final String title, final int maxProgress,
+  ProgressDialog(final Window dialogOwner, final String title, final boolean indeterminate,
                  final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = initializeProgressBar(maxProgress);
+    progressBar = initializeProgressBar(indeterminate);
     initializeUI(northPanel, westPanel, buttonControls);
   }
 
@@ -66,16 +66,16 @@ public final class ProgressDialog extends JDialog {
     Windows.centerWindow(this);
   }
 
-  private static JProgressBar initializeProgressBar(final int maxProgress) {
-    final JProgressBar bar = new JProgressBar();
-    Components.setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
-    if (maxProgress < 0) {
-      bar.setIndeterminate(true);
+  private static JProgressBar initializeProgressBar(final boolean indeterminate) {
+    final JProgressBar progressBar = new JProgressBar();
+    Components.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+    if (indeterminate) {
+      progressBar.setIndeterminate(true);
     }
     else {
-      bar.setMaximum(maxProgress);
+      progressBar.setMaximum(100);
     }
 
-    return bar;
+    return progressBar;
   }
 }

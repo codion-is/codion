@@ -4,6 +4,7 @@ import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -45,11 +46,16 @@ public final class CityTablePanel extends EntityTablePanel {
     private final CityTableModel cityTableModel;
 
     private LocationUpdater(final Window dialogOwner, final CityTableModel cityTableModel) {
-      super(dialogOwner, "Updating locations", Indeterminate.NO, null, Controls.builder()
-              .control(Control.builder()
-                      .command(cityTableModel::cancelLocationUpdate)
-                      .name("Cancel")
-                      .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
+      super(Dialogs.progressDialogBuilder()
+              .owner(dialogOwner)
+              .title("Updating locations")
+              .indeterminate(false)
+              .buttonControls(Controls.builder()
+                      .control(Control.builder()
+                              .command(cityTableModel::cancelLocationUpdate)
+                              .name("Cancel")
+                              .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
+                      .build())
               .build());
       this.dialogOwner = dialogOwner;
       this.cityTableModel = cityTableModel;
