@@ -7,9 +7,12 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.model.SwingEntityTableSortModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,7 +37,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   private final State locationUpdateCancelledState = State.state();
 
   public CityTableModel(final EntityConnectionProvider connectionProvider) {
-    super(City.TYPE, connectionProvider);
+    super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
   }
 
   public List<Entity> updateLocationForSelected(EventDataListener<Integer> progressListener)
@@ -79,6 +82,24 @@ public final class CityTableModel extends SwingEntityTableModel {
   private static JSONArray toJSONArray(URL url) throws IOException {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream(), UTF_8))) {
       return new JSONArray(reader.lines().collect(joining()));
+    }
+  }
+
+  private static final class CityTableSortModel extends SwingEntityTableSortModel {
+
+    private CityTableSortModel(Entities entities) {
+      super(entities);
+    }
+
+    @Override
+    protected Comparable<?> getComparable(Entity entity, Attribute<?> attribute) {
+      if (attribute.equals(City.LOCATION)) {
+        Object location = entity.get(attribute);
+
+        return location == null ? null : location.toString();
+      }
+
+      return super.getComparable(entity, attribute);
     }
   }
 }

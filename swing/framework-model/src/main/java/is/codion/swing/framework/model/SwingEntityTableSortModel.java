@@ -43,7 +43,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, At
   }
 
   @Override
-  protected Comparable<?> getComparable(final Entity row, final Attribute<?> attribute) {
-    return (Comparable<?>) row.get(attribute);
+  protected Comparable<?> getComparable(final Entity entity, final Attribute<?> attribute) {
+    return (Comparable<?>) entity.get(attribute);
   }
 }
