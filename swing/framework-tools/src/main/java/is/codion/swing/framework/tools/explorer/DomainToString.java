@@ -29,10 +29,10 @@ final class DomainToString {
     builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
     final List<Property<?>> columnProperties =
-            definition.getProperties().stream().filter(property -> property instanceof ColumnProperty).collect(Collectors.toList());
+            definition.getProperties().stream().filter(ColumnProperty.class::isInstance).collect(Collectors.toList());
     columnProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
     final List<Property<?>> foreignKeyProperties =
-            definition.getProperties().stream().filter(property -> property instanceof ForeignKeyProperty).collect(Collectors.toList());
+            definition.getProperties().stream().filter(ForeignKeyProperty.class::isInstance).collect(Collectors.toList());
     if (!foreignKeyProperties.isEmpty()) {
       builder.append(Util.LINE_SEPARATOR);
       foreignKeyProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
