@@ -97,19 +97,13 @@ public final class DatabaseExplorerPanel extends JPanel {
     final JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
     northPanel.add(schemaLabel, BorderLayout.CENTER);
     final EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
-    final ProgressWorker<Void> worker = new ProgressWorker<Void>(Dialogs.progressDialogBuilder()
-            .owner(Windows.getParentWindow(this))
-            .title("Populating")
+    ProgressWorker.builder()
+            .dialogOwner(this)
+            .dialogTitle("Populating")
             .northPanel(northPanel)
-            .build()) {
-      @Override
-      protected Void doInBackground() throws Exception {
-        model.populateSelected(schemaNotifier);
-        return null;
-      }
-    };
-    worker.addOnSuccessListener(Void -> model.getSchemaModel().refresh());
-    worker.execute();
+            .task(() -> model.populateSelected(schemaNotifier))
+            .onSuccess(result -> model.getSchemaModel().refresh())
+            .build().execute();
   }
 
   /**

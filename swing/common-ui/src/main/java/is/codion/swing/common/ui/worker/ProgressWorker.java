@@ -21,7 +21,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -31,89 +30,49 @@ import static java.util.Objects.requireNonNull;
 /**
  * A SwingWorker implementation which displays a progress bar in a modal dialog
  * while background work is being performed.
- * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 - 100 by default.
+ * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 - 100.
  * Note that instances of this class are not reusable.
- * Use {@link SwingWorker#setProgress} in {@link SwingWorker#doInBackground()} to indicate work progress.
  * @param <T> the type of result this {@link ProgressWorker} produces.
- * @see #setMaximum(int)
+ * @see ProgressTask#perform(EventDataListener) to indicate work progress
  */
-public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
+public final class ProgressWorker<T> extends SwingWorker<T, Void> {
 
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
 
   private final ProgressDialog progressDialog;
+  private final Event<Integer> progressReporter = Event.event();
   private final Event<T> onSuccessEvent = Event.event();
 
-  public ProgressWorker(final ProgressDialog progressDialog) {
+  private ProgressTask<T> task;
+  private Consumer<Throwable> exceptionHandler;
+
+  /**
+   * Instantiates a new ProgressWorker.
+   * @param progressDialog the progress dialog to use
+   */
+  private ProgressWorker(final ProgressDialog progressDialog) {
     this.progressDialog = requireNonNull(progressDialog);
+    this.exceptionHandler = throwable -> DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
+    this.progressReporter.addDataListener(this::setProgress);
     addPropertyChangeListener(this::onPropertyChangeEvent);
-  }
-
-  /**
-   * Adds a success listener.
-   * @param onSuccessListener a listener notified after a successful run, this notification happens on the EDT.
-   * @return this {@link ProgressWorker} instance
-   */
-  public final ProgressWorker<T> addOnSuccessListener(final EventDataListener<T> onSuccessListener) {
-    onSuccessEvent.addDataListener(requireNonNull(onSuccessListener));
-
-    return this;
-  }
-
-  /**
-   * Sets the maximum progress (max 100).
-   * @param maximumProgress the maximum progress
-   * @return this ProgressWorker instance
-   * @throws IllegalArgumentException in case the value not between 1 and 100 (inclusive)
-   */
-  public final ProgressWorker<T> setMaximum(final int maximumProgress) {
-    if (maximumProgress <= 0 || maximumProgress > 100) {
-      throw new IllegalArgumentException("maximumProgress should be between 1 and 100");
-    }
-    progressDialog.getProgressModel().setMaximum(maximumProgress);
-    return this;
-  }
-
-  /**
-   * @return the {@link ProgressDialog} used by this progress worker.
-   */
-  public final ProgressDialog getProgressDialog() {
-    return progressDialog;
   }
 
   /**
    * @return a new {@link Builder} instance
    */
-  public static Builder builder() {
-    return new DefaultBuilder();
+  public static <T> Builder<T> builder() {
+    return new DefaultBuilder<>();
   }
 
   @Override
-  protected final void done() {/*Prevent overriding*/}
+  protected T doInBackground() throws Exception {
+    if (task == null) {
+      throw new IllegalStateException("No task has been specified");
+    }
 
-  /**
-   * Handles an InterruptedException.
-   * By default the current thread is interrupted.
-   * @param exception the exception
-   */
-  protected void onInterruptedException(final InterruptedException exception) {
-    Thread.currentThread().interrupt();
+    return task.perform(progressReporter);
   }
-
-  /**
-   * Handles any exceptions other than {@link InterruptedException}, occurring during background work.
-   * This default implementation displays the exception information in a dialog, unless the
-   * exception is a {@link CancelException}, then it returns silently.
-   * Override for customized error handling.
-   * @param throwable the exception to handle
-   */
-  protected void onException(final Throwable throwable) {
-    DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
-  }
-
-  @Override
-  protected final void process(final List<Void> chunks) {/*Prevent overriding*/}
 
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
@@ -136,123 +95,195 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
       onSuccessEvent.onEvent(get());
     }
     catch (final InterruptedException e) {
-      onInterruptedException(e);
+      Thread.currentThread().interrupt();
     }
     catch (final ExecutionException e) {
-      onException(e.getCause());
+      exceptionHandler.accept(e);
     }
   }
 
   /**
-   * A builder for a {@link ProgressWorker} with an indeterminate progress bar.
+   * A background task.
+   * @param <T> the task result type
    */
-  public interface Builder {
+  public interface Task<T> {
+
+    /**
+     * Performs the task.
+     * @return the task result
+     * @throws Exception in case of an exception
+     */
+    T perform() throws Exception;
+  }
+
+  /**
+   * A progress aware background task.
+   * @param <T> the task result type
+   */
+  public interface ProgressTask<T> {
+
+    /**
+     * Performs the task.
+     * @param progressReporter the progress reporter to report progress to
+     * @return the task result
+     * @throws Exception in case of an exception
+     */
+    T perform(EventDataListener<Integer> progressReporter) throws Exception;
+  }
+
+  /**
+   * A builder for a {@link ProgressWorker} with an indeterminate progress bar.
+   * @param <T> the result type
+   */
+  public interface Builder<T> {
 
     /**
      * @param dialogOwner the dialog owner
      * @return this Builder instance
      */
-    Builder dialogOwner(JComponent dialogOwner);
+    Builder<T> dialogOwner(JComponent dialogOwner);
 
     /**
      * @param task the task to run
      * @return this Builder instance
      */
-    Builder task(Control.Command task);
+    Builder<T> task(Control.Command task);
+
+    /**
+     * @param task the task to run
+     * @return this Builder instance
+     */
+    Builder<T> task(Task<T> task);
+
+    /**
+     * @param progressTask the progress aware task to run
+     * @return this Builder instance
+     */
+    Builder<T> progressTask(ProgressTask<T> progressTask);
+
+    /**
+     * @param indeterminate true if the progress bar should be indeterminate
+     * @return this Builder instance
+     */
+    Builder<T> indeterminate(boolean indeterminate);
 
     /**
      * @param dialogTitle the dialog title
      * @return this Builder instance
      */
-    Builder dialogTitle(String dialogTitle);
+    Builder<T> dialogTitle(String dialogTitle);
 
     /**
      * @param onSuccess executed on the EDT after a successful run
      * @return this Builder instance
      */
-    Builder onSuccess(Runnable onSuccess);
+    Builder<T> onSuccess(Consumer<T> onSuccess);
 
     /**
      * @param successMessage if specified then this message is displayed after the task has successfully run
      * @return this Builder instance
      */
-    Builder successMessage(String successMessage);
+    Builder<T> successMessage(String successMessage);
 
     /**
-     * @param onException the exception handler
+     * @param exceptionHandler the exception handler
      * @return this Builder instance
      */
-    Builder onException(Consumer<Throwable> onException);
+    Builder<T> exceptionHandler(Consumer<Throwable> exceptionHandler);
 
     /**
      * @param failTitle the title of the failure dialog
      * @return this Builder instance
      */
-    Builder failTitle(String failTitle);
+    Builder<T> failTitle(String failTitle);
 
     /**
      * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
      * @return this Builder instance
      */
-    Builder northPanel(JPanel northPanel);
+    Builder<T> northPanel(JPanel northPanel);
 
     /**
      * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
      * @return this Builder instance
      */
-    Builder westPanel(JPanel westPanel);
+    Builder<T> westPanel(JPanel westPanel);
 
     /**
      * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
      * @return this Builder instance
      */
-    Builder buttonControls(Controls buttonControls);
+    Builder<T> buttonControls(Controls buttonControls);
 
     /**
      * @return a {@link ProgressWorker} based on this builder
      * @throws IllegalStateException in case no task has been specified
      */
-    ProgressWorker<?> build();
+    ProgressWorker<T> build();
   }
 
-  static final class DefaultBuilder implements Builder {
+  static final class DefaultBuilder<T> implements Builder<T> {
 
     private JComponent dialogOwner;
-    private Control.Command task;
+    private ProgressTask<T> progressTask;
     private String dialogTitle;
-    private Runnable onSuccess;
-    private Consumer<Throwable> onException;
+    private Consumer<T> onSuccess;
+    private Consumer<Throwable> exceptionHandler;
     private JPanel northPanel;
     private JPanel westPanel;
     private Controls buttonControls;
+    private boolean indeterminate = true;
 
     @Override
-    public Builder dialogOwner(final JComponent dialogOwner) {
+    public Builder<T> dialogOwner(final JComponent dialogOwner) {
       this.dialogOwner = dialogOwner;
       return this;
     }
 
     @Override
-    public Builder task(final Control.Command task) {
-      this.task = task;
+    public Builder<T> task(final Control.Command task) {
+      requireNonNull(task);
+      return task(() -> {
+        task.perform();
+        return null;
+      });
+    }
+
+    @Override
+    public Builder<T> task(final Task<T> task) {
+      requireNonNull(task);
+      this.progressTask = progressReporter -> task.perform();
+
       return this;
     }
 
     @Override
-    public Builder dialogTitle(final String dialogTitle) {
+    public Builder<T> progressTask(final ProgressTask<T> progressTask) {
+      this.progressTask = requireNonNull(progressTask);
+      return this;
+    }
+
+    @Override
+    public Builder<T> indeterminate(final boolean indeterminate) {
+      this.indeterminate = indeterminate;
+      return this;
+    }
+
+    @Override
+    public Builder<T> dialogTitle(final String dialogTitle) {
       this.dialogTitle = dialogTitle;
       return this;
     }
 
     @Override
-    public Builder onSuccess(final Runnable onSuccess) {
+    public Builder<T> onSuccess(final Consumer<T> onSuccess) {
       this.onSuccess = onSuccess;
       return this;
     }
 
     @Override
-    public Builder successMessage(final String successMessage) {
-      return onSuccess(() -> {
+    public Builder<T> successMessage(final String successMessage) {
+      return onSuccess(result -> {
         if (!nullOrEmpty(successMessage)) {
           JOptionPane.showMessageDialog(Windows.getParentWindow(dialogOwner), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
         }
@@ -260,14 +291,14 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
 
     @Override
-    public Builder onException(final Consumer<Throwable> onException) {
-      this.onException = onException;
+    public Builder<T> exceptionHandler(final Consumer<Throwable> exceptionHandler) {
+      this.exceptionHandler = exceptionHandler;
       return this;
     }
 
     @Override
-    public Builder failTitle(final String failTitle) {
-      return onException(exception -> {
+    public Builder<T> failTitle(final String failTitle) {
+      return exceptionHandler(exception -> {
         if (!(exception instanceof CancelException)) {
           Dialogs.showExceptionDialog(Windows.getParentWindow(dialogOwner), failTitle, exception);
         }
@@ -275,56 +306,56 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
 
     @Override
-    public Builder northPanel(final JPanel northPanel) {
+    public Builder<T> northPanel(final JPanel northPanel) {
       this.northPanel = northPanel;
       return this;
     }
 
     @Override
-    public Builder westPanel(final JPanel westPanel) {
+    public Builder<T> westPanel(final JPanel westPanel) {
       this.westPanel = westPanel;
       return this;
     }
 
     @Override
-    public Builder buttonControls(final Controls buttonControls) {
+    public Builder<T> buttonControls(final Controls buttonControls) {
       this.buttonControls = buttonControls;
       return this;
     }
 
     @Override
-    public ProgressWorker<?> build() {
-      if (task == null) {
+    public ProgressWorker<T> build() {
+      if (progressTask == null) {
         throw new IllegalStateException("No task has been specified");
       }
-      final Window dialogOwner = Windows.getParentWindow(this.dialogOwner);
-      final ProgressWorker<?> worker = new ProgressWorker<Object>(Dialogs.progressDialogBuilder()
-            .owner(dialogOwner)
-            .title(dialogTitle)
-            .northPanel(northPanel)
-            .westPanel(westPanel)
-            .buttonControls(buttonControls)
-            .build()) {
-        @Override
-        protected Object doInBackground() throws Exception {
-          task.perform();
-          return null;
-        }
-
-        @Override
-        protected void onException(final Throwable exception) {
+      final Window parentWindow = Windows.getParentWindow(dialogOwner);
+      final ProgressDialog progressDialog = Dialogs.progressDialogBuilder()
+              .owner(parentWindow)
+              .indeterminate(indeterminate)
+              .title(dialogTitle)
+              .northPanel(northPanel)
+              .westPanel(westPanel)
+              .buttonControls(buttonControls)
+              .build();
+      final ProgressWorker<T> worker = new ProgressWorker<>(progressDialog);
+      worker.task = progressTask;
+      if (onSuccess != null) {
+        worker.onSuccessEvent.addDataListener(result -> onSuccess.accept(result));
+      }
+      if (exceptionHandler != null) {
+        worker.exceptionHandler = exceptionHandler;
+      }
+      else {
+        worker.exceptionHandler = exception -> {
           if (!(exception instanceof CancelException)) {
-            if (onException != null) {
-              onException.accept(exception);
+            if (exceptionHandler != null) {
+              exceptionHandler.accept(exception);
             }
             else {
-              Dialogs.showExceptionDialog(dialogOwner, Messages.get(Messages.EXCEPTION), exception);
+              Dialogs.showExceptionDialog(parentWindow, Messages.get(Messages.EXCEPTION), exception);
             }
           }
-        }
-      };
-      if (onSuccess != null) {
-        worker.addOnSuccessListener(Void -> onSuccess.run());
+        };
       }
 
       return worker;

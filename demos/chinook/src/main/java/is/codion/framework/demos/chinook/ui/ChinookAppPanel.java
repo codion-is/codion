@@ -16,7 +16,6 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -194,24 +193,17 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   private void updateInvoiceTotals() {
     final Window dialogOwner = Windows.getParentWindow(this);
 
-    new ProgressWorker<List<Entity>>(Dialogs.progressDialogBuilder()
-            .owner(dialogOwner)
-            .title(bundle.getString(UPDATING_TOTALS))
-            .build()) {
-      @Override
-      protected List<Entity> doInBackground() throws Exception {
-        return getModel().updateInvoiceTotals();
-      }
-
-      @Override
-      protected void onException(final Throwable exception) {
-        showExceptionDialog(dialogOwner, bundle.getString(UPDATING_TOTALS_FAILED), exception);
-      }
-    }.addOnSuccessListener(updatedInvoices -> {
-      getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
-              .getTableModel().replaceEntities(updatedInvoices);
-      showMessageDialog(dialogOwner, bundle.getString(TOTALS_UPDATED));
-    }).execute();
+    ProgressWorker.<List<Entity>>builder()
+            .dialogOwner(this)
+            .dialogTitle(bundle.getString(UPDATING_TOTALS))
+            .task(() -> getModel().updateInvoiceTotals())
+            .onSuccess(updatedInvoices -> {
+              getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
+                      .getTableModel().replaceEntities(updatedInvoices);
+              showMessageDialog(dialogOwner, bundle.getString(TOTALS_UPDATED));
+            })
+            .exceptionHandler(exception -> showExceptionDialog(dialogOwner, bundle.getString(UPDATING_TOTALS_FAILED), exception))
+            .build().execute();
   }
 
   private void selectLanguage() {

@@ -1185,7 +1185,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
               .task(applicationStarter)
               .dialogTitle(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
-              .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
+              .onSuccess(result -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
               .build()
               .execute();
     }

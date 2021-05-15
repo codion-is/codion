@@ -6975,3 +6975,4 @@
   Dialogs.ProgressDialogBuilder added along with progressDialogBuilder() factory method
   ProgressWorker now takes a single ProgressDialog parameter
   ProgressDialogBuilder.indeterminate() added
+  ProgressWorker now final and Builder based
