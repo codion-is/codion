@@ -18,11 +18,11 @@ import com.github.lgooddatepicker.components.TimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.GridBagLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -133,7 +133,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param parent the dialog parent
    * @return a LocalDate from the user, null if the action was cancelled
    */
-  public static LocalDate getLocalDateWithCalendar(final LocalDate startDate, final String message, final Container parent) {
+  public static LocalDate getLocalDateWithCalendar(final LocalDate startDate, final String message, final JComponent parent) {
     final Event<?> closeEvent = Event.event();
     final State cancel = State.state();
     final Control okControl = Control.control(closeEvent::onEvent);
@@ -154,7 +154,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .action(cancelControl)
             .enable(datePanel);
     Dialogs.builder()
-            .owner(parent)
+            .dialogParent(parent)
             .component(datePanel)
             .title(message)
             .enterAction(okControl)
@@ -171,7 +171,8 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param parent the dialog parent
    * @return a LocalDateTime from the user, null if the action was cancelled
    */
-  public static LocalDateTime getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String message, final Container parent) {
+  public static LocalDateTime getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String message,
+                                                           final JComponent parent) {
     final Event<?> closeEvent = Event.event();
     final State cancel = State.state();
     final Control okControl = Control.control(closeEvent::onEvent);
@@ -203,7 +204,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .action(cancelControl)
             .enable(dateTimePanel);
     Dialogs.builder()
-            .owner(parent)
+            .dialogParent(parent)
             .component(dateTimePanel)
             .title(message)
             .enterAction(okControl)

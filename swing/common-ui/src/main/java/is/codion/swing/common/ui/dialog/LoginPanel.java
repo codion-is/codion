@@ -1,17 +1,19 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -40,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JPanel for retrieving login information.
  */
-public final class LoginPanel extends JPanel {
+final class LoginPanel extends JPanel {
 
   static {
     //initialize button captions
@@ -53,7 +55,7 @@ public final class LoginPanel extends JPanel {
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
   private final Value<User> userValue = Value.value();
-  private final LoginValidator loginValidator;
+  private final Dialogs.LoginValidator loginValidator;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
@@ -61,7 +63,7 @@ public final class LoginPanel extends JPanel {
   /**
    * Instantiates a new LoginPanel
    */
-  private LoginPanel(final User defaultUser, final LoginValidator loginValidator,
+  LoginPanel(final User defaultUser, final Dialogs.LoginValidator loginValidator,
                      final JComponent southComponent) {
     this.okControl = Control.builder()
             .name(Messages.get(Messages.OK))
@@ -79,8 +81,8 @@ public final class LoginPanel extends JPanel {
     initializeUI(defaultUser, southComponent);
   }
 
-  private User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
-    Window parentWindow = Windows.getParentWindow(parent);
+  User showLoginPanel(final Window parent, final String title, final ImageIcon icon) {
+    Window parentWindow = parent;
     JFrame dummyFrame = null;
     if (parentWindow == null && isWindows()) {
       dummyFrame = createDummyFrame(title, icon);
@@ -108,13 +110,6 @@ public final class LoginPanel extends JPanel {
     }
 
     return userValue.get();
-  }
-
-  /**
-   * @return a new login panel builder
-   */
-  public static Builder builder() {
-    return new LoginPanelBuilder();
   }
 
   private void initializeUI(final User defaultUser, final JComponent southComponent) {
@@ -210,117 +205,5 @@ public final class LoginPanel extends JPanel {
 
   private static boolean isWindows() {
     return System.getProperty("os.name").toLowerCase().contains("win");
-  }
-
-  /**
-   * A login panel builder
-   */
-  public interface Builder {
-
-    /**
-     * @param defaultUser the default user credentials to display
-     * @return this Builder instance
-     */
-    Builder defaultUser(User defaultUser);
-
-    /**
-     * @param validator the login validator to use
-     * @return this Builder instance
-     */
-    Builder validator(LoginValidator validator);
-
-    /**
-     * @param southComponent a component to add to the south of the credentials input fields
-     * @return this Builder instance
-     */
-    Builder southComponent(JComponent southComponent);
-
-    /**
-     * @param dialogParent the dialog parent component
-     * @return this Builder instance
-     */
-    Builder dialogParent(JComponent dialogParent);
-
-    /**
-     * @param dialogTitle the dialog title
-     * @return this Builder instance
-     */
-    Builder dialogTitle(String dialogTitle);
-
-    /**
-     * @param icon the dialog icon
-     * @return this Builder instance
-     */
-    Builder icon(ImageIcon icon);
-
-    /**
-     * @return the logged in user
-     * @throws CancelException in case the login is cancelled
-     */
-    User show();
-  }
-
-  /**
-   * Validates a login attempt.
-   */
-  public interface LoginValidator {
-
-    /**
-     * Valdates a login with the given user
-     * @param user the user
-     * @throws Exception in case validation fails
-     */
-    void validate(User user) throws Exception;
-  }
-
-  private static final class LoginPanelBuilder implements Builder {
-
-    private User defaultUser;
-    private LoginValidator validator = user -> {};
-    private JComponent southComponent;
-    private JComponent dialogParent;
-    private String dialogTitle;
-    private ImageIcon icon;
-
-    @Override
-    public Builder defaultUser(final User defaultUser) {
-      this.defaultUser = defaultUser;
-      return this;
-    }
-
-    @Override
-    public Builder validator(final LoginValidator validator) {
-      this.validator = requireNonNull(validator);
-      return this;
-    }
-
-    @Override
-    public Builder southComponent(final JComponent southComponent) {
-      this.southComponent = southComponent;
-      return this;
-    }
-
-    @Override
-    public Builder dialogParent(final JComponent dialogParent) {
-      this.dialogParent = dialogParent;
-      return this;
-    }
-
-    @Override
-    public Builder dialogTitle(final String dialogTitle) {
-      this.dialogTitle = dialogTitle;
-      return this;
-    }
-
-    @Override
-    public Builder icon(final ImageIcon icon) {
-      this.icon = icon;
-      return this;
-    }
-
-    @Override
-    public User show() {
-      return new LoginPanel(defaultUser, validator, southComponent).showLoginPanel(dialogParent, dialogTitle, icon);
-    }
   }
 }

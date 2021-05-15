@@ -8,6 +8,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.dialog.Dialogs.DialogBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -15,7 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -23,9 +24,9 @@ import java.awt.event.WindowEvent;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDialogBuilder implements Dialogs.Builder {
+final class DefaultDialogBuilder implements DialogBuilder {
 
-  private Container owner;
+  private Window owner;
   private JComponent component;
   private String title;
   private ImageIcon icon;
@@ -37,61 +38,70 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
   private boolean disposeOnEscape = true;
 
   @Override
-  public Dialogs.Builder owner(final Container owner) {
+  public DialogBuilder owner(final Window owner) {
     this.owner = owner;
     return this;
   }
 
   @Override
-  public Dialogs.Builder component(final JComponent component) {
+  public DialogBuilder dialogParent(final JComponent dialogParent) {
+    if (owner != null) {
+      throw new IllegalStateException("owner has alrady been set");
+    }
+    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
+    return this;
+  }
+
+  @Override
+  public DialogBuilder component(final JComponent component) {
     this.component = requireNonNull(component);
     return this;
   }
 
   @Override
-  public Dialogs.Builder title(final String title) {
+  public DialogBuilder title(final String title) {
     this.title = title;
     return this;
   }
 
   @Override
-  public Dialogs.Builder icon(final ImageIcon icon) {
+  public DialogBuilder icon(final ImageIcon icon) {
     this.icon = icon;
     return this;
   }
 
   @Override
-  public Dialogs.Builder modal(final boolean modal) {
+  public DialogBuilder modal(final boolean modal) {
     this.modal = modal;
     return this;
   }
 
   @Override
-  public Dialogs.Builder enterAction(final Action enterAction) {
+  public DialogBuilder enterAction(final Action enterAction) {
     this.enterAction = requireNonNull(enterAction);
     return this;
   }
 
   @Override
-  public Dialogs.Builder onClosedAction(final Action onClosedAction) {
+  public DialogBuilder onClosedAction(final Action onClosedAction) {
     this.onClosedAction = onClosedAction;
     return this;
   }
 
   @Override
-  public Dialogs.Builder closeEvent(final EventObserver<?> closeEvent) {
+  public DialogBuilder closeEvent(final EventObserver<?> closeEvent) {
     this.closeEvent = closeEvent;
     return this;
   }
 
   @Override
-  public Dialogs.Builder confirmCloseListener(final EventDataListener<State> confirmCloseListener) {
+  public DialogBuilder confirmCloseListener(final EventDataListener<State> confirmCloseListener) {
     this.confirmCloseListener = confirmCloseListener;
     return this;
   }
 
   @Override
-  public Dialogs.Builder disposeOnEscape(final boolean disposeOnEscape) {
+  public DialogBuilder disposeOnEscape(final boolean disposeOnEscape) {
     this.disposeOnEscape = disposeOnEscape;
     return this;
   }
@@ -102,7 +112,7 @@ final class DefaultDialogBuilder implements Dialogs.Builder {
       throw new IllegalStateException("A component to display in the dialog must be specified");
     }
 
-    final JDialog dialog = new JDialog(Windows.getParentWindow(owner), title);
+    final JDialog dialog = new JDialog(owner, title);
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
     }
