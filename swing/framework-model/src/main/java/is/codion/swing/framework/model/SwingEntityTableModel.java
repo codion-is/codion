@@ -144,8 +144,19 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
-    this(entityType, requireNonNull(connectionProvider), new SwingEntityTableSortModel(connectionProvider.getEntities()),
-            new DefaultEntityTableConditionModel(entityType, connectionProvider,
+    this(entityType, requireNonNull(connectionProvider), new SwingEntityTableSortModel(connectionProvider.getEntities()));
+  }
+
+  /**
+   * Instantiates a new DefaultEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the connection provider
+   * @param sortModel the sort model
+   * @throws NullPointerException in case sortModel is null
+   */
+  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+                               final TableSortModel<Entity, Attribute<?>> sortModel) {
+    this(entityType, connectionProvider, sortModel, new DefaultEntityTableConditionModel(entityType, connectionProvider,
                     new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
   }
 
@@ -154,8 +165,21 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param entityType the entityType
    * @param connectionProvider the connection provider
    * @param tableConditionModel the table condition model
-   * @param sortModel the sort model
    * @throws NullPointerException in case conditionModel is null
+   * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
+   */
+  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+                               final EntityTableConditionModel tableConditionModel) {
+    this(entityType, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities()), tableConditionModel);
+  }
+
+  /**
+   * Instantiates a new DefaultEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the connection provider
+   * @param sortModel the sort model
+   * @param tableConditionModel the table condition model
+   * @throws NullPointerException in case sortModel or conditionModel is null
    * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
