@@ -128,7 +128,12 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public static synchronized void setJDKDir(final JComponent dialogParent) {
     try {
-      jdkDir = Dialogs.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
+      jdkDir = Dialogs.fileSelectionDialogBuilder()
+              .dialogParent(dialogParent)
+              .startDirectory(jdkDir)
+              .title("Set JDK home")
+              .selectDirectory()
+              .getAbsolutePath();
       UserPreferences.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
     catch (final CancelException ignored) {/*ignored*/}

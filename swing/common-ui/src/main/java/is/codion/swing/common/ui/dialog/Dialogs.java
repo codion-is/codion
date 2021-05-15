@@ -17,8 +17,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -30,70 +28,11 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
-
-import static is.codion.common.Util.nullOrEmpty;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 /**
  * A utility class for displaying Dialogs.
  */
 public final class Dialogs {
-
-  public static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName());
-
-  /**
-   * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives
-   */
-  private static JFileChooser fileChooserOpen;
-  private static JFileChooser fileChooserSave;
-
-  /**
-   * Specifies how a file selection dialog restricts it's selection.
-   */
-  public enum FilesOrDirectories {
-    /**
-     * Only files.
-     */
-    FILES,
-    /**
-     * Only directories.
-     */
-    DIRECTORIES,
-    /**
-     * Both files and directories.
-     */
-    BOTH
-  }
-
-  /**
-   * Specifies if a overwriting a file should be confirmed.
-   */
-  public enum ConfirmOverwrite {
-    /**
-     * If overwriting should be confirmed.
-     */
-    YES,
-    /**
-     * If overwriting should not be confirmed.
-     */
-    NO
-  }
-
-  /**
-   * Specifies whether single item selection is enabled when selecting files and or directories.
-   */
-  public enum SingleSelection {
-    /**
-     * Single selection is enabled.
-     */
-    YES,
-    /**
-     * Single selection is not enabled.
-     */
-    NO
-  }
 
   private Dialogs() {}
 
@@ -154,6 +93,13 @@ public final class Dialogs {
   }
 
   /**
+   * @return a new FileSelectionDialogBuilder
+   */
+  public static FileSelectionDialogBuilder fileSelectionDialogBuilder() {
+    return new DefaultFileSelectionDialogBuilder();
+  }
+
+  /**
    * @param values the values to select from
    * @param <T> the value type
    * @return a new selection dialog builder
@@ -195,203 +141,6 @@ public final class Dialogs {
     }
     dialog.setModal(true);
     dialog.setResizable(true);
-  }
-
-  /**
-   * Displays a file selection dialog for selecting an existing directory
-   * @param dialogParent the dialog parent
-   * @param startDir the start directory, user.home if not specified
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static File selectDirectory(final JComponent dialogParent, final String startDir) {
-    return selectDirectory(dialogParent, startDir, MESSAGES.getString("select_directory"));
-  }
-
-  /**
-   * Displays a file selection dialog for selecting an existing directory
-   * @param dialogParent the dialog parent
-   * @param startDir the start directory, user.home if not specified
-   * @param dialogTitle the dialog title
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static File selectDirectory(final JComponent dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle);
-  }
-
-  /**
-   * Displays a file selection dialog for selecting an existing file
-   * @param dialogParent the dialog parent
-   * @param startDir the start directory, user.home if not specified
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static File selectFile(final JComponent dialogParent, final String startDir) {
-    return selectFile(dialogParent, startDir, MESSAGES.getString("select_file"));
-  }
-
-  /**
-   * Displays a file selection dialog for selecting an existing file
-   * @param dialogParent the dialog parent
-   * @param startDir the start directory, user.home if not specified
-   * @param dialogTitle the dialog title
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static File selectFile(final JComponent dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.FILES, dialogTitle);
-  }
-
-  /**
-   * Displays a file selection dialog for selecting an existing file or directory
-   * @param dialogParent the dialog parent
-   * @param startDir the start directory, user.home if not specified
-   * @param filesOrDirectories specifies whether selection should be restricted
-   * @param dialogTitle the dialog title
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir,
-                                           final FilesOrDirectories filesOrDirectories, final String dialogTitle) {
-    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, SingleSelection.NO, dialogTitle).get(0);
-  }
-
-  /**
-   * Displays a file selection dialog for selecting files or directories
-   * @param dialogParent the dialog parent
-   * @param startDir the start directory, user.home if not specified
-   * @param filesOrDirectories specifies whether selection should be restricted
-   * @param singleSelection if true then the dialog will be restricted to single item selection
-   * @param dialogTitle the dialog title
-   * @return a List containing the selected files, contains at least one file
-   * @throws CancelException in case the user cancels or no files are selected
-   */
-  public static synchronized List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
-                                                                 final FilesOrDirectories filesOrDirectories,
-                                                                 final SingleSelection singleSelection,
-                                                                 final String dialogTitle) {
-    if (fileChooserOpen == null) {
-      try {
-        Components.showWaitCursor(dialogParent);
-        fileChooserOpen = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
-      }
-      finally {
-        Components.hideWaitCursor(dialogParent);
-      }
-    }
-    switch (filesOrDirectories) {
-      case FILES:
-        fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        break;
-      case DIRECTORIES:
-        fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        break;
-      case BOTH:
-        fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        break;
-    }
-    fileChooserOpen.setSelectedFiles(new File[] {new File("")});
-    fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
-    fileChooserOpen.setMultiSelectionEnabled(singleSelection == SingleSelection.NO);
-    if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
-      fileChooserOpen.setCurrentDirectory(new File(startDir));
-    }
-    if (dialogTitle != null) {
-      fileChooserOpen.setDialogTitle(dialogTitle);
-    }
-    final int option = fileChooserOpen.showOpenDialog(dialogParent);
-    if (option == JFileChooser.APPROVE_OPTION) {
-      final List<File> selectedFiles;
-      if (singleSelection == SingleSelection.NO) {
-        selectedFiles = asList(fileChooserOpen.getSelectedFiles());
-      }
-      else {
-        selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
-      }
-      if (!selectedFiles.isEmpty()) {
-        return selectedFiles;
-      }
-    }
-
-    throw new CancelException();
-  }
-
-  /**
-   * Displays a save file dialog for creating a new file
-   * @param dialogParent the dialog parent
-   * @param startDir the start dir, user.dir if not specified
-   * @param defaultFileName the default file name to suggest
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
-    return selectFileToSave(dialogParent, startDir, defaultFileName, ConfirmOverwrite.YES);
-  }
-
-  /**
-   * Displays a save file dialog for creating a new file
-   * @param dialogParent the dialog parent
-   * @param startDir the start dir, user.dir if not specified
-   * @param defaultFileName the default file name to suggest
-   * @param confirmOverwrite specifies whether overwriting a file should be confirmed
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir,
-                                                   final String defaultFileName, final ConfirmOverwrite confirmOverwrite) {
-    if (fileChooserSave == null) {
-      try {
-        Components.showWaitCursor(dialogParent);
-        fileChooserSave = new JFileChooser();
-      }
-      finally {
-        Components.hideWaitCursor(dialogParent);
-      }
-    }
-    fileChooserSave.setSelectedFiles(new File[] {new File("")});
-    fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
-    fileChooserSave.setMultiSelectionEnabled(false);
-    final File startDirectory;
-    if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
-      startDirectory = new File(startDir);
-    }
-    else {
-      startDirectory = fileChooserSave.getCurrentDirectory();
-    }
-    File selectedFile = new File(startDirectory.getAbsolutePath() + (defaultFileName != null ? File.separator + defaultFileName : ""));
-    boolean fileChosen = false;
-    while (!fileChosen) {
-      if (selectedFile.isDirectory()) {
-        fileChooserSave.setCurrentDirectory(selectedFile);
-      }
-      else {
-        fileChooserSave.setSelectedFile(selectedFile);
-      }
-      int option = fileChooserSave.showSaveDialog(dialogParent);
-      if (option == JFileChooser.APPROVE_OPTION) {
-        selectedFile = fileChooserSave.getSelectedFile();
-        if (selectedFile.exists() && confirmOverwrite == ConfirmOverwrite.YES) {
-          option = JOptionPane.showConfirmDialog(dialogParent, MESSAGES.getString("overwrite_file"),
-                  MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
-          if (option == JOptionPane.YES_OPTION) {
-            fileChosen = true;
-          }
-          else if (option == JOptionPane.CANCEL_OPTION) {
-            throw new CancelException();
-          }
-        }
-        else {
-          fileChosen = true;
-        }
-      }
-      else {
-        throw new CancelException();
-      }
-    }
-
-    return selectedFile;
   }
 
   /**
@@ -528,6 +277,73 @@ public final class Dialogs {
      * @return the selected values, en empty Collection if none was selected
      */
     Collection<T> select();
+  }
+
+  /**
+   * A builder for a file/directory selection dialog
+   */
+  public interface FileSelectionDialogBuilder {
+
+    /**
+     * @param owner the dialog owner
+     * @return this DialogBuilder instance
+     */
+    FileSelectionDialogBuilder owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this DialogBuilder instance
+     */
+    FileSelectionDialogBuilder dialogParent(JComponent dialogParent);
+
+    /**
+     * @param title the dialog title
+     * @return this DialogBuilder instance
+     */
+    FileSelectionDialogBuilder title(String title);
+
+    /**
+     * @param startDirectory the start directory
+     * @return this DialogBuilder instance
+     */
+    FileSelectionDialogBuilder startDirectory(String startDirectory);
+
+    /**
+     * @param confirmOverwrite specifies whether overwriting a file should be confirmed
+     * @return this DialogBuilder instance
+     */
+    FileSelectionDialogBuilder confirmOverwrite(boolean confirmOverwrite);
+
+    /**
+     * @return the selected file
+     * @throws CancelException in case the user cancels
+     */
+    File selectFile();
+
+    /**
+     * @return the selected directory
+     * @throws CancelException in case the user cancels
+     */
+    File selectDirectory();
+
+    /**
+     * @return a List containing the selected files, contains at least one file
+     * @throws CancelException in case the user cancels or no files are selected
+     */
+    List<File> selectFilesOrDirectories();
+
+    /**
+     * @return the selected file
+     * @throws CancelException in case the user cancels
+     */
+    File selectFileToSave();
+
+    /**
+     * @param defaultFileName the default file name
+     * @return the selected file
+     * @throws CancelException in case the user cancels
+     */
+    File selectFileToSave(String defaultFileName);
   }
 
   /**

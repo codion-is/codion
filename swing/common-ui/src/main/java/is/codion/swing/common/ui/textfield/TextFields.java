@@ -275,7 +275,10 @@ public final class TextFields {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          final File file = Dialogs.selectFile(filenameField, getParentPath(filenameField.getText()));
+          final File file = Dialogs.fileSelectionDialogBuilder()
+                  .dialogParent(filenameField)
+                  .startDirectory(getParentPath(filenameField.getText()))
+                  .selectFile();
           filenameField.setText(file.getAbsolutePath());
         }
         catch (final CancelException ignored) {/*ignored*/}
