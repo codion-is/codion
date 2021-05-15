@@ -10,33 +10,22 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +34,6 @@ import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -54,7 +42,7 @@ import static java.util.Collections.singletonList;
 public final class Dialogs {
 
   public static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName());
-  private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
+
   /**
    * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives
    */
@@ -166,72 +154,13 @@ public final class Dialogs {
   }
 
   /**
-   * Displays a dialog for selecting one of a collection of values
-   * @param dialogOwner the dialog owner
-   * @param values the values to choose from
-   * @return the selected value, {@link Optional#empty()} if none was selected
-   * @param <T> the type of values being selected
+   * @param values the values to select from
+   * @param <T> the value type
+   * @return a new selection dialog builder
+   * @throws IllegalArgumentException in case values is empty
    */
-  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values) {
-    return selectValue(dialogOwner, values, MESSAGES.getString("select_value"));
-  }
-
-  /**
-   * Displays a dialog for selecting one of a collection of values
-   * @param dialogOwner the dialog owner
-   * @param values the values to choose from
-   * @param dialogTitle the dialog title
-   * @return the selected value, {@link Optional#empty()} if none was selected
-   * @param <T> the type of values being selected
-   */
-  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    return selectValue(dialogOwner, values, dialogTitle, null);
-  }
-
-  /**
-   * Displays a dialog for selecting one of a collection of values
-   * @param dialogOwner the dialog owner
-   * @param values the values to choose from
-   * @param dialogTitle the dialog title
-   * @param defaultSelection the item selected by default
-   * @return the selected value, {@link Optional#empty()} if none was selected
-   * @param <T> the type of values being selected
-   */
-  public static <T> Optional<T> selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
-                                            final T defaultSelection) {
-    final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
-            defaultSelection == null ? emptyList() : singletonList(defaultSelection));
-    if (selected.isEmpty()) {
-      return Optional.empty();
-    }
-
-    return Optional.of(selected.get(0));
-  }
-
-  /**
-   * Displays a dialog for selecting from of a collection of values
-   * @param dialogOwner the dialog owner
-   * @param values the values to choose from
-   * @param dialogTitle the dialog title
-   * @return the selected values, en empty Collection if none was selected
-   * @param <T> the type of values being selected
-   */
-  public static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    return selectValues(dialogOwner, values, dialogTitle, false, emptyList());
-  }
-
-  /**
-   * Displays a dialog for selecting from of a collection of values
-   * @param dialogOwner the dialog owner
-   * @param values the values to choose from
-   * @param dialogTitle the dialog title
-   * @param defaultSelection the items selected by default
-   * @return the selected values, en empty Collection if none was selected
-   * @param <T> the type of values being selected
-   */
-  public static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
-                                         final Collection<T> defaultSelection) {
-    return selectValues(dialogOwner, values, dialogTitle, false, defaultSelection);
+  public static <T> SelectionDialogBuilder<T> selectionDialogBuilder(final Collection<T> values) {
+    return new DefaultSelectionDialogBuilder<>(values);
   }
 
   /**
@@ -466,60 +395,6 @@ public final class Dialogs {
   }
 
   /**
-   * Displays a dialog for selecting from of a collection of values
-   * @param dialogOwner the dialog owner
-   * @param values the values to choose from
-   * @param dialogTitle the dialog title
-   * @param singleSelection if true then the selection is restricted to a single value
-   * @param defaultSelection the items selected by default
-   * @return the selected values, en empty Collection if none was selected
-   */
-  private static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values,
-                                          final String dialogTitle, final boolean singleSelection,
-                                          final Collection<T> defaultSelection) {
-    final DefaultListModel<T> listModel = new DefaultListModel<>();
-    values.forEach(listModel::addElement);
-    final JList<T> list = new JList<>(listModel);
-    final Window owner = Windows.getParentWindow(dialogOwner);
-    final JDialog dialog = new JDialog(owner, dialogTitle);
-    final Action okAction = new DisposeDialogAction(dialog, null);
-    final Action cancelAction = new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        list.clearSelection();
-        dialog.dispose();
-      }
-    };
-    if (singleSelection) {
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    prepareOkCancelDialog(dialog, new JScrollPane(list), okAction, cancelAction);
-    list.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          okAction.actionPerformed(null);
-        }
-      }
-    });
-    if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
-      dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
-    }
-    if (defaultSelection != null) {
-      defaultSelection.forEach(item -> {
-        final int index = listModel.indexOf(item);
-        list.getSelectionModel().addSelectionInterval(index, index);
-        list.ensureIndexIsVisible(index);
-      });
-    }
-    dialog.setVisible(true);
-
-    return list.getSelectedValuesList();
-  }
-
-  /**
    * A builder for JDialog.
    */
   public interface DialogBuilder {
@@ -600,6 +475,59 @@ public final class Dialogs {
      * @throws IllegalStateException in case no component has been specified
      */
     JDialog build();
+  }
+
+  /**
+   * A builder for a selection dialog.
+   * @param <T> the value type
+   */
+  public interface SelectionDialogBuilder<T> {
+
+    /**
+     * @param owner the dialog owner
+     * @return this SelectionDialogBuilder instance
+     */
+    SelectionDialogBuilder<T> owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this SelectionDialogBuilder instance
+     */
+    SelectionDialogBuilder<T> dialogParent(JComponent dialogParent);
+
+    /**
+     * @param title the dialog title
+     * @return this SelectionDialogBuilder instance
+     */
+    SelectionDialogBuilder<T> title(String title);
+
+    /**
+     * @param singleSelection if true then the selection is restricted to a single value
+     * @return this SelectionDialogBuilder instance
+     */
+    SelectionDialogBuilder<T> singleSelection(boolean singleSelection);
+
+    /**
+     * @param defaultSelection the item selected by default
+     * @return this SelectionDialogBuilder instance
+     */
+    SelectionDialogBuilder<T> defaultSelection(T defaultSelection);
+
+    /**
+     * @param defaultSelection the items selected by default
+     * @return this SelectionDialogBuilder instance
+     */
+    SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection);
+
+    /**
+     * @return the selected value, {@link Optional#empty()} if none was selected
+     */
+    Optional<T> selectSingle();
+
+    /**
+     * @return the selected values, en empty Collection if none was selected
+     */
+    Collection<T> select();
   }
 
   /**

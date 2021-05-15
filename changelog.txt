@@ -6979,3 +6979,4 @@
   SwingEntityTableModel, added a couple of overloaded constructors
   InterruptedException handled in a couple of places
   ProgressWorker.Builder now consistent with other dialog builders
+  Dialogs.selectValue() and selectValues() methods replaced with SelectionDialogBuilder

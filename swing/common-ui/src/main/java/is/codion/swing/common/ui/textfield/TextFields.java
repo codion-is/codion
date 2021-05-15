@@ -253,7 +253,9 @@ public final class TextFields {
             .action(new AbstractAction("TextFields.lookupValue") {
               @Override
               public void actionPerformed(final ActionEvent e) {
-                final Object value = Dialogs.selectValue(textField, valueProvider.get());
+                final Object value = Dialogs.selectionDialogBuilder(valueProvider.get())
+                        .dialogParent(textField)
+                        .select();
                 if (value != null) {
                   textField.setText(value.toString());
                 }
