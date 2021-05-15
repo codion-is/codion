@@ -8,9 +8,9 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
-import is.codion.swing.common.ui.LoginPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.worker.ProgressWorker;
@@ -117,7 +117,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     try {
       final Database database = DatabaseFactory.getDatabase();
       final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
-              LoginPanel.builder()
+              Dialogs.loginDialogBuilder()
                       .validator(user -> database.createConnection(user).close())
                       .show());
       new DatabaseExplorerPanel(explorerModel).showFrame();

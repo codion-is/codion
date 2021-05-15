@@ -32,8 +32,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Components.LookAndFeelProvider;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.LoginPanel;
-import is.codion.swing.common.ui.LoginPanel.LoginValidator;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
@@ -42,6 +40,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.Dialogs.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -1109,7 +1108,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected User getLoginUser(final User defaultUser, final LoginValidator loginValidator) {
     final String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
-    final User user = LoginPanel.builder()
+    final User user = Dialogs.loginDialogBuilder()
             .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
             .validator(loginValidator)
             .dialogTitle(loginDialogTitle)

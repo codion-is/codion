@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
+import is.codion.common.user.User;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
@@ -145,6 +146,13 @@ public final class Dialogs {
    */
   public static Builder builder() {
     return new DefaultDialogBuilder();
+  }
+
+  /**
+   * @return a new login dialog builder
+   */
+  public static LoginDialogBuilder loginDialogBuilder() {
+    return new DefaultLoginDialogBuilder();
   }
 
   /**
@@ -576,5 +584,66 @@ public final class Dialogs {
      * @throws IllegalStateException in case no component has been specified
      */
     JDialog build();
+  }
+
+  /**
+   * A login panel builder
+   */
+  public interface LoginDialogBuilder {
+
+    /**
+     * @param defaultUser the default user credentials to display
+     * @return this Builder instance
+     */
+    LoginDialogBuilder defaultUser(User defaultUser);
+
+    /**
+     * @param validator the login validator to use
+     * @return this Builder instance
+     */
+    LoginDialogBuilder validator(LoginValidator validator);
+
+    /**
+     * @param southComponent a component to add to the south of the credentials input fields
+     * @return this Builder instance
+     */
+    LoginDialogBuilder southComponent(JComponent southComponent);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this Builder instance
+     */
+    LoginDialogBuilder dialogParent(JComponent dialogParent);
+
+    /**
+     * @param dialogTitle the dialog title
+     * @return this Builder instance
+     */
+    LoginDialogBuilder dialogTitle(String dialogTitle);
+
+    /**
+     * @param icon the dialog icon
+     * @return this Builder instance
+     */
+    LoginDialogBuilder icon(ImageIcon icon);
+
+    /**
+     * @return the logged in user
+     * @throws CancelException in case the login is cancelled
+     */
+    User show();
+  }
+
+  /**
+   * Validates a login attempt.
+   */
+  public interface LoginValidator {
+
+    /**
+     * Valdates a login with the given user
+     * @param user the user
+     * @throws Exception in case validation fails
+     */
+    void validate(User user) throws Exception;
   }
 }

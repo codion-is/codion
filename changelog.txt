@@ -6970,3 +6970,4 @@
   LoginPanel.UserValidator renamed LoginValidator
   LoginPanel constructor and showLoginDialog() replaced by Builder
   EntityApplicationPanel.startApplication() bug fixed, did not set the font size before showing login dialog, refactored
+  LoginPanel.builder() moved to Dialogs, renamed loginDialogBuilder()
