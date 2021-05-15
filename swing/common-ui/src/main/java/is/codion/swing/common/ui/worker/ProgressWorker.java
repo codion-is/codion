@@ -112,8 +112,14 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   public ProgressWorker(final Window dialogOwner, final String progressMessage, final Indeterminate indeterminate,
                         final JPanel dialogNorthPanel, final JPanel dialogWestPanel, final Controls buttonControls) {
-    progressDialog = new ProgressDialog(dialogOwner, progressMessage,
-            indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS, dialogNorthPanel, dialogWestPanel, buttonControls);
+    progressDialog = Dialogs.progressDialogBuilder()
+            .owner(dialogOwner)
+            .title(progressMessage)
+            .maxProgress(indeterminate == Indeterminate.YES ? NO_PROGRESS : DEFAULT_MAX_PROGRESS)
+            .northPanel(dialogNorthPanel)
+            .westPanel(dialogWestPanel)
+            .buttonControls(buttonControls)
+            .build();
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
