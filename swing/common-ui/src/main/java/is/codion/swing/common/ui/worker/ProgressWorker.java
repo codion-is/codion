@@ -59,6 +59,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
+   * @param <T> the worker result type
    * @return a new {@link Builder} instance
    */
   public static <T> Builder<T> builder() {
