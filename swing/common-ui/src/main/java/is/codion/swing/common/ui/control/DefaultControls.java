@@ -160,8 +160,8 @@ final class DefaultControls extends AbstractControl implements Controls {
   public JMenuBar createMenuBar() {
     final JMenuBar menuBar = new JMenuBar();
     actions.stream()
-            .filter(control -> control instanceof Controls)
-            .map(control -> (Controls) control)
+            .filter(Controls.class::isInstance)
+            .map(Controls.class::cast)
             .forEach(subControls -> menuBar.add(subControls.createMenu()));
 
     return menuBar;
