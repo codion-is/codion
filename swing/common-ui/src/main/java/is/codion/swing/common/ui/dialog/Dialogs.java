@@ -136,6 +136,9 @@ public final class Dialogs {
         SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, true).dispose());
       }
     }
+    catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
