@@ -6978,3 +6978,4 @@
   ProgressWorker now final and Builder based
   SwingEntityTableModel, added a couple of overloaded constructors
   InterruptedException handled in a couple of places
+  ProgressWorker.Builder now consistent with other dialog builders

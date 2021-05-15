@@ -98,7 +98,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     northPanel.add(schemaLabel, BorderLayout.CENTER);
     final EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
     ProgressWorker.builder()
-            .dialogOwner(this)
+            .dialogParent(this)
             .dialogTitle("Populating")
             .northPanel(northPanel)
             .task(() -> model.populateSelected(schemaNotifier))

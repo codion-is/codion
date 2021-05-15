@@ -39,7 +39,7 @@ public final class LookupTablePanel extends EntityTablePanel {
   private void exportCSV() throws IOException {
     File fileToSave = selectFileToSave(this, null, "export.csv");
     ProgressWorker.builder()
-            .dialogOwner(this)
+            .dialogParent(this)
             .task(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
             .dialogTitle("Exporting data")
             .successMessage("Export successful")
