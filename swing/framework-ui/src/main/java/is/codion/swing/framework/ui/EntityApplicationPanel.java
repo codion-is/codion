@@ -1531,6 +1531,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
         LOG.info(getFrameTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }
+      catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
       catch (final Throwable exception) {
         displayException(exception, null);
       }

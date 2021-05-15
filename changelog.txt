@@ -7008,3 +7008,4 @@
   ProgressDialogBuilder.indeterminate() added
   ProgressWorker now final and Builder based
   SwingEntityTableModel, added a couple of overloaded constructors
+  InterruptedException handled in a couple of places
