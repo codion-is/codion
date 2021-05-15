@@ -158,7 +158,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     private RefreshOnVisible(final EntityComboBox comboBox) {
       this.comboBox = comboBox;
       if (!comboBox.isShowing() && Arrays.stream(comboBox.getAncestorListeners())
-              .noneMatch(listener -> listener instanceof RefreshOnVisible)) {
+              .noneMatch(RefreshOnVisible.class::isInstance)) {
         this.comboBox.addAncestorListener(this);
       }
     }

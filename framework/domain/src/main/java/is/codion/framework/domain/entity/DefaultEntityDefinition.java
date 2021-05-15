@@ -825,8 +825,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap();
       this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties();
       initializeForeignKeyColumnProperties(propertyBuilders.stream()
-              .filter(property -> property instanceof ForeignKeyProperty.Builder)
-              .map(property -> (ForeignKeyProperty.Builder) property).collect(toList()));
+              .filter(ForeignKeyProperty.Builder.class::isInstance)
+              .map(ForeignKeyProperty.Builder.class::cast).collect(toList()));
       this.derivedAttributes = initializeDerivedAttributes();
       this.transientProperties = unmodifiableList(getTransientProperties());
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
@@ -926,17 +926,17 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private List<ForeignKeyProperty> getForeignKeyProperties() {
-      return properties.stream().filter(property -> property instanceof ForeignKeyProperty)
+      return properties.stream().filter(ForeignKeyProperty.class::isInstance)
               .map(property -> (ForeignKeyProperty) property).collect(Collectors.toList());
     }
 
     private List<ColumnProperty<?>> getColumnProperties() {
-      return properties.stream().filter(property -> property instanceof ColumnProperty)
+      return properties.stream().filter(ColumnProperty.class::isInstance)
               .map(property -> (ColumnProperty<?>) property).collect(toList());
     }
 
     private List<TransientProperty<?>> getTransientProperties() {
-      return properties.stream().filter(property -> property instanceof TransientProperty)
+      return properties.stream().filter(TransientProperty.class::isInstance)
               .map(property -> (TransientProperty<?>) property).collect(toList());
     }
 

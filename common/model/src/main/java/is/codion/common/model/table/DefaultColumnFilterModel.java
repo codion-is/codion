@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnConditionModel<C, T> implements ColumnFilterModel<R, C, T> {
 
-  private Function<R, Comparable<T>> comparableFunction = value -> (Comparable<T>) value;
+  private Function<R, Comparable<T>> comparableFunction = Comparable.class::cast;
 
   /**
    * Instantiates a DefaultColumnFilterModel.

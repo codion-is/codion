@@ -400,6 +400,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
         newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit(starter).get();
       }
     }
+    catch (final InterruptedException e) {
+      LOG.error("Interrupted during auxiliary server startup", e);
+      Thread.currentThread().interrupt();
+    }
     catch (final Exception e) {
       LOG.error("Starting auxiliary server", e);
       throw new RuntimeException(e);
