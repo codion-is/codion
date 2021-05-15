@@ -550,7 +550,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final String settingsMessage = MESSAGES.getString("settings");
     popupMenu.add(Control.builder()
             .command(() -> Dialogs.builder()
-                    .owner(FilteredTable.this)
+                    .dialogParent(FilteredTable.this)
                     .component(panel)
                     .title(settingsMessage)
                     .onClosedAction(control)

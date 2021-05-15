@@ -81,8 +81,8 @@ final class LoginPanel extends JPanel {
     initializeUI(defaultUser, southComponent);
   }
 
-  User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
-    Window parentWindow = Windows.getParentWindow(parent);
+  User showLoginPanel(final Window parent, final String title, final ImageIcon icon) {
+    Window parentWindow = parent;
     JFrame dummyFrame = null;
     if (parentWindow == null && isWindows()) {
       dummyFrame = createDummyFrame(title, icon);

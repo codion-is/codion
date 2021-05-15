@@ -316,7 +316,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void viewApplicationTree() {
     Dialogs.builder()
-            .owner(this)
+            .dialogParent(this)
             .component(initializeApplicationTree())
             .title(resourceBundle.getString("view_application_tree"))
             .modal(false)
@@ -328,7 +328,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void viewDependencyTree() {
     Dialogs.builder()
-            .owner(this)
+            .dialogParent(this)
             .component(initializeDependencyTree())
             .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
             .modal(false)
@@ -1111,7 +1111,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final User user = Dialogs.loginDialogBuilder()
             .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
             .validator(loginValidator)
-            .dialogTitle(loginDialogTitle)
+            .title(loginDialogTitle)
             .icon(applicationIcon)
             .show();
     if (nullOrEmpty(user.getUsername())) {

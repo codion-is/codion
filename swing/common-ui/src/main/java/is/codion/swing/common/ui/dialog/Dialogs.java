@@ -29,7 +29,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
@@ -142,9 +141,9 @@ public final class Dialogs {
   }
 
   /**
-   * @return a new JDialog {@link Builder} instance.
+   * @return a new {@link DialogBuilder} instance.
    */
-  public static Builder builder() {
+  public static DialogBuilder builder() {
     return new DefaultDialogBuilder();
   }
 
@@ -512,49 +511,55 @@ public final class Dialogs {
   /**
    * A builder for JDialog.
    */
-  public interface Builder {
+  public interface DialogBuilder {
 
     /**
      * @param owner the dialog owner
      * @return this Builder instance
      */
-    Builder owner(Container owner);
+    DialogBuilder owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this Builder instance
+     */
+    DialogBuilder dialogParent(JComponent dialogParent);
 
     /**
      * @param component the component to display
      * @return this Builder instance
      */
-    Builder component(JComponent component);
+    DialogBuilder component(JComponent component);
 
     /**
      * @param title the dialog title
      * @return this Builder instance
      */
-    Builder title(String title);
+    DialogBuilder title(String title);
 
     /**
      * @param icon the dialog icon
      * @return this Builder instance
      */
-    Builder icon(ImageIcon icon);
+    DialogBuilder icon(ImageIcon icon);
 
     /**
      * @param modal true if the dialog should be modal
      * @return this Builder instance
      */
-    Builder modal(boolean modal);
+    DialogBuilder modal(boolean modal);
 
     /**
      * @param enterAction the action to associate with the ENTER key
      * @return this Builder instance
      */
-    Builder enterAction(Action enterAction);
+    DialogBuilder enterAction(Action enterAction);
 
     /**
      * @param onClosedAction this action will be registered as a windowClosed action for the dialog
      * @return this Builder instance
      */
-    Builder onClosedAction(Action onClosedAction);
+    DialogBuilder onClosedAction(Action onClosedAction);
 
     /**
      * Sets the Event which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
@@ -562,7 +567,7 @@ public final class Dialogs {
      * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
      * @return this Builder instance
      */
-    Builder closeEvent(EventObserver<?> closeEvent);
+    DialogBuilder closeEvent(EventObserver<?> closeEvent);
 
     /**
      * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
@@ -570,14 +575,14 @@ public final class Dialogs {
      * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
      * @return this Builder instance
      */
-    Builder confirmCloseListener(EventDataListener<State> confirmCloseListener);
+    DialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener);
 
     /**
      * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,
      * has no effect if a <code>closeEvent</code> is specified
      * @return this Builder instance
      */
-    Builder disposeOnEscape(boolean disposeOnEscape);
+    DialogBuilder disposeOnEscape(boolean disposeOnEscape);
 
     /**
      * @return a new JDialog instance based on this builder.
@@ -587,9 +592,21 @@ public final class Dialogs {
   }
 
   /**
-   * A login panel builder
+   * A login dialog builder
    */
   public interface LoginDialogBuilder {
+
+    /**
+     * @param owner the dialog owner
+     * @return this Builder instance
+     */
+    LoginDialogBuilder owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this Builder instance
+     */
+    LoginDialogBuilder dialogParent(JComponent dialogParent);
 
     /**
      * @param defaultUser the default user credentials to display
@@ -610,16 +627,10 @@ public final class Dialogs {
     LoginDialogBuilder southComponent(JComponent southComponent);
 
     /**
-     * @param dialogParent the dialog parent component
+     * @param title the dialog title
      * @return this Builder instance
      */
-    LoginDialogBuilder dialogParent(JComponent dialogParent);
-
-    /**
-     * @param dialogTitle the dialog title
-     * @return this Builder instance
-     */
-    LoginDialogBuilder dialogTitle(String dialogTitle);
+    LoginDialogBuilder title(String title);
 
     /**
      * @param icon the dialog icon

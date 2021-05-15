@@ -34,7 +34,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
@@ -102,16 +101,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue(
           "is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
-
-  /**
-   * Indicates whether dialogs opened by child panels in the application should be centered
-   * on their respective parent panel or the application frame/dialog.
-   * This applies to edit panels.
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final PropertyValue<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
 
   /**
    * Indicates whether entity edit panel dialogs should be closed on escape<br>
@@ -1453,7 +1442,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = Dialogs.builder()
-            .owner(EntityPanel.this)
+            .dialogParent(this)
             .component(detailPanelTabbedPane)
             .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
             .modal(false)
@@ -1482,12 +1471,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the edit panel in a non-modal dialog
    */
   private void showEditDialog() {
-    Container dialogOwner = this;
-    if (CENTER_APPLICATION_DIALOGS.get()) {
-      dialogOwner = Windows.getParentWindow(this);
-    }
     editPanelDialog = Dialogs.builder()
-            .owner(dialogOwner)
+            .dialogParent(this)
             .component(editControlPanel)
             .title(caption)
             .modal(false)

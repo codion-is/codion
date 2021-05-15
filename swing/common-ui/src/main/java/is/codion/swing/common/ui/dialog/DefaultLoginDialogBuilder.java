@@ -4,59 +4,71 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.user.User;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.dialog.Dialogs.LoginDialogBuilder;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import java.awt.Window;
 
 import static java.util.Objects.requireNonNull;
 
-public final class DefaultLoginDialogBuilder implements Dialogs.LoginDialogBuilder {
+final class DefaultLoginDialogBuilder implements LoginDialogBuilder {
 
+  private Window owner;
   private User defaultUser;
   private Dialogs.LoginValidator validator = user -> {};
   private JComponent southComponent;
-  private JComponent dialogParent;
-  private String dialogTitle;
+  private String title;
   private ImageIcon icon;
 
   @Override
-  public Dialogs.LoginDialogBuilder defaultUser(final User defaultUser) {
+  public LoginDialogBuilder owner(final Window owner) {
+    this.owner = owner;
+    return this;
+  }
+
+  @Override
+  public LoginDialogBuilder dialogParent(final JComponent dialogParent) {
+    if (owner != null) {
+      throw new IllegalStateException("owner has alrady been set");
+    }
+    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
+    return this;
+  }
+
+  @Override
+  public LoginDialogBuilder defaultUser(final User defaultUser) {
     this.defaultUser = defaultUser;
     return this;
   }
 
   @Override
-  public Dialogs.LoginDialogBuilder validator(final Dialogs.LoginValidator validator) {
+  public LoginDialogBuilder validator(final Dialogs.LoginValidator validator) {
     this.validator = requireNonNull(validator);
     return this;
   }
 
   @Override
-  public Dialogs.LoginDialogBuilder southComponent(final JComponent southComponent) {
+  public LoginDialogBuilder southComponent(final JComponent southComponent) {
     this.southComponent = southComponent;
     return this;
   }
 
   @Override
-  public Dialogs.LoginDialogBuilder dialogParent(final JComponent dialogParent) {
-    this.dialogParent = dialogParent;
+  public LoginDialogBuilder title(final String title) {
+    this.title = title;
     return this;
   }
 
   @Override
-  public Dialogs.LoginDialogBuilder dialogTitle(final String dialogTitle) {
-    this.dialogTitle = dialogTitle;
-    return this;
-  }
-
-  @Override
-  public Dialogs.LoginDialogBuilder icon(final ImageIcon icon) {
+  public LoginDialogBuilder icon(final ImageIcon icon) {
     this.icon = icon;
     return this;
   }
 
   @Override
   public User show() {
-    return new LoginPanel(defaultUser, validator, southComponent).showLoginPanel(dialogParent, dialogTitle, icon);
+    return new LoginPanel(defaultUser, validator, southComponent).showLoginPanel(owner, title, icon);
   }
 }

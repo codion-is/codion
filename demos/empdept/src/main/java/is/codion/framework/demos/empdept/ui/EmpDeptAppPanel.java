@@ -62,7 +62,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider());
 
     Dialogs.builder()
-            .owner(this)
+            .dialogParent(this)
             .component(tablePanel)
             .title("Import")
             .build().setVisible(true);

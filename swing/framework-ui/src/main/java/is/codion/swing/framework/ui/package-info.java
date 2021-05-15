@@ -9,7 +9,6 @@
  * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_SAVE_CONTROL}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#USE_FOCUS_ACTIVATION}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#USE_KEYBOARD_NAVIGATION}<br>
- * {@link is.codion.swing.framework.ui.EntityPanel#CENTER_APPLICATION_DIALOGS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_TOGGLE_EDIT_PANEL_CONTROL}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_DETAIL_PANEL_CONTROLS}<br>
