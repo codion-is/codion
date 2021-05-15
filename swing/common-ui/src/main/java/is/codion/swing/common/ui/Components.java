@@ -20,14 +20,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
@@ -43,6 +40,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -72,7 +70,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Components {
 
-  private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
+  private static final Map<Window, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
@@ -609,7 +607,7 @@ public final class Components {
    * @see #hideWaitCursor(JComponent)
    */
   public static void showWaitCursor(final JComponent component) {
-    setWaitCursor(true, component);
+    showWaitCursor(Windows.getParentWindow(component));
   }
 
   /**
@@ -629,24 +627,36 @@ public final class Components {
    * @see #showWaitCursor(JComponent)
    */
   public static void hideWaitCursor(final JComponent component) {
-    setWaitCursor(false, component);
+    hideWaitCursor(Windows.getParentWindow(component));
   }
 
-  private static void setWaitCursor(final boolean on, final JComponent component) {
-    RootPaneContainer root = getParentOfType(component, JDialog.class);
-    if (root == null) {
-      root = getParentOfType(component, JFrame.class);
-    }
-    if (root == null) {
+  public static void showWaitCursor(final Window window) {
+    setWaitCursor(true, window);
+  }
+
+  /**
+   * Removes a wait cursor request for the given window
+   * @param window the window
+   */
+  public static void hideWaitCursor(final Window window) {
+    setWaitCursor(false, window);
+  }
+
+  /**
+   * Adds a wait cursor request for the given window
+   * @param window the window
+   */
+  private static void setWaitCursor(final boolean on, final Window window) {
+    if (window == null) {
       return;
     }
 
     synchronized (WAIT_CURSOR_REQUESTS) {
-      if (!WAIT_CURSOR_REQUESTS.containsKey(root)) {
-        WAIT_CURSOR_REQUESTS.put(root, 0);
+      if (!WAIT_CURSOR_REQUESTS.containsKey(window)) {
+        WAIT_CURSOR_REQUESTS.put(window, 0);
       }
 
-      int requests = WAIT_CURSOR_REQUESTS.get(root);
+      int requests = WAIT_CURSOR_REQUESTS.get(window);
       if (on) {
         requests++;
       }
@@ -655,13 +665,13 @@ public final class Components {
       }
 
       if ((requests == 1 && on) || (requests == 0 && !on)) {
-        root.getRootPane().setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
+        window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
       }
       if (requests == 0) {
-        WAIT_CURSOR_REQUESTS.remove(root);
+        WAIT_CURSOR_REQUESTS.remove(window);
       }
       else {
-        WAIT_CURSOR_REQUESTS.put(root, requests);
+        WAIT_CURSOR_REQUESTS.put(window, requests);
       }
     }
   }

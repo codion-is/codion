@@ -92,7 +92,10 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     if (!conditionProperties.isEmpty()) {
       Properties.sort(conditionProperties);
       final Optional<Property<?>> optionalProperty = conditionProperties.size() == 1 ? Optional.of(conditionProperties.get(0)) :
-              Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
+              Dialogs.selectionDialogBuilder(conditionProperties)
+                      .dialogParent(this)
+                      .title(Messages.get(Messages.SELECT_INPUT_FIELD))
+                      .selectSingle();
       optionalProperty.ifPresent(property -> {
         final ColumnConditionPanel<?, ?> panel = getConditionPanel(property.getAttribute());
         if (panel != null) {

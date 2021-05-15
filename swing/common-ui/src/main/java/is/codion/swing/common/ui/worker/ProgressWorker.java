@@ -125,7 +125,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
 
     /**
      * Performs the task.
-     * @param progressReporter the progress reporter to report progress to
+     * @param progressReporter the progress reporter to report progress to, 0 - 100.
      * @return the task result
      * @throws Exception in case of an exception
      */
@@ -139,10 +139,16 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
   public interface Builder<T> {
 
     /**
-     * @param dialogOwner the dialog owner
+     * @param owner the dialog owner
+     * @return this DialogBuilder instance
+     */
+    Builder<T> owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
      * @return this Builder instance
      */
-    Builder<T> dialogOwner(JComponent dialogOwner);
+    Builder<T> dialogParent(JComponent dialogOwner);
 
     /**
      * @param task the task to run
@@ -225,7 +231,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
 
   static final class DefaultBuilder<T> implements Builder<T> {
 
-    private JComponent dialogOwner;
+    private Window owner;
     private ProgressTask<T> progressTask;
     private String dialogTitle;
     private Consumer<T> onSuccess;
@@ -236,8 +242,17 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     private boolean indeterminate = true;
 
     @Override
-    public Builder<T> dialogOwner(final JComponent dialogOwner) {
-      this.dialogOwner = dialogOwner;
+    public Builder<T> owner(final Window owner) {
+      this.owner = owner;
+      return this;
+    }
+
+    @Override
+    public Builder<T> dialogParent(final JComponent dialogParent) {
+      if (owner != null) {
+        throw new IllegalStateException("owner has alrady been set");
+      }
+      this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
       return this;
     }
 
@@ -286,7 +301,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     public Builder<T> successMessage(final String successMessage) {
       return onSuccess(result -> {
         if (!nullOrEmpty(successMessage)) {
-          JOptionPane.showMessageDialog(Windows.getParentWindow(dialogOwner), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
+          JOptionPane.showMessageDialog(owner, successMessage, null, JOptionPane.INFORMATION_MESSAGE);
         }
       });
     }
@@ -301,7 +316,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     public Builder<T> failTitle(final String failTitle) {
       return exceptionHandler(exception -> {
         if (!(exception instanceof CancelException)) {
-          Dialogs.showExceptionDialog(Windows.getParentWindow(dialogOwner), failTitle, exception);
+          Dialogs.showExceptionDialog(owner, failTitle, exception);
         }
       });
     }
@@ -329,9 +344,8 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
       if (progressTask == null) {
         throw new IllegalStateException("No task has been specified");
       }
-      final Window parentWindow = Windows.getParentWindow(dialogOwner);
       final ProgressDialog progressDialog = Dialogs.progressDialogBuilder()
-              .owner(parentWindow)
+              .owner(owner)
               .indeterminate(indeterminate)
               .title(dialogTitle)
               .northPanel(northPanel)
@@ -353,7 +367,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
               exceptionHandler.accept(exception);
             }
             else {
-              Dialogs.showExceptionDialog(parentWindow, Messages.get(Messages.EXCEPTION), exception);
+              Dialogs.showExceptionDialog(owner, Messages.get(Messages.EXCEPTION), exception);
             }
           }
         };

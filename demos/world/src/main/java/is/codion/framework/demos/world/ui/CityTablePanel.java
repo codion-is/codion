@@ -38,7 +38,7 @@ public final class CityTablePanel extends EntityTablePanel {
     final CityTableModel cityTableModel = (CityTableModel) getTableModel();
 
     ProgressWorker.<List<Entity>>builder()
-            .dialogOwner(this)
+            .dialogParent(this)
             .dialogTitle("Updating locations")
             .indeterminate(false)
             .buttonControls(Controls.builder()

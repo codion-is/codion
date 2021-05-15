@@ -72,7 +72,10 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void setCover() throws IOException {
-    final File coverFile = Dialogs.selectFile(this, null, BUNDLE.getString(SELECT_IMAGE));
+    final File coverFile = Dialogs.fileSelectionDialogBuilder()
+            .dialogParent(this)
+            .title(BUNDLE.getString(SELECT_IMAGE))
+            .selectFile();
     imageBytesValue.set(Files.readAllBytes(coverFile.toPath()));
   }
 

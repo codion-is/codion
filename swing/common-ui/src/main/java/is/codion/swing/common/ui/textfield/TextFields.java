@@ -253,7 +253,9 @@ public final class TextFields {
             .action(new AbstractAction("TextFields.lookupValue") {
               @Override
               public void actionPerformed(final ActionEvent e) {
-                final Object value = Dialogs.selectValue(textField, valueProvider.get());
+                final Object value = Dialogs.selectionDialogBuilder(valueProvider.get())
+                        .dialogParent(textField)
+                        .select();
                 if (value != null) {
                   textField.setText(value.toString());
                 }
@@ -273,7 +275,10 @@ public final class TextFields {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          final File file = Dialogs.selectFile(filenameField, getParentPath(filenameField.getText()));
+          final File file = Dialogs.fileSelectionDialogBuilder()
+                  .dialogParent(filenameField)
+                  .startDirectory(getParentPath(filenameField.getText()))
+                  .selectFile();
           filenameField.setText(file.getAbsolutePath());
         }
         catch (final CancelException ignored) {/*ignored*/}

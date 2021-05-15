@@ -194,9 +194,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     final Window dialogOwner = Windows.getParentWindow(this);
 
     ProgressWorker.<List<Entity>>builder()
-            .dialogOwner(this)
+            .owner(dialogOwner)
             .dialogTitle(bundle.getString(UPDATING_TOTALS))
-            .task(() -> getModel().updateInvoiceTotals())
+            .task(getModel()::updateInvoiceTotals)
             .onSuccess(updatedInvoices -> {
               getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
                       .getTableModel().replaceEntities(updatedInvoices);

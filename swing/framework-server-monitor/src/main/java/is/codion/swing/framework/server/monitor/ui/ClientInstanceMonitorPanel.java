@@ -157,6 +157,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     final LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
     final String filename = user.getUsername() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
 
-    Files.write(Dialogs.selectFileToSave(this, null, filename).toPath(), logArea.getText().getBytes());
+    Files.write(Dialogs.fileSelectionDialogBuilder()
+            .dialogParent(this)
+            .selectFileToSave(filename).toPath(),
+            logArea.getText().getBytes());
   }
 }

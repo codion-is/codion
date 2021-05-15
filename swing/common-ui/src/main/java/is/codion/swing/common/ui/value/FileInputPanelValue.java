@@ -70,7 +70,10 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
 
     private void browseFile() {
       try {
-        final File file = Dialogs.selectFile(filePathField, null, "Select file");
+        final File file = Dialogs.fileSelectionDialogBuilder()
+                .dialogParent(filePathField)
+                .title("Select file")
+                .selectFile();
         filePathField.setText(file.toString());
       }
       catch (final CancelException e) {
