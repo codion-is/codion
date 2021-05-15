@@ -321,10 +321,22 @@ public final class Dialogs {
     File selectFile();
 
     /**
+     * @return the selected files
+     * @throws CancelException in case the user cancels
+     */
+    List<File> selectFiles();
+
+    /**
      * @return the selected directory
      * @throws CancelException in case the user cancels
      */
     File selectDirectory();
+
+    /**
+     * @return the selected directories
+     * @throws CancelException in case the user cancels
+     */
+    List<File> selectDirectories();
 
     /**
      * @return a List containing the selected files, contains at least one file

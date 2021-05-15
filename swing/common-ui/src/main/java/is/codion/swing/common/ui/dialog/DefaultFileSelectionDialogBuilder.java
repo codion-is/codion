@@ -73,8 +73,18 @@ final class DefaultFileSelectionDialogBuilder implements FileSelectionDialogBuil
   }
 
   @Override
+  public List<File> selectFiles() {
+    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.FILES, false, title);
+  }
+
+  @Override
   public File selectDirectory() {
     return selectDirectory(owner, startDirectory, title);
+  }
+
+  @Override
+  public List<File> selectDirectories() {
+    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false, title);
   }
 
   @Override
