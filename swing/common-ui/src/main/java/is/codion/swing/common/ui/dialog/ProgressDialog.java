@@ -20,66 +20,25 @@ import java.awt.Window;
 /**
  * A dialog containing a progress bar.
  */
-public class ProgressDialog extends JDialog {
+public final class ProgressDialog extends JDialog {
 
   public static final int DEFAULT_PROGRESS_BAR_WIDTH = 400;
 
   private final JProgressBar progressBar;
 
-  /**
-   * Instantiates a new 'inditerminate' progress bar dialog.
-   * @param dialogOwner the dialog owner
-   * @param title the title
-   */
-  public ProgressDialog(final Window dialogOwner, final String title) {
-    this(dialogOwner, title, -1);
-  }
-
-  /**
-   * Instantiates a new progress bar dialog.
-   * @param dialogOwner the dialog owner
-   * @param title the title
-   * @param maxProgress the maximum progress for the progress bar, -1 for indeterminate,
-   */
-  public ProgressDialog(final Window dialogOwner, final String title, final int maxProgress) {
-    this(dialogOwner, title, maxProgress, null, null);
-  }
-
-  /**
-   * Instantiates a new progress bar dialog.
-   * @param dialogOwner the dialog owner
-   * @param title the title
-   * @param maxProgress the maximum progress for the progress bar, -1 for indeterminate,
-   * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
-   * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
-   */
-  public ProgressDialog(final Window dialogOwner, final String title, final int maxProgress,
-                        final JPanel northPanel, final Controls buttonControls) {
-    this(dialogOwner, title, maxProgress, northPanel, null, buttonControls);
-  }
-
-  /**
-   * Instantiates a new progress bar dialog.
-   * @param dialogOwner the dialog owner
-   * @param title the title
-   * @param maxProgress the maximum progress for the progress bar, -1 for indeterminate,
-   * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
-   * @param westPanel if specified this panel is added to the {@link BorderLayout#WEST} position
-   * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
-   */
-  public ProgressDialog(final Window dialogOwner, final String title, final int maxProgress,
-                        final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
+  ProgressDialog(final Window dialogOwner, final String title, final boolean indeterminate,
+                 final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = initializeProgressBar(maxProgress);
+    progressBar = initializeProgressBar(indeterminate);
     initializeUI(northPanel, westPanel, buttonControls);
   }
 
   /**
    * @return the progress bar model
    */
-  public final BoundedRangeModel getProgressModel() {
+  public BoundedRangeModel getProgressModel() {
     return progressBar.getModel();
   }
 
@@ -89,7 +48,7 @@ public class ProgressDialog extends JDialog {
    * @param westPanel a panel to display at the {@link BorderLayout#WEST} position
    * @param buttonControls if specified buttons based on these controls are added to this dialog
    */
-  protected void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
+  private void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
@@ -100,27 +59,23 @@ public class ProgressDialog extends JDialog {
     add(progressBar, BorderLayout.CENTER);
     if (buttonControls != null) {
       final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-      southPanel.add(initializeButtonPanel(buttonControls));
+      southPanel.add(buttonControls.createHorizontalButtonPanel());
       add(southPanel, BorderLayout.SOUTH);
     }
     pack();
     Windows.centerWindow(this);
   }
 
-  private static JProgressBar initializeProgressBar(final int maxProgress) {
-    final JProgressBar bar = new JProgressBar();
-    Components.setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
-    if (maxProgress < 0) {
-      bar.setIndeterminate(true);
+  private static JProgressBar initializeProgressBar(final boolean indeterminate) {
+    final JProgressBar progressBar = new JProgressBar();
+    Components.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+    if (indeterminate) {
+      progressBar.setIndeterminate(true);
     }
     else {
-      bar.setMaximum(maxProgress);
+      progressBar.setMaximum(100);
     }
 
-    return bar;
-  }
-
-  private static JPanel initializeButtonPanel(final Controls buttonControls) {
-    return buttonControls.createHorizontalButtonPanel();
+    return progressBar;
   }
 }

@@ -7003,3 +7003,8 @@
   EntityApplicationPanel.startApplication() bug fixed, did not set the font size before showing login dialog, refactored
   LoginPanel.builder() moved to Dialogs, renamed loginDialogBuilder()
   Dialogs.Builder renamed DialogBuilder, LoginDialogBuilder consistent with DialogBuilder, owner() and dialogParent()
+  Dialogs.ProgressDialogBuilder added along with progressDialogBuilder() factory method
+  ProgressWorker now takes a single ProgressDialog parameter
+  ProgressDialogBuilder.indeterminate() added
+  ProgressWorker now final and Builder based
+  SwingEntityTableModel, added a couple of overloaded constructors

@@ -11,6 +11,7 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
@@ -145,6 +146,13 @@ public final class Dialogs {
    */
   public static DialogBuilder builder() {
     return new DefaultDialogBuilder();
+  }
+
+  /**
+   * @return a new {@link ProgressDialogBuilder} instance.
+   */
+  public static ProgressDialogBuilder progressDialogBuilder() {
+    return new DefaultProgressDialogBuilder();
   }
 
   /**
@@ -515,49 +523,49 @@ public final class Dialogs {
 
     /**
      * @param owner the dialog owner
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder owner(Window owner);
 
     /**
      * @param dialogParent the dialog parent component
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder dialogParent(JComponent dialogParent);
 
     /**
      * @param component the component to display
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder component(JComponent component);
 
     /**
      * @param title the dialog title
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder title(String title);
 
     /**
      * @param icon the dialog icon
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder icon(ImageIcon icon);
 
     /**
      * @param modal true if the dialog should be modal
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder modal(boolean modal);
 
     /**
      * @param enterAction the action to associate with the ENTER key
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder enterAction(Action enterAction);
 
     /**
      * @param onClosedAction this action will be registered as a windowClosed action for the dialog
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder onClosedAction(Action onClosedAction);
 
@@ -565,7 +573,7 @@ public final class Dialogs {
      * Sets the Event which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
      * has no effect if the closeEvent is specified.
      * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder closeEvent(EventObserver<?> closeEvent);
 
@@ -573,14 +581,14 @@ public final class Dialogs {
      * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
      * the dialog is closed, using the State instance to signal confirmation, the dialog
      * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener);
 
     /**
      * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,
      * has no effect if a <code>closeEvent</code> is specified
-     * @return this Builder instance
+     * @return this DialogBuilder instance
      */
     DialogBuilder disposeOnEscape(boolean disposeOnEscape);
 
@@ -592,49 +600,102 @@ public final class Dialogs {
   }
 
   /**
+   * A builder for {@link ProgressDialog}.
+   */
+  public interface ProgressDialogBuilder {
+
+    /**
+     * @param owner the dialog owner
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder dialogParent(JComponent dialogParent);
+
+    /**
+     * @param title the title
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder title(String title);
+
+    /**
+     * @param indeterminate the indeterminate status of the progress bar
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder indeterminate(boolean indeterminate);
+
+    /**
+     * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder northPanel(JPanel northPanel);
+
+    /**
+     * @param westPanel if specified this panel is added to the {@link BorderLayout#WEST} position
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder westPanel(JPanel westPanel);
+
+    /**
+     * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
+     * @return this ProgressDialogBuilder instance
+     */
+    ProgressDialogBuilder buttonControls(Controls buttonControls);
+
+    /**
+     * @return a new ProgressDialog
+     */
+    ProgressDialog build();
+  }
+
+  /**
    * A login dialog builder
    */
   public interface LoginDialogBuilder {
 
     /**
      * @param owner the dialog owner
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder owner(Window owner);
 
     /**
      * @param dialogParent the dialog parent component
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder dialogParent(JComponent dialogParent);
 
     /**
      * @param defaultUser the default user credentials to display
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder defaultUser(User defaultUser);
 
     /**
      * @param validator the login validator to use
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder validator(LoginValidator validator);
 
     /**
      * @param southComponent a component to add to the south of the credentials input fields
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder southComponent(JComponent southComponent);
 
     /**
      * @param title the dialog title
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder title(String title);
 
     /**
      * @param icon the dialog icon
-     * @return this Builder instance
+     * @return this LoginDialogBuilder instance
      */
     LoginDialogBuilder icon(ImageIcon icon);
 

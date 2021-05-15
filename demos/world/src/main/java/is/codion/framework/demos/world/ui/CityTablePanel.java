@@ -8,7 +8,6 @@ import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import java.awt.Window;
 import java.util.List;
 
 import static is.codion.swing.common.ui.Windows.getParentWindow;
@@ -36,34 +35,21 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   private void updateLocation() {
-    new LocationUpdater(getParentWindow(this), (CityTableModel) getTableModel()).execute();
-  }
+    final CityTableModel cityTableModel = (CityTableModel) getTableModel();
 
-  private static final class LocationUpdater extends ProgressWorker<List<Entity>> {
-
-    private final Window dialogOwner;
-    private final CityTableModel cityTableModel;
-
-    private LocationUpdater(final Window dialogOwner, final CityTableModel cityTableModel) {
-      super(dialogOwner, "Updating locations", Indeterminate.NO, null, Controls.builder()
-              .control(Control.builder()
-                      .command(cityTableModel::cancelLocationUpdate)
-                      .name("Cancel")
-                      .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
-              .build());
-      this.dialogOwner = dialogOwner;
-      this.cityTableModel = cityTableModel;
-      addOnSuccessListener(cityTableModel::replaceEntities);
-    }
-
-    @Override
-    protected List<Entity> doInBackground() throws Exception {
-      return cityTableModel.updateLocationForSelected(this::setProgress);
-    }
-
-    @Override
-    protected void onException(final Throwable exception) {
-      showExceptionDialog(dialogOwner, "Unable to update locations", exception);
-    }
+    ProgressWorker.<List<Entity>>builder()
+            .dialogOwner(this)
+            .dialogTitle("Updating locations")
+            .indeterminate(false)
+            .buttonControls(Controls.builder()
+                    .control(Control.builder()
+                            .command(cityTableModel::cancelLocationUpdate)
+                            .name("Cancel")
+                            .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
+                    .build())
+            .progressTask(cityTableModel::updateLocationForSelected)
+            .onSuccess(cityTableModel::replaceEntities)
+            .exceptionHandler(exception -> showExceptionDialog(getParentWindow(this), "Unable to update locations", exception))
+            .build().execute();
   }
 }
