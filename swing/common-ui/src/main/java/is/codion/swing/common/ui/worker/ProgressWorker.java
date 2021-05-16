@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.worker;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Windows;
@@ -21,6 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -33,16 +33,18 @@ import static java.util.Objects.requireNonNull;
  * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 - 100.
  * Note that instances of this class are not reusable.
  * @param <T> the type of result this {@link ProgressWorker} produces.
- * @see ProgressTask#perform(EventDataListener) to indicate work progress
+ * @see ProgressTask#perform(ProgressReporter) to indicate work progress
  */
-public final class ProgressWorker<T> extends SwingWorker<T, Void> {
+public final class ProgressWorker<T> extends SwingWorker<T, String> {
 
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
 
   private final ProgressDialog progressDialog;
-  private final Event<Integer> progressReporter = Event.event();
+  private final Event<Integer> progressEvent = Event.event();
+  private final Event<String> messageEvent = Event.event();
   private final Event<T> onSuccessEvent = Event.event();
+  private final ProgressReporter progressReporter = new DefaultProgressReporter();
 
   private ProgressTask<T> task;
   private Consumer<Throwable> exceptionHandler;
@@ -54,7 +56,8 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
   private ProgressWorker(final ProgressDialog progressDialog) {
     this.progressDialog = requireNonNull(progressDialog);
     this.exceptionHandler = throwable -> DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
-    this.progressReporter.addDataListener(this::setProgress);
+    this.progressEvent.addDataListener(this::setProgress);
+    this.messageEvent.addDataListener(this::publish);
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -75,6 +78,11 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     return task.perform(progressReporter);
   }
 
+  @Override
+  protected void process(final List<String> chunks) {
+    progressDialog.getProgressBar().setString(chunks.isEmpty() ? null : chunks.get(chunks.size() - 1));
+  }
+
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
       if (StateValue.STARTED.equals(changeEvent.getNewValue())) {
@@ -85,7 +93,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
       }
     }
     else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
-      SwingUtilities.invokeLater(() -> progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue()));
+      SwingUtilities.invokeLater(() -> progressDialog.getProgressBar().getModel().setValue((Integer) changeEvent.getNewValue()));
     }
   }
 
@@ -125,11 +133,28 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
 
     /**
      * Performs the task.
-     * @param progressReporter the progress reporter to report progress to, 0 - 100.
+     * @param progressReporter the progress reporter to report a message or progress (0 - 100).
      * @return the task result
      * @throws Exception in case of an exception
      */
-    T perform(EventDataListener<Integer> progressReporter) throws Exception;
+    T perform(ProgressReporter progressReporter) throws Exception;
+  }
+
+  /**
+   * Reports progress for a ProgressWorker
+   */
+  public interface ProgressReporter {
+
+    /**
+     * @param progress the progress, 0 - 100.
+     */
+    void setProgress(int progress);
+
+    /**
+     * @param message the message to display
+     * @see Builder#stringPainted(boolean)
+     */
+    void setMessage(String message);
   }
 
   /**
@@ -173,6 +198,12 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
      * @return this Builder instance
      */
     Builder<T> indeterminate(boolean indeterminate);
+
+    /**
+     * @param stringPainted the string painted status of the progress bar
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder<T> stringPainted(boolean stringPainted);
 
     /**
      * @param dialogTitle the dialog title
@@ -240,6 +271,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     private JPanel westPanel;
     private Controls buttonControls;
     private boolean indeterminate = true;
+    private boolean stringPainted = false;
 
     @Override
     public Builder<T> owner(final Window owner) {
@@ -282,6 +314,12 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     @Override
     public Builder<T> indeterminate(final boolean indeterminate) {
       this.indeterminate = indeterminate;
+      return this;
+    }
+
+    @Override
+    public Builder<T> stringPainted(final boolean stringPainted) {
+      this.stringPainted = stringPainted;
       return this;
     }
 
@@ -350,6 +388,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
       final ProgressDialog progressDialog = Dialogs.progressDialogBuilder()
               .owner(owner)
               .indeterminate(indeterminate)
+              .stringPainted(stringPainted)
               .title(dialogTitle)
               .northPanel(northPanel)
               .westPanel(westPanel)
@@ -380,6 +419,18 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
       }
 
       return worker;
+    }
+  }
+
+  private final class DefaultProgressReporter implements ProgressReporter {
+    @Override
+    public void setProgress(final int progress) {
+      progressEvent.onEvent(progress);
+    }
+
+    @Override
+    public void setMessage(final String message) {
+      messageEvent.onEvent(message);
     }
   }
 }

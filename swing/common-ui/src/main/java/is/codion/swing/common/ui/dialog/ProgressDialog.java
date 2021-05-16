@@ -8,7 +8,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -28,22 +27,22 @@ public final class ProgressDialog extends JDialog {
   private final JProgressBar progressBar;
 
   ProgressDialog(final Window dialogOwner, final String title, final ImageIcon icon, final boolean indeterminate,
-                 final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
+                 final boolean stringPainted, final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     if (icon != null) {
       setIconImage(icon.getImage());
     }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = initializeProgressBar(indeterminate);
+    progressBar = initializeProgressBar(indeterminate, stringPainted);
     initializeUI(northPanel, westPanel, buttonControls);
   }
 
   /**
-   * @return the progress bar model
+   * @return the progress bar
    */
-  public BoundedRangeModel getProgressModel() {
-    return progressBar.getModel();
+  public JProgressBar getProgressBar() {
+    return progressBar;
   }
 
   /**
@@ -70,8 +69,9 @@ public final class ProgressDialog extends JDialog {
     Windows.centerWindow(this);
   }
 
-  private static JProgressBar initializeProgressBar(final boolean indeterminate) {
+  private static JProgressBar initializeProgressBar(final boolean indeterminate, final boolean stringPainted) {
     final JProgressBar progressBar = new JProgressBar();
+    progressBar.setStringPainted(stringPainted);
     Components.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
     if (indeterminate) {
       progressBar.setIndeterminate(true);

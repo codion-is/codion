@@ -40,6 +40,12 @@ public interface ProgressDialogBuilder {
   ProgressDialogBuilder indeterminate(boolean indeterminate);
 
   /**
+   * @param stringPainted the string painted status of the progress bar
+   * @return this ProgressDialogBuilder instance
+   */
+  ProgressDialogBuilder stringPainted(boolean stringPainted);
+
+  /**
    * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
    * @return this ProgressDialogBuilder instance
    */
