@@ -190,10 +190,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void updateInvoiceTotals() {
-    ProgressWorker.<List<Entity>>builder()
+    ProgressWorker.builder(getModel()::updateInvoiceTotals)
             .owner(this)
             .title(bundle.getString(UPDATING_TOTALS))
-            .task(getModel()::updateInvoiceTotals)
             .onSuccess(this::handleUpdateTotalsSuccess)
             .onException(this::handleUpdateTotalsException)
             .execute();

@@ -62,11 +62,32 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
   }
 
   /**
+   * @param task the task to run
+   * @return a new {@link Builder} instance
+   */
+  public static Builder<?> builder(final Control.Command task) {
+    return new DefaultBuilder<>(progressReporter -> {
+      task.perform();
+      return null;
+    });
+  }
+
+  /**
+   * @param task the task to run
    * @param <T> the worker result type
    * @return a new {@link Builder} instance
    */
-  public static <T> Builder<T> builder() {
-    return new DefaultBuilder<>();
+  public static <T> Builder<T> builder(final Task<T> task) {
+    return new DefaultBuilder<>(progressReporter -> task.perform());
+  }
+
+  /**
+   * @param task the task to run
+   * @param <T> the worker result type
+   * @return a new {@link Builder} instance
+   */
+  public static <T> Builder<T> builder(final ProgressTask<T> task) {
+    return new DefaultBuilder<>(task);
   }
 
   @Override
@@ -182,24 +203,6 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     Builder<T> title(String title);
 
     /**
-     * @param task the task to run
-     * @return this Builder instance
-     */
-    Builder<T> task(Control.Command task);
-
-    /**
-     * @param task the task to run
-     * @return this Builder instance
-     */
-    Builder<T> task(Task<T> task);
-
-    /**
-     * @param progressTask the progress aware task to run
-     * @return this Builder instance
-     */
-    Builder<T> progressTask(ProgressTask<T> progressTask);
-
-    /**
      * @param indeterminate true if the progress bar should be indeterminate
      * @return this Builder instance
      */
@@ -275,8 +278,9 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
 
   static final class DefaultBuilder<T> implements Builder<T> {
 
+    private final ProgressTask<T> progressTask;
+
     private Window owner;
-    private ProgressTask<T> progressTask;
     private String title;
     private Consumer<T> onSuccess;
     private Consumer<Throwable> onException;
@@ -285,6 +289,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     private Controls buttonControls;
     private boolean indeterminate = true;
     private boolean stringPainted = false;
+
+    DefaultBuilder(final ProgressTask<T> progressTask) {
+      this.progressTask = requireNonNull(progressTask);
+    }
 
     @Override
     public Builder<T> owner(final Window owner) {
@@ -304,29 +312,6 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     @Override
     public Builder<T> title(final String title) {
       this.title = title;
-      return this;
-    }
-
-    @Override
-    public Builder<T> task(final Control.Command task) {
-      requireNonNull(task);
-      return task(() -> {
-        task.perform();
-        return null;
-      });
-    }
-
-    @Override
-    public Builder<T> task(final Task<T> task) {
-      requireNonNull(task);
-      this.progressTask = progressReporter -> task.perform();
-
-      return this;
-    }
-
-    @Override
-    public Builder<T> progressTask(final ProgressTask<T> progressTask) {
-      this.progressTask = requireNonNull(progressTask);
       return this;
     }
 
@@ -408,9 +393,6 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
 
     @Override
     public ProgressWorker<T> build() {
-      if (progressTask == null) {
-        throw new IllegalStateException("No task has been specified");
-      }
       final ProgressDialog progressDialog = Dialogs.progressDialogBuilder()
               .owner(owner)
               .indeterminate(indeterminate)

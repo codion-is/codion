@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.model.CityTableModel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -35,7 +34,7 @@ public final class CityTablePanel extends EntityTablePanel {
   private void updateLocation() {
     final CityTableModel cityTableModel = (CityTableModel) getTableModel();
 
-    ProgressWorker.<List<Entity>>builder()
+    ProgressWorker.builder(cityTableModel::updateLocationForSelected)
             .owner(this)
             .title("Updating locations")
             .indeterminate(false)
@@ -46,7 +45,6 @@ public final class CityTablePanel extends EntityTablePanel {
                             .name("Cancel")
                             .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
                     .build())
-            .progressTask(cityTableModel::updateLocationForSelected)
             .onSuccess(cityTableModel::replaceEntities)
             .onException(this::displayUpdateException)
             .execute();

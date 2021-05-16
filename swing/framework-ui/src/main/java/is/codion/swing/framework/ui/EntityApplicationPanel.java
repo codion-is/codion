@@ -1181,8 +1181,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                 final EntityConnectionProvider connectionProvider) {
     final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
-      ProgressWorker.builder()
-              .task(applicationStarter)
+      ProgressWorker.builder(applicationStarter)
               .title(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
