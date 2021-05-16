@@ -7019,3 +7019,4 @@
   Dialog builders moved up to package level
   ProgressWorker.ProgressReporter added, ProgressWorker now supports publishing messages
   ProgressWorker.onSuccess(EventListener) added
+  ProgressWorker.onSuccess(EventListener) changed to onSuccess(Runnable)
