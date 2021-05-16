@@ -1183,7 +1183,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
-              .dialogTitle(applicationName)
+              .title(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
               .build()
