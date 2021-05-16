@@ -54,7 +54,7 @@ public class TrackTablePanel extends EntityTablePanel {
     final ComponentValuePanel<BigDecimal, BigDecimalField> inputPanel =
             new ComponentValuePanel<>(ComponentValues.bigDecimalField(new BigDecimalField()),
                     BUNDLE.getString("amount"));
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .dialogParent(this)
             .component(inputPanel)
             .title(BUNDLE.getString("raise_price"))

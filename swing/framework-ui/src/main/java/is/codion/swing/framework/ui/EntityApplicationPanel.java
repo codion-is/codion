@@ -315,7 +315,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .dialogParent(this)
             .component(initializeApplicationTree())
             .title(resourceBundle.getString("view_application_tree"))
@@ -327,7 +327,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .dialogParent(this)
             .component(initializeDependencyTree())
             .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))

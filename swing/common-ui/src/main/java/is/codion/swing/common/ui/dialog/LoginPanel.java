@@ -92,7 +92,7 @@ final class LoginPanel extends JPanel {
     if (icon != null) {
       add(new JLabel(icon), BorderLayout.WEST);
     }
-    final JDialog dialog = Dialogs.builder()
+    final JDialog dialog = Dialogs.dialogBuilder()
             .component(this)
             .owner(parentWindow)
             .title(title == null ? Messages.get(Messages.LOGIN) : title)

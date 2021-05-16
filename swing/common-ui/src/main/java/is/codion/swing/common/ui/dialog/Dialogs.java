@@ -27,7 +27,7 @@ public final class Dialogs {
   /**
    * @return a new {@link DialogBuilder} instance.
    */
-  public static DialogBuilder builder() {
+  public static DialogBuilder dialogBuilder() {
     return new DefaultDialogBuilder();
   }
 

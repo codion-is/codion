@@ -153,7 +153,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(datePanel);
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .dialogParent(parent)
             .component(datePanel)
             .title(message)
@@ -203,7 +203,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(dateTimePanel);
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .dialogParent(parent)
             .component(dateTimePanel)
             .title(message)

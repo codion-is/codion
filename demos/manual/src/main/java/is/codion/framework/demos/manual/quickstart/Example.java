@@ -190,7 +190,7 @@ public final class Example {
     //populate the model with data from the database
     customerModel.refresh();
 
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .component(customerPanel)
             .title("Customers")
             .build().setVisible(true);

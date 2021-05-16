@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import java.awt.Window;
 
-abstract class AbstractDialogBuilder<T> {
+class AbstractDialogBuilder<T> {
 
   protected Window owner;
   protected String title;

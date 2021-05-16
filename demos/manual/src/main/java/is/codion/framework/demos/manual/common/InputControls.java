@@ -369,7 +369,7 @@ public final class InputControls {
 
     fieldValue.addListener(panel::revalidate);
 
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .component(panel)
             .title("test")
             .build().setVisible(true);
