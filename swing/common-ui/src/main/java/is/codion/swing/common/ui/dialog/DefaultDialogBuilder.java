@@ -7,16 +7,13 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs.DialogBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -24,12 +21,9 @@ import java.awt.event.WindowEvent;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDialogBuilder implements DialogBuilder {
+final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> implements DialogBuilder {
 
-  private Window owner;
   private JComponent component;
-  private String title;
-  private ImageIcon icon;
   private boolean modal = true;
   private Action enterAction;
   private Action onClosedAction;
@@ -38,35 +32,8 @@ final class DefaultDialogBuilder implements DialogBuilder {
   private boolean disposeOnEscape = true;
 
   @Override
-  public DialogBuilder owner(final Window owner) {
-    this.owner = owner;
-    return this;
-  }
-
-  @Override
-  public DialogBuilder dialogParent(final JComponent dialogParent) {
-    if (owner != null) {
-      throw new IllegalStateException("owner has alrady been set");
-    }
-    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
-    return this;
-  }
-
-  @Override
   public DialogBuilder component(final JComponent component) {
     this.component = requireNonNull(component);
-    return this;
-  }
-
-  @Override
-  public DialogBuilder title(final String title) {
-    this.title = title;
-    return this;
-  }
-
-  @Override
-  public DialogBuilder icon(final ImageIcon icon) {
-    this.icon = icon;
     return this;
   }
 

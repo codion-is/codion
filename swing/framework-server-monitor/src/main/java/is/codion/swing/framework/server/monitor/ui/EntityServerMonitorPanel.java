@@ -263,9 +263,11 @@ public final class EntityServerMonitorPanel extends JPanel {
         UIManager.setLookAndFeel(Components.getSystemLookAndFeelClassName());
         new EntityServerMonitorPanel().showFrame();
       }
-      catch (final Exception e) {
-        LOG.error(e.getMessage(), e);
-        Dialogs.showExceptionDialog(null, "Error during startup", e);
+      catch (final Exception exception) {
+        LOG.error(exception.getMessage(), exception);
+        Dialogs.exceptionDialogBuilder()
+                .title("Error during startup")
+                .show(exception);
         System.exit(1);
       }
     });

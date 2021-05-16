@@ -4,14 +4,12 @@ import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.util.List;
-
-import static is.codion.swing.common.ui.Windows.getParentWindow;
-import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 
 public final class CityTablePanel extends EntityTablePanel {
 
@@ -49,7 +47,14 @@ public final class CityTablePanel extends EntityTablePanel {
                     .build())
             .progressTask(cityTableModel::updateLocationForSelected)
             .onSuccess(cityTableModel::replaceEntities)
-            .exceptionHandler(exception -> showExceptionDialog(getParentWindow(this), "Unable to update locations", exception))
+            .onException(this::displayUpdateException)
             .build().execute();
+  }
+
+  private void displayUpdateException(final Throwable exception) {
+    Dialogs.exceptionDialogBuilder()
+            .dialogParent(this)
+            .title("Unable to update locations")
+            .show(exception);
   }
 }

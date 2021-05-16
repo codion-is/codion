@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.Windows;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
@@ -29,13 +27,12 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSelectionDialogBuilder<T> implements Dialogs.SelectionDialogBuilder<T> {
+final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Dialogs.SelectionDialogBuilder<T>>
+        implements Dialogs.SelectionDialogBuilder<T> {
 
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
 
-  private Window owner;
   private final Collection<T> values;
-  private String title;
   private boolean singleSelection;
   private Collection<T> defaultSelection = Collections.emptyList();
 
@@ -44,27 +41,6 @@ final class DefaultSelectionDialogBuilder<T> implements Dialogs.SelectionDialogB
       throw new IllegalArgumentException("No values to select from");
     }
     this.values = requireNonNull(values);
-  }
-
-  @Override
-  public Dialogs.SelectionDialogBuilder<T> owner(final Window owner) {
-    this.owner = owner;
-    return this;
-  }
-
-  @Override
-  public Dialogs.SelectionDialogBuilder<T> dialogParent(final JComponent dialogParent) {
-    if (owner != null) {
-      throw new IllegalStateException("owner has alrady been set");
-    }
-    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
-    return this;
-  }
-
-  @Override
-  public Dialogs.SelectionDialogBuilder<T> title(final String title) {
-    this.title = title;
-    return this;
   }
 
   @Override

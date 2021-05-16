@@ -16,6 +16,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -43,7 +44,6 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +52,6 @@ import java.util.ResourceBundle;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.Components.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.Components.lookAndFeelProvider;
-import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
@@ -191,19 +190,26 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void updateInvoiceTotals() {
-    final Window dialogOwner = Windows.getParentWindow(this);
-
     ProgressWorker.<List<Entity>>builder()
-            .owner(dialogOwner)
+            .dialogParent(this)
             .dialogTitle(bundle.getString(UPDATING_TOTALS))
             .task(getModel()::updateInvoiceTotals)
-            .onSuccess(updatedInvoices -> {
-              getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
-                      .getTableModel().replaceEntities(updatedInvoices);
-              showMessageDialog(dialogOwner, bundle.getString(TOTALS_UPDATED));
-            })
-            .exceptionHandler(exception -> showExceptionDialog(dialogOwner, bundle.getString(UPDATING_TOTALS_FAILED), exception))
+            .onSuccess(this::handleUpdateTotalsSuccess)
+            .onException(this::handleUpdateTotalsException)
             .build().execute();
+  }
+
+  private void handleUpdateTotalsSuccess(final List<Entity> updatedInvoices) {
+    getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
+            .getTableModel().replaceEntities(updatedInvoices);
+    showMessageDialog(Windows.getParentWindow(this), bundle.getString(TOTALS_UPDATED));
+  }
+
+  private void handleUpdateTotalsException(final Throwable exception) {
+    Dialogs.exceptionDialogBuilder()
+            .owner(Windows.getParentWindow(this))
+            .title(bundle.getString(UPDATING_TOTALS_FAILED))
+            .show(exception);
   }
 
   private void selectLanguage() {

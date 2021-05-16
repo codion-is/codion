@@ -193,10 +193,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     Builder<T> successMessage(String successMessage);
 
     /**
-     * @param exceptionHandler the exception handler
+     * @param onException the exception handler
      * @return this Builder instance
      */
-    Builder<T> exceptionHandler(Consumer<Throwable> exceptionHandler);
+    Builder<T> onException(Consumer<Throwable> onException);
 
     /**
      * @param failTitle the title of the failure dialog
@@ -235,7 +235,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     private ProgressTask<T> progressTask;
     private String dialogTitle;
     private Consumer<T> onSuccess;
-    private Consumer<Throwable> exceptionHandler;
+    private Consumer<Throwable> onException;
     private JPanel northPanel;
     private JPanel westPanel;
     private Controls buttonControls;
@@ -307,16 +307,19 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     }
 
     @Override
-    public Builder<T> exceptionHandler(final Consumer<Throwable> exceptionHandler) {
-      this.exceptionHandler = exceptionHandler;
+    public Builder<T> onException(final Consumer<Throwable> onException) {
+      this.onException = onException;
       return this;
     }
 
     @Override
     public Builder<T> failTitle(final String failTitle) {
-      return exceptionHandler(exception -> {
+      return onException(exception -> {
         if (!(exception instanceof CancelException)) {
-          Dialogs.showExceptionDialog(owner, failTitle, exception);
+          Dialogs.exceptionDialogBuilder()
+                  .owner(owner)
+                  .title(failTitle)
+                  .show(exception);
         }
       });
     }
@@ -357,17 +360,20 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
       if (onSuccess != null) {
         worker.onSuccessEvent.addDataListener(result -> onSuccess.accept(result));
       }
-      if (exceptionHandler != null) {
-        worker.exceptionHandler = exceptionHandler;
+      if (onException != null) {
+        worker.exceptionHandler = onException;
       }
       else {
         worker.exceptionHandler = exception -> {
           if (!(exception instanceof CancelException)) {
-            if (exceptionHandler != null) {
-              exceptionHandler.accept(exception);
+            if (onException != null) {
+              onException.accept(exception);
             }
             else {
-              Dialogs.showExceptionDialog(owner, Messages.get(Messages.EXCEPTION), exception);
+              Dialogs.exceptionDialogBuilder()
+                      .owner(owner)
+                      .message(Messages.get(Messages.EXCEPTION))
+                      .show(exception);
             }
           }
         };

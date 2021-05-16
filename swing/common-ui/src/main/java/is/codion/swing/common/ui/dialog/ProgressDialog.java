@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -26,10 +27,13 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  ProgressDialog(final Window dialogOwner, final String title, final boolean indeterminate,
+  ProgressDialog(final Window dialogOwner, final String title, final ImageIcon icon, final boolean indeterminate,
                  final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
+    if (icon != null) {
+      setIconImage(icon.getImage());
+    }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     progressBar = initializeProgressBar(indeterminate);
     initializeUI(northPanel, westPanel, buttonControls);

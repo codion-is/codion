@@ -3,8 +3,6 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.common.i18n.Messages;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -175,7 +173,8 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private void onException(final Exception exception) {
-    Dialogs.showExceptionDialog(Windows.getParentWindow(this),
-            Messages.get(Messages.EXCEPTION), exception.getMessage(), exception);
+    Dialogs.exceptionDialogBuilder()
+            .dialogParent(this)
+            .show(exception);
   }
 }
