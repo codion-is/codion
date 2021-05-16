@@ -1186,7 +1186,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
               .title(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
-              .build()
               .execute();
     }
     else {

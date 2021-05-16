@@ -196,7 +196,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
             .task(getModel()::updateInvoiceTotals)
             .onSuccess(this::handleUpdateTotalsSuccess)
             .onException(this::handleUpdateTotalsException)
-            .build().execute();
+            .execute();
   }
 
   private void handleUpdateTotalsSuccess(final List<Entity> updatedInvoices) {
