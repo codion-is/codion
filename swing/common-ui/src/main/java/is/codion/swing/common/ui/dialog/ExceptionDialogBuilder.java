@@ -19,10 +19,11 @@ public interface ExceptionDialogBuilder {
   ExceptionDialogBuilder owner(Window owner);
 
   /**
-   * @param dialogParent the dialog parent component
+   * Sets the dialog owner as the parent window of the given component.
+   * @param owner the dialog parent component
    * @return this ExceptionDialogBuilder instance
    */
-  ExceptionDialogBuilder dialogParent(JComponent dialogParent);
+  ExceptionDialogBuilder owner(JComponent owner);
 
   /**
    * @param title the dialog title

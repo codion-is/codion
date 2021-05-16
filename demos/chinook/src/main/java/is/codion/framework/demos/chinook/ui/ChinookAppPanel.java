@@ -191,8 +191,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   private void updateInvoiceTotals() {
     ProgressWorker.<List<Entity>>builder()
-            .dialogParent(this)
-            .dialogTitle(bundle.getString(UPDATING_TOTALS))
+            .owner(this)
+            .title(bundle.getString(UPDATING_TOTALS))
             .task(getModel()::updateInvoiceTotals)
             .onSuccess(this::handleUpdateTotalsSuccess)
             .onException(this::handleUpdateTotalsException)

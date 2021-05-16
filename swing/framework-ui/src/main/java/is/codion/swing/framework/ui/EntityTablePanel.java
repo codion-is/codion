@@ -658,8 +658,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue);
     final ComponentValuePanel<T, JComponent> inputPanel =
             new ComponentValuePanel<>(componentValue, propertyToUpdate.getCaption());
-    Dialogs.builder()
-            .dialogParent(this)
+    Dialogs.dialogBuilder()
+            .owner(this)
             .component(inputPanel)
             .title(FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE))
             .enterAction(inputPanel.getOkAction())
@@ -1526,8 +1526,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     finally {
       hideWaitCursor(dialogParent);
     }
-    Dialogs.builder()
-            .dialogParent(dialogParent)
+    Dialogs.dialogBuilder()
+            .owner(dialogParent)
             .component(dependenciesPanel)
             .title(title)
             .build().setVisible(true);

@@ -7020,3 +7020,6 @@
   ProgressWorker.ProgressReporter added, ProgressWorker now supports publishing messages
   ProgressWorker.onSuccess(EventListener) added
   ProgressWorker.onSuccess(EventListener) changed to onSuccess(Runnable)
+  Dialogs.builder() renamed dialogBuilder()
+  AbstractDialogBuilder.dialogParent() renamed owner()
+  ProgressWorker.Builder.dialogParent() renamed owner() and dialogTitle() title(), for consistency

@@ -38,7 +38,6 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
@@ -339,7 +338,7 @@ public final class Components {
     okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
     cancelButton.setText(Messages.get(Messages.CANCEL));
     cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+    final JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
     buttonPanel.add(okButton);
     buttonPanel.add(cancelButton);
 

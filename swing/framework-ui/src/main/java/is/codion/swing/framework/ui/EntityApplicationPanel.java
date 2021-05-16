@@ -315,8 +315,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    Dialogs.builder()
-            .dialogParent(this)
+    Dialogs.dialogBuilder()
+            .owner(this)
             .component(initializeApplicationTree())
             .title(resourceBundle.getString("view_application_tree"))
             .modal(false)
@@ -327,8 +327,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    Dialogs.builder()
-            .dialogParent(this)
+    Dialogs.dialogBuilder()
+            .owner(this)
             .component(initializeDependencyTree())
             .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
             .modal(false)
@@ -1183,7 +1183,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (displayProgressDialog) {
       ProgressWorker.builder()
               .task(applicationStarter)
-              .dialogTitle(applicationName)
+              .title(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
               .build()

@@ -94,7 +94,7 @@ public class StoreDemo {
     customerModel.refresh();
     customerPanel.initializePanel();
 
-    Dialogs.builder()
+    Dialogs.dialogBuilder()
             .component(customerPanel)
             .title("Customers")
             .build().setVisible(true);

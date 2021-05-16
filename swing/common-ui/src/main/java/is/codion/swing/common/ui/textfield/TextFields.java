@@ -254,7 +254,7 @@ public final class TextFields {
               @Override
               public void actionPerformed(final ActionEvent e) {
                 final Object value = Dialogs.selectionDialogBuilder(valueProvider.get())
-                        .dialogParent(textField)
+                        .owner(textField)
                         .select();
                 if (value != null) {
                   textField.setText(value.toString());
@@ -276,7 +276,7 @@ public final class TextFields {
       public void actionPerformed(final ActionEvent e) {
         try {
           final File file = Dialogs.fileSelectionDialogBuilder()
-                  .dialogParent(filenameField)
+                  .owner(filenameField)
                   .startDirectory(getParentPath(filenameField.getText()))
                   .selectFile();
           filenameField.setText(file.getAbsolutePath());

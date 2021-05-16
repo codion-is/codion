@@ -36,8 +36,8 @@ public final class CityTablePanel extends EntityTablePanel {
     final CityTableModel cityTableModel = (CityTableModel) getTableModel();
 
     ProgressWorker.<List<Entity>>builder()
-            .dialogParent(this)
-            .dialogTitle("Updating locations")
+            .owner(this)
+            .title("Updating locations")
             .indeterminate(false)
             .stringPainted(true)
             .buttonControls(Controls.builder()
@@ -54,7 +54,7 @@ public final class CityTablePanel extends EntityTablePanel {
 
   private void displayUpdateException(final Throwable exception) {
     Dialogs.exceptionDialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .title("Unable to update locations")
             .show(exception);
   }

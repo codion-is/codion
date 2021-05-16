@@ -1441,8 +1441,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
-    detailPanelDialog = Dialogs.builder()
-            .dialogParent(this)
+    detailPanelDialog = Dialogs.dialogBuilder()
+            .owner(this)
             .component(detailPanelTabbedPane)
             .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
             .modal(false)
@@ -1471,8 +1471,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the edit panel in a non-modal dialog
    */
   private void showEditDialog() {
-    editPanelDialog = Dialogs.builder()
-            .dialogParent(this)
+    editPanelDialog = Dialogs.dialogBuilder()
+            .owner(this)
             .component(editControlPanel)
             .title(caption)
             .modal(false)

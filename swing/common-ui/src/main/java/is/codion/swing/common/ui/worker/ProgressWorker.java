@@ -170,10 +170,16 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     Builder<T> owner(Window owner);
 
     /**
-     * @param dialogParent the dialog parent component
+     * @param owner the dialog parent component
      * @return this Builder instance
      */
-    Builder<T> dialogParent(JComponent dialogParent);
+    Builder<T> owner(JComponent owner);
+
+    /**
+     * @param title the dialog title
+     * @return this Builder instance
+     */
+    Builder<T> title(String title);
 
     /**
      * @param task the task to run
@@ -204,12 +210,6 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
      * @return this ProgressDialogBuilder instance
      */
     Builder<T> stringPainted(boolean stringPainted);
-
-    /**
-     * @param dialogTitle the dialog title
-     * @return this Builder instance
-     */
-    Builder<T> dialogTitle(String dialogTitle);
 
     /**
      * @param onSuccess executed on the EDT after a successful run
@@ -270,7 +270,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
 
     private Window owner;
     private ProgressTask<T> progressTask;
-    private String dialogTitle;
+    private String title;
     private Consumer<T> onSuccess;
     private Consumer<Throwable> onException;
     private JPanel northPanel;
@@ -286,11 +286,17 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     }
 
     @Override
-    public Builder<T> dialogParent(final JComponent dialogParent) {
-      if (owner != null) {
+    public Builder<T> owner(final JComponent owner) {
+      if (this.owner != null) {
         throw new IllegalStateException("owner has alrady been set");
       }
-      this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
+      this.owner = owner == null ? null : Windows.getParentWindow(owner);
+      return this;
+    }
+
+    @Override
+    public Builder<T> title(final String title) {
+      this.title = title;
       return this;
     }
 
@@ -326,12 +332,6 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     @Override
     public Builder<T> stringPainted(final boolean stringPainted) {
       this.stringPainted = stringPainted;
-      return this;
-    }
-
-    @Override
-    public Builder<T> dialogTitle(final String dialogTitle) {
-      this.dialogTitle = dialogTitle;
       return this;
     }
 
@@ -400,7 +400,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
               .owner(owner)
               .indeterminate(indeterminate)
               .stringPainted(stringPainted)
-              .title(dialogTitle)
+              .title(title)
               .northPanel(northPanel)
               .westPanel(westPanel)
               .buttonControls(buttonControls)

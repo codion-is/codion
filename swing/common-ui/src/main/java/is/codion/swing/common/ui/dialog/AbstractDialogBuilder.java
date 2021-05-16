@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import java.awt.Window;
 
-abstract class AbstractDialogBuilder<T> {
+class AbstractDialogBuilder<T> {
 
   protected Window owner;
   protected String title;
@@ -20,11 +20,11 @@ abstract class AbstractDialogBuilder<T> {
     return (T) this;
   }
 
-  public final T dialogParent(final JComponent dialogParent) {
-    if (owner != null) {
+  public final T owner(final JComponent owner) {
+    if (this.owner != null) {
       throw new IllegalStateException("owner has alrady been set");
     }
-    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
+    this.owner = owner == null ? null : Windows.getParentWindow(owner);
     return (T) this;
   }
 
