@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs.ProgressDialogBuilder;
 
 import javax.swing.JPanel;
 

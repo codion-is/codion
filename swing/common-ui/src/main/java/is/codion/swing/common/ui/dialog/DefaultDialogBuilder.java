@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.dialog.Dialogs.DialogBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;

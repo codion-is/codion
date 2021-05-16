@@ -6985,3 +6985,4 @@
   AbstractDialogBuilder added, related refactoring
   Dialogs.ExceptionDialogBuilder added along with exceptionDialogBuilder() factory method
   ProgressWorker.Builder.exceptionHandler() renamed onException()
+  Dialog builders moved up to package level

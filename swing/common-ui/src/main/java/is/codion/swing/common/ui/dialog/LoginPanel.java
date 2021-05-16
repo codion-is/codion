@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -55,7 +56,7 @@ final class LoginPanel extends JPanel {
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
   private final Value<User> userValue = Value.value();
-  private final Dialogs.LoginValidator loginValidator;
+  private final LoginValidator loginValidator;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
@@ -63,7 +64,7 @@ final class LoginPanel extends JPanel {
   /**
    * Instantiates a new LoginPanel
    */
-  LoginPanel(final User defaultUser, final Dialogs.LoginValidator loginValidator,
+  LoginPanel(final User defaultUser, final LoginValidator loginValidator,
                      final JComponent southComponent) {
     this.okControl = Control.builder()
             .name(Messages.get(Messages.OK))

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.dialog.Dialogs.LoginDialogBuilder;
 
 import javax.swing.JComponent;
 
@@ -13,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogBuilder> implements LoginDialogBuilder {
 
   private User defaultUser;
-  private Dialogs.LoginValidator validator = user -> {};
+  private LoginValidator validator = user -> {};
   private JComponent southComponent;
 
   @Override
@@ -23,7 +22,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   }
 
   @Override
-  public LoginDialogBuilder validator(final Dialogs.LoginValidator validator) {
+  public LoginDialogBuilder validator(final LoginValidator validator) {
     this.validator = requireNonNull(validator);
     return this;
   }

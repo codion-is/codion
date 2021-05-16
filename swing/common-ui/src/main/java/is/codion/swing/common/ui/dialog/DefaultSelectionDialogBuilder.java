@@ -27,8 +27,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Dialogs.SelectionDialogBuilder<T>>
-        implements Dialogs.SelectionDialogBuilder<T> {
+final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<SelectionDialogBuilder<T>>
+        implements SelectionDialogBuilder<T> {
 
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
 
@@ -44,18 +44,18 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Dialo
   }
 
   @Override
-  public Dialogs.SelectionDialogBuilder<T> singleSelection(final boolean singleSelection) {
+  public SelectionDialogBuilder<T> singleSelection(final boolean singleSelection) {
     this.singleSelection = singleSelection;
     return this;
   }
 
   @Override
-  public Dialogs.SelectionDialogBuilder<T> defaultSelection(final T defaultSelection) {
+  public SelectionDialogBuilder<T> defaultSelection(final T defaultSelection) {
     return defaultSelection(Collections.singletonList(defaultSelection));
   }
 
   @Override
-  public Dialogs.SelectionDialogBuilder<T> defaultSelection(final Collection<T> defaultSelection) {
+  public SelectionDialogBuilder<T> defaultSelection(final Collection<T> defaultSelection) {
     this.defaultSelection = requireNonNull(defaultSelection);
     return this;
   }

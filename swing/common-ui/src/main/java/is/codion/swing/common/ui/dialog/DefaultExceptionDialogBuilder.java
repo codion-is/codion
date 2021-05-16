@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.swing.common.ui.dialog.Dialogs.ExceptionDialogBuilder;
 
 import javax.swing.SwingUtilities;
 
