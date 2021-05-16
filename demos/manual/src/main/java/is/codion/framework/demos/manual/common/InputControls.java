@@ -372,7 +372,7 @@ public final class InputControls {
     Dialogs.dialogBuilder()
             .component(panel)
             .title("test")
-            .build().setVisible(true);
+            .show();
     // end::customTextFieldHorizontalAlignment[]
   }
 }

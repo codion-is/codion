@@ -73,6 +73,14 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
   }
 
   @Override
+  public JDialog show() {
+    final JDialog dialog = build();
+    dialog.setVisible(true);
+
+    return dialog;
+  }
+
+  @Override
   public JDialog build() {
     if (component == null) {
       throw new IllegalStateException("A component to display in the dialog must be specified");

@@ -60,7 +60,7 @@ public class TrackTablePanel extends EntityTablePanel {
             .title(BUNDLE.getString("raise_price"))
             .enterAction(inputPanel.getOkAction())
             .closeEvent(inputPanel.getButtonClickObserver())
-            .build().setVisible(true);
+            .show();
     if (inputPanel.isInputAccepted() && inputPanel.get() != null) {
       return inputPanel.get();
     }

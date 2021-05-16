@@ -95,4 +95,11 @@ public interface DialogBuilder {
    * @throws IllegalStateException in case no component has been specified
    */
   JDialog build();
+
+  /**
+   * Builds and shows the dialog.
+   * @return a new JDialog instance based on this builder.
+   * @throws IllegalStateException in case no component has been specified
+   */
+  JDialog show();
 }
