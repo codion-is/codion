@@ -1249,15 +1249,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
   }
 
-  private void onLoginException(final Throwable throwable) {
-    displayException(throwable, null);
-    if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
-            resourceBundle.getString("retry"), resourceBundle.getString("retry_title"),
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-      throw new CancelException();
-    }
-  }
-
   private void initializePanel() {
     this.entityPanels.addAll(initializeEntityPanels(applicationModel));
     this.supportPanelBuilders.addAll(initializeSupportEntityPanelBuilders(applicationModel));
