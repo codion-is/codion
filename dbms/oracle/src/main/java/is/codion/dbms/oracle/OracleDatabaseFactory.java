@@ -21,11 +21,6 @@ public final class OracleDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof OracleDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new OracleDatabase(jdbcUrl);
   }

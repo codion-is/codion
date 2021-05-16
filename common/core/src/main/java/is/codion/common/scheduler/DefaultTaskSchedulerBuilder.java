@@ -10,7 +10,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
 
-  private Runnable task;
+  private final Runnable task;
+
   private int interval;
   private int initialDelay;
   private TimeUnit timeUnit;
@@ -21,10 +22,8 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
     return thread;
   };
 
-  @Override
-  public TaskScheduler.Builder task(final Runnable task) {
+  DefaultTaskSchedulerBuilder(final Runnable task) {
     this.task = requireNonNull(task);
-    return this;
   }
 
   @Override
@@ -58,10 +57,15 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
   }
 
   @Override
+  public TaskScheduler start() {
+    final TaskScheduler taskScheduler = build();
+    taskScheduler.start();
+
+    return taskScheduler;
+  }
+
+  @Override
   public TaskScheduler build() {
-    if (task == null) {
-      throw new IllegalStateException("A task is required for building a TaskScheduler");
-    }
     if (interval == 0) {
       throw new IllegalStateException("An interval > 0 is required for building a TaskScheduler");
     }

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
  * <pre>
- *   TaskScheduler scheduler = TaskScheduler.builder().task(new Runnable() {
+ *   TaskScheduler scheduler = TaskScheduler.builder(new Runnable() {
  *     public void run() {
  *       System.out.println("Running wild...");
  *     }
@@ -67,20 +67,14 @@ public interface TaskScheduler {
   /**
    * @return a new {@link TaskScheduler.Builder} instance.
    */
-  static TaskScheduler.Builder builder() {
-    return new DefaultTaskSchedulerBuilder();
+  static TaskScheduler.Builder builder(final Runnable task) {
+    return new DefaultTaskSchedulerBuilder(task);
   }
 
   /**
    * A builder for {@link TaskScheduler}
    */
   interface Builder {
-
-    /**
-     * @param task the task to run
-     * @return this builder instance
-     */
-    Builder task(Runnable task);
 
     /**
      * @param interval the interval
@@ -105,6 +99,12 @@ public interface TaskScheduler {
      * @return this builder instance
      */
     Builder threadFactory(ThreadFactory threadFactory);
+
+    /**
+     * Builds and starts a new {@link TaskScheduler}.
+     * @return a new {@link TaskScheduler}.
+     */
+    TaskScheduler start();
 
     /**
      * @return a new {@link TaskScheduler}.

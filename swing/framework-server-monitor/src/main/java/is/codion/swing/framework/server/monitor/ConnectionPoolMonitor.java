@@ -89,11 +89,10 @@ public final class ConnectionPoolMonitor {
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
-    this.updateScheduler = TaskScheduler.builder()
-            .task(this::updateStatistics)
+    this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
-            .build().start();
+            .start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     bindEvents();
   }

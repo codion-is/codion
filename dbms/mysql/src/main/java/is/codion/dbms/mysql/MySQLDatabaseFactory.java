@@ -21,11 +21,6 @@ public final class MySQLDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof MySQLDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new MySQLDatabase(jdbcUrl);
   }

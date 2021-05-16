@@ -133,11 +133,10 @@ public final class ServerMonitor {
     this.systemLoadCollection.addSeries(processLoadSeries);
     this.databaseMonitor = new DatabaseMonitor(server, updateRate);
     this.clientMonitor = new ClientUserMonitor(server, updateRate);
-    this.updateScheduler = TaskScheduler.builder()
-            .task(this::updateStatistics)
+    this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
-            .build().start();
+            .start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     refreshDomainList();
     bindEvents();

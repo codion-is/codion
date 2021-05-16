@@ -76,11 +76,10 @@ public final class ClientUserMonitor {
         throw new IllegalArgumentException("Connection timeout must be a positive integer");
       }
     });
-    this.updateScheduler = TaskScheduler.builder()
-            .task(this::refreshUserHistoryTableModel)
+    this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
-            .build().start();
+            .start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     bindEvents();
     refresh();

@@ -21,11 +21,6 @@ public final class SQLServerDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof SQLServerDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new SQLServerDatabase(jdbcUrl);
   }

@@ -7033,3 +7033,6 @@
   TextFields.addLookupDialog() and getBrowseAction() moved to Dialogs, due to cyclical dependencies
   ProgressWorker bug fixed, exception handler now gets called with the ExecutionException cause
   ProgressWorker refactored
+  DatabaseFactory.isDatabaseCompatible() removed, unused
+  TaskScheduler.builder() now takes Runnable task as parameter, TaskScheduler.Builder.task() removed
+  TaskScheduler.Builder.start() added

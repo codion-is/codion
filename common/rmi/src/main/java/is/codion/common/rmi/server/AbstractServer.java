@@ -86,12 +86,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.configuration = configuration;
       this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
               configuration.getServerPort(), ZonedDateTime.now());
-      this.connectionMaintenanceScheduler = TaskScheduler.builder()
-              .task(new MaintenanceTask())
+      this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
               .interval(configuration.getConnectionMaintenanceInterval())
               .initialDelay(configuration.getConnectionMaintenanceInterval())
               .timeUnit(TimeUnit.MILLISECONDS)
-              .build().start();
+              .start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
       loadLoginProxies();

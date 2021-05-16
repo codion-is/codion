@@ -21,11 +21,6 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof DerbyDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new DerbyDatabase(jdbcUrl);
   }

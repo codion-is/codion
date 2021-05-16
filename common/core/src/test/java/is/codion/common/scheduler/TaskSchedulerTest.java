@@ -16,38 +16,38 @@ public class TaskSchedulerTest {
 
   @Test
   public void constructorNegativeInterval() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().interval(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(-1));
   }
 
   @Test
   public void constructorNegativeInitialDelay() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().initialDelay(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).initialDelay(-1));
   }
 
   @Test
   public void constructorNullTask() {
-    assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(null));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder(null));
   }
 
   @Test
   public void constructorNullTimUnit() {
-    assertThrows(NullPointerException.class, () -> TaskScheduler.builder().timeUnit(null));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).timeUnit(null));
   }
 
   @Test
   public void constructorNullThreadFactory() {
-    assertThrows(NullPointerException.class, () -> TaskScheduler.builder().threadFactory(null));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).threadFactory(null));
   }
 
   @Test
   public void setIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().task(runnable).interval(1).timeUnit(TimeUnit.SECONDS).build().setInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1).timeUnit(TimeUnit.SECONDS).build().setInterval(-1));
   }
 
   @Test
   public void startStop() throws InterruptedException {
     final AtomicInteger counter = new AtomicInteger();
-    final TaskScheduler scheduler = TaskScheduler.builder().task(counter::incrementAndGet).interval(1).timeUnit(TimeUnit.MILLISECONDS).build();
+    final TaskScheduler scheduler = TaskScheduler.builder(counter::incrementAndGet).interval(1).timeUnit(TimeUnit.MILLISECONDS).build();
     assertFalse(scheduler.isRunning());
     scheduler.start();
     assertTrue(scheduler.isRunning());
