@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -93,7 +94,12 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
-    dialog.setLocationRelativeTo(owner);
+    if (owner != null) {
+      dialog.setLocationRelativeTo(owner);
+    }
+    else {
+      Windows.centerWindow(dialog);
+    }
     dialog.setModal(modal);
     dialog.setResizable(true);
 
