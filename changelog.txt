@@ -6982,3 +6982,4 @@
   Dialogs.selectValue() and selectValues() methods replaced with SelectionDialogBuilder
   Dialogs.selectFiles() and related methods replaced with FileSelectionDialogBuilder
   Dialogs.FileSelectionDialogBuilder.selectFiles() and selectDirectories() added
+  AbstractDialogBuilder added, related refactoring

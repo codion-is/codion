@@ -3,43 +3,17 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs.ProgressDialogBuilder;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.awt.Window;
 
-class DefaultProgressDialogBuilder implements ProgressDialogBuilder {
+class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialogBuilder> implements ProgressDialogBuilder {
 
-  private Window owner;
-  private String title;
   private boolean indeterminate = true;
   private JPanel northPanel;
   private JPanel westPanel;
   private Controls buttonControls;
-
-  @Override
-  public ProgressDialogBuilder owner(final Window owner) {
-    this.owner = owner;
-    return this;
-  }
-
-  @Override
-  public ProgressDialogBuilder dialogParent(final JComponent dialogParent) {
-    if (owner != null) {
-      throw new IllegalStateException("owner has alrady been set");
-    }
-    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
-    return this;
-  }
-
-  @Override
-  public ProgressDialogBuilder title(final String title) {
-    this.title = title;
-    return this;
-  }
 
   @Override
   public ProgressDialogBuilder indeterminate(final boolean indeterminate) {
@@ -67,6 +41,6 @@ class DefaultProgressDialogBuilder implements ProgressDialogBuilder {
 
   @Override
   public ProgressDialog build() {
-    return new ProgressDialog(owner, title, indeterminate, northPanel, westPanel, buttonControls);
+    return new ProgressDialog(owner, title, icon, indeterminate, northPanel, westPanel, buttonControls);
   }
 }

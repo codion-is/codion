@@ -5,10 +5,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs.FileSelectionDialogBuilder;
 
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.awt.Window;
@@ -20,7 +18,8 @@ import java.util.ResourceBundle;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.singletonList;
 
-final class DefaultFileSelectionDialogBuilder implements FileSelectionDialogBuilder {
+final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<FileSelectionDialogBuilder>
+        implements FileSelectionDialogBuilder {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName());
 
@@ -29,31 +28,8 @@ final class DefaultFileSelectionDialogBuilder implements FileSelectionDialogBuil
    */
   private static JFileChooser fileChooserOpen;
   private static JFileChooser fileChooserSave;
-  private Window owner;
-  private String title;
   private String startDirectory;
   private boolean confirmOverwrite = true;
-
-  @Override
-  public FileSelectionDialogBuilder owner(final Window owner) {
-    this.owner = owner;
-    return this;
-  }
-
-  @Override
-  public FileSelectionDialogBuilder dialogParent(final JComponent dialogParent) {
-    if (owner != null) {
-      throw new IllegalStateException("owner has alrady been set");
-    }
-    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
-    return this;
-  }
-
-  @Override
-  public FileSelectionDialogBuilder title(final String title) {
-    this.title = title;
-    return this;
-  }
 
   @Override
   public FileSelectionDialogBuilder startDirectory(final String startDirectory) {
