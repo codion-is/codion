@@ -40,20 +40,17 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
 
+  private final ProgressTask<T> task;
   private final ProgressDialog progressDialog;
   private final Event<Integer> progressEvent = Event.event();
   private final Event<String> messageEvent = Event.event();
   private final Event<T> onSuccessEvent = Event.event();
   private final ProgressReporter progressReporter = new DefaultProgressReporter();
 
-  private ProgressTask<T> task;
   private Consumer<Throwable> exceptionHandler;
 
-  /**
-   * Instantiates a new ProgressWorker.
-   * @param progressDialog the progress dialog to use
-   */
-  private ProgressWorker(final ProgressDialog progressDialog) {
+  private ProgressWorker(final ProgressTask<T> task, final ProgressDialog progressDialog) {
+    this.task = requireNonNull(task);
     this.progressDialog = requireNonNull(progressDialog);
     this.exceptionHandler = throwable -> DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
     this.progressEvent.addDataListener(this::setProgress);
@@ -402,8 +399,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
               .westPanel(westPanel)
               .buttonControls(buttonControls)
               .build();
-      final ProgressWorker<T> worker = new ProgressWorker<>(progressDialog);
-      worker.task = progressTask;
+      final ProgressWorker<T> worker = new ProgressWorker<>(progressTask, progressDialog);
       if (onSuccess != null) {
         worker.onSuccessEvent.addDataListener(result -> onSuccess.accept(result));
       }
