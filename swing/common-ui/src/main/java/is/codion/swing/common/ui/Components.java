@@ -357,7 +357,7 @@ public final class Components {
     TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> textField.setText(Memory.getMemoryUsage())))
             .interval(updateIntervalMilliseconds)
             .timeUnit(TimeUnit.MILLISECONDS)
-            .build().start();
+            .start();
 
     return textField;
   }

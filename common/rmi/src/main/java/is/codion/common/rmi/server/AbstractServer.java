@@ -91,7 +91,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
               .interval(configuration.getConnectionMaintenanceInterval())
               .initialDelay(configuration.getConnectionMaintenanceInterval())
               .timeUnit(TimeUnit.MILLISECONDS)
-              .build().start();
+              .start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
       loadLoginProxies();

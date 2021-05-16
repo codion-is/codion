@@ -57,10 +57,15 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
   }
 
   @Override
+  public TaskScheduler start() {
+    final TaskScheduler taskScheduler = build();
+    taskScheduler.start();
+
+    return taskScheduler;
+  }
+
+  @Override
   public TaskScheduler build() {
-    if (task == null) {
-      throw new IllegalStateException("A task is required for building a TaskScheduler");
-    }
     if (interval == 0) {
       throw new IllegalStateException("An interval > 0 is required for building a TaskScheduler");
     }

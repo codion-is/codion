@@ -48,7 +48,7 @@ public final class DatabaseMonitor {
     this.updateScheduler = TaskScheduler.builder(this::doUpdateStatistics)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
-            .build().start();
+            .start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
   }
 

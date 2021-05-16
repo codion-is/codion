@@ -136,7 +136,7 @@ public final class ServerMonitor {
     this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
-            .build().start();
+            .start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     refreshDomainList();
     bindEvents();

@@ -79,7 +79,7 @@ public final class ClientUserMonitor {
     this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
-            .build().start();
+            .start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     bindEvents();
     refresh();

@@ -7004,3 +7004,4 @@
   ProgressWorker refactored
   DatabaseFactory.isDatabaseCompatible() removed, unused
   TaskScheduler.builder() now takes Runnable task as parameter, TaskScheduler.Builder.task() removed
+  TaskScheduler.Builder.start() added
