@@ -6984,3 +6984,4 @@
   Dialogs.FileSelectionDialogBuilder.selectFiles() and selectDirectories() added
   AbstractDialogBuilder added, related refactoring
   Dialogs.ExceptionDialogBuilder added along with exceptionDialogBuilder() factory method
+  ProgressWorker.Builder.exceptionHandler() renamed onException()

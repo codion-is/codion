@@ -47,7 +47,7 @@ public final class CityTablePanel extends EntityTablePanel {
                     .build())
             .progressTask(cityTableModel::updateLocationForSelected)
             .onSuccess(cityTableModel::replaceEntities)
-            .exceptionHandler(this::displayUpdateException)
+            .onException(this::displayUpdateException)
             .build().execute();
   }
 

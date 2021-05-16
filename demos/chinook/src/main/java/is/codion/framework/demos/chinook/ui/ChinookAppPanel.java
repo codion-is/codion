@@ -202,7 +202,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                       .getTableModel().replaceEntities(updatedInvoices);
               showMessageDialog(dialogOwner, bundle.getString(TOTALS_UPDATED));
             })
-            .exceptionHandler(exception -> Dialogs.exceptionDialogBuilder()
+            .onException(exception -> Dialogs.exceptionDialogBuilder()
                     .owner(dialogOwner)
                     .title(bundle.getString(UPDATING_TOTALS_FAILED))
                     .show(exception))
