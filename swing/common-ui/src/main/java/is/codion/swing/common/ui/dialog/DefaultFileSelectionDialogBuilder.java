@@ -20,7 +20,7 @@ import static java.util.Collections.singletonList;
 final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<FileSelectionDialogBuilder>
         implements FileSelectionDialogBuilder {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultFileSelectionDialogBuilder.class.getName());
 
   /**
    * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives
