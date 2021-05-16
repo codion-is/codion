@@ -67,20 +67,14 @@ public interface TaskScheduler {
   /**
    * @return a new {@link TaskScheduler.Builder} instance.
    */
-  static TaskScheduler.Builder builder() {
-    return new DefaultTaskSchedulerBuilder();
+  static TaskScheduler.Builder builder(final Runnable task) {
+    return new DefaultTaskSchedulerBuilder(task);
   }
 
   /**
    * A builder for {@link TaskScheduler}
    */
   interface Builder {
-
-    /**
-     * @param task the task to run
-     * @return this builder instance
-     */
-    Builder task(Runnable task);
 
     /**
      * @param interval the interval

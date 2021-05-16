@@ -76,8 +76,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
                            final int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
-    this.expiredCleaner = TaskScheduler.builder()
-            .task(this::removeExpired)
+    this.expiredCleaner = TaskScheduler.builder(this::removeExpired)
             .interval(cleanupInterval)
             .timeUnit(TimeUnit.MILLISECONDS)
             .build().start();

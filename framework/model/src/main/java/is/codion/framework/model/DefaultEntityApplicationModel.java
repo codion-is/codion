@@ -36,8 +36,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   private final State connectionValidState = State.state();
   private final Event<User> loginEvent = Event.event();
   private final Event<User> logoutEvent = Event.event();
-  private final TaskScheduler validityCheckScheduler = TaskScheduler.builder()
-          .task(this::checkConnectionValidity)
+  private final TaskScheduler validityCheckScheduler = TaskScheduler.builder(this::checkConnectionValidity)
           .interval(VALIDITY_CHECK_INTERVAL_SECONDS)
           .initialDelay(VALIDITY_CHECK_INTERVAL_SECONDS)
           .timeUnit(TimeUnit.SECONDS)

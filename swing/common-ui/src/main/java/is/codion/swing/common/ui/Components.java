@@ -354,8 +354,7 @@ public final class Components {
     final JTextField textField = new JTextField(8);
     textField.setEditable(false);
     textField.setHorizontalAlignment(JTextField.CENTER);
-    TaskScheduler.builder()
-            .task(() -> SwingUtilities.invokeLater(() -> textField.setText(Memory.getMemoryUsage())))
+    TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> textField.setText(Memory.getMemoryUsage())))
             .interval(updateIntervalMilliseconds)
             .timeUnit(TimeUnit.MILLISECONDS)
             .build().start();

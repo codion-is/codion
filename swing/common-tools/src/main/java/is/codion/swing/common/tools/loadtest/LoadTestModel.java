@@ -136,8 +136,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
     this.scenarioChooser = initializeScenarioChooser();
     initializeChartModels();
-    this.chartUpdateScheduler = TaskScheduler.builder()
-            .task(new ChartUpdateTask())
+    this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS)
             .timeUnit(TimeUnit.MILLISECONDS)
             .build();
