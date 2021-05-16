@@ -40,10 +40,9 @@ public final class LookupTablePanel extends EntityTablePanel {
     File fileToSave = Dialogs.fileSelectionDialogBuilder()
             .owner(this)
             .selectFileToSave("export.csv");
-    ProgressWorker.builder()
+    ProgressWorker.builder(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
             .owner(this)
             .title("Exporting data")
-            .task(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
             .successMessage("Export successful")
             .failTitle("Export failed")
             .execute();

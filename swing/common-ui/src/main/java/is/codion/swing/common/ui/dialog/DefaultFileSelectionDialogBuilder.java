@@ -63,6 +63,11 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   }
 
   @Override
+  public File selectFileOrDirectory() {
+    return selectFileOrDirectory(owner, startDirectory, FilesOrDirectories.BOTH, title);
+  }
+
+  @Override
   public List<File> selectFilesOrDirectories() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.BOTH, false, title);
   }
