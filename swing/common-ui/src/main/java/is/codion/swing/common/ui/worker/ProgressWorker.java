@@ -125,7 +125,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
       Thread.currentThread().interrupt();
     }
     catch (final ExecutionException e) {
-      exceptionHandler.accept(e);
+      exceptionHandler.accept(e.getCause());
     }
   }
 
