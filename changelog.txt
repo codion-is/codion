@@ -7026,3 +7026,5 @@
   DialogBuilder.show() added
   ProgressWorker.Builder.execute() added
   ForeignKeyTableCellEditor bug fixed, did not refresh combo box model
+  DefaultDialogBuilder bug fixed, now centers on screen if no parent is available, login panel now appears on the correct monitor (the same as before, that is)
+  DialogBuilder.resizable() added

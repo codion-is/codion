@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -24,6 +25,7 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
 
   private JComponent component;
   private boolean modal = true;
+  private boolean resizable = true;
   private Action enterAction;
   private Action onClosedAction;
   private EventObserver<?> closeEvent;
@@ -39,6 +41,12 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
   @Override
   public DialogBuilder modal(final boolean modal) {
     this.modal = modal;
+    return this;
+  }
+
+  @Override
+  public DialogBuilder resizable(final boolean resizable) {
+    this.resizable = resizable;
     return this;
   }
 
@@ -93,9 +101,14 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
-    dialog.setLocationRelativeTo(owner);
+    if (owner != null) {
+      dialog.setLocationRelativeTo(owner);
+    }
+    else {
+      Windows.centerWindow(dialog);
+    }
     dialog.setModal(modal);
-    dialog.setResizable(true);
+    dialog.setResizable(resizable);
 
     if (enterAction != null) {
       KeyEvents.builder()

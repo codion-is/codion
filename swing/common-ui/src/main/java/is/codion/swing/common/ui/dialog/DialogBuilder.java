@@ -56,6 +56,12 @@ public interface DialogBuilder {
   DialogBuilder modal(boolean modal);
 
   /**
+   * @param resizable true if the dialog should be resizable
+   * @return this DialogBuilder instance
+   */
+  DialogBuilder resizable(boolean resizable);
+
+  /**
    * @param enterAction the action to associate with the ENTER key
    * @return this DialogBuilder instance
    */
