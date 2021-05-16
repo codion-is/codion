@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.worker;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Windows;
@@ -215,6 +216,12 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
      * @param onSuccess executed on the EDT after a successful run
      * @return this Builder instance
      */
+    Builder<T> onSuccess(EventListener onSuccess);
+
+    /**
+     * @param onSuccess executed on the EDT after a successful run
+     * @return this Builder instance
+     */
     Builder<T> onSuccess(Consumer<T> onSuccess);
 
     /**
@@ -327,6 +334,11 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     public Builder<T> dialogTitle(final String dialogTitle) {
       this.dialogTitle = dialogTitle;
       return this;
+    }
+
+    @Override
+    public Builder<T> onSuccess(final EventListener onSuccess) {
+      return onSuccess(result -> onSuccess.onEvent());
     }
 
     @Override
