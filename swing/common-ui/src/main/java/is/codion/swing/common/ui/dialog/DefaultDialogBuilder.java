@@ -25,6 +25,7 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
 
   private JComponent component;
   private boolean modal = true;
+  private boolean resizable = true;
   private Action enterAction;
   private Action onClosedAction;
   private EventObserver<?> closeEvent;
@@ -40,6 +41,12 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
   @Override
   public DialogBuilder modal(final boolean modal) {
     this.modal = modal;
+    return this;
+  }
+
+  @Override
+  public DialogBuilder resizable(final boolean resizable) {
+    this.resizable = resizable;
     return this;
   }
 
@@ -101,7 +108,7 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
       Windows.centerWindow(dialog);
     }
     dialog.setModal(modal);
-    dialog.setResizable(true);
+    dialog.setResizable(resizable);
 
     if (enterAction != null) {
       KeyEvents.builder()
