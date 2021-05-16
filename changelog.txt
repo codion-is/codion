@@ -6999,3 +6999,4 @@
   DialogBuilder.resizable() added
   ProgressWorker.builder() overloaded with task parameter, works better with generics this way
   FileSelectionDialogBuilder.selectFileOrDirectory() added
+  TextFields.addLookupDialog() and getBrowseAction() moved to Dialogs, due to cyclical dependencies
