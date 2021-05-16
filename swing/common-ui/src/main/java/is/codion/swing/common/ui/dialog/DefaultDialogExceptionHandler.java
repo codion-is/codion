@@ -45,7 +45,11 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     if (nullOrEmpty(message)) {
       message = rootCause.getCause() != null ? trimMessage(rootCause.getCause()) : trimMessage(rootCause);
     }
-    Dialogs.showExceptionDialog(dialogParent, getMessageTitle(rootCause), message, rootCause);
+    Dialogs.exceptionDialogBuilder()
+            .owner(dialogParent)
+            .title(getMessageTitle(rootCause))
+            .message(message)
+            .show(rootCause);
   }
 
   static Throwable unwrapExceptions(final Throwable exception, final Collection<Class<? extends Throwable>> exceptions) {

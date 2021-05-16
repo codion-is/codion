@@ -316,7 +316,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
     public Builder<T> failTitle(final String failTitle) {
       return exceptionHandler(exception -> {
         if (!(exception instanceof CancelException)) {
-          Dialogs.showExceptionDialog(owner, failTitle, exception);
+          Dialogs.exceptionDialogBuilder()
+                  .owner(owner)
+                  .title(failTitle)
+                  .show(exception);
         }
       });
     }
@@ -367,7 +370,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, Void> {
               exceptionHandler.accept(exception);
             }
             else {
-              Dialogs.showExceptionDialog(owner, Messages.get(Messages.EXCEPTION), exception);
+              Dialogs.exceptionDialogBuilder()
+                      .owner(owner)
+                      .message(Messages.get(Messages.EXCEPTION))
+                      .show(exception);
             }
           }
         };

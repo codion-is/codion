@@ -18,7 +18,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -35,41 +34,6 @@ import java.util.Optional;
 public final class Dialogs {
 
   private Dialogs() {}
-
-  /**
-   * Shows an exception dialog for the given throwable
-   * @param window the dialog parent window
-   * @param title the dialog title
-   * @param throwable the exception to display
-   */
-  public static void showExceptionDialog(final Window window, final String title, final Throwable throwable) {
-    showExceptionDialog(window, title, throwable.getMessage(), throwable);
-  }
-
-  /**
-   * Shows an exception dialog for the given throwable
-   * @param window the dialog parent window
-   * @param message the message
-   * @param title the dialog title
-   * @param throwable the exception to display
-   */
-  public static void showExceptionDialog(final Window window, final String title, final String message,
-                                         final Throwable throwable) {
-    try {
-      if (SwingUtilities.isEventDispatchThread()) {
-        new ExceptionDialog(window).showForThrowable(title, message, throwable, true).dispose();
-      }
-      else {
-        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, true).dispose());
-      }
-    }
-    catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   /**
    * @return a new {@link DialogBuilder} instance.
@@ -90,6 +54,13 @@ public final class Dialogs {
    */
   public static LoginDialogBuilder loginDialogBuilder() {
     return new DefaultLoginDialogBuilder();
+  }
+
+  /**
+   * @return a new exception dialog builder
+   */
+  public static ExceptionDialogBuilder exceptionDialogBuilder() {
+    return new DefaultExceptionDialogBuilder();
   }
 
   /**
@@ -412,7 +383,49 @@ public final class Dialogs {
   }
 
   /**
-   * A login dialog builder
+   * An exception dialog builder.
+   */
+  public interface ExceptionDialogBuilder {
+
+    /**
+     * @param owner the dialog owner
+     * @return this ExceptionDialogBuilder instance
+     */
+    ExceptionDialogBuilder owner(Window owner);
+
+    /**
+     * @param dialogParent the dialog parent component
+     * @return this ExceptionDialogBuilder instance
+     */
+    ExceptionDialogBuilder dialogParent(JComponent dialogParent);
+
+    /**
+     * @param title the dialog title
+     * @return this ExceptionDialogBuilder instance
+     */
+    ExceptionDialogBuilder title(String title);
+
+    /**
+     * @param icon the dialog icon
+     * @return this ExceptionDialogBuilder instance
+     */
+    ExceptionDialogBuilder icon(ImageIcon icon);
+
+    /**
+     * @param message the message to display
+     * @return this ExceptionDialogBuilder instance
+     */
+    ExceptionDialogBuilder message(String message);
+
+    /**
+     * Displays an exception dialog for the given exception
+     * @param exception the exception to display
+     */
+    void show(Throwable exception);
+  }
+
+  /**
+   * A login dialog builder.
    */
   public interface LoginDialogBuilder {
 

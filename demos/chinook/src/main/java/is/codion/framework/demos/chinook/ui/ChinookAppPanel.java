@@ -16,6 +16,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -52,7 +53,6 @@ import java.util.ResourceBundle;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.Components.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.Components.lookAndFeelProvider;
-import static is.codion.swing.common.ui.dialog.Dialogs.showExceptionDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
@@ -202,7 +202,10 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                       .getTableModel().replaceEntities(updatedInvoices);
               showMessageDialog(dialogOwner, bundle.getString(TOTALS_UPDATED));
             })
-            .exceptionHandler(exception -> showExceptionDialog(dialogOwner, bundle.getString(UPDATING_TOTALS_FAILED), exception))
+            .exceptionHandler(exception -> Dialogs.exceptionDialogBuilder()
+                    .owner(dialogOwner)
+                    .title(bundle.getString(UPDATING_TOTALS_FAILED))
+                    .show(exception))
             .build().execute();
   }
 
