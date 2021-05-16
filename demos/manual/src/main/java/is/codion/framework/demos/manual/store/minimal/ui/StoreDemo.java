@@ -97,7 +97,7 @@ public class StoreDemo {
     Dialogs.dialogBuilder()
             .component(customerPanel)
             .title("Customers")
-            .build().setVisible(true);
+            .show();
 
     connectionProvider.close();
   }

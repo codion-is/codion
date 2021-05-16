@@ -193,7 +193,7 @@ public final class Example {
     Dialogs.dialogBuilder()
             .component(customerPanel)
             .title("Customers")
-            .build().setVisible(true);
+            .show();
     // end::detailPanel[]
   }
 

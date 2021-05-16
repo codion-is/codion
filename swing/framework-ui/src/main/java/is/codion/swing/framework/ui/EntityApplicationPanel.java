@@ -320,7 +320,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .component(initializeApplicationTree())
             .title(resourceBundle.getString("view_application_tree"))
             .modal(false)
-            .build().setVisible(true);
+            .show();
   }
 
   /**
@@ -332,7 +332,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .component(initializeDependencyTree())
             .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
             .modal(false)
-            .build().setVisible(true);
+            .show();
   }
 
   /**

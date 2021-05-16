@@ -554,7 +554,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                     .component(panel)
                     .title(settingsMessage)
                     .onClosedAction(control)
-                    .build().setVisible(true))
+                    .show())
             .name(settingsMessage)
             .build());
 

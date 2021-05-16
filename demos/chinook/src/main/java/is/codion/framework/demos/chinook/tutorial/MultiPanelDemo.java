@@ -53,6 +53,7 @@ public final class MultiPanelDemo {
             .component(basePanel)
             .title("Multi Panel Demo")
             .disposeOnEscape(false)
-            .build().setVisible(true);
+            .show()
+            .dispose();
   }
 }
