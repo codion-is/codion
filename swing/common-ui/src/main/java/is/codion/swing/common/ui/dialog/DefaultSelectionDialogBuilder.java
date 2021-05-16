@@ -43,7 +43,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     if (requireNonNull(values).isEmpty()) {
       throw new IllegalArgumentException("No values to select from");
     }
-    this.values = requireNonNull(values);
+    this.values = values;
   }
 
   @Override
