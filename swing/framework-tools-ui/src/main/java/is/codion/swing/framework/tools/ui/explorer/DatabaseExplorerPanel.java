@@ -102,7 +102,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .dialogTitle("Populating")
             .northPanel(northPanel)
             .task(() -> model.populateSelected(schemaNotifier))
-            .onSuccess(result -> model.getSchemaModel().refresh())
+            .onSuccess(model.getSchemaModel()::refresh)
             .build().execute();
   }
 
