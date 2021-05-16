@@ -3,13 +3,11 @@
  */
 package is.codion.swing.common.ui.worker;
 
-import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ProgressDialog;
 
@@ -42,19 +40,16 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
 
   private final ProgressTask<T> task;
   private final ProgressDialog progressDialog;
-  private final Event<Integer> progressEvent = Event.event();
-  private final Event<String> messageEvent = Event.event();
-  private final Event<T> onSuccessEvent = Event.event();
   private final ProgressReporter progressReporter = new DefaultProgressReporter();
+  private final Consumer<T> resultHandler;
+  private final Consumer<Throwable> exceptionHandler;
 
-  private Consumer<Throwable> exceptionHandler;
-
-  private ProgressWorker(final ProgressTask<T> task, final ProgressDialog progressDialog) {
+  private ProgressWorker(final ProgressTask<T> task, final ProgressDialog progressDialog,
+                         final Consumer<T> resultHandler, final Consumer<Throwable> exceptionHandler) {
     this.task = requireNonNull(task);
     this.progressDialog = requireNonNull(progressDialog);
-    this.exceptionHandler = throwable -> DefaultDialogExceptionHandler.getInstance().displayException(throwable, progressDialog.getOwner());
-    this.progressEvent.addDataListener(this::setProgress);
-    this.messageEvent.addDataListener(this::publish);
+    this.resultHandler = requireNonNull(resultHandler);
+    this.exceptionHandler = requireNonNull(exceptionHandler);
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -121,7 +116,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     progressDialog.setVisible(false);
     progressDialog.dispose();
     try {
-      onSuccessEvent.onEvent(get());
+      resultHandler.accept(get());
     }
     catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -401,42 +396,37 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
               .westPanel(westPanel)
               .buttonControls(buttonControls)
               .build();
-      final ProgressWorker<T> worker = new ProgressWorker<>(progressTask, progressDialog);
-      if (onSuccess != null) {
-        worker.onSuccessEvent.addDataListener(result -> onSuccess.accept(result));
-      }
-      if (onException != null) {
-        worker.exceptionHandler = onException;
-      }
-      else {
-        worker.exceptionHandler = exception -> {
-          if (!(exception instanceof CancelException)) {
-            if (onException != null) {
-              onException.accept(exception);
-            }
-            else {
-              Dialogs.exceptionDialogBuilder()
-                      .owner(owner)
-                      .message(Messages.get(Messages.EXCEPTION))
-                      .show(exception);
-            }
-          }
-        };
-      }
+      final ProgressWorker<T> worker = new ProgressWorker<>(progressTask, progressDialog,
+              onSuccess == null ? result -> {} : onSuccess,
+              this::createExceptionHandler);
 
       return worker;
+    }
+
+    private void createExceptionHandler(final Throwable exception) {
+      if (!(exception instanceof CancelException)) {
+        if (onException != null) {
+          onException.accept(exception);
+        }
+        else {
+          Dialogs.exceptionDialogBuilder()
+                  .owner(owner)
+                  .message(Messages.get(Messages.EXCEPTION))
+                  .show(exception);
+        }
+      }
     }
   }
 
   private final class DefaultProgressReporter implements ProgressReporter {
     @Override
     public void setProgress(final int progress) {
-      progressEvent.onEvent(progress);
+      ProgressWorker.this.setProgress(progress);
     }
 
     @Override
     public void setMessage(final String message) {
-      messageEvent.onEvent(message);
+      ProgressWorker.this.publish(message);
     }
   }
 }

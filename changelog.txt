@@ -7001,3 +7001,4 @@
   FileSelectionDialogBuilder.selectFileOrDirectory() added
   TextFields.addLookupDialog() and getBrowseAction() moved to Dialogs, due to cyclical dependencies
   ProgressWorker bug fixed, exception handler now gets called with the ExecutionException cause
+  ProgressWorker refactored
