@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.dialog.Dialogs.FileSelectionDialogBuilder;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
