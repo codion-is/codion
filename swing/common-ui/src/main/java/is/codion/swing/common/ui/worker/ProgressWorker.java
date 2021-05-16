@@ -63,6 +63,8 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
    * @return a new {@link Builder} instance
    */
   public static Builder<?> builder(final Control.Command task) {
+    requireNonNull(task);
+
     return new DefaultBuilder<>(progressReporter -> {
       task.perform();
       return null;
@@ -75,6 +77,8 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
    * @return a new {@link Builder} instance
    */
   public static <T> Builder<T> builder(final Task<T> task) {
+    requireNonNull(task);
+
     return new DefaultBuilder<>(progressReporter -> task.perform());
   }
 
@@ -84,15 +88,13 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
    * @return a new {@link Builder} instance
    */
   public static <T> Builder<T> builder(final ProgressTask<T> task) {
+    requireNonNull(task);
+
     return new DefaultBuilder<>(task);
   }
 
   @Override
   protected T doInBackground() throws Exception {
-    if (task == null) {
-      throw new IllegalStateException("No task has been specified");
-    }
-
     return task.perform(progressReporter);
   }
 
@@ -288,7 +290,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     private boolean stringPainted = false;
 
     DefaultBuilder(final ProgressTask<T> progressTask) {
-      this.progressTask = requireNonNull(progressTask);
+      this.progressTask = progressTask;
     }
 
     @Override
