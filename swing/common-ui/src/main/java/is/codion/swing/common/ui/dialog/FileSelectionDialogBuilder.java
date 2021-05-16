@@ -71,6 +71,12 @@ public interface FileSelectionDialogBuilder {
   List<File> selectDirectories();
 
   /**
+   * @return the selected file or directory
+   * @throws CancelException in case the user cancels
+   */
+  File selectFileOrDirectory();
+
+  /**
    * @return a List containing the selected files, contains at least one file
    * @throws CancelException in case the user cancels or no files are selected
    */
