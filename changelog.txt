@@ -6994,3 +6994,4 @@
   ProgressWorker.Builder.dialogParent() renamed owner() and dialogTitle() title(), for consistency
   DialogBuilder.show() added
   ProgressWorker.Builder.execute() added
+  ForeignKeyTableCellEditor bug fixed, did not refresh combo box model
