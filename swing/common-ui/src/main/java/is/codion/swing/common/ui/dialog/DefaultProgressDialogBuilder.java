@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialogBuilder> implements ProgressDialogBuilder {
 
   private boolean indeterminate = true;
+  private boolean stringPainted = false;
   private JPanel northPanel;
   private JPanel westPanel;
   private Controls buttonControls;
@@ -17,6 +18,12 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialogB
   @Override
   public ProgressDialogBuilder indeterminate(final boolean indeterminate) {
     this.indeterminate = indeterminate;
+    return this;
+  }
+
+  @Override
+  public ProgressDialogBuilder stringPainted(final boolean stringPainted) {
+    this.stringPainted = stringPainted;
     return this;
   }
 
@@ -40,6 +47,6 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialogB
 
   @Override
   public ProgressDialog build() {
-    return new ProgressDialog(owner, title, icon, indeterminate, northPanel, westPanel, buttonControls);
+    return new ProgressDialog(owner, title, icon, indeterminate, stringPainted, northPanel, westPanel, buttonControls);
   }
 }

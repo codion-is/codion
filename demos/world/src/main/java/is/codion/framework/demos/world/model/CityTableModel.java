@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -11,6 +10,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.swing.common.ui.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingEntityTableSortModel;
 
@@ -40,16 +40,17 @@ public final class CityTableModel extends SwingEntityTableModel {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
   }
 
-  public List<Entity> updateLocationForSelected(EventDataListener<Integer> progressListener)
+  public List<Entity> updateLocationForSelected(ProgressReporter progressReporter)
           throws IOException, DatabaseException, ValidationException {
     List<Entity> updatedCities = new ArrayList<>();
     locationUpdateCancelledState.set(false);
     List<Entity> selectedCities = getSelectionModel().getSelectedItems();
     for (Entity city : selectedCities) {
       if (!locationUpdateCancelledState.get()) {
+        progressReporter.setMessage(city.toString());
         updateLocation(city);
         updatedCities.add(city);
-        progressListener.onEvent(100 * updatedCities.size() / selectedCities.size());
+        progressReporter.setProgress(100 * updatedCities.size() / selectedCities.size());
       }
     }
 
