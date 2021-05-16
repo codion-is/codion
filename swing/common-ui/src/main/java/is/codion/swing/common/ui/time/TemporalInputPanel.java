@@ -112,7 +112,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   @Override
-  public synchronized final void addFocusListener(final FocusListener listener) {
+  public final synchronized void addFocusListener(final FocusListener listener) {
     //prevent override of method used in constructor
     super.addFocusListener(listener);
   }
