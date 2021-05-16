@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -29,6 +30,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<SelectionDialogBuilder<T>>
         implements SelectionDialogBuilder<T> {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultSelectionDialogBuilder.class.getName());
 
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
 
@@ -40,7 +43,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     if (requireNonNull(values).isEmpty()) {
       throw new IllegalArgumentException("No values to select from");
     }
-    this.values = requireNonNull(values);
+    this.values = values;
   }
 
   @Override
@@ -62,13 +65,13 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
   @Override
   public Optional<T> selectSingle() {
-    return selectValue(owner, values, title, defaultSelection.isEmpty() ? null :
-            defaultSelection.iterator().next());
+    return selectValue(owner, values, title == null ? MESSAGES.getString("select_value") : title,
+            defaultSelection.isEmpty() ? null : defaultSelection.iterator().next());
   }
 
   @Override
   public Collection<T> select() {
-    return selectValues(owner, values, title, singleSelection, defaultSelection);
+    return selectValues(owner, values, title == null ? MESSAGES.getString("select_values") : title, singleSelection, defaultSelection);
   }
 
   static <T> Optional<T> selectValue(final Window dialogOwner, final Collection<T> values, final String dialogTitle,

@@ -20,7 +20,7 @@ import static java.util.Collections.singletonList;
 final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<FileSelectionDialogBuilder>
         implements FileSelectionDialogBuilder {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Dialogs.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultFileSelectionDialogBuilder.class.getName());
 
   /**
    * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives
@@ -44,32 +44,36 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
   @Override
   public File selectFile() {
-    return selectFile(owner, startDirectory, title);
+    return selectFile(owner, startDirectory, title == null ? MESSAGES.getString("select_file") : title);
   }
 
   @Override
   public List<File> selectFiles() {
-    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.FILES, false, title);
+    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.FILES, false,
+            title == null ? MESSAGES.getString("select_files") : title);
   }
 
   @Override
   public File selectDirectory() {
-    return selectDirectory(owner, startDirectory, title);
+    return selectDirectory(owner, startDirectory, title == null ? MESSAGES.getString("select_directory") : title);
   }
 
   @Override
   public List<File> selectDirectories() {
-    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false, title);
+    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false,
+            title == null ? MESSAGES.getString("select_directories") : title);
   }
 
   @Override
   public File selectFileOrDirectory() {
-    return selectFileOrDirectory(owner, startDirectory, FilesOrDirectories.BOTH, title);
+    return selectFileOrDirectory(owner, startDirectory, FilesOrDirectories.BOTH,
+            title == null ? MESSAGES.getString("select_file_or_directory") : title);
   }
 
   @Override
   public List<File> selectFilesOrDirectories() {
-    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.BOTH, false, title);
+    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.BOTH, false,
+            title == null ? MESSAGES.getString("select_files_or_directories") : title);
   }
 
   @Override

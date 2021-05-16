@@ -3,19 +3,29 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.Collection;
+import java.util.function.Supplier;
+
+import static is.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for displaying Dialogs.
@@ -101,5 +111,65 @@ public final class Dialogs {
     }
     dialog.setModal(true);
     dialog.setResizable(true);
+  }
+
+  /**
+   * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
+   * by the given value provider
+   * @param textField the text field
+   * @param valueProvider provides the values for the lookup dialog
+   * @param <T> the type of values being looked up
+   */
+  public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+    requireNonNull(valueProvider);
+    KeyEvents.builder()
+            .keyEvent(KeyEvent.VK_SPACE)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(new AbstractAction("TextFields.lookupValue") {
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                final Object value = selectionDialogBuilder(valueProvider.get())
+                        .owner(textField)
+                        .select();
+                if (value != null) {
+                  textField.setText(value.toString());
+                }
+              }
+            })
+            .enable(textField);
+  }
+
+  /**
+   * Creates a Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
+   * @param filenameField the text field for displaying the file path
+   * @return the Action
+   */
+  public static Action getBrowseAction(final JTextField filenameField) {
+    requireNonNull(filenameField, "filenameField");
+    return new AbstractAction("...") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          final File file = fileSelectionDialogBuilder()
+                  .owner(filenameField)
+                  .startDirectory(getParentPath(filenameField.getText()))
+                  .selectFile();
+          filenameField.setText(file.getAbsolutePath());
+        }
+        catch (final CancelException ignored) {/*ignored*/}
+      }
+    };
+  }
+
+  private static String getParentPath(final String text) {
+    if (nullOrEmpty(text)) {
+      return null;
+    }
+    try {
+      return new File(text).getParentFile().getPath();
+    }
+    catch (final Exception e) {
+      return null;
+    }
   }
 }
