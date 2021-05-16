@@ -65,6 +65,7 @@ public interface TaskScheduler {
   void addIntervalListener(final EventDataListener<Integer> listener);
 
   /**
+   * @param task the task to run
    * @return a new {@link TaskScheduler.Builder} instance.
    */
   static TaskScheduler.Builder builder(final Runnable task) {
