@@ -129,7 +129,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static synchronized void setJDKDir(final JComponent dialogParent) {
     try {
       jdkDir = Dialogs.fileSelectionDialogBuilder()
-              .dialogParent(dialogParent)
+              .owner(dialogParent)
               .startDirectory(jdkDir)
               .title("Set JDK home")
               .selectDirectory()

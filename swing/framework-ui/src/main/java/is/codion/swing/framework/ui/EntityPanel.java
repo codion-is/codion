@@ -1442,7 +1442,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = Dialogs.dialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .component(detailPanelTabbedPane)
             .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
             .modal(false)
@@ -1472,7 +1472,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   private void showEditDialog() {
     editPanelDialog = Dialogs.dialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .component(editControlPanel)
             .title(caption)
             .modal(false)

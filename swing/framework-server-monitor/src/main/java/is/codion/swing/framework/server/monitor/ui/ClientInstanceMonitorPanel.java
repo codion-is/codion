@@ -158,7 +158,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     final String filename = user.getUsername() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
 
     Files.write(Dialogs.fileSelectionDialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .selectFileToSave(filename).toPath(),
             logArea.getText().getBytes());
   }

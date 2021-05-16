@@ -197,7 +197,7 @@ final class ExceptionDialog extends JDialog {
             .build();
     final Control saveControl = Control.builder()
             .command(() -> Files.write(Dialogs.fileSelectionDialogBuilder()
-                            .dialogParent(detailsArea)
+                            .owner(detailsArea)
                             .selectFileToSave("error.txt")
                             .toPath(),
                     Arrays.asList(detailsArea.getText().split("\\r?\\n"))))

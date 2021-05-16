@@ -54,7 +54,7 @@ public final class CityTablePanel extends EntityTablePanel {
 
   private void displayUpdateException(final Throwable exception) {
     Dialogs.exceptionDialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .title("Unable to update locations")
             .show(exception);
   }

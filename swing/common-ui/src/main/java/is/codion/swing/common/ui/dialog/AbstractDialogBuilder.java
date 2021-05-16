@@ -20,11 +20,11 @@ class AbstractDialogBuilder<T> {
     return (T) this;
   }
 
-  public final T dialogParent(final JComponent dialogParent) {
-    if (owner != null) {
+  public final T owner(final JComponent owner) {
+    if (this.owner != null) {
       throw new IllegalStateException("owner has alrady been set");
     }
-    this.owner = dialogParent == null ? null : Windows.getParentWindow(dialogParent);
+    this.owner = owner == null ? null : Windows.getParentWindow(owner);
     return (T) this;
   }
 

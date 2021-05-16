@@ -57,7 +57,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   // tag::importJSON[]
   public void importJSON() throws Exception {
     final File file = Dialogs.fileSelectionDialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .selectFile();
 
     final EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
@@ -65,7 +65,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider());
 
     Dialogs.dialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .component(tablePanel)
             .title("Import")
             .build().setVisible(true);

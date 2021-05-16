@@ -239,7 +239,7 @@ public class EntityEditComponentPanel extends JPanel {
             Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
     final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.get(0)) :
             Dialogs.selectionDialogBuilder(properties)
-                    .dialogParent(this)
+                    .owner(this)
                     .title(Messages.get(Messages.SELECT_INPUT_FIELD))
                     .selectSingle();
     optionalProperty.ifPresent(property -> requestComponentFocus(property.getAttribute()));

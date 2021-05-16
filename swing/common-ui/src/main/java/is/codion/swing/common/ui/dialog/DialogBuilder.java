@@ -25,10 +25,11 @@ public interface DialogBuilder {
   DialogBuilder owner(Window owner);
 
   /**
-   * @param dialogParent the dialog parent component
+   * Sets the dialog owner as the parent window of the given component.
+   * @param owner the dialog parent component
    * @return this DialogBuilder instance
    */
-  DialogBuilder dialogParent(JComponent dialogParent);
+  DialogBuilder owner(JComponent owner);
 
   /**
    * @param component the component to display

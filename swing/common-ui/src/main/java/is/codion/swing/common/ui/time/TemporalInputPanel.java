@@ -154,7 +154,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .action(cancelControl)
             .enable(datePanel);
     Dialogs.dialogBuilder()
-            .dialogParent(parent)
+            .owner(parent)
             .component(datePanel)
             .title(message)
             .enterAction(okControl)
@@ -204,7 +204,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
             .action(cancelControl)
             .enable(dateTimePanel);
     Dialogs.dialogBuilder()
-            .dialogParent(parent)
+            .owner(parent)
             .component(dateTimePanel)
             .title(message)
             .enterAction(okControl)

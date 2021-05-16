@@ -174,7 +174,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private void onException(final Exception exception) {
     Dialogs.exceptionDialogBuilder()
-            .dialogParent(this)
+            .owner(this)
             .show(exception);
   }
 }

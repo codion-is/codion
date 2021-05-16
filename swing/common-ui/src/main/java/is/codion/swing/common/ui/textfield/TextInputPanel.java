@@ -184,7 +184,7 @@ public final class TextInputPanel extends JPanel {
     };
     okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
     Dialogs.dialogBuilder()
-            .dialogParent(textField)
+            .owner(textField)
             .component(new JScrollPane(textArea))
             .title(dialogTitle)
             .onClosedAction(okAction)

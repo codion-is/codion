@@ -22,10 +22,11 @@ public interface ProgressDialogBuilder {
   ProgressDialogBuilder owner(Window owner);
 
   /**
-   * @param dialogParent the dialog parent component
+   * Sets the dialog owner as the parent window of the given component.
+   * @param owner the dialog parent component
    * @return this ProgressDialogBuilder instance
    */
-  ProgressDialogBuilder dialogParent(JComponent dialogParent);
+  ProgressDialogBuilder owner(JComponent owner);
 
   /**
    * @param title the title
