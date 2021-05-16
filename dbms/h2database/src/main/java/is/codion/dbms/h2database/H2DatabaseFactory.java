@@ -31,11 +31,6 @@ public final class H2DatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof H2Database;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPTS.get()));
   }

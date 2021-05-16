@@ -21,12 +21,6 @@ public interface DatabaseFactory {
   boolean isDriverCompatible(String driverClassName);
 
   /**
-   * @param database the database
-   * @return true if the given database is compatible with this database provider
-   */
-  boolean isDatabaseCompatible(Database database);
-
-  /**
    * @return a new {@link Database} implementation based on the given jdbc url.
    * @param jdbcUrl the jdbc url
    */

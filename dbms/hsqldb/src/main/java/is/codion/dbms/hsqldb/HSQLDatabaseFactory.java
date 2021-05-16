@@ -21,11 +21,6 @@ public final class HSQLDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof HSQLDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new HSQLDatabase(jdbcUrl);
   }

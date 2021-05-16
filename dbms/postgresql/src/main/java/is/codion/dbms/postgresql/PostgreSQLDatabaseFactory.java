@@ -21,11 +21,6 @@ public final class PostgreSQLDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof PostgreSQLDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new PostgreSQLDatabase(jdbcUrl);
   }

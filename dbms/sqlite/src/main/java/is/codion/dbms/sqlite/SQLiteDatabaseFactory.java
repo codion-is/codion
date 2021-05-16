@@ -21,11 +21,6 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof SQLiteDatabase;
-  }
-
-  @Override
   public Database createDatabase(final String jdbcUrl) {
     return new SQLiteDatabase(jdbcUrl);
   }
