@@ -35,8 +35,10 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
     final EntityType<?> foreignEntityType = foreignKey.getReferencedEntityType();
 
     if (connectionProvider.getEntities().getDefinition(foreignEntityType).isSmallDataset()) {
-      return getInputComponents().createForeignKeyComboBox(foreignKey, getCellValue(),
-              new SwingEntityComboBoxModel(foreignEntityType, connectionProvider));
+      final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignEntityType, connectionProvider);
+      comboBoxModel.refresh();
+
+      return getInputComponents().createForeignKeyComboBox(foreignKey, getCellValue(), comboBoxModel);
     }
 
     return getInputComponents().createForeignKeySearchField(foreignKey, getCellValue(),
