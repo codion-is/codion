@@ -46,6 +46,6 @@ public final class LookupTablePanel extends EntityTablePanel {
             .task(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
             .successMessage("Export successful")
             .failTitle("Export failed")
-            .build().execute();
+            .execute();
   }
 }

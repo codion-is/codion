@@ -260,6 +260,13 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     Builder<T> buttonControls(Controls buttonControls);
 
     /**
+     * Builds and executes a new {@link ProgressWorker} based on this builder
+     * @throws IllegalStateException in case no task has been specified
+     * @return a {@link ProgressWorker} based on this builder
+     */
+    ProgressWorker<T> execute();
+
+    /**
      * @return a {@link ProgressWorker} based on this builder
      * @throws IllegalStateException in case no task has been specified
      */
@@ -389,6 +396,14 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     public Builder<T> buttonControls(final Controls buttonControls) {
       this.buttonControls = buttonControls;
       return this;
+    }
+
+    @Override
+    public ProgressWorker<T> execute() {
+      final ProgressWorker<T> worker = build();
+      worker.execute();
+
+      return worker;
     }
 
     @Override

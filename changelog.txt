@@ -6993,3 +6993,4 @@
   AbstractDialogBuilder.dialogParent() renamed owner()
   ProgressWorker.Builder.dialogParent() renamed owner() and dialogTitle() title(), for consistency
   DialogBuilder.show() added
+  ProgressWorker.Builder.execute() added
