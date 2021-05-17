@@ -38,7 +38,7 @@ public final class CityTablePanel extends EntityTablePanel {
             .owner(this)
             .title("Updating locations")
             .stringPainted(true)
-            .buttonControls(Controls.builder()
+            .controls(Controls.builder()
                     .control(Control.builder()
                             .command(cityTableModel::cancelLocationUpdate)
                             .name("Cancel")

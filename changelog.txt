@@ -7006,3 +7006,4 @@
   TaskScheduler.builder() now takes Runnable task as parameter, TaskScheduler.Builder.task() removed
   TaskScheduler.Builder.start() added
   ProgressWorker.builder(ProgressTask) now sets the progress bar type to determinate
+  ProgressWorker.Builder.buttonControls() renamed controls()
