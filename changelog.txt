@@ -7038,3 +7038,4 @@
   TaskScheduler.Builder.start() added
   ProgressWorker.builder(ProgressTask) now sets the progress bar type to determinate
   ProgressWorker.Builder.buttonControls() renamed controls()
+  EntityApplicationPanel.ApplicationStarter now throws CancelException after catching and displaying startup exceptions, thereby cancelling the startup

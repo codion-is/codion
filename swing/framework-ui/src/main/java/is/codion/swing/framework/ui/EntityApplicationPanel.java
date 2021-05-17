@@ -1522,9 +1522,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
+        throw new CancelException();
       }
-      catch (final Throwable exception) {
+      catch (final Exception exception) {
         displayException(exception, null);
+        throw new CancelException();
       }
     }
 
