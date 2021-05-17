@@ -253,10 +253,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     Builder<T> westPanel(JPanel westPanel);
 
     /**
-     * @param buttonControls if specified these controls will be displayed as buttons, useful for adding a cancel action
+     * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
      * @return this Builder instance
      */
-    Builder<T> buttonControls(Controls buttonControls);
+    Builder<T> controls(Controls controls);
 
     /**
      * Builds and executes a new {@link ProgressWorker} based on this builder
@@ -374,8 +374,8 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     }
 
     @Override
-    public Builder<T> buttonControls(final Controls buttonControls) {
-      this.buttonControls = buttonControls;
+    public Builder<T> controls(final Controls controls) {
+      this.buttonControls = controls;
       return this;
     }
 
