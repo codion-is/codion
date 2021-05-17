@@ -57,7 +57,7 @@ public interface SelectionDialogBuilder<T> {
   Optional<T> selectSingle();
 
   /**
-   * @return the selected values, en empty Collection if none was selected
+   * @return the selected values, an empty Collection if none was selected
    */
   Collection<T> select();
 }

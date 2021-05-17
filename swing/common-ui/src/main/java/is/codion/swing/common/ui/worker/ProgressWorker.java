@@ -63,7 +63,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     return new DefaultBuilder<>(progressReporter -> {
       task.perform();
       return null;
-    });
+    }).indeterminate(true);
   }
 
   /**
@@ -74,18 +74,20 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
   public static <T> Builder<T> builder(final Task<T> task) {
     requireNonNull(task);
 
-    return new DefaultBuilder<>(progressReporter -> task.perform());
+    return new DefaultBuilder<>(progressReporter -> task.perform()).indeterminate(true);
   }
 
   /**
+   * Note, also sets the progress bar type to 'determinate'.
    * @param task the task to run
    * @param <T> the worker result type
    * @return a new {@link Builder} instance
+   * @see Builder#indeterminate(boolean)
    */
   public static <T> Builder<T> builder(final ProgressTask<T> task) {
     requireNonNull(task);
 
-    return new DefaultBuilder<>(task);
+    return new DefaultBuilder<>(task).indeterminate(false);
   }
 
   @Override
