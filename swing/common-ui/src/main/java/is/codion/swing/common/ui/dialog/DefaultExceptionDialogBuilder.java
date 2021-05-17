@@ -23,18 +23,12 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   @Override
   public void show(final Throwable exception) {
     requireNonNull(exception);
-    if (title == null) {
-      title = Messages.get(Messages.EXCEPTION);
-    }
-    if (message == null) {
-      message = exception.getMessage();
-    }
     try {
       if (SwingUtilities.isEventDispatchThread()) {
-        new ExceptionDialog(owner).showForThrowable(title, message, exception, true).dispose();
+        displayException(exception);
       }
       else {
-        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(owner).showForThrowable(title, message, exception, true).dispose());
+        SwingUtilities.invokeAndWait(() -> displayException(exception));
       }
     }
     catch (final InterruptedException e) {
@@ -43,5 +37,11 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void displayException(final Throwable exception) {
+    new ExceptionDialog(owner).showForThrowable(exception,
+            title == null ? Messages.get(Messages.EXCEPTION) : title,
+            message == null ? exception.getMessage() : message, true).dispose();
   }
 }

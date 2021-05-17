@@ -37,7 +37,6 @@ public final class CityTablePanel extends EntityTablePanel {
     ProgressWorker.builder(cityTableModel::updateLocationForSelected)
             .owner(this)
             .title("Updating locations")
-            .indeterminate(false)
             .stringPainted(true)
             .buttonControls(Controls.builder()
                     .control(Control.builder()

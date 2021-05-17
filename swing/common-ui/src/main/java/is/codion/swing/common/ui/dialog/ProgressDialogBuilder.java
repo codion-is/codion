@@ -59,8 +59,7 @@ public interface ProgressDialogBuilder {
   ProgressDialogBuilder westPanel(JPanel westPanel);
 
   /**
-   * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH}
-   * position
+   * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
    * @return this ProgressDialogBuilder instance
    */
   ProgressDialogBuilder buttonControls(Controls buttonControls);
