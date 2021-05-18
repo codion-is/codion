@@ -109,6 +109,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
 
+  private static final String CODION_CLIENT_VERSION = "codion.client.version";
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
   private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
@@ -1192,6 +1193,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private void startApplication(final Dimension frameSize, final boolean maximizeFrame, final boolean displayFrame,
                                 final boolean includeMainMenu, final boolean displayProgressDialog,
                                 final EntityConnectionProvider connectionProvider) {
+    setVersionProperty();
     final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
       ProgressWorker.builder(applicationStarter)
@@ -1203,6 +1205,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     else {
       applicationStarter.perform();
       applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu));
+    }
+  }
+
+  /**
+   * Sets the application version as a system property, so that it appears automatically in exception dialogs.
+   */
+  private void setVersionProperty() {
+    final Version version = getClientVersion();
+    if (version != null) {
+      System.setProperty(CODION_CLIENT_VERSION, version.toString());
     }
   }
 
