@@ -58,7 +58,7 @@ test {
 }
 
 task runClientLocal(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -68,7 +68,7 @@ task runClientLocal(type: ModularJavaExec) {
 }
 
 task runClientRMI(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -80,7 +80,7 @@ task runClientRMI(type: ModularJavaExec) {
 }
 
 task runClientHttp(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType': 'http',
@@ -91,7 +91,7 @@ task runClientHttp(type: ModularJavaExec) {
 }
 
 task runLoadTestRMI(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execLoadTestMainClass
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -103,7 +103,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
 }
 
 task runLoadTestHttp(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execLoadTestMainClass
     systemProperties = [
             'codion.client.connectionType': 'http',

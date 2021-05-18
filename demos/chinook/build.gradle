@@ -101,7 +101,7 @@ task buildReports(dependsOn: 'compileJava') {
 classes.finalizedBy buildReports
 
 task runClientLocal(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execMainClass
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
@@ -113,7 +113,7 @@ task runClientLocal(type: ModularJavaExec) {
 }
 
 task runClientRMI(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execMainClass
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
@@ -126,7 +126,7 @@ task runClientRMI(type: ModularJavaExec) {
 }
 
 task runClientHttp(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execMainClass
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
@@ -138,7 +138,7 @@ task runClientHttp(type: ModularJavaExec) {
 }
 
 task runLoadTestRMI(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execLoadTestMainClass
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
@@ -151,7 +151,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
 }
 
 task runLoadTestHttp(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     mainClass = execLoadTestMainClass
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
