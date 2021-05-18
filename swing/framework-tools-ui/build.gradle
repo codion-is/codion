@@ -67,7 +67,7 @@ applicationDistribution.into('config') {
 }
 
 task runDatabaseExplorerH2(type: ModularJavaExec) {
-    group 'run'
+    group 'application'
     main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
@@ -82,7 +82,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 }
 
 //task runDatabaseExplorerOracle(type: ModularJavaExec) {
-//    group 'run'
+//    group 'application'
 //    main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
@@ -91,7 +91,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 //}
 
 //task runDatabaseExplorerPostgres(type: ModularJavaExec) {
-//    group 'run'
+//    group 'application'
 //    main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
