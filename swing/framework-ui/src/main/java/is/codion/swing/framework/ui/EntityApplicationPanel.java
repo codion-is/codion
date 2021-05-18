@@ -1018,10 +1018,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return a frame title based on the application name and the logged in user
+   * @return a frame title based on the application name, version and the logged in user
    */
   protected String getFrameTitle() {
-    return (applicationName.isEmpty() ? "" : (applicationName + " - ")) + getUserInfo(getModel().getConnectionProvider());
+    final StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
+    final Version version = getClientVersion();
+    if (version != null) {
+      if (builder.length() > 0) {
+        builder.append(" - ");
+      }
+      builder.append(version);
+    }
+    if (builder.length() > 0) {
+      builder.append(" - ");
+    }
+    builder.append(getUserInfo(getModel().getConnectionProvider()));
+
+    return builder.toString();
   }
 
   /**
