@@ -124,7 +124,7 @@ applicationDistribution.into('bin') {
 }
 
 task runClientLocal(type: JavaExec) {
-    group 'run'
+    group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -136,7 +136,7 @@ task runClientLocal(type: JavaExec) {
 }
 
 task runClientRMI(type: JavaExec) {
-    group 'run'
+    group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -149,7 +149,7 @@ task runClientRMI(type: JavaExec) {
 }
 
 task runClientHttp(type: JavaExec) {
-    group 'run'
+    group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'http',
@@ -161,7 +161,7 @@ task runClientHttp(type: JavaExec) {
 }
 
 task runLoadTestRMI(type: JavaExec) {
-    group 'run'
+    group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -173,7 +173,7 @@ task runLoadTestRMI(type: JavaExec) {
 }
 
 task runLoadTestHttp(type: JavaExec) {
-    group 'run'
+    group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'http',

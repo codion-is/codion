@@ -44,7 +44,7 @@ applicationDefaultJvmArgs = [
 ]
 
 task runServerMonitor(type: JavaExec) {
-    group 'run'
+    group 'application'
     classpath = sourceSets.main.runtimeClasspath
     main = 'is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
     systemProperties = [

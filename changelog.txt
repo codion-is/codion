@@ -7009,3 +7009,4 @@
   ProgressWorker.Builder.buttonControls() renamed controls()
   EntityApplicationPanel.ApplicationStarter now throws CancelException after catching and displaying startup exceptions, thereby cancelling the startup
   EntityApplicationPanel.getFrameTitle() now adds version info if available
+  Gradle run tasks moved from run group to application

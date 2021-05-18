@@ -89,7 +89,7 @@ runClientLocal {
 }
 
 task runClientLocalFX(type: JavaExec) {
-    group 'run'
+    group 'application'
     mainClass = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
