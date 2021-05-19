@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -676,7 +677,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the attribute
    */
   protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
-    return createCheckBox(attribute, enabledState, IncludeCaption.YES);
+    return createCheckBox(attribute, IncludeCaption.YES, enabledState);
   }
 
   /**
@@ -686,18 +687,18 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the attribute
    */
   protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption) {
-    return createCheckBox(attribute, null, includeCaption);
+    return createCheckBox(attribute, includeCaption, null);
   }
 
   /**
    * Creates a JCheckBox bound to {@code attribute}
    * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
+   * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the attribute
    */
-  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState,
-                                           final IncludeCaption includeCaption) {
+  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption,
+                                           final StateObserver enabledState) {
     final JCheckBox box = inputComponents.createCheckBox(attribute,
             getEditModel().value(attribute), enabledState, includeCaption);
     if (transferFocusOnEnter) {
@@ -714,7 +715,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the attribute
    */
   protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute) {
-    return createNullableCheckBox(attribute, null);
+    return createNullableCheckBox(attribute, (StateObserver) null);
   }
 
   /**
@@ -724,18 +725,28 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a NullableCheckBox bound to the attribute
    */
   protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
-    return createNullableCheckBox(attribute, enabledState, IncludeCaption.YES);
+    return createNullableCheckBox(attribute, IncludeCaption.YES, enabledState);
   }
 
   /**
    * Creates a NullableCheckBox bound to {@code attribute}
    * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
    * @return a NullableCheckBox bound to the attribute
    */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState,
-                                                          final IncludeCaption includeCaption) {
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption) {
+    return createNullableCheckBox(attribute, includeCaption, null);
+  }
+
+  /**
+   * Creates a NullableCheckBox bound to {@code attribute}
+   * @param attribute the attribute to bind
+   * @param includeCaption specifies whether or not the caption should be included
+   * @param enabledState a state for controlling the enabled state of the component
+   * @return a NullableCheckBox bound to the attribute
+   */
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption,
+                                                          final StateObserver enabledState) {
     final NullableCheckBox box = inputComponents.createNullableCheckBox(attribute,
             getEditModel().value(attribute), enabledState, includeCaption);
     if (transferFocusOnEnter) {

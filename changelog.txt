@@ -7042,3 +7042,4 @@
   EntityApplicationPanel.getFrameTitle() now adds version info if available
   Gradle run tasks moved from run group to application
   Entity application panel sets the application version as a system property, so that it appears automatically in exception dialogs
+  EntityEditComponentPanel.createNullableCheck() overloaded, createCheckBox() parameter reordering

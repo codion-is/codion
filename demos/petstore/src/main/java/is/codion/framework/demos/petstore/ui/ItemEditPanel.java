@@ -40,7 +40,7 @@ public class ItemEditPanel extends EntityEditPanel {
     addressBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
     createTextField(Item.IMAGE_URL).setColumns(14);
     createTextField(Item.IMAGE_THUMB_URL).setColumns(14);
-    createNullableCheckBox(Item.DISABLED, null, IncludeCaption.NO);
+    createNullableCheckBox(Item.DISABLED, IncludeCaption.NO);
 
     setLayout(Layouts.flexibleGridLayout(3, 3));
     addInputPanel(Item.PRODUCT_FK);
