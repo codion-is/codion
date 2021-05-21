@@ -4,6 +4,7 @@ module is.codion.swing.framework.ui {
   requires transitive is.codion.swing.common.ui;
 
   exports is.codion.swing.framework.ui;
+  exports is.codion.swing.framework.ui.component;
   exports is.codion.swing.framework.ui.icons;
 
   uses is.codion.swing.framework.ui.icons.FrameworkIcons;
