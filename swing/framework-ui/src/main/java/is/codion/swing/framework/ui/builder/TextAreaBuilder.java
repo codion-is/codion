@@ -3,35 +3,14 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JTextArea;
-import java.awt.Dimension;
-import java.util.function.Consumer;
 
 /**
  * Builds a JTextArea.
  */
-public interface TextAreaBuilder extends ComponentBuilder<String, JTextArea> {
-
-  @Override
-  TextAreaBuilder preferredHeight(int preferredHeight);
-
-  @Override
-  TextAreaBuilder preferredWidth(int preferredWidth);
-
-  @Override
-  TextAreaBuilder preferredSize(Dimension preferredSize);
-
-  @Override
-  TextAreaBuilder transferFocusOnEnter(boolean transferFocusOnEnter);
-
-  @Override
-  TextAreaBuilder enabledState(StateObserver enabledState);
-
-  @Override
-  TextAreaBuilder onBuild(Consumer<JTextArea> onBuild);
+public interface TextAreaBuilder extends ComponentBuilder<String, JTextArea, TextAreaBuilder> {
 
   /**
    * @param updateOn specifies when the underlying value should be updated

@@ -13,44 +13,45 @@ import java.util.function.Consumer;
  * Builds a JComponent
  * @param <V> the type of the value the component represents
  * @param <T> the component type
+ * @param <B> the builder type
  */
-public interface ComponentBuilder<V, T extends JComponent> {
+public interface ComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T, B>> {
 
   /**
    * @param preferredHeight the preferred component height
    * @return this builder instance
    */
-  ComponentBuilder<V, T> preferredHeight(int preferredHeight);
+  B preferredHeight(int preferredHeight);
 
   /**
    * @param preferredWidth the preferred component width
    * @return this builder instance
    */
-  ComponentBuilder<V, T> preferredWidth(int preferredWidth);
+  B preferredWidth(int preferredWidth);
 
   /**
    * @param preferredSize the preferred component size
    * @return this builder instance
    */
-  ComponentBuilder<V, T> preferredSize(Dimension preferredSize);
+  B preferredSize(Dimension preferredSize);
 
   /**
    * @param transferFocusOnEnter true if the component should transfer focus on Enter
    * @return this builder instance
    */
-  ComponentBuilder<V, T> transferFocusOnEnter(boolean transferFocusOnEnter);
+  B transferFocusOnEnter(boolean transferFocusOnEnter);
 
   /**
    * @param enabledState the state controlling the component enabled status
    * @return this builder instance
    */
-  ComponentBuilder<V, T> enabledState(StateObserver enabledState);
+  B enabledState(StateObserver enabledState);
 
   /**
    * @param onBuild called after the component is built
    * @return this builder instance
    */
-  ComponentBuilder<V, T> onBuild(Consumer<T> onBuild);
+  B onBuild(Consumer<T> onBuild);
 
   /**
    * Builds the component.

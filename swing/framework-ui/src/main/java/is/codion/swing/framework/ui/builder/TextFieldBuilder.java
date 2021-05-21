@@ -3,37 +3,16 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
-import java.awt.Dimension;
-import java.util.function.Consumer;
 
 /**
  * Builds a JTextField.
  * @param <T> the type the text field represents
  */
-public interface TextFieldBuilder<T> extends ComponentBuilder<T, JTextField> {
-
-  @Override
-  TextFieldBuilder<T> preferredHeight(int preferredHeight);
-
-  @Override
-  TextFieldBuilder<T> preferredWidth(int preferredWidth);
-
-  @Override
-  TextFieldBuilder<T> preferredSize(Dimension preferredSize);
-
-  @Override
-  TextFieldBuilder<T> transferFocusOnEnter(boolean transferFocusOnEnter);
-
-  @Override
-  TextFieldBuilder<T> enabledState(StateObserver enabledState);
-
-  @Override
-  TextFieldBuilder<T> onBuild(Consumer<JTextField> onBuild);
+public interface TextFieldBuilder<T> extends ComponentBuilder<T, JTextField, TextFieldBuilder<T>> {
 
   /**
    * @param updateOn specifies when the underlying value should be updated

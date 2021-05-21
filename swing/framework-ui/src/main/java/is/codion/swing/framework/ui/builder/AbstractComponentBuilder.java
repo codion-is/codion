@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T>> implements ComponentBuilder<V, T> {
+abstract class AbstractComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T, B>> implements ComponentBuilder<V, T, B> {
 
   protected final Property<V> property;
   protected final Value<V> value;
@@ -26,8 +26,8 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   protected Consumer<T> onBuild;
 
   protected AbstractComponentBuilder(final Property<V> attribute, final Value<V> value) {
-    this.property = attribute;
-    this.value = value;
+    this.property = requireNonNull(attribute);
+    this.value = requireNonNull(value);
   }
 
   @Override
