@@ -20,14 +20,13 @@ import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
-import java.awt.Dimension;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
-import java.util.function.Consumer;
 
-final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JTextField> implements TextFieldBuilder<T> {
+final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JTextField, TextFieldBuilder<T>>
+        implements TextFieldBuilder<T> {
 
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int columns;
@@ -38,39 +37,6 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
 
   DefaultTextFieldBuilder(final Property<T> attribute, final Value<T> value) {
     super(attribute, value);
-  }
-
-  @Override
-  public TextFieldBuilder<T> preferredHeight(final int preferredHeight) {
-    return (TextFieldBuilder<T>) super.preferredHeight(preferredHeight);
-  }
-
-  @Override
-  public TextFieldBuilder<T> preferredWidth(final int preferredWidth) {
-    return (TextFieldBuilder<T>) super.preferredWidth(preferredWidth);
-  }
-
-  @Override
-  public TextFieldBuilder<T> preferredSize(final Dimension preferredSize) {
-    return (TextFieldBuilder<T>) super.preferredSize(preferredSize);
-  }
-
-  @Override
-  public TextFieldBuilder<T> transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    if (action != null) {
-      throw new IllegalStateException("Action has already been set");
-    }
-    return (TextFieldBuilder<T>) super.transferFocusOnEnter(transferFocusOnEnter);
-  }
-
-  @Override
-  public TextFieldBuilder<T> enabledState(final StateObserver enabledState) {
-    return (TextFieldBuilder<T>) super.enabledState(enabledState);
-  }
-
-  @Override
-  public TextFieldBuilder<T> onBuild(final Consumer<JTextField> onBuild) {
-    return (TextFieldBuilder<T>) super.onBuild(onBuild);
   }
 
   @Override

@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
@@ -12,46 +11,15 @@ import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JCheckBox;
-import java.awt.Dimension;
-import java.util.function.Consumer;
 
-final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCheckBox> implements CheckBoxBuilder {
+final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCheckBox, CheckBoxBuilder>
+        implements CheckBoxBuilder {
 
   private boolean includeCaption;
   private boolean nullable = false;
 
   DefaultCheckBoxBuilder(final Property<Boolean> attribute, final Value<Boolean> value) {
     super(attribute, value);
-  }
-
-  @Override
-  public CheckBoxBuilder preferredHeight(final int preferredHeight) {
-    return (CheckBoxBuilder) super.preferredHeight(preferredHeight);
-  }
-
-  @Override
-  public CheckBoxBuilder preferredWidth(final int preferredWidth) {
-    return (CheckBoxBuilder) super.preferredWidth(preferredWidth);
-  }
-
-  @Override
-  public CheckBoxBuilder preferredSize(final Dimension preferredSize) {
-    return (CheckBoxBuilder) super.preferredSize(preferredSize);
-  }
-
-  @Override
-  public CheckBoxBuilder transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    return (CheckBoxBuilder) super.transferFocusOnEnter(transferFocusOnEnter);
-  }
-
-  @Override
-  public CheckBoxBuilder enabledState(final StateObserver enabledState) {
-    return (CheckBoxBuilder) super.enabledState(enabledState);
-  }
-
-  @Override
-  public CheckBoxBuilder onBuild(final Consumer<JCheckBox> onBuild) {
-    return (CheckBoxBuilder) super.onBuild(onBuild);
   }
 
   @Override

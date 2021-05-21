@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractComponentBuilder<V, T extends JComponent> implements ComponentBuilder<V, T> {
+abstract class AbstractComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T>> implements ComponentBuilder<V, T> {
 
   protected final Property<V> property;
   protected final Value<V> value;
@@ -31,41 +31,41 @@ abstract class AbstractComponentBuilder<V, T extends JComponent> implements Comp
   }
 
   @Override
-  public ComponentBuilder<V, T> preferredHeight(final int preferredHeight) {//todo return type
+  public final B preferredHeight(final int preferredHeight) {
     this.preferredHeight = preferredHeight;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComponentBuilder<V, T> preferredWidth(final int preferredWidth) {
+  public final B preferredWidth(final int preferredWidth) {
     this.preferredWidth = preferredWidth;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComponentBuilder<V, T> preferredSize(final Dimension preferredSize) {
+  public final B preferredSize(final Dimension preferredSize) {
     requireNonNull(preferredSize);
     this.preferredHeight = preferredSize.height;
     this.preferredWidth = preferredSize.width;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComponentBuilder<V, T> transferFocusOnEnter(final boolean transferFocusOnEnter) {
+  public final B transferFocusOnEnter(final boolean transferFocusOnEnter) {
     this.transferFocusOnEnter = transferFocusOnEnter;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComponentBuilder<V, T> enabledState(final StateObserver enabledState) {
+  public final B enabledState(final StateObserver enabledState) {
     this.enabledState = enabledState;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComponentBuilder<V, T> onBuild(final Consumer<T> onBuild) {
+  public final B onBuild(final Consumer<T> onBuild) {
     this.onBuild = onBuild;
-    return this;
+    return (B) this;
   }
 
   protected final void setPreferredSize(final T component) {

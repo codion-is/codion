@@ -7016,3 +7016,4 @@
   EntityEditComponentPanel, Builder suffix removed from builder factory methods
   EntityInputComponents moved to builder package, major refactoring, helper methods moved to relevant builder classes
   EntityInputComponents builders moved up to package level
+  AbstractComponentBuilder generics magic used to prevent ugly overrides in subclasses

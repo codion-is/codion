@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -13,10 +12,9 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 
 import javax.swing.JComponent;
-import java.awt.Dimension;
-import java.util.function.Consumer;
 
-final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<Entity, EntityComboBox> implements ForeignKeyComboBoxBuilder {
+final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<Entity, EntityComboBox, ForeignKeyComboBoxBuilder>
+        implements ForeignKeyComboBoxBuilder {
 
   private final SwingEntityComboBoxModel comboBoxModel;
   private int popupWidth;
@@ -25,36 +23,6 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
                                    final SwingEntityComboBoxModel comboBoxModel) {
     super(foreignKey, value);
     this.comboBoxModel = comboBoxModel;
-  }
-
-  @Override
-  public ForeignKeyComboBoxBuilder preferredHeight(final int preferredHeight) {
-    return (ForeignKeyComboBoxBuilder) super.preferredHeight(preferredHeight);
-  }
-
-  @Override
-  public ForeignKeyComboBoxBuilder preferredWidth(final int preferredWidth) {
-    return (ForeignKeyComboBoxBuilder) super.preferredWidth(preferredWidth);
-  }
-
-  @Override
-  public ForeignKeyComboBoxBuilder preferredSize(final Dimension preferredSize) {
-    return (ForeignKeyComboBoxBuilder) super.preferredSize(preferredSize);
-  }
-
-  @Override
-  public ForeignKeyComboBoxBuilder transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    return (ForeignKeyComboBoxBuilder) super.transferFocusOnEnter(transferFocusOnEnter);
-  }
-
-  @Override
-  public ForeignKeyComboBoxBuilder enabledState(final StateObserver enabledState) {
-    return (ForeignKeyComboBoxBuilder) super.enabledState(enabledState);
-  }
-
-  @Override
-  public ForeignKeyComboBoxBuilder onBuild(final Consumer<EntityComboBox> onBuild) {
-    return (ForeignKeyComboBoxBuilder) super.onBuild(onBuild);
   }
 
   @Override

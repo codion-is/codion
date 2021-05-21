@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.Components;
@@ -12,14 +11,12 @@ import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
-import java.awt.Dimension;
 import java.time.temporal.Temporal;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTemporalInputPanelBuiler<T extends Temporal> extends AbstractComponentBuilder<T,
-        TemporalInputPanel<T>>
+final class DefaultTemporalInputPanelBuiler<T extends Temporal>
+        extends AbstractComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>>
         implements TemporalInputPanelBuilder<T> {
 
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
@@ -28,36 +25,6 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal> extends Abstract
 
   DefaultTemporalInputPanelBuiler(final Property<T> attribute, final Value<T> value) {
     super(attribute, value);
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> preferredHeight(final int preferredHeight) {
-    return (TemporalInputPanelBuilder<T>) super.preferredHeight(preferredHeight);
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> preferredWidth(final int preferredWidth) {
-    return (TemporalInputPanelBuilder<T>) super.preferredWidth(preferredWidth);
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> preferredSize(final Dimension preferredSize) {
-    return (TemporalInputPanelBuilder<T>) super.preferredSize(preferredSize);
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    return (TemporalInputPanelBuilder<T>) super.transferFocusOnEnter(transferFocusOnEnter);
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> enabledState(final StateObserver enabledState) {
-    return (TemporalInputPanelBuilder<T>) super.enabledState(enabledState);
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> onBuild(final Consumer<TemporalInputPanel<T>> onBuild) {
-    return (TemporalInputPanelBuilder<T>) super.onBuild(onBuild);
   }
 
   @Override

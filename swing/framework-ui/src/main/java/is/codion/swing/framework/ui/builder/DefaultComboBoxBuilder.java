@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.Components;
@@ -14,10 +13,9 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import java.awt.Dimension;
-import java.util.function.Consumer;
 
-final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<T>> implements ComboBoxBuilder<T> {
+final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<T>, ComboBoxBuilder<T>>
+        implements ComboBoxBuilder<T> {
 
   private final ComboBoxModel<T> comboBoxModel;
   private boolean editable = false;
@@ -26,36 +24,6 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
                          final ComboBoxModel<T> comboBoxModel) {
     super(attribute, value);
     this.comboBoxModel = comboBoxModel;
-  }
-
-  @Override
-  public ComboBoxBuilder<T> preferredHeight(final int preferredHeight) {
-    return (ComboBoxBuilder<T>) super.preferredHeight(preferredHeight);
-  }
-
-  @Override
-  public ComboBoxBuilder<T> preferredWidth(final int preferredWidth) {
-    return (ComboBoxBuilder<T>) super.preferredWidth(preferredWidth);
-  }
-
-  @Override
-  public ComboBoxBuilder<T> preferredSize(final Dimension preferredSize) {
-    return (ComboBoxBuilder<T>) super.preferredSize(preferredSize);
-  }
-
-  @Override
-  public ComboBoxBuilder<T> transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    return (ComboBoxBuilder<T>) super.transferFocusOnEnter(transferFocusOnEnter);
-  }
-
-  @Override
-  public ComboBoxBuilder<T> enabledState(final StateObserver enabledState) {
-    return (ComboBoxBuilder<T>) super.enabledState(enabledState);
-  }
-
-  @Override
-  public ComboBoxBuilder<T> onBuild(final Consumer<SteppedComboBox<T>> onBuild) {
-    return (ComboBoxBuilder<T>) super.onBuild(onBuild);
   }
 
   @Override

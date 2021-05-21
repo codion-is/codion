@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.builder;
 
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
@@ -11,15 +10,15 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.ui.EntitySearchField;
 
-import java.awt.Dimension;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField> implements ForeignKeySearchFieldBuilder {
+final class DefaultForeignKeySearchFieldBuilder
+        extends AbstractComponentBuilder<Entity, EntitySearchField, ForeignKeySearchFieldBuilder>
+        implements ForeignKeySearchFieldBuilder {
 
   private final EntitySearchModel searchModel;
   private int columns;
@@ -29,36 +28,6 @@ final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder
                                       final EntitySearchModel searchModel) {
     super(attribute, value);
     this.searchModel = searchModel;
-  }
-
-  @Override
-  public ForeignKeySearchFieldBuilder preferredHeight(final int preferredHeight) {
-    return (ForeignKeySearchFieldBuilder) super.preferredHeight(preferredHeight);
-  }
-
-  @Override
-  public ForeignKeySearchFieldBuilder preferredWidth(final int preferredWidth) {
-    return (ForeignKeySearchFieldBuilder) super.preferredWidth(preferredWidth);
-  }
-
-  @Override
-  public ForeignKeySearchFieldBuilder preferredSize(final Dimension preferredSize) {
-    return (ForeignKeySearchFieldBuilder) super.preferredSize(preferredSize);
-  }
-
-  @Override
-  public ForeignKeySearchFieldBuilder transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    return (ForeignKeySearchFieldBuilder) super.transferFocusOnEnter(transferFocusOnEnter);
-  }
-
-  @Override
-  public ForeignKeySearchFieldBuilder enabledState(final StateObserver enabledState) {
-    return (ForeignKeySearchFieldBuilder) super.enabledState(enabledState);
-  }
-
-  @Override
-  public ForeignKeySearchFieldBuilder onBuild(final Consumer<EntitySearchField> onBuild) {
-    return (ForeignKeySearchFieldBuilder) super.onBuild(onBuild);
   }
 
   @Override
