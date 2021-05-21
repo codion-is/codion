@@ -57,18 +57,20 @@ public class StoreDatabase {
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.getEntities();
 
-    Entity customer = entities.entity(Customer.TYPE);
-    customer.put(Customer.FIRST_NAME, "Peter");
-    customer.put(Customer.LAST_NAME, "Jackson");
+    Entity customer = entities.builder(Customer.TYPE)
+            .with(Customer.FIRST_NAME, "Peter")
+            .with(Customer.LAST_NAME, "Jackson")
+            .build();
 
     Key customerKey = connection.insert(customer);
     //select to get generated and default column values
     customer = connection.selectSingle(customerKey);
 
-    Entity address = entities.entity(Address.TYPE);
-    address.put(Address.CUSTOMER_FK, customer);
-    address.put(Address.STREET, "Elm st.");
-    address.put(Address.CITY, "Boston");
+    Entity address = entities.builder(Address.TYPE)
+            .with(Address.CUSTOMER_FK, customer)
+            .with(Address.STREET, "Elm st.")
+            .with(Address.CITY, "Boston")
+            .build();
 
     Key addressKey = connection.insert(address);
 

@@ -73,16 +73,13 @@ public final class WorldImplTest extends EntityTestUnit {
                                              Map<EntityType<?>, Entity> foreignKeyEntities)
           throws DatabaseException{
     if (entityType.equals(Country.TYPE)) {
-      Entity iceland = getEntities().entity(Country.TYPE);
-      iceland.put(Country.CODE, "ISL");
-
-      return iceland;
+      return getEntities().builder(Country.TYPE)
+              .with(Country.CODE, "ISL").build();
     }
     if (entityType.equals(City.TYPE)) {
-      Entity reykjavik = getEntities().entity(City.TYPE);
-      reykjavik.put(City.ID, 1449);
-
-      return reykjavik;
+      return getEntities().builder(City.TYPE)
+              .with(City.ID, 1449)
+              .build();
     }
 
     return super.initializeReferenceEntity(entityType, foreignKeyEntities);

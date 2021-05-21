@@ -7058,3 +7058,4 @@
   TextInputPanel now builder based
   EntityComponentValues refactored
   TemporalField now builder based
+  Entity.Builder added along with Entities.builder() factory method

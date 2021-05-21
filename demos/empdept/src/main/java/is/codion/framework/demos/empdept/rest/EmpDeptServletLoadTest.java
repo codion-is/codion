@@ -130,12 +130,11 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
         final int deptNo = new Random().nextInt(5000);
-        final Entity department = client.getEntities().entity(Department.TYPE);
-        department.put(Department.ID, deptNo);
-        department.put(Department.NAME, Text.randomString(4, 8));
-        department.put(Department.LOCATION, Text.randomString(5, 10));
-
-        client.getConnection().insert(department);
+        client.getConnection().insert(client.getEntities().builder(Department.TYPE)
+                .with(Department.ID, deptNo)
+                .with(Department.NAME, Text.randomString(4, 8))
+                .with(Department.LOCATION, Text.randomString(5, 10))
+                .build());
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
@@ -157,15 +156,14 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
       try {
         final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
         final Entity department = departments.get(random.nextInt(departments.size()));
-        final Entity employee = client.getEntities().entity(Employee.TYPE);
-        employee.put(Employee.DEPARTMENT_FK, department);
-        employee.put(Employee.NAME, Text.randomString(5, 10));
-        employee.put(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).getValue());
-        employee.put(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000));
-        employee.put(Employee.HIREDATE, LocalDate.now());
-        employee.put(Employee.COMMISSION, random.nextDouble() * 500);
-
-        client.getConnection().insert(employee);
+        client.getConnection().insert(client.getEntities().builder(Employee.TYPE)
+                .with(Employee.DEPARTMENT_FK, department)
+                .with(Employee.NAME, Text.randomString(5, 10))
+                .with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).getValue())
+                .with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
+                .with(Employee.HIREDATE, LocalDate.now())
+                .with(Employee.COMMISSION, random.nextDouble() * 500)
+                .build());
       }
       catch (final Exception e) {
         throw new ScenarioException(e);

@@ -112,29 +112,32 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     final Entities entities = deptModel.getEntities();
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
-    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, -10);
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere1");
-    dept.put(TestDomain.DEPARTMENT_NAME, "HELLO");
+    final Entity dept = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -10)
+            .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere1")
+            .with(TestDomain.DEPARTMENT_NAME, "HELLO")
+            .build();
     final int count = deptModel.getRowCount();
     deptModel.getEditModel().insert(singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
     assertEquals(dept, deptModel.getItems().get(deptModel.getRowCount() - 1));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_TOP_SORTED);
-    final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
-    dept2.put(TestDomain.DEPARTMENT_ID, -20);
-    dept2.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");
-    dept2.put(TestDomain.DEPARTMENT_NAME, "NONAME");
+    final Entity dept2 = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -20)
+            .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere2")
+            .with(TestDomain.DEPARTMENT_NAME, "NONAME")
+            .build();
     deptModel.getEditModel().insert(singletonList(dept2));
     assertEquals(count + 2, deptModel.getRowCount());
     assertEquals(dept2, deptModel.getItems().get(2));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
-    final Entity dept3 = entities.entity(TestDomain.T_DEPARTMENT);
-    dept3.put(TestDomain.DEPARTMENT_ID, -30);
-    dept3.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere3");
-    dept3.put(TestDomain.DEPARTMENT_NAME, "NONAME2");
+    final Entity dept3 = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -30)
+            .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere3")
+            .with(TestDomain.DEPARTMENT_NAME, "NONAME2")
+            .build();
     deptModel.getEditModel().insert(singletonList(dept3));
     assertEquals(count + 2, deptModel.getRowCount());
 
@@ -386,11 +389,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final List<Entity> testEntities = new ArrayList<>(5);
     final String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
     for (int i = 0; i < 5; i++) {
-      final Entity entity = entities.entity(TestDomain.T_DETAIL);
-      entity.put(TestDomain.DETAIL_ID, (long) i + 1);
-      entity.put(TestDomain.DETAIL_INT, i + 1);
-      entity.put(TestDomain.DETAIL_STRING, stringValues[i]);
-      testEntities.add(entity);
+      testEntities.add(entities.builder(TestDomain.T_DETAIL)
+              .with(TestDomain.DETAIL_ID, (long) i + 1)
+              .with(TestDomain.DETAIL_INT, i + 1)
+              .with(TestDomain.DETAIL_STRING, stringValues[i])
+              .build());
     }
 
     return testEntities;
