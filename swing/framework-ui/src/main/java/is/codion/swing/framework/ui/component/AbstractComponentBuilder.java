@@ -22,6 +22,7 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
 
   private final Event<T> buildEvent = Event.event();
 
+  private boolean focusable = true;
   private int preferredHeight;
   private int preferredWidth;
   private boolean transferFocusOnEnter;
@@ -30,6 +31,12 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   protected AbstractComponentBuilder(final Property<V> attribute, final Value<V> value) {
     this.property = requireNonNull(attribute);
     this.value = requireNonNull(value);
+  }
+
+  @Override
+  public final B focusable(final boolean focusable) {
+    this.focusable = focusable;
+    return (B) this;
   }
 
   @Override
@@ -76,6 +83,7 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
    */
   public final T build() {
     final T component = buildComponent();
+    component.setFocusable(focusable);
     setPreferredSize(component);
     setDescriptionAndEnabledState(component);
     if (transferFocusOnEnter) {
