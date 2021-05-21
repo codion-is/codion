@@ -100,7 +100,8 @@ public class StringValuesTest {
     SizedDocument document = new SizedDocument();
     document.setMaximumLength(5);
 
-    TextInputPanel inputPanel = new TextInputPanel(new JTextField(document, value, 0), "none");
+    TextInputPanel inputPanel = TextInputPanel.builder(new JTextField(document, value, 0))
+            .dialogTitle("none").build();
 
     ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textInputPanel(inputPanel);
     assertEquals(value, componentValue.get());

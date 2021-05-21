@@ -56,8 +56,11 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
             .updateOn(updateOn)
             .columns(columns)
             .build();
-    final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), textAreaSize,
-            buttonFocusable ? TextInputPanel.ButtonFocusable.YES : TextInputPanel.ButtonFocusable.NO);
+    final TextInputPanel panel = TextInputPanel.builder(field)
+            .dialogTitle(property.getCaption())
+            .textAreaSize(textAreaSize)
+            .buttonFocusable(buttonFocusable)
+            .build();
     panel.setMaximumLength(property.getMaximumLength());
 
     return panel;

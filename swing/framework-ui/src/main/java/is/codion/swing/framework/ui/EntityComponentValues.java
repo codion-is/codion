@@ -103,14 +103,16 @@ public class EntityComponentValues {
               .build();
     }
     if (attribute.isCharacter()) {
-      final TextInputPanel textInputPanel =
-              new TextInputPanel(createTextField((Character) initialValue, 1), property.getCaption());
+      final TextInputPanel textInputPanel = TextInputPanel.builder(createTextField((Character) initialValue, 1))
+              .dialogTitle(property.getCaption())
+              .build();
 
       return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
     }
     if (attribute.isString()) {
-      final TextInputPanel textInputPanel =
-              new TextInputPanel(createTextField((String) initialValue, property.getMaximumLength()), property.getCaption());
+      final TextInputPanel textInputPanel = TextInputPanel.builder(createTextField((String) initialValue, property.getMaximumLength()))
+              .dialogTitle(property.getCaption())
+              .build();
 
       return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
     }

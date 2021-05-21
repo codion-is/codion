@@ -30,7 +30,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
 
   private boolean editable = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  private int columns;
+  private int columns;//todo default columns configuration value
   private Action action;
   private boolean selectAllOnFocusGained;
   private boolean upperCase;
