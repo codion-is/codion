@@ -20,34 +20,34 @@ public class EmployeeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Employee.FIRSTNAME);
 
-    textField(Employee.FIRSTNAME)
+    createTextField(Employee.FIRSTNAME)
             .columns(16);
-    textField(Employee.LASTNAME)
+    createTextField(Employee.LASTNAME)
             .columns(16);
-    temporalInputPanel(Employee.BIRTHDATE)
+    createTemporalInputPanel(Employee.BIRTHDATE)
             .columns(16);
-    textField(Employee.ADDRESS)
+    createTextField(Employee.ADDRESS)
             .columns(16);
-    textField(Employee.CITY)
+    createTextField(Employee.CITY)
             .columns(16);
-    textField(Employee.STATE)
+    createTextField(Employee.STATE)
             .columns(16)
             .upperCase();
-    textField(Employee.COUNTRY)
+    createTextField(Employee.COUNTRY)
             .columns(16);
-    textField(Employee.POSTALCODE)
+    createTextField(Employee.POSTALCODE)
             .columns(16);
-    textField(Employee.PHONE)
+    createTextField(Employee.PHONE)
             .columns(16);
-    textField(Employee.FAX)
+    createTextField(Employee.FAX)
             .columns(16);
-    textField(Employee.EMAIL)
+    createTextField(Employee.EMAIL)
             .columns(16);
-    foreignKeyComboBox(Employee.REPORTSTO_FK)
+    createForeignKeyComboBox(Employee.REPORTSTO_FK)
             .preferredHeight(getPreferredTextFieldHeight());
-    temporalInputPanel(Employee.HIREDATE)
+    createTemporalInputPanel(Employee.HIREDATE)
             .columns(16);
-    textField(Employee.TITLE)
+    createTextField(Employee.TITLE)
             .columns(16);
 
     setLayout(flexibleGridLayout(4, 4));

@@ -23,25 +23,25 @@ public class ItemEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Item.PRODUCT_FK);
 
-    foreignKeyComboBox(Item.PRODUCT_FK);
-    textField(Item.NAME).columns(12);
-    textInputPanel(Item.DESCRIPTION)
+    createForeignKeyComboBox(Item.PRODUCT_FK);
+    createTextField(Item.NAME).columns(12);
+    createTextInputPanel(Item.DESCRIPTION)
             .columns(14)
             .buttonFocusable(false);
-    textField(Item.PRICE);
-    final EntityComboBox contactInfoBox = foreignKeyComboBox(Item.CONTACT_INFO_FK)
+    createTextField(Item.PRICE);
+    final EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)
             .preferredWidth(140)
             .popupWidth(200)
             .build();
-    final EntityComboBox addressBox = foreignKeyComboBox(Item.ADDRESS_FK)
+    final EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK)
             .preferredSize(TextFields.getPreferredTextFieldSize())
             .popupWidth(200)
             .build();
-    textField(Item.IMAGE_URL)
+    createTextField(Item.IMAGE_URL)
             .columns(14);
-    textField(Item.IMAGE_THUMB_URL)
+    createTextField(Item.IMAGE_THUMB_URL)
             .columns(14);
-    checkBox(Item.DISABLED)
+    createCheckBox(Item.DISABLED)
             .nullable(true)
             .includeCaption(false);
 

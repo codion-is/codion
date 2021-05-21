@@ -29,22 +29,22 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Country.CODE);
 
-    textField(Country.CODE).upperCase().columns(12);
-    textField(Country.CODE_2).upperCase().columns(12);
-    textField(Country.NAME).columns(12);
-    valueListComboBox(Country.CONTINENT).preferredWidth(120);
-    attributeComboBox(Country.REGION).preferredWidth(120);
-    textField(Country.SURFACEAREA);
-    textField(Country.INDEPYEAR);
-    textField(Country.POPULATION);
-    textField(Country.LIFE_EXPECTANCY);
-    textField(Country.GNP);
-    textField(Country.GNPOLD);
-    textField(Country.LOCALNAME).columns(12);
-    attributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true);
-    textField(Country.HEADOFSTATE).columns(12);
+    createTextField(Country.CODE).upperCase().columns(12);
+    createTextField(Country.CODE_2).upperCase().columns(12);
+    createTextField(Country.NAME).columns(12);
+    createValueListComboBox(Country.CONTINENT).preferredWidth(120);
+    createAttributeComboBox(Country.REGION).preferredWidth(120);
+    createTextField(Country.SURFACEAREA);
+    createTextField(Country.INDEPYEAR);
+    createTextField(Country.POPULATION);
+    createTextField(Country.LIFE_EXPECTANCY);
+    createTextField(Country.GNP);
+    createTextField(Country.GNPOLD);
+    createTextField(Country.LOCALNAME).columns(12);
+    createAttributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true);
+    createTextField(Country.HEADOFSTATE).columns(12);
     EntityComboBox capitalComboBox =
-            foreignKeyComboBox(Country.CAPITAL_FK)
+            createForeignKeyComboBox(Country.CAPITAL_FK)
                     .preferredWidth(120)
                     .build();
     //create a panel with a button for adding a new city

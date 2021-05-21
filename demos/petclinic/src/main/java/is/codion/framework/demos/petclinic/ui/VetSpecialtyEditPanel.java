@@ -25,8 +25,8 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(VetSpecialty.VET_FK);
 
-    foreignKeyComboBox(VetSpecialty.VET_FK);
-    EntityComboBox specialtyComboBox = foreignKeyComboBox(VetSpecialty.SPECIALTY_FK).build();
+    createForeignKeyComboBox(VetSpecialty.VET_FK);
+    EntityComboBox specialtyComboBox = createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK).build();
 
     Action newSpecialtyAction = EntityPanel.builder(VetSpecialty.TYPE)
             .editPanelClass(VetSpecialtyEditPanel.class)

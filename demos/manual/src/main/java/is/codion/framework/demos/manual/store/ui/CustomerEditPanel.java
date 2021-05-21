@@ -21,13 +21,13 @@ public class CustomerEditPanel extends EntityEditPanel {
     //the firstName field should receive the focus whenever the panel is initialized
     setInitialFocusAttribute(Customer.FIRST_NAME);
 
-    textField(Customer.FIRST_NAME)
+    createTextField(Customer.FIRST_NAME)
             .columns(15);
-    textField(Customer.LAST_NAME)
+    createTextField(Customer.LAST_NAME)
             .columns(15);
-    textField(Customer.EMAIL)
+    createTextField(Customer.EMAIL)
             .columns(15);
-    checkBox(Customer.IS_ACTIVE)
+    createCheckBox(Customer.IS_ACTIVE)
             .includeCaption(false);
 
     setLayout(new GridLayout(4,1));

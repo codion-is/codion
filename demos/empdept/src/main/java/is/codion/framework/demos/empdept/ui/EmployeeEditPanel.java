@@ -34,15 +34,15 @@ public class EmployeeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Employee.NAME);
 
-    textField(Employee.NAME)
+    createTextField(Employee.NAME)
             .columns(8)
             .upperCase();
-    valueListComboBox(Employee.JOB);
-    foreignKeyComboBox(Employee.MGR_FK)
+    createValueListComboBox(Employee.JOB);
+    createForeignKeyComboBox(Employee.MGR_FK)
             .preferredSize(getPreferredTextFieldSize());
-    textField(Employee.SALARY);
-    textField(Employee.COMMISSION);
-    temporalInputPanel(Employee.HIREDATE)
+    createTextField(Employee.SALARY);
+    createTextField(Employee.COMMISSION);
+    createTemporalInputPanel(Employee.HIREDATE)
             .calendarButton(true);
 
     setLayout(flexibleGridLayout(3, 3, FixRowHeights.YES, FixColumnWidths.NO));
@@ -61,7 +61,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
   }
 
   private JPanel initializeDepartmentPanel() {
-    final EntityComboBox departmentBox = foreignKeyComboBox(Employee.DEPARTMENT_FK).build();
+    final EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
     final IntegerField departmentIdField = departmentBox.integerFieldSelector(Department.ID);
     transferFocusOnEnter(departmentIdField);
 

@@ -20,9 +20,9 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(PlaylistTrack.PLAYLIST_FK);
 
-    foreignKeyComboBox(PlaylistTrack.PLAYLIST_FK)
+    createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK)
             .preferredHeight(getPreferredTextFieldHeight());
-    foreignKeySearchField(PlaylistTrack.TRACK_FK)
+    createForeignKeySearchField(PlaylistTrack.TRACK_FK)
             .selectionProviderFactory(TrackSelectionProvider::new)
             .columns(30);
 

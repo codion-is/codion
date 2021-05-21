@@ -66,17 +66,17 @@ public final class EntityEditPanels {
     private void booleanValue() {
       // tag::booleanValue[]
       JCheckBox checkBox =
-              checkBox(Demo.BOOLEAN)
+              createCheckBox(Demo.BOOLEAN)
                       .includeCaption(false)
                       .build();
 
       NullableCheckBox nullableCheckBox =
-              (NullableCheckBox) checkBox(Demo.BOOLEAN)
+              (NullableCheckBox) createCheckBox(Demo.BOOLEAN)
                       .nullable(true)
                       .build();
 
       JComboBox<Item<Boolean>> comboBox =
-              booleanComboBox(Demo.BOOLEAN)
+              createBooleanComboBox(Demo.BOOLEAN)
                       .build();
       // end::booleanValue[]
     }
@@ -84,16 +84,16 @@ public final class EntityEditPanels {
     private void foreignKeyValue() {
       // tag::foreignKeyValue[]
       EntityComboBox comboBox =
-              foreignKeyComboBox(Demo.FOREIGN_KEY)
+              createForeignKeyComboBox(Demo.FOREIGN_KEY)
                       .build();
 
       EntitySearchField searchField =
-              foreignKeySearchField(Demo.FOREIGN_KEY)
+              createForeignKeySearchField(Demo.FOREIGN_KEY)
                       .build();
 
       //readOnly
       JTextField textField =
-              foreignKeyField(Demo.FOREIGN_KEY)
+              createForeignKeyField(Demo.FOREIGN_KEY)
                       .build();
       // end::foreignKeyValue[]
     }
@@ -101,11 +101,11 @@ public final class EntityEditPanels {
     private void temporalValue() {
       // tag::temporalValue[]
       JTextField textField =
-              textField(Demo.LOCAL_DATE)
+              createTextField(Demo.LOCAL_DATE)
                       .build();
 
       TemporalInputPanel<LocalDate> inputPanel =
-              temporalInputPanel(Demo.LOCAL_DATE)
+              createTemporalInputPanel(Demo.LOCAL_DATE)
                       .build();
       // end::temporalValue[]
     }
@@ -113,19 +113,19 @@ public final class EntityEditPanels {
     private void numericalValue() {
       // tag::numericalValue[]
       IntegerField integerField =
-              (IntegerField) textField(Demo.INTEGER)
+              (IntegerField) createTextField(Demo.INTEGER)
                       .build();
 
       LongField longField =
-              (LongField) textField(Demo.LONG)
+              (LongField) createTextField(Demo.LONG)
                       .build();
 
       DoubleField doubleField =
-              (DoubleField) textField(Demo.DOUBLE)
+              (DoubleField) createTextField(Demo.DOUBLE)
                       .build();
 
       BigDecimalField bigDecimalField =
-              (BigDecimalField) textField(Demo.BIG_DECIMAL)
+              (BigDecimalField) createTextField(Demo.BIG_DECIMAL)
                       .build();
       // end::numericalValue[]
     }
@@ -133,20 +133,20 @@ public final class EntityEditPanels {
     private void textValue() {
       // tag::textValue[]
       JTextField textField =
-              textField(Demo.TEXT)
+              createTextField(Demo.TEXT)
                       .build();
 
       JTextArea textArea =
-              textArea(Demo.LONG_TEXT)
+              createTextArea(Demo.LONG_TEXT)
                       .rows(5).columns(20)
                       .build();
 
       TextInputPanel inputPanel =
-              textInputPanel(Demo.LONG_TEXT)
+              createTextInputPanel(Demo.LONG_TEXT)
                       .build();
 
       JFormattedTextField formattedField =
-              formattedTextField(Demo.FORMATTED_TEXT)
+              createFormattedTextField(Demo.FORMATTED_TEXT)
                       .formatMaskString("###:###")
                       .valueContainsLiterals(true)
                       .build();
@@ -155,7 +155,7 @@ public final class EntityEditPanels {
 
     private void valueList() {
       // tag::valueList[]
-      SteppedComboBox<Item<String>> comboBox = valueListComboBox(Demo.VALUE_LIST)
+      SteppedComboBox<Item<String>> comboBox = createValueListComboBox(Demo.VALUE_LIST)
               .build();
       // end::valueList[]
     }
