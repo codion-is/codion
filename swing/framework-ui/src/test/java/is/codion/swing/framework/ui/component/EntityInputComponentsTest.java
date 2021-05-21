@@ -1,4 +1,4 @@
-package is.codion.swing.framework.ui;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.item.Item;
@@ -13,7 +13,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import is.codion.swing.framework.ui.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,16 +43,9 @@ public class EntityInputComponentsTest {
   }
 
   @Test
-  public void createNullableCheckBoxNonNullableBooleanProperty() {
-    assertThrows(IllegalArgumentException.class, () ->
-            inputComponents.createNullableCheckBox(TestDomain.DETAIL_BOOLEAN,
-                    editModel.value(TestDomain.DETAIL_BOOLEAN), null, IncludeCaption.YES));
-  }
-
-  @Test
   public void createCheckBox() {
     editModel.setDefaultValues();
-    final JCheckBox box = inputComponents.createCheckBox(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN));
+    final JCheckBox box = inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN)).build();
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
@@ -68,7 +61,11 @@ public class EntityInputComponentsTest {
   @Test
   public void createNullableCheckBox() {
     editModel.setDefaultValues();
-    final NullableCheckBox box = inputComponents.createNullableCheckBox(TestDomain.DETAIL_BOOLEAN_NULLABLE, editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE), null, IncludeCaption.NO);
+    final NullableCheckBox box = (NullableCheckBox) inputComponents
+            .checkBoxBuilder(TestDomain.DETAIL_BOOLEAN_NULLABLE, editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE))
+            .nullable(true)
+            .includeCaption(false)
+            .build();
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
@@ -86,7 +83,7 @@ public class EntityInputComponentsTest {
     editModel.setDefaultValues();
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
-            inputComponents.createBooleanComboBox(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN)).getModel();
+            inputComponents.booleanComboBoxBuilder(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN)).build().getModel();
     assertTrue(boxModel.getSelectedValue().getValue());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
@@ -97,8 +94,8 @@ public class EntityInputComponentsTest {
 
   @Test
   public void createValueListComboBox() {
-    final JComboBox<Item<Integer>> box = inputComponents.createValueListComboBox(TestDomain.DETAIL_INT_VALUE_LIST,
-            editModel.value(TestDomain.DETAIL_INT_VALUE_LIST));
+    final JComboBox<Item<Integer>> box = inputComponents.valueListComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST,
+            editModel.value(TestDomain.DETAIL_INT_VALUE_LIST)).build();
 
     assertNull(editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(1);
@@ -114,7 +111,8 @@ public class EntityInputComponentsTest {
   @Test
   public void createComboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
-    final JComboBox<Integer> box = inputComponents.createComboBox(TestDomain.DETAIL_INT, editModel.value(TestDomain.DETAIL_INT), boxModel);
+    final JComboBox<Integer> box = inputComponents.comboBoxBuilder(TestDomain.DETAIL_INT, editModel.value(TestDomain.DETAIL_INT),
+            boxModel).build();
 
     assertNull(editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(1);
@@ -130,7 +128,7 @@ public class EntityInputComponentsTest {
   @Test
   public void valueListComboBox() {
     final Value<Integer> value = Value.value();
-    final SteppedComboBox<Item<Integer>> comboBox = inputComponents.createValueListComboBox(TestDomain.DETAIL_INT_VALUE_LIST, value);
+    final SteppedComboBox<Item<Integer>> comboBox = inputComponents.valueListComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST, value).build();
     final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));

@@ -172,8 +172,8 @@ public final class EmpDeptMinimalApp {
     protected void initializeUI() {
       setInitialFocusAttribute(Department.DEPTNO);
 
-      createTextField(Department.DNAME);
-      createTextField(Department.LOC);
+      textField(Department.DNAME);
+      textField(Department.LOC);
 
       setLayout(new GridLayout(2, 1, 5, 5));
 
@@ -195,13 +195,13 @@ public final class EmpDeptMinimalApp {
     protected void initializeUI() {
       setInitialFocusAttribute(Employee.ENAME);
 
-      createTextField(Employee.ENAME);
-      createForeignKeyComboBox(Employee.DEPT_FK);
-      createTextField(Employee.JOB);
-      createForeignKeyComboBox(Employee.MGR_FK);
-      createTemporalInputPanel(Employee.HIREDATE);
-      createTextField(Employee.SAL);
-      createTextField(Employee.COMM);
+      textField(Employee.ENAME);
+      foreignKeyComboBox(Employee.DEPT_FK);
+      textField(Employee.JOB);
+      foreignKeyComboBox(Employee.MGR_FK);
+      temporalInputPanel(Employee.HIREDATE);
+      textField(Employee.SAL);
+      textField(Employee.COMM);
 
       setLayout(new GridLayout(4, 2, 5, 5));
 

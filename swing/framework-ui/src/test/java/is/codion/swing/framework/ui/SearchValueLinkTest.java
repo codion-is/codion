@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.component.EntityInputComponents;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,9 +29,10 @@ public class SearchValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final EntitySearchModel searchModel = inputComponents.createForeignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
+    final EntitySearchModel searchModel = inputComponents.foreignKeySearchFieldBuilder(TestDomain.EMP_DEPARTMENT_FK,
             model.value(TestDomain.EMP_DEPARTMENT_FK),
-            model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).getModel();
+            model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK))
+            .build().getModel();
     assertEquals(0, searchModel.getSelectedEntities().size());
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     model.put(TestDomain.EMP_DEPARTMENT_FK, department);

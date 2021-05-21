@@ -38,10 +38,10 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignEntityType, connectionProvider);
       comboBoxModel.refresh();
 
-      return getInputComponents().createForeignKeyComboBox(foreignKey, getCellValue(), comboBoxModel);
+      return getInputComponents().foreignKeyComboBoxBuilder(foreignKey, getCellValue(), comboBoxModel).build();
     }
 
-    return getInputComponents().createForeignKeySearchField(foreignKey, getCellValue(),
-            new DefaultEntitySearchModel(foreignEntityType, connectionProvider));
+    return getInputComponents().foreignKeySearchFieldBuilder(foreignKey, getCellValue(),
+            new DefaultEntitySearchModel(foreignEntityType, connectionProvider)).build();
   }
 }

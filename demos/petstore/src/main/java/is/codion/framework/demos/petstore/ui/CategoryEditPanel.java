@@ -19,9 +19,9 @@ public class CategoryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Category.NAME);
 
-    createTextField(Category.NAME).setColumns(10);
-    createTextField(Category.DESCRIPTION).setColumns(18);
-    createTextField(Category.IMAGE_URL);
+    textField(Category.NAME).columns(10);
+    textField(Category.DESCRIPTION).columns(18);
+    textField(Category.IMAGE_URL);
 
     setLayout(Layouts.flexibleGridLayout(2, 2));
     addInputPanel(Category.NAME);

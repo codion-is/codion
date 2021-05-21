@@ -12,6 +12,24 @@ import javax.swing.text.BadLocationException;
 public final class Completion {
 
   /**
+   * Identifies the completion mode MaximumMatch
+   * @see Completion#maximumMatch(JComboBox)
+   */
+  public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
+
+  /**
+   * Identifies the completion mode AutoCompletion
+   * @see Completion#autoComplete(JComboBox)
+   */
+  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
+
+  /**
+   * No completion.
+   * @see Completion#autoComplete(JComboBox)
+   */
+  public static final String COMPLETION_MODE_NONE = "none";
+
+  /**
    * Enables maximum match on the given combobox
    * @param comboBox the combobox on which to enable maximum match
    * @param <C> the combobox type

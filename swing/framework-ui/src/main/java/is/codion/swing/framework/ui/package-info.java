@@ -1,5 +1,7 @@
 /**
  * Package configuration values:<br>
+ * {@link is.codion.swing.framework.ui.component.EntityInputComponents#LABEL_TEXT_ALIGNMENT}<br>
+ * {@link is.codion.swing.framework.ui.component.EntityInputComponents#COMBO_BOX_COMPLETION_MODE}
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#PERSIST_ENTITY_PANELS}<br>
@@ -18,7 +20,5 @@
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_AUTO_RESIZE_MODE}<br>
  * {@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
- * {@link is.codion.swing.framework.ui.EntityInputComponents#LABEL_TEXT_ALIGNMENT}<br>
- * {@link is.codion.swing.framework.ui.EntityInputComponents#COMBO_BOX_COMPLETION_MODE}
  */
 package is.codion.swing.framework.ui;

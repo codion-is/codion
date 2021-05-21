@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store.ui;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import java.awt.GridLayout;
 
@@ -21,9 +20,9 @@ public class AddressEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Address.STREET);
 
-    createTextField(Address.STREET).setColumns(25);
-    createTextField(Address.CITY).setColumns(25);
-    createCheckBox(Address.VALID, IncludeCaption.NO);
+    textField(Address.STREET).columns(25);
+    textField(Address.CITY).columns(25);
+    checkBox(Address.VALID).includeCaption(false);
 
     setLayout(new GridLayout(3, 1, 5, 5));
     addInputPanel(Address.STREET);

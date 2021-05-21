@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static is.codion.swing.common.ui.Components.setPreferredWidth;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.emptySet;
@@ -36,10 +35,10 @@ public final class CityEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(City.COUNTRY_FK);
 
-    setPreferredWidth(createForeignKeyComboBox(City.COUNTRY_FK), 120);
-    createTextField(City.NAME).setColumns(12);
-    createTextField(City.DISTRICT).setColumns(12);
-    createTextField(City.POPULATION);
+    foreignKeyComboBox(City.COUNTRY_FK).preferredWidth(120);
+    textField(City.NAME).columns(12);
+    textField(City.DISTRICT).columns(12);
+    textField(City.POPULATION);
 
     JPanel inputPanel = new JPanel(gridLayout(4, 1));
     inputPanel.add(createInputPanel(City.COUNTRY_FK));

@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store.ui;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import java.awt.GridLayout;
 
@@ -22,10 +21,14 @@ public class CustomerEditPanel extends EntityEditPanel {
     //the firstName field should receive the focus whenever the panel is initialized
     setInitialFocusAttribute(Customer.FIRST_NAME);
 
-    createTextField(Customer.FIRST_NAME).setColumns(15);
-    createTextField(Customer.LAST_NAME).setColumns(15);
-    createTextField(Customer.EMAIL).setColumns(15);
-    createCheckBox(Customer.IS_ACTIVE, IncludeCaption.NO);
+    textField(Customer.FIRST_NAME)
+            .columns(15);
+    textField(Customer.LAST_NAME)
+            .columns(15);
+    textField(Customer.EMAIL)
+            .columns(15);
+    checkBox(Customer.IS_ACTIVE)
+            .includeCaption(false);
 
     setLayout(new GridLayout(4,1));
     //the addInputPanel method creates and adds a panel containing the

@@ -27,8 +27,9 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(CustomerAddress.ADDRESS_FK);
 
     EntityComboBox addressComboBox =
-            createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
-    Components.setPreferredWidth(addressComboBox, 200);
+            foreignKeyComboBox(CustomerAddress.ADDRESS_FK)
+                    .preferredWidth(200)
+                    .build();
     Action newAddressAction = EntityPanel.builder(Address.TYPE)
             .editPanelClass(AddressEditPanel.class)
             .createEditPanelAction(addressComboBox);

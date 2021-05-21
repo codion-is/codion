@@ -5,42 +5,36 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
-import is.codion.swing.common.ui.textfield.TextInputPanel;
-import is.codion.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
-import is.codion.swing.common.ui.time.TemporalInputPanel;
-import is.codion.swing.common.ui.value.ComponentValues;
-import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityInputComponents.CalendarButton;
-import is.codion.swing.framework.ui.EntityInputComponents.Editable;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
-import is.codion.swing.framework.ui.EntityInputComponents.Sorted;
+import is.codion.swing.framework.ui.component.BooleanComboBoxBuilder;
+import is.codion.swing.framework.ui.component.CheckBoxBuilder;
+import is.codion.swing.framework.ui.component.ComboBoxBuilder;
+import is.codion.swing.framework.ui.component.ComponentBuilder;
+import is.codion.swing.framework.ui.component.EntityInputComponents;
+import is.codion.swing.framework.ui.component.ForeignKeyComboBoxBuilder;
+import is.codion.swing.framework.ui.component.ForeignKeyFieldBuilder;
+import is.codion.swing.framework.ui.component.ForeignKeySearchFieldBuilder;
+import is.codion.swing.framework.ui.component.FormattedTextFieldBuilder;
+import is.codion.swing.framework.ui.component.TemporalInputPanelBuilder;
+import is.codion.swing.framework.ui.component.TextAreaBuilder;
+import is.codion.swing.framework.ui.component.TextFieldBuilder;
+import is.codion.swing.framework.ui.component.TextInputPanelBuilder;
+import is.codion.swing.framework.ui.component.ValueListComboBoxBuilder;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.time.temporal.Temporal;
@@ -52,7 +46,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -83,6 +76,8 @@ public class EntityEditComponentPanel extends JPanel {
    * Input components mapped to their respective attributes
    */
   private final Map<Attribute<?>, JComponent> components = new HashMap<>();
+
+  private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 
   /**
    * Attributes that should be excluded when presenting the component selection
@@ -143,6 +138,10 @@ public class EntityEditComponentPanel extends JPanel {
    * associated with the given attribute
    */
   public final JComponent getComponent(final Attribute<?> attribute) {
+    if (!components.containsKey(attribute) && componentBuilders.containsKey(attribute)) {
+      componentBuilders.get(attribute).build();
+    }
+
     return components.get(attribute);
   }
 
@@ -426,607 +425,207 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JTextArea component bound to {@code attribute}.
-   * @param attribute the attribute to bind
-   * @return a JTextArea bound to the attribute
+   * Creates a builder for text areas.
+   * @param attribute the attribute for which to build a text area
+   * @return a text area builder
    */
-  protected final JTextArea createTextArea(final Attribute<String> attribute) {
-    return createTextArea(attribute, -1, -1);
+  protected final TextAreaBuilder textArea(final Attribute<String> attribute) {
+    final TextAreaBuilder builder = inputComponents.textAreaBuilder(attribute, getEditModel().value(attribute))
+            .addBuildListener(textArea -> {
+              EntityComponentValidators.addValidator(attribute, textArea, getEditModel());
+              setComponent(attribute, textArea);
+            });
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a JTextArea component bound to {@code attribute}.
-   * @param attribute the attribute to bind
-   * @param rows the number of rows in the text area
-   * @param columns the number of columns in the text area
-   * @return a JTextArea bound to the attribute
+   * Creates a builder for text input panels.
+   * @param attribute the attribute for which to build a text input panel
+   * @return a text input panel builder
    */
-  protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns) {
-    return createTextArea(attribute, rows, columns, UpdateOn.KEYSTROKE);
+  protected final TextInputPanelBuilder textInputPanel(final Attribute<String> attribute) {
+    final TextInputPanelBuilder builder = inputComponents.textInputPanelBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(inputPanel -> setComponent(attribute, inputPanel));
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a JTextArea component bound to {@code attribute}.
-   * @param attribute the attribute to bind
-   * @param rows the number of rows in the text area
-   * @param columns the number of columns in the text area
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a JTextArea bound to the attribute
+   * Creates a builder for temporal input panels.
+   * @param attribute the attribute for which to build a temporal input panel
+   * @param <T> the temporal type
+   * @return a text area builder
    */
-  protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns,
-                                           final UpdateOn updateOn) {
-    return createTextArea(attribute, rows, columns, updateOn, null);
+  protected final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Attribute<T> attribute) {
+    final TemporalInputPanelBuilder<T> builder = inputComponents.temporalInputPanelBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(inputPanel -> {
+              EntityComponentValidators.addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel());
+              setComponent(attribute, inputPanel);
+            });
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a JTextArea component bound to {@code attribute}.
-   * @param attribute the attribute to bind
-   * @param rows the number of rows in the text area
-   * @param columns the number of columns in the text area
-   * @param updateOn specifies when the underlying value should be updated
-   * @param enabledState a state indicating when this text area should be enabled
-   * @return a JTextArea bound to the attribute
+   * Creates a builder for text fields.
+   * @param attribute the attribute for which to build a text field
+   * @param <T> the value type
+   * @return a text field builder
    */
-  protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns,
-                                           final UpdateOn updateOn, final StateObserver enabledState) {
-    final JTextArea textArea = inputComponents.createTextArea(attribute, getEditModel().value(attribute),
-            rows, columns, updateOn, enabledState);
-    EntityComponentValidators.addValidator(attribute, textArea, getEditModel());
-    setComponent(attribute, textArea);
+  protected final <T> TextFieldBuilder<T> textField(final Attribute<T> attribute) {
+    final TextFieldBuilder<T> builder = inputComponents.textFieldBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(textField -> setComponent(attribute, textField));
+    setComponentBuilder(attribute, builder);
 
-    return textArea;
+    return builder;
   }
 
   /**
-   * Creates a TextInputPanel bound to {@code attribute}.
-   * @param attribute the attribute to bind
-   * @return a TextInputPanel bound to the attribute
+   * Creates a builder for formatted text fields.
+   * @param attribute the attribute for which to build a formatted text field
+   * @return a formatted text field builder
    */
-  protected final TextInputPanel createTextInputPanel(final Attribute<String> attribute) {
-    return createTextInputPanel(attribute, UpdateOn.KEYSTROKE, ButtonFocusable.YES);
+  protected final FormattedTextFieldBuilder formattedTextField(final Attribute<String> attribute) {
+    final FormattedTextFieldBuilder builder = inputComponents.formattedTextFieldBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(true)
+            .addBuildListener(textField -> {
+              EntityComponentValidators.addFormattedValidator(attribute, textField, getEditModel());
+              setComponent(attribute, textField);
+            });
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a TextInputPanel bound to {@code attribute}.
-   * @param attribute the attribute to bind
-   * @param updateOn specifies when the underlying value should be updated
-   * @param buttonFocusable specifies whether the edit button should be focusable.
-   * @return a TextInputPanel bound to the attribute
+   * Creates a builder for check boxes.
+   * @param attribute the attribute for which to build a check box
+   * @return a check box builder
    */
-  protected final TextInputPanel createTextInputPanel(final Attribute<String> attribute, final UpdateOn updateOn,
-                                                      final ButtonFocusable buttonFocusable) {
-    final TextInputPanel inputPanel = inputComponents.createTextInputPanel(attribute,
-            getEditModel().value(attribute), updateOn, buttonFocusable);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(inputPanel.getTextField());
-      if (inputPanel.getButton() != null) {
-        transferFocusOnEnter(inputPanel.getButton());
-      }
-    }
-    setComponent(attribute, inputPanel);
+  protected final CheckBoxBuilder checkBox(final Attribute<Boolean> attribute) {
+    final CheckBoxBuilder builder = inputComponents.checkBoxBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(box -> setComponent(attribute, box));
+    setComponentBuilder(attribute, builder);
 
-    return inputPanel;
+    return builder;
   }
 
   /**
-   * Creates a new TemporalInputPanel using the default short date format, bound to the attribute
-   * identified by {@code attribute}.
-   * @param attribute the attribute for which to create the panel
-   * @param <T> the attribute type
-   * @return a TemporalInputPanel
-   * @see Property#DATE_FORMAT
+   * Creates a builder for boolean combo boxes.
+   * @param attribute the attribute for which to build boolean combo box
+   * @return a boolean combo box builder
    */
-  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute) {
-    return createTemporalInputPanel(attribute, CalendarButton.YES);
+  protected BooleanComboBoxBuilder booleanComboBox(final Attribute<Boolean> attribute) {
+    final BooleanComboBoxBuilder builder = inputComponents.booleanComboBoxBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(box -> setComponent(attribute, box));
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a new TemporalInputPanel bound to {@code attribute}.
-   * @param attribute the attribute for which to create the panel
-   * @param calendarButton if yes a button for visually editing the date is included
-   * @param <T> the attribute type
-   * @return a TemporalInputPanel
-   * @see Property#DATE_FORMAT
+   * Creates a builder for combo boxes.
+   * @param attribute the attribute for which to build combo box
+   * @param comboBoxModel the combo box model
+   * @param <T> the value type
+   * @return a combo box builder
    */
-  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton) {
-    return createTemporalInputPanel(attribute, calendarButton, null);
+  protected final <T> ComboBoxBuilder<T> comboBox(final Attribute<T> attribute,
+                                                  final ComboBoxModel<T> comboBoxModel) {
+    final ComboBoxBuilder<T> builder = inputComponents.comboBoxBuilder(attribute, getEditModel().value(attribute), comboBoxModel)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(box -> setComponent(attribute, box));
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a new TemporalInputPanel bound to {@code attribute}.
-   * @param attribute the attribute for which to create the panel
-   * @param calendarButton if yes a button for visually editing the date is included
-   * @param enabledState a state for controlling the enabled state of the input component
-   * @param <T> the attribute type
-   * @return a TemporalInputPanel bound to the attribute
+   * Creates a builder for value list combo boxes.
+   * @param attribute the attribute for which to build a value list combo box
+   * @param <T> the value type
+   * @return a value list combo box builder
    */
-  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
-                                                                                      final StateObserver enabledState) {
-    return createTemporalInputPanel(attribute, calendarButton, enabledState, UpdateOn.KEYSTROKE);
+  protected final <T> ValueListComboBoxBuilder<T> valueListComboBox(final Attribute<T> attribute) {
+    final ValueListComboBoxBuilder<T> builder = inputComponents.valueListComboBoxBuilder(attribute, getEditModel().value(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(box -> setComponent(attribute, box));
+    setComponentBuilder(attribute, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a new TemporalInputPanel bound to {@code attribute}.
-   * @param attribute the attribute for which to create the panel
-   * @param calendarButton if yes a button for visually editing the date is included
-   * @param enabledState a state for controlling the enabled state of the input component
-   * @param updateOn specifies when the underlying value should be updated
-   * @param <T> the attribute type
-   * @return a TemporalInputPanel bound to the attribute
+   * Creates a builder for combo boxes, containing the values of the given attribute.
+   * @param attribute the attribute for which to build a combo box
+   * @param <T> the value type
+   * @return a combo box builder
    */
-  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
-                                                                                      final StateObserver enabledState, final UpdateOn updateOn) {
-    final TemporalInputPanel<T> panel = inputComponents.createTemporalInputPanel(attribute,
-            getEditModel().value(attribute), updateOn, calendarButton, enabledState);
-    EntityComponentValidators.addFormattedValidator(attribute, panel.getInputField(), getEditModel());
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(panel.getInputField());
-      if (panel.getCalendarButton() != null) {
-        transferFocusOnEnter(panel.getCalendarButton());
-      }
-    }
-    setComponent(attribute, panel);
+  protected final <T> ComboBoxBuilder<T> attributeComboBox(final Attribute<T> attribute) {
+    final ComboBoxBuilder<T> builder = inputComponents.comboBoxBuilder(attribute,
+            getEditModel().value(attribute),
+            (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(box -> setComponent(attribute, box));
+    setComponentBuilder(attribute, builder);
 
-    return panel;
+    return builder;
   }
 
   /**
-   * Creates a JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param <T> the attribute type
-   * @return a text field bound to the attribute
+   * Creates a builder for foreign key combo boxes.
+   * @param foreignKey the foreign key for which to build a combo box
+   * @return a foreign key combo box builder
    */
-  protected final <T> JTextField createTextField(final Attribute<T> attribute) {
-    return createTextField(attribute, UpdateOn.KEYSTROKE);
+  protected final ForeignKeyComboBoxBuilder foreignKeyComboBox(final ForeignKey foreignKey) {
+    final ForeignKeyComboBoxBuilder builder = inputComponents.foreignKeyComboBoxBuilder(foreignKey,
+            getEditModel().value(foreignKey),
+            getEditModel().getForeignKeyComboBoxModel(foreignKey))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(box -> setComponent(foreignKey, box));
+    setComponentBuilder(foreignKey, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param updateOn specifies when the underlying value should be updated
-   * @param <T> the attribute type
-   * @return a text field bound to the attribute
+   * Creates a builder for foreign key search fields.
+   * @param foreignKey the foreign key for which to build a search field
+   * @return a foreign key search field builder
    */
-  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn) {
-    return createTextField(attribute, updateOn, null);
+  protected final ForeignKeySearchFieldBuilder foreignKeySearchField(final ForeignKey foreignKey) {
+    final ForeignKeySearchFieldBuilder builder = inputComponents.foreignKeySearchFieldBuilder(foreignKey,
+            getEditModel().value(foreignKey),
+            getEditModel().getForeignKeySearchModel(foreignKey))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(searchField -> setComponent(foreignKey, searchField));
+    setComponentBuilder(foreignKey, builder);
+
+    return builder;
   }
 
   /**
-   * Creates a JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param updateOn specifies when the underlying value should be updated
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param <T> the attribute type
-   * @return a text field bound to the attribute
+   * Creates a builder for read-only foreign key fields.
+   * @param foreignKey the foreign key for which to build a field
+   * @return a foreign key field builder
    */
-  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
-                                                 final StateObserver enabledState) {
-    final JTextField textField = inputComponents.createTextField(attribute,
-            getEditModel().value(attribute), updateOn, enabledState);
-    EntityComponentValidators.addValidator(attribute, textField, getEditModel());
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(textField);
-    }
-    setComponent(attribute, textField);
+  protected final ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {
+    final ForeignKeyFieldBuilder builder = inputComponents.foreignKeyFieldBuilder(foreignKey,
+            new ForeignKeyModelValue(getEditModel(), foreignKey))
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .addBuildListener(field -> setComponent(foreignKey, field));
+    setComponentBuilder(foreignKey, builder);
 
-    return textField;
-  }
-
-  /**
-   * Creates a JFormattedTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param formatMaskString the format mask
-   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
-   * @return a text field bound to the attribute
-   */
-  protected final JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final String formatMaskString,
-                                                            final ValueContainsLiterals valueContainsLiterals) {
-    return createMaskedTextField(attribute, formatMaskString, valueContainsLiterals, UpdateOn.KEYSTROKE);
-  }
-
-  /**
-   * Creates a JFormattedTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param formatMaskString the format mask
-   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a text field bound to the attribute
-   */
-  protected final JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final String formatMaskString,
-                                                            final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn) {
-    return createMaskedTextField(attribute, formatMaskString, valueContainsLiterals, updateOn, null);
-  }
-
-  /**
-   * Creates a JFormattedTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param formatMaskString the format mask
-   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
-   * @param updateOn specifies when the underlying value should be updated
-   * @param enabledState a state for controlling the enabled state of the component, only applicable if {@code maskString} is specified
-   * @return a text field bound to the attribute
-   */
-  protected final JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final String formatMaskString,
-                                                            final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
-                                                            final StateObserver enabledState) {
-    requireNonNull(formatMaskString, "formatMaskString");
-    final JFormattedTextField textField = inputComponents.createMaskedTextField(attribute,
-            getEditModel().value(attribute), formatMaskString, valueContainsLiterals, updateOn, enabledState);
-    EntityComponentValidators.addFormattedValidator(attribute, textField, getEditModel());
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(textField);
-    }
-    setComponent(attribute, textField);
-
-    return textField;
-  }
-
-  /**
-   * Creates a JCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @return a JCheckBox bound to the attribute
-   */
-  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute) {
-    return createCheckBox(attribute, (StateObserver) null);
-  }
-
-  /**
-   * Creates a JCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return a JCheckBox bound to the attribute
-   */
-  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
-    return createCheckBox(attribute, IncludeCaption.YES, enabledState);
-  }
-
-  /**
-   * Creates a JCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param includeCaption specifies whether or not the caption should be included
-   * @return a JCheckBox bound to the attribute
-   */
-  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption) {
-    return createCheckBox(attribute, includeCaption, null);
-  }
-
-  /**
-   * Creates a JCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param includeCaption specifies whether or not the caption should be included
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return a JCheckBox bound to the attribute
-   */
-  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption,
-                                           final StateObserver enabledState) {
-    final JCheckBox box = inputComponents.createCheckBox(attribute,
-            getEditModel().value(attribute), enabledState, includeCaption);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(box);
-    }
-    setComponent(attribute, box);
-
-    return box;
-  }
-
-  /**
-   * Creates a NullableCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @return a NullableCheckBox bound to the attribute
-   */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute) {
-    return createNullableCheckBox(attribute, (StateObserver) null);
-  }
-
-  /**
-   * Creates a NullableCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return a NullableCheckBox bound to the attribute
-   */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
-    return createNullableCheckBox(attribute, IncludeCaption.YES, enabledState);
-  }
-
-  /**
-   * Creates a NullableCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param includeCaption specifies whether or not the caption should be included
-   * @return a NullableCheckBox bound to the attribute
-   */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption) {
-    return createNullableCheckBox(attribute, includeCaption, null);
-  }
-
-  /**
-   * Creates a NullableCheckBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param includeCaption specifies whether or not the caption should be included
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return a NullableCheckBox bound to the attribute
-   */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption,
-                                                          final StateObserver enabledState) {
-    final NullableCheckBox box = inputComponents.createNullableCheckBox(attribute,
-            getEditModel().value(attribute), enabledState, includeCaption);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(box);
-    }
-    setComponent(attribute, box);
-
-    return box;
-  }
-
-  /**
-   * Create a JComboBox for {@code attribute}, containing
-   * values for the boolean values: true, false, null
-   * @param attribute the attribute to bind
-   * @return JComboBox for the given attribute
-   */
-  protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Attribute<Boolean> attribute) {
-    return createBooleanComboBox(attribute, null);
-  }
-
-  /**
-   * Create a JComboBox for {@code attribute}, containing
-   * values for the boolean values: true, false, null
-   * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return JComboBox for the given attribute
-   */
-  protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
-    final JComboBox<Item<Boolean>> comboBox = inputComponents.createBooleanComboBox(attribute,
-            getEditModel().value(attribute), enabledState);
-    setComponent(attribute, comboBox);
-
-    return comboBox;
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param comboBoxModel the ComboBoxModel
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound the the attribute
-   */
-  protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
-    return createComboBox(attribute, comboBoxModel, null);
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param comboBoxModel the ComboBoxModel
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound the the attribute
-   */
-  protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
-                                                        final StateObserver enabledState) {
-    final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
-            getEditModel().value(attribute), comboBoxModel, enabledState);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-    setComponent(attribute, comboBox);
-
-    return comboBox;
-  }
-
-  /**
-   * Creates a SteppedComboBox containing the values defined by the given value list attribute,
-   * bound to the given attribute.
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
-   */
-  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute) {
-    return createValueListComboBox(attribute, Sorted.YES);
-  }
-
-  /**
-   * Creates a SteppedComboBox containing the values defined by the given value list attribute,
-   * bound to the given attribute.
-   * @param attribute the attribute
-   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
-   */
-  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Sorted sorted) {
-    return createValueListComboBox(attribute, sorted, null);
-  }
-
-  /**
-   * Creates a SteppedComboBox containing the values defined by the given value list attribute,
-   * bound to the given attribute.
-   * @param attribute the attribute
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
-   */
-  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final StateObserver enabledState) {
-    return createValueListComboBox(attribute, Sorted.YES, enabledState);
-  }
-
-  /**
-   * Creates a SteppedComboBox containing the values defined by the given value list attribute,
-   * bound to the given attribute.
-   * @param attribute the attribute
-   * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
-   */
-  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Sorted sorted,
-                                                                       final StateObserver enabledState) {
-    final SteppedComboBox<Item<T>> comboBox = inputComponents.createValueListComboBox(attribute,
-            getEditModel().value(attribute), sorted, enabledState);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-    setComponent(attribute, comboBox);
-
-    return comboBox;
-  }
-
-  /**
-   * Creates an editable SteppedComboBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param comboBoxModel the ComboBoxModel
-   * @param <T> the attribute type
-   * @return an editable SteppedComboBox bound the the attribute
-   */
-  protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
-    return createEditableComboBox(attribute, comboBoxModel, null);
-  }
-
-  /**
-   * Creates an editable SteppedComboBox bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param comboBoxModel the ComboBoxModel
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param <T> the attribute type
-   * @return an editable SteppedComboBox bound the the attribute
-   */
-  protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
-                                                                final StateObserver enabledState) {
-    final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute,
-            getEditModel().value(attribute), comboBoxModel, enabledState, Editable.YES);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-    setComponent(attribute, comboBox);
-
-    return comboBox;
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to {@code attribute}, the combo box
-   * contains the underlying values of the attribute
-   * @param attribute the attribute to bind
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   */
-  protected final <T> SteppedComboBox<T> createAttributeComboBox(final Attribute<T> attribute) {
-    return createAttributeComboBox(attribute, null);
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to {@code attribute}, the combo box
-   * contains the underlying values of the attribute
-   * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   */
-  protected final <T> SteppedComboBox<T> createAttributeComboBox(final Attribute<T> attribute, final StateObserver enabledState) {
-    return createAttributeComboBox(attribute, enabledState, Editable.NO);
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to {@code attribute}, the combo box
-   * contains the underlying values of the attribute
-   * @param attribute the attribute to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
-   * @param <T> the attribute type
-   * @return a SteppedComboBox bound to the attribute
-   */
-  protected final <T> SteppedComboBox<T> createAttributeComboBox(final Attribute<T> attribute, final StateObserver enabledState,
-                                                                 final Editable editable) {
-    final SteppedComboBox<T> comboBox = inputComponents.createComboBox(attribute, getEditModel().value(attribute),
-            (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute), enabledState, editable);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-    setComponent(attribute, comboBox);
-
-    return comboBox;
-  }
-
-  /**
-   * Creates an EntityComboBox bound to {@code foreignKey}
-   * @param foreignKey the foreign key
-   * @return an EntityComboBox bound to the foreign key
-   */
-  protected final EntityComboBox createForeignKeyComboBox(final ForeignKey foreignKey) {
-    return createForeignKeyComboBox(foreignKey, null);
-  }
-
-  /**
-   * Creates a EntityComboBox bound to {@code foreignKey}
-   * @param foreignKey the foreign key
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return a EntityComboBox bound to the foreign key
-   */
-  protected final EntityComboBox createForeignKeyComboBox(final ForeignKey foreignKey, final StateObserver enabledState) {
-    final EntityComboBox comboBox = inputComponents.createForeignKeyComboBox(foreignKey,
-            getEditModel().value(foreignKey), getEditModel().getForeignKeyComboBoxModel(foreignKey), enabledState);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      //getEditor().getEditorComponent() only required because the combo box is editable, due to AutoCompletion
-      transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-    setComponent(foreignKey, comboBox);
-
-    return comboBox;
-  }
-
-  /**
-   * Creates an {@link EntitySearchField} bound to {@code foreignKey}
-   * @param foreignKey the foreign key
-   * @return an {@link EntitySearchField} bound the foreign key
-   */
-  protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey) {
-    return createForeignKeySearchField(foreignKey, null);
-  }
-
-  /**
-   * Creates an {@link EntitySearchField} bound to {@code foreignKey}
-   * @param foreignKey the foreign key
-   * @param enabledState a state for controlling the enabled state of the component
-   * @return an {@link EntitySearchField} bound the foreign key
-   */
-  protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey,
-                                                                final StateObserver enabledState) {
-    final EntitySearchField searchField = inputComponents.createForeignKeySearchField(foreignKey,
-            getEditModel().value(foreignKey), getEditModel().getForeignKeySearchModel(foreignKey), enabledState);
-    if (transferFocusOnEnter) {
-      searchField.setTransferFocusOnEnter(true);
-    }
-    setComponent(foreignKey, searchField);
-
-    return searchField;
-  }
-
-  /**
-   * Creates an uneditable JTextField bound to {@code foreignKey}
-   * @param foreignKey the foreign key
-   * @return an uneditable JTextField bound to the foreign key
-   */
-  protected final JTextField createForeignKeyField(final ForeignKey foreignKey) {
-    requireNonNull(foreignKey, "foreignKey");
-    final ForeignKeyProperty foreignKeyProperty =
-            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
-    final JTextField textField = new JTextField();
-    textField.setEditable(false);
-    textField.setFocusable(false);
-    textField.setToolTipText(foreignKeyProperty.getDescription());
-    ComponentValues.textComponent(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKey));
-    if (transferFocusOnEnter) {
-      transferFocusOnEnter(textField);
-    }
-    setComponent(foreignKey, textField);
-
-    return textField;
+    return builder;
   }
 
   /**
@@ -1086,6 +685,13 @@ public class EntityEditComponentPanel extends JPanel {
     requestFocus(getAfterInsertFocusComponent());
   }
 
+  private void setComponentBuilder(final Attribute<?> attribute, final ComponentBuilder<?, ?, ?> componentBuilder) {
+    if (componentBuilders.containsKey(attribute)) {
+      throw new IllegalStateException("ComponentBuilder has already been set for attribute: " + attribute);
+    }
+    componentBuilders.put(attribute, componentBuilder);
+  }
+
   private void requestFocus(final JComponent component) {
     if (component != null && component.isFocusable()) {
       component.requestFocus();
@@ -1114,7 +720,7 @@ public class EntityEditComponentPanel extends JPanel {
     return label;
   }
 
-  private static final class ForeignKeyModelValue extends AbstractValue<String> {
+  private static final class ForeignKeyModelValue extends AbstractValue<Entity> {
 
     private final EntityEditModel editModel;
     private final ForeignKey foreignKey;
@@ -1126,13 +732,11 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     @Override
-    public String get() {
-      final Entity value = editModel.getForeignKey(foreignKey);
-
-      return value == null ? "" : value.toString();
+    public Entity get() {
+      return editModel.getForeignKey(foreignKey);
     }
 
     @Override
-    protected void setValue(final String value) {/*read only*/}
+    protected void setValue(final Entity value) {/*read only*/}
   }
 }

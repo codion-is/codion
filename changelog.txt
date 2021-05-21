@@ -7043,3 +7043,12 @@
   Gradle run tasks moved from run group to application
   Entity application panel sets the application version as a system property, so that it appears automatically in exception dialogs
   EntityEditComponentPanel.createNullableCheck() overloaded, createCheckBox() parameter reordering
+  EntityInputComponents and EntityEditComponentPanel now builder based
+  EntityEditComponentPanel, Builder suffix removed from builder factory methods
+  EntityInputComponents moved to builder package, major refactoring, helper methods moved to relevant builder classes
+  EntityInputComponents builders moved up to package level
+  AbstractComponentBuilder generics magic used to prevent ugly overrides in subclasses
+  ComponentBuilder, more generics magic to prevent overrides in sub-interfaces
+  EntityEditComponentPanel now handles building components
+  AbstractComponentBuilder and subclasses refactored
+  AbstractComponentBuilder now handles description and enabled state
