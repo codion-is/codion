@@ -28,11 +28,9 @@ public class DepartmentEditPanel extends EntityEditPanel {
             .columns(10)
             .build();
     textField(Department.NAME)
-            .upperCase()
-            .build();
+            .upperCase();
     textField(Department.LOCATION)
-            .upperCase()
-            .build();
+            .upperCase();
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {

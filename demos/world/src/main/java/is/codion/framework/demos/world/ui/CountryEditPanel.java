@@ -29,20 +29,20 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Country.CODE);
 
-    textField(Country.CODE).upperCase().columns(12).build();
-    textField(Country.CODE_2).upperCase().columns(12).build();
-    textField(Country.NAME).columns(12).build();
-    valueListComboBox(Country.CONTINENT).preferredWidth(120).build();
-    attributeComboBox(Country.REGION).preferredWidth(120).build();
-    textField(Country.SURFACEAREA).build();
-    textField(Country.INDEPYEAR).build();
-    textField(Country.POPULATION).build();
-    textField(Country.LIFE_EXPECTANCY).build();
-    textField(Country.GNP).build();
-    textField(Country.GNPOLD).build();
-    textField(Country.LOCALNAME).columns(12).build();
-    attributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true).build();
-    textField(Country.HEADOFSTATE).columns(12).build();
+    textField(Country.CODE).upperCase().columns(12);
+    textField(Country.CODE_2).upperCase().columns(12);
+    textField(Country.NAME).columns(12);
+    valueListComboBox(Country.CONTINENT).preferredWidth(120);
+    attributeComboBox(Country.REGION).preferredWidth(120);
+    textField(Country.SURFACEAREA);
+    textField(Country.INDEPYEAR);
+    textField(Country.POPULATION);
+    textField(Country.LIFE_EXPECTANCY);
+    textField(Country.GNP);
+    textField(Country.GNPOLD);
+    textField(Country.LOCALNAME).columns(12);
+    attributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true);
+    textField(Country.HEADOFSTATE).columns(12);
     EntityComboBox capitalComboBox =
             foreignKeyComboBox(Country.CAPITAL_FK)
                     .preferredWidth(120)

@@ -30,12 +30,10 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
     foreignKeySearchField(InvoiceLine.TRACK_FK)
             .selectionProviderFactory(TrackSelectionProvider::new)
-            .columns(15)
-            .build();
+            .columns(15);
     textField(InvoiceLine.QUANTITY)
             .selectAllOnFocusGained()
-            .action(Control.control(this::save))
-            .build();
+            .action(Control.control(this::save));
 
     setLayout(borderLayout());
     addInputPanel(InvoiceLine.TRACK_FK, BorderLayout.WEST);

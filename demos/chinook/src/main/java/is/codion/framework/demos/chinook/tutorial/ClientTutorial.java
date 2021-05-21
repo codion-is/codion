@@ -101,8 +101,7 @@ public final class ClientTutorial {
     protected void initializeUI() {
       setInitialFocusAttribute(Artist.NAME);
       textField(Artist.NAME)
-              .columns(15)
-              .build();
+              .columns(15);
       addInputPanel(Artist.NAME);
     }
   }
@@ -117,12 +116,10 @@ public final class ClientTutorial {
     protected void initializeUI() {
       setInitialFocusAttribute(Album.ARTIST_FK);
       foreignKeySearchField(Album.ARTIST_FK)
-              .columns(15)
-              .build();
+              .columns(15);
       textField(Album.TITLE)
               .action(createInsertControl())
-              .columns(15)
-              .build();
+              .columns(15);
       setLayout(gridLayout(2, 1));
       addInputPanel(Album.ARTIST_FK);
       addInputPanel(Album.TITLE);

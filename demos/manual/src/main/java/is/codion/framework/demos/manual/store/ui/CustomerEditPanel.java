@@ -22,17 +22,13 @@ public class CustomerEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Customer.FIRST_NAME);
 
     textField(Customer.FIRST_NAME)
-            .columns(15)
-            .build();
+            .columns(15);
     textField(Customer.LAST_NAME)
-            .columns(15)
-            .build();
+            .columns(15);
     textField(Customer.EMAIL)
-            .columns(15)
-            .build();
+            .columns(15);
     checkBox(Customer.IS_ACTIVE)
-            .includeCaption(false)
-            .build();
+            .includeCaption(false);
 
     setLayout(new GridLayout(4,1));
     //the addInputPanel method creates and adds a panel containing the

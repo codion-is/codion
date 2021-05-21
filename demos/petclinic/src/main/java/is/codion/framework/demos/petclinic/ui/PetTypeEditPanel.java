@@ -18,7 +18,7 @@ public final class PetTypeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(PetType.NAME);
 
-    textField(PetType.NAME).columns(12).build();
+    textField(PetType.NAME).columns(12);
 
     setLayout(Layouts.gridLayout(1, 1));
 

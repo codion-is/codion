@@ -20,9 +20,9 @@ public class AddressEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Address.STREET);
 
-    textField(Address.STREET).columns(25).build();
-    textField(Address.CITY).columns(25).build();
-    checkBox(Address.VALID).includeCaption(false).build();
+    textField(Address.STREET).columns(25);
+    textField(Address.CITY).columns(25);
+    checkBox(Address.VALID).includeCaption(false);
 
     setLayout(new GridLayout(3, 1, 5, 5));
     addInputPanel(Address.STREET);

@@ -71,15 +71,14 @@ public final class EntityEditPanelTest {
 
     @Override
     protected void initializeUI() {
-      textField(TestDomain.EMP_NAME).build();
-      valueListComboBox(TestDomain.EMP_JOB).build();
-      foreignKeyComboBox(TestDomain.EMP_MGR_FK).build();
-      foreignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK).build();
-      textField(TestDomain.EMP_SALARY).build();
-      textField(TestDomain.EMP_COMMISSION).build();
+      textField(TestDomain.EMP_NAME);
+      valueListComboBox(TestDomain.EMP_JOB);
+      foreignKeyComboBox(TestDomain.EMP_MGR_FK);
+      foreignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
+      textField(TestDomain.EMP_SALARY);
+      textField(TestDomain.EMP_COMMISSION);
       temporalInputPanel(TestDomain.EMP_HIREDATE)
-              .calendarButton(true)
-              .build();
+              .calendarButton(true);
 
       setInitialFocusAttribute(TestDomain.EMP_NAME);
 

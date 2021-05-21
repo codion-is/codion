@@ -23,42 +23,30 @@ public class CustomerEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Customer.FIRSTNAME);
 
     textField(Customer.FIRSTNAME)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.LASTNAME)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.COMPANY)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.ADDRESS)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.CITY)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.STATE)
             .columns(TEXT_FIELD_COLUMNS)
-            .upperCase()
-            .build();
+            .upperCase();
     textField(Customer.COUNTRY)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.POSTALCODE)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.PHONE)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.FAX)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     textField(Customer.EMAIL)
-            .columns(TEXT_FIELD_COLUMNS)
-            .build();
+            .columns(TEXT_FIELD_COLUMNS);
     foreignKeyComboBox(Customer.SUPPORTREP_FK)
-            .preferredHeight(getPreferredTextFieldHeight())
-            .build();
+            .preferredHeight(getPreferredTextFieldHeight());
 
     setLayout(flexibleGridLayout(4, 3));
     addInputPanel(Customer.FIRSTNAME);

@@ -41,28 +41,22 @@ public class InvoiceEditPanel extends EntityEditPanel {
             .build();
     configureCustomerSearch(customerField);
     temporalInputPanel(Invoice.DATE)
-            .columns(12)
-            .build();
+            .columns(12);
     textField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained()
-            .columns(16)
-            .build();
+            .columns(16);
     textField(Invoice.BILLINGCITY)
             .selectAllOnFocusGained()
-            .columns(16)
-            .build();
+            .columns(16);
     textField(Invoice.BILLINGSTATE)
             .selectAllOnFocusGained()
-            .columns(16)
-            .build();
+            .columns(16);
     textField(Invoice.BILLINGCOUNTRY)
             .selectAllOnFocusGained()
-            .columns(16)
-            .build();
+            .columns(16);
     textField(Invoice.BILLINGPOSTALCODE)
             .selectAllOnFocusGained()
-            .columns(16)
-            .build();
+            .columns(16);
 
     final JPanel centerPanel = new JPanel(gridLayout(4, 2));
     centerPanel.add(createInputPanel(Invoice.CUSTOMER_FK));

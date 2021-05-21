@@ -36,20 +36,14 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     textField(Employee.NAME)
             .columns(8)
-            .upperCase()
-            .build();
-    valueListComboBox(Employee.JOB)
-            .build();
+            .upperCase();
+    valueListComboBox(Employee.JOB);
     foreignKeyComboBox(Employee.MGR_FK)
-            .preferredSize(getPreferredTextFieldSize())
-            .build();
-    textField(Employee.SALARY)
-            .build();
-    textField(Employee.COMMISSION)
-            .build();
+            .preferredSize(getPreferredTextFieldSize());
+    textField(Employee.SALARY);
+    textField(Employee.COMMISSION);
     temporalInputPanel(Employee.HIREDATE)
-            .calendarButton(true)
-            .build();
+            .calendarButton(true);
 
     setLayout(flexibleGridLayout(3, 3, FixRowHeights.YES, FixColumnWidths.NO));
 

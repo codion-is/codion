@@ -20,8 +20,7 @@ public class ArtistEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Artist.NAME);
 
     textField(Artist.NAME)
-            .columns(18)
-            .build();
+            .columns(18);
 
     setLayout(gridLayout(1, 1));
     addInputPanel(Artist.NAME);

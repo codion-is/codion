@@ -18,11 +18,11 @@ public final class OwnerEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Owner.FIRST_NAME);
 
-    textField(Owner.FIRST_NAME).columns(12).build();
-    textField(Owner.LAST_NAME).columns(12).build();
-    textField(Owner.ADDRESS).columns(12).build();
-    textField(Owner.CITY).columns(12).build();
-    textField(Owner.TELEPHONE).columns(12).build();
+    textField(Owner.FIRST_NAME).columns(12);
+    textField(Owner.LAST_NAME).columns(12);
+    textField(Owner.ADDRESS).columns(12);
+    textField(Owner.CITY).columns(12);
+    textField(Owner.TELEPHONE).columns(12);
 
     setLayout(Layouts.gridLayout(3, 2));
 

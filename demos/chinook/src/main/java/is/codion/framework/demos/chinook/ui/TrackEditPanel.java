@@ -31,9 +31,9 @@ public class TrackEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Track.ALBUM_FK);
 
     foreignKeySearchField(Track.ALBUM_FK)
-            .columns(18)
-            .build();
-    textField(Track.NAME).columns(18).build();
+            .columns(18);
+    textField(Track.NAME)
+            .columns(18);
     final EntityComboBox mediaTypeBox = foreignKeyComboBox(Track.MEDIATYPE_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
@@ -50,17 +50,16 @@ public class TrackEditPanel extends EntityEditPanel {
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
     textInputPanel(Track.COMPOSER)
             .columns(18)
-            .buttonFocusable(false)
+            .buttonFocusable(false);
+    final IntegerField millisecondsField = (IntegerField) textField(Track.MILLISECONDS)
             .build();
-    final IntegerField millisecondsField = (IntegerField) textField(Track.MILLISECONDS).build();
     millisecondsField.setGroupingUsed(true);
     final IntegerField bytesField = (IntegerField) textField(Track.BYTES)
             .columns(18)
             .build();
     bytesField.setGroupingUsed(true);
     textField(Track.UNITPRICE)
-            .columns(18)
-            .build();
+            .columns(18);
 
     final ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
     minutesSecondsValue.link(getEditModel().value(Track.MILLISECONDS));

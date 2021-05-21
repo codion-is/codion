@@ -104,9 +104,9 @@ public final class EntityEditPanels {
               textField(Demo.LOCAL_DATE)
                       .build();
 
-      TemporalInputPanel<LocalDate>
-              inputPanel = temporalInputPanel(Demo.LOCAL_DATE)
-              .build();
+      TemporalInputPanel<LocalDate> inputPanel =
+              temporalInputPanel(Demo.LOCAL_DATE)
+                      .build();
       // end::temporalValue[]
     }
 

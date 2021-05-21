@@ -7018,3 +7018,4 @@
   EntityInputComponents builders moved up to package level
   AbstractComponentBuilder generics magic used to prevent ugly overrides in subclasses
   ComponentBuilder, more generics magic to prevent overrides in sub-interfaces
+  EntityEditComponentPanel now handles building components
