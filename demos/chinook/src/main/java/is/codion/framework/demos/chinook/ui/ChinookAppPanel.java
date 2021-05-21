@@ -25,7 +25,7 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import is.codion.swing.framework.ui.builder.EntityInputComponents;
+import is.codion.swing.framework.ui.component.EntityInputComponents;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;

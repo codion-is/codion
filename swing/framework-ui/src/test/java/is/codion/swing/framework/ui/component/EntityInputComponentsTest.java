@@ -1,4 +1,4 @@
-package is.codion.swing.framework.ui.builder;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.item.Item;

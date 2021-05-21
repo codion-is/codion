@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.builder;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
