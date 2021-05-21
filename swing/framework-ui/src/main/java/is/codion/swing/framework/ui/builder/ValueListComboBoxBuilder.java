@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 public interface ValueListComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<Item<T>>, ValueListComboBoxBuilder<T>> {
 
   /**
+   * @param sorted true if the combo box content should be sorted
    * @return this builder instance
    */
   ValueListComboBoxBuilder<T> sorted(boolean sorted);

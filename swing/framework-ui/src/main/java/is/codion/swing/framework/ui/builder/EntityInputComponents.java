@@ -136,53 +136,128 @@ public final class EntityInputComponents {
     return label;
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
     return new DefaultCheckBoxBuilder(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
     return new DefaultBooleanComboBoxBuilder(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param foreignKey the foreign key
+   * @param value the value
+   * @param comboBoxModel the combo box model
+   * @return a builder
+   */
   public ForeignKeyComboBoxBuilder foreignKeyComboBoxBuilder(final ForeignKey foreignKey, final Value<Entity> value,
                                                              final SwingEntityComboBoxModel comboBoxModel) {
     return new DefaultForeignKeyComboBoxBuilder(entityDefinition.getForeignKeyProperty(foreignKey), value, comboBoxModel);
   }
 
+  /**
+   * Creates a builder.
+   * @param foreignKey the foreign key
+   * @param value the value
+   * @param searchModel the search model
+   * @return a builder
+   */
   public ForeignKeySearchFieldBuilder foreignKeySearchFieldBuilder(final ForeignKey foreignKey, final Value<Entity> value,
                                                                    final EntitySearchModel searchModel) {
     return new DefaultForeignKeySearchFieldBuilder(entityDefinition.getForeignKeyProperty(foreignKey), value, searchModel);
   }
 
+  /**
+   * Creates a builder.
+   * @param foreignKey the foreign key
+   * @param value the value
+   * @return a builder
+   */
   public ForeignKeyFieldBuilder foreignKeyFieldBuilder(final ForeignKey foreignKey, final Value<Entity> value) {
     return new DefaultForeignKeyFieldBuilder(entityDefinition.getForeignKeyProperty(foreignKey), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute, final Value<T> value) {
     return new DefaultValueListComboBoxBuilder<>(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @param comboBoxModel the combo box model
+   * @return a builder
+   */
   public <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute, final Value<T> value,
                                                 final ComboBoxModel<T> comboBoxModel) {
     return new DefaultComboBoxBuilder<>(entityDefinition.getProperty(attribute), value, comboBoxModel);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute, final Value<T> value) {
     return new DefaultTemporalInputPanelBuiler<>(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute, final Value<String> value) {
     return new DefaultTextInputPanelBuilder(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public TextAreaBuilder textAreaBuilder(final Attribute<String> attribute, final Value<String> value) {
     return new DefaultTextAreaBuilder(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute, final Value<T> value) {
     return new DefaultTextFieldBuilder<>(entityDefinition.getProperty(attribute), value);
   }
 
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param value the value
+   * @return a builder
+   */
   public FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute, final Value<String> value) {
     return new DefaultFormattedTextFieldBuilder(entityDefinition.getProperty(attribute), value);
   }

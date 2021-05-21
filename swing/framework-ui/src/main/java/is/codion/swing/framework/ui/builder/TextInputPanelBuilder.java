@@ -26,6 +26,7 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
   TextInputPanelBuilder columns(int columns);
 
   /**
+   * @param buttonFocusable true if the dialog button should be focusable
    * @return this builder instance
    */
   TextInputPanelBuilder buttonFocusable(boolean buttonFocusable);

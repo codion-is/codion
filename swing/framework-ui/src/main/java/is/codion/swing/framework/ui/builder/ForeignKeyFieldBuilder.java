@@ -12,5 +12,9 @@ import javax.swing.JTextField;
  */
 public interface ForeignKeyFieldBuilder extends ComponentBuilder<Entity, JTextField, ForeignKeyFieldBuilder> {
 
+  /**
+   * @param columns the number of colums in the text field
+   * @return this builder instance
+   */
   ForeignKeyFieldBuilder columns(int columns);
 }

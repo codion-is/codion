@@ -21,6 +21,7 @@ public interface ForeignKeySearchFieldBuilder extends ComponentBuilder<Entity, E
   ForeignKeySearchFieldBuilder columns(int columns);
 
   /**
+   * @param selectionProviderFactory the selection provider factory to use
    * @return this builder instance
    */
   ForeignKeySearchFieldBuilder selectionProviderFactory(Function<EntitySearchModel,

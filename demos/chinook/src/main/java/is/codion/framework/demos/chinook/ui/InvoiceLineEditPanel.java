@@ -33,7 +33,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
             .columns(15)
             .build();
     textField(InvoiceLine.QUANTITY)
-            .selectAllOnFocusGained(true)
+            .selectAllOnFocusGained()
             .action(Control.control(this::save))
             .build();
 

@@ -44,23 +44,23 @@ public class InvoiceEditPanel extends EntityEditPanel {
             .columns(12)
             .build();
     textField(Invoice.BILLINGADDRESS)
-            .selectAllOnFocusGained(true)
+            .selectAllOnFocusGained()
             .columns(16)
             .build();
     textField(Invoice.BILLINGCITY)
-            .selectAllOnFocusGained(true)
+            .selectAllOnFocusGained()
             .columns(16)
             .build();
     textField(Invoice.BILLINGSTATE)
-            .selectAllOnFocusGained(true)
+            .selectAllOnFocusGained()
             .columns(16)
             .build();
     textField(Invoice.BILLINGCOUNTRY)
-            .selectAllOnFocusGained(true)
+            .selectAllOnFocusGained()
             .columns(16)
             .build();
     textField(Invoice.BILLINGPOSTALCODE)
-            .selectAllOnFocusGained(true)
+            .selectAllOnFocusGained()
             .columns(16)
             .build();
 

@@ -59,8 +59,8 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
   }
 
   @Override
-  public TextFieldBuilder<T> selectAllOnFocusGained(final boolean selectAllOnFocusGained) {
-    this.selectAllOnFocusGained = selectAllOnFocusGained;
+  public TextFieldBuilder<T> selectAllOnFocusGained() {
+    this.selectAllOnFocusGained = true;
     return this;
   }
 

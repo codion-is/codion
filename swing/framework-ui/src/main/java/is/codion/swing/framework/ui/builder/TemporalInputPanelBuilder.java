@@ -27,6 +27,7 @@ public interface TemporalInputPanelBuilder<T extends Temporal> extends Component
   TemporalInputPanelBuilder<T> columns(int columns);
 
   /**
+   * @param calendarButton true if a calendar button should be included (may not be supported)
    * @return this builder instance
    */
   TemporalInputPanelBuilder<T> calendarButton(boolean calendarButton);

@@ -37,7 +37,7 @@ public interface TextFieldBuilder<T> extends ComponentBuilder<T, JTextField, Tex
    * Makes the text field select all when it gains focus
    * @return this builder instance
    */
-  TextFieldBuilder<T> selectAllOnFocusGained(boolean selectAllOnFocusGained);
+  TextFieldBuilder<T> selectAllOnFocusGained();
 
   /**
    * Makes the text field convert all lower case input to upper case

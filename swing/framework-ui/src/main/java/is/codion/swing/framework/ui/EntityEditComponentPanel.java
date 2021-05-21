@@ -444,6 +444,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for temporal input panels.
    * @param attribute the attribute for which to build a temporal input panel
+   * @param <T> the temporal type
    * @return a text area builder
    */
   protected final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Attribute<T> attribute) {
@@ -458,6 +459,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for text fields.
    * @param attribute the attribute for which to build a text field
+   * @param <T> the value type
    * @return a text field builder
    */
   protected final <T> TextFieldBuilder<T> textField(final Attribute<T> attribute) {
@@ -505,6 +507,8 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for combo boxes.
    * @param attribute the attribute for which to build combo box
+   * @param comboBoxModel the combo box model
+   * @param <T> the value type
    * @return a combo box builder
    */
   protected final <T> ComboBoxBuilder<T> comboBox(final Attribute<T> attribute,
@@ -517,6 +521,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for value list combo boxes.
    * @param attribute the attribute for which to build a value list combo box
+   * @param <T> the value type
    * @return a value list combo box builder
    */
   protected final <T> ValueListComboBoxBuilder<T> valueListComboBox(final Attribute<T> attribute) {
@@ -528,6 +533,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for combo boxes, containing the values of the given attribute.
    * @param attribute the attribute for which to build a combo box
+   * @param <T> the value type
    * @return a combo box builder
    */
   protected final <T> ComboBoxBuilder<T> attributeComboBox(final Attribute<T> attribute) {
@@ -539,7 +545,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a builder for foreign key combo boxes.
-   * @param attribute the attribute for which to build a foreign key combo box
+   * @param foreignKey the foreign key for which to build a combo box
    * @return a foreign key combo box builder
    */
   protected final ForeignKeyComboBoxBuilder foreignKeyComboBox(final ForeignKey foreignKey) {
@@ -551,7 +557,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a builder for foreign key search fields.
-   * @param attribute the attribute for which to build a foreign key search field
+   * @param foreignKey the foreign key for which to build a search field
    * @return a foreign key search field builder
    */
   protected final ForeignKeySearchFieldBuilder foreignKeySearchField(final ForeignKey foreignKey) {
@@ -563,7 +569,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a builder for read-only foreign key fields.
-   * @param attribute the attribute for which to build a foreign key field
+   * @param foreignKey the foreign key for which to build a field
    * @return a foreign key field builder
    */
   protected final ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {

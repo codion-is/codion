@@ -12,6 +12,7 @@ import is.codion.swing.framework.ui.EntityComboBox;
 public interface ForeignKeyComboBoxBuilder extends ComponentBuilder<Entity, EntityComboBox, ForeignKeyComboBoxBuilder> {
 
   /**
+   * @param popupWidth the required popup with
    * @return this builder instance
    */
   ForeignKeyComboBoxBuilder popupWidth(int popupWidth);
