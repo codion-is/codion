@@ -21,6 +21,8 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int rows;
   private int columns;
+  private boolean lineWrap = true;
+  private boolean wrapStyleWord = true;
 
   DefaultTextAreaBuilder(final Property<String> attribute, final Value<String> value) {
     super(attribute, value);
@@ -45,15 +47,26 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
   }
 
   @Override
+  public TextAreaBuilder lineWrap(final boolean lineWrap) {
+    this.lineWrap = lineWrap;
+    return this;
+  }
+
+  @Override
+  public TextAreaBuilder wrapStyleWord(final boolean wrapStyleWord) {
+    this.wrapStyleWord = wrapStyleWord;
+    return this;
+  }
+
+  @Override
   protected JTextArea buildComponent() {
     if (!property.getAttribute().isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
 
-    final JTextArea textArea = setDescriptionAndEnabledState(rows > 0 && columns > 0 ? new JTextArea(rows, columns) :
-            new JTextArea(), property.getDescription(), enabledState);
-    textArea.setLineWrap(true);//todo
-    textArea.setWrapStyleWord(true);//todo
+    final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
+    textArea.setLineWrap(lineWrap);
+    textArea.setWrapStyleWord(wrapStyleWord);
     if (property.getMaximumLength() > 0) {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(
               parsingDocumentFilter(stringLengthValidator(property.getMaximumLength())));

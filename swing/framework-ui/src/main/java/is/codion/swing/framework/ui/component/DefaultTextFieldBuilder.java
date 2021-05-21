@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Property;
@@ -100,7 +99,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
   }
 
   private JTextField createTextField() {
-    final JTextField textField = createTextField(property, enabledState);
+    final JTextField textField = createTextField(property);
     final Attribute<T> attribute = property.getAttribute();
     if (attribute.isString()) {
       ComponentValues.textComponent(textField, property.getFormat(), updateOn).link((Value<String>) value);
@@ -146,11 +145,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
     return textField;
   }
 
-  static JTextField createTextField(final Property<?> property, final StateObserver enabledState) {
-    return setDescriptionAndEnabledState(createTextField(property), property.getDescription(), enabledState);
-  }
-
-  private static JTextField createTextField(final Property<?> property) {
+  static JTextField createTextField(final Property<?> property) {
     final Attribute<?> attribute = property.getAttribute();
     if (attribute.isInteger()) {
       return initializeIntegerField((Property<Integer>) property);

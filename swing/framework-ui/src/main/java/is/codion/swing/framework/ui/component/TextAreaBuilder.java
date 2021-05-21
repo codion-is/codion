@@ -29,4 +29,16 @@ public interface TextAreaBuilder extends ComponentBuilder<String, JTextArea, Tex
    * @return this builder instance
    */
   TextAreaBuilder columns(int columns);
+
+  /**
+   * @param lineWrap true if line wrap should be used
+   * @return this builder instance
+   */
+  TextAreaBuilder lineWrap(boolean lineWrap);
+
+  /**
+   * @param wrapStyleWord true if wrap style word should be used
+   * @return this builder instance
+   */
+  TextAreaBuilder wrapStyleWord(boolean wrapStyleWord);
 }

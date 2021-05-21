@@ -53,9 +53,8 @@ final class DefaultFormattedTextFieldBuilder
 
   @Override
   protected JFormattedTextField buildComponent() {
-    final JFormattedTextField textField = setDescriptionAndEnabledState(createFormattedField(formatMaskString,
-            valueContainsLiterals ? TextFields.ValueContainsLiterals.YES : TextFields.ValueContainsLiterals.NO),
-            property.getDescription(), enabledState);
+    final JFormattedTextField textField = createFormattedField(formatMaskString,
+            valueContainsLiterals ? TextFields.ValueContainsLiterals.YES : TextFields.ValueContainsLiterals.NO);
     ComponentValues.textComponent(textField, null, updateOn).link(value);
     textField.setColumns(columns);
 

@@ -42,7 +42,7 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
     ComponentValues.itemComboBox(comboBox).link(value);
     DefaultComboBoxBuilder.addComboBoxCompletion(comboBox);
 
-    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+    return comboBox;
   }
 
   @Override

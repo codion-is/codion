@@ -53,16 +53,19 @@ final class DefaultForeignKeySearchFieldBuilder
     new SearchUIValue(searchField.getModel()).link(value);
     selectAllOnFocusGained(searchField);
 
-
-    final String propertyDescription = property.getDescription();
-
-    return setDescriptionAndEnabledState(searchField, propertyDescription == null ? searchModel.getDescription() :
-            propertyDescription, enabledState);
+    return searchField;
   }
 
   @Override
   protected void setTransferFocusOnEnter(final EntitySearchField component) {
     component.setTransferFocusOnEnter(true);
+  }
+
+  @Override
+  protected String getDescription(final EntitySearchField component) {
+    final String description = super.getDescription(component);
+
+    return description == null ? searchModel.getDescription() : description;
   }
 
   private static final class SearchUIValue extends AbstractValue<Entity> {

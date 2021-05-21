@@ -41,7 +41,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
     comboBox.setEditable(editable);
     ComponentValues.comboBox(comboBox).link(value);
 
-    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+    return comboBox;
   }
 
   @Override

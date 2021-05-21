@@ -46,13 +46,13 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
             includeCaption ? property.getCaption() : null);
     ComponentValues.toggleButton(checkBox).link(value);
 
-    return setDescriptionAndEnabledState(checkBox, property.getDescription(), enabledState);
+    return checkBox;
   }
 
   private JCheckBox createCheckBox() {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     ComponentValues.toggleButton(checkBox).link(value);
 
-    return setDescriptionAndEnabledState(checkBox, property.getDescription(), enabledState);
+    return checkBox;
   }
 }

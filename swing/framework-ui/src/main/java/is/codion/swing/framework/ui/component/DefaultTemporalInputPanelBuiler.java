@@ -67,7 +67,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
     }
 
     final TemporalField<Temporal> temporalField =
-            (TemporalField<Temporal>) DefaultTextFieldBuilder.createTextField(property, enabledState);
+            (TemporalField<Temporal>) DefaultTextFieldBuilder.createTextField(property);
 
     ComponentValues.temporalField(temporalField, updateOn).link((Value<Temporal>) value);
 

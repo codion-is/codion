@@ -7020,3 +7020,4 @@
   ComponentBuilder, more generics magic to prevent overrides in sub-interfaces
   EntityEditComponentPanel now handles building components
   AbstractComponentBuilder and subclasses refactored
+  AbstractComponentBuilder now handles description and enabled state

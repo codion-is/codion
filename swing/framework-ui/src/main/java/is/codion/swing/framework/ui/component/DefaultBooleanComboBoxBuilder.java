@@ -30,7 +30,7 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
     DefaultComboBoxBuilder.addComboBoxCompletion(comboBox);
     comboBox.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
-    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+    return comboBox;
   }
 
   @Override

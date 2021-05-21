@@ -77,6 +77,7 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   public final T build() {
     final T component = buildComponent();
     setPreferredSize(component);
+    setDescriptionAndEnabledState(component);
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }
@@ -99,6 +100,14 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
     Components.transferFocusOnEnter(component);
   }
 
+  /**
+   * @param component the component
+   * @return a description for the component
+   */
+  protected String getDescription(final T component) {
+    return property.getDescription();
+  }
+
   private void setPreferredSize(final T component) {
     if (preferredHeight > 0) {
       Components.setPreferredHeight(component, preferredHeight);
@@ -108,10 +117,9 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
     }
   }
 
-  static <T extends JComponent> T setDescriptionAndEnabledState(final T component, final String description,
-                                                                final StateObserver enabledState) {
-    if (description != null) {
-      component.setToolTipText(description);
+  private T setDescriptionAndEnabledState(final T component) {
+    if (property.getDescription() != null) {
+      component.setToolTipText(getDescription(component));
     }
     if (enabledState != null) {
       Components.linkToEnabledState(enabledState, component);

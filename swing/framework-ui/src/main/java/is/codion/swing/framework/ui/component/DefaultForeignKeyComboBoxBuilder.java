@@ -40,7 +40,7 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
       comboBox.setPopupWidth(popupWidth);
     }
 
-    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+    return comboBox;
   }
 
   @Override
