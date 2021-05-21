@@ -18,11 +18,9 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntitySearchField;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -34,7 +32,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.swing.common.ui.Components.removeTransferFocusOnEnter;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
@@ -103,8 +100,9 @@ public final class ClientTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Artist.NAME);
-      JTextField nameField = createTextField(Artist.NAME);
-      nameField.setColumns(15);
+      textFieldBuilder(Artist.NAME)
+              .columns(15)
+              .build();
       addInputPanel(Artist.NAME);
     }
   }
@@ -118,12 +116,13 @@ public final class ClientTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Album.ARTIST_FK);
-      EntitySearchField artistSearchField = createForeignKeySearchField(Album.ARTIST_FK);
-      artistSearchField.setColumns(15);
-      JTextField titleField = createTextField(Album.TITLE);
-      removeTransferFocusOnEnter(titleField);
-      titleField.setAction(createInsertControl());
-      titleField.setColumns(15);
+      foreignKeySearchFieldBuilder(Album.ARTIST_FK)
+              .columns(15)
+              .build();
+      textFieldBuilder(Album.TITLE)
+              .action(createInsertControl())
+              .columns(15)
+              .build();
       setLayout(gridLayout(2, 1));
       addInputPanel(Album.ARTIST_FK);
       addInputPanel(Album.TITLE);

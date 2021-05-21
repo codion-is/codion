@@ -4,7 +4,6 @@
 package is.codion.framework.demos.empdept.ui;
 
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -25,10 +24,15 @@ public class DepartmentEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Department.ID);
 
-    final JTextField departmentIdField = createTextField(Department.ID);
-    departmentIdField.setColumns(10);
-    TextFields.upperCase(createTextField(Department.NAME));
-    TextFields.upperCase(createTextField(Department.LOCATION));
+    final JTextField departmentIdField = textFieldBuilder(Department.ID)
+            .columns(10)
+            .build();
+    textFieldBuilder(Department.NAME)
+            .upperCase()
+            .build();
+    textFieldBuilder(Department.LOCATION)
+            .upperCase()
+            .build();
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {

@@ -22,9 +22,9 @@ public final class VisitEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Visit.PET_FK);
 
-    createForeignKeyComboBox(Visit.PET_FK);
-    createTextField(Visit.DATE);
-    createTextArea(Visit.DESCRIPTION, 4, 20);
+    foreignKeyComboBoxBuilder(Visit.PET_FK).build();
+    textFieldBuilder(Visit.DATE).build();
+    textAreaBuilder(Visit.DESCRIPTION).rows(4).columns(20).build();
 
     JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
     northPanel.add(createInputPanel(Visit.PET_FK));

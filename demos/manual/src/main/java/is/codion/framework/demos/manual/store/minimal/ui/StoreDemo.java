@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
@@ -32,10 +31,18 @@ public class StoreDemo {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Customer.FIRST_NAME);
-      createTextField(Customer.FIRST_NAME).setColumns(12);
-      createTextField(Customer.LAST_NAME).setColumns(12);
-      createTextField(Customer.EMAIL).setColumns(12);
-      createCheckBox(Customer.IS_ACTIVE, IncludeCaption.NO);
+      textFieldBuilder(Customer.FIRST_NAME)
+              .columns(12)
+              .build();
+      textFieldBuilder(Customer.LAST_NAME)
+              .columns(12)
+              .build();
+      textFieldBuilder(Customer.EMAIL)
+              .columns(12)
+              .build();
+      checkBoxBuilder(Customer.IS_ACTIVE)
+              .includeCaption(false)
+              .build();
       setLayout(gridLayout(2, 2));
       addInputPanel(Customer.FIRST_NAME);
       addInputPanel(Customer.LAST_NAME);
@@ -53,9 +60,14 @@ public class StoreDemo {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Address.STREET);
-      createForeignKeyComboBox(Address.CUSTOMER_FK);
-      createTextField(Address.STREET).setColumns(12);
-      createTextField(Address.CITY).setColumns(12);
+      foreignKeyComboBoxBuilder(Address.CUSTOMER_FK)
+              .build();
+      textFieldBuilder(Address.STREET)
+              .columns(12)
+              .build();
+      textFieldBuilder(Address.CITY)
+              .columns(12)
+              .build();
       setLayout(gridLayout(3, 1));
       addInputPanel(Address.CUSTOMER_FK);
       addInputPanel(Address.STREET);

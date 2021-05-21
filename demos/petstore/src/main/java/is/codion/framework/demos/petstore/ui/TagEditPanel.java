@@ -18,7 +18,7 @@ public class TagEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Tag.TAG);
 
-    createTextField(Tag.TAG).setColumns(16);
+    textFieldBuilder(Tag.TAG).columns(16).build();
 
     setLayout(Layouts.flexibleGridLayout(1, 1));
     addInputPanel(Tag.TAG);

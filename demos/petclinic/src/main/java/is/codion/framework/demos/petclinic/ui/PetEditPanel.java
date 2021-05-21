@@ -25,10 +25,10 @@ public final class PetEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Pet.NAME);
 
-    createForeignKeyComboBox(Pet.OWNER_FK);
-    createTextField(Pet.NAME).setColumns(12);
-    createTextField(Pet.BIRTH_DATE);
-    EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
+    foreignKeyComboBoxBuilder(Pet.OWNER_FK).build();
+    textFieldBuilder(Pet.NAME).columns(12).build();
+    textFieldBuilder(Pet.BIRTH_DATE).build();
+    EntityComboBox petTypeBox = foreignKeyComboBoxBuilder(Pet.PET_TYPE_FK).build();
 
     Action newPetTypeAction = EntityPanel.builder(PetType.TYPE)
             .editPanelClass(PetTypeEditPanel.class)

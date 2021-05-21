@@ -3,12 +3,10 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
-import static is.codion.swing.common.ui.Components.setPreferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
@@ -24,18 +22,43 @@ public class CustomerEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Customer.FIRSTNAME);
 
-    createTextField(Customer.FIRSTNAME).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.LASTNAME).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.COMPANY).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.ADDRESS).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.CITY).setColumns(TEXT_FIELD_COLUMNS);
-    TextFields.upperCase(createTextField(Customer.STATE)).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.COUNTRY).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.POSTALCODE).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.PHONE).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.FAX).setColumns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.EMAIL).setColumns(TEXT_FIELD_COLUMNS);
-    setPreferredHeight(createForeignKeyComboBox(Customer.SUPPORTREP_FK), getPreferredTextFieldHeight());
+    textFieldBuilder(Customer.FIRSTNAME)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.LASTNAME)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.COMPANY)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.ADDRESS)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.CITY)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.STATE)
+            .columns(TEXT_FIELD_COLUMNS)
+            .upperCase()
+            .build();
+    textFieldBuilder(Customer.COUNTRY)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.POSTALCODE)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.PHONE)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.FAX)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    textFieldBuilder(Customer.EMAIL)
+            .columns(TEXT_FIELD_COLUMNS)
+            .build();
+    foreignKeyComboBoxBuilder(Customer.SUPPORTREP_FK)
+            .preferredHeight(getPreferredTextFieldHeight())
+            .build();
 
     setLayout(flexibleGridLayout(4, 3));
     addInputPanel(Customer.FIRSTNAME);

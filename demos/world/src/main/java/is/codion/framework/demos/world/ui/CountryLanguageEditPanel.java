@@ -3,9 +3,7 @@ package is.codion.framework.demos.world.ui;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
-import static is.codion.swing.common.ui.Components.setPreferredWidth;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CountryLanguageEditPanel extends EntityEditPanel {
@@ -18,10 +16,10 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(CountryLanguage.COUNTRY_FK);
 
-    setPreferredWidth(createForeignKeyComboBox(CountryLanguage.COUNTRY_FK), 120);
-    createTextField(CountryLanguage.LANGUAGE).setColumns(12);
-    createCheckBox(CountryLanguage.IS_OFFICIAL, IncludeCaption.NO);
-    createTextField(CountryLanguage.PERCENTAGE);
+    foreignKeyComboBoxBuilder(CountryLanguage.COUNTRY_FK).preferredWidth(120).build();
+    textFieldBuilder(CountryLanguage.LANGUAGE).columns(12).build();
+    checkBoxBuilder(CountryLanguage.IS_OFFICIAL).includeCaption(false).build();
+    textFieldBuilder(CountryLanguage.PERCENTAGE).build();
 
     setLayout(gridLayout(2, 4));
 

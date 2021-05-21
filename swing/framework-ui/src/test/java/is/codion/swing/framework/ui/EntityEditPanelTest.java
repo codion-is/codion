@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityInputComponents.CalendarButton;
 
 import org.junit.jupiter.api.Test;
 
@@ -72,13 +71,15 @@ public final class EntityEditPanelTest {
 
     @Override
     protected void initializeUI() {
-      createTextField(TestDomain.EMP_NAME);
-      createValueListComboBox(TestDomain.EMP_JOB);
-      createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
-      createForeignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
-      createTextField(TestDomain.EMP_SALARY);
-      createTextField(TestDomain.EMP_COMMISSION);
-      createTemporalInputPanel(TestDomain.EMP_HIREDATE, CalendarButton.YES);
+      textFieldBuilder(TestDomain.EMP_NAME).build();
+      valueListComboBoxBuilder(TestDomain.EMP_JOB).build();
+      foreignKeyComboBoxBuilder(TestDomain.EMP_MGR_FK).build();
+      foreignKeyComboBoxBuilder(TestDomain.EMP_DEPARTMENT_FK).build();
+      textFieldBuilder(TestDomain.EMP_SALARY).build();
+      textFieldBuilder(TestDomain.EMP_COMMISSION).build();
+      temporalInputPanelBuilder(TestDomain.EMP_HIREDATE)
+              .calendarButton(true)
+              .build();
 
       setInitialFocusAttribute(TestDomain.EMP_NAME);
 

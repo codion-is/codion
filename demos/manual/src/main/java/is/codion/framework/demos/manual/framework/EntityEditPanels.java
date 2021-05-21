@@ -14,13 +14,11 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.JCheckBox;
@@ -67,62 +65,98 @@ public final class EntityEditPanels {
 
     private void booleanValue() {
       // tag::booleanValue[]
-      JCheckBox checkBox = createCheckBox(Demo.BOOLEAN, IncludeCaption.NO);
+      JCheckBox checkBox =
+              checkBoxBuilder(Demo.BOOLEAN)
+                      .includeCaption(false)
+                      .build();
 
-      NullableCheckBox nullableCheckBox = createNullableCheckBox(Demo.BOOLEAN);
+      NullableCheckBox nullableCheckBox =
+              (NullableCheckBox) checkBoxBuilder(Demo.BOOLEAN)
+                      .nullable(true)
+                      .build();
 
-      JComboBox<Item<Boolean>> comboBox = createBooleanComboBox(Demo.BOOLEAN);
+      JComboBox<Item<Boolean>> comboBox =
+              booleanComboBoxBuilder(Demo.BOOLEAN)
+                      .build();
       // end::booleanValue[]
     }
 
     private void foreignKeyValue() {
       // tag::foreignKeyValue[]
-      EntityComboBox comboBox = createForeignKeyComboBox(Demo.FOREIGN_KEY);
+      EntityComboBox comboBox =
+              foreignKeyComboBoxBuilder(Demo.FOREIGN_KEY)
+                      .build();
 
-      EntitySearchField searchField = createForeignKeySearchField(Demo.FOREIGN_KEY);
+      EntitySearchField searchField =
+              foreignKeySearchFieldBuilder(Demo.FOREIGN_KEY)
+                      .build();
 
       //readOnly
-      JTextField textField = createForeignKeyField(Demo.FOREIGN_KEY);
+      JTextField textField =
+              foreignKeyFieldBuilder(Demo.FOREIGN_KEY)
+                      .build();
       // end::foreignKeyValue[]
     }
 
     private void temporalValue() {
       // tag::temporalValue[]
-      JTextField textField = createTextField(Demo.LOCAL_DATE);
+      JTextField textField =
+              textFieldBuilder(Demo.LOCAL_DATE)
+                      .build();
 
-      TemporalInputPanel<LocalDate> inputPanel = createTemporalInputPanel(Demo.LOCAL_DATE);
+      TemporalInputPanel<LocalDate>
+              inputPanel = temporalInputPanelBuilder(Demo.LOCAL_DATE)
+              .build();
       // end::temporalValue[]
     }
 
     private void numericalValue() {
       // tag::numericalValue[]
-      IntegerField integerField = (IntegerField) createTextField(Demo.INTEGER);
+      IntegerField integerField =
+              (IntegerField) textFieldBuilder(Demo.INTEGER)
+                      .build();
 
-      LongField longField = (LongField) createTextField(Demo.LONG);
+      LongField longField =
+              (LongField) textFieldBuilder(Demo.LONG)
+                      .build();
 
-      DoubleField doubleField = (DoubleField) createTextField(Demo.DOUBLE);
+      DoubleField doubleField =
+              (DoubleField) textFieldBuilder(Demo.DOUBLE)
+                      .build();
 
-      BigDecimalField bigDecimalField = (BigDecimalField) createTextField(Demo.BIG_DECIMAL);
+      BigDecimalField bigDecimalField =
+              (BigDecimalField) textFieldBuilder(Demo.BIG_DECIMAL)
+                      .build();
       // end::numericalValue[]
     }
 
     private void textValue() {
       // tag::textValue[]
-      JTextField textField = createTextField(Demo.TEXT);
+      JTextField textField =
+              textFieldBuilder(Demo.TEXT)
+                      .build();
 
-      JTextArea textArea = createTextArea(Demo.LONG_TEXT, 5, 20);
+      JTextArea textArea =
+              textAreaBuilder(Demo.LONG_TEXT)
+                      .rows(5).columns(20)
+                      .build();
 
-      TextInputPanel inputPanel = createTextInputPanel(Demo.LONG_TEXT);
+      TextInputPanel inputPanel =
+              textInputPanelBuilder(Demo.LONG_TEXT)
+                      .build();
 
       JFormattedTextField formattedField =
-              createMaskedTextField(Demo.FORMATTED_TEXT, "###:###",
-                      ValueContainsLiterals.YES);
+              formattedTextFieldBuilder(Demo.FORMATTED_TEXT)
+                      .formatMaskString("###:###")
+                      .valueContainsLiterals(true)
+                      .build();
       // end::textValue[]
     }
 
     private void valueList() {
       // tag::valueList[]
-      SteppedComboBox<Item<String>> comboBox = createValueListComboBox(Demo.VALUE_LIST);
+      SteppedComboBox<Item<String>> comboBox = valueListComboBoxBuilder(Demo.VALUE_LIST)
+              .build();
       // end::valueList[]
     }
 

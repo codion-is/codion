@@ -10,7 +10,6 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityInputComponents.Editable;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JComponent;
@@ -18,9 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import static is.codion.swing.common.ui.Components.createEastButtonPanel;
-import static is.codion.swing.common.ui.Components.setPreferredWidth;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.upperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
@@ -32,22 +29,24 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Country.CODE);
 
-    upperCase(createTextField(Country.CODE)).setColumns(12);
-    upperCase(createTextField(Country.CODE_2)).setColumns(12);
-    createTextField(Country.NAME).setColumns(12);
-    setPreferredWidth(createValueListComboBox(Country.CONTINENT), 120);
-    setPreferredWidth(createAttributeComboBox(Country.REGION), 120);
-    createTextField(Country.SURFACEAREA);
-    createTextField(Country.INDEPYEAR);
-    createTextField(Country.POPULATION);
-    createTextField(Country.LIFE_EXPECTANCY);
-    createTextField(Country.GNP);
-    createTextField(Country.GNPOLD);
-    createTextField(Country.LOCALNAME).setColumns(12);
-    setPreferredWidth(createAttributeComboBox(Country.GOVERNMENTFORM, null, Editable.YES), 120);
-    createTextField(Country.HEADOFSTATE).setColumns(12);
+    textFieldBuilder(Country.CODE).upperCase().columns(12).build();
+    textFieldBuilder(Country.CODE_2).upperCase().columns(12).build();
+    textFieldBuilder(Country.NAME).columns(12).build();
+    valueListComboBoxBuilder(Country.CONTINENT).preferredWidth(120).build();
+    attributeComboBoxBuilder(Country.REGION).preferredWidth(120).build();
+    textFieldBuilder(Country.SURFACEAREA).build();
+    textFieldBuilder(Country.INDEPYEAR).build();
+    textFieldBuilder(Country.POPULATION).build();
+    textFieldBuilder(Country.LIFE_EXPECTANCY).build();
+    textFieldBuilder(Country.GNP).build();
+    textFieldBuilder(Country.GNPOLD).build();
+    textFieldBuilder(Country.LOCALNAME).columns(12).build();
+    attributeComboBoxBuilder(Country.GOVERNMENTFORM).preferredWidth(120).editable(true).build();
+    textFieldBuilder(Country.HEADOFSTATE).columns(12).build();
     EntityComboBox capitalComboBox =
-            setPreferredWidth(createForeignKeyComboBox(Country.CAPITAL_FK), 120);
+            foreignKeyComboBoxBuilder(Country.CAPITAL_FK)
+                    .preferredWidth(120)
+                    .build();
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
             EntityPanel.builder(City.TYPE)
