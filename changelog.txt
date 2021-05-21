@@ -7023,3 +7023,4 @@
   AbstractComponentBuilder now handles description and enabled state
   EntityEditComponentPanel, create prefix added (back) to builder factory methods
   ComponentBuilder.focusable() added
+  TextFieldBuilder.editable() added

@@ -14,7 +14,7 @@ import javax.swing.JCheckBox;
 final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCheckBox, CheckBoxBuilder>
         implements CheckBoxBuilder {
 
-  private boolean includeCaption;
+  private boolean includeCaption;//todo configuration value for default
   private boolean nullable = false;
 
   DefaultCheckBoxBuilder(final Property<Boolean> attribute, final Value<Boolean> value) {

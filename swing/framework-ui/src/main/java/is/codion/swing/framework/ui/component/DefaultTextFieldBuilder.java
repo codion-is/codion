@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JTextField, TextFieldBuilder<T>>
         implements TextFieldBuilder<T> {
 
+  private boolean editable = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int columns;
   private Action action;
@@ -37,6 +38,12 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
 
   DefaultTextFieldBuilder(final Property<T> attribute, final Value<T> value) {
     super(attribute, value);
+  }
+
+  @Override
+  public TextFieldBuilder<T> editable(final boolean editable) {
+    this.editable = editable;
+    return this;
   }
 
   @Override
@@ -81,6 +88,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
   @Override
   protected JTextField buildComponent() {
     final JTextField textField = createTextField();
+    textField.setEditable(editable);
     textField.setColumns(columns);
     if (action != null) {
       textField.setAction(action);
