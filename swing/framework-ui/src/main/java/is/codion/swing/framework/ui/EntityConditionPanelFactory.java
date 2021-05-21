@@ -11,6 +11,7 @@ import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
+import is.codion.swing.framework.ui.builder.EntityInputComponents;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -13,6 +13,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.builder.EntityInputComponents;
 
 import org.junit.jupiter.api.Test;
 

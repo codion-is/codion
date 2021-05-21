@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.swing.framework.ui.builder.EntityInputComponents;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;
