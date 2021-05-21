@@ -276,6 +276,27 @@ public interface Entity extends Comparable<Entity> {
   Set<Map.Entry<Attribute<?>, Object>> originalEntrySet();
 
   /**
+   * A builder for {@link Entity} instances.
+   */
+  interface Builder {
+
+    /**
+     * Adds the given attribute value to this builder
+     * @param attribute the attribute
+     * @param value the value
+     * @param <T> the value type
+     * @return this builder instance
+     */
+    <T> Builder with(Attribute<T> attribute, T value);
+
+    /**
+     * Builds the entity instance
+     * @return a new Entity instance
+     */
+    Entity build();
+  }
+
+  /**
    * Checks if the primary key of any of the given entities is modified
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key

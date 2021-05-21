@@ -25,22 +25,24 @@ public final class EntitiesInAction {
             .setClientTypeId("Manual")
             .setUser(User.parseUser("scott:tiger"));
 
-    Entities store = connectionProvider.getEntities();
+    Entities entities = connectionProvider.getEntities();
 
     EntityConnection connection = connectionProvider.getConnection();
 
     //populate a new category
-    Entity insects = store.entity(Category.TYPE);
-    insects.put(Category.NAME, "Insects");
-    insects.put(Category.DESCRIPTION, "Creepy crawlies");
+    Entity insects = entities.builder(Category.TYPE)
+            .with(Category.NAME, "Insects")
+            .with(Category.DESCRIPTION, "Creepy crawlies")
+            .build();
 
     connection.insert(insects);
 
     //populate a new product for the insect category
-    Entity smallBeetles = store.entity(Product.TYPE);
-    smallBeetles.put(Product.CATEGORY_FK, insects);
-    smallBeetles.put(Product.NAME, "Small Beetles");
-    smallBeetles.put(Product.DESCRIPTION, "Beetles on the smaller side");
+    Entity smallBeetles = entities.builder(Product.TYPE)
+            .with(Product.CATEGORY_FK, insects)
+            .with(Product.NAME, "Small Beetles")
+            .with(Product.DESCRIPTION, "Beetles on the smaller side")
+            .build();
 
     connection.insert(smallBeetles);
 

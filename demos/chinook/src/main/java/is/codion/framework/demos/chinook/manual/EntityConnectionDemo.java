@@ -180,14 +180,16 @@ public final class EntityConnectionDemo {
     // tag::insert[]
     Entities entities = connection.getEntities();
 
-    Entity myBand = entities.entity(Artist.TYPE);
-    myBand.put(Artist.NAME, "My Band");
+    Entity myBand = entities.builder(Artist.TYPE)
+            .with(Artist.NAME, "My Band")
+            .build();
 
     connection.insert(myBand);
 
-    Entity album = entities.entity(Album.TYPE);
-    album.put(Album.ARTIST_FK, myBand);
-    album.put(Album.TITLE, "First album");
+    Entity album = entities.builder(Album.TYPE)
+            .with(Album.ARTIST_FK, myBand)
+            .with(Album.TITLE, "First album")
+            .build();
 
     connection.insert(album);
     // end::insert[]

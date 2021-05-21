@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,19 @@ public abstract class DefaultEntities implements Entities, Serializable {
   @Override
   public final Entity entity(final Key key) {
     return getDefinition(key.getEntityType()).entity(key);
+  }
+
+  @Override
+  public final Entity.Builder builder(final EntityType<?> entityType) {
+    return new DefaultEntityBuilder(getDefinition(entityType));
+  }
+
+  @Override
+  public final Entity.Builder builder(final Key key) {
+    final Entity.Builder builder = builder(requireNonNull(key).getEntityType());
+    key.getAttributes().forEach(attribute -> builder.with((Attribute<Object>) attribute, key.get(attribute)));
+
+    return builder;
   }
 
   @Override
@@ -186,5 +200,36 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     REGISTERED_ENTITIES.put(domainType, this);
+  }
+
+  private static final class DefaultEntityBuilder implements Entity.Builder {
+
+    private final EntityDefinition definition;
+    private final Map<Attribute<?>, Object> attributeValues = new HashMap<>();
+    private final Map<ForeignKey, Entity> foreignKeyValues = new HashMap<>();
+
+    private DefaultEntityBuilder(final EntityDefinition definition) {
+      this.definition = definition;
+    }
+
+    @Override
+    public <T> Entity.Builder with(final Attribute<T> attribute, final T value) {
+      if (attribute instanceof ForeignKey) {
+        foreignKeyValues.put((ForeignKey) attribute, (Entity) value);
+      }
+      else {
+        attributeValues.put(definition.getProperty(attribute).getAttribute(), value);
+      }
+
+      return this;
+    }
+
+    @Override
+    public Entity build() {
+      final Entity entity = definition.entity(attributeValues, null);
+      foreignKeyValues.forEach(entity::put);
+
+      return entity;
+    }
   }
 }

@@ -76,14 +76,16 @@ class Introduction {
     EntityDefinition cityDefinition = customerDefinition.getForeignDefinition(Customer.CITY_FK);
     List<Attribute<?>> cityPrimaryKeyAttributes = cityDefinition.getPrimaryKeyAttributes();
 
-    Entity city = entities.entity(City.TYPE);
-    city.put(City.NAME, "Reykjavík");
+    Entity city = entities.builder(City.TYPE)
+            .with(City.NAME, "Reykjavík")
+            .build();
 
     Key customerKey = entities.primaryKey(Customer.TYPE).withValue(42);
 
-    Entity customer = entities.entity(customerKey);
-    customer.put(Customer.NAME, "John");
-    customer.put(Customer.CITY_FK, city);
+    Entity customer = entities.builder(customerKey)
+            .with(Customer.NAME, "John")
+            .with(Customer.CITY_FK, city)
+            .build();
     // end::domainUsage[]
   }
 }

@@ -28,11 +28,10 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
     final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
     final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
     final EntityEditModel albumEditModel = albumModel.getEditModel();
-    final Entity album = application.getEntities().entity(Album.TYPE);
-    album.put(Album.ARTIST_FK, artist);
-    album.put(Album.TITLE, "Title");
-
-    albumEditModel.setEntity(album);
+    albumEditModel.setEntity(application.getEntities().builder(Album.TYPE)
+            .with(Album.ARTIST_FK, artist)
+            .with(Album.TITLE, "Title")
+            .build());
     try {
       final Entity insertedAlbum = albumEditModel.insert();
       final SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).getEditModel();

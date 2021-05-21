@@ -260,21 +260,24 @@ public final class Example {
 
     Entities entities = domain.getEntities();
 
-    Entity customer = entities.entity(Customer.TYPE);
-    customer.put(Customer.FIRST_NAME, "John");
-    customer.put(Customer.LAST_NAME, "Doe");
+    Entity customer = entities.builder(Customer.TYPE)
+            .with(Customer.FIRST_NAME, "John")
+            .with(Customer.LAST_NAME, "Doe")
+            .build();
 
     connection.insert(customer);
 
-    Entity address = entities.entity(Address.TYPE);
-    address.put(Address.STREET, "Elm Street 321");
-    address.put(Address.CITY, "Syracuse");
+    Entity address = entities.builder(Address.TYPE)
+            .with(Address.STREET, "Elm Street 321")
+            .with(Address.CITY, "Syracuse")
+            .build();
 
     connection.insert(address);
 
-    Entity customerAddress = entities.entity(CustomerAddress.TYPE);
-    customerAddress.put(CustomerAddress.CUSTOMER_FK, customer);
-    customerAddress.put(CustomerAddress.ADDRESS_FK, address);
+    Entity customerAddress = entities.builder(CustomerAddress.TYPE)
+            .with(CustomerAddress.CUSTOMER_FK, customer)
+            .with(CustomerAddress.ADDRESS_FK, address)
+            .build();
 
     connection.insert(customerAddress);
 

@@ -62,6 +62,20 @@ public interface Entities {
   Entity entity(Key key);
 
   /**
+   * Creates a new {@link Entity.Builder} instance.
+   * @param entityType the entityType
+   * @return a new {@link Entity.Builder}
+   */
+  Entity.Builder builder(EntityType<?> entityType);
+
+  /**
+   * Creates a new {@link Entity.Builder} instance, initialized with the values from the given primary key.
+   * @param key the primary key
+   * @return a new {@link Entity.Builder}
+   */
+  Entity.Builder builder(Key key);
+
+  /**
    * Creates a new {@link Key} instance with the given entityType
    * @param entityType the entityType
    * @return a new {@link Key} instance

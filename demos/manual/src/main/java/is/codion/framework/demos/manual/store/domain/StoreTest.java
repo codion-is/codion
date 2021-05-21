@@ -44,12 +44,11 @@ public class StoreTest extends EntityTestUnit {
           throws DatabaseException {
     //see if the currently running test requires an ADDRESS entity
     if (entityType.equals(Address.TYPE)) {
-      Entity address = getEntities().entity(Address.TYPE);
-      address.put(Address.ID, 21);
-      address.put(Address.STREET, "One Way");
-      address.put(Address.CITY, "Sin City");
-
-      return address;
+      return getEntities().builder(Address.TYPE)
+              .with(Address.ID, 21)
+              .with(Address.STREET, "One Way")
+              .with(Address.CITY, "Sin City")
+              .build();
     }
 
     return super.initializeReferenceEntity(entityType, foreignKeyEntities);
@@ -61,30 +60,27 @@ public class StoreTest extends EntityTestUnit {
     if (entityType.equals(Address.TYPE)) {
       //Initialize a entity representing the table STORE.ADDRESS,
       //which can be used for the testing
-      Entity address = getEntities().entity(Address.TYPE);
-      address.put(Address.ID, 42);
-      address.put(Address.STREET, "Street");
-      address.put(Address.CITY, "City");
-
-      return address;
+      return getEntities().builder(Address.TYPE)
+              .with(Address.ID, 42)
+              .with(Address.STREET, "Street")
+              .with(Address.CITY, "City")
+              .build();
     }
     else if (entityType.equals(Customer.TYPE)) {
       //Initialize a entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
-      Entity customer = getEntities().entity(Customer.TYPE);
-      customer.put(Customer.ID, UUID.randomUUID().toString());
-      customer.put(Customer.FIRST_NAME, "Robert");
-      customer.put(Customer.LAST_NAME, "Ford");
-      customer.put(Customer.IS_ACTIVE, true);
-
-      return customer;
+      return getEntities().builder(Customer.TYPE)
+              .with(Customer.ID, UUID.randomUUID().toString())
+              .with(Customer.FIRST_NAME, "Robert")
+              .with(Customer.LAST_NAME, "Ford")
+              .with(Customer.IS_ACTIVE, true)
+              .build();
     }
     else if (entityType.equals(CustomerAddress.TYPE)) {
-      Entity customerAddress = getEntities().entity(CustomerAddress.TYPE);
-      customerAddress.put(CustomerAddress.CUSTOMER_FK, foreignKeyEntities.get(Customer.TYPE));
-      customerAddress.put(CustomerAddress.ADDRESS_FK, foreignKeyEntities.get(Address.TYPE));
-
-      return customerAddress;
+      return getEntities().builder(CustomerAddress.TYPE)
+              .with(CustomerAddress.CUSTOMER_FK, foreignKeyEntities.get(Customer.TYPE))
+              .with(CustomerAddress.ADDRESS_FK, foreignKeyEntities.get(Address.TYPE))
+              .build();
     }
 
     return super.initializeTestEntity(entityType, foreignKeyEntities);

@@ -276,10 +276,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    final Entity dept = departmentModel.getConnectionProvider().getEntities().entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, -42);
-    dept.put(TestDomain.DEPARTMENT_NAME, "Name");
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
+    final Entity dept = departmentModel.getConnectionProvider().getEntities().builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -42)
+            .with(TestDomain.DEPARTMENT_NAME, "Name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "Loc")
+            .build();
 
     final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.EMP_ID, 8).clearPrimaryKey();
     emp.put(TestDomain.EMP_NAME, "NewName");
