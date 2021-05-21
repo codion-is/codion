@@ -18,6 +18,12 @@ import java.awt.Dimension;
 public interface ComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T, B>> {
 
   /**
+   * @param focusable false if the component should not be focusable
+   * @return this builder instance
+   */
+  B focusable(boolean focusable);
+
+  /**
    * @param preferredHeight the preferred component height
    * @return this builder instance
    */

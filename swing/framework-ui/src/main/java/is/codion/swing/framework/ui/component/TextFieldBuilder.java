@@ -15,6 +15,12 @@ import javax.swing.JTextField;
 public interface TextFieldBuilder<T> extends ComponentBuilder<T, JTextField, TextFieldBuilder<T>> {
 
   /**
+   * @param editable false if the field should not be editable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> editable(boolean editable);
+
+  /**
    * @param updateOn specifies when the underlying value should be updated
    * @return this builder instance
    */
