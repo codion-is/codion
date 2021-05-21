@@ -36,30 +36,30 @@ public class InvoiceEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
-    final EntitySearchField customerField = foreignKeySearchFieldBuilder(Invoice.CUSTOMER_FK)
+    final EntitySearchField customerField = foreignKeySearchField(Invoice.CUSTOMER_FK)
             .columns(16)
             .build();
     configureCustomerSearch(customerField);
-    temporalInputPanelBuilder(Invoice.DATE)
+    temporalInputPanel(Invoice.DATE)
             .columns(12)
             .build();
-    textFieldBuilder(Invoice.BILLINGADDRESS)
+    textField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained(true)
             .columns(16)
             .build();
-    textFieldBuilder(Invoice.BILLINGCITY)
+    textField(Invoice.BILLINGCITY)
             .selectAllOnFocusGained(true)
             .columns(16)
             .build();
-    textFieldBuilder(Invoice.BILLINGSTATE)
+    textField(Invoice.BILLINGSTATE)
             .selectAllOnFocusGained(true)
             .columns(16)
             .build();
-    textFieldBuilder(Invoice.BILLINGCOUNTRY)
+    textField(Invoice.BILLINGCOUNTRY)
             .selectAllOnFocusGained(true)
             .columns(16)
             .build();
-    textFieldBuilder(Invoice.BILLINGPOSTALCODE)
+    textField(Invoice.BILLINGPOSTALCODE)
             .selectAllOnFocusGained(true)
             .columns(16)
             .build();

@@ -16,10 +16,10 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(CountryLanguage.COUNTRY_FK);
 
-    foreignKeyComboBoxBuilder(CountryLanguage.COUNTRY_FK).preferredWidth(120).build();
-    textFieldBuilder(CountryLanguage.LANGUAGE).columns(12).build();
-    checkBoxBuilder(CountryLanguage.IS_OFFICIAL).includeCaption(false).build();
-    textFieldBuilder(CountryLanguage.PERCENTAGE).build();
+    foreignKeyComboBox(CountryLanguage.COUNTRY_FK).preferredWidth(120).build();
+    textField(CountryLanguage.LANGUAGE).columns(12).build();
+    checkBox(CountryLanguage.IS_OFFICIAL).includeCaption(false).build();
+    textField(CountryLanguage.PERCENTAGE).build();
 
     setLayout(gridLayout(2, 4));
 

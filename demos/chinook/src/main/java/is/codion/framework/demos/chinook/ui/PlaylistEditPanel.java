@@ -19,7 +19,7 @@ public class PlaylistEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Playlist.NAME);
 
-    textFieldBuilder(Playlist.NAME)
+    textField(Playlist.NAME)
             .columns(12)
             .build();
 

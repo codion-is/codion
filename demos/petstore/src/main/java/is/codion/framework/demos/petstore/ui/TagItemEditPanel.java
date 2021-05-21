@@ -21,13 +21,13 @@ public class TagItemEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setLayout(Layouts.flexibleGridLayout(2, 1));
-    final EntityComboBox itemBox = foreignKeyComboBoxBuilder(TagItem.ITEM_FK)
+    final EntityComboBox itemBox = foreignKeyComboBox(TagItem.ITEM_FK)
             .popupWidth(240)
             .preferredWidth(180)
             .build();
     setInitialFocusComponent(itemBox);
     addInputPanel(TagItem.ITEM_FK);
-    final EntityComboBox itemTagBox = foreignKeyComboBoxBuilder(TagItem.TAG_FK)
+    final EntityComboBox itemTagBox = foreignKeyComboBox(TagItem.TAG_FK)
             .build();
     addInputPanel(TagItem.TAG_FK, Components.createEastButtonPanel(itemTagBox,
             EntityPanel.builder(Tag.TYPE).editPanelClass(TagEditPanel.class)

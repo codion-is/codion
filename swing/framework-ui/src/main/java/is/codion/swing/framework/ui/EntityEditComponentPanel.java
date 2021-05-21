@@ -420,7 +420,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a text area
    * @return a text area builder
    */
-  protected final TextAreaBuilder textAreaBuilder(final Attribute<String> attribute) {
+  protected final TextAreaBuilder textArea(final Attribute<String> attribute) {
     return inputComponents.textAreaBuilder(attribute, getEditModel().value(attribute))
             .onBuild(textArea -> {
               EntityComponentValidators.addValidator(attribute, textArea, getEditModel());
@@ -433,7 +433,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a text input panel
    * @return a text input panel builder
    */
-  protected final TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute) {
+  protected final TextInputPanelBuilder textInputPanel(final Attribute<String> attribute) {
     return inputComponents.textInputPanelBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(inputPanel -> setComponent(attribute, inputPanel));
@@ -444,7 +444,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal input panel
    * @return a text area builder
    */
-  protected final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute) {
+  protected final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Attribute<T> attribute) {
     return inputComponents.temporalInputPanelBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(inputPanel -> {
@@ -458,7 +458,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a text field
    * @return a text field builder
    */
-  protected final <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute) {
+  protected final <T> TextFieldBuilder<T> textField(final Attribute<T> attribute) {
     return inputComponents.textFieldBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(textField -> setComponent(attribute, textField));
@@ -469,7 +469,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a formatted text field
    * @return a formatted text field builder
    */
-  protected final FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute) {
+  protected final FormattedTextFieldBuilder formattedTextField(final Attribute<String> attribute) {
     return inputComponents.formattedTextFieldBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(true)
             .onBuild(textField -> {
@@ -483,7 +483,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a check box
    * @return a check box builder
    */
-  protected final CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute) {
+  protected final CheckBoxBuilder checkBox(final Attribute<Boolean> attribute) {
     return inputComponents.checkBoxBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(box -> setComponent(attribute, box));
@@ -494,7 +494,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build boolean combo box
    * @return a boolean combo box builder
    */
-  protected BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute) {
+  protected BooleanComboBoxBuilder booleanComboBox(final Attribute<Boolean> attribute) {
     return inputComponents.booleanComboBoxBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(box -> setComponent(attribute, box));
@@ -505,8 +505,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build combo box
    * @return a combo box builder
    */
-  protected final <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute,
-                                                         final ComboBoxModel<T> comboBoxModel) {
+  protected final <T> ComboBoxBuilder<T> comboBox(final Attribute<T> attribute,
+                                                  final ComboBoxModel<T> comboBoxModel) {
     return inputComponents.comboBoxBuilder(attribute, getEditModel().value(attribute), comboBoxModel)
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(box -> setComponent(attribute, box));
@@ -517,7 +517,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a value list combo box
    * @return a value list combo box builder
    */
-  protected final <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute) {
+  protected final <T> ValueListComboBoxBuilder<T> valueListComboBox(final Attribute<T> attribute) {
     return inputComponents.valueListComboBoxBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(box -> setComponent(attribute, box));
@@ -528,7 +528,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a combo box
    * @return a combo box builder
    */
-  protected final <T> ComboBoxBuilder<T> attributeComboBoxBuilder(final Attribute<T> attribute) {
+  protected final <T> ComboBoxBuilder<T> attributeComboBox(final Attribute<T> attribute) {
     return inputComponents.comboBoxBuilder(attribute, getEditModel().value(attribute),
             (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
@@ -540,7 +540,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a foreign key combo box
    * @return a foreign key combo box builder
    */
-  protected final ForeignKeyComboBoxBuilder foreignKeyComboBoxBuilder(final ForeignKey foreignKey) {
+  protected final ForeignKeyComboBoxBuilder foreignKeyComboBox(final ForeignKey foreignKey) {
     return inputComponents.foreignKeyComboBoxBuilder(foreignKey, getEditModel().value(foreignKey),
             getEditModel().getForeignKeyComboBoxModel(foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
@@ -552,7 +552,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a foreign key search field
    * @return a foreign key search field builder
    */
-  protected final ForeignKeySearchFieldBuilder foreignKeySearchFieldBuilder(final ForeignKey foreignKey) {
+  protected final ForeignKeySearchFieldBuilder foreignKeySearchField(final ForeignKey foreignKey) {
     return inputComponents.foreignKeySearchFieldBuilder(foreignKey, getEditModel().value(foreignKey),
             getEditModel().getForeignKeySearchModel(foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
@@ -564,7 +564,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a foreign key field
    * @return a foreign key field builder
    */
-  protected final EntityInputComponents.ForeignKeyFieldBuilder foreignKeyFieldBuilder(final ForeignKey foreignKey) {
+  protected final EntityInputComponents.ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {
     return inputComponents.foreignKeyFieldBuilder(foreignKey, new ForeignKeyModelValue(getEditModel(), foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(field -> setComponent(foreignKey, field));

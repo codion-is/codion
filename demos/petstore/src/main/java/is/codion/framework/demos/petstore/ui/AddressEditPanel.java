@@ -21,13 +21,13 @@ public class AddressEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Address.CITY);
 
-    textFieldBuilder(Address.CITY).columns(12).build();
-    textFieldBuilder(Address.STATE).columns(12).build();
-    textFieldBuilder(Address.ZIP).columns(12).build();
-    textFieldBuilder(Address.STREET_1).columns(12).build();
-    textFieldBuilder(Address.STREET_2).columns(12).build();
-    textFieldBuilder(Address.LATITUDE).build();
-    textFieldBuilder(Address.LONGITUDE).build();
+    textField(Address.CITY).columns(12).build();
+    textField(Address.STATE).columns(12).build();
+    textField(Address.ZIP).columns(12).build();
+    textField(Address.STREET_1).columns(12).build();
+    textField(Address.STREET_2).columns(12).build();
+    textField(Address.LATITUDE).build();
+    textField(Address.LONGITUDE).build();
 
     setLayout(Layouts.flexibleGridLayout(4, 2));
     addInputPanel(Address.CITY);

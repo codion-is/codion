@@ -20,47 +20,47 @@ public class EmployeeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Employee.FIRSTNAME);
 
-    textFieldBuilder(Employee.FIRSTNAME)
+    textField(Employee.FIRSTNAME)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.LASTNAME)
+    textField(Employee.LASTNAME)
             .columns(16)
             .build();
-    temporalInputPanelBuilder(Employee.BIRTHDATE)
+    temporalInputPanel(Employee.BIRTHDATE)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.ADDRESS)
+    textField(Employee.ADDRESS)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.CITY)
+    textField(Employee.CITY)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.STATE)
+    textField(Employee.STATE)
             .columns(16)
             .upperCase()
             .build();
-    textFieldBuilder(Employee.COUNTRY)
+    textField(Employee.COUNTRY)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.POSTALCODE)
+    textField(Employee.POSTALCODE)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.PHONE)
+    textField(Employee.PHONE)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.FAX)
+    textField(Employee.FAX)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.EMAIL)
+    textField(Employee.EMAIL)
             .columns(16)
             .build();
-    foreignKeyComboBoxBuilder(Employee.REPORTSTO_FK)
+    foreignKeyComboBox(Employee.REPORTSTO_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
-    temporalInputPanelBuilder(Employee.HIREDATE)
+    temporalInputPanel(Employee.HIREDATE)
             .columns(16)
             .build();
-    textFieldBuilder(Employee.TITLE)
+    textField(Employee.TITLE)
             .columns(16)
             .build();
 

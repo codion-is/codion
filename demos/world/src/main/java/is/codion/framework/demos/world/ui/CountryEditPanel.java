@@ -29,22 +29,22 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Country.CODE);
 
-    textFieldBuilder(Country.CODE).upperCase().columns(12).build();
-    textFieldBuilder(Country.CODE_2).upperCase().columns(12).build();
-    textFieldBuilder(Country.NAME).columns(12).build();
-    valueListComboBoxBuilder(Country.CONTINENT).preferredWidth(120).build();
-    attributeComboBoxBuilder(Country.REGION).preferredWidth(120).build();
-    textFieldBuilder(Country.SURFACEAREA).build();
-    textFieldBuilder(Country.INDEPYEAR).build();
-    textFieldBuilder(Country.POPULATION).build();
-    textFieldBuilder(Country.LIFE_EXPECTANCY).build();
-    textFieldBuilder(Country.GNP).build();
-    textFieldBuilder(Country.GNPOLD).build();
-    textFieldBuilder(Country.LOCALNAME).columns(12).build();
-    attributeComboBoxBuilder(Country.GOVERNMENTFORM).preferredWidth(120).editable(true).build();
-    textFieldBuilder(Country.HEADOFSTATE).columns(12).build();
+    textField(Country.CODE).upperCase().columns(12).build();
+    textField(Country.CODE_2).upperCase().columns(12).build();
+    textField(Country.NAME).columns(12).build();
+    valueListComboBox(Country.CONTINENT).preferredWidth(120).build();
+    attributeComboBox(Country.REGION).preferredWidth(120).build();
+    textField(Country.SURFACEAREA).build();
+    textField(Country.INDEPYEAR).build();
+    textField(Country.POPULATION).build();
+    textField(Country.LIFE_EXPECTANCY).build();
+    textField(Country.GNP).build();
+    textField(Country.GNPOLD).build();
+    textField(Country.LOCALNAME).columns(12).build();
+    attributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true).build();
+    textField(Country.HEADOFSTATE).columns(12).build();
     EntityComboBox capitalComboBox =
-            foreignKeyComboBoxBuilder(Country.CAPITAL_FK)
+            foreignKeyComboBox(Country.CAPITAL_FK)
                     .preferredWidth(120)
                     .build();
     //create a panel with a button for adding a new city

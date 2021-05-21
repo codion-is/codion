@@ -31,16 +31,16 @@ public class StoreDemo {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Customer.FIRST_NAME);
-      textFieldBuilder(Customer.FIRST_NAME)
+      textField(Customer.FIRST_NAME)
               .columns(12)
               .build();
-      textFieldBuilder(Customer.LAST_NAME)
+      textField(Customer.LAST_NAME)
               .columns(12)
               .build();
-      textFieldBuilder(Customer.EMAIL)
+      textField(Customer.EMAIL)
               .columns(12)
               .build();
-      checkBoxBuilder(Customer.IS_ACTIVE)
+      checkBox(Customer.IS_ACTIVE)
               .includeCaption(false)
               .build();
       setLayout(gridLayout(2, 2));
@@ -60,12 +60,12 @@ public class StoreDemo {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Address.STREET);
-      foreignKeyComboBoxBuilder(Address.CUSTOMER_FK)
+      foreignKeyComboBox(Address.CUSTOMER_FK)
               .build();
-      textFieldBuilder(Address.STREET)
+      textField(Address.STREET)
               .columns(12)
               .build();
-      textFieldBuilder(Address.CITY)
+      textField(Address.CITY)
               .columns(12)
               .build();
       setLayout(gridLayout(3, 1));

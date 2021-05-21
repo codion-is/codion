@@ -22,41 +22,41 @@ public class CustomerEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Customer.FIRSTNAME);
 
-    textFieldBuilder(Customer.FIRSTNAME)
+    textField(Customer.FIRSTNAME)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.LASTNAME)
+    textField(Customer.LASTNAME)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.COMPANY)
+    textField(Customer.COMPANY)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.ADDRESS)
+    textField(Customer.ADDRESS)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.CITY)
+    textField(Customer.CITY)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.STATE)
+    textField(Customer.STATE)
             .columns(TEXT_FIELD_COLUMNS)
             .upperCase()
             .build();
-    textFieldBuilder(Customer.COUNTRY)
+    textField(Customer.COUNTRY)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.POSTALCODE)
+    textField(Customer.POSTALCODE)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.PHONE)
+    textField(Customer.PHONE)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.FAX)
+    textField(Customer.FAX)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    textFieldBuilder(Customer.EMAIL)
+    textField(Customer.EMAIL)
             .columns(TEXT_FIELD_COLUMNS)
             .build();
-    foreignKeyComboBoxBuilder(Customer.SUPPORTREP_FK)
+    foreignKeyComboBox(Customer.SUPPORTREP_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
 

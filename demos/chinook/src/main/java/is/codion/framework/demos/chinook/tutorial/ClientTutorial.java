@@ -100,7 +100,7 @@ public final class ClientTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Artist.NAME);
-      textFieldBuilder(Artist.NAME)
+      textField(Artist.NAME)
               .columns(15)
               .build();
       addInputPanel(Artist.NAME);
@@ -116,10 +116,10 @@ public final class ClientTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Album.ARTIST_FK);
-      foreignKeySearchFieldBuilder(Album.ARTIST_FK)
+      foreignKeySearchField(Album.ARTIST_FK)
               .columns(15)
               .build();
-      textFieldBuilder(Album.TITLE)
+      textField(Album.TITLE)
               .action(createInsertControl())
               .columns(15)
               .build();

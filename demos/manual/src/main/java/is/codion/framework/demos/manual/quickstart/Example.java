@@ -140,10 +140,10 @@ public final class Example {
       @Override
       protected void initializeUI() {
         setInitialFocusAttribute(Customer.FIRST_NAME);
-        textFieldBuilder(Customer.FIRST_NAME)
+        textField(Customer.FIRST_NAME)
                 .columns(12)
                 .build();
-        textFieldBuilder(Customer.LAST_NAME)
+        textField(Customer.LAST_NAME)
                 .columns(12)
                 .build();
         addInputPanel(Customer.FIRST_NAME);
@@ -172,9 +172,9 @@ public final class Example {
       @Override
       protected void initializeUI() {
         setInitialFocusAttribute(CustomerAddress.CUSTOMER_FK);
-        foreignKeyComboBoxBuilder(CustomerAddress.CUSTOMER_FK)
+        foreignKeyComboBox(CustomerAddress.CUSTOMER_FK)
                 .build();
-        foreignKeyComboBoxBuilder(CustomerAddress.ADDRESS_FK)
+        foreignKeyComboBox(CustomerAddress.ADDRESS_FK)
                 .build();
         addInputPanel(CustomerAddress.CUSTOMER_FK);
         addInputPanel(CustomerAddress.ADDRESS_FK);

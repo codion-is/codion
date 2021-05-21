@@ -19,7 +19,7 @@ public class ArtistEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Artist.NAME);
 
-    textFieldBuilder(Artist.NAME)
+    textField(Artist.NAME)
             .columns(18)
             .build();
 

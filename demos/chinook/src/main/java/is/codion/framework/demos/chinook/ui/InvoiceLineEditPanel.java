@@ -28,11 +28,11 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(InvoiceLine.TRACK_FK);
 
-    foreignKeySearchFieldBuilder(InvoiceLine.TRACK_FK)
+    foreignKeySearchField(InvoiceLine.TRACK_FK)
             .selectionProviderFactory(TrackSelectionProvider::new)
             .columns(15)
             .build();
-    textFieldBuilder(InvoiceLine.QUANTITY)
+    textField(InvoiceLine.QUANTITY)
             .selectAllOnFocusGained(true)
             .action(Control.control(this::save))
             .build();

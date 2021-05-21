@@ -23,10 +23,10 @@ public class AlbumEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Album.ARTIST_FK);
 
-    foreignKeySearchFieldBuilder(Album.ARTIST_FK)
+    foreignKeySearchField(Album.ARTIST_FK)
             .columns(18)
             .build();
-    textFieldBuilder(Album.TITLE)
+    textField(Album.TITLE)
             .columns(18)
             .build();
 

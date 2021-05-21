@@ -30,35 +30,35 @@ public class TrackEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Track.ALBUM_FK);
 
-    foreignKeySearchFieldBuilder(Track.ALBUM_FK)
+    foreignKeySearchField(Track.ALBUM_FK)
             .columns(18)
             .build();
-    textFieldBuilder(Track.NAME).columns(18).build();
-    final EntityComboBox mediaTypeBox = foreignKeyComboBoxBuilder(Track.MEDIATYPE_FK)
+    textField(Track.NAME).columns(18).build();
+    final EntityComboBox mediaTypeBox = foreignKeyComboBox(Track.MEDIATYPE_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
     final Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
             .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
     final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
-    final EntityComboBox genreBox = foreignKeyComboBoxBuilder(Track.GENRE_FK)
+    final EntityComboBox genreBox = foreignKeyComboBox(Track.GENRE_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
     final Action newGenreAction = EntityPanel.builder(Genre.TYPE)
             .editPanelClass(GenreEditPanel.class)
             .createEditPanelAction(genreBox);
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
-    textInputPanelBuilder(Track.COMPOSER)
+    textInputPanel(Track.COMPOSER)
             .columns(18)
             .buttonFocusable(false)
             .build();
-    final IntegerField millisecondsField = (IntegerField) textFieldBuilder(Track.MILLISECONDS).build();
+    final IntegerField millisecondsField = (IntegerField) textField(Track.MILLISECONDS).build();
     millisecondsField.setGroupingUsed(true);
-    final IntegerField bytesField = (IntegerField) textFieldBuilder(Track.BYTES)
+    final IntegerField bytesField = (IntegerField) textField(Track.BYTES)
             .columns(18)
             .build();
     bytesField.setGroupingUsed(true);
-    textFieldBuilder(Track.UNITPRICE)
+    textField(Track.UNITPRICE)
             .columns(18)
             .build();
 

@@ -18,8 +18,8 @@ public final class VetEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Vet.FIRST_NAME);
 
-    textFieldBuilder(Vet.FIRST_NAME).columns(12).build();
-    textFieldBuilder(Vet.LAST_NAME).columns(12).build();
+    textField(Vet.FIRST_NAME).columns(12).build();
+    textField(Vet.LAST_NAME).columns(12).build();
 
     setLayout(Layouts.gridLayout(1, 2));
 

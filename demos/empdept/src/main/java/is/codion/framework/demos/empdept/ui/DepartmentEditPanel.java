@@ -24,13 +24,13 @@ public class DepartmentEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Department.ID);
 
-    final JTextField departmentIdField = textFieldBuilder(Department.ID)
+    final JTextField departmentIdField = textField(Department.ID)
             .columns(10)
             .build();
-    textFieldBuilder(Department.NAME)
+    textField(Department.NAME)
             .upperCase()
             .build();
-    textFieldBuilder(Department.LOCATION)
+    textField(Department.LOCATION)
             .upperCase()
             .build();
 
