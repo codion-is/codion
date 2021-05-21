@@ -22,30 +22,30 @@ public class CustomerEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Customer.FIRSTNAME);
 
-    textField(Customer.FIRSTNAME)
+    createTextField(Customer.FIRSTNAME)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.LASTNAME)
+    createTextField(Customer.LASTNAME)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.COMPANY)
+    createTextField(Customer.COMPANY)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.ADDRESS)
+    createTextField(Customer.ADDRESS)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.CITY)
+    createTextField(Customer.CITY)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.STATE)
+    createTextField(Customer.STATE)
             .columns(TEXT_FIELD_COLUMNS)
             .upperCase();
-    textField(Customer.COUNTRY)
+    createTextField(Customer.COUNTRY)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.POSTALCODE)
+    createTextField(Customer.POSTALCODE)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.PHONE)
+    createTextField(Customer.PHONE)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.FAX)
+    createTextField(Customer.FAX)
             .columns(TEXT_FIELD_COLUMNS);
-    textField(Customer.EMAIL)
+    createTextField(Customer.EMAIL)
             .columns(TEXT_FIELD_COLUMNS);
-    foreignKeyComboBox(Customer.SUPPORTREP_FK)
+    createForeignKeyComboBox(Customer.SUPPORTREP_FK)
             .preferredHeight(getPreferredTextFieldHeight());
 
     setLayout(flexibleGridLayout(4, 3));

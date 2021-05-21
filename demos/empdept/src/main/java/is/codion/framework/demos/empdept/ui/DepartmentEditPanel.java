@@ -24,12 +24,12 @@ public class DepartmentEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Department.ID);
 
-    final JTextField departmentIdField = textField(Department.ID)
+    final JTextField departmentIdField = createTextField(Department.ID)
             .columns(10)
             .build();
-    textField(Department.NAME)
+    createTextField(Department.NAME)
             .upperCase();
-    textField(Department.LOCATION)
+    createTextField(Department.LOCATION)
             .upperCase();
 
     //we don't allow editing of the department number since it's a primary key

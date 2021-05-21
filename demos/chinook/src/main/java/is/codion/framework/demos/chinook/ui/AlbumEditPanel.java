@@ -23,9 +23,9 @@ public class AlbumEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Album.ARTIST_FK);
 
-    foreignKeySearchField(Album.ARTIST_FK)
+    createForeignKeySearchField(Album.ARTIST_FK)
             .columns(18);
-    textField(Album.TITLE)
+    createTextField(Album.TITLE)
             .columns(18);
 
     final JPanel inputPanel = new JPanel(gridLayout(2, 1));

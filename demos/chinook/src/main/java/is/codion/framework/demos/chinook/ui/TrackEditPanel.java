@@ -30,35 +30,35 @@ public class TrackEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Track.ALBUM_FK);
 
-    foreignKeySearchField(Track.ALBUM_FK)
+    createForeignKeySearchField(Track.ALBUM_FK)
             .columns(18);
-    textField(Track.NAME)
+    createTextField(Track.NAME)
             .columns(18);
-    final EntityComboBox mediaTypeBox = foreignKeyComboBox(Track.MEDIATYPE_FK)
+    final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
     final Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
             .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
     final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
-    final EntityComboBox genreBox = foreignKeyComboBox(Track.GENRE_FK)
+    final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
             .preferredHeight(getPreferredTextFieldHeight())
             .build();
     final Action newGenreAction = EntityPanel.builder(Genre.TYPE)
             .editPanelClass(GenreEditPanel.class)
             .createEditPanelAction(genreBox);
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
-    textInputPanel(Track.COMPOSER)
+    createTextInputPanel(Track.COMPOSER)
             .columns(18)
             .buttonFocusable(false);
-    final IntegerField millisecondsField = (IntegerField) textField(Track.MILLISECONDS)
+    final IntegerField millisecondsField = (IntegerField) createTextField(Track.MILLISECONDS)
             .build();
     millisecondsField.setGroupingUsed(true);
-    final IntegerField bytesField = (IntegerField) textField(Track.BYTES)
+    final IntegerField bytesField = (IntegerField) createTextField(Track.BYTES)
             .columns(18)
             .build();
     bytesField.setGroupingUsed(true);
-    textField(Track.UNITPRICE)
+    createTextField(Track.UNITPRICE)
             .columns(18);
 
     final ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();

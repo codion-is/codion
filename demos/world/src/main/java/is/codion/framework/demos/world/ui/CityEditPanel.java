@@ -35,10 +35,10 @@ public final class CityEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(City.COUNTRY_FK);
 
-    foreignKeyComboBox(City.COUNTRY_FK).preferredWidth(120);
-    textField(City.NAME).columns(12);
-    textField(City.DISTRICT).columns(12);
-    textField(City.POPULATION);
+    createForeignKeyComboBox(City.COUNTRY_FK).preferredWidth(120);
+    createTextField(City.NAME).columns(12);
+    createTextField(City.DISTRICT).columns(12);
+    createTextField(City.POPULATION);
 
     JPanel inputPanel = new JPanel(gridLayout(4, 1));
     inputPanel.add(createInputPanel(City.COUNTRY_FK));
