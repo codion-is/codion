@@ -16,18 +16,19 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.builder.BooleanComboBoxBuilder;
+import is.codion.swing.framework.ui.builder.CheckBoxBuilder;
+import is.codion.swing.framework.ui.builder.ComboBoxBuilder;
 import is.codion.swing.framework.ui.builder.EntityInputComponents;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.BooleanComboBoxBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.CheckBoxBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.ComboBoxBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.ForeignKeyComboBoxBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.ForeignKeySearchFieldBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.FormattedTextFieldBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.TemporalInputPanelBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.TextAreaBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.TextFieldBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.TextInputPanelBuilder;
-import is.codion.swing.framework.ui.builder.EntityInputComponents.ValueListComboBoxBuilder;
+import is.codion.swing.framework.ui.builder.ForeignKeyComboBoxBuilder;
+import is.codion.swing.framework.ui.builder.ForeignKeyFieldBuilder;
+import is.codion.swing.framework.ui.builder.ForeignKeySearchFieldBuilder;
+import is.codion.swing.framework.ui.builder.FormattedTextFieldBuilder;
+import is.codion.swing.framework.ui.builder.TemporalInputPanelBuilder;
+import is.codion.swing.framework.ui.builder.TextAreaBuilder;
+import is.codion.swing.framework.ui.builder.TextFieldBuilder;
+import is.codion.swing.framework.ui.builder.TextInputPanelBuilder;
+import is.codion.swing.framework.ui.builder.ValueListComboBoxBuilder;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
@@ -565,7 +566,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a foreign key field
    * @return a foreign key field builder
    */
-  protected final EntityInputComponents.ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {
+  protected final ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {
     return inputComponents.foreignKeyFieldBuilder(foreignKey, new ForeignKeyModelValue(getEditModel(), foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(field -> setComponent(foreignKey, field));

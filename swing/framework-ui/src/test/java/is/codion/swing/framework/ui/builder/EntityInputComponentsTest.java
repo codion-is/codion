@@ -1,4 +1,4 @@
-package is.codion.swing.framework.ui;
+package is.codion.swing.framework.ui.builder;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.item.Item;
@@ -13,7 +13,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.builder.EntityInputComponents;
+import is.codion.swing.framework.ui.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
