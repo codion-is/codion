@@ -194,6 +194,7 @@ public final class EntityInputComponents {
    * Creates a builder.
    * @param attribute the attribute
    * @param value the value
+   * @param <T> the attribute type
    * @return a builder
    */
   public <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute, final Value<T> value) {
@@ -205,6 +206,7 @@ public final class EntityInputComponents {
    * @param attribute the attribute
    * @param value the value
    * @param comboBoxModel the combo box model
+   * @param <T> the attribute type
    * @return a builder
    */
   public <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute, final Value<T> value,
@@ -216,6 +218,7 @@ public final class EntityInputComponents {
    * Creates a builder.
    * @param attribute the attribute
    * @param value the value
+   * @param <T> the attribute type
    * @return a builder
    */
   public <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute, final Value<T> value) {
@@ -246,6 +249,7 @@ public final class EntityInputComponents {
    * Creates a builder.
    * @param attribute the attribute
    * @param value the value
+   * @param <T> the attribute type
    * @return a builder
    */
   public <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute, final Value<T> value) {
