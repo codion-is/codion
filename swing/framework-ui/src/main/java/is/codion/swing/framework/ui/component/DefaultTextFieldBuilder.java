@@ -30,7 +30,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
 
   private boolean editable = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  private int columns;
+  private int columns;//todo default columns configuration value
   private Action action;
   private boolean selectAllOnFocusGained;
   private boolean upperCase;
@@ -168,7 +168,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
       return initializeLongField((Property<Long>) property);
     }
     else if (attribute.isTemporal()) {
-      return new TemporalField<>((Class<Temporal>) attribute.getTypeClass(), property.getDateTimePattern());
+      return initializeTemporalField(property, attribute);
     }
     else if (attribute.isString()) {
       return initializeStringField(property.getMaximumLength());
@@ -223,6 +223,13 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
     }
 
     return field;
+  }
+
+  private static TemporalField<Temporal> initializeTemporalField(final Property<?> property,
+                                                                  final Attribute<?> attribute) {
+    return TemporalField.builder((Class<Temporal>) attribute.getTypeClass())
+            .dateTimePattern(property.getDateTimePattern())
+            .build();
   }
 
   private static NumberFormat cloneFormat(final NumberFormat format) {

@@ -422,7 +422,9 @@ public class ColumnConditionPanel<C, T> extends JPanel {
         return longField;
       }
       else if (Temporal.class.isAssignableFrom(typeClass)) {
-        final TemporalField<Temporal> temporalField = new TemporalField<>((Class<Temporal>) typeClass, columnConditionModel.getDateTimePattern());
+        final TemporalField<Temporal> temporalField = TemporalField.builder((Class<Temporal>) typeClass)
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .build();
         ComponentValues.temporalField(temporalField).link((Value<Temporal>) value);
 
         return temporalField;

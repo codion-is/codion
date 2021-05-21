@@ -7055,3 +7055,6 @@
   EntityEditComponentPanel, create prefix added (back) to builder factory methods
   ComponentBuilder.focusable() added
   TextFieldBuilder.editable() added
+  TextInputPanel now builder based
+  EntityComponentValues refactored
+  TemporalField now builder based

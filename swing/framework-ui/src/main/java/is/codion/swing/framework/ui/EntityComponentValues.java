@@ -19,7 +19,6 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -32,6 +31,7 @@ import java.text.NumberFormat;
 import java.time.temporal.Temporal;
 import java.util.List;
 
+import static is.codion.swing.common.ui.value.ComponentValues.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,61 +61,34 @@ public class EntityComponentValues {
     }
     final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) ComponentValues.itemComboBox(createValueListComboBox((ValueListProperty<T>) property, initialValue));
+      return (ComponentValue<T, C>) itemComboBox(createValueListComboBox((ValueListProperty<T>) property, initialValue));
     }
     if (attribute.isBoolean()) {
-      final BooleanComboBoxModel model = new BooleanComboBoxModel();
-      model.setSelectedItem(initialValue);
-
-      return (ComponentValue<T, C>) ComponentValues.booleanComboBox(new JComboBox<>(model));
+      return createBooleanComboBox(initialValue);
     }
     if (attribute.isTemporal()) {
-      final TemporalField<Temporal> temporalField =
-              new TemporalField<>((Class<Temporal>) attribute.getTypeClass(), property.getDateTimePattern());
-
-      return (ComponentValue<T, C>) ComponentValues.temporalInputPanel(TemporalInputPanel.builder()
-              .temporalField(temporalField)
-              .initialValue((Temporal) initialValue)
-              .build());
+      return createTemporalInputPanel(attribute, (Temporal) initialValue, property);
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) ComponentValues.doubleFieldBuilder()
-              .initalValue((Double) initialValue)
-              .format((DecimalFormat) property.getFormat())
-              .build();
+      return createDoubleField((Double) initialValue, property);
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) ComponentValues.bigDecimalFieldBuilder()
-              .initalValue((BigDecimal) initialValue)
-              .format((DecimalFormat) property.getFormat())
-              .build();
+      return createBigDecimalField((BigDecimal) initialValue, property);
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) ComponentValues.integerFieldBuilder()
-              .initalValue((Integer) initialValue)
-              .format((NumberFormat) property.getFormat())
-              .build();
+      return createIntegerField((Integer) initialValue, property);
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>)  ComponentValues.longFieldBuilder()
-              .initalValue((Long) initialValue)
-              .format((NumberFormat) property.getFormat())
-              .build();
+      return createLongField((Long) initialValue, property);
     }
     if (attribute.isCharacter()) {
-      final TextInputPanel textInputPanel =
-              new TextInputPanel(createTextField((Character) initialValue, 1), property.getCaption());
-
-      return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
+      return createTextInpuPanel((Character) initialValue, property);
     }
     if (attribute.isString()) {
-      final TextInputPanel textInputPanel =
-              new TextInputPanel(createTextField((String) initialValue, property.getMaximumLength()), property.getCaption());
-
-      return (ComponentValue<T, C>) ComponentValues.textInputPanel(textInputPanel);
+      return createTextInputPanel((String) initialValue, property);
     }
     if (attribute.isByteArray()) {
-      return (ComponentValue<T, C>) ComponentValues.fileInputPanel();
+      return (ComponentValue<T, C>) fileInputPanel();
     }
 
     throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + attribute.getTypeClass() + ")");
@@ -136,13 +109,77 @@ public class EntityComponentValues {
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<Entity, T>) ComponentValues.comboBox(new EntityComboBox(comboBoxModel).refreshOnSetVisible());
+      return (ComponentValue<Entity, T>) comboBox(new EntityComboBox(comboBoxModel).refreshOnSetVisible());
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
     return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValue();
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createBooleanComboBox(final T initialValue) {
+    final BooleanComboBoxModel model = new BooleanComboBoxModel();
+    model.setSelectedItem(initialValue);
+
+    return (ComponentValue<T, C>) booleanComboBox(new JComboBox<>(model));
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createTemporalInputPanel(final Attribute<T> attribute,
+                                                                                         final Temporal initialValue,
+                                                                                         final Property<T> property) {
+    return (ComponentValue<T, C>) temporalInputPanel(TemporalInputPanel.builder()
+            .temporalField(TemporalField.builder((Class<Temporal>) attribute.getTypeClass())
+                    .dateTimePattern(property.getDateTimePattern())
+                    .build())
+            .initialValue(initialValue)
+            .build());
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createDoubleField(final Double initialValue,
+                                                                                  final Property<T> property) {
+    return (ComponentValue<T, C>) doubleFieldBuilder()
+            .initalValue(initialValue)
+            .format((DecimalFormat) property.getFormat())
+            .build();
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createBigDecimalField(final BigDecimal initialValue,
+                                                                                      final Property<T> property) {
+    return (ComponentValue<T, C>) bigDecimalFieldBuilder()
+            .initalValue(initialValue)
+            .format((DecimalFormat) property.getFormat())
+            .build();
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createIntegerField(final Integer initialValue,
+                                                                                   final Property<T> property) {
+    return (ComponentValue<T, C>) integerFieldBuilder()
+            .initalValue(initialValue)
+            .format((NumberFormat) property.getFormat())
+            .build();
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createLongField(final Long initialValue,
+                                                                                final Property<T> property) {
+    return (ComponentValue<T, C>)  longFieldBuilder()
+            .initalValue(initialValue)
+            .format((NumberFormat) property.getFormat())
+            .build();
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createTextInpuPanel(final Character initialValue,
+                                                                                    final Property<T> property) {
+    return (ComponentValue<T, C>) textInputPanel(TextInputPanel.builder(createTextField(initialValue, 1))
+            .dialogTitle(property.getCaption())
+            .build());
+  }
+
+  private static <T, C extends JComponent> ComponentValue<T, C> createTextInputPanel(final String initialValue,
+                                                                                     final Property<T> property) {
+    return (ComponentValue<T, C>) textInputPanel(TextInputPanel.builder(createTextField(initialValue, property.getMaximumLength()))
+            .dialogTitle(property.getCaption())
+            .build());
   }
 
   private static <T> JComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final T initialValue) {
