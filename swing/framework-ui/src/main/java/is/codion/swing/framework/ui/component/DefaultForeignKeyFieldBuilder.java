@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JTextField;
@@ -27,19 +26,14 @@ final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entit
   }
 
   @Override
-  public JTextField build() {
+  protected JTextField buildComponent() {
     final JTextField textField = new JTextField(columns);
-    setPreferredSize(textField);
-    onBuild(textField);
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(property.getDescription());
     final Value<String> entityStringValue = Value.value();
     value.addDataListener(entity -> entityStringValue.set(entity == null ? "" : entity.toString()));
     ComponentValues.textComponent(textField).link(entityStringValue);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(textField);
-    }
 
     return textField;
   }

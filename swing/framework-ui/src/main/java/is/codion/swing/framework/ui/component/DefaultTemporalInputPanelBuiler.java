@@ -46,19 +46,19 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
-  public TemporalInputPanel<T> build() {
+  protected TemporalInputPanel<T> buildComponent() {
     final TemporalInputPanel<T> inputPanel = createTemporalInputPanel();
-    setPreferredSize(inputPanel);
-    onBuild(inputPanel);
     inputPanel.getInputField().setColumns(columns);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(inputPanel.getInputField());
-      if (inputPanel.getCalendarButton() != null) {
-        Components.transferFocusOnEnter(inputPanel.getCalendarButton());
-      }
-    }
 
     return inputPanel;
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final TemporalInputPanel<T> component) {
+    Components.transferFocusOnEnter(component.getInputField());
+    if (component.getCalendarButton() != null) {
+      Components.transferFocusOnEnter(component.getCalendarButton());
+    }
   }
 
   private <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel() {

@@ -32,19 +32,7 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
   }
 
   @Override
-  public SteppedComboBox<Item<T>> build() {
-    final SteppedComboBox<Item<T>> comboBox = createValueListComboBox();
-    setPreferredSize(comboBox);
-    onBuild(comboBox);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-
-    return comboBox;
-  }
-
-  private SteppedComboBox<Item<T>> createValueListComboBox() {
+  protected SteppedComboBox<Item<T>> buildComponent() {
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a " +
               "ValueListProperty");
@@ -55,6 +43,12 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
     DefaultComboBoxBuilder.addComboBoxCompletion(comboBox);
 
     return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final SteppedComboBox<Item<T>> component) {
+    component.setTransferFocusOnEnter(true);
+    Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
 
   private ItemComboBoxModel<T> createValueListComboBoxModel() {

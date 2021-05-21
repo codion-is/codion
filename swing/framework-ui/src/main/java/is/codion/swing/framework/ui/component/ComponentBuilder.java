@@ -3,11 +3,11 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.JComponent;
 import java.awt.Dimension;
-import java.util.function.Consumer;
 
 /**
  * Builds a JComponent
@@ -48,10 +48,10 @@ public interface ComponentBuilder<V, T extends JComponent, B extends ComponentBu
   B enabledState(StateObserver enabledState);
 
   /**
-   * @param onBuild called after the component is built
+   * @param listener called after a component is built
    * @return this builder instance
    */
-  B onBuild(Consumer<T> onBuild);
+  B addBuildListener(EventDataListener<T> listener);
 
   /**
    * Builds the component.

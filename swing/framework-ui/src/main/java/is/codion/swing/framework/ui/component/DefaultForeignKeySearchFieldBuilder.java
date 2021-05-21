@@ -44,30 +44,25 @@ final class DefaultForeignKeySearchFieldBuilder
   }
 
   @Override
-  public EntitySearchField build() {
-    final EntitySearchField searchField = createForeignKeySearchField();
-    setPreferredSize(searchField);
-    onBuild(searchField);
+  protected EntitySearchField buildComponent() {
+    final EntitySearchField searchField = new EntitySearchField(searchModel);
     searchField.setColumns(columns);
-    if (transferFocusOnEnter) {
-      searchField.setTransferFocusOnEnter(true);
-    }
     if (selectionProviderFactory != null) {
       searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.getModel()));
     }
-
-    return searchField;
-  }
-
-  private EntitySearchField createForeignKeySearchField() {
-    final EntitySearchField searchField = new EntitySearchField(searchModel);
     new SearchUIValue(searchField.getModel()).link(value);
     selectAllOnFocusGained(searchField);
+
 
     final String propertyDescription = property.getDescription();
 
     return setDescriptionAndEnabledState(searchField, propertyDescription == null ? searchModel.getDescription() :
             propertyDescription, enabledState);
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final EntitySearchField component) {
+    component.setTransferFocusOnEnter(true);
   }
 
   private static final class SearchUIValue extends AbstractValue<Entity> {

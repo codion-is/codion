@@ -3,6 +3,8 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
@@ -10,7 +12,6 @@ import is.codion.swing.common.ui.Components;
 
 import javax.swing.JComponent;
 import java.awt.Dimension;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,11 +20,12 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   protected final Property<V> property;
   protected final Value<V> value;
 
+  private final Event<T> buildEvent = Event.event();
+
   private int preferredHeight;
   private int preferredWidth;
-  protected boolean transferFocusOnEnter;
+  private boolean transferFocusOnEnter;
   protected StateObserver enabledState;
-  protected Consumer<T> onBuild;
 
   protected AbstractComponentBuilder(final Property<V> attribute, final Value<V> value) {
     this.property = requireNonNull(attribute);
@@ -63,23 +65,46 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   }
 
   @Override
-  public final B onBuild(final Consumer<T> onBuild) {
-    this.onBuild = onBuild;
+  public final B addBuildListener(final EventDataListener<T> listener) {
+    buildEvent.addDataListener(listener);
     return (B) this;
   }
 
-  protected final void setPreferredSize(final T component) {
+  /**
+   * Builds the component.
+   * @return a new component instance
+   */
+  public final T build() {
+    final T component = buildComponent();
+    setPreferredSize(component);
+    if (transferFocusOnEnter) {
+      setTransferFocusOnEnter(component);
+    }
+    buildEvent.onEvent(component);
+
+    return component;
+  }
+
+  /**
+   * Builds the component.
+   * @return a new component instance
+   */
+  protected abstract T buildComponent();
+
+  /**
+   * Enables focus transfer on Enter, override for special handling
+   * @param component the component
+   */
+  protected void setTransferFocusOnEnter(final T component) {
+    Components.transferFocusOnEnter(component);
+  }
+
+  private void setPreferredSize(final T component) {
     if (preferredHeight > 0) {
       Components.setPreferredHeight(component, preferredHeight);
     }
     if (preferredWidth > 0) {
       Components.setPreferredWidth(component, preferredWidth);
-    }
-  }
-
-  protected final void onBuild(final T component) {
-    if (onBuild != null) {
-      onBuild.accept(component);
     }
   }
 

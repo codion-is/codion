@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -35,21 +34,8 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
   }
 
   @Override
-  public JCheckBox build() {
-    final JCheckBox checkBox;
-    if (nullable) {
-      checkBox = createNullableCheckBox();
-    }
-    else {
-      checkBox = createCheckBox();
-    }
-    setPreferredSize(checkBox);
-    onBuild(checkBox);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(checkBox);
-    }
-
-    return checkBox;
+  protected JCheckBox buildComponent() {
+    return nullable ? createNullableCheckBox() : createCheckBox();
   }
 
   private NullableCheckBox createNullableCheckBox() {

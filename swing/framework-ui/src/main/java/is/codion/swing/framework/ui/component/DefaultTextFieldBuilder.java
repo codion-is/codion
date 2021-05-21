@@ -7,7 +7,6 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -24,6 +23,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JTextField, TextFieldBuilder<T>>
         implements TextFieldBuilder<T> {
@@ -53,9 +54,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
 
   @Override
   public TextFieldBuilder<T> action(final Action action) {
-    this.action = action;
-    this.transferFocusOnEnter = false;
-    return this;
+    this.action = requireNonNull(action);
+
+    return transferFocusOnEnter(false);
   }
 
   @Override
@@ -79,16 +80,11 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
   }
 
   @Override
-  public JTextField build() {
+  protected JTextField buildComponent() {
     final JTextField textField = createTextField();
-    setPreferredSize(textField);
-    onBuild(textField);
     textField.setColumns(columns);
     if (action != null) {
       textField.setAction(action);
-    }
-    else if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(textField);
     }
     if (selectAllOnFocusGained) {
       TextFields.selectAllOnFocusGained(textField);

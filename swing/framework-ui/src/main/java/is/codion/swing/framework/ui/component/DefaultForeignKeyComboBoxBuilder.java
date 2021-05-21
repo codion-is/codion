@@ -32,35 +32,20 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
   }
 
   @Override
-  public EntityComboBox build() {
-    final EntityComboBox comboBox = createForeignKeyComboBox();
-    setPreferredSize(comboBox);
-    onBuild(comboBox);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-    setPreferredSize(comboBox);
+  protected EntityComboBox buildComponent() {
+    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+    ComponentValues.comboBox(comboBox).link(value);
+    DefaultComboBoxBuilder.addComboBoxCompletion(comboBox);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
     }
 
-    return comboBox;
+    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
   }
 
-  /**
-   * Creates EntityComboBox based on the given foreign key
-   * @param foreignKey the foreign key on which entity to base the combobox
-   * @param value the value to bind to the field
-   * @param comboBoxModel the combo box model
-   * @param enabledState the state controlling the enabled state of the combobox
-   * @return a EntityComboBox based on the given foreign key
-   */
-  private EntityComboBox createForeignKeyComboBox() {
-    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    ComponentValues.comboBox(comboBox).link(value);
-    DefaultComboBoxBuilder.addComboBoxCompletion(comboBox);
-
-    return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+  @Override
+  protected void setTransferFocusOnEnter(final EntityComboBox component) {
+    component.setTransferFocusOnEnter(true);
+    Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
 }

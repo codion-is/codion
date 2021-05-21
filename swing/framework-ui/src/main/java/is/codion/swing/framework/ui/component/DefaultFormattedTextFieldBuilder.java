@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -53,17 +52,12 @@ final class DefaultFormattedTextFieldBuilder
   }
 
   @Override
-  public JFormattedTextField build() {
+  protected JFormattedTextField buildComponent() {
     final JFormattedTextField textField = setDescriptionAndEnabledState(createFormattedField(formatMaskString,
             valueContainsLiterals ? TextFields.ValueContainsLiterals.YES : TextFields.ValueContainsLiterals.NO),
             property.getDescription(), enabledState);
     ComponentValues.textComponent(textField, null, updateOn).link(value);
-    setPreferredSize(textField);
-    onBuild(textField);
     textField.setColumns(columns);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(textField);
-    }
 
     return textField;
   }

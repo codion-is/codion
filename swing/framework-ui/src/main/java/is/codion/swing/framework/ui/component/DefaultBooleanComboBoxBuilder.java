@@ -23,19 +23,7 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
   }
 
   @Override
-  public SteppedComboBox<Item<Boolean>> build() {
-    final SteppedComboBox<Item<Boolean>> comboBox = createBooleanComboBox();
-    setPreferredSize(comboBox);
-    onBuild(comboBox);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-
-    return comboBox;
-  }
-
-  private SteppedComboBox<Item<Boolean>> createBooleanComboBox() {
+  protected SteppedComboBox<Item<Boolean>> buildComponent() {
     final BooleanComboBoxModel comboBoxModel = new BooleanComboBoxModel();
     final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
     ComponentValues.itemComboBox(comboBox).link(value);
@@ -43,5 +31,11 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
     comboBox.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
     return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final SteppedComboBox<Item<Boolean>> component) {
+    component.setTransferFocusOnEnter(true);
+    Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
 }

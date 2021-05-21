@@ -45,15 +45,13 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
   }
 
   @Override
-  public JTextArea build() {
+  protected JTextArea buildComponent() {
     if (!property.getAttribute().isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
 
     final JTextArea textArea = setDescriptionAndEnabledState(rows > 0 && columns > 0 ? new JTextArea(rows, columns) :
             new JTextArea(), property.getDescription(), enabledState);
-    setPreferredSize(textArea);
-    onBuild(textArea);
     textArea.setLineWrap(true);//todo
     textArea.setWrapStyleWord(true);//todo
     if (property.getMaximumLength() > 0) {

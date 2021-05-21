@@ -51,29 +51,23 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  public TextInputPanel build() {
-    final TextInputPanel inputPanel = createTextInputPanel();
-    setPreferredSize(inputPanel);
-    onBuild(inputPanel);
-    inputPanel.getTextField().setColumns(columns);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(inputPanel.getTextField());
-      if (inputPanel.getButton() != null) {
-        Components.transferFocusOnEnter(inputPanel.getButton());
-      }
-    }
-
-    return inputPanel;
-  }
-
-  private TextInputPanel createTextInputPanel() {
+  protected TextInputPanel buildComponent() {
     final JTextField field = new DefaultTextFieldBuilder<>(property, value)
             .updateOn(updateOn)
+            .columns(columns)
             .build();
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), textAreaSize,
             buttonFocusable ? TextInputPanel.ButtonFocusable.YES : TextInputPanel.ButtonFocusable.NO);
     panel.setMaximumLength(property.getMaximumLength());
 
     return panel;
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final TextInputPanel component) {
+    Components.transferFocusOnEnter(component.getTextField());
+    if (component.getButton() != null) {
+      Components.transferFocusOnEnter(component.getButton());
+    }
   }
 }

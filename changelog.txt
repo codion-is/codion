@@ -7019,3 +7019,4 @@
   AbstractComponentBuilder generics magic used to prevent ugly overrides in subclasses
   ComponentBuilder, more generics magic to prevent overrides in sub-interfaces
   EntityEditComponentPanel now handles building components
+  AbstractComponentBuilder and subclasses refactored

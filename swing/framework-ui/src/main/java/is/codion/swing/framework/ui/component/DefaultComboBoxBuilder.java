@@ -33,19 +33,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   }
 
   @Override
-  public SteppedComboBox<T> build() {
-    final SteppedComboBox<T> comboBox = createComboBox();
-    setPreferredSize(comboBox);
-    onBuild(comboBox);
-    comboBox.setTransferFocusOnEnter(transferFocusOnEnter);
-    if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
-    }
-
-    return comboBox;
-  }
-
-  private SteppedComboBox<T> createComboBox() {
+  protected SteppedComboBox<T> buildComponent() {
     final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
     if (editable && !property.getAttribute().isString()) {
       throw new IllegalArgumentException("Editable attribute ComboBox is only implemented for String properties");
@@ -54,6 +42,12 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
     ComponentValues.comboBox(comboBox).link(value);
 
     return setDescriptionAndEnabledState(comboBox, property.getDescription(), enabledState);
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final SteppedComboBox<T> component) {
+    component.setTransferFocusOnEnter(true);
+    Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
 
   static void addComboBoxCompletion(final JComboBox<?> comboBox) {
