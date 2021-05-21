@@ -7025,3 +7025,4 @@
   ComponentBuilder.focusable() added
   TextFieldBuilder.editable() added
   TextInputPanel now builder based
+  EntityComponentValues refactored
