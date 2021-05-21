@@ -241,8 +241,9 @@ public final class InputControls {
 
     String dateTimePattern = "HH:mm:ss";
 
-    TemporalField<LocalTime> textField =
-            new TemporalField<>(LocalTime.class, dateTimePattern);
+    TemporalField<LocalTime> textField = TemporalField.builder(LocalTime.class)
+            .dateTimePattern(dateTimePattern)
+            .build();
 
     ComponentValues.temporalField(textField).link(localTimeValue);
     // end::localTime[]
@@ -254,8 +255,9 @@ public final class InputControls {
 
     String dateTimePattern = "dd-MM-yyyy";
 
-    TemporalField<LocalDate> textField =
-            new TemporalField<>(LocalDate.class, dateTimePattern);
+    TemporalField<LocalDate> textField = TemporalField.builder(LocalDate.class)
+            .dateTimePattern(dateTimePattern)
+            .build();
 
     ComponentValues.temporalField(textField).link(localDateValue);
     // end::localDate[]
@@ -267,8 +269,9 @@ public final class InputControls {
 
     String dateTimePattern = "dd-MM-yyyy HH:mm";
 
-    TemporalField<LocalDateTime> textField =
-            new TemporalField<>(LocalDateTime.class, dateTimePattern);
+    TemporalField<LocalDateTime> textField = TemporalField.builder(LocalDateTime.class)
+            .dateTimePattern(dateTimePattern)
+            .build();
 
     ComponentValues.temporalField(textField).link(localDateTimeValue);
     // end::localDateTime[]
