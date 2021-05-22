@@ -140,10 +140,8 @@ public final class Example {
       @Override
       protected void initializeUI() {
         setInitialFocusAttribute(Customer.FIRST_NAME);
-        createTextField(Customer.FIRST_NAME)
-                .columns(12);
-        createTextField(Customer.LAST_NAME)
-                .columns(12);
+        createTextField(Customer.FIRST_NAME);
+        createTextField(Customer.LAST_NAME);
         addInputPanel(Customer.FIRST_NAME);
         addInputPanel(Customer.LAST_NAME);
       }

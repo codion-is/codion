@@ -19,7 +19,7 @@ public class ContactInfoEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(SellerContactInfo.LAST_NAME);
 
-    createTextField(SellerContactInfo.LAST_NAME).columns(10);
+    createTextField(SellerContactInfo.LAST_NAME);
     createTextField(SellerContactInfo.FIRST_NAME);
     createTextField(SellerContactInfo.EMAIL);
 

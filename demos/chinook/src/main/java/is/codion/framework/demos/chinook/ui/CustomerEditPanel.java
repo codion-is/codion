@@ -3,8 +3,12 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
+
+import java.util.Collection;
+import java.util.function.Supplier;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
@@ -12,39 +16,29 @@ import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFie
 
 public class CustomerEditPanel extends EntityEditPanel {
 
-  public static final int TEXT_FIELD_COLUMNS = 12;
-
   public CustomerEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
+    setDefaultTextFieldColumns(12);
   }
 
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Customer.FIRSTNAME);
 
-    createTextField(Customer.FIRSTNAME)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.LASTNAME)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.COMPANY)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.ADDRESS)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.CITY)
-            .columns(TEXT_FIELD_COLUMNS);
+    createTextField(Customer.FIRSTNAME);
+    createTextField(Customer.LASTNAME);
+    createTextField(Customer.COMPANY);
+    createTextField(Customer.ADDRESS);
+    createTextField(Customer.CITY);
     createTextField(Customer.STATE)
-            .columns(TEXT_FIELD_COLUMNS)
-            .upperCase();
-    createTextField(Customer.COUNTRY)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.POSTALCODE)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.PHONE)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.FAX)
-            .columns(TEXT_FIELD_COLUMNS);
-    createTextField(Customer.EMAIL)
-            .columns(TEXT_FIELD_COLUMNS);
+            .upperCase()
+            .lookupDialog(new StateValueSupplier())
+            .build();
+    createTextField(Customer.COUNTRY);
+    createTextField(Customer.POSTALCODE);
+    createTextField(Customer.PHONE);
+    createTextField(Customer.FAX);
+    createTextField(Customer.EMAIL);
     createForeignKeyComboBox(Customer.SUPPORTREP_FK)
             .preferredHeight(getPreferredTextFieldHeight());
 
@@ -61,5 +55,18 @@ public class CustomerEditPanel extends EntityEditPanel {
     addInputPanel(Customer.FAX);
     addInputPanel(Customer.EMAIL);
     addInputPanel(Customer.SUPPORTREP_FK);
+  }
+
+  private class StateValueSupplier implements Supplier<Collection<String>> {
+
+    @Override
+    public Collection<String> get() {
+      try {
+        return getEditModel().getConnectionProvider().getConnection().select(Customer.STATE);
+      }
+      catch (final DatabaseException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

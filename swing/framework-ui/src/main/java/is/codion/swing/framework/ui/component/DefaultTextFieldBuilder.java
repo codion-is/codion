@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Property;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -22,6 +23,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
+import java.util.Collection;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,11 +33,12 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
 
   private boolean editable = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  private int columns;//todo default columns configuration value
+  private int columns;
   private Action action;
   private boolean selectAllOnFocusGained;
   private boolean upperCase;
   private boolean lowerCase;
+  private Supplier<Collection<T>> valueSupplier;
 
   DefaultTextFieldBuilder(final Property<T> attribute, final Value<T> value) {
     super(attribute, value);
@@ -86,6 +90,12 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
   }
 
   @Override
+  public TextFieldBuilder<T> lookupDialog(final Supplier<Collection<T>> valueSupplier) {
+    this.valueSupplier = requireNonNull(valueSupplier);
+    return this;
+  }
+
+  @Override
   protected JTextField buildComponent() {
     final JTextField textField = createTextField();
     textField.setEditable(editable);
@@ -101,6 +111,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
     }
     if (lowerCase) {
       TextFields.lowerCase(textField);
+    }
+    if (valueSupplier != null) {
+      Dialogs.addLookupDialog(textField, valueSupplier);
     }
 
     return textField;

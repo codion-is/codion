@@ -121,21 +121,12 @@ public final class Dialogs {
    * @param <T> the type of values being looked up
    */
   public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+    requireNonNull(textField);
     requireNonNull(valueProvider);
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_SPACE)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .action(new AbstractAction("TextFields.lookupValue") {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                final Object value = selectionDialogBuilder(valueProvider.get())
-                        .owner(textField)
-                        .select();
-                if (value != null) {
-                  textField.setText(value.toString());
-                }
-              }
-            })
+            .action(new LookupAction<>(textField, valueProvider))
             .enable(textField);
   }
 
@@ -170,6 +161,26 @@ public final class Dialogs {
     }
     catch (final Exception e) {
       return null;
+    }
+  }
+
+  private static final class LookupAction<T> extends AbstractAction {
+
+    private final JTextField textField;
+    private final Supplier<Collection<T>> valueProvider;
+
+    private LookupAction(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+      super("Dialogs.LookupAction");
+      this.textField = textField;
+      this.valueProvider = valueProvider;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      selectionDialogBuilder(valueProvider.get())
+              .owner(textField)
+              .selectSingle()
+              .ifPresent(value -> textField.setText(value.toString()));
     }
   }
 }

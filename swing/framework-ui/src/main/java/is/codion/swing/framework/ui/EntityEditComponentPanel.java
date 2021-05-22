@@ -63,6 +63,14 @@ public class EntityEditComponentPanel extends JPanel {
           "is.codion.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
 
   /**
+   * Specifies the default number of columns in text fields created by this component panel<br>
+   * Value type: Integer<br>
+   * Default value: 12
+   */
+  public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS = Configuration.integerValue(
+          "is.codion.swing.framework.ui.EntityEditComponentPanel.defaultTextFieldColumns", 12);
+
+  /**
    * The edit model these edit components are associated with
    */
   private final SwingEntityEditModel editModel;
@@ -108,6 +116,11 @@ public class EntityEditComponentPanel extends JPanel {
    * Specifies whether components created by this edit component panel should transfer focus on enter.
    */
   private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
+
+  /**
+   * The default number of text field columns
+   */
+  private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.get();
 
   /**
    * Instantiates a new EntityEditComponentPanel
@@ -279,6 +292,17 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
     this.transferFocusOnEnter = transferFocusOnEnter;
+  }
+
+  /**
+   * Sets the default number of text field columns
+   * @param defaultTextFieldColumns
+   * @see #createTextField(Attribute)
+   * @see #createForeignKeySearchField(ForeignKey)
+   * @see #createForeignKeyField(ForeignKey)
+   */
+  protected final void setDefaultTextFieldColumns(final int defaultTextFieldColumns) {
+    this.defaultTextFieldColumns = defaultTextFieldColumns;
   }
 
   /**
@@ -481,6 +505,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final <T> TextFieldBuilder<T> createTextField(final Attribute<T> attribute) {
     final TextFieldBuilder<T> builder = inputComponents.textFieldBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns)
             .addBuildListener(textField -> setComponent(attribute, textField));
     setComponentBuilder(attribute, builder);
 
@@ -607,6 +632,7 @@ public class EntityEditComponentPanel extends JPanel {
             getEditModel().value(foreignKey),
             getEditModel().getForeignKeySearchModel(foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns)
             .addBuildListener(searchField -> setComponent(foreignKey, searchField));
     setComponentBuilder(foreignKey, builder);
 
@@ -622,6 +648,7 @@ public class EntityEditComponentPanel extends JPanel {
     final ForeignKeyFieldBuilder builder = inputComponents.foreignKeyFieldBuilder(foreignKey,
             new ForeignKeyModelValue(getEditModel(), foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns)
             .addBuildListener(field -> setComponent(foreignKey, field));
     setComponentBuilder(foreignKey, builder);
 

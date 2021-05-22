@@ -27,6 +27,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
   public InvoiceEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
+    setDefaultTextFieldColumns(16);
   }
 
   public void setInvoiceLinePanel(final EntityPanel invoiceLinePanel) {
@@ -36,27 +37,19 @@ public class InvoiceEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
-    final EntitySearchField customerField = createForeignKeySearchField(Invoice.CUSTOMER_FK)
-            .columns(16)
-            .build();
-    configureCustomerSearch(customerField);
-    createTemporalInputPanel(Invoice.DATE)
-            .columns(12);
+    createForeignKeySearchField(Invoice.CUSTOMER_FK)
+            .addBuildListener(InvoiceEditPanel::configureCustomerSearch);
+    createTemporalInputPanel(Invoice.DATE);
     createTextField(Invoice.BILLINGADDRESS)
-            .selectAllOnFocusGained()
-            .columns(16);
+            .selectAllOnFocusGained();
     createTextField(Invoice.BILLINGCITY)
-            .selectAllOnFocusGained()
-            .columns(16);
+            .selectAllOnFocusGained();
     createTextField(Invoice.BILLINGSTATE)
-            .selectAllOnFocusGained()
-            .columns(16);
+            .selectAllOnFocusGained();
     createTextField(Invoice.BILLINGCOUNTRY)
-            .selectAllOnFocusGained()
-            .columns(16);
+            .selectAllOnFocusGained();
     createTextField(Invoice.BILLINGPOSTALCODE)
-            .selectAllOnFocusGained()
-            .columns(16);
+            .selectAllOnFocusGained();
 
     final JPanel centerPanel = new JPanel(gridLayout(4, 2));
     centerPanel.add(createInputPanel(Invoice.CUSTOMER_FK));

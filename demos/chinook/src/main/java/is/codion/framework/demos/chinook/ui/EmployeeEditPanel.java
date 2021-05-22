@@ -14,41 +14,29 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
   public EmployeeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
+    setDefaultTextFieldColumns(16);
   }
 
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Employee.FIRSTNAME);
 
-    createTextField(Employee.FIRSTNAME)
-            .columns(16);
-    createTextField(Employee.LASTNAME)
-            .columns(16);
-    createTemporalInputPanel(Employee.BIRTHDATE)
-            .columns(16);
-    createTextField(Employee.ADDRESS)
-            .columns(16);
-    createTextField(Employee.CITY)
-            .columns(16);
+    createTextField(Employee.FIRSTNAME);
+    createTextField(Employee.LASTNAME);
+    createTemporalInputPanel(Employee.BIRTHDATE);
+    createTextField(Employee.ADDRESS);
+    createTextField(Employee.CITY);
     createTextField(Employee.STATE)
-            .columns(16)
             .upperCase();
-    createTextField(Employee.COUNTRY)
-            .columns(16);
-    createTextField(Employee.POSTALCODE)
-            .columns(16);
-    createTextField(Employee.PHONE)
-            .columns(16);
-    createTextField(Employee.FAX)
-            .columns(16);
-    createTextField(Employee.EMAIL)
-            .columns(16);
+    createTextField(Employee.COUNTRY);
+    createTextField(Employee.POSTALCODE);
+    createTextField(Employee.PHONE);
+    createTextField(Employee.FAX);
+    createTextField(Employee.EMAIL);
     createForeignKeyComboBox(Employee.REPORTSTO_FK)
             .preferredHeight(getPreferredTextFieldHeight());
-    createTemporalInputPanel(Employee.HIREDATE)
-            .columns(16);
-    createTextField(Employee.TITLE)
-            .columns(16);
+    createTemporalInputPanel(Employee.HIREDATE);
+    createTextField(Employee.TITLE);
 
     setLayout(flexibleGridLayout(4, 4));
     addInputPanel(Employee.FIRSTNAME);

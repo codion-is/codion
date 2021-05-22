@@ -7029,3 +7029,5 @@
   TemporalField now builder based
   Entity.Builder added along with Entities.builder() factory method
   ValueListComboBoxBuilder.popupWidth() added, some fail fast improvements
+  TextFieldBuilder.lookupDialog() added
+  EntityEditComponentPanel.defaultTextFieldColumns added along with DEFAULT_TEXT_FIELD_COLUMNS configuration value

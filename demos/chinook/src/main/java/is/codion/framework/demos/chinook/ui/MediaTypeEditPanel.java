@@ -19,8 +19,7 @@ public class MediaTypeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(MediaType.NAME);
 
-    createTextField(MediaType.NAME)
-            .columns(12);
+    createTextField(MediaType.NAME);
 
     setLayout(gridLayout(1, 1));
     addInputPanel(MediaType.NAME);

@@ -17,16 +17,15 @@ public class AlbumEditPanel extends EntityEditPanel {
 
   public AlbumEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
+    setDefaultTextFieldColumns(18);
   }
 
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Album.ARTIST_FK);
 
-    createForeignKeySearchField(Album.ARTIST_FK)
-            .columns(18);
-    createTextField(Album.TITLE)
-            .columns(18);
+    createForeignKeySearchField(Album.ARTIST_FK);
+    createTextField(Album.TITLE);
 
     final JPanel inputPanel = new JPanel(gridLayout(2, 1));
     inputPanel.add(createInputPanel(Album.ARTIST_FK));

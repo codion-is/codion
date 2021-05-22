@@ -31,12 +31,9 @@ public class StoreDemo {
     @Override
     protected void initializeUI() {
       setInitialFocusAttribute(Customer.FIRST_NAME);
-      createTextField(Customer.FIRST_NAME)
-              .columns(12);
-      createTextField(Customer.LAST_NAME)
-              .columns(12);
-      createTextField(Customer.EMAIL)
-              .columns(12);
+      createTextField(Customer.FIRST_NAME);
+      createTextField(Customer.LAST_NAME);
+      createTextField(Customer.EMAIL);
       createCheckBox(Customer.IS_ACTIVE)
               .includeCaption(false);
       setLayout(gridLayout(2, 2));
@@ -57,10 +54,8 @@ public class StoreDemo {
     protected void initializeUI() {
       setInitialFocusAttribute(Address.STREET);
       createForeignKeyComboBox(Address.CUSTOMER_FK);
-      createTextField(Address.STREET)
-              .columns(12);
-      createTextField(Address.CITY)
-              .columns(12);
+      createTextField(Address.STREET);
+      createTextField(Address.CITY);
       setLayout(gridLayout(3, 1));
       addInputPanel(Address.CUSTOMER_FK);
       addInputPanel(Address.STREET);

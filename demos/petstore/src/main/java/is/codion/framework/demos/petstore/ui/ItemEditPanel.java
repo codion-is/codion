@@ -17,6 +17,7 @@ public class ItemEditPanel extends EntityEditPanel {
 
   public ItemEditPanel(final SwingEntityEditModel model) {
     super(model);
+    setDefaultTextFieldColumns(14);
   }
 
   @Override
@@ -24,9 +25,8 @@ public class ItemEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Item.PRODUCT_FK);
 
     createForeignKeyComboBox(Item.PRODUCT_FK);
-    createTextField(Item.NAME).columns(12);
+    createTextField(Item.NAME);
     createTextInputPanel(Item.DESCRIPTION)
-            .columns(14)
             .buttonFocusable(false);
     createTextField(Item.PRICE);
     final EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)
@@ -37,10 +37,8 @@ public class ItemEditPanel extends EntityEditPanel {
             .preferredSize(TextFields.getPreferredTextFieldSize())
             .popupWidth(200)
             .build();
-    createTextField(Item.IMAGE_URL)
-            .columns(14);
-    createTextField(Item.IMAGE_THUMB_URL)
-            .columns(14);
+    createTextField(Item.IMAGE_URL);
+    createTextField(Item.IMAGE_THUMB_URL);
     createCheckBox(Item.DISABLED)
             .nullable(true)
             .includeCaption(false);
