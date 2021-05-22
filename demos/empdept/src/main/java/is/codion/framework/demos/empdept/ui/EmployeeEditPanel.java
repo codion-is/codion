@@ -19,7 +19,6 @@ import java.awt.BorderLayout;
 import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldSize;
 
 // tag::constructor[]
 public class EmployeeEditPanel extends EntityEditPanel {
@@ -38,8 +37,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
             .columns(8)
             .upperCase();
     createValueListComboBox(Employee.JOB);
-    createForeignKeyComboBox(Employee.MGR_FK)
-            .preferredSize(getPreferredTextFieldSize());
+    createForeignKeyComboBox(Employee.MGR_FK);
     createTextField(Employee.SALARY);
     createTextField(Employee.COMMISSION);
     createTemporalInputPanel(Employee.HIREDATE)

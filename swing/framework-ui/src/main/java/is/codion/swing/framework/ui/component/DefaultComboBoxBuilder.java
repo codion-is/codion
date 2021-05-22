@@ -8,6 +8,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.ComboBoxModel;
@@ -24,6 +25,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
                          final ComboBoxModel<T> comboBoxModel) {
     super(attribute, value);
     this.comboBoxModel = comboBoxModel;
+    preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
   @Override

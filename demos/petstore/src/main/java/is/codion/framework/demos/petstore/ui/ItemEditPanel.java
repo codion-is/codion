@@ -5,7 +5,6 @@ package is.codion.framework.demos.petstore.ui;
 
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -34,13 +33,11 @@ public class ItemEditPanel extends EntityEditPanel {
             .popupWidth(200)
             .build();
     final EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK)
-            .preferredSize(TextFields.getPreferredTextFieldSize())
             .popupWidth(200)
             .build();
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);
-    createCheckBox(Item.DISABLED)
-            .nullable(true);
+    createBooleanComboBox(Item.DISABLED);
 
     setLayout(Layouts.flexibleGridLayout(3, 3));
     addInputPanel(Item.PRODUCT_FK);
