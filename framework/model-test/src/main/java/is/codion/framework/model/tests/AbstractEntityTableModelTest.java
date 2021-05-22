@@ -362,7 +362,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   /**
-   * @return a static EntityTableModel using {@link #testEntities} with an edit model
+   * @return a EntityTableModel using {@link #testEntities} with an edit model
    * @see TestDomain#T_DETAIL
    */
   protected abstract TableModel createTestTableModel();

@@ -26,6 +26,9 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
 
   DefaultTextAreaBuilder(final Property<String> attribute, final Value<String> value) {
     super(attribute, value);
+    if (!property.getAttribute().isString()) {
+      throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
+    }
   }
 
   @Override
@@ -60,10 +63,6 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
 
   @Override
   protected JTextArea buildComponent() {
-    if (!property.getAttribute().isString()) {
-      throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
-    }
-
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
