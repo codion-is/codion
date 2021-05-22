@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.i18n.Messages;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
@@ -142,18 +142,18 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
-    final JButton jButton = new JButton(new AbstractAction("...") {
+    final JButton button = new JButton(new AbstractAction("...") {
       @Override
       public void actionPerformed(final ActionEvent e) {
         getInputFromUser();
       }
     });
-    jButton.setFocusable(buttonFocusable);
+    button.setFocusable(buttonFocusable);
     if (buttonSize != null) {
-      jButton.setPreferredSize(buttonSize);
+      button.setPreferredSize(buttonSize);
     }
 
-    return jButton;
+    return button;
   }
 
   private void getInputFromUser() {
@@ -167,18 +167,18 @@ public final class TextInputPanel extends JPanel {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setEditable(textField.isEditable());
-    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+    final Action okAction = new AbstractAction() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         textField.setText(textArea.getText());
+        Windows.getParentDialog(textArea).dispose();
       }
     };
-    okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    Dialogs.dialogBuilder()
+    Dialogs.okCancelDialogBuilder()
             .owner(textField)
             .component(new JScrollPane(textArea))
             .title(dialogTitle)
-            .onClosedAction(okAction)
+            .okAction(okAction)
             .show();
     textField.requestFocusInWindow();
   }
