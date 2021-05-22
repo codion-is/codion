@@ -8,7 +8,6 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 public class PlaylistTrackEditPanel extends EntityEditPanel {
 
@@ -20,8 +19,7 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(PlaylistTrack.PLAYLIST_FK);
 
-    createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK)
-            .preferredHeight(getPreferredTextFieldHeight());
+    createForeignKeyComboBox(PlaylistTrack.PLAYLIST_FK);
     createForeignKeySearchField(PlaylistTrack.TRACK_FK)
             .selectionProviderFactory(TrackSelectionProvider::new)
             .columns(30);

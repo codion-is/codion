@@ -300,6 +300,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
    * @see #createForeignKeyField(ForeignKey)
+   * @see #createTextInputPanel(Attribute)
    */
   protected final void setDefaultTextFieldColumns(final int defaultTextFieldColumns) {
     this.defaultTextFieldColumns = defaultTextFieldColumns;
@@ -472,6 +473,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final TextInputPanelBuilder createTextInputPanel(final Attribute<String> attribute) {
     final TextInputPanelBuilder builder = inputComponents.textInputPanelBuilder(attribute, getEditModel().value(attribute))
             .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns)
             .addBuildListener(inputPanel -> setComponent(attribute, inputPanel));
     setComponentBuilder(attribute, builder);
 
