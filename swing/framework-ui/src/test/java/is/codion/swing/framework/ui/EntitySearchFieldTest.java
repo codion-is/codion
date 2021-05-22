@@ -30,9 +30,9 @@ public class EntitySearchFieldTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void inputProvider() throws Exception {
+  public void componentValue() throws Exception {
     final EntitySearchModel model = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final ComponentValue<Entity, EntitySearchField> value = new EntitySearchField(model).componentValue();
+    final ComponentValue<Entity, EntitySearchField> value = new EntitySearchField(model).componentValueSingle();
 
     assertNull(value.get());
 

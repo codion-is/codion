@@ -4,16 +4,13 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.CancelException;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -51,21 +48,8 @@ public class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    final ComponentValuePanel<BigDecimal, BigDecimalField> inputPanel =
-            new ComponentValuePanel<>(ComponentValues.bigDecimalField(new BigDecimalField()),
-                    BUNDLE.getString("amount"));
-    Dialogs.dialogBuilder()
-            .owner(this)
-            .component(inputPanel)
-            .title(BUNDLE.getString("raise_price"))
-            .enterAction(inputPanel.getOkAction())
-            .closeEvent(inputPanel.getButtonClickObserver())
-            .show();
-    if (inputPanel.isInputAccepted() && inputPanel.get() != null) {
-      return inputPanel.get();
-    }
-
-    throw new CancelException();
+    return ComponentValues.bigDecimalField(new BigDecimalField())
+            .showDialog(this, BUNDLE.getString("amount"));
   }
 
   private static final class TrackComponentValues extends EntityComponentValues {

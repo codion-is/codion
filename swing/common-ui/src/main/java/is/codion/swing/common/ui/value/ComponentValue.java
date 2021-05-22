@@ -21,6 +21,23 @@ public interface ComponentValue<V, C extends JComponent> extends Value<V> {
   C getComponent();
 
   /**
+   * Displays the underlying component in a dialog and returns the value if the user presses OK.
+   * @param owner the dialog owner
+   * @return the value from the underlying component if the user presses OK
+   * @throws is.codion.common.model.CancelException if the user cancels
+   */
+  V showDialog(final JComponent owner);
+
+  /**
+   * Displays the underlying component in a dialog and returns the value if the user presses OK.
+   * @param owner the dialog owner
+   * @param title the dialog title
+   * @return the value from the underlying component if the user presses OK
+   * @throws is.codion.common.model.CancelException if the user cancels
+   */
+  V showDialog(final JComponent owner, final String title);
+
+  /**
    * A builder for Values based on an input component
    * @param <V> the value type
    * @param <C> the component type

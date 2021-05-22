@@ -33,15 +33,15 @@ public abstract class AbstractValue<V> implements Value<V> {
 
   private ValueObserver<V> observer;
 
-  public AbstractValue() {
+  protected AbstractValue() {
     this(null);
   }
 
-  public AbstractValue(final V nullValue) {
+  protected AbstractValue(final V nullValue) {
     this(nullValue, NotifyOnSet.NO);
   }
 
-  public AbstractValue(final V nullValue, final NotifyOnSet notifyOnSet) {
+  protected AbstractValue(final V nullValue, final NotifyOnSet notifyOnSet) {
     this.nullValue = nullValue;
     this.notifyOnSet = notifyOnSet == NotifyOnSet.YES;
   }

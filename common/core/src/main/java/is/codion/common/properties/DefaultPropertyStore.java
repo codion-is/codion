@@ -85,8 +85,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public <V> PropertyValue<List<V>> propertyListValue(final String propertyName, final List<V> defaultValue,
-                                                      final Function<String, V> decoder,
-                                                      final Function<V, String> encoder) {
+                                                      final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }

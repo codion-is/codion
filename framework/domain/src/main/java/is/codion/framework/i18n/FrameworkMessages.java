@@ -38,7 +38,6 @@ public final class FrameworkMessages {
   public static final String REFRESH_TIP = "refresh_tip";
   public static final String VIEW_DEPENDENCIES = "view_dependencies";
   public static final String VIEW_DEPENDENCIES_TIP = "view_dependencies_tip";
-  public static final String SET_PROPERTY_VALUE = "set_property_value";
   public static final String INSERT = "insert";
   public static final String INSERT_NEW = "insert_new";
   public static final String INSERT_MNEMONIC = "insert_mnemonic";

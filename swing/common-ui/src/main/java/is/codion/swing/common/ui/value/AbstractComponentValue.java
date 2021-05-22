@@ -3,10 +3,20 @@
  */
 package is.codion.swing.common.ui.value;
 
+import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 
 import static java.util.Objects.requireNonNull;
@@ -46,6 +56,31 @@ public abstract class AbstractComponentValue<V, C extends JComponent> extends Ab
   @Override
   public final C getComponent() {
     return component;
+  }
+
+  @Override
+  public final V showDialog(final JComponent owner) {
+    return showDialog(owner, null);
+  }
+
+  @Override
+  public final V showDialog(final JComponent owner, final String title) {
+    final State okPressed = State.state();
+    final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    basePanel.add(component, BorderLayout.CENTER);
+    basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+    Dialogs.okCancelDialogBuilder()
+            .owner(owner)
+            .title(title)
+            .component(basePanel)
+            .okAction(new OkAction(okPressed, basePanel))
+            .cancelAction(new CancelAction(basePanel))
+            .show();
+    if (okPressed.get()) {
+      return get();
+    }
+
+    throw new CancelException();
   }
 
   @Override
@@ -91,4 +126,35 @@ public abstract class AbstractComponentValue<V, C extends JComponent> extends Ab
    * @param value the value to display in the input component
    */
   protected abstract void setComponentValue(C component, V value);
+
+  private static final class OkAction extends AbstractAction {
+
+    private final State okPressed;
+    private final JComponent component;
+
+    private OkAction(final State okPressed, final JComponent component) {
+      this.okPressed = okPressed;
+      this.component = component;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      okPressed.set(true);
+      Windows.getParentDialog(component).dispose();
+    }
+  }
+
+  private static final class CancelAction extends AbstractAction {
+
+    private final JComponent component;
+
+    private CancelAction(final JComponent component) {
+      this.component = component;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      Windows.getParentDialog(component).dispose();
+    }
+  }
 }

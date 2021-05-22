@@ -43,8 +43,6 @@ import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -654,30 +652,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final ComponentValue<T, JComponent> componentValue =
-            componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue);
-    final ComponentValuePanel<T, JComponent> inputPanel =
-            new ComponentValuePanel<>(componentValue, propertyToUpdate.getCaption());
-    Dialogs.dialogBuilder()
-            .owner(this)
-            .component(inputPanel)
-            .title(FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE))
-            .enterAction(inputPanel.getOkAction())
-            .closeEvent(inputPanel.getButtonClickObserver())
-            .show();
-    if (inputPanel.isInputAccepted()) {
-      Entity.put(propertyToUpdate.getAttribute(), inputPanel.get(), selectedEntities);
-      try {
-        showWaitCursor(this);
-        tableModel.update(selectedEntities);
-      }
-      catch (final Exception e) {
-        LOG.error(e.getMessage(), e);
-        onException(e);
-      }
-      finally {
-        hideWaitCursor(this);
-      }
+    final T newValue = componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
+            .showDialog(this, propertyToUpdate.getCaption());
+    Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
+    try {
+      showWaitCursor(this);
+      tableModel.update(selectedEntities);
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      onException(e);
+    }
+    finally {
+      hideWaitCursor(this);
     }
   }
 

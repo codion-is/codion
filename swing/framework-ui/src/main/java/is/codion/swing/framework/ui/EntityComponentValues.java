@@ -115,7 +115,7 @@ public class EntityComponentValues {
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
-    return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValue();
+    return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValueSingle();
   }
 
   private static <T, C extends JComponent> ComponentValue<T, C> createBooleanComboBox(final T initialValue) {

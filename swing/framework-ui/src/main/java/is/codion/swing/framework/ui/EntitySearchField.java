@@ -29,7 +29,6 @@ import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -183,8 +182,16 @@ public final class EntitySearchField extends JTextField {
    * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}.
    * @return a new ComponentValue
    */
-  public ComponentValue<Entity, EntitySearchField> componentValue() {
-    return new SearchFieldValue(this);
+  public ComponentValue<Entity, EntitySearchField> componentValueSingle() {
+    return new SearchFieldSingleValue(this);
+  }
+
+  /**
+   * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}.
+   * @return a new ComponentValue
+   */
+  public ComponentValue<List<Entity>, EntitySearchField> componentValueMultiple() {
+    return new SearchFieldMultipleValues(this);
   }
 
   /**
@@ -193,15 +200,15 @@ public final class EntitySearchField extends JTextField {
    * @param entityType the entityType of the entity to perform a search for
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
-   * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
-   * @return the selected entity or null in case no entity was selected
+   * @return the selected entity
+   * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntitySearchField
    * @see EntityDefinition#getSearchAttributes()
    */
   public static Entity lookupEntity(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                    final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
-    final List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
+                                    final JComponent dialogParent, final String dialogTitle) {
+    final List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, dialogTitle);
 
     return entities.isEmpty() ? null : entities.get(0);
   }
@@ -212,15 +219,15 @@ public final class EntitySearchField extends JTextField {
    * @param entityType the entityType of the entity to perform a search for
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
-   * @param lookupCaption the caption for the lookup field
    * @param dialogTitle the title to display on the dialog
-   * @return the selected entities or an empty list in case no entity was selected
+   * @return the selected entities
+   * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntitySearchField
    * @see EntityDefinition#getSearchAttributes()
    */
   public static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                            final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
-    return lookupEntities(entityType, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
+                                            final JComponent dialogParent, final String dialogTitle) {
+    return lookupEntities(entityType, connectionProvider, false, dialogParent, dialogTitle);
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -378,24 +385,11 @@ public final class EntitySearchField extends JTextField {
   }
 
   private static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                             final boolean singleSelection, final JComponent dialogParent,
-                                             final String lookupCaption, final String dialogTitle) {
+                                             final boolean singleSelection, final JComponent dialogParent, final String dialogTitle) {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
-    final ComponentValuePanel<Entity, EntitySearchField> inputPanel =
-            new ComponentValuePanel<>(new EntitySearchField(searchModel).componentValue(), lookupCaption);
-    Dialogs.dialogBuilder()
-            .owner(dialogParent)
-            .component(inputPanel)
-            .title(dialogTitle)
-            .enterAction(inputPanel.getOkAction())
-            .closeEvent(inputPanel.getButtonClickObserver())
-            .show();
-    if (inputPanel.isInputAccepted()) {
-      return searchModel.getSelectedEntities();
-    }
 
-    return emptyList();
+    return new EntitySearchField(searchModel).componentValueMultiple().showDialog(dialogParent, dialogTitle);
   }
 
   private static final class SettingsPanel extends JPanel {
@@ -605,9 +599,9 @@ public final class EntitySearchField extends JTextField {
     }
   }
 
-  private static final class SearchFieldValue extends AbstractComponentValue<Entity, EntitySearchField> {
+  private static final class SearchFieldSingleValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
-    private SearchFieldValue(final EntitySearchField searchField) {
+    private SearchFieldSingleValue(final EntitySearchField searchField) {
       super(searchField);
     }
 
@@ -621,6 +615,23 @@ public final class EntitySearchField extends JTextField {
     @Override
     protected void setComponentValue(final EntitySearchField component, final Entity value) {
       component.getModel().setSelectedEntity(value);
+    }
+  }
+
+  private static final class SearchFieldMultipleValues extends AbstractComponentValue<List<Entity>, EntitySearchField> {
+
+    private SearchFieldMultipleValues(final EntitySearchField searchField) {
+      super(searchField);
+    }
+
+    @Override
+    protected List<Entity> getComponentValue(final EntitySearchField component) {
+      return component.getModel().getSelectedEntities();
+    }
+
+    @Override
+    protected void setComponentValue(final EntitySearchField component, final List<Entity> value) {
+      component.getModel().setSelectedEntities(value);
     }
   }
 
