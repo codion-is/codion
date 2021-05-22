@@ -62,8 +62,9 @@ public interface TextFieldBuilder<T> extends ComponentBuilder<T, JTextField, Tex
   /**
    * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
    * by the given value provider
-   * @param valueProvider provides the values for the lookup dialog
+   * @param valueSupplier provides the values for the lookup dialog
    * @param <T> the type of values being looked up
+   * @return this builder instance
    */
   TextFieldBuilder<T> lookupDialog(Supplier<Collection<T>> valueSupplier);
 }
