@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.rmi;
 
-import is.codion.common.i18n.Messages;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
@@ -75,10 +74,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   @Override
   public String getDescription() {
-    if (!isConnectionValid()) {
-      return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
-    }
-
     return serverInformation.getServerName() + "@" + serverHostName;
   }
 
