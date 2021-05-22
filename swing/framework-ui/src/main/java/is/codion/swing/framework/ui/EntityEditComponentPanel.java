@@ -296,7 +296,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Sets the default number of text field columns
-   * @param defaultTextFieldColumns
+   * @param defaultTextFieldColumns the default text field columns
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
    * @see #createForeignKeyField(ForeignKey)
