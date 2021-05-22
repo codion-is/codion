@@ -40,8 +40,7 @@ public class ItemEditPanel extends EntityEditPanel {
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);
     createCheckBox(Item.DISABLED)
-            .nullable(true)
-            .includeCaption(false);
+            .nullable(true);
 
     setLayout(Layouts.flexibleGridLayout(3, 3));
     addInputPanel(Item.PRODUCT_FK);

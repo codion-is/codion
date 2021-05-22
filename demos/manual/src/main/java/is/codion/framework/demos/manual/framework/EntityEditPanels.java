@@ -67,7 +67,7 @@ public final class EntityEditPanels {
       // tag::booleanValue[]
       JCheckBox checkBox =
               createCheckBox(Demo.BOOLEAN)
-                      .includeCaption(false)
+                      .includeCaption(true)
                       .build();
 
       NullableCheckBox nullableCheckBox =

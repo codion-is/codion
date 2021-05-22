@@ -85,6 +85,9 @@ public class EntityEditComponentPanel extends JPanel {
    */
   private final Map<Attribute<?>, JComponent> components = new HashMap<>();
 
+  /**
+   * Input component builders mapped to their respective attributes
+   */
   private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 
   /**
@@ -147,11 +150,12 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * @param attribute the attribute
-   * @return the component associated with the given attribute, null if no component has been
-   * associated with the given attribute
+   * @return the component associated with the given attribute, null if no component
+   * or component builder has been associated with the given attribute
    */
   public final JComponent getComponent(final Attribute<?> attribute) {
     if (!components.containsKey(attribute) && componentBuilders.containsKey(attribute)) {
+      //adds the component to the components map via the build listener
       componentBuilders.get(attribute).build();
     }
 
@@ -566,8 +570,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param <T> the value type
    * @return a combo box builder
    */
-  protected final <T> ComboBoxBuilder<T> createComboBox(final Attribute<T> attribute,
-                                                        final ComboBoxModel<T> comboBoxModel) {
+  protected final <T> ComboBoxBuilder<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     final ComboBoxBuilder<T> builder = inputComponents.comboBoxBuilder(attribute, getEditModel().value(attribute), comboBoxModel)
             .transferFocusOnEnter(transferFocusOnEnter)
             .addBuildListener(box -> setComponent(attribute, box));

@@ -61,10 +61,9 @@ public class EntityInputComponentsTest {
   @Test
   public void createNullableCheckBox() {
     editModel.setDefaultValues();
-    final NullableCheckBox box = (NullableCheckBox) inputComponents
-            .checkBoxBuilder(TestDomain.DETAIL_BOOLEAN_NULLABLE, editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE))
+    final NullableCheckBox box = (NullableCheckBox) inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN_NULLABLE,
+            editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE))
             .nullable(true)
-            .includeCaption(false)
             .build();
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
