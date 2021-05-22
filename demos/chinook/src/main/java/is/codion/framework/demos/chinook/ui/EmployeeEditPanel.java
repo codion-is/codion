@@ -8,7 +8,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Employee;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 
@@ -33,8 +32,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTextField(Employee.PHONE);
     createTextField(Employee.FAX);
     createTextField(Employee.EMAIL);
-    createForeignKeyComboBox(Employee.REPORTSTO_FK)
-            .preferredHeight(getPreferredTextFieldHeight());
+    createForeignKeyComboBox(Employee.REPORTSTO_FK);
     createTemporalInputPanel(Employee.HIREDATE);
     createTextField(Employee.TITLE);
 

@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 public class CustomerEditPanel extends EntityEditPanel {
 
@@ -39,8 +38,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.PHONE);
     createTextField(Customer.FAX);
     createTextField(Customer.EMAIL);
-    createForeignKeyComboBox(Customer.SUPPORTREP_FK)
-            .preferredHeight(getPreferredTextFieldHeight());
+    createForeignKeyComboBox(Customer.SUPPORTREP_FK);
 
     setLayout(flexibleGridLayout(4, 3));
     addInputPanel(Customer.FIRSTNAME);
