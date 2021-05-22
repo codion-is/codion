@@ -15,8 +15,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -41,7 +39,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 
 /**
  * A JDialog for displaying information on exceptions.
@@ -64,7 +63,6 @@ final class ExceptionDialog extends JDialog {
   private static final int MAX_MESSAGE_LENGTH = 100;
   private static final int BORDER_SIZE = 5;
   private static final int ICON_TEXT_GAP = 10;
-  private static final int NORTH_PANEL_DIMENSIONS = 2;
   private static final int TAB_SIZE = 4;
 
   //ui components
@@ -126,8 +124,10 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createNorthPanel() {
-    final FlexibleGridLayout layout =
-            flexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, FixRowHeights.YES, FixColumnWidths.NO);
+    final FlexibleGridLayout layout = FlexibleGridLayout.builder()
+            .rows(2).columns(2)
+            .fixRowHeights(true)
+            .build();
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
     detailPanel = new JPanel(layout);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);

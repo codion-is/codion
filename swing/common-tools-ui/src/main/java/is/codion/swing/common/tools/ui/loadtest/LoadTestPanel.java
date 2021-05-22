@@ -15,8 +15,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -136,7 +134,10 @@ public final class LoadTestPanel<T> extends JPanel {
     final JPanel userBase = initializeUserPanel();
     final JPanel chartControlPanel = initializeChartControlPanel();
 
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(5, 1, FixRowHeights.NO, FixColumnWidths.YES));
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+            .rows(5).columns(1)
+            .fixColumnWidths(true)
+            .build());
     controlPanel.add(applicationPanel);
     controlPanel.add(activityPanel);
     controlPanel.add(scenarioPanel);
@@ -185,9 +186,11 @@ public final class LoadTestPanel<T> extends JPanel {
     final ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
-    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(2, 2, FixRowHeights.YES, FixColumnWidths.NO);
-    layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
-    final JPanel userBase = new JPanel(layout);
+    final JPanel userBase = new JPanel(Layouts.flexibleGridLayoutBuilder()
+            .rows(2).columns(2)
+            .fixRowHeights(true)
+            .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
+            .build());
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
 
     userBase.add(new JLabel("Username"));
@@ -250,7 +253,10 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeChartControlPanel() {
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+            .rows(1).columns(2)
+            .fixRowHeights(true)
+            .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ToggleControl.builder()
             .state(loadTestModel.getCollectChartDataState())
@@ -355,8 +361,11 @@ public final class LoadTestPanel<T> extends JPanel {
             .mnemonic('P')
             .build();
 
-    final FlexibleGridLayout layout = Layouts.flexibleGridLayout(4, 2, FixRowHeights.YES, FixColumnWidths.NO);
-    layout.setFixedRowHeight(TextFields.getPreferredTextFieldHeight());
+    final FlexibleGridLayout layout = Layouts.flexibleGridLayoutBuilder()
+            .rows(4).columns(2)
+            .fixRowHeights(true)
+            .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
+            .build();
     final JPanel thinkTimePanel = new JPanel(layout);
     thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
     thinkTimePanel.add(maxThinkTimeSpinner);

@@ -18,74 +18,17 @@ public final class FlexibleGridLayout extends GridLayout {
 
   private static final double ONE_POINT_O = 1.0;
 
-  /**
-   * Specifies whether row heights should be fixed.
-   */
-  public enum FixRowHeights {
-    /**
-     * Row heights should be fixed.
-     */
-    YES,
-    /**
-     * Row heights should not be fixed.
-     */
-    NO
-  }
-
-  /**
-   * Specifies whether column widths should be fixed.
-   */
-  public enum FixColumnWidths {
-    /**
-     * Column widths should be fixed.
-     */
-    YES,
-    /**
-     * Column widths should not be fixed.
-     */
-    NO
-  }
-
   private final boolean fixedRowHeights;
   private final boolean fixedColumnWidths;
 
   private int fixedColumnWidth;
   private int fixedRowHeight;
 
-  /**
-   * Instantiates a new FlexibleGridLayout
-   * @param rows the number of rows
-   * @param cols the number of columns
-   */
-  public FlexibleGridLayout(final int rows, final int cols) {
-    this(rows, cols, 0, 0, FixRowHeights.NO, FixColumnWidths.NO);
-  }
-
-  /**
-   * Instantiates a new FlexibleGridLayout
-   * @param rows the number of rows
-   * @param cols the number of columns
-   * @param hgap the horizontal gap
-   * @param vgap the vertical gap
-   */
-  public FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap) {
-    this(rows, cols, hgap, vgap, FixRowHeights.NO, FixColumnWidths.NO);
-  }
-
-  /**
-   * Instantiates a new FlexibleGridLayout
-   * @param rows the number of rows
-   * @param cols the number of columns
-   * @param hgap the horizontal gap
-   * @param vgap the vertical gap
-   * @param fixRowHeights if yes then the row heights are fixed according to the largest row
-   * @param fixColumnWidths if yes then the column widths are fixed according to the largest column
-   */
-  public FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap,
-                            final FixRowHeights fixRowHeights, final FixColumnWidths fixColumnWidths) {
+  private FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap,
+                             final boolean fixRowHeights, final boolean fixColumnWidths) {
     super(rows, cols, hgap, vgap);
-    this.fixedRowHeights = fixRowHeights == FixRowHeights.YES;
-    this.fixedColumnWidths = fixColumnWidths == FixColumnWidths.YES;
+    this.fixedRowHeights = fixRowHeights;
+    this.fixedColumnWidths = fixColumnWidths;
   }
 
   /**
@@ -173,6 +116,75 @@ public final class FlexibleGridLayout extends GridLayout {
     }
   }
 
+  /**
+   * @return a builder for {@link FlexibleGridLayout}.
+   */
+  public static Builder builder() {
+    return new DefaultBuilder();
+  }
+
+  /**
+   * A builder for {@link FlexibleGridLayout}.
+   */
+  public interface Builder {
+
+    /**
+     * @param rows the number of rows
+     * @return this builder instance
+     */
+    Builder rows(int rows);
+
+    /**
+     *
+     * @param columns the number of columns
+     * @return this builder instance
+     */
+    Builder columns(int columns);
+
+    /**
+     * @param horizontalGap the horizontal gap
+     * @return this builder instance
+     */
+    Builder horizontalGap(int horizontalGap);
+
+    /**
+     * @param verticalGap the vertical gap
+     * @return this builder instance
+     */
+    Builder verticalGap(int verticalGap);
+
+    /**
+     * @param fixRowHeights true if rows should have a
+     * fixed height according to the tallest component
+     * @return this builder instance
+     */
+    Builder fixRowHeights(boolean fixRowHeights);
+
+    /**
+     * @param fixColumnWidths true if columns should have a
+     * fixed width according to the widest component
+     * @return this builder instance
+     */
+    Builder fixColumnWidths(boolean fixColumnWidths);
+
+    /**
+     * @param fixedRowHeight the fixed row height
+     * @return this builder instance
+     */
+    Builder fixedRowHeight(int fixedRowHeight);
+
+    /**
+     * @param fixedColumnWidth the fixed column width
+     * @return this builder instance
+     */
+    Builder fixedColumnWidth(int fixedColumnWidth);
+
+    /**
+     * @return a new layout instance
+     */
+    FlexibleGridLayout build();
+  }
+
   private void arrangeFixedSizes(final int[] columnWidths, final int[] rowHeights) {
     if (fixedColumnWidths) {
       int maxColumnWidth = 0;
@@ -234,6 +246,79 @@ public final class FlexibleGridLayout extends GridLayout {
 
       return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns - 1) * getHgap(),
               insets.top + insets.bottom + newHeight + (numberOfRows - 1) * getVgap());
+    }
+  }
+
+  private static final class DefaultBuilder implements Builder {
+
+    private int rows = 0;
+    private int columns = 0;
+    private int horizontalGap = 0;
+    private int verticalGap = 0;
+    private boolean fixRowHeights = false;
+    private boolean fixColumnWidths = false;
+    private int fixedRowHeight;
+    private int fixedColumnWidth;
+
+    @Override
+    public Builder rows(final int rows) {
+      this.rows = rows;
+      return this;
+    }
+
+    @Override
+    public Builder columns(final int columns) {
+      this.columns = columns;
+      return this;
+    }
+
+    @Override
+    public Builder horizontalGap(final int horizontalGap) {
+      this.horizontalGap = horizontalGap;
+      return this;
+    }
+
+    @Override
+    public Builder verticalGap(final int verticalGap) {
+      this.verticalGap = verticalGap;
+      return this;
+    }
+
+    @Override
+    public Builder fixRowHeights(final boolean fixRowHeights) {
+      this.fixRowHeights = fixRowHeights;
+      return this;
+    }
+
+    @Override
+    public Builder fixColumnWidths(final boolean fixColumnWidths) {
+      this.fixColumnWidths = fixColumnWidths;
+      return this;
+    }
+
+    @Override
+    public Builder fixedRowHeight(final int fixedRowHeight) {
+      this.fixedRowHeight = fixedRowHeight;
+      return this;
+    }
+
+    @Override
+    public Builder fixedColumnWidth(final int fixedColumnWidth) {
+      this.fixedColumnWidth = fixedColumnWidth;
+      return this;
+    }
+
+    @Override
+    public FlexibleGridLayout build() {
+      final FlexibleGridLayout layout = new FlexibleGridLayout(rows, columns, horizontalGap, verticalGap, fixRowHeights, fixColumnWidths);
+      if (fixedRowHeight > 0) {
+        layout.setFixedRowHeight(fixedRowHeight);
+      }
+      if (fixedColumnWidth > 0) {
+        layout.setFixedColumnWidth(fixedColumnWidth);
+      }
+
+      return layout;
     }
   }
 }

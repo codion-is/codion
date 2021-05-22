@@ -16,8 +16,6 @@ import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -552,7 +550,12 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   private void initializeUI() {
     Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
-    setLayout(new FlexibleGridLayout(2, 1, 0, 0, FixRowHeights.YES, FixColumnWidths.NO));
+    setLayout(FlexibleGridLayout.builder()
+            .rows(2).columns(1)
+            .horizontalGap(0)
+            .verticalGap(0)
+            .fixRowHeights(true)
+            .build());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     if (toggleEnabledButton != null) {
       this.toggleEnabledButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));

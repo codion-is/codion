@@ -5,8 +5,6 @@ package is.codion.swing.common.ui.layout;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -71,22 +69,20 @@ public final class Layouts {
    * @see #HORIZONTAL_VERTICAL_GAP
    */
   public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns) {
-    return flexibleGridLayout(rows, columns, FixRowHeights.NO, FixColumnWidths.NO);
+    return flexibleGridLayoutBuilder()
+            .rows(rows)
+            .columns(columns)
+            .build();
   }
 
   /**
-   * Creates a FlexibleGridLayout using the default vertical and horizontal gap value
-   * @param rows the number of rows
-   * @param columns the number of columns
-   * @param fixRowHeights if yes then the height of the rows is fixed as the largest value
-   * @param fixColumnWidths if yes then the width of the columns is fixed as the largest value
-   * @return a FlexibleGridLayout
+   * Creates a FlexibleGridLayout.Builder using the default vertical and horizontal gap value
+   * @return a FlexibleGridLayout.Builder instance
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns,
-                                                      final FixRowHeights fixRowHeights,
-                                                      final FixColumnWidths fixColumnWidths) {
-    return new FlexibleGridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(),
-            HORIZONTAL_VERTICAL_GAP.get(), fixRowHeights, fixColumnWidths);
+  public static FlexibleGridLayout.Builder flexibleGridLayoutBuilder() {
+    return FlexibleGridLayout.builder()
+            .horizontalGap(HORIZONTAL_VERTICAL_GAP.get())
+            .verticalGap(HORIZONTAL_VERTICAL_GAP.get());
   }
 }
