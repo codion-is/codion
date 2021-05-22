@@ -7031,3 +7031,4 @@
   ValueListComboBoxBuilder.popupWidth() added, some fail fast improvements
   TextFieldBuilder.lookupDialog() added
   EntityEditComponentPanel.defaultTextFieldColumns added along with DEFAULT_TEXT_FIELD_COLUMNS configuration value
+  EntityEditComponentPanel.createTextInputPanel() ignored the default text field columns
