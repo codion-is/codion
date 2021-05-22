@@ -4,7 +4,6 @@
 package is.codion.framework.server;
 
 import is.codion.common.db.database.DatabaseFactory;
-import is.codion.common.i18n.Messages;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
@@ -33,8 +32,6 @@ import org.junit.jupiter.api.Test;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -48,8 +45,6 @@ public class EntityServerTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final User ADMIN_USER = User.parseUser("scott:tiger");
-  private static final Map<String, Object> CONNECTION_PARAMS =
-          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain");
   private static Server<RemoteEntityConnection, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -215,17 +210,17 @@ public class EntityServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    final User john = User.user("john", "hello".toCharArray());
+    final User john = User.parseUser("john:hello");
     final ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
             .user(john)
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     final ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
-            .user(User.user("helen", "juno".toCharArray()))
+            .user(User.parseUser("helen:juno"))
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     final ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
-            .user(User.user("foo", "bar".toCharArray()))
+            .user(User.parseUser("foo:bar"))
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     server.connect(connectionRequestJohn);
@@ -280,9 +275,9 @@ public class EntityServerTest {
     db3.close();
 
     provider.close();
-    assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
+    assertFalse(provider.isConnectionValid());
     db3 = provider.getConnection();
-    assertEquals(admin.getServerInformation().getServerName() + "@localhost", provider.getDescription());
+    assertTrue(provider.isConnectionValid());
     db3.close();
   }
 
