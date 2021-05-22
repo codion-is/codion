@@ -36,8 +36,8 @@ public final class CityEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(City.COUNTRY_FK);
 
     createForeignKeyComboBox(City.COUNTRY_FK).preferredWidth(120);
-    createTextField(City.NAME).columns(12);
-    createTextField(City.DISTRICT).columns(12);
+    createTextField(City.NAME);
+    createTextField(City.DISTRICT);
     createTextField(City.POPULATION);
 
     JPanel inputPanel = new JPanel(gridLayout(4, 1));

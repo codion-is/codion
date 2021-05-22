@@ -19,7 +19,7 @@ public class CategoryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Category.NAME);
 
-    createTextField(Category.NAME).columns(10);
+    createTextField(Category.NAME);
     createTextField(Category.DESCRIPTION).columns(18);
     createTextField(Category.IMAGE_URL);
 

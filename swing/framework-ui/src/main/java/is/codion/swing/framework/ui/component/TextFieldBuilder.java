@@ -7,6 +7,8 @@ import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
+import java.util.Collection;
+import java.util.function.Supplier;
 
 /**
  * Builds a JTextField.
@@ -56,4 +58,12 @@ public interface TextFieldBuilder<T> extends ComponentBuilder<T, JTextField, Tex
    * @return this builder instance
    */
   TextFieldBuilder<T> lowerCase();
+
+  /**
+   * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
+   * by the given value provider
+   * @param valueProvider provides the values for the lookup dialog
+   * @param <T> the type of values being looked up
+   */
+  TextFieldBuilder<T> lookupDialog(Supplier<Collection<T>> valueSupplier);
 }

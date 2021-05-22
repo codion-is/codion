@@ -14,6 +14,7 @@ public class CustomerEditPanel extends EntityEditPanel {
 
   public CustomerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
+    setDefaultTextFieldColumns(15);
   }
 
   @Override
@@ -21,14 +22,10 @@ public class CustomerEditPanel extends EntityEditPanel {
     //the firstName field should receive the focus whenever the panel is initialized
     setInitialFocusAttribute(Customer.FIRST_NAME);
 
-    createTextField(Customer.FIRST_NAME)
-            .columns(15);
-    createTextField(Customer.LAST_NAME)
-            .columns(15);
-    createTextField(Customer.EMAIL)
-            .columns(15);
-    createCheckBox(Customer.IS_ACTIVE)
-            .includeCaption(false);
+    createTextField(Customer.FIRST_NAME);
+    createTextField(Customer.LAST_NAME);
+    createTextField(Customer.EMAIL);
+    createCheckBox(Customer.IS_ACTIVE);
 
     setLayout(new GridLayout(4,1));
     //the addInputPanel method creates and adds a panel containing the

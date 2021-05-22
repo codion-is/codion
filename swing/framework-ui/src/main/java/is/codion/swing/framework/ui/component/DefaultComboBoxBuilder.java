@@ -28,6 +28,9 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
 
   @Override
   public ComboBoxBuilder<T> editable(final boolean editable) {
+    if (editable && !property.getAttribute().isString()) {
+      throw new IllegalArgumentException("Editable attribute ComboBox is only implemented for String properties");
+    }
     this.editable = editable;
     return this;
   }
@@ -35,9 +38,6 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   @Override
   protected SteppedComboBox<T> buildComponent() {
     final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
-    if (editable && !property.getAttribute().isString()) {
-      throw new IllegalArgumentException("Editable attribute ComboBox is only implemented for String properties");
-    }
     comboBox.setEditable(editable);
     ComponentValues.comboBox(comboBox).link(value);
 

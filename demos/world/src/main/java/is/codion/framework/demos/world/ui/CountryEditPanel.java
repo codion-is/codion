@@ -29,9 +29,9 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Country.CODE);
 
-    createTextField(Country.CODE).upperCase().columns(12);
-    createTextField(Country.CODE_2).upperCase().columns(12);
-    createTextField(Country.NAME).columns(12);
+    createTextField(Country.CODE).upperCase();
+    createTextField(Country.CODE_2).upperCase();
+    createTextField(Country.NAME);
     createValueListComboBox(Country.CONTINENT).preferredWidth(120);
     createAttributeComboBox(Country.REGION).preferredWidth(120);
     createTextField(Country.SURFACEAREA);
@@ -40,9 +40,9 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(Country.LIFE_EXPECTANCY);
     createTextField(Country.GNP);
     createTextField(Country.GNPOLD);
-    createTextField(Country.LOCALNAME).columns(12);
+    createTextField(Country.LOCALNAME);
     createAttributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true);
-    createTextField(Country.HEADOFSTATE).columns(12);
+    createTextField(Country.HEADOFSTATE);
     EntityComboBox capitalComboBox =
             createForeignKeyComboBox(Country.CAPITAL_FK)
                     .preferredWidth(120)

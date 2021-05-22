@@ -19,10 +19,20 @@ import java.util.List;
 final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ValueListComboBoxBuilder<T>>
         implements ValueListComboBoxBuilder<T> {
 
+  private int popupWidth;
   private boolean sorted = true;
 
   DefaultValueListComboBoxBuilder(final Property<T> attribute, final Value<T> value) {
     super(attribute, value);
+    if (!(property instanceof ValueListProperty)) {
+      throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
+    }
+  }
+
+  @Override
+  public ValueListComboBoxBuilder<T> popupWidth(final int popupWidth) {
+    this.popupWidth = popupWidth;
+    return this;
   }
 
   @Override
@@ -33,14 +43,13 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
 
   @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
-    if (!(property instanceof ValueListProperty)) {
-      throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a " +
-              "ValueListProperty");
-    }
     final ItemComboBoxModel<T> valueListComboBoxModel = createValueListComboBoxModel();
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(valueListComboBoxModel);
     ComponentValues.itemComboBox(comboBox).link(value);
     DefaultComboBoxBuilder.addComboBoxCompletion(comboBox);
+    if (popupWidth > 0) {
+      comboBox.setPopupWidth(popupWidth);
+    }
 
     return comboBox;
   }

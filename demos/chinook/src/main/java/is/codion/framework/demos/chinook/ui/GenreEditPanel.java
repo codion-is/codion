@@ -19,8 +19,7 @@ public class GenreEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Genre.NAME);
 
-    createTextField(Genre.NAME)
-            .columns(12);
+    createTextField(Genre.NAME);
 
     setLayout(gridLayout(1, 1));
     addInputPanel(Genre.NAME);
