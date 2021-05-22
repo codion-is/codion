@@ -4,7 +4,6 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.Configuration;
-import is.codion.common.i18n.Messages;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
@@ -85,10 +84,6 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   @Override
   public String getDescription() {
-    if (!isConnectionValid()) {
-      return getServerHostName() + " - " + Messages.get(Messages.NOT_CONNECTED);
-    }
-
     return getServerHostName();
   }
 
