@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.textfield;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -182,7 +181,7 @@ public final class TextFields {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        SwingUtilities.invokeLater(() -> textComponent.setCaretPosition(0));
+        textComponent.setCaretPosition(0);
       }
     });
 
@@ -200,7 +199,7 @@ public final class TextFields {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        SwingUtilities.invokeLater(() -> textComponent.setCaretPosition(textComponent.getText().length()));
+        textComponent.setCaretPosition(textComponent.getText().length());
       }
     });
 
@@ -325,12 +324,12 @@ public final class TextFields {
 
     @Override
     public void focusGained(final FocusEvent e) {
-      SwingUtilities.invokeLater(textComponent::selectAll);
+      textComponent.selectAll();
     }
 
     @Override
     public void focusLost(final FocusEvent e) {
-      SwingUtilities.invokeLater(() -> textComponent.select(0, 0));
+      textComponent.select(0, 0);
     }
   }
 }

@@ -11,6 +11,7 @@ import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JComponent;
@@ -27,6 +28,7 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
     }
+    preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
   @Override

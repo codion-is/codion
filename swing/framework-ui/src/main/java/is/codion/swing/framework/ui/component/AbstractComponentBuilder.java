@@ -83,7 +83,9 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
    */
   public final T build() {
     final T component = buildComponent();
-    component.setFocusable(focusable);
+    if (component.isFocusable() && !focusable) {
+      component.setFocusable(false);
+    }
     setPreferredSize(component);
     setDescriptionAndEnabledState(component);
     if (transferFocusOnEnter) {

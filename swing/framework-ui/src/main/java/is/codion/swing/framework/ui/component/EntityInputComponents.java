@@ -96,7 +96,6 @@ public final class EntityInputComponents {
       return checkBoxBuilder((Attribute<Boolean>) attribute, (Value<Boolean>) value)
               .enabledState(enabledState)
               .nullable(property.isNullable())
-              .includeCaption(false)
               .build();
     }
     if (attribute.isTemporal() || attribute.isNumerical() || attribute.isString() || attribute.isCharacter()) {

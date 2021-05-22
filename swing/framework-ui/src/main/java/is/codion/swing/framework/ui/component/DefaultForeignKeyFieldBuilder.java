@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JTextField;
@@ -17,6 +18,7 @@ final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entit
 
   DefaultForeignKeyFieldBuilder(final ForeignKeyProperty attribute, final Value<Entity> value) {
     super(attribute, value);
+    preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
   @Override

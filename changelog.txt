@@ -7063,3 +7063,6 @@
   TextFieldBuilder.lookupDialog() added
   EntityEditComponentPanel.defaultTextFieldColumns added along with DEFAULT_TEXT_FIELD_COLUMNS configuration value
   EntityEditComponentPanel.createTextInputPanel() ignored the default text field columns
+  ComboBoxBuilders preferredHeight defaults to preferredTextFieldHeight
+  TextFields, focus gained listeners no longer use invokeLater(), focus events always happen on the EDT, right?
+  AbstractComponentBuilder bug fixed, now only sets focusable(false) if component was focusable to begin with

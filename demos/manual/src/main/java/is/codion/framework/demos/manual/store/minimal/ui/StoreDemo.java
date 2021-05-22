@@ -34,8 +34,7 @@ public class StoreDemo {
       createTextField(Customer.FIRST_NAME);
       createTextField(Customer.LAST_NAME);
       createTextField(Customer.EMAIL);
-      createCheckBox(Customer.IS_ACTIVE)
-              .includeCaption(false);
+      createCheckBox(Customer.IS_ACTIVE);
       setLayout(gridLayout(2, 2));
       addInputPanel(Customer.FIRST_NAME);
       addInputPanel(Customer.LAST_NAME);
