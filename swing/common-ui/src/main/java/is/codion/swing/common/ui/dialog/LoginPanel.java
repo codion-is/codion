@@ -65,7 +65,7 @@ final class LoginPanel extends JPanel {
    * Instantiates a new LoginPanel
    */
   LoginPanel(final User defaultUser, final LoginValidator loginValidator,
-                     final JComponent southComponent) {
+             final JComponent southComponent) {
     this.okControl = Control.builder()
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))

@@ -39,7 +39,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -225,10 +224,12 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    final JDialog dialog = new JDialog(Windows.getParentWindow(this), MESSAGES.getString("select_entity"));
-    Dialogs.prepareOkCancelDialog(dialog, selectionProvider.getSelectionComponent(entities),
-            selectionProvider.getSelectControl(), Control.control(dialog::dispose));
-    dialog.setVisible(true);
+    Dialogs.okCancelDialogBuilder()
+            .owner(this)
+            .title(MESSAGES.getString("select_entity"))
+            .component(selectionProvider.getSelectionComponent(entities))
+            .okAction(selectionProvider.getSelectControl())
+            .show();
   }
 
   private void linkToModel() {
@@ -497,7 +498,7 @@ public final class EntitySearchField extends JTextField {
      */
     public ListSelectionProvider(final EntitySearchModel searchModel) {
       requireNonNull(searchModel, SEARCH_MODEL);
-      this.selectControl = Control.builder().command(() -> {
+      selectControl = Control.builder().command(() -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
       }).name(Messages.get(Messages.OK)).build();

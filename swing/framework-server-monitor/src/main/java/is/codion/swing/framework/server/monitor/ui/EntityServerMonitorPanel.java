@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -226,12 +225,14 @@ public final class EntityServerMonitorPanel extends JPanel {
     final ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(field);
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
-    final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
-    Dialogs.prepareOkCancelDialog(dialog, panel, Control.control(() -> {
-      getModel().setUpdateInterval(componentValue.get());
-      dialog.dispose();
-    }), Control.control(dialog::dispose));
-    dialog.setVisible(true);
+    Dialogs.okCancelDialogBuilder()
+            .owner(this)
+            .title("Update interval (s)")
+            .okAction(Control.control(() -> {
+              getModel().setUpdateInterval(componentValue.get());
+              Windows.getParentDialog(panel).dispose();
+            }))
+            .show();
   }
 
   private void bindEvents() {

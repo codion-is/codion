@@ -4,19 +4,11 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.WindowConstants;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -80,37 +72,10 @@ public final class Dialogs {
   }
 
   /**
-   * Prepares a modal dialog for displaying the given {@code component},
-   * with OK and Cancel buttons based on the given actions.
-   * @param dialog the dialog
-   * @param component added to the center position
-   * @param okAction the action for the OK button
-   * @param cancelAction the action for the cancel button
+   * @return a new OkCancelDialogBuilder
    */
-  public static void prepareOkCancelDialog(final JDialog dialog, final JComponent component,
-                                           final Action okAction, final Action cancelAction) {
-    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ESCAPE)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .action(cancelAction)
-            .enable(dialog.getRootPane());
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER).condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .onKeyPressed()
-            .action(okAction)
-            .enable(dialog.getRootPane());
-    dialog.setLayout(Layouts.borderLayout());
-    dialog.add(component, BorderLayout.CENTER);
-    final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    buttonBasePanel.add(Components.createOkCancelButtonPanel(okAction, cancelAction));
-    dialog.add(buttonBasePanel, BorderLayout.SOUTH);
-    dialog.pack();
-    if (dialog.getOwner() != null) {
-      dialog.setLocationRelativeTo(dialog.getOwner());
-    }
-    dialog.setModal(true);
-    dialog.setResizable(true);
+  public static OkCancelDialogBuilder okCancelDialogBuilder() {
+    return new DefaultOkCancelDialogBuilder();
   }
 
   /**
@@ -135,7 +100,7 @@ public final class Dialogs {
    * @param filenameField the text field for displaying the file path
    * @return the Action
    */
-  public static Action getBrowseAction(final JTextField filenameField) {
+  public static Action createBrowseAction(final JTextField filenameField) {
     requireNonNull(filenameField, "filenameField");
     return new AbstractAction("...") {
       @Override
