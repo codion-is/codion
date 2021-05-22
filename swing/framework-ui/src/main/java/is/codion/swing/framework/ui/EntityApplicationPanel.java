@@ -79,6 +79,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -1259,7 +1260,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the uncaught exception handler
    */
   private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> displayException(e, Windows.getParentWindow(EntityApplicationPanel.this)));
+    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
+      JComponent focusOwner = (JComponent) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+      if (focusOwner == null) {
+        focusOwner = EntityApplicationPanel.this;
+      }
+      displayException(exception, Windows.getParentWindow(focusOwner));
+    });
   }
 
   private void bindEventsInternal() {

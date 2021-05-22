@@ -9,32 +9,35 @@ import is.codion.common.state.State;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import java.awt.event.ActionEvent;
+import java.util.function.Supplier;
 
 final class DisposeDialogAction extends AbstractAction {
 
-  private final JDialog dialog;
+  private final Supplier<JDialog> dialogSupplier;
   private final EventDataListener<State> confirmCloseListener;
 
-  DisposeDialogAction(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
+  DisposeDialogAction(final Supplier<JDialog> dialogSupplier, final EventDataListener<State> confirmCloseListener) {
     super("DisposeDialogAction");
-    this.dialog = dialog;
+    this.dialogSupplier = dialogSupplier;
     this.confirmCloseListener = confirmCloseListener;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    closeIfConfirmed(dialog, confirmCloseListener);
+    closeIfConfirmed(dialogSupplier.get(), confirmCloseListener);
   }
 
   static void closeIfConfirmed(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
-    if (confirmCloseListener == null) {
-      dialog.dispose();
-    }
-    else {
-      final State confirmClose = State.state();
-      confirmCloseListener.onEvent(confirmClose);
-      if (confirmClose.get()) {
+    if (dialog != null) {
+      if (confirmCloseListener == null) {
         dialog.dispose();
+      }
+      else {
+        final State confirmClose = State.state();
+        confirmCloseListener.onEvent(confirmClose);
+        if (confirmClose.get()) {
+          dialog.dispose();
+        }
       }
     }
   }

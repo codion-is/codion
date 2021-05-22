@@ -5,8 +5,6 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -18,7 +16,7 @@ import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayoutBuilder;
 
 // tag::constructor[]
 public class EmployeeEditPanel extends EntityEditPanel {
@@ -43,7 +41,10 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTemporalInputPanel(Employee.HIREDATE)
             .calendarButton(true);
 
-    setLayout(flexibleGridLayout(3, 3, FixRowHeights.YES, FixColumnWidths.NO));
+    setLayout(flexibleGridLayoutBuilder()
+            .rows(3).columns(3)
+            .fixRowHeights(true)
+            .build());
 
     addInputPanel(Employee.NAME);
     addInputPanel(Employee.JOB);

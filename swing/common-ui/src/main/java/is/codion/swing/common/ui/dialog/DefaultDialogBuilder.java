@@ -119,7 +119,7 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
               .enable(dialog.getRootPane());
     }
 
-    final Action disposeAction = new DisposeDialogAction(dialog, confirmCloseListener);
+    final Action disposeAction = new DisposeDialogAction(() -> dialog, confirmCloseListener);
     dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosing(final WindowEvent e) {

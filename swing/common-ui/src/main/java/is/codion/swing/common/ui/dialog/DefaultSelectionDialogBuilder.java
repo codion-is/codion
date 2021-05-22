@@ -3,8 +3,9 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.swing.common.ui.Windows;
+
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -91,21 +92,12 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     final DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
     final JList<T> list = new JList<>(listModel);
-    final JDialog dialog = new JDialog(dialogOwner, dialogTitle);
-    final Action okAction = new DisposeDialogAction(dialog, null);
-    final Action cancelAction = new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        list.clearSelection();
-        dialog.dispose();
-      }
-    };
+    final DisposeDialogAction okAction = new DisposeDialogAction(() -> Windows.getParentDialog(list), null);
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
     list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    Dialogs.prepareOkCancelDialog(dialog, new JScrollPane(list), okAction, cancelAction);
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
@@ -114,6 +106,19 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
         }
       }
     });
+    final JDialog dialog = new DefaultOkCancelDialogBuilder()
+            .component(new JScrollPane(list))
+            .owner(dialogOwner)
+            .title(dialogTitle)
+            .okAction(okAction)
+            .cancelAction(new AbstractAction() {
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                list.clearSelection();
+                Windows.getParentDialog(list).dispose();
+              }
+            })
+            .build();
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
       dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
     }

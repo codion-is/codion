@@ -15,8 +15,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
 
@@ -51,7 +49,6 @@ final class LoginPanel extends JPanel {
   }
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;
-  private static final int GRID_SIZE = 2;
 
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
@@ -65,7 +62,7 @@ final class LoginPanel extends JPanel {
    * Instantiates a new LoginPanel
    */
   LoginPanel(final User defaultUser, final LoginValidator loginValidator,
-                     final JComponent southComponent) {
+             final JComponent southComponent) {
     this.okControl = Control.builder()
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
@@ -126,7 +123,10 @@ final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
-    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout(GRID_SIZE, GRID_SIZE, FixRowHeights.YES, FixColumnWidths.NO));
+    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+            .rows(2).columns(2)
+            .fixRowHeights(true)
+            .build());
     credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
     credentialsPanel.add(usernameField);
     credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));

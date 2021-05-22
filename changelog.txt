@@ -7067,3 +7067,6 @@
   TextFields, focus gained listeners no longer use invokeLater(), focus events always happen on the EDT, right?
   AbstractComponentBuilder bug fixed, now only sets focusable(false) if component was focusable to begin with
   RemoteEntityConnectionProvider and HttpEntityConnectionProvider description() no longer contains connection status
+  Dialogs.prepareOkCancelDialog() replaced with OkCancelDialogBuilder and factory method
+  EntityApplicationPanel bug fixed, defaultUncaughtExceptionHandler did not respect the current focus owner, returned focus to the main window instead of support panel dialog for example
+  FlexibleGridLayout now builder based
