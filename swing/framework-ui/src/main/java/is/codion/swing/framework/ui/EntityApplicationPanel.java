@@ -733,8 +733,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control controlling the always on top status
    */
   protected final ToggleControl createAlwaysOnTopControl() {
-    return ToggleControl.builder()
-            .state(alwaysOnTopState)
+    return ToggleControl.builder(alwaysOnTopState)
             .name(resourceBundle.getString(ALWAYS_ON_TOP))
             .build();
   }

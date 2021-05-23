@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.control;
 
-import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
@@ -14,29 +13,22 @@ import static java.util.Objects.requireNonNull;
 
 final class ToggleControlBuilder implements ToggleControl.Builder {
 
+  private final Value<Boolean> value;
+
   private String name;
-  private Value<Boolean> value;
   private StateObserver enabledState;
   private char mnemonic;
   private Icon icon;
   private String description;
   private KeyStroke keyStroke;
 
+  ToggleControlBuilder(final Value<Boolean> value) {
+    this.value = requireNonNull(value);
+  }
+
   @Override
   public ToggleControl.Builder name(final String name) {
     this.name = requireNonNull(name);
-    return this;
-  }
-
-  @Override
-  public ToggleControl.Builder state(final State state) {
-    this.value = requireNonNull(state);
-    return this;
-  }
-
-  @Override
-  public ToggleControl.Builder value(final Value<Boolean> value) {
-    this.value = requireNonNull(value);
     return this;
   }
 

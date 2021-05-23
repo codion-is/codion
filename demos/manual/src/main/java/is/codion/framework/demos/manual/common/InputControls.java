@@ -67,9 +67,8 @@ public final class InputControls {
     // tag::toggleControl[]
     State state = State.state();
 
-    ToggleControl stateControl = ToggleControl.builder()
+    ToggleControl stateControl = ToggleControl.builder(state)
             .name("Change state")
-            .state(state)
             .mnemonic('C')
             .build();
 
@@ -77,9 +76,8 @@ public final class InputControls {
 
     Value<Boolean> booleanValue = Value.value();
 
-    ToggleControl valueControl = ToggleControl.builder()
+    ToggleControl valueControl = ToggleControl.builder(booleanValue)
             .name("Change value")
-            .value(booleanValue)
             .mnemonic('V')
             .build();
 

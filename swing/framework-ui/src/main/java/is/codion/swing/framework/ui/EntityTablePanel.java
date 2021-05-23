@@ -779,8 +779,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a summary panel toggle button
    */
   public final Control createToggleSummaryPanelControl() {
-    return ToggleControl.builder()
-            .state(summaryPanelVisibleState)
+    return ToggleControl.builder(summaryPanelVisibleState)
             .icon(frameworkIcons().summary())
             .description(MESSAGES.getString("toggle_summary_tip"))
             .build();
@@ -1091,8 +1090,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final Control createConditionPanelControl() {
-    return ToggleControl.builder()
-            .state(conditionPanelVisibleState)
+    return ToggleControl.builder(conditionPanelVisibleState)
             .name(FrameworkMessages.get(FrameworkMessages.SHOW))
             .build();
   }
@@ -1454,8 +1452,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       conditionControls.addAll(searchPanelControls);
       conditionControls.addSeparator();
     }
-    conditionControls.add(ToggleControl.builder()
-            .state(tableModel.getQueryConditionRequiredState())
+    conditionControls.add(ToggleControl.builder(tableModel.getQueryConditionRequiredState())
             .name(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description")).build());
     if (!conditionControls.isEmpty()) {

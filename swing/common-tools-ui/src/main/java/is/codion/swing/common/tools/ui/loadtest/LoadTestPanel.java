@@ -258,8 +258,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixRowHeights(true)
             .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ToggleControl.builder()
-            .state(loadTestModel.getCollectChartDataState())
+    controlPanel.add(ToggleControl.builder(loadTestModel.getCollectChartDataState())
             .name("Collect chart data")
             .build().createCheckBox());
     controlPanel.add(new JButton(Control.builder(loadTestModel::resetChartData)
@@ -354,8 +353,7 @@ public final class LoadTestPanel<T> extends JPanel {
     ComponentValues.integerSpinner(minThinkTimeSpinner).link(loadTestModel.getMinimumThinkTimeValue());
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
-    final ToggleControl pauseControl = ToggleControl.builder()
-            .state(loadTestModel.getPausedState())
+    final ToggleControl pauseControl = ToggleControl.builder(loadTestModel.getPausedState())
             .name("Pause")
             .mnemonic('P')
             .build();

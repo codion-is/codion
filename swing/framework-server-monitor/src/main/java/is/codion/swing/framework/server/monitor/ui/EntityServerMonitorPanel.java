@@ -177,8 +177,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeAlwaysOnTopControl() {
-    return ToggleControl.builder()
-            .state(alwaysOnTopState)
+    return ToggleControl.builder(alwaysOnTopState)
             .name("Always on Top")
             .mnemonic('A')
             .build();
