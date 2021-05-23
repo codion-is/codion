@@ -15,12 +15,12 @@ import java.awt.Dimension;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T, B>> implements ComponentBuilder<V, T, B> {
+abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
 
-  protected final Property<V> property;
-  protected final Value<V> value;
+  protected final Property<T> property;
+  protected final Value<T> value;
 
-  private final Event<T> buildEvent = Event.event();
+  private final Event<C> buildEvent = Event.event();
 
   private boolean focusable = true;
   private int preferredHeight;
@@ -28,7 +28,7 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   private boolean transferFocusOnEnter;
   protected StateObserver enabledState;
 
-  protected AbstractComponentBuilder(final Property<V> attribute, final Value<V> value) {
+  protected AbstractComponentBuilder(final Property<T> attribute, final Value<T> value) {
     this.property = requireNonNull(attribute);
     this.value = requireNonNull(value);
   }
@@ -72,7 +72,7 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
   }
 
   @Override
-  public final B addBuildListener(final EventDataListener<T> listener) {
+  public final B addBuildListener(final EventDataListener<C> listener) {
     buildEvent.addDataListener(listener);
     return (B) this;
   }
@@ -81,8 +81,8 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
    * Builds the component.
    * @return a new component instance
    */
-  public final T build() {
-    final T component = buildComponent();
+  public final C build() {
+    final C component = buildComponent();
     if (component.isFocusable() && !focusable) {
       component.setFocusable(false);
     }
@@ -100,13 +100,13 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
    * Builds the component.
    * @return a new component instance
    */
-  protected abstract T buildComponent();
+  protected abstract C buildComponent();
 
   /**
    * Enables focus transfer on Enter, override for special handling
    * @param component the component
    */
-  protected void setTransferFocusOnEnter(final T component) {
+  protected void setTransferFocusOnEnter(final C component) {
     Components.transferFocusOnEnter(component);
   }
 
@@ -114,11 +114,11 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
    * @param component the component
    * @return a description for the component
    */
-  protected String getDescription(final T component) {
+  protected String getDescription(final C component) {
     return property.getDescription();
   }
 
-  private void setPreferredSize(final T component) {
+  private void setPreferredSize(final C component) {
     if (preferredHeight > 0) {
       Components.setPreferredHeight(component, preferredHeight);
     }
@@ -127,7 +127,7 @@ abstract class AbstractComponentBuilder<V, T extends JComponent, B extends Compo
     }
   }
 
-  private T setDescriptionAndEnabledState(final T component) {
+  private C setDescriptionAndEnabledState(final C component) {
     if (property.getDescription() != null) {
       component.setToolTipText(getDescription(component));
     }

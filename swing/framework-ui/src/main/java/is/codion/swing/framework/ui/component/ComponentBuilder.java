@@ -11,11 +11,11 @@ import java.awt.Dimension;
 
 /**
  * Builds a JComponent
- * @param <V> the type of the value the component represents
- * @param <T> the component type
+ * @param <T> the type of the value the component represents
+ * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComponentBuilder<V, T extends JComponent, B extends ComponentBuilder<V, T, B>> {
+public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> {
 
   /**
    * @param focusable false if the component should not be focusable
@@ -57,11 +57,11 @@ public interface ComponentBuilder<V, T extends JComponent, B extends ComponentBu
    * @param listener called after a component is built
    * @return this builder instance
    */
-  B addBuildListener(EventDataListener<T> listener);
+  B addBuildListener(EventDataListener<C> listener);
 
   /**
    * Builds the component.
    * @return the component
    */
-  T build();
+  C build();
 }

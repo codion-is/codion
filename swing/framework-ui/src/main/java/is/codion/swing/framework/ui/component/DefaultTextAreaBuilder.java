@@ -7,25 +7,19 @@ import is.codion.common.value.Value;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
 
 import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
 import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
-import static java.util.Objects.requireNonNull;
 
-final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTextArea, TextAreaBuilder>
+final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, JTextArea, TextAreaBuilder>
         implements TextAreaBuilder {
 
-  private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int rows;
-  private int columns;
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
-  private boolean upperCase;
-  private boolean lowerCase;
 
   DefaultTextAreaBuilder(final Property<String> attribute, final Value<String> value) {
     super(attribute, value);
@@ -35,20 +29,8 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
   }
 
   @Override
-  public TextAreaBuilder updateOn(final UpdateOn updateOn) {
-    this.updateOn = requireNonNull(updateOn);
-    return this;
-  }
-
-  @Override
   public TextAreaBuilder rows(final int rows) {
     this.rows = rows;
-    return this;
-  }
-
-  @Override
-  public TextAreaBuilder columns(final int columns) {
-    this.columns = columns;
     return this;
   }
 
@@ -65,24 +47,11 @@ final class DefaultTextAreaBuilder extends AbstractComponentBuilder<String, JTex
   }
 
   @Override
-  public TextAreaBuilder upperCase() {
-    this.upperCase = true;
-    this.lowerCase = false;
-    return this;
-  }
-
-  @Override
-  public TextAreaBuilder lowerCase() {
-    this.lowerCase = true;
-    this.upperCase = false;
-    return this;
-  }
-
-  @Override
   protected JTextArea buildComponent() {
-    final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
+    final JTextArea textArea = new JTextArea(rows, columns);
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
+    textArea.setEditable(editable);
     if (upperCase) {
       TextFields.upperCase(textArea);
     }

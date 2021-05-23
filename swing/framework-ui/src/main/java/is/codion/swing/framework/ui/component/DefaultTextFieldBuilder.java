@@ -15,7 +15,6 @@ import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
@@ -28,38 +27,15 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JTextField, TextFieldBuilder<T>>
+final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, JTextField, TextFieldBuilder<T>>
         implements TextFieldBuilder<T> {
 
-  private boolean editable = true;
-  private UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  private int columns;
   private Action action;
   private boolean selectAllOnFocusGained;
-  private boolean upperCase;
-  private boolean lowerCase;
   private Supplier<Collection<T>> valueSupplier;
 
   DefaultTextFieldBuilder(final Property<T> attribute, final Value<T> value) {
     super(attribute, value);
-  }
-
-  @Override
-  public TextFieldBuilder<T> editable(final boolean editable) {
-    this.editable = editable;
-    return this;
-  }
-
-  @Override
-  public TextFieldBuilder<T> updateOn(final UpdateOn updateOn) {
-    this.updateOn = updateOn;
-    return this;
-  }
-
-  @Override
-  public TextFieldBuilder<T> columns(final int columns) {
-    this.columns = columns;
-    return this;
   }
 
   @Override
@@ -72,20 +48,6 @@ final class DefaultTextFieldBuilder<T> extends AbstractComponentBuilder<T, JText
   @Override
   public TextFieldBuilder<T> selectAllOnFocusGained() {
     this.selectAllOnFocusGained = true;
-    return this;
-  }
-
-  @Override
-  public TextFieldBuilder<T> upperCase() {
-    this.upperCase = true;
-    this.lowerCase = false;
-    return this;
-  }
-
-  @Override
-  public TextFieldBuilder<T> lowerCase() {
-    this.lowerCase = true;
-    this.upperCase = false;
     return this;
   }
 
