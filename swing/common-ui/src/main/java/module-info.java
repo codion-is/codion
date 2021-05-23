@@ -6,6 +6,7 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui;
   exports is.codion.swing.common.ui.checkbox;
   exports is.codion.swing.common.ui.combobox;
+  exports is.codion.swing.common.ui.component;
   exports is.codion.swing.common.ui.control;
   exports is.codion.swing.common.ui.dialog;
   exports is.codion.swing.common.ui.icons;
