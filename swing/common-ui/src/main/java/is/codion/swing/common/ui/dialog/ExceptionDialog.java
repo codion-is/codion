@@ -178,8 +178,7 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final ToggleControl detailsControl = ToggleControl.builder()
-            .state(showDetailsState)
+    final ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
             .name(MESSAGES.getString("details"))
             .description(MESSAGES.getString("show_details"))
             .build();

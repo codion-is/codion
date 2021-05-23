@@ -61,8 +61,7 @@ public class DefaultToggleControlTest {
 
   @Test
   public void toggleControlTest() {
-    final ToggleControl control = ToggleControl.builder()
-            .value(Value.propertyValue(this, "value", boolean.class, valueChangeEvent.getObserver())).build();
+    final ToggleControl control = ToggleControl.builder(Value.propertyValue(this, "value", boolean.class, valueChangeEvent.getObserver())).build();
     control.getValue().set(true);
     assertTrue(value);
     control.getValue().set(false);
@@ -71,7 +70,7 @@ public class DefaultToggleControlTest {
     assertTrue(control.getValue().get());
 
     final Value<Boolean> nullableValue = Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent.getObserver());
-    final ToggleControl nullableControl = ToggleControl.builder().value(nullableValue).build();
+    final ToggleControl nullableControl = ToggleControl.builder(nullableValue).build();
     final NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) nullableControl.createButtonModel();
     assertTrue(toggleButtonModel.isSelected());
     assertTrue(nullableControl.getValue().get());
@@ -88,7 +87,7 @@ public class DefaultToggleControlTest {
     assertFalse(toggleButtonModel.isSelected());
 
     final Value<Boolean> nonNullableValue = Value.value(true, false);
-    final ToggleControl nonNullableControl = ToggleControl.builder().value(nonNullableValue).build();
+    final ToggleControl nonNullableControl = ToggleControl.builder(nonNullableValue).build();
     final ButtonModel buttonModel = nonNullableControl.createButtonModel();
     assertFalse(buttonModel instanceof NullableToggleButtonModel);
     assertTrue(nonNullableControl.getValue().get());
@@ -107,7 +106,7 @@ public class DefaultToggleControlTest {
   @Test
   public void stateToggleControl() {
     final State enabledState = State.state(false);
-    final ToggleControl control = ToggleControl.builder().state(state).name("stateToggleControl").enabledState(enabledState).build();
+    final ToggleControl control = ToggleControl.builder(state).name("stateToggleControl").enabledState(enabledState).build();
     final ButtonModel buttonModel = control.createButtonModel();
     assertFalse(control.isEnabled());
     assertFalse(buttonModel.isEnabled());
@@ -133,7 +132,7 @@ public class DefaultToggleControlTest {
 
   @Test
   public void nullableToggleControl() {
-    final ToggleControl toggleControl = ToggleControl.builder().value(Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent)).build();
+    final ToggleControl toggleControl = ToggleControl.builder(Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent)).build();
     final NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleControl.createButtonModel();
     buttonModel.setState(null);
     assertNull(value);
@@ -157,16 +156,14 @@ public class DefaultToggleControlTest {
 
   @Test
   public void checkBox() {
-    final JCheckBox box = ToggleControl.builder().name("Test")
-            .value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event())).build().createCheckBox();
+    final JCheckBox box = ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event())).name("Test").build().createCheckBox();
     assertEquals("Test", box.getText());
   }
 
   @Test
   public void checkBoxMenuItem() {
-    final JMenuItem item = ToggleControl.builder().name("Test")
-            .value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-            .build().createCheckBoxMenuItem();
+    final JMenuItem item = ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
+            .name("Test").build().createCheckBoxMenuItem();
     assertEquals("Test", item.getText());
   }
 }

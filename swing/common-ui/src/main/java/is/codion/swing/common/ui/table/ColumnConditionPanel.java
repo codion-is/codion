@@ -137,12 +137,10 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
     this.operatorCombo = initializeOperatorComboBox(operators);
-    this.toggleEnabledButton = ToggleControl.builder()
-            .state(conditionModel.getEnabledState())
+    this.toggleEnabledButton = ToggleControl.builder(conditionModel.getEnabledState())
             .icon(icons().filter())
             .build().createToggleButton();
-    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? ToggleControl.builder()
-            .state(advancedConditionState)
+    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? ToggleControl.builder(advancedConditionState)
             .icon(icons().configure())
             .build().createToggleButton() : null;
     conditionModel.setLocked(modelLocked);
