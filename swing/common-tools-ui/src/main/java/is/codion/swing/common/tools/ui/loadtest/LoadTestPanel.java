@@ -237,7 +237,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = Control.builder().command(() -> {
+    final JButton button = Control.builder(() -> {
       if (add) {
         loadTestModel.addApplicationBatch();
       }
@@ -262,8 +262,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .state(loadTestModel.getCollectChartDataState())
             .name("Collect chart data")
             .build().createCheckBox());
-    controlPanel.add(new JButton(Control.builder()
-            .command(loadTestModel::resetChartData)
+    controlPanel.add(new JButton(Control.builder(loadTestModel::resetChartData)
             .name("Reset")
             .build()));
 

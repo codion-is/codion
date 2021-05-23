@@ -213,8 +213,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(collectSnapshotCheckBox);
 
-    final JButton clearButton = Control.builder()
-            .command(model::clearInPoolStatistics)
+    final JButton clearButton = Control.builder(model::clearInPoolStatistics)
             .name("Clear")
             .build().createButton();
     clearButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
@@ -249,8 +248,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statisticsBase.add(createWestCenterPanel(new JLabel("Created"), createdField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Since"), resetTimeField));
-    statisticsBase.add(Control.builder()
-            .command(model::clearStatistics)
+    statisticsBase.add(Control.builder(model::clearStatistics)
             .name("Clear")
             .build().createButton(), BorderLayout.SOUTH);
 

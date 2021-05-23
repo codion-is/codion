@@ -183,30 +183,26 @@ final class ExceptionDialog extends JDialog {
             .name(MESSAGES.getString("details"))
             .description(MESSAGES.getString("show_details"))
             .build();
-    final Control printControl = Control.builder()
-            .command(() -> detailsArea.print())
+    final Control printControl = Control.builder(() -> detailsArea.print())
             .name(Messages.get(Messages.PRINT))
             .description(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build();
-    final Control closeControl = Control.builder()
-            .command(this::dispose)
+    final Control closeControl = Control.builder(this::dispose)
             .name(Messages.get(Messages.CLOSE))
             .description(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    final Control saveControl = Control.builder()
-            .command(() -> Files.write(Dialogs.fileSelectionDialogBuilder()
-                            .owner(detailsArea)
-                            .selectFileToSave("error.txt")
-                            .toPath(),
-                    Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
+    final Control saveControl = Control.builder(() -> Files.write(Dialogs.fileSelectionDialogBuilder()
+                    .owner(detailsArea)
+                    .selectFileToSave("error.txt")
+                    .toPath(),
+            Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
             .name(MESSAGES.getString("save"))
             .description(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
-    final Control copyControl = Control.builder()
-            .command(() -> Components.setClipboard(detailsArea.getText()))
+    final Control copyControl = Control.builder(() -> Components.setClipboard(detailsArea.getText()))
             .name(Messages.get(Messages.COPY))
             .description(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))

@@ -85,8 +85,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(Control.builder()
-            .command(model::refresh)
+    clientTypeBase.add(Control.builder(model::refresh)
             .name("Refresh")
             .build().createButton(), BorderLayout.SOUTH);
 
@@ -101,13 +100,11 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(connectionTimeoutSpinner);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(Control.builder()
-            .command(model::disconnectTimedOut)
+    actionBase.add(Control.builder(model::disconnectTimedOut)
             .name("Disconnect idle")
             .description("Disconnect those that have exceeded the allowed idle time")
             .build().createButton());
-    actionBase.add(Control.builder()
-            .command(this::disconnectAll)
+    actionBase.add(Control.builder(this::disconnectAll)
             .name("Disconnect all")
             .description("Disconnect all clients")
             .build().createButton());
@@ -143,8 +140,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
-    configBase.add(Control.builder()
-            .command(model::resetHistory)
+    configBase.add(Control.builder(model::resetHistory)
             .name("Reset")
             .build().createButton(), BorderLayout.EAST);
 

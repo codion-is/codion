@@ -31,8 +31,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     Controls printControls = super.createPrintControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
-    printControls.add(Control.builder()
-            .command(this::viewCustomerReport)
+    printControls.add(Control.builder(this::viewCustomerReport)
             .name("Customer report")
             .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver())
             .build());

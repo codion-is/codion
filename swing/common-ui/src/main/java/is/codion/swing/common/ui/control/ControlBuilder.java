@@ -12,8 +12,9 @@ import static java.util.Objects.requireNonNull;
 
 final class ControlBuilder implements Control.Builder {
 
-  private Control.Command command;
-  private Control.ActionCommand actionCommand;
+  private final Control.Command command;
+  private final Control.ActionCommand actionCommand;
+
   private String name;
   private StateObserver enabledState;
   private char mnemonic;
@@ -21,22 +22,14 @@ final class ControlBuilder implements Control.Builder {
   private String description;
   private KeyStroke keyStroke;
 
-  @Override
-  public Control.Builder command(final Control.Command command) {
-    if (actionCommand != null) {
-      throw new IllegalStateException("An ActionCommand has already been set for control");
-    }
-    this.command = requireNonNull(command);
-    return this;
+  ControlBuilder(final Control.ActionCommand actionCommand) {
+    this.actionCommand = requireNonNull(actionCommand);
+    this.command = null;
   }
 
-  @Override
-  public Control.Builder actionCommand(final Control.ActionCommand actionCommand) {
-    if (command != null) {
-      throw new IllegalStateException("A Command has already been set for control");
-    }
-    this.actionCommand = requireNonNull(actionCommand);
-    return this;
+  ControlBuilder(final Control.Command command) {
+    this.command = requireNonNull(command);
+    this.actionCommand = null;
   }
 
   @Override
@@ -81,11 +74,8 @@ final class ControlBuilder implements Control.Builder {
     if (command != null) {
       control = new DefaultControl(command, name, enabledState);
     }
-    else if (actionCommand != null) {
-      control = new DefaultActionControl(actionCommand, name, enabledState);
-    }
     else {
-      throw new IllegalStateException("A Command or ActionCommand must be specified before building a control");
+      control = new DefaultActionControl(actionCommand, name, enabledState);
     }
 
     return control.setMnemonic(mnemonic)

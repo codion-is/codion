@@ -7042,3 +7042,4 @@
   ComponentValuePanel replaced with ComponentValue.showDialog()
   TemporalInputPanel and TextInpuPanel now use Dialogs.okCancelDialogBuilder()
   EntityEditPanel.insert/update/delete(ConfirmationRequired) replaced with insert/update/deleteWithoutConfirmation
+  Controls.builder() now take the command as a required parameter

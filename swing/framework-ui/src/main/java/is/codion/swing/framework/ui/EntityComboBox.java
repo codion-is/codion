@@ -67,7 +67,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a Control for filtering this combo box
    */
   public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
-    return Control.builder().command(() -> {
+    return Control.builder(() -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKey),
               MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
@@ -143,8 +143,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(Control.builder()
-            .command(((EntityComboBoxModel) getModel())::forceRefresh)
+    popupMenu.add(Control.builder(((EntityComboBoxModel) getModel())::forceRefresh)
             .name(FrameworkMessages.get(FrameworkMessages.REFRESH))
             .build());
 

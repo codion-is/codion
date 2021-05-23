@@ -84,7 +84,7 @@ public final class DialogsTest {
             .northPanel(new JPanel())
             .westPanel(new JPanel())
             .buttonControls(Controls.builder()
-                    .control(Control.builder().command(() -> {}))
+                    .control(Control.builder(() -> {}))
                     .build())
             .build();
   }

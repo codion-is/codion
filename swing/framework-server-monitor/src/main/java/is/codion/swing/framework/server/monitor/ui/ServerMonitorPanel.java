@@ -129,8 +129,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    shutdownBasePanel.add(Control.builder()
-            .command(this::shutdownServer)
+    shutdownBasePanel.add(Control.builder(this::shutdownServer)
             .name("Shutdown")
             .build().createButton(), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
@@ -164,8 +163,7 @@ public final class ServerMonitorPanel extends JPanel {
     intervalPanel.add(updateIntervalSpinner, BorderLayout.CENTER);
 
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
-    chartsPanel.add(Control.builder()
-            .command(model::clearStatistics)
+    chartsPanel.add(Control.builder(model::clearStatistics)
             .name("Clear")
             .build().createButton(), BorderLayout.EAST);
 
@@ -175,8 +173,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
     ComponentValues.toggleButton(synchronizedZoomCheckBox).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
-    zoomPanel.add(Control.builder()
-            .command(this::resetZoom)
+    zoomPanel.add(Control.builder(this::resetZoom)
             .name("Reset zoom")
             .build().createButton(), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
@@ -222,8 +219,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(Control.builder()
-            .command(model::refreshDomainList)
+    refreshPanel.add(Control.builder(model::refreshDomainList)
             .name("Refresh")
             .build().createButton());
     panel.add(refreshPanel, BorderLayout.NORTH);

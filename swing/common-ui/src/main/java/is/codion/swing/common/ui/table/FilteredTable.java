@@ -371,8 +371,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a control for showing the column selection dialog
    */
   public Control createSelectColumnsControl() {
-    return Control.builder()
-            .command(this::selectColumns)
+    return Control.builder(this::selectColumns)
             .name(MESSAGES.getString(SELECT_COLUMNS) + "...")
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
@@ -540,21 +539,19 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 1));
     panel.add(boxRegexp);
 
-    final Control control = Control.builder()
-            .command(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()))
+    final Control control = Control.builder(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()))
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
             .build();
 
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
-    popupMenu.add(Control.builder()
-            .command(() -> Dialogs.dialogBuilder()
-                    .owner(FilteredTable.this)
-                    .component(panel)
-                    .title(settingsMessage)
-                    .onClosedAction(control)
-                    .show())
+    popupMenu.add(Control.builder(() -> Dialogs.dialogBuilder()
+            .owner(FilteredTable.this)
+            .component(panel)
+            .title(settingsMessage)
+            .onClosedAction(control)
+            .show())
             .name(settingsMessage)
             .build());
 
@@ -570,12 +567,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       togglePanel.add(columnCheckBox);
     });
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    southPanel.add(Control.builder()
-            .command(() -> setSelected(checkBoxes, true))
+    southPanel.add(Control.builder(() -> setSelected(checkBoxes, true))
             .name(MESSAGES.getString("select_all"))
             .build().createButton());
-    southPanel.add(Control.builder()
-            .command(() -> setSelected(checkBoxes, false))
+    southPanel.add(Control.builder(() -> setSelected(checkBoxes, false))
             .name(MESSAGES.getString("select_none"))
             .build().createButton());
 

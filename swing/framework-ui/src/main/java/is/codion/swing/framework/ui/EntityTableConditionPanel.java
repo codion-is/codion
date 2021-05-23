@@ -127,8 +127,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
               .state(getAdvancedState())
               .name(FrameworkMessages.get(FrameworkMessages.ADVANCED)));
     }
-    controls.control(Control.builder()
-            .command(getTableConditionModel()::clearConditionModels)
+    controls.control(Control.builder(getTableConditionModel()::clearConditionModels)
             .name(FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
     return controls.build();

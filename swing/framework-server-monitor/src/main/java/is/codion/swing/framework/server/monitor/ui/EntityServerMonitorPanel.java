@@ -170,8 +170,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeRefreshControl() {
-    return Control.builder()
-            .command(model::refresh)
+    return Control.builder(model::refresh)
             .name("Refresh")
             .mnemonic('R')
             .build();
@@ -186,31 +185,27 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeUpateIntervalControl() {
-    return Control.builder()
-            .command(this::setUpdateInterval)
+    return Control.builder(this::setUpdateInterval)
             .name("Chart update interval...")
             .build();
   }
 
   private Control initializeSetJDKDirControl() {
-    return Control.builder()
-            .command(this::setJDKDir)
+    return Control.builder(this::setJDKDir)
             .name("Set JDK home...")
             .mnemonic('S')
             .build();
   }
 
   private Control initializeJConsoleControl() {
-    return Control.builder()
-            .command(this::runJConsole)
+    return Control.builder(this::runJConsole)
             .name("Run JConsole")
             .mnemonic('J')
             .build();
   }
 
   private Control initializeExitControl() {
-    return Control.builder()
-            .command(() -> System.exit(0))
+    return Control.builder(() -> System.exit(0))
             .name("Exit")
             .mnemonic('X')
             .build();

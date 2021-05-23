@@ -37,7 +37,7 @@ public final class DefaultControlTest {
   @Test
   public void test() throws Exception {
     final State enabledState = State.state();
-    final Control control = Control.builder().command(this::method).enabledState(enabledState).build();
+    final Control control = Control.builder(this::method).enabledState(enabledState).build();
     final JButton button = control.createButton();
     assertFalse(button.isEnabled());
     enabledState.set(true);
@@ -51,7 +51,7 @@ public final class DefaultControlTest {
     final State state = State.state();
     final Event<ActionEvent> event = Event.event();
     event.addListener(() -> state.set(true));
-    Control.control(event).actionPerformed(null);
+    Control.eventControl(event).actionPerformed(null);
     assertTrue(state.get());
   }
 
@@ -86,7 +86,7 @@ public final class DefaultControlTest {
   @Test
   public void setEnabled() {
     final State enabledState = State.state();
-    final Control control = Control.builder().command(this::doNothing).name("control").enabledState(enabledState.getObserver()).build();
+    final Control control = Control.builder(this::doNothing).name("control").enabledState(enabledState.getObserver()).build();
     assertEquals("control", control.getName());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());
     assertFalse(control.isEnabled());

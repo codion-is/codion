@@ -64,8 +64,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   }
 
   private JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
-    final Control simpleSearchControl = Control.builder()
-            .command(this::performSimpleSearch)
+    final Control simpleSearchControl = Control.builder(this::performSimpleSearch)
             .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .build();
     final JButton simpleSearchButton = simpleSearchControl.createButton();

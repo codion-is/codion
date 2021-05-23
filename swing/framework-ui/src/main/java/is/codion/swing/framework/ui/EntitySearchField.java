@@ -337,8 +337,7 @@ public final class EntitySearchField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(Control.builder()
-            .command(() -> Dialogs.dialogBuilder()
+    popupMenu.add(Control.builder(() -> Dialogs.dialogBuilder()
                     .owner(EntitySearchField.this)
                     .component(settingsPanel)
                     .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
@@ -355,8 +354,7 @@ public final class EntitySearchField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
-    final JButton okButton = Control.builder()
-            .command(closeEvent::onEvent)
+    final JButton okButton = Control.builder(closeEvent::onEvent)
             .name(Messages.get(Messages.OK))
             .build().createButton();
     KeyEvents.builder()
@@ -492,7 +490,7 @@ public final class EntitySearchField extends JTextField {
      */
     public ListSelectionProvider(final EntitySearchModel searchModel) {
       requireNonNull(searchModel, SEARCH_MODEL);
-      selectControl = Control.builder().command(() -> {
+      selectControl = Control.builder(() -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
       }).name(Messages.get(Messages.OK)).build();
@@ -554,7 +552,7 @@ public final class EntitySearchField extends JTextField {
         }
       };
       table = new FilteredTable<>(tableModel);
-      selectControl = Control.builder().command(() -> {
+      selectControl = Control.builder(() -> {
         searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         Windows.getParentDialog(table).dispose();
       }).name(Messages.get(Messages.OK)).build();

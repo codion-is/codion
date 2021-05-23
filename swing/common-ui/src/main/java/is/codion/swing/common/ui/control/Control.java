@@ -120,21 +120,21 @@ public interface Control extends Action {
   }
 
   /**
-   * Creates a control based on a {@link Control.ActionCommand}
-   * @param actionCommand the {@link Control.ActionCommand} on which to base this control
-   * @return a Control for calling the given {@link Control.Command}
-   */
-  static Control actionControl(final ActionCommand actionCommand) {
-    return builder().actionCommand(actionCommand).build();
-  }
-
-  /**
    * Creates a control based on a {@link Control.Command}
-   * @param command the {@link Control.Command} on which to base this control
+   * @param command the {@link Control.Command} on which to base the control
    * @return a Control for calling the given {@link Control.Command}
    */
   static Control control(final Command command) {
-    return builder().command(command).build();
+    return builder(command).build();
+  }
+
+  /**
+   * Creates a control based on a {@link Control.ActionCommand}
+   * @param actionCommand the {@link Control.ActionCommand} on which to base the control
+   * @return a Control for calling the given {@link Control.Command}
+   */
+  static Control actionControl(final ActionCommand actionCommand) {
+    return actionControlBuilder(actionCommand).build();
   }
 
   /**
@@ -142,36 +142,42 @@ public interface Control extends Action {
    * @param event the event
    * @return a control which triggers the given event
    */
-  static Control control(final Event<ActionEvent> event) {
-    requireNonNull(event, "event");
-    return control(event::onEvent);
+  static Control eventControl(final Event<ActionEvent> event) {
+    return eventControlBuilder(event).build();
   }
 
   /**
+   * Creates a new Builder.
+   * @param command the command to base the control on
    * @return a new Control.Builder
    */
-  static Builder builder() {
-    return new ControlBuilder();
+  static Builder builder(final Command command) {
+    return new ControlBuilder(command);
+  }
+
+  /**
+   * Creates a new Builder.
+   * @param actionCommand the action command to base the control on
+   * @return a new Control.Builder
+   */
+  static Builder actionControlBuilder(final ActionCommand actionCommand) {
+    return new ControlBuilder(actionCommand);
+  }
+
+  /**
+   * Creates a Builder for a control which triggers the given event on action performed
+   * @param event the event
+   * @return a new Control.Builder
+   */
+  static Builder eventControlBuilder(final Event<ActionEvent> event) {
+    requireNonNull(event, "event");
+    return new ControlBuilder((ActionCommand) event::onEvent);
   }
 
   /**
    * A builder for Control
    */
   interface Builder {
-
-    /**
-     * @param command the {@link Control.Command} on which to base this control
-     * @return this Builder instance
-     * @throws IllegalStateException in case an actionCommand has already been set
-     */
-    Builder command(Command command);
-
-    /**
-     * @param actionCommand the {@link Control.ActionCommand} on which to base this control
-     * @return this Builder instance
-     * @throws IllegalStateException in case a command has already been set
-     */
-    Builder actionCommand(ActionCommand actionCommand);
 
     /**
      * @param name the name of the control
