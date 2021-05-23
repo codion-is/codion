@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.util.Collections;
 
 public final class DialogsTest {
 
@@ -87,5 +89,24 @@ public final class DialogsTest {
                     .control(Control.builder(() -> {}))
                     .build())
             .build();
+  }
+
+  @Test
+  public void selectionDialogBuilder() {
+    Dialogs.selectionDialogBuilder(Collections.singletonList("hello"))
+            .owner(new JLabel())
+            .title("title")
+            .singleSelection(false)
+            .defaultSelection("hello");
+  }
+
+  @Test
+  public void addLookupDialog() {
+    Dialogs.addLookupDialog(new JTextField(), () -> Collections.singletonList("hello"));
+  }
+
+  @Test
+  public void createBrowseAction() {
+    Dialogs.createBrowseAction(new JTextField());
   }
 }

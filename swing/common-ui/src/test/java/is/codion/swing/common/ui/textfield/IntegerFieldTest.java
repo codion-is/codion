@@ -16,7 +16,7 @@ public class IntegerFieldTest {
 
   @Test
   public void test() {
-    final IntegerField integerField = new IntegerField();
+    final IntegerField integerField = new IntegerField(5);
     integerField.setInteger(42);
     assertEquals("42", integerField.getText());
     integerField.setText("22");
