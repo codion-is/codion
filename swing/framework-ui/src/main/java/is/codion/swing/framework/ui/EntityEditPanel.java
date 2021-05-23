@@ -79,20 +79,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Specifies whether a user confirmation is required.
-   */
-  public enum ConfirmRequired {
-    /**
-     * Specifies that a confirm is required.
-     */
-    YES,
-    /**
-     * Specifies that a confirm is not required.
-     */
-    NO
-  }
-
-  /**
    * The actions meriting user confirmation
    */
   protected enum ConfirmType {
@@ -495,46 +481,47 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) {//update
-        update(ConfirmRequired.NO);
+        updateWithoutConfirmation();
       }
       else if (choiceIdx == 1) {//insert
-        insert(ConfirmRequired.NO);
+        insertWithoutConfirmation();
       }
     }
   }
 
   /**
-   * Performs a insert on the active entity
+   * Performs a insert on the active entity after asking for confirmation
    * @return true in case of successful insert, false otherwise
    */
   public final boolean insert() {
-    return insert(ConfirmRequired.YES);
+    if (!confirmInsert()) {
+      return false;
+    }
+
+    return insertWithoutConfirmation();
   }
 
   /**
-   * Performs a insert on the active entity
-   * @param confirmRequired specifies whether a user confirmation is required.
+   * Performs a insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
    */
-  public final boolean insert(final ConfirmRequired confirmRequired) {
+  public final boolean insertWithoutConfirmation() {
     try {
-      if (confirmRequired == ConfirmRequired.NO || confirmInsert()) {
-        validateData();
-        try {
-          showWaitCursor(this);
-          getEditModel().insert();
-        }
-        finally {
-          hideWaitCursor(this);
-        }
-        if (clearAfterInsert) {
-          getEditModel().setDefaultValues();
-        }
-        if (requestFocusAfterInsert) {
-          requestAfterInsertFocus();
-        }
-        return true;
+      validateData();
+      try {
+        showWaitCursor(this);
+        getEditModel().insert();
       }
+      finally {
+        hideWaitCursor(this);
+      }
+      if (clearAfterInsert) {
+        getEditModel().setDefaultValues();
+      }
+      if (requestFocusAfterInsert) {
+        requestAfterInsertFocus();
+      }
+      return true;
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -549,31 +536,32 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs a delete on the active entity
+   * Performs a delete on the active entity after asking for confirmation
    * @return true if the delete operation was successful
    */
   public final boolean delete() {
-    return delete(ConfirmRequired.YES);
+    if (!confirmDelete()) {
+      return false;
+    }
+
+    return deleteWithoutConfirmation();
   }
 
   /**
-   * Performs a delete on the active entity
-   * @param confirmRequired specifies whether a user confirmation is required.
+   * Performs a delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
    */
-  public final boolean delete(final ConfirmRequired confirmRequired) {
+  public final boolean deleteWithoutConfirmation() {
     try {
-      if (confirmRequired == ConfirmRequired.NO || confirmDelete()) {
-        try {
-          showWaitCursor(this);
-          getEditModel().delete();
-        }
-        finally {
-          hideWaitCursor(this);
-        }
-
-        return true;
+      try {
+        showWaitCursor(this);
+        getEditModel().delete();
       }
+      finally {
+        hideWaitCursor(this);
+      }
+
+      return true;
     }
     catch (final ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -588,33 +576,34 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs an update on the active entity
+   * Performs an update on the active entity after asking for confirmation
    * @return true if the update operation was successful
    */
   public final boolean update() {
-    return update(ConfirmRequired.YES);
+    if (!confirmUpdate()) {
+      return false;
+    }
+
+    return updateWithoutConfirmation();
   }
 
   /**
-   * Performs an update on the active entity
-   * @param confirmRequired specifies whether a user confirmation is required.
+   * Performs an update on the active entity without asking for confirmation
    * @return true if the update operation was successful or if no update was required
    */
-  public final boolean update(final ConfirmRequired confirmRequired) {
+  public final boolean updateWithoutConfirmation() {
     try {
-      if (confirmRequired == ConfirmRequired.NO || confirmUpdate()) {
-        validateData();
-        try {
-          showWaitCursor(this);
-          getEditModel().update();
-        }
-        finally {
-          hideWaitCursor(this);
-        }
-        requestInitialFocus();
-
-        return true;
+      validateData();
+      try {
+        showWaitCursor(this);
+        getEditModel().update();
       }
+      finally {
+        hideWaitCursor(this);
+      }
+      requestInitialFocus();
+
+      return true;
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);
