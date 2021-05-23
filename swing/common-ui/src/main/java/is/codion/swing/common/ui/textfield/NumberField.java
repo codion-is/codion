@@ -4,7 +4,9 @@
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.value.PropertyValue;
+import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
@@ -95,6 +97,14 @@ public class NumberField<T extends Number> extends JTextField {
    */
   public final void setSeparators(final char decimalSeparator, final char groupingSeparator) {
     getTypedDocument().setSeparators(decimalSeparator, groupingSeparator);
+  }
+
+  /**
+   * @param listener a listener notified when the value changes
+   */
+  public void addValueListener(final EventDataListener<T> listener) {
+    final NumberDocument<T> document = getTypedDocument();
+    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getNumber()));
   }
 
   /**

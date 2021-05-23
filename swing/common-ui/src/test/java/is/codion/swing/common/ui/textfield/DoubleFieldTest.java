@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.text.BadLocationException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,7 +49,8 @@ public class DoubleFieldTest {
 
   @Test
   public void testGrouping() {
-    final DoubleField doubleField = new DoubleField();
+    final DecimalFormat decimalFormat = new DecimalFormat();
+    final DoubleField doubleField = new DoubleField(decimalFormat);
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
     assertEquals(0, doubleField.getCaretPosition());
@@ -101,7 +103,7 @@ public class DoubleFieldTest {
     final DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
-    final NumberDocument document = (NumberDocument) doubleField.getDocument();
+    final NumberDocument<Double> document = doubleField.getTypedDocument();
 
     doubleField.setText("123456789");
     assertEquals("123.456.789", doubleField.getText());

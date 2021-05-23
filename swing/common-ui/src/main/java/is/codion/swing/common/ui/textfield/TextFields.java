@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -34,63 +33,11 @@ public final class TextFields {
   private static final String TEXT_COMPONENT = "textComponent";
 
   /**
-   * Specifies whether a formatted text field value should contain the literal characters.
-   */
-  public enum ValueContainsLiterals {
-    /**
-     * Value should contain literal characters.
-     */
-    YES,
-    /**
-     * Value should not contain literal characters.
-     */
-    NO
-  }
-
-  /**
    * A text field used by getPreferredTextFieldSize and getPreferredTextFieldHeight
    */
   private static JTextField textField;
 
   private TextFields() {}
-
-  /**
-   * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
-   * with JFormattedTextField.COMMIT as focus lost behaviour. By default the value contains the literal characters.
-   * @param mask the format mask
-   * @return a JFormattedTextField
-   */
-  public static JFormattedTextField createFormattedField(final String mask) {
-    return createFormattedField(mask, ValueContainsLiterals.YES);
-  }
-
-  /**
-   * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
-   * with JFormattedTextField.COMMIT as focus lost behaviour.
-   * @param mask the format mask
-   * @param valueContainsLiterals if yes, the value will also contain the literal characters in mask
-   * @return a JFormattedTextField
-   */
-  public static JFormattedTextField createFormattedField(final String mask, final ValueContainsLiterals valueContainsLiterals) {
-    try {
-      return createFormattedField(new FieldFormatter(mask, valueContainsLiterals));
-    }
-    catch (final ParseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Creates a JFormattedTextField with the given mask formatter, with JFormattedTextField.COMMIT as focus lost behaviour.
-   * @param maskFormatter the mask formatter
-   * @return a JFormattedTextField
-   */
-  public static JFormattedTextField createFormattedField(final MaskFormatter maskFormatter) {
-    final JFormattedTextField formattedTextField = new JFormattedTextField(requireNonNull(maskFormatter, "maskFormatter"));
-    formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
-
-    return formattedTextField;
-  }
 
   /**
    * Makes {@code textComponent} convert all lower case input to upper case
@@ -225,6 +172,19 @@ public final class TextFields {
   }
 
   /**
+   * Somewhat of a hacky way to keep the current field selection and caret position when
+   * the field gains focus, in case the content length has not changed
+   * http://stackoverflow.com/a/2202073/317760
+   * @param mask the format mask
+   * @param valueContainsLiterals true if the the value should contain literals
+   * @return a new MaskFormatter
+   * @throws ParseException in case of an exception while parsing the mask
+   */
+  public static MaskFormatter fieldFormatter(final String mask, final boolean valueContainsLiterals) throws ParseException {
+    return new FieldFormatter(mask, valueContainsLiterals);
+  }
+
+  /**
    * A hint text for text fields, that is, text that is shown
    * when the field contains no data, is empty and unfocused.
    * @see TextFields#hint(JTextField, String)
@@ -247,39 +207,6 @@ public final class TextFields {
      * but sometimes it may be necessary to update manually.
      */
     void updateHint();
-  }
-
-  /**
-   * Somewhat of a hack to keep the current field selection and caret position when
-   * the field gains focus, in case the content length has not changed
-   * http://stackoverflow.com/a/2202073/317760
-   */
-  public static class FieldFormatter extends MaskFormatter {
-
-    public FieldFormatter(final String mask, final ValueContainsLiterals valueContainsLiterals) throws ParseException {
-      super(mask);
-      setPlaceholderCharacter('_');
-      setAllowsInvalid(false);
-      setValueContainsLiteralCharacters(valueContainsLiterals == ValueContainsLiterals.YES);
-    }
-
-    @Override
-    public final void install(final JFormattedTextField field) {
-      final int previousLength = field.getDocument().getLength();
-      final int currentCaretPosition = field.getCaretPosition();
-      final int currentSelectionStart = field.getSelectionStart();
-      final int currentSelectionEnd = field.getSelectionEnd();
-      super.install(field);
-      if (previousLength == field.getDocument().getLength()) {
-        if (currentSelectionEnd - currentSelectionStart > 0) {
-          field.setCaretPosition(currentSelectionStart);
-          field.moveCaretPosition(currentSelectionEnd);
-        }
-        else {
-          field.setCaretPosition(currentCaretPosition);
-        }
-      }
-    }
   }
 
   private static final class CaseDocumentFilter extends DocumentFilter {

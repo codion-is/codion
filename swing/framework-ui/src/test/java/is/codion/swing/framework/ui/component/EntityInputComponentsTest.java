@@ -7,11 +7,14 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain;
 
@@ -20,7 +23,10 @@ import org.junit.jupiter.api.Test;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +51,8 @@ public class EntityInputComponentsTest {
   @Test
   public void createCheckBox() {
     editModel.setDefaultValues();
-    final JCheckBox box = inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN)).build();
+    final JCheckBox box = inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN))
+            .transferFocusOnEnter(true).build();
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
@@ -63,8 +70,7 @@ public class EntityInputComponentsTest {
     editModel.setDefaultValues();
     final NullableCheckBox box = (NullableCheckBox) inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN_NULLABLE,
             editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE))
-            .nullable(true)
-            .build();
+            .transferFocusOnEnter(true).nullable(true).build();
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
@@ -82,7 +88,8 @@ public class EntityInputComponentsTest {
     editModel.setDefaultValues();
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
-            inputComponents.booleanComboBoxBuilder(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN)).build().getModel();
+            inputComponents.booleanComboBoxBuilder(TestDomain.DETAIL_BOOLEAN, editModel.value(TestDomain.DETAIL_BOOLEAN))
+                    .transferFocusOnEnter(true).build().getModel();
     assertTrue(boxModel.getSelectedValue().getValue());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
@@ -94,7 +101,7 @@ public class EntityInputComponentsTest {
   @Test
   public void createValueListComboBox() {
     final JComboBox<Item<Integer>> box = inputComponents.valueListComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST,
-            editModel.value(TestDomain.DETAIL_INT_VALUE_LIST)).build();
+            editModel.value(TestDomain.DETAIL_INT_VALUE_LIST)).transferFocusOnEnter(true).build();
 
     assertNull(editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(1);
@@ -110,8 +117,8 @@ public class EntityInputComponentsTest {
   @Test
   public void createComboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
-    final JComboBox<Integer> box = inputComponents.comboBoxBuilder(TestDomain.DETAIL_INT, editModel.value(TestDomain.DETAIL_INT),
-            boxModel).build();
+    final JComboBox<Integer> box = inputComponents.comboBoxBuilder(TestDomain.DETAIL_INT, editModel.value(TestDomain.DETAIL_INT), boxModel)
+            .transferFocusOnEnter(true).build();
 
     assertNull(editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(1);
@@ -122,6 +129,53 @@ public class EntityInputComponentsTest {
     assertEquals(3, editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(4);//does not exist
     assertEquals(3, editModel.get(TestDomain.DETAIL_INT));
+  }
+
+  @Test
+  public void createTextField() {
+    final JTextField field = inputComponents.textFieldBuilder(TestDomain.DETAIL_STRING,
+            editModel.value(TestDomain.DETAIL_STRING))
+            .columns(10).upperCase().selectAllOnFocusGained().build();
+    field.setText("hello");
+    assertEquals("HELLO", editModel.get(TestDomain.DETAIL_STRING));
+  }
+
+  @Test
+  public void createTextArea() {
+    final JTextArea textArea = inputComponents.textAreaBuilder(TestDomain.DETAIL_STRING,
+            editModel.value(TestDomain.DETAIL_STRING))
+            .transferFocusOnEnter(true).rows(4).columns(2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true).build();
+    textArea.setText("hello");
+    assertEquals("hello", editModel.get(TestDomain.DETAIL_STRING));
+  }
+
+  @Test
+  public void createTextInputPanel() {
+    final TextInputPanel inputPanel = inputComponents.textInputPanelBuilder(TestDomain.DETAIL_STRING,
+            editModel.value(TestDomain.DETAIL_STRING))
+            .transferFocusOnEnter(true).columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE).build();
+    inputPanel.setText("hello");
+    assertEquals("hello", editModel.get(TestDomain.DETAIL_STRING));
+  }
+
+  @Test
+  public void createFormattedTextField() {
+    final JFormattedTextField field = inputComponents.formattedTextFieldBuilder(TestDomain.DETAIL_STRING,
+            editModel.value(TestDomain.DETAIL_STRING))
+            .formatMaskString("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
+            .focusLostBehaviour(JFormattedTextField.COMMIT).build();
+    field.setText("1234");
+    assertEquals("12:34", editModel.get(TestDomain.DETAIL_STRING));
+  }
+
+  @Test
+  public void createForeignKeyField() {
+    final JTextField field = inputComponents.foreignKeyFieldBuilder(TestDomain.DETAIL_MASTER_FK,
+            editModel.value(TestDomain.DETAIL_MASTER_FK))
+            .columns(10).build();
+    final Entity entity = editModel.getEntities().builder(TestDomain.T_MASTER).with(TestDomain.MASTER_NAME, "name").build();
+    editModel.put(TestDomain.DETAIL_MASTER_FK, entity);
+    assertEquals("name", field.getText());
   }
 
   @Test

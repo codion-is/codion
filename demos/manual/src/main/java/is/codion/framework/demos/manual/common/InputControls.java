@@ -44,22 +44,20 @@ public final class InputControls {
     // tag::control[]
     State somethingEnabledState = State.state(true);
 
-    Control control = Control.builder()
+    Control control = Control.builder(() -> System.out.println("Doing something"))
             .name("Do something")
-            .command(() -> System.out.println("Doing something"))
             .enabledState(somethingEnabledState)
             .mnemonic('D')
             .build();
 
     JButton somethingButton = control.createButton();
 
-    Control actionControl = Control.builder()
-            .name("Do something else")
-            .actionCommand(actionEvent -> {
+    Control actionControl = Control.actionControlBuilder(actionEvent -> {
               if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
                 System.out.println("Doing something else");
               }
             })
+            .name("Do something else")
             .mnemonic('S')
             .build();
 
@@ -92,37 +90,31 @@ public final class InputControls {
   void controls() {
     // tag::controls[]
     Controls controls = Controls.builder()
-            .control(Control.builder()
+            .control(Control.builder(this::doFirst)
                     .name("First")
-                    .mnemonic('F')
-                    .command(this::doFirst))
-            .control(Control.builder()
+                    .mnemonic('F'))
+            .control(Control.builder(this::doSecond)
                     .name("Second")
-                    .mnemonic('S')
-                    .command(this::doSecond))
+                    .mnemonic('S'))
             .control(Controls.builder()
                     .name("Submenu")
-                    .control(Control.builder()
+                    .control(Control.builder(this::doSubFirst)
                             .name("Sub-first")
-                            .mnemonic('b')
-                            .command(this::doSubFirst))
-                    .control(Control.builder()
+                            .mnemonic('b'))
+                    .control(Control.builder(this::doSubSecond)
                             .name("Sub-second")
-                            .mnemonic('u')
-                            .command(this::doSubSecond)))
+                            .mnemonic('u')))
             .build();
 
     JMenu menu = controls.createMenu();
 
-    Control firstControl = Control.builder()
+    Control firstControl = Control.builder(this::doFirst)
             .name("First")
             .mnemonic('F')
-            .command(this::doFirst)
             .build();
-    Control secondControl = Control.builder()
+    Control secondControl = Control.builder(this::doSecond)
             .name("Second")
             .mnemonic('S')
-            .command(this::doSecond)
             .build();
 
     Controls flatControls = Controls.builder()

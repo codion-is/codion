@@ -55,8 +55,7 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(Control.builder()
-            .command(this::refresh)
+    clientInstanceBase.add(Control.builder(this::refresh)
             .name("Refresh")
             .build().createButton(), BorderLayout.SOUTH);
 
@@ -88,7 +87,7 @@ public final class ClientMonitorPanel extends JPanel {
 
   private JPopupMenu initializePopupMenu() {
     final Controls controls = Controls.controls();
-    controls.add(Control.builder().command(() -> {
+    controls.add(Control.builder(() -> {
       for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
         model.getServer().disconnect(remoteClient.getClientId());
         model.getRemoteClientListModel().removeElement(remoteClient);

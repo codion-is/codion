@@ -161,7 +161,8 @@ public interface Controls extends Control {
 
   /**
    * A builder for Controls
-   * @see Controls#builder()
+   * @see Controls#builder(Command)
+   * @see Controls#actionControlBuilder(ActionCommand)
    */
   interface Builder extends Control.Builder {
 

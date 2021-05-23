@@ -63,16 +63,14 @@ final class LoginPanel extends JPanel {
    */
   LoginPanel(final User defaultUser, final LoginValidator loginValidator,
              final JComponent southComponent) {
-    this.okControl = Control.builder()
+    this.okControl = Control.builder(this::onOkPressed)
             .name(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
-            .command(this::onOkPressed)
             .enabledState(validatingState.getReversedObserver())
             .build();
-    this.cancelControl = Control.builder()
+    this.cancelControl = Control.builder(() -> Windows.getParentDialog(this).dispose())
             .name(Messages.get(Messages.CANCEL))
             .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
-            .command(() -> Windows.getParentDialog(this).dispose())
             .enabledState(validatingState.getReversedObserver())
             .build();
     this.loginValidator = requireNonNull(loginValidator);

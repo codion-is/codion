@@ -5,8 +5,6 @@ package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.formats.LocaleDateTimePattern;
-import is.codion.swing.common.ui.textfield.TextFields.FieldFormatter;
-import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 
 import javax.swing.JFormattedTextField;
 import java.text.ParseException;
@@ -146,7 +144,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private static FieldFormatter initializeFormatter(final String dateTimePattern) {
     try {
-      return new FieldFormatter(LocaleDateTimePattern.getMask(dateTimePattern), ValueContainsLiterals.YES);
+      return new FieldFormatter(LocaleDateTimePattern.getMask(dateTimePattern), true);
     }
     catch (final ParseException e) {
       throw new RuntimeException(e);

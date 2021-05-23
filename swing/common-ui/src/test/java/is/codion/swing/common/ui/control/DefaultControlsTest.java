@@ -29,8 +29,8 @@ public class DefaultControlsTest {
   }
 
   private final Controls controls = Controls.builder().controls(
-          Control.builder().command(() -> {}).name("one"),
-          Control.builder().command(() -> {}).name("two"),
+          Control.builder(() -> {}).name("one"),
+          Control.builder(() -> {}).name("two"),
           ToggleControl.builder().value(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
                   .name("three")).build();
 

@@ -68,8 +68,7 @@ public final class DatabaseMonitorPanel extends JPanel {
 
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
-    chartConfig.add(Control.builder()
-            .command(model::clearStatistics)
+    chartConfig.add(Control.builder(model::clearStatistics)
             .name("Clear")
             .build().createButton());
 

@@ -34,8 +34,7 @@ final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
   LocalDateInputPanel(final TemporalField<LocalDate> inputField, final boolean calendarButton, final StateObserver enabledState) {
     super(inputField, enabledState);
     if (calendarButton) {
-      this.button = Control.builder()
-              .command(this::displayCalendar)
+      this.button = Control.builder(this::displayCalendar)
               .name("...")
               .build().createButton();
       this.button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);

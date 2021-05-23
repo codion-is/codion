@@ -12,7 +12,7 @@ public class LongFieldTest {
 
   @Test
   public void test() {
-    final LongField longField = new LongField();
+    final LongField longField = new LongField(5);
     longField.setLong(42L);
     assertEquals("42", longField.getText());
     longField.setText("22");

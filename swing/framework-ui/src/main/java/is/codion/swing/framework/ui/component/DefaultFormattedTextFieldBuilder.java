@@ -10,8 +10,8 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JFormattedTextField;
+import java.text.ParseException;
 
-import static is.codion.swing.common.ui.textfield.TextFields.createFormattedField;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFormattedTextFieldBuilder
@@ -22,6 +22,7 @@ final class DefaultFormattedTextFieldBuilder
   private boolean valueContainsLiterals = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int columns;
+  private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
   DefaultFormattedTextFieldBuilder(final Property<String> attribute, final Value<String> value) {
     super(attribute, value);
@@ -52,12 +53,23 @@ final class DefaultFormattedTextFieldBuilder
   }
 
   @Override
-  protected JFormattedTextField buildComponent() {
-    final JFormattedTextField textField = createFormattedField(formatMaskString,
-            valueContainsLiterals ? TextFields.ValueContainsLiterals.YES : TextFields.ValueContainsLiterals.NO);
-    ComponentValues.textComponent(textField, null, updateOn).link(value);
-    textField.setColumns(columns);
+  public FormattedTextFieldBuilder focusLostBehaviour(final int focusLostBehaviour) {
+    this.focusLostBehaviour = focusLostBehaviour;
+    return this;
+  }
 
-    return textField;
+  @Override
+  protected JFormattedTextField buildComponent() {
+    try {
+      final JFormattedTextField textField = new JFormattedTextField(TextFields.fieldFormatter(formatMaskString, valueContainsLiterals));
+      textField.setFocusLostBehavior(focusLostBehaviour);
+      ComponentValues.textComponent(textField, null, updateOn).link(value);
+      textField.setColumns(columns);
+
+      return textField;
+    }
+    catch (final ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

@@ -79,20 +79,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Specifies whether a user confirmation is required.
-   */
-  public enum ConfirmRequired {
-    /**
-     * Specifies that a confirm is required.
-     */
-    YES,
-    /**
-     * Specifies that a confirm is not required.
-     */
-    NO
-  }
-
-  /**
    * The actions meriting user confirmation
    */
   protected enum ConfirmType {
@@ -273,8 +259,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return Control.builder()
-            .command(getEditModel()::refresh)
+    return Control.builder(getEditModel()::refresh)
             .name(FrameworkMessages.get(FrameworkMessages.REFRESH))
             .enabledState(activeState)
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX + mnemonic + ")")
@@ -288,8 +273,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
-    return Control.builder()
-            .command(this::delete)
+    return Control.builder(this::delete)
             .name(FrameworkMessages.get(FrameworkMessages.DELETE))
             .enabledState(State.and(activeState,
                     getEditModel().getDeleteEnabledObserver(),
@@ -305,8 +289,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return Control.builder()
-            .command(this::clearAndRequestFocus)
+    return Control.builder(this::clearAndRequestFocus)
             .name(FrameworkMessages.get(FrameworkMessages.CLEAR))
             .enabledState(activeState)
             .description(FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")")
@@ -320,8 +303,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
-    return Control.builder()
-            .command(this::update)
+    return Control.builder(this::update)
             .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(State.and(activeState,
                     getEditModel().getUpdateEnabledObserver(),
@@ -337,8 +319,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return Control.builder()
-            .command(this::insert)
+    return Control.builder(this::insert)
             .name(FrameworkMessages.get(FrameworkMessages.INSERT))
             .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")")
@@ -355,8 +336,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
     final State insertUpdateState = State.or(getEditModel().getInsertEnabledObserver(),
             State.and(getEditModel().getUpdateEnabledObserver(), getEditModel().getModifiedObserver()));
-    return Control.builder()
-            .command(this::save)
+    return Control.builder(this::save)
             .name(FrameworkMessages.get(FrameworkMessages.SAVE))
             .enabledState(State.and(activeState, insertUpdateState))
             .description(FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")")
@@ -440,7 +420,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       return controlPanelControls.createVerticalToolBar();
     }
     else if (orientation == SwingConstants.HORIZONTAL) {
-       return controlPanelControls.createHorizontalToolBar();
+      return controlPanelControls.createHorizontalToolBar();
     }
 
     throw new IllegalArgumentException("Unknown orientation value: " + orientation);
@@ -495,46 +475,47 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) {//update
-        update(ConfirmRequired.NO);
+        updateWithoutConfirmation();
       }
       else if (choiceIdx == 1) {//insert
-        insert(ConfirmRequired.NO);
+        insertWithoutConfirmation();
       }
     }
   }
 
   /**
-   * Performs a insert on the active entity
+   * Performs a insert on the active entity after asking for confirmation
    * @return true in case of successful insert, false otherwise
    */
   public final boolean insert() {
-    return insert(ConfirmRequired.YES);
+    if (!confirmInsert()) {
+      return false;
+    }
+
+    return insertWithoutConfirmation();
   }
 
   /**
-   * Performs a insert on the active entity
-   * @param confirmRequired specifies whether a user confirmation is required.
+   * Performs a insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
    */
-  public final boolean insert(final ConfirmRequired confirmRequired) {
+  public final boolean insertWithoutConfirmation() {
     try {
-      if (confirmRequired == ConfirmRequired.NO || confirmInsert()) {
-        validateData();
-        try {
-          showWaitCursor(this);
-          getEditModel().insert();
-        }
-        finally {
-          hideWaitCursor(this);
-        }
-        if (clearAfterInsert) {
-          getEditModel().setDefaultValues();
-        }
-        if (requestFocusAfterInsert) {
-          requestAfterInsertFocus();
-        }
-        return true;
+      validateData();
+      try {
+        showWaitCursor(this);
+        getEditModel().insert();
       }
+      finally {
+        hideWaitCursor(this);
+      }
+      if (clearAfterInsert) {
+        getEditModel().setDefaultValues();
+      }
+      if (requestFocusAfterInsert) {
+        requestAfterInsertFocus();
+      }
+      return true;
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -549,31 +530,32 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs a delete on the active entity
+   * Performs a delete on the active entity after asking for confirmation
    * @return true if the delete operation was successful
    */
   public final boolean delete() {
-    return delete(ConfirmRequired.YES);
+    if (!confirmDelete()) {
+      return false;
+    }
+
+    return deleteWithoutConfirmation();
   }
 
   /**
-   * Performs a delete on the active entity
-   * @param confirmRequired specifies whether a user confirmation is required.
+   * Performs a delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
    */
-  public final boolean delete(final ConfirmRequired confirmRequired) {
+  public final boolean deleteWithoutConfirmation() {
     try {
-      if (confirmRequired == ConfirmRequired.NO || confirmDelete()) {
-        try {
-          showWaitCursor(this);
-          getEditModel().delete();
-        }
-        finally {
-          hideWaitCursor(this);
-        }
-
-        return true;
+      try {
+        showWaitCursor(this);
+        getEditModel().delete();
       }
+      finally {
+        hideWaitCursor(this);
+      }
+
+      return true;
     }
     catch (final ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -588,33 +570,34 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs an update on the active entity
+   * Performs an update on the active entity after asking for confirmation
    * @return true if the update operation was successful
    */
   public final boolean update() {
-    return update(ConfirmRequired.YES);
+    if (!confirmUpdate()) {
+      return false;
+    }
+
+    return updateWithoutConfirmation();
   }
 
   /**
-   * Performs an update on the active entity
-   * @param confirmRequired specifies whether a user confirmation is required.
+   * Performs an update on the active entity without asking for confirmation
    * @return true if the update operation was successful or if no update was required
    */
-  public final boolean update(final ConfirmRequired confirmRequired) {
+  public final boolean updateWithoutConfirmation() {
     try {
-      if (confirmRequired == ConfirmRequired.NO || confirmUpdate()) {
-        validateData();
-        try {
-          showWaitCursor(this);
-          getEditModel().update();
-        }
-        finally {
-          hideWaitCursor(this);
-        }
-        requestInitialFocus();
-
-        return true;
+      validateData();
+      try {
+        showWaitCursor(this);
+        getEditModel().update();
       }
+      finally {
+        hideWaitCursor(this);
+      }
+      requestInitialFocus();
+
+      return true;
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);

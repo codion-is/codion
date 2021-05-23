@@ -27,16 +27,6 @@ final class ControlsBuilder implements Controls.Builder {
   private KeyStroke keyStroke;
 
   @Override
-  public Controls.Builder command(final Control.Command command) {
-    throw new UnsupportedOperationException("Controls can not have a Command");
-  }
-
-  @Override
-  public Control.Builder actionCommand(final Control.ActionCommand actionCommand) {
-    throw new UnsupportedOperationException("Controls can not have a ActionCommand");
-  }
-
-  @Override
   public Controls.Builder name(final String name) {
     this.name = name;
     return this;

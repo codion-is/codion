@@ -3,9 +3,6 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.swing.common.model.textfield.DocumentAdapter;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -75,14 +72,6 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    */
   public void setBigDecimal(final BigDecimal value) {
     getTypedDocument().setNumber(value);
-  }
-
-  /**
-   * @param listener a listener notified when the value changes
-   */
-  public void addBigDecimalListener(final EventDataListener<BigDecimal> listener) {
-    final NumberDocument<BigDecimal> document = getTypedDocument();
-    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getBigDecimal()));
   }
 
   private static DecimalFormat createDefaultFormat() {
