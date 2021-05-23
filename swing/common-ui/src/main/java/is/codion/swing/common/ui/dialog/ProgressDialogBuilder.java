@@ -5,34 +5,13 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.control.Controls;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.Window;
 
 /**
  * A builder for {@link ProgressDialog}.
  */
-public interface ProgressDialogBuilder {
-
-  /**
-   * @param owner the dialog owner
-   * @return this ProgressDialogBuilder instance
-   */
-  ProgressDialogBuilder owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this ProgressDialogBuilder instance
-   */
-  ProgressDialogBuilder owner(JComponent owner);
-
-  /**
-   * @param title the title
-   * @return this ProgressDialogBuilder instance
-   */
-  ProgressDialogBuilder title(String title);
+public interface ProgressDialogBuilder extends DialogBuilder<ProgressDialogBuilder> {
 
   /**
    * @param indeterminate the indeterminate status of the progress bar

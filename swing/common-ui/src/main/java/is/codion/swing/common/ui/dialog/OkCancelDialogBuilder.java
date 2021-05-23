@@ -4,10 +4,8 @@
 package is.codion.swing.common.ui.dialog;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import java.awt.Window;
 
 
 /**
@@ -15,38 +13,13 @@ import java.awt.Window;
  * with OK and Cancel buttons based on the given actions.
  * An OK action must be provided and the default Cancel action simply disposes the dialog.
  */
-public interface OkCancelDialogBuilder {
-
-  /**
-   * @param owner the dialog owner
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder owner(JComponent owner);
+public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuilder> {
 
   /**
    * @param component the component to display
    * @return this builder instance
    */
   OkCancelDialogBuilder component(JComponent component);
-
-  /**
-   * @param title the dialog title
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder title(String title);
-
-  /**
-   * @param icon the dialog icon
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder icon(ImageIcon icon);
 
   /**
    * @param okAction the action for the OK button

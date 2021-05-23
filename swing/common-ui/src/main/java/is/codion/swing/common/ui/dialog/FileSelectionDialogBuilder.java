@@ -5,34 +5,13 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 
-import javax.swing.JComponent;
-import java.awt.Window;
 import java.io.File;
 import java.util.List;
 
 /**
  * A builder for a file/directory selection dialog
  */
-public interface FileSelectionDialogBuilder {
-
-  /**
-   * @param owner the dialog owner
-   * @return this DialogBuilder instance
-   */
-  FileSelectionDialogBuilder owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this DialogBuilder instance
-   */
-  FileSelectionDialogBuilder owner(JComponent owner);
-
-  /**
-   * @param title the dialog title
-   * @return this DialogBuilder instance
-   */
-  FileSelectionDialogBuilder title(String title);
+public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionDialogBuilder> {
 
   /**
    * @param startDirectory the start directory

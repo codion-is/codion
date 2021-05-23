@@ -7077,3 +7077,5 @@
   NumberField.addValueListener() added, type specific methods removed from subclasses
   TextFields.createFormattedField() moved to DefaultFormattedTextFieldBuilder, FieldFormatter moved up to package level, factory method added
   FormattedTextFieldBuilder.focusLostBehaviour() added
+  Dialogs.dialogBuilder() renamed componentDialogBuilder(), component parameter added
+  DialogBuilder base interface added, inherited

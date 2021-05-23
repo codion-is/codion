@@ -21,9 +21,10 @@ import java.awt.event.WindowEvent;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> implements DialogBuilder {
+final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<ComponentDialogBuilder> implements ComponentDialogBuilder {
 
-  private JComponent component;
+  private final JComponent component;
+
   private boolean modal = true;
   private boolean resizable = true;
   private Action enterAction;
@@ -32,50 +33,48 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
   private EventDataListener<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
 
-  @Override
-  public DialogBuilder component(final JComponent component) {
+  DefaultComponentDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
-    return this;
   }
 
   @Override
-  public DialogBuilder modal(final boolean modal) {
+  public ComponentDialogBuilder modal(final boolean modal) {
     this.modal = modal;
     return this;
   }
 
   @Override
-  public DialogBuilder resizable(final boolean resizable) {
+  public ComponentDialogBuilder resizable(final boolean resizable) {
     this.resizable = resizable;
     return this;
   }
 
   @Override
-  public DialogBuilder enterAction(final Action enterAction) {
+  public ComponentDialogBuilder enterAction(final Action enterAction) {
     this.enterAction = requireNonNull(enterAction);
     return this;
   }
 
   @Override
-  public DialogBuilder onClosedAction(final Action onClosedAction) {
+  public ComponentDialogBuilder onClosedAction(final Action onClosedAction) {
     this.onClosedAction = onClosedAction;
     return this;
   }
 
   @Override
-  public DialogBuilder closeEvent(final EventObserver<?> closeEvent) {
+  public ComponentDialogBuilder closeEvent(final EventObserver<?> closeEvent) {
     this.closeEvent = closeEvent;
     return this;
   }
 
   @Override
-  public DialogBuilder confirmCloseListener(final EventDataListener<State> confirmCloseListener) {
+  public ComponentDialogBuilder confirmCloseListener(final EventDataListener<State> confirmCloseListener) {
     this.confirmCloseListener = confirmCloseListener;
     return this;
   }
 
   @Override
-  public DialogBuilder disposeOnEscape(final boolean disposeOnEscape) {
+  public ComponentDialogBuilder disposeOnEscape(final boolean disposeOnEscape) {
     this.disposeOnEscape = disposeOnEscape;
     return this;
   }
@@ -90,10 +89,6 @@ final class DefaultDialogBuilder extends AbstractDialogBuilder<DialogBuilder> im
 
   @Override
   public JDialog build() {
-    if (component == null) {
-      throw new IllegalStateException("A component to display in the dialog must be specified");
-    }
-
     final JDialog dialog = new JDialog(owner, title);
     if (icon != null) {
       dialog.setIconImage(icon.getImage());

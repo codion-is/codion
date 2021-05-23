@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import javax.swing.JComponent;
-import java.awt.Window;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -12,26 +10,7 @@ import java.util.Optional;
  * A builder for a selection dialog.
  * @param <T> the value type
  */
-public interface SelectionDialogBuilder<T> {
-
-  /**
-   * @param owner the dialog owner
-   * @return this SelectionDialogBuilder instance
-   */
-  SelectionDialogBuilder<T> owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this SelectionDialogBuilder instance
-   */
-  SelectionDialogBuilder<T> owner(JComponent owner);
-
-  /**
-   * @param title the dialog title
-   * @return this SelectionDialogBuilder instance
-   */
-  SelectionDialogBuilder<T> title(String title);
+public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialogBuilder<T>> {
 
   /**
    * @param singleSelection if true then the selection is restricted to a single value
