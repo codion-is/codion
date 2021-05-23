@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
+import java.text.Format;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -34,4 +35,28 @@ public interface TextFieldBuilder<T> extends TextComponentBuilder<T, JTextField,
    * @return this builder instance
    */
   TextFieldBuilder<T> lookupDialog(Supplier<Collection<T>> valueSupplier);
+
+  /**
+   * @param format the format
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> format(Format format);
+
+  /**
+   * @param dateTimePattern the date time pattern, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> dateTimePattern(String dateTimePattern);
+
+  /**
+   * @param minimumValue the minimum numerical value, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> minimumValue(Double minimumValue);
+
+  /**
+   * @param maximumValue the maximum numerical value, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> maximumValue(Double maximumValue);
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -36,4 +36,16 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
    * @return this builder instance
    */
   TextInputPanelBuilder textAreaSize(Dimension textAreaSize);
+
+  /**
+   * @param maximumLength the maximum text length
+   * @return this builder instance
+   */
+  TextInputPanelBuilder maximumLength(int maximumLength);
+
+  /**
+   * @param caption the caption
+   * @return this builder instance
+   */
+  TextInputPanelBuilder caption(String caption);
 }

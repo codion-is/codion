@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
@@ -46,6 +46,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B transferFocusOnEnter(boolean transferFocusOnEnter);
+
+  /**
+   * @param description the description
+   * @return this builder instance
+   */
+  B description(String description);
 
   /**
    * @param enabledState the state controlling the component enabled status

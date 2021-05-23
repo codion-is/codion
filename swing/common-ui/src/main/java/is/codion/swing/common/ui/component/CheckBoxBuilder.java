@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 
@@ -11,6 +11,12 @@ import javax.swing.JCheckBox;
  * Builds a JCheckBox.
  */
 public interface CheckBoxBuilder extends ComponentBuilder<Boolean, JCheckBox, CheckBoxBuilder> {
+
+  /**
+   * @param caption the caption
+   * @return this builder instance
+   */
+  CheckBoxBuilder caption(String caption);
 
   /**
    * @param includeCaption specifies whether a caption should be included

@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.item.Item;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -25,6 +26,8 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.time.temporal.Temporal;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link ComponentValue}.
@@ -285,5 +288,68 @@ public final class ComponentValues {
    */
   public static NumberFieldValueBuilder<Long, LongField, NumberFormat> longFieldBuilder() {
     return new LongFieldValueBuilder();
+  }
+
+  /**
+   * Links the given text field with the given value.
+   * @param textField the text field
+   * @param valueClass the value class
+   * @param value the value
+   * @param updateOn the update on
+   * @param format the format, if any
+   * @param <C> the component type
+   * @param <T> the value type
+   * @return the text field
+   * @throws IllegalArgumentException in case the value class is not supported
+   */
+  public static <C extends JTextField, T> C textFieldValue(final C textField, final Class<T> valueClass,
+                                                           final Value<T> value, final UpdateOn updateOn,
+                                                           final Format format) {
+    requireNonNull(textField);
+    requireNonNull(valueClass);
+    requireNonNull(value);
+    requireNonNull(updateOn);
+    if (valueClass.equals(String.class)) {
+      textComponent(textField, format, updateOn).link((Value<String>) value);
+    }
+    else if (valueClass.equals(Character.class)) {
+      characterTextField(textField, updateOn).link((Value<Character>) value);
+    }
+    else if (valueClass.equals(Integer.class)) {
+      integerFieldBuilder()
+              .component((IntegerField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Integer>) value);
+    }
+    else if (valueClass.equals(Double.class)) {
+      doubleFieldBuilder()
+              .component((DoubleField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Double>) value);
+    }
+    else if (valueClass.equals(BigDecimal.class)) {
+      bigDecimalFieldBuilder()
+              .component((BigDecimalField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<BigDecimal>) value);
+    }
+    else if (valueClass.equals(Long.class)) {
+      longFieldBuilder()
+              .component((LongField) textField)
+              .updateOn(updateOn)
+              .build()
+              .link((Value<Long>) value);
+    }
+    else if (Temporal.class.isAssignableFrom(valueClass)) {
+      temporalField((TemporalField<Temporal>) textField, updateOn).link((Value<Temporal>) value);
+    }
+    else {
+      throw new IllegalArgumentException("Text fields not implemented for type: " + valueClass);
+    }
+
+    return textField;
   }
 }

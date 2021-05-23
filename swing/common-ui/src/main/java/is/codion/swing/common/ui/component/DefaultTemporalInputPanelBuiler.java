@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
@@ -19,12 +18,15 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
         extends AbstractComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>>
         implements TemporalInputPanelBuilder<T> {
 
+  private final TemporalField<T> temporalField;
+
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean calendarButton;
   private int columns;
 
-  DefaultTemporalInputPanelBuiler(final Property<T> attribute, final Value<T> value) {
-    super(attribute, value);
+  DefaultTemporalInputPanelBuiler(final Value<T> value, final TemporalField<T> temporalField) {
+    super(value);
+    this.temporalField = requireNonNull(temporalField);
   }
 
   @Override
@@ -62,17 +64,10 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   private <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel() {
-    if (!property.getAttribute().isTemporal()) {
-      throw new IllegalArgumentException("Property " + property.getAttribute() + " is not a date or time attribute");
-    }
-
-    final TemporalField<Temporal> temporalField =
-            (TemporalField<Temporal>) DefaultTextFieldBuilder.createTextField(property);
-
-    ComponentValues.temporalField(temporalField, updateOn).link((Value<Temporal>) value);
+    ComponentValues.temporalField(temporalField, updateOn).link(value);
 
     return (TemporalInputPanel<T>) TemporalInputPanel.builder()
-            .temporalField(temporalField)
+            .temporalField((TemporalField<Temporal>) temporalField)
             .calendarButton(calendarButton)
             .enabledState(enabledState)
             .build();

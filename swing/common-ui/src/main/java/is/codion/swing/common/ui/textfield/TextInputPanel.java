@@ -193,13 +193,13 @@ public final class TextInputPanel extends JPanel {
     private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
     private boolean buttonFocusable;
 
-    public DefaultBuilder(final JTextField textField) {
+    private DefaultBuilder(final JTextField textField) {
       this.textField = textField;
     }
 
     @Override
     public Builder dialogTitle(final String dialogTitle) {
-      this.dialogTitle = requireNonNull(dialogTitle);
+      this.dialogTitle = dialogTitle;
       return this;
     }
 

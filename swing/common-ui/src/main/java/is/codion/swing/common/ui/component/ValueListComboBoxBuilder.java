@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
@@ -11,6 +11,12 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
  * @param <T> the value type
  */
 public interface ValueListComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<Item<T>>, ValueListComboBoxBuilder<T>> {
+
+  /**
+   * @param nullable true if a null value should be added to the model if missing
+   * @return this builder instance
+   */
+  ValueListComboBoxBuilder<T> nullable(boolean nullable);
 
   /**
    * @param popupWidth the required popup with

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.value.UpdateOn;
 
@@ -42,4 +42,10 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B lowerCase();
+
+  /**
+   * @param maximumLength the maximum text length
+   * @return this builder instance
+   */
+  B maximumLength(int maximumLength);
 }

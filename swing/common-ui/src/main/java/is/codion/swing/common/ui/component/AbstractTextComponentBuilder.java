@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.text.JTextComponent;
@@ -19,9 +18,10 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   protected int columns;
   protected boolean upperCase;
   protected boolean lowerCase;
+  protected int maximumLength;
 
-  AbstractTextComponentBuilder(final Property<T> attribute, final Value<T> value) {
-    super(attribute, value);
+  AbstractTextComponentBuilder(final Value<T> value) {
+    super(value);
   }
 
   @Override
@@ -53,6 +53,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   public B lowerCase() {
     this.lowerCase = true;
     this.upperCase = false;
+    return (B) this;
+  }
+
+  @Override
+  public B maximumLength(final int maximumLength) {
+    this.maximumLength = maximumLength;
     return (B) this;
   }
 }

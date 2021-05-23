@@ -1,8 +1,13 @@
 package is.codion.swing.common.ui.combobox;
 
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
+
 import javax.swing.JComboBox;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Code originally from: http://www.orbital-computer.de/JComboBox
@@ -28,6 +33,15 @@ public final class Completion {
    * @see Completion#autoComplete(JComboBox)
    */
   public static final String COMPLETION_MODE_NONE = "none";
+
+  /**
+   * Specifies whether maximum match or autocomplete is used for comboboxes,
+   * {@link Completion#COMPLETION_MODE_MAXIMUM_MATCH} for maximum match
+   * and {@link Completion#COMPLETION_MODE_AUTOCOMPLETE} for auto completion.<br>
+   * Value type:String<br>
+   * Default value: {@link Completion#COMPLETION_MODE_MAXIMUM_MATCH}
+   */
+  public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("codion.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
 
   /**
    * Enables maximum match on the given combobox
@@ -79,6 +93,27 @@ public final class Completion {
     comboBox.setEditable(true);
 
     return comboBox;
+  }
+
+  /**
+   * Adds completion to the given combo box
+   * @param comboBox the combo box
+   */
+  public static void addComboBoxCompletion(final JComboBox<?> comboBox) {
+    requireNonNull(comboBox);
+    final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
+    switch (completionMode) {
+      case COMPLETION_MODE_NONE:
+        break;
+      case COMPLETION_MODE_AUTOCOMPLETE:
+        autoComplete(comboBox);
+        break;
+      case COMPLETION_MODE_MAXIMUM_MATCH:
+        maximumMatch(comboBox);
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown completion mode: " + completionMode);
+    }
   }
 
   /**

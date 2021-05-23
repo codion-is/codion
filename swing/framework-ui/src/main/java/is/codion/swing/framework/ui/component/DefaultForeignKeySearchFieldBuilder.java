@@ -6,8 +6,8 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.ui.EntitySearchField;
 
@@ -27,9 +27,8 @@ final class DefaultForeignKeySearchFieldBuilder
   private boolean lowerCase;
   private Function<EntitySearchModel, EntitySearchField.SelectionProvider> selectionProviderFactory;
 
-  DefaultForeignKeySearchFieldBuilder(final ForeignKeyProperty attribute, final Value<Entity> value,
-                                      final EntitySearchModel searchModel) {
-    super(attribute, value);
+  DefaultForeignKeySearchFieldBuilder(final Value<Entity> value, final EntitySearchModel searchModel) {
+    super(value);
     this.searchModel = searchModel;
   }
 
@@ -82,13 +81,6 @@ final class DefaultForeignKeySearchFieldBuilder
   @Override
   protected void setTransferFocusOnEnter(final EntitySearchField component) {
     component.setTransferFocusOnEnter(true);
-  }
-
-  @Override
-  protected String getDescription(final EntitySearchField component) {
-    final String description = super.getDescription(component);
-
-    return description == null ? searchModel.getDescription() : description;
   }
 
   private static final class SearchUIValue extends AbstractValue<Entity> {

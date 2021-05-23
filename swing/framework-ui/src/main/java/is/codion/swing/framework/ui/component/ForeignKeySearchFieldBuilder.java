@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.framework.ui.EntitySearchField;
 
 import java.util.function.Function;
