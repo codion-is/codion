@@ -8,10 +8,8 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.JTextField;
 import java.time.temporal.Temporal;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * A factory for {@link ComponentBuilder}.
@@ -36,6 +34,8 @@ public final class ComponentBuilders {
 
   /**
    * @param value the value
+   * @param values the values
+   * @param <T> the value type
    * @return a builder for a component linked to the given value
    */
   public static <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Value<T> value,
@@ -45,18 +45,23 @@ public final class ComponentBuilders {
 
   /**
    * @param value the value
+   * @param valueClass the value class
+   * @param comboBoxModel the combo box model
+   * @param <T> the value type
    * @return a builder for a component linked to the given value
    */
-  public static <T> ComboBoxBuilder<T> comboBoxBuilder(final Value<T> value, final Class<T> typeClass, final ComboBoxModel<T> comboBoxModel) {
-    return new DefaultComboBoxBuilder<>(value, typeClass, comboBoxModel);
+  public static <T> ComboBoxBuilder<T> comboBoxBuilder(final Value<T> value, final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
+    return new DefaultComboBoxBuilder<>(value, valueClass, comboBoxModel);
   }
 
   /**
    * @param value the value
+   * @param temporalField the temporal field
+   * @param <T> the value type
    * @return a builder for a component linked to the given value
    */
-  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuiler(final Value<T> value, final Supplier<TemporalField<T>> supplier) {
-    return new DefaultTemporalInputPanelBuiler<>(value, supplier);
+  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuiler(final Value<T> value, final TemporalField<T> temporalField) {
+    return new DefaultTemporalInputPanelBuiler<>(value, temporalField);
   }
 
   /**
@@ -77,10 +82,12 @@ public final class ComponentBuilders {
 
   /**
    * @param value the value
+   * @param <T> the value type
+   * @param valueClass the value class
    * @return a builder for a component linked to the given value
    */
-  public static <T> TextFieldBuilder<T> textFieldBuilder(final Value<T> value, final Class<T> typeClass, final Supplier<JTextField> textFieldSupplier) {
-    return new DefaultTextFieldBuilder<>(value, typeClass, textFieldSupplier);
+  public static <T> TextFieldBuilder<T> textFieldBuilder(final Value<T> value, final Class<T> valueClass) {
+    return new DefaultTextFieldBuilder<>(value, valueClass);
   }
 
   /**

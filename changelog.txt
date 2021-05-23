@@ -7054,3 +7054,4 @@
   TextComponentBuilder added along with AbstractTextComponentBuilder, TextFieldBuilder and TextAreaBuilder changed accordingly
   AbstractComponentBuilder, major refactoring, no longer depends on domain
   ComponentBuilder moved to swing.common.ui.component
+  TextFieldBuilder now handles creating type specific text fields

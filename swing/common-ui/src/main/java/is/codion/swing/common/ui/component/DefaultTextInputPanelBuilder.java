@@ -65,7 +65,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final JTextField field = new DefaultTextFieldBuilder<>(value, String.class, JTextField::new)
+    final JTextField field = new DefaultTextFieldBuilder<>(value, String.class)
             .updateOn(updateOn)
             .columns(columns)
             .build();

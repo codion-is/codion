@@ -25,11 +25,6 @@ import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
 import is.codion.swing.common.ui.component.ValueListComboBoxBuilder;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -37,12 +32,7 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.temporal.Temporal;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -265,9 +255,11 @@ public final class EntityInputComponents {
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    final Supplier<TemporalField<T>> supplier = () -> (TemporalField<T>) createTextField(property, attribute.getTypeClass());
+    final TemporalField<T> temporalField = (TemporalField<T>) ComponentBuilders.textFieldBuilder(value, attribute.getTypeClass())
+            .dateTimePattern(property.getDateTimePattern())
+            .build();
 
-    return ComponentBuilders.temporalInputPanelBuiler(value, supplier)
+    return ComponentBuilders.temporalInputPanelBuiler(value, temporalField)
             .description(property.getDescription());
   }
 
@@ -311,10 +303,11 @@ public final class EntityInputComponents {
   public <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute, final Value<T> value) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    final Supplier<JTextField> textFieldSupplier = () -> createTextField(property, attribute.getTypeClass());
-
-    return ComponentBuilders.textFieldBuilder(value, attribute.getTypeClass(), textFieldSupplier)
+    return ComponentBuilders.textFieldBuilder(value, attribute.getTypeClass())
             .format(property.getFormat())
+            .dateTimePattern(property.getDateTimePattern())
+            .minimumValue(property.getMinimumValue())
+            .maximumValue(property.getMaximumValue())
             .description(property.getDescription());
   }
 
@@ -329,97 +322,5 @@ public final class EntityInputComponents {
 
     return ComponentBuilders.formattedTextFieldBuilder(value)
             .description(property.getDescription());
-  }
-
-  private static JTextField createTextField(final Property<?> property, final Class<?> valueClass) {
-    final Attribute<?> attribute = property.getAttribute();
-    if (valueClass.equals(Integer.class)) {
-      return initializeIntegerField((Property<Integer>) property);
-    }
-    if (valueClass.equals(Double.class)) {
-      return initializeDoubleField((Property<Double>) property);
-    }
-    if (valueClass.equals(BigDecimal.class)) {
-      return initializeBigDecimalField((Property<BigDecimal>) property);
-    }
-    if (valueClass.equals(Long.class)) {
-      return initializeLongField((Property<Long>) property);
-    }
-    if (Temporal.class.isAssignableFrom(valueClass)) {
-      return initializeTemporalField(property.getDateTimePattern(), (Class<Temporal>) attribute.getTypeClass());
-    }
-    if (valueClass.equals(String.class)) {
-      return initializeStringField(property.getMaximumLength());
-    }
-    if (valueClass.equals(Character.class)) {
-      return new JTextField(new SizedDocument(1), "", 1);
-    }
-
-    throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");
-  }
-
-  private static JTextField initializeStringField(final int maximumLength) {
-    final SizedDocument sizedDocument = new SizedDocument();
-    if (maximumLength > 0) {
-      sizedDocument.setMaximumLength(maximumLength);
-    }
-
-    return new JTextField(sizedDocument, "", 0);
-  }
-
-  private static DoubleField initializeDoubleField(final Property<Double> property) {
-    final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
-      field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
-    }
-
-    return field;
-  }
-
-  private static BigDecimalField initializeBigDecimalField(final Property<BigDecimal> property) {
-    final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
-      field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
-    }
-
-    return field;
-  }
-
-  private static IntegerField initializeIntegerField(final Property<Integer> property) {
-    final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
-      field.setRange(property.getMinimumValue(), property.getMaximumValue());
-    }
-
-    return field;
-  }
-
-  private static LongField initializeLongField(final Property<Long> property) {
-    final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
-    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
-      field.setRange(property.getMinimumValue(), property.getMaximumValue());
-    }
-
-    return field;
-  }
-
-  private static TemporalField<Temporal> initializeTemporalField(final String dateTimePattern,
-                                                                  final Class<Temporal> valueType) {
-    return TemporalField.builder(valueType)
-            .dateTimePattern(dateTimePattern)
-            .build();
-  }
-
-  private static NumberFormat cloneFormat(final NumberFormat format) {
-    final NumberFormat cloned = (NumberFormat) format.clone();
-    cloned.setGroupingUsed(format.isGroupingUsed());
-    cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
-    cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());
-    cloned.setMinimumFractionDigits(format.getMinimumFractionDigits());
-    cloned.setRoundingMode(format.getRoundingMode());
-    cloned.setCurrency(format.getCurrency());
-    cloned.setParseIntegerOnly(format.isParseIntegerOnly());
-
-    return cloned;
   }
 }

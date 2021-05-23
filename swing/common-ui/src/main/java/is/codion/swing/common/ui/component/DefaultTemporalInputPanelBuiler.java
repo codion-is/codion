@@ -11,7 +11,6 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import java.time.temporal.Temporal;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,15 +18,15 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
         extends AbstractComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>>
         implements TemporalInputPanelBuilder<T> {
 
-  private final Supplier<TemporalField<T>> temporalFieldSupplier;
+  private final TemporalField<T> temporalField;
 
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean calendarButton;
   private int columns;
 
-  DefaultTemporalInputPanelBuiler(final Value<T> value, final Supplier<TemporalField<T>> temporalFieldSupplier) {
+  DefaultTemporalInputPanelBuiler(final Value<T> value, final TemporalField<T> temporalField) {
     super(value);
-    this.temporalFieldSupplier = temporalFieldSupplier;
+    this.temporalField = requireNonNull(temporalField);
   }
 
   @Override
@@ -65,12 +64,10 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   private <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel() {
-    final TemporalField<Temporal> temporalField = (TemporalField<Temporal>) temporalFieldSupplier.get();
-
-    ComponentValues.temporalField(temporalField, updateOn).link((Value<Temporal>) value);
+    ComponentValues.temporalField(temporalField, updateOn).link(value);
 
     return (TemporalInputPanel<T>) TemporalInputPanel.builder()
-            .temporalField(temporalField)
+            .temporalField((TemporalField<Temporal>) temporalField)
             .calendarButton(calendarButton)
             .enabledState(enabledState)
             .build();

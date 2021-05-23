@@ -299,7 +299,7 @@ public final class ComponentValues {
    * @param format the format, if any
    * @param <C> the component type
    * @param <T> the value type
-   * @return
+   * @return the text field
    * @throws IllegalArgumentException in case the value class is not supported
    */
   public static <C extends JTextField, T> C textFieldValue(final C textField, final Class<T> valueClass,

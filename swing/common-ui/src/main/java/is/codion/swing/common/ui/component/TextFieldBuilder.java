@@ -41,4 +41,22 @@ public interface TextFieldBuilder<T> extends TextComponentBuilder<T, JTextField,
    * @return this builder instance
    */
   TextFieldBuilder<T> format(Format format);
+
+  /**
+   * @param dateTimePattern the date time pattern, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> dateTimePattern(String dateTimePattern);
+
+  /**
+   * @param minimumValue the minimum numerical value, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> minimumValue(Double minimumValue);
+
+  /**
+   * @param maximumValue the maximum numerical value, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> maximumValue(Double maximumValue);
 }
