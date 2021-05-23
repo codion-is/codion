@@ -20,9 +20,8 @@ public final class DialogsTest {
 
   @Test
   public void dialogBuilder() {
-    Dialogs.dialogBuilder()
+    Dialogs.componentDialogBuilder(new JLabel())
             .owner(new JLabel())
-            .component(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
             .modal(false)

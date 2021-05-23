@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.KeyEvents;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -27,10 +28,11 @@ public final class Dialogs {
   private Dialogs() {}
 
   /**
-   * @return a new {@link DialogBuilder} instance.
+   * @param component the component to display
+   * @return a new {@link ComponentDialogBuilder} instance.
    */
-  public static DialogBuilder dialogBuilder() {
-    return new DefaultDialogBuilder();
+  public static ComponentDialogBuilder componentDialogBuilder(final JComponent component) {
+    return new DefaultComponentDialogBuilder(component);
   }
 
   /**

@@ -1499,9 +1499,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     finally {
       hideWaitCursor(dialogParent);
     }
-    Dialogs.dialogBuilder()
+    Dialogs.componentDialogBuilder(dependenciesPanel)
             .owner(dialogParent)
-            .component(dependenciesPanel)
             .title(title)
             .show();
   }

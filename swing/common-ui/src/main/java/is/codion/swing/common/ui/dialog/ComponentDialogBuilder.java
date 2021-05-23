@@ -16,62 +16,56 @@ import java.awt.Window;
 /**
  * A builder for JDialog.
  */
-public interface DialogBuilder {
+public interface ComponentDialogBuilder {
 
   /**
    * @param owner the dialog owner
    * @return this DialogBuilder instance
    */
-  DialogBuilder owner(Window owner);
+  ComponentDialogBuilder owner(Window owner);
 
   /**
    * Sets the dialog owner as the parent window of the given component.
    * @param owner the dialog parent component
    * @return this DialogBuilder instance
    */
-  DialogBuilder owner(JComponent owner);
-
-  /**
-   * @param component the component to display
-   * @return this DialogBuilder instance
-   */
-  DialogBuilder component(JComponent component);
+  ComponentDialogBuilder owner(JComponent owner);
 
   /**
    * @param title the dialog title
    * @return this DialogBuilder instance
    */
-  DialogBuilder title(String title);
+  ComponentDialogBuilder title(String title);
 
   /**
    * @param icon the dialog icon
    * @return this DialogBuilder instance
    */
-  DialogBuilder icon(ImageIcon icon);
+  ComponentDialogBuilder icon(ImageIcon icon);
 
   /**
    * @param modal true if the dialog should be modal
    * @return this DialogBuilder instance
    */
-  DialogBuilder modal(boolean modal);
+  ComponentDialogBuilder modal(boolean modal);
 
   /**
    * @param resizable true if the dialog should be resizable
    * @return this DialogBuilder instance
    */
-  DialogBuilder resizable(boolean resizable);
+  ComponentDialogBuilder resizable(boolean resizable);
 
   /**
    * @param enterAction the action to associate with the ENTER key
    * @return this DialogBuilder instance
    */
-  DialogBuilder enterAction(Action enterAction);
+  ComponentDialogBuilder enterAction(Action enterAction);
 
   /**
    * @param onClosedAction this action will be registered as a windowClosed action for the dialog
    * @return this DialogBuilder instance
    */
-  DialogBuilder onClosedAction(Action onClosedAction);
+  ComponentDialogBuilder onClosedAction(Action onClosedAction);
 
   /**
    * Sets the Event which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
@@ -79,7 +73,7 @@ public interface DialogBuilder {
    * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
    * @return this DialogBuilder instance
    */
-  DialogBuilder closeEvent(EventObserver<?> closeEvent);
+  ComponentDialogBuilder closeEvent(EventObserver<?> closeEvent);
 
   /**
    * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
@@ -87,14 +81,14 @@ public interface DialogBuilder {
    * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
    * @return this DialogBuilder instance
    */
-  DialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener);
+  ComponentDialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener);
 
   /**
    * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,
    * has no effect if a <code>closeEvent</code> is specified
    * @return this DialogBuilder instance
    */
-  DialogBuilder disposeOnEscape(boolean disposeOnEscape);
+  ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape);
 
   /**
    * @return a new JDialog instance based on this builder.

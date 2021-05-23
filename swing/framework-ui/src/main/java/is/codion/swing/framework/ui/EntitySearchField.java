@@ -337,9 +337,8 @@ public final class EntitySearchField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(Control.builder(() -> Dialogs.dialogBuilder()
+    popupMenu.add(Control.builder(() -> Dialogs.componentDialogBuilder(settingsPanel)
                     .owner(EntitySearchField.this)
-                    .component(settingsPanel)
                     .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
                     .show())
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
@@ -374,9 +373,8 @@ public final class EntitySearchField extends JTextField {
     final JPanel messagePanel = new JPanel(Layouts.borderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(buttonPanel, BorderLayout.SOUTH);
-    Dialogs.dialogBuilder()
+    Dialogs.componentDialogBuilder(messagePanel)
             .owner(this)
-            .component(messagePanel)
             .title(SwingMessages.get("OptionPane.messageDialogTitle"))
             .closeEvent(closeEvent)
             .show();

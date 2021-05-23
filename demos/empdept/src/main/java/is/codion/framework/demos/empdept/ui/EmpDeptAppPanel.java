@@ -64,9 +64,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             new EntityObjectMapper(getModel().getEntities()).deserializeEntities(
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider());
 
-    Dialogs.dialogBuilder()
+    Dialogs.componentDialogBuilder(tablePanel)
             .owner(this)
-            .component(tablePanel)
             .title("Import")
             .show();
   }
