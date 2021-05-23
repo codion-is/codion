@@ -9,21 +9,24 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
+import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
@@ -35,6 +38,7 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 
 /**
  * A dialog for searching for and selecting one or more entities from a table model.
+ * @see #builder(SwingEntityTableModel)
  */
 public final class EntitySelectionDialog extends JDialog {
 
@@ -55,16 +59,12 @@ public final class EntitySelectionDialog extends JDialog {
           .mnemonic(FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0))
           .build();
 
-  /**
-   * Instantiates a JDialog for searching for and selecting one or more entities.
-   * @param tableModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
-   * @param preferredSize the preferred size of the dialog, may be null
-   */
-  public EntitySelectionDialog(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                               final String dialogTitle, final Dimension preferredSize) {
-    super(dialogOwner instanceof Window ? (Window) dialogOwner : getParentWindow(dialogOwner), dialogTitle);
+  private EntitySelectionDialog(final SwingEntityTableModel tableModel, final Window owner, final String title,
+                                final ImageIcon icon, final Dimension preferredSize, final boolean singleSelection) {
+    super(owner, title);
+    if (icon != null) {
+      setIconImage(icon.getImage());
+    }
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
     if (tableModel.hasEditModel()) {
@@ -86,27 +86,43 @@ public final class EntitySelectionDialog extends JDialog {
     add(entityTablePanel, BorderLayout.CENTER);
     add(buttonPanel, BorderLayout.SOUTH);
     pack();
-    setLocationRelativeTo(dialogOwner);
+    setLocationRelativeTo(owner);
     setModal(true);
     setResizable(true);
-  }
-
-  public void setSingleSelection(final boolean singleSelection) {
     entityTablePanel.getTable().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
   }
 
   /**
-   * Displays this dialog.
-   * @return the selected entities
-   * @throws CancelException in case no entities were selected
+   * Creates a new {@link Builder} instance.
+   * @param tableModel the table model on which to base the table panel
+   * @return a new builder instance
    */
-  public List<Entity> selectEntities() {
-    setVisible(true);
-    if (selectedEntities.isEmpty()) {
-      throw new CancelException();
-    }
+  public static Builder builder(final SwingEntityTableModel tableModel) {
+    return new DefaultBuilder(requireNonNull(tableModel));
+  }
 
-    return selectedEntities;
+  /**
+   * A builder for {@link EntitySelectionDialog}.
+   */
+  public interface Builder extends DialogBuilder<Builder> {
+
+    /**
+     * @param preferredSize the preferred dialog size
+     * @return this builder instance
+     */
+    Builder preferredSize(Dimension preferredSize);
+
+    /**
+     * @return a List containing the selected entities
+     * @throws CancelException in case the user cancels the operation
+     */
+    List<Entity> select();
+
+    /**
+     * Displays a entity table in a dialog for selecting a single entity
+     * @return the selected entity or {@link Optional#empty()} if none was selected
+     */
+    Optional<Entity> selectSingle();
   }
 
   private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel, final Dimension preferredSize) {
@@ -145,62 +161,38 @@ public final class EntitySelectionDialog extends JDialog {
     }
   }
 
-  /**
-   * Displays a entity table in a dialog for selecting a single entity
-   * @param tableModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
-   * @return the selected entity or null if none was selected
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Entity selectEntity(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                                    final String dialogTitle) {
-    return selectEntity(tableModel, dialogOwner, dialogTitle, null);
+  private List<Entity> selectEntities() {
+    setVisible(true);
+
+    return selectedEntities;
   }
 
-  /**
-   * Displays a entity table in a dialog for selecting a single entity
-   * @param tableModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
-   * @param preferredSize the preferred dialog size
-   * @return the selected entity or null if none was selected
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Entity selectEntity(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                                    final String dialogTitle, final Dimension preferredSize) {
-    final EntitySelectionDialog dialog = new EntitySelectionDialog(tableModel, dialogOwner, dialogTitle, preferredSize);
-    dialog.setSingleSelection(true);
+  private static final class DefaultBuilder extends AbstractDialogBuilder<Builder> implements Builder {
 
-    final List<Entity> entities = dialog.selectEntities();
+    private final SwingEntityTableModel tableModel;
 
-    return entities.isEmpty() ? null : entities.get(0);
-  }
+    private Dimension preferredSize;
 
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param tableModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
-   * @return a List containing the selected entities
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static List<Entity> selectEntities(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                                            final String dialogTitle) {
-    return selectEntities(tableModel, dialogOwner, dialogTitle, null);
-  }
+    private DefaultBuilder(final SwingEntityTableModel tableModel) {
+      this.tableModel = tableModel;
+    }
 
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param tableModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
-   * @param preferredSize the preferred size of the dialog
-   * @return a List containing the selected entities
-   * @throws CancelException in case the user cancels the operation or selects no entities
-   */
-  public static List<Entity> selectEntities(final SwingEntityTableModel tableModel, final Container dialogOwner,
-                                            final String dialogTitle, final Dimension preferredSize) {
-    return new EntitySelectionDialog(tableModel, dialogOwner, dialogTitle, preferredSize).selectEntities();
+    @Override
+    public EntitySelectionDialog.Builder preferredSize(final Dimension preferredSize) {
+      this.preferredSize = requireNonNull(preferredSize);
+      return this;
+    }
+
+    @Override
+    public List<Entity> select() {
+      return new EntitySelectionDialog(tableModel, owner, title, icon, preferredSize, false).selectEntities();
+    }
+
+    @Override
+    public Optional<Entity> selectSingle() {
+      final List<Entity> entities = new EntitySelectionDialog(tableModel, owner, title, icon, preferredSize, true).selectEntities();
+
+      return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
+    }
   }
 }

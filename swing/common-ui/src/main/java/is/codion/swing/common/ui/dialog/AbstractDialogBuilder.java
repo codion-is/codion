@@ -9,7 +9,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import java.awt.Window;
 
-class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
+/**
+ * A base class for Dialog builders.
+ * @param <B> the builder type
+ */
+public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
 
   protected Window owner;
   protected String title;

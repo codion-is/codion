@@ -41,4 +41,16 @@ public interface TextAreaBuilder extends ComponentBuilder<String, JTextArea, Tex
    * @return this builder instance
    */
   TextAreaBuilder wrapStyleWord(boolean wrapStyleWord);
+
+  /**
+   * Makes the text area convert all lower case input to upper case
+   * @return this builder instance
+   */
+  TextAreaBuilder upperCase();
+
+  /**
+   * Makes the text area convert all upper case input to lower case
+   * @return this builder instance
+   */
+  TextAreaBuilder lowerCase();
 }

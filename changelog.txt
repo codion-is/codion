@@ -7080,3 +7080,5 @@
   Dialogs.dialogBuilder() renamed componentDialogBuilder(), component parameter added
   DialogBuilder base interface added, inherited
   ToggleControl.builder() now takes value and state parameter
+  EntitySelectionDialog now builder based, AbstractDialogBuilder now public
+  TextAreaBuilder.upperCase() and lowerCase() added
