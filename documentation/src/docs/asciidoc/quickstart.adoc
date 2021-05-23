@@ -51,7 +51,7 @@ The most used and tested DBMS modules are:
 |===
 
 == Logging
-Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to the classpath. If you use Logback, Log4J og Java Util Logging you can use one of the logging-proxy plugins below which will pull in the required dependencies and provide a main-menu action in the client for setting the logging level.
+Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to the classpath. If you use Logback, Log4J or Java Util Logging you can use one of the logging-proxy plugins below which will pull in the required dependencies and provide a main-menu action in the client for setting the logging level.
 
 [cols="1,4"]
 |===
@@ -69,8 +69,6 @@ dependencies {
     //Swing client UI module
     implementation 'is.codion.{codion-jdk}:codion-swing-framework-ui:{codion-version}'
 
-    //JSON for persisting client preferences
-    runtimeOnly 'is.codion.{codion-jdk}:codion-plugin-json:{codion-version}'
     //Local JDBC connection module
     runtimeOnly 'is.codion.{codion-jdk}:codion-framework-db-local:{codion-version}'
     //H2 DBMS module
@@ -83,8 +81,8 @@ dependencies {
     //Domain model unit testing module
     testImplementation 'is.codion.{codion-jdk}:codion-framework-domain-test:{codion-version}'
     //JUnit 5
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 }
 ----
 

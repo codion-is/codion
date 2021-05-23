@@ -129,7 +129,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, List<T> arguments) throws RemoteException, DatabaseException;
 
   /**
-   * Inserts the given entity, returning the primary key of the inserted entity.
+   * Inserts the given entity, returning the primary key.
    * Performs a commit unless a transaction is open.
    * @param entity the entity to insert
    * @return the primary key of the inserted entity
@@ -139,7 +139,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Key insert(Entity entity) throws RemoteException, DatabaseException;
 
   /**
-   * Inserts the given entities, returning a list containing the primary keys of the inserted entities
+   * Inserts the given entities, returning a list containing the primary keys
    * in the same order as they were received.
    * If the primary key value of a entity is specified the id generation is disregarded.
    * Performs a commit unless a transaction is open.
@@ -151,7 +151,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   List<Key> insert(List<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
-   * Updates the given entity according to its properties. Returns the updated entity.
+   * Updates the given entity based on its attribute values. Returns the updated entity.
    * Throws an exception if the given entity is unmodified.
    * Performs a commit unless a transaction is open.
    * @param entity the entity to update
@@ -164,7 +164,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Entity update(Entity entity) throws RemoteException, DatabaseException;
 
   /**
-   * Updates the given entities according to their properties.
+   * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to update
    * @return the updated entities
@@ -175,7 +175,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   List<Entity> update(List<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
-   * Performs an update according to the given condition, updating the properties found
+   * Performs an update based on the given condition, updating the attributes found
    * in the {@link UpdateCondition#getAttributeValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
@@ -267,8 +267,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Entity selectSingle(Key key) throws RemoteException, DatabaseException;
 
   /**
-   * Selects a single entity according to the specified condition, throws a DatabaseException
-   * if the condition results in more than one entity
+   * Selects a single entity based on the specified condition
    * @param condition the condition specifying the entity to select
    * @return the entities according to the given condition
    * @throws DatabaseException if an exception occurs
@@ -279,47 +278,47 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Entity selectSingle(Condition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Returns entities according to {@code keys}
+   * Selects entities based on the given {@code keys}
    * @param keys the keys used in the condition
-   * @return entities according to {@code keys}
+   * @return entities based on {@code keys}
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
   List<Entity> select(List<Key> keys) throws RemoteException, DatabaseException;
 
   /**
-   * Selects entities according to the specified condition
+   * Selects entities based on the given condition
    * @param condition the condition specifying which entities to select
-   * @return entities according to the given condition
+   * @return entities based to the given condition
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
   List<Entity> select(Condition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Selects entities according to one attribute, using {@code value} as a condition
+   * Selects entities based on a single attribute condition, using {@code values} OR'ed together
    * @param attribute the condition attribute
    * @param value the value to use as condition
    * @param <T> the value type
-   * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
+   * @return entities of the type {@code entityType} based on {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
   <T> List<Entity> select(Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
-   * Selects entities according to one attribute, using {@code values} OR'ed together as a condition
+   * Selects entities based on a single attribute condition, using {@code values} OR'ed together
    * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
-   * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
+   * @return entities of the type {@code entityType} based on {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
   <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
 
   /**
-   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityTypes
+   * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
    * @param entities the entities for which to retrieve dependencies
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a db exception
@@ -328,7 +327,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Map<EntityType<?>, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
-   * Selects the number of rows returned according to the given condition
+   * Selects the number of rows returned based on the given condition
    * @param condition the search condition
    * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a db exception

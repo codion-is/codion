@@ -40,15 +40,13 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    Condition condition =
-            condition(Artist.NAME).equalTo("The %");
+    Condition condition = condition(Artist.NAME).equalTo("The %");
 
     List<Entity> artists = connection.select(condition);
 
-    condition =
-            condition(Album.ARTIST_FK).equalTo(artists)
-                    .and(condition(Album.TITLE).notEqualTo("%live%")
-                            .caseSensitive(false));
+    condition = condition(Album.ARTIST_FK).equalTo(artists)
+            .and(condition(Album.TITLE).notEqualTo("%live%")
+                    .caseSensitive(false));
 
     List<Entity> nonLiveAlbums = connection.select(condition);
     // end::selectCondition[]
@@ -155,8 +153,9 @@ public final class EntityConnectionDemo {
 
   static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
-    List<String> customerUsStates = connection.select(Customer.STATE,
-            condition(Customer.COUNTRY).equalTo("USA"));
+    List<String> customerUsStates =
+            connection.select(Customer.STATE,
+                    condition(Customer.COUNTRY).equalTo("USA"));
     // end::selectValues[]
   }
 
