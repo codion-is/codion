@@ -7,7 +7,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.Components;
 
 import javax.swing.JComponent;
@@ -17,7 +16,6 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
 
-  protected final Property<T> property;
   protected final Value<T> value;
 
   private final Event<C> buildEvent = Event.event();
@@ -26,10 +24,10 @@ abstract class AbstractComponentBuilder<T, C extends JComponent, B extends Compo
   private int preferredHeight;
   private int preferredWidth;
   private boolean transferFocusOnEnter;
+  protected String description;
   protected StateObserver enabledState;
 
-  protected AbstractComponentBuilder(final Property<T> attribute, final Value<T> value) {
-    this.property = requireNonNull(attribute);
+  protected AbstractComponentBuilder(final Value<T> value) {
     this.value = requireNonNull(value);
   }
 
@@ -72,6 +70,12 @@ abstract class AbstractComponentBuilder<T, C extends JComponent, B extends Compo
   }
 
   @Override
+  public B description(final String description) {
+    this.description = description;
+    return (B) this;
+  }
+
+  @Override
   public final B addBuildListener(final EventDataListener<C> listener) {
     buildEvent.addDataListener(listener);
     return (B) this;
@@ -87,7 +91,12 @@ abstract class AbstractComponentBuilder<T, C extends JComponent, B extends Compo
       component.setFocusable(false);
     }
     setPreferredSize(component);
-    setDescriptionAndEnabledState(component);
+    if (enabledState != null) {
+      Components.linkToEnabledState(enabledState, component);
+    }
+    if (description != null) {
+      component.setToolTipText(description);
+    }
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }
@@ -110,14 +119,6 @@ abstract class AbstractComponentBuilder<T, C extends JComponent, B extends Compo
     Components.transferFocusOnEnter(component);
   }
 
-  /**
-   * @param component the component
-   * @return a description for the component
-   */
-  protected String getDescription(final C component) {
-    return property.getDescription();
-  }
-
   private void setPreferredSize(final C component) {
     if (preferredHeight > 0) {
       Components.setPreferredHeight(component, preferredHeight);
@@ -125,16 +126,5 @@ abstract class AbstractComponentBuilder<T, C extends JComponent, B extends Compo
     if (preferredWidth > 0) {
       Components.setPreferredWidth(component, preferredWidth);
     }
-  }
-
-  private C setDescriptionAndEnabledState(final C component) {
-    if (property.getDescription() != null) {
-      component.setToolTipText(getDescription(component));
-    }
-    if (enabledState != null) {
-      Components.linkToEnabledState(enabledState, component);
-    }
-
-    return component;
   }
 }

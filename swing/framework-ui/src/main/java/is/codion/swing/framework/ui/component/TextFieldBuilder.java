@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui.component;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
+import java.text.Format;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -34,4 +35,10 @@ public interface TextFieldBuilder<T> extends TextComponentBuilder<T, JTextField,
    * @return this builder instance
    */
   TextFieldBuilder<T> lookupDialog(Supplier<Collection<T>> valueSupplier);
+
+  /**
+   * @param format the format
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> format(Format format);
 }

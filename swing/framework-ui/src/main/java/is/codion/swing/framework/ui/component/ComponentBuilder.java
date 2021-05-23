@@ -48,6 +48,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B transferFocusOnEnter(boolean transferFocusOnEnter);
 
   /**
+   * @param description the description
+   * @return this builder instance
+   */
+  B description(String description);
+
+  /**
    * @param enabledState the state controlling the component enabled status
    * @return this builder instance
    */

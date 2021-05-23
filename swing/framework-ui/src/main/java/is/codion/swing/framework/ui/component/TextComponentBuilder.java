@@ -42,4 +42,10 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B lowerCase();
+
+  /**
+   * @param maximumLength the maximum text length
+   * @return this builder instance
+   */
+  B maximumLength(int maximumLength);
 }

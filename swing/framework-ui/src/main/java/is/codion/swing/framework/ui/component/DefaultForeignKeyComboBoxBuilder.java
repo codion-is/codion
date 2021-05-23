@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -20,9 +19,8 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
   private final SwingEntityComboBoxModel comboBoxModel;
   private int popupWidth;
 
-  DefaultForeignKeyComboBoxBuilder(final ForeignKeyProperty foreignKey, final Value<Entity> value,
-                                   final SwingEntityComboBoxModel comboBoxModel) {
-    super(foreignKey, value);
+  DefaultForeignKeyComboBoxBuilder(final Value<Entity> value, final SwingEntityComboBoxModel comboBoxModel) {
+    super(value);
     this.comboBoxModel = comboBoxModel;
     preferredHeight(TextFields.getPreferredTextFieldHeight());
   }

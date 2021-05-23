@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
@@ -19,19 +18,21 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
         implements ComboBoxBuilder<T> {
 
   private final ComboBoxModel<T> comboBoxModel;
+  private final Class<T> valueClass;
+
   private boolean editable = false;
 
-  DefaultComboBoxBuilder(final Property<T> attribute, final Value<T> value,
-                         final ComboBoxModel<T> comboBoxModel) {
-    super(attribute, value);
+  DefaultComboBoxBuilder(final Value<T> value, final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
+    super(value);
+    this.valueClass = valueClass;
     this.comboBoxModel = comboBoxModel;
     preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
   @Override
   public ComboBoxBuilder<T> editable(final boolean editable) {
-    if (editable && !property.getAttribute().isString()) {
-      throw new IllegalArgumentException("Editable attribute ComboBox is only implemented for String properties");
+    if (editable && !valueClass.equals(String.class)) {
+      throw new IllegalArgumentException("Editable ComboBox is only supported for String values");
     }
     this.editable = editable;
     return this;

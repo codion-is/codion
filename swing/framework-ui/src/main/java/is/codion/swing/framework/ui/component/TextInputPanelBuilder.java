@@ -36,4 +36,16 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
    * @return this builder instance
    */
   TextInputPanelBuilder textAreaSize(Dimension textAreaSize);
+
+  /**
+   * @param maximumLength the maximum text length
+   * @return this builder instance
+   */
+  TextInputPanelBuilder maximumLength(int maximumLength);
+
+  /**
+   * @param caption the caption
+   * @return this builder instance
+   */
+  TextInputPanelBuilder caption(String caption);
 }

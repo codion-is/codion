@@ -7052,3 +7052,4 @@
   EntitySelectionDialog now builder based, AbstractDialogBuilder now public
   TextAreaBuilder.upperCase() and lowerCase() added
   TextComponentBuilder added along with AbstractTextComponentBuilder, TextFieldBuilder and TextAreaBuilder changed accordingly
+  AbstractComponentBuilder, major refactoring, no longer depends on domain

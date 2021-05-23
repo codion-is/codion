@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
@@ -17,8 +16,8 @@ import javax.swing.JComponent;
 final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boolean, SteppedComboBox<Item<Boolean>>, BooleanComboBoxBuilder>
         implements BooleanComboBoxBuilder {
 
-  DefaultBooleanComboBoxBuilder(final Property<Boolean> attribute, final Value<Boolean> value) {
-    super(attribute, value);
+  DefaultBooleanComboBoxBuilder(final Value<Boolean> value) {
+    super(value);
     preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 

@@ -11,17 +11,29 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.SizedDocument;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.temporal.Temporal;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -142,7 +154,12 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
-    return new DefaultCheckBoxBuilder(entityDefinition.getProperty(attribute), value);
+    final Property<Boolean> property = entityDefinition.getProperty(attribute);
+
+    return new DefaultCheckBoxBuilder(value)
+            .description(property.getDescription())
+            .nullable(property.isNullable())
+            .caption(property.getCaption());
   }
 
   /**
@@ -152,7 +169,10 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
-    return new DefaultBooleanComboBoxBuilder(entityDefinition.getProperty(attribute), value);
+    final Property<Boolean> property = entityDefinition.getProperty(attribute);
+
+    return new DefaultBooleanComboBoxBuilder(value)
+            .description(property.getDescription());
   }
 
   /**
@@ -164,7 +184,10 @@ public final class EntityInputComponents {
    */
   public ForeignKeyComboBoxBuilder foreignKeyComboBoxBuilder(final ForeignKey foreignKey, final Value<Entity> value,
                                                              final SwingEntityComboBoxModel comboBoxModel) {
-    return new DefaultForeignKeyComboBoxBuilder(entityDefinition.getForeignKeyProperty(foreignKey), value, comboBoxModel);
+    final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+
+    return new DefaultForeignKeyComboBoxBuilder(value, comboBoxModel)
+            .description(foreignKeyProperty.getDescription());
   }
 
   /**
@@ -176,7 +199,10 @@ public final class EntityInputComponents {
    */
   public ForeignKeySearchFieldBuilder foreignKeySearchFieldBuilder(final ForeignKey foreignKey, final Value<Entity> value,
                                                                    final EntitySearchModel searchModel) {
-    return new DefaultForeignKeySearchFieldBuilder(entityDefinition.getForeignKeyProperty(foreignKey), value, searchModel);
+    final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+
+    return new DefaultForeignKeySearchFieldBuilder(value, searchModel)
+            .description(foreignKeyProperty.getDescription() == null ? searchModel.getDescription() : foreignKeyProperty.getDescription());
   }
 
   /**
@@ -186,7 +212,10 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public ForeignKeyFieldBuilder foreignKeyFieldBuilder(final ForeignKey foreignKey, final Value<Entity> value) {
-    return new DefaultForeignKeyFieldBuilder(entityDefinition.getForeignKeyProperty(foreignKey), value);
+    final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+
+    return new DefaultForeignKeyFieldBuilder(value)
+            .description(foreignKeyProperty.getDescription());
   }
 
   /**
@@ -197,7 +226,14 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute, final Value<T> value) {
-    return new DefaultValueListComboBoxBuilder<>(entityDefinition.getProperty(attribute), value);
+    final Property<T> property = entityDefinition.getProperty(attribute);
+    if (!(property instanceof ValueListProperty)) {
+      throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
+    }
+
+    return new DefaultValueListComboBoxBuilder<>(((ValueListProperty<T>) property).getValues(), value)
+            .description(property.getDescription())
+            .nullable(property.isNullable());
   }
 
   /**
@@ -210,7 +246,10 @@ public final class EntityInputComponents {
    */
   public <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute, final Value<T> value,
                                                 final ComboBoxModel<T> comboBoxModel) {
-    return new DefaultComboBoxBuilder<>(entityDefinition.getProperty(attribute), value, comboBoxModel);
+    final Property<T> property = entityDefinition.getProperty(attribute);
+
+    return new DefaultComboBoxBuilder<>(value, attribute.getTypeClass(), comboBoxModel)
+            .description(property.getDescription());
   }
 
   /**
@@ -221,7 +260,15 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute, final Value<T> value) {
-    return new DefaultTemporalInputPanelBuiler<>(entityDefinition.getProperty(attribute), value);
+    if (!attribute.isTemporal()) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
+    }
+    final Property<T> property = entityDefinition.getProperty(attribute);
+
+    final Supplier<TemporalField<T>> supplier = () -> (TemporalField<T>) createTextField(property, attribute.getTypeClass());
+
+    return new DefaultTemporalInputPanelBuiler<>(value, supplier)
+            .description(property.getDescription());
   }
 
   /**
@@ -231,7 +278,11 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute, final Value<String> value) {
-    return new DefaultTextInputPanelBuilder(entityDefinition.getProperty(attribute), value);
+    final Property<String> property = entityDefinition.getProperty(attribute);
+
+    return new DefaultTextInputPanelBuilder(value)
+            .description(property.getDescription())
+            .caption(property.getCaption());
   }
 
   /**
@@ -241,7 +292,13 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public TextAreaBuilder textAreaBuilder(final Attribute<String> attribute, final Value<String> value) {
-    return new DefaultTextAreaBuilder(entityDefinition.getProperty(attribute), value);
+    final Property<String> property = entityDefinition.getProperty(attribute);
+    if (!attribute.isString()) {
+      throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
+    }
+
+    return new DefaultTextAreaBuilder(value)
+            .description(property.getDescription());
   }
 
   /**
@@ -252,7 +309,13 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute, final Value<T> value) {
-    return new DefaultTextFieldBuilder<>(entityDefinition.getProperty(attribute), value);
+    final Property<T> property = entityDefinition.getProperty(attribute);
+
+    final Supplier<JTextField> textFieldSupplier = () -> createTextField(property, attribute.getTypeClass());
+
+    return new DefaultTextFieldBuilder<>(value, attribute.getTypeClass(), textFieldSupplier)
+            .format(property.getFormat())
+            .description(property.getDescription());
   }
 
   /**
@@ -262,6 +325,101 @@ public final class EntityInputComponents {
    * @return a builder
    */
   public FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute, final Value<String> value) {
-    return new DefaultFormattedTextFieldBuilder(entityDefinition.getProperty(attribute), value);
+    final Property<String> property = entityDefinition.getProperty(attribute);
+
+    return new DefaultFormattedTextFieldBuilder(value)
+            .description(property.getDescription());
+  }
+
+  private static JTextField createTextField(final Property<?> property, final Class<?> valueClass) {
+    final Attribute<?> attribute = property.getAttribute();
+    if (valueClass.equals(Integer.class)) {
+      return initializeIntegerField((Property<Integer>) property);
+    }
+    if (valueClass.equals(Double.class)) {
+      return initializeDoubleField((Property<Double>) property);
+    }
+    if (valueClass.equals(BigDecimal.class)) {
+      return initializeBigDecimalField((Property<BigDecimal>) property);
+    }
+    if (valueClass.equals(Long.class)) {
+      return initializeLongField((Property<Long>) property);
+    }
+    if (Temporal.class.isAssignableFrom(valueClass)) {
+      return initializeTemporalField(property.getDateTimePattern(), (Class<Temporal>) attribute.getTypeClass());
+    }
+    if (valueClass.equals(String.class)) {
+      return initializeStringField(property.getMaximumLength());
+    }
+    if (valueClass.equals(Character.class)) {
+      return new JTextField(new SizedDocument(1), "", 1);
+    }
+
+    throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");
+  }
+
+  private static JTextField initializeStringField(final int maximumLength) {
+    final SizedDocument sizedDocument = new SizedDocument();
+    if (maximumLength > 0) {
+      sizedDocument.setMaximumLength(maximumLength);
+    }
+
+    return new JTextField(sizedDocument, "", 0);
+  }
+
+  private static DoubleField initializeDoubleField(final Property<Double> property) {
+    final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
+    }
+
+    return field;
+  }
+
+  private static BigDecimalField initializeBigDecimalField(final Property<BigDecimal> property) {
+    final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
+    }
+
+    return field;
+  }
+
+  private static IntegerField initializeIntegerField(final Property<Integer> property) {
+    final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(property.getMinimumValue(), property.getMaximumValue());
+    }
+
+    return field;
+  }
+
+  private static LongField initializeLongField(final Property<Long> property) {
+    final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(property.getMinimumValue(), property.getMaximumValue());
+    }
+
+    return field;
+  }
+
+  private static TemporalField<Temporal> initializeTemporalField(final String dateTimePattern,
+                                                                  final Class<Temporal> valueType) {
+    return TemporalField.builder(valueType)
+            .dateTimePattern(dateTimePattern)
+            .build();
+  }
+
+  private static NumberFormat cloneFormat(final NumberFormat format) {
+    final NumberFormat cloned = (NumberFormat) format.clone();
+    cloned.setGroupingUsed(format.isGroupingUsed());
+    cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
+    cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());
+    cloned.setMinimumFractionDigits(format.getMinimumFractionDigits());
+    cloned.setRoundingMode(format.getRoundingMode());
+    cloned.setCurrency(format.getCurrency());
+    cloned.setParseIntegerOnly(format.isParseIntegerOnly());
+
+    return cloned;
   }
 }

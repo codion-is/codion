@@ -13,6 +13,12 @@ import javax.swing.JCheckBox;
 public interface CheckBoxBuilder extends ComponentBuilder<Boolean, JCheckBox, CheckBoxBuilder> {
 
   /**
+   * @param caption the caption
+   * @return this builder instance
+   */
+  CheckBoxBuilder caption(String caption);
+
+  /**
    * @param includeCaption specifies whether a caption should be included
    * @return this builder instance
    */

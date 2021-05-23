@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -21,11 +20,8 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
 
-  DefaultTextAreaBuilder(final Property<String> attribute, final Value<String> value) {
-    super(attribute, value);
-    if (!property.getAttribute().isString()) {
-      throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
-    }
+  DefaultTextAreaBuilder(final Value<String> value) {
+    super(value);
   }
 
   @Override
@@ -58,9 +54,9 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
     if (lowerCase) {
       TextFields.lowerCase(textArea);
     }
-    if (property.getMaximumLength() > 0) {
+    if (maximumLength > 0) {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(
-              parsingDocumentFilter(stringLengthValidator(property.getMaximumLength())));
+              parsingDocumentFilter(stringLengthValidator(maximumLength)));
     }
     ComponentValues.textComponent(textArea, null, updateOn).link(value);
 

@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -24,8 +23,8 @@ final class DefaultFormattedTextFieldBuilder
   private int columns;
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-  DefaultFormattedTextFieldBuilder(final Property<String> attribute, final Value<String> value) {
-    super(attribute, value);
+  DefaultFormattedTextFieldBuilder(final Value<String> value) {
+    super(value);
   }
 
   @Override
