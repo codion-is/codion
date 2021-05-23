@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 

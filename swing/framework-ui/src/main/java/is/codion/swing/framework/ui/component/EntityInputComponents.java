@@ -15,7 +15,16 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
+import is.codion.swing.common.ui.component.CheckBoxBuilder;
+import is.codion.swing.common.ui.component.ComboBoxBuilder;
+import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
+import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
+import is.codion.swing.common.ui.component.TextAreaBuilder;
+import is.codion.swing.common.ui.component.TextFieldBuilder;
+import is.codion.swing.common.ui.component.TextInputPanelBuilder;
+import is.codion.swing.common.ui.component.ValueListComboBoxBuilder;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -41,15 +50,6 @@ import static java.util.Objects.requireNonNull;
  * Provides input components for editing entities.
  */
 public final class EntityInputComponents {
-
-  /**
-   * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link Completion#COMPLETION_MODE_MAXIMUM_MATCH} for maximum match
-   * and {@link Completion#COMPLETION_MODE_AUTOCOMPLETE} for auto completion.<br>
-   * Value type:String<br>
-   * Default value: {@link Completion#COMPLETION_MODE_MAXIMUM_MATCH}
-   */
-  public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("codion.swing.comboBoxCompletionMode", Completion.COMPLETION_MODE_MAXIMUM_MATCH);
 
   /**
    * Specifies the default horizontal alignment used in labels<br>
@@ -156,7 +156,7 @@ public final class EntityInputComponents {
   public CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return new DefaultCheckBoxBuilder(value)
+    return ComponentBuilders.checkBoxBuilder(value)
             .description(property.getDescription())
             .nullable(property.isNullable())
             .caption(property.getCaption());
@@ -171,7 +171,7 @@ public final class EntityInputComponents {
   public BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return new DefaultBooleanComboBoxBuilder(value)
+    return ComponentBuilders.booleanComboBoxBuilder(value)
             .description(property.getDescription());
   }
 
@@ -231,7 +231,7 @@ public final class EntityInputComponents {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
     }
 
-    return new DefaultValueListComboBoxBuilder<>(((ValueListProperty<T>) property).getValues(), value)
+    return ComponentBuilders.valueListComboBoxBuilder(value, ((ValueListProperty<T>) property).getValues())
             .description(property.getDescription())
             .nullable(property.isNullable());
   }
@@ -248,7 +248,7 @@ public final class EntityInputComponents {
                                                 final ComboBoxModel<T> comboBoxModel) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return new DefaultComboBoxBuilder<>(value, attribute.getTypeClass(), comboBoxModel)
+    return ComponentBuilders.comboBoxBuilder(value, attribute.getTypeClass(), comboBoxModel)
             .description(property.getDescription());
   }
 
@@ -267,7 +267,7 @@ public final class EntityInputComponents {
 
     final Supplier<TemporalField<T>> supplier = () -> (TemporalField<T>) createTextField(property, attribute.getTypeClass());
 
-    return new DefaultTemporalInputPanelBuiler<>(value, supplier)
+    return ComponentBuilders.temporalInputPanelBuiler(value, supplier)
             .description(property.getDescription());
   }
 
@@ -280,7 +280,7 @@ public final class EntityInputComponents {
   public TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute, final Value<String> value) {
     final Property<String> property = entityDefinition.getProperty(attribute);
 
-    return new DefaultTextInputPanelBuilder(value)
+    return ComponentBuilders.textInputPanelBuilder(value)
             .description(property.getDescription())
             .caption(property.getCaption());
   }
@@ -297,7 +297,7 @@ public final class EntityInputComponents {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
 
-    return new DefaultTextAreaBuilder(value)
+    return ComponentBuilders.textAreaBuilder(value)
             .description(property.getDescription());
   }
 
@@ -313,7 +313,7 @@ public final class EntityInputComponents {
 
     final Supplier<JTextField> textFieldSupplier = () -> createTextField(property, attribute.getTypeClass());
 
-    return new DefaultTextFieldBuilder<>(value, attribute.getTypeClass(), textFieldSupplier)
+    return ComponentBuilders.textFieldBuilder(value, attribute.getTypeClass(), textFieldSupplier)
             .format(property.getFormat())
             .description(property.getDescription());
   }
@@ -327,7 +327,7 @@ public final class EntityInputComponents {
   public FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute, final Value<String> value) {
     final Property<String> property = entityDefinition.getProperty(attribute);
 
-    return new DefaultFormattedTextFieldBuilder(value)
+    return ComponentBuilders.formattedTextFieldBuilder(value)
             .description(property.getDescription());
   }
 

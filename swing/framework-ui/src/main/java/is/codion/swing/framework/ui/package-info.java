@@ -1,7 +1,6 @@
 /**
  * Package configuration values:<br>
  * {@link is.codion.swing.framework.ui.component.EntityInputComponents#LABEL_TEXT_ALIGNMENT}<br>
- * {@link is.codion.swing.framework.ui.component.EntityInputComponents#COMBO_BOX_COMPLETION_MODE}
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#PERSIST_ENTITY_PANELS}<br>

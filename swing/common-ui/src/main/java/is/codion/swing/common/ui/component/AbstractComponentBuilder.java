@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.component;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
@@ -14,7 +14,7 @@ import java.awt.Dimension;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
+public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
 
   protected final Value<T> value;
 

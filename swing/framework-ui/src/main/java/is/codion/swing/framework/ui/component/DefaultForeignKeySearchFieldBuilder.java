@@ -7,6 +7,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.ui.EntitySearchField;
 
