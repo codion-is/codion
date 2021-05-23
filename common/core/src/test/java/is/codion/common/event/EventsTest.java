@@ -13,10 +13,12 @@ public class EventsTest {
 
   @Test
   public void test() throws Exception {
-    final Event<?> event = Event.event();
+    final Event<Integer> event = Event.event();
     final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = counter::incrementAndGet;
+    final EventDataListener<Integer> dataListener = value -> {};
     event.addListener(listener);
+    event.addDataListener(dataListener);
     event.onEvent();
     assertEquals(1, counter.get(), "EventListener should have been notified on onEvent()");
     event.onEvent();
@@ -24,6 +26,7 @@ public class EventsTest {
     event.removeListener(listener);
     event.onEvent();
     assertEquals(2, counter.get(), "Removed EventListener should not have been notified");
+    event.removeDataListener(dataListener);
     Event.listener(Event.dataListener(listener));
   }
 }
