@@ -3,39 +3,10 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import java.awt.Window;
-
 /**
  * An exception dialog builder.
  */
-public interface ExceptionDialogBuilder {
-
-  /**
-   * @param owner the dialog owner
-   * @return this ExceptionDialogBuilder instance
-   */
-  ExceptionDialogBuilder owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this ExceptionDialogBuilder instance
-   */
-  ExceptionDialogBuilder owner(JComponent owner);
-
-  /**
-   * @param title the dialog title
-   * @return this ExceptionDialogBuilder instance
-   */
-  ExceptionDialogBuilder title(String title);
-
-  /**
-   * @param icon the dialog icon
-   * @return this ExceptionDialogBuilder instance
-   */
-  ExceptionDialogBuilder icon(ImageIcon icon);
+public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBuilder> {
 
   /**
    * @param message the message to display

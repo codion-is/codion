@@ -6,27 +6,12 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import java.awt.Window;
 
 /**
  * A login dialog builder.
  */
-public interface LoginDialogBuilder {
-
-  /**
-   * @param owner the dialog owner
-   * @return this LoginDialogBuilder instance
-   */
-  LoginDialogBuilder owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this LoginDialogBuilder instance
-   */
-  LoginDialogBuilder owner(JComponent owner);
+public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
 
   /**
    * @param defaultUser the default user credentials to display
@@ -45,18 +30,6 @@ public interface LoginDialogBuilder {
    * @return this LoginDialogBuilder instance
    */
   LoginDialogBuilder southComponent(JComponent southComponent);
-
-  /**
-   * @param title the dialog title
-   * @return this LoginDialogBuilder instance
-   */
-  LoginDialogBuilder title(String title);
-
-  /**
-   * @param icon the dialog icon
-   * @return this LoginDialogBuilder instance
-   */
-  LoginDialogBuilder icon(ImageIcon icon);
 
   /**
    * @return the logged in user

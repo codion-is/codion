@@ -8,40 +8,12 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
-import java.awt.Window;
 
 /**
- * A builder for JDialog.
+ * A builder for JDialog containing a single component.
  */
-public interface ComponentDialogBuilder {
-
-  /**
-   * @param owner the dialog owner
-   * @return this DialogBuilder instance
-   */
-  ComponentDialogBuilder owner(Window owner);
-
-  /**
-   * Sets the dialog owner as the parent window of the given component.
-   * @param owner the dialog parent component
-   * @return this DialogBuilder instance
-   */
-  ComponentDialogBuilder owner(JComponent owner);
-
-  /**
-   * @param title the dialog title
-   * @return this DialogBuilder instance
-   */
-  ComponentDialogBuilder title(String title);
-
-  /**
-   * @param icon the dialog icon
-   * @return this DialogBuilder instance
-   */
-  ComponentDialogBuilder icon(ImageIcon icon);
+public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBuilder>{
 
   /**
    * @param modal true if the dialog should be modal
