@@ -35,4 +35,14 @@ public interface FormattedTextFieldBuilder extends ComponentBuilder<String, JFor
    * @return this builder instance
    */
   FormattedTextFieldBuilder columns(int columns);
+
+  /**
+   * @param focusLostBehaviour the focus lost behaviour, JFormattedTextField.COMMIT by default
+   * @return this builder instance
+   * @see JFormattedTextField#COMMIT
+   * @see JFormattedTextField#COMMIT_OR_REVERT
+   * @see JFormattedTextField#REVERT
+   * @see JFormattedTextField#PERSIST
+   */
+  FormattedTextFieldBuilder focusLostBehaviour(int focusLostBehaviour);
 }

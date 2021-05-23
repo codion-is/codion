@@ -7044,3 +7044,5 @@
   EntityEditPanel.insert/update/delete(ConfirmationRequired) replaced with insert/update/deleteWithoutConfirmation
   Controls.builder() now take the command as a required parameter
   NumberField.addValueListener() added, type specific methods removed from subclasses
+  TextFields.createFormattedField() moved to DefaultFormattedTextFieldBuilder, FieldFormatter moved up to package level, factory method added
+  FormattedTextFieldBuilder.focusLostBehaviour() added
