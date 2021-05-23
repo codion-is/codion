@@ -115,11 +115,11 @@ public final class InputControls {
             .mnemonic('S')
             .build();
 
-    Controls flatControls = Controls.builder()
+    Controls twoControls = Controls.builder()
             .controls(firstControl, secondControl)
             .build();
 
-    JPanel buttonPanel = flatControls.createHorizontalButtonPanel();
+    JPanel buttonPanel = twoControls.createHorizontalButtonPanel();
     // end::controls[]
   }
 
