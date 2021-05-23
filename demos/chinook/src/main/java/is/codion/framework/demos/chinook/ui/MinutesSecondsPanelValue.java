@@ -21,8 +21,8 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
   MinutesSecondsPanelValue() {
     super(new MinutesSecondsPanel());
-    getComponent().minutesField.addIntegerListener(minutes -> notifyValueChange());
-    getComponent().secondsField.addIntegerListener(seconds -> notifyValueChange());
+    getComponent().minutesField.addValueListener(minutes -> notifyValueChange());
+    getComponent().secondsField.addValueListener(seconds -> notifyValueChange());
   }
 
   @Override

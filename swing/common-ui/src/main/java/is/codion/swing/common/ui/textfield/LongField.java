@@ -3,9 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.Formats;
-import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import java.text.NumberFormat;
 
@@ -58,13 +56,5 @@ public final class LongField extends NumberField<Long> {
    */
   public void setLong(final Long value) {
     getTypedDocument().setNumber(value);
-  }
-
-  /**
-   * @param listener a listener notified when the value changes
-   */
-  public void addLongListener(final EventDataListener<Long> listener) {
-    final NumberDocument<Long> document = getTypedDocument();
-    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getLong()));
   }
 }

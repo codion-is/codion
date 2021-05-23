@@ -55,6 +55,10 @@ public class IntegerFieldTest {
     assertEquals("123.456.789", integerField.getText());
     integerField.setText("987654321");
     assertEquals(987654321, (int) integerField.getInteger());
+
+    integerField.setInteger(null);
+    integerField.addValueListener(value -> assertEquals(42, value));
+    integerField.setInteger(42);
   }
 
   @Test

@@ -3,9 +3,6 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.swing.common.model.textfield.DocumentAdapter;
-
 import java.text.DecimalFormat;
 
 /**
@@ -71,14 +68,6 @@ public final class DoubleField extends NumberField<Double> {
    */
   public void setDouble(final Double value) {
     getTypedDocument().setNumber(value);
-  }
-
-  /**
-   * @param listener a listener notified when the value changes
-   */
-  public void addDoubleListener(final EventDataListener<Double> listener) {
-    final NumberDocument<Double> document = getTypedDocument();
-    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getDouble()));
   }
 
   private static DecimalFormat createDefaultFormat() {
