@@ -15,6 +15,8 @@ import java.util.List;
  * A factory for {@link ComponentBuilder}.
  */
 public final class ComponentBuilders {
+  
+  private ComponentBuilders() {}
 
   /**
    * @param value the value

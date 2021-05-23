@@ -398,11 +398,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
               .westPanel(westPanel)
               .buttonControls(buttonControls)
               .build();
-      final ProgressWorker<T> worker = new ProgressWorker<>(progressTask, progressDialog,
+
+      return new ProgressWorker<>(progressTask, progressDialog,
               onSuccess == null ? result -> {} : onSuccess,
               this::createExceptionHandler);
-
-      return worker;
     }
 
     private void createExceptionHandler(final Throwable exception) {
