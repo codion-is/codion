@@ -9,6 +9,7 @@ import java.awt.Window;
 
 /**
  * A base interface for JDialog builders
+ * @param <B> the Builder type
  */
 public interface DialogBuilder<B extends DialogBuilder<B>> {
 

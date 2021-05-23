@@ -7082,3 +7082,4 @@
   ToggleControl.builder() now takes value and state parameter
   EntitySelectionDialog now builder based, AbstractDialogBuilder now public
   TextAreaBuilder.upperCase() and lowerCase() added
+  TextComponentBuilder added along with AbstractTextComponentBuilder, TextFieldBuilder and TextAreaBuilder changed accordingly
