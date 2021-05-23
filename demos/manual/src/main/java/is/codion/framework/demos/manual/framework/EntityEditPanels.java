@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -21,6 +22,7 @@ import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntitySearchField;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -30,6 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static is.codion.framework.domain.DomainType.domainType;
 
@@ -61,7 +64,6 @@ public final class EntityEditPanels {
     public EditPanelDemo(final SwingEntityEditModel editModel) {
       super(editModel);
     }
-
 
     private void booleanValue() {
       // tag::booleanValue[]
@@ -100,8 +102,8 @@ public final class EntityEditPanels {
 
     private void temporalValue() {
       // tag::temporalValue[]
-      JTextField textField =
-              createTextField(Demo.LOCAL_DATE)
+      TemporalField<LocalDateTime> textField =
+              (TemporalField<LocalDateTime>) createTextField(Demo.LOCAL_DATE)
                       .build();
 
       TemporalInputPanel<LocalDate> inputPanel =
@@ -153,10 +155,23 @@ public final class EntityEditPanels {
       // end::textValue[]
     }
 
+    private void selectionValue() {
+      // tag::selectionValue[]
+      final DefaultComboBoxModel<String> comboBoxModel =
+              new DefaultComboBoxModel<>(new String[]{"One", "Two"});
+
+      final SteppedComboBox<String> comboBox =
+              createComboBox(Demo.TEXT, comboBoxModel)
+                      .editable(true)
+                      .build();
+      // end::selectionValue[]
+    }
+
     private void valueList() {
       // tag::valueList[]
-      SteppedComboBox<Item<String>> comboBox = createValueListComboBox(Demo.VALUE_LIST)
-              .build();
+      SteppedComboBox<Item<String>> comboBox =
+              createValueListComboBox(Demo.VALUE_LIST)
+                      .build();
       // end::valueList[]
     }
 

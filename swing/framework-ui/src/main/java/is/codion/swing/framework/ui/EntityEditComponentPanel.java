@@ -536,7 +536,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for check boxes.
+   * Creates a builder for check boxes. If {@link CheckBoxBuilder#nullable(boolean)} is set to true,
+   * a {@link is.codion.swing.common.ui.checkbox.NullableCheckBox} is built.
    * @param attribute the attribute for which to build a check box
    * @return a check box builder
    */

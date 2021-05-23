@@ -67,25 +67,34 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Text
 
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=textValue]
-----
-
 {url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-is.codion.framework.domain.entity.Attribute-[createTextArea(attribute)]
 
 {url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-is.codion.framework.domain.entity.Attribute-[createTextField(attribute)]
 
 {url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-is.codion.framework.domain.entity.Attribute-[createTextInputPanel(attribute)]
 
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=textValue]
+----
+
+=== Selection
+
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createComboBox-is.codion.framework.domain.entity.Attribute-javax.swing.ComboBoxModel-[createValueListComboBox(attribute)]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=selectionValue]
+----
+
 === Value list
+
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-is.codion.framework.domain.entity.Attribute-[createValueListComboBox(attribute)]
 
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=valueList]
 ----
-
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-is.codion.framework.domain.entity.Attribute-[createValueListComboBox(attribute)]
 
 == Panels & labels
 
