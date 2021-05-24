@@ -177,7 +177,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   private IntegerField initializeIntegerField() {
-    final IntegerField field = new IntegerField(cloneFormat((NumberFormat) format));
+    final IntegerField field = format == null ? new IntegerField() : new IntegerField(cloneFormat((NumberFormat) format));
     if (minimumValue != null && maximumValue != null) {
       field.setRange(minimumValue, maximumValue);
     }
@@ -186,7 +186,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   private DoubleField initializeDoubleField() {
-    final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) format));
+    final DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) cloneFormat((NumberFormat) format));
     if (minimumValue != null && maximumValue != null) {
       field.setRange(Math.min(minimumValue, 0), maximumValue);
     }
@@ -198,7 +198,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   private BigDecimalField initializeBigDecimalField() {
-    final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) format));
+    final BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) format));
     if (minimumValue != null && maximumValue != null) {
       field.setRange(Math.min(minimumValue, 0), maximumValue);
     }
@@ -210,7 +210,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   private LongField initializeLongField() {
-    final LongField field = new LongField(cloneFormat((NumberFormat) format));
+    final LongField field = format == null ? new LongField() : new LongField(cloneFormat((NumberFormat) format));
     if (minimumValue != null && maximumValue != null) {
       field.setRange(minimumValue, maximumValue);
     }
