@@ -5,12 +5,13 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
+
+import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<T>, ComboBoxBuilder<T>>
         implements ComboBoxBuilder<T> {
@@ -23,7 +24,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   DefaultComboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
     this.valueClass = valueClass;
     this.comboBoxModel = comboBoxModel;
-    preferredHeight(TextFields.getPreferredTextFieldHeight());
+    preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override

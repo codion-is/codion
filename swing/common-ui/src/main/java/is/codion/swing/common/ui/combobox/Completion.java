@@ -96,10 +96,11 @@ public final class Completion {
   }
 
   /**
-   * Adds completion to the given combo box
+   * Enables the default completion type on the given combo box
    * @param comboBox the combo box
+   * @see #COMBO_BOX_COMPLETION_MODE
    */
-  public static void addComboBoxCompletion(final JComboBox<?> comboBox) {
+  public static void enableComboBoxCompletion(final JComboBox<?> comboBox) {
     requireNonNull(comboBox);
     final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
