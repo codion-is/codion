@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import java.awt.Dimension;
@@ -16,9 +16,10 @@ import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
 
-  protected final Value<T> value;
-
   private final Event<C> buildEvent = Event.event();
+
+  private C component;
+  private ComponentValue<T, C> componentValue;
 
   private boolean focusable = true;
   private int preferredHeight;
@@ -26,10 +27,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private boolean transferFocusOnEnter;
   protected String description;
   protected StateObserver enabledState;
-
-  protected AbstractComponentBuilder(final Value<T> value) {
-    this.value = requireNonNull(value);
-  }
 
   @Override
   public final B focusable(final boolean focusable) {
@@ -81,12 +78,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     return (B) this;
   }
 
-  /**
-   * Builds the component.
-   * @return a new component instance
-   */
+  @Override
   public final C build() {
-    final C component = buildComponent();
+    if (component != null) {
+      return component;
+    }
+    component = buildComponent();
     if (component.isFocusable() && !focusable) {
       component.setFocusable(false);
     }
@@ -105,11 +102,27 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     return component;
   }
 
+  @Override
+  public final ComponentValue<T, C> buildComponentValue() {
+    if (componentValue != null) {
+      return componentValue;
+    }
+    componentValue = buildComponentValue(build());
+
+    return componentValue;
+  }
+
   /**
    * Builds the component.
    * @return a new component instance
    */
   protected abstract C buildComponent();
+
+  /**
+   * @param component the component
+   * @return a component value based on the component
+   */
+  protected abstract ComponentValue<T, C> buildComponentValue(final C component);
 
   /**
    * Enables focus transfer on Enter, override for special handling

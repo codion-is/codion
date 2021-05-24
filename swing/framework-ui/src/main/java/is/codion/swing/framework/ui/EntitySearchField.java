@@ -599,6 +599,7 @@ public final class EntitySearchField extends JTextField {
 
     private SearchFieldSingleValue(final EntitySearchField searchField) {
       super(searchField);
+      searchField.getModel().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override
@@ -618,6 +619,7 @@ public final class EntitySearchField extends JTextField {
 
     private SearchFieldMultipleValues(final EntitySearchField searchField) {
       super(searchField);
+      searchField.getModel().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override

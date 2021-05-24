@@ -68,7 +68,7 @@ public final class TextInputPanel extends JPanel {
     if (maximumLength > 0 && text.length() > maximumLength) {
       throw new IllegalArgumentException("Maximum allowed text length exceeded");
     }
-    textField.setText(text);
+    textField.setText(text == null ? "" : text);
   }
 
   /**
@@ -83,7 +83,9 @@ public final class TextInputPanel extends JPanel {
    * @return the current input text value
    */
   public String getText() {
-    return textField.getText();
+    final String text = textField.getText();
+
+    return text.isEmpty() ? null : text;
   }
 
   /**

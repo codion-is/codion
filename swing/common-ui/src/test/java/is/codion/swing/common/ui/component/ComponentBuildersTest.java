@@ -8,7 +8,9 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import org.junit.jupiter.api.Test;
@@ -30,8 +32,10 @@ public final class ComponentBuildersTest {
   @Test
   public void createCheckBox() {
     final Value<Boolean> value = Value.value(true, false);
-    final JCheckBox box = ComponentBuilders.checkBoxBuilder(value)
-            .transferFocusOnEnter(true).build();
+    final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
+            .transferFocusOnEnter(true).buildComponentValue();
+    componentValue.link(value);
+    final JCheckBox box = componentValue.getComponent();
     assertTrue(box.isSelected());
     assertTrue(value.get());
 
@@ -47,8 +51,10 @@ public final class ComponentBuildersTest {
   @Test
   public void createNullableCheckBox() {
     final Value<Boolean> value = Value.value(true);
-    final NullableCheckBox box = (NullableCheckBox) ComponentBuilders.checkBoxBuilder(value)
-            .transferFocusOnEnter(true).nullable(true).build();
+    final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
+            .transferFocusOnEnter(true).nullable(true).buildComponentValue();
+    componentValue.link(value);
+    final NullableCheckBox box = (NullableCheckBox) componentValue.getComponent();
     assertTrue(box.isSelected());
     assertTrue(value.get());
 
@@ -64,9 +70,12 @@ public final class ComponentBuildersTest {
   @Test
   public void createBooleanComboBox() {
     final Value<Boolean> value = Value.value(true);
+    final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
+            ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
+            .transferFocusOnEnter(true).buildComponentValue();
+    componentValue.link(value);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
-            ComponentBuilders.booleanComboBoxBuilder(value)
-                    .transferFocusOnEnter(true).build().getModel();
+            componentValue.getComponent().getModel();
     assertTrue(boxModel.getSelectedValue().getValue());
     boxModel.setSelectedItem(null);
     assertNull(value.get());
@@ -80,9 +89,12 @@ public final class ComponentBuildersTest {
     final List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
     final Value<Integer> value = Value.value();
-    final JComboBox<Item<Integer>> comboBox = ComponentBuilders.valueListComboBoxBuilder(value, items)
+    final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
+            ComponentBuilders.valueListComboBoxBuilder(items)
             .transferFocusOnEnter(true)
-            .nullable(true).build();
+            .nullable(true).buildComponentValue();
+    componentValue.link(value);
+    final JComboBox<Item<Integer>> comboBox = componentValue.getComponent();
     final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));
@@ -102,8 +114,11 @@ public final class ComponentBuildersTest {
   public void createComboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
     final Value<Integer> value = Value.value();
-    final JComboBox<Integer> box = ComponentBuilders.comboBoxBuilder(value, Integer.class, boxModel)
-            .transferFocusOnEnter(true).build();
+    final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
+            ComponentBuilders.comboBoxBuilder(Integer.class, boxModel)
+            .transferFocusOnEnter(true).buildComponentValue();
+    componentValue.link(value);
+    final JComboBox<Integer> box = componentValue.getComponent();
 
     assertNull(value.get());
     box.setSelectedItem(1);
@@ -119,8 +134,11 @@ public final class ComponentBuildersTest {
   @Test
   public void createTextField() {
     final Value<String> value = Value.value();
-    final JTextField field = ComponentBuilders.textFieldBuilder(value, String.class)
-            .columns(10).upperCase().selectAllOnFocusGained().build();
+    final ComponentValue<String, JTextField> componentValue =
+            ComponentBuilders.textFieldBuilder(String.class)
+            .columns(10).upperCase().selectAllOnFocusGained().buildComponentValue();
+    componentValue.link(value);
+    final JTextField field = componentValue.getComponent();
     field.setText("hello");
     assertEquals("HELLO", value.get());
   }
@@ -128,8 +146,11 @@ public final class ComponentBuildersTest {
   @Test
   public void createTextArea() {
     final Value<String> value = Value.value();
-    final JTextArea textArea = ComponentBuilders.textAreaBuilder(value)
-            .transferFocusOnEnter(true).rows(4).columns(2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true).build();
+    final ComponentValue<String, JTextArea> componentValue = ComponentBuilders.textAreaBuilder()
+            .transferFocusOnEnter(true).rows(4).columns(2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
+            .buildComponentValue();
+    componentValue.link(value);
+    final JTextArea textArea = componentValue.getComponent();
     textArea.setText("hello");
     assertEquals("hello", value.get());
   }
@@ -137,8 +158,11 @@ public final class ComponentBuildersTest {
   @Test
   public void createTextInputPanel() {
     final Value<String> value = Value.value();
-    final TextInputPanel inputPanel = ComponentBuilders.textInputPanelBuilder(value)
-            .transferFocusOnEnter(true).columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE).build();
+    final ComponentValue<String, TextInputPanel> componentValue =
+            ComponentBuilders.textInputPanelBuilder()
+            .transferFocusOnEnter(true).columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE).buildComponentValue();
+    componentValue.link(value);
+    final TextInputPanel inputPanel = componentValue.getComponent();
     inputPanel.setText("hello");
     assertEquals("hello", value.get());
   }
@@ -146,9 +170,12 @@ public final class ComponentBuildersTest {
   @Test
   public void createFormattedTextField() {
     final Value<String> value = Value.value();
-    final JFormattedTextField field = ComponentBuilders.formattedTextFieldBuilder(value)
-            .formatMaskString("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
-            .focusLostBehaviour(JFormattedTextField.COMMIT).build();
+    final ComponentValue<String, JFormattedTextField> componentValue =
+            ComponentBuilders.formattedTextFieldBuilder()
+            .formatMask("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
+            .focusLostBehaviour(JFormattedTextField.COMMIT).buildComponentValue();
+    componentValue.link(value);
+    final JFormattedTextField field = componentValue.getComponent();
     field.setText("1234");
     assertEquals("12:34", value.get());
   }

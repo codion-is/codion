@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntitySearchModel;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JComponent;
@@ -38,10 +39,17 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignEntityType, connectionProvider);
       comboBoxModel.refresh();
 
-      return getInputComponents().foreignKeyComboBoxBuilder(foreignKey, getCellValue(), comboBoxModel).build();
+      final ComponentValue<Entity, EntityComboBox> componentValue = getInputComponents()
+              .foreignKeyComboBoxBuilder(foreignKey, comboBoxModel).buildComponentValue();
+      getCellValue().link(componentValue);
+
+      return componentValue.getComponent();
     }
 
-    return getInputComponents().foreignKeySearchFieldBuilder(foreignKey, getCellValue(),
-            new DefaultEntitySearchModel(foreignEntityType, connectionProvider)).build();
+    final ComponentValue<Entity, EntitySearchField> componentValue = getInputComponents()
+            .foreignKeySearchFieldBuilder(foreignKey, new DefaultEntitySearchModel(foreignEntityType, connectionProvider)).buildComponentValue();
+    getCellValue().link(componentValue);
+
+    return componentValue.getComponent();
   }
 }

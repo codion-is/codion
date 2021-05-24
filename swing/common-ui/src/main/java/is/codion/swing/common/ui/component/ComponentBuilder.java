@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import java.awt.Dimension;
@@ -66,8 +67,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B addBuildListener(EventDataListener<C> listener);
 
   /**
-   * Builds the component.
+   * Builds and returns the component, note that subsequent calls return the same component.
    * @return the component
    */
   C build();
+
+  /**
+   * Builds and returns the component value, note that subsequent calls return the same component value.
+   * @return the component value
+   */
+  ComponentValue<T, C> buildComponentValue();
 }

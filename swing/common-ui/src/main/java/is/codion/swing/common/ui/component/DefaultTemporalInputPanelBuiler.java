@@ -3,10 +3,10 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
@@ -18,15 +18,21 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
         extends AbstractComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>>
         implements TemporalInputPanelBuilder<T> {
 
-  private final TemporalField<T> temporalField;
+  private final Class<T> valueClass;
 
-  private UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  private boolean calendarButton;
+  private boolean calendarButton = true;
   private int columns;
+  private UpdateOn updateOn = UpdateOn.KEYSTROKE;
+  private String dateTimePattern;
 
-  DefaultTemporalInputPanelBuiler(final Value<T> value, final TemporalField<T> temporalField) {
-    super(value);
-    this.temporalField = requireNonNull(temporalField);
+  DefaultTemporalInputPanelBuiler(final Class<T> valueClass) {
+    this.valueClass = requireNonNull(valueClass);
+  }
+
+  @Override
+  public TemporalInputPanelBuilder<T> columns(final int columns) {
+    this.columns = columns;
+    return this;
   }
 
   @Override
@@ -36,8 +42,8 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
-  public TemporalInputPanelBuilder<T> columns(final int columns) {
-    this.columns = columns;
+  public TemporalInputPanelBuilder<T> dateTimePattern(final String dateTimePattern) {
+    this.dateTimePattern = requireNonNull(dateTimePattern);
     return this;
   }
 
@@ -49,10 +55,21 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected TemporalInputPanel<T> buildComponent() {
-    final TemporalInputPanel<T> inputPanel = createTemporalInputPanel();
-    inputPanel.getInputField().setColumns(columns);
+    final TemporalField<T> temporalField = (TemporalField<T>) ComponentBuilders.textFieldBuilder(valueClass)
+            .updateOn(updateOn)
+            .columns(columns)
+            .dateTimePattern(dateTimePattern)
+            .build();
 
-    return inputPanel;
+    return TemporalInputPanel.builder(temporalField)
+            .calendarButton(calendarButton)
+            .enabledState(enabledState)
+            .build();
+  }
+
+  @Override
+  protected ComponentValue<T, TemporalInputPanel<T>> buildComponentValue(final TemporalInputPanel<T> component) {
+    return ComponentValues.temporalInputPanel(component);
   }
 
   @Override
@@ -61,15 +78,5 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
     if (component.getCalendarButton() != null) {
       Components.transferFocusOnEnter(component.getCalendarButton());
     }
-  }
-
-  private <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel() {
-    ComponentValues.temporalField(temporalField, updateOn).link(value);
-
-    return (TemporalInputPanel<T>) TemporalInputPanel.builder()
-            .temporalField((TemporalField<Temporal>) temporalField)
-            .calendarButton(calendarButton)
-            .enabledState(enabledState)
-            .build();
   }
 }

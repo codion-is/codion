@@ -15,9 +15,7 @@ class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel>
 
   @Override
   protected String getComponentValue(final TextInputPanel component) {
-    final String value = component.getText();
-
-    return value.isEmpty() ? null : value;
+    return component.getText();
   }
 
   @Override

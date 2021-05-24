@@ -10,6 +10,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityInputComponents;
 
@@ -29,10 +30,11 @@ public class SearchValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final EntitySearchModel searchModel = inputComponents.foreignKeySearchFieldBuilder(TestDomain.EMP_DEPARTMENT_FK,
-            model.value(TestDomain.EMP_DEPARTMENT_FK),
-            model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK))
-            .build().getModel();
+    final ComponentValue<Entity, EntitySearchField> componentValue =
+            inputComponents.foreignKeySearchFieldBuilder(TestDomain.EMP_DEPARTMENT_FK,
+            model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();
+    componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
+    final EntitySearchModel searchModel = componentValue.getComponent().getModel();
     assertEquals(0, searchModel.getSelectedEntities().size());
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     model.put(TestDomain.EMP_DEPARTMENT_FK, department);

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.item.Item;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -294,7 +293,6 @@ public final class ComponentValues {
    * Links the given text field with the given value.
    * @param textField the text field
    * @param valueClass the value class
-   * @param value the value
    * @param updateOn the update on
    * @param format the format, if any
    * @param <C> the component type
@@ -302,54 +300,61 @@ public final class ComponentValues {
    * @return the text field
    * @throws IllegalArgumentException in case the value class is not supported
    */
-  public static <C extends JTextField, T> C textFieldValue(final C textField, final Class<T> valueClass,
-                                                           final Value<T> value, final UpdateOn updateOn,
-                                                           final Format format) {
+  public static <C extends JTextField, T> ComponentValue<T, C> textFieldValue(final C textField, final Class<T> valueClass,
+                                                                              final UpdateOn updateOn, final Format format) {
     requireNonNull(textField);
     requireNonNull(valueClass);
-    requireNonNull(value);
     requireNonNull(updateOn);
     if (valueClass.equals(String.class)) {
-      textComponent(textField, format, updateOn).link((Value<String>) value);
+      final ComponentValue<String, C> componentValue = textComponent(textField, format, updateOn);
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else if (valueClass.equals(Character.class)) {
-      characterTextField(textField, updateOn).link((Value<Character>) value);
+      final ComponentValue<Character, JTextField> componentValue = characterTextField(textField, updateOn);
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else if (valueClass.equals(Integer.class)) {
-      integerFieldBuilder()
+      final ComponentValue<Integer, IntegerField> componentValue = integerFieldBuilder()
               .component((IntegerField) textField)
               .updateOn(updateOn)
-              .build()
-              .link((Value<Integer>) value);
+              .build();
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else if (valueClass.equals(Double.class)) {
-      doubleFieldBuilder()
+      final ComponentValue<Double, DoubleField> componentValue = doubleFieldBuilder()
               .component((DoubleField) textField)
               .updateOn(updateOn)
-              .build()
-              .link((Value<Double>) value);
+              .build();
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else if (valueClass.equals(BigDecimal.class)) {
-      bigDecimalFieldBuilder()
+      final ComponentValue<BigDecimal, BigDecimalField> componentValue = bigDecimalFieldBuilder()
               .component((BigDecimalField) textField)
               .updateOn(updateOn)
-              .build()
-              .link((Value<BigDecimal>) value);
+              .build();
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else if (valueClass.equals(Long.class)) {
-      longFieldBuilder()
+      final ComponentValue<Long, LongField> componentValue = longFieldBuilder()
               .component((LongField) textField)
               .updateOn(updateOn)
-              .build()
-              .link((Value<Long>) value);
+              .build();
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else if (Temporal.class.isAssignableFrom(valueClass)) {
-      temporalField((TemporalField<Temporal>) textField, updateOn).link((Value<Temporal>) value);
+      final ComponentValue<Temporal, TemporalField<Temporal>> componentValue =
+              temporalField((TemporalField<Temporal>) textField, updateOn);
+
+      return (ComponentValue<T, C>) componentValue;
     }
     else {
       throw new IllegalArgumentException("Text fields not implemented for type: " + valueClass);
     }
-
-    return textField;
   }
 }

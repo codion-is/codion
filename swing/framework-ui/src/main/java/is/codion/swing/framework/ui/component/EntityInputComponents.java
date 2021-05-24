@@ -6,15 +6,14 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.Configuration;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
@@ -25,7 +24,7 @@ import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
 import is.codion.swing.common.ui.component.ValueListComboBoxBuilder;
-import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
@@ -66,45 +65,45 @@ public final class EntityInputComponents {
 
   /**
    * @param attribute the attribute for which to create the input component
-   * @param value the value to bind to the field
    * @param <T> the attribute type
+   * @param <C> the component type
    * @return the component handling input for {@code attribute}
    * @throws IllegalArgumentException in case the attribute type is not supported
    */
-  public <T> JComponent createInputComponent(final Attribute<T> attribute, final Value<T> value) {
-    return createInputComponent(attribute, value, null);
+  public <T, C extends JComponent> ComponentValue<T, C> createInputComponent(final Attribute<T> attribute) {
+    return createInputComponent(attribute, null);
   }
 
   /**
-   * @param attribute the attribute for which to create the input component
-   * @param value the value to bind to the field
-   * @param enabledState the enabled state
    * @param <T> the attribute type
+   * @param <C> the component type
+   * @param attribute the attribute for which to create the input component
+   * @param enabledState the enabled state
    * @return the component handling input for {@code attribute}
    * @throws IllegalArgumentException in case the attribute type is not supported
    */
-  public <T> JComponent createInputComponent(final Attribute<T> attribute, final Value<T> value,
-                                             final StateObserver enabledState) {
+  public <T, C extends JComponent> ComponentValue<T, C> createInputComponent(final Attribute<T> attribute,
+                                                                             final StateObserver enabledState) {
     if (attribute instanceof ForeignKey) {
       throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeySearchField() for ForeignKeys");
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (property instanceof ValueListProperty) {
-      return valueListComboBoxBuilder(attribute, value)
+      return (ComponentValue<T, C>) valueListComboBoxBuilder(attribute)
               .enabledState(enabledState)
-              .build();
+              .buildComponentValue();
     }
     if (attribute.isBoolean()) {
-      return checkBoxBuilder((Attribute<Boolean>) attribute, (Value<Boolean>) value)
+      return (ComponentValue<T, C>) checkBoxBuilder((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
               .nullable(property.isNullable())
-              .build();
+              .buildComponentValue();
     }
     if (attribute.isTemporal() || attribute.isNumerical() || attribute.isString() || attribute.isCharacter()) {
-      return textFieldBuilder(attribute, value)
+      return (ComponentValue<T, C>) textFieldBuilder(attribute)
               .enabledState(enabledState)
               .updateOn(UpdateOn.KEYSTROKE)
-              .build();
+              .buildComponentValue();
     }
 
     throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.getTypeClass() + ")");
@@ -140,13 +139,12 @@ public final class EntityInputComponents {
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @return a builder
    */
-  public CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
+  public CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.checkBoxBuilder(value)
+    return ComponentBuilders.checkBoxBuilder()
             .description(property.getDescription())
             .nullable(property.isNullable())
             .caption(property.getCaption());
@@ -155,73 +153,66 @@ public final class EntityInputComponents {
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @return a builder
    */
-  public BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute, final Value<Boolean> value) {
+  public BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.booleanComboBoxBuilder(value)
+    return ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
             .description(property.getDescription());
   }
 
   /**
    * Creates a builder.
    * @param foreignKey the foreign key
-   * @param value the value
    * @param comboBoxModel the combo box model
    * @return a builder
    */
-  public ForeignKeyComboBoxBuilder foreignKeyComboBoxBuilder(final ForeignKey foreignKey, final Value<Entity> value,
-                                                             final SwingEntityComboBoxModel comboBoxModel) {
+  public ForeignKeyComboBoxBuilder foreignKeyComboBoxBuilder(final ForeignKey foreignKey, final SwingEntityComboBoxModel comboBoxModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return new DefaultForeignKeyComboBoxBuilder(value, comboBoxModel)
+    return new DefaultForeignKeyComboBoxBuilder(comboBoxModel)
             .description(foreignKeyProperty.getDescription());
   }
 
   /**
    * Creates a builder.
    * @param foreignKey the foreign key
-   * @param value the value
    * @param searchModel the search model
    * @return a builder
    */
-  public ForeignKeySearchFieldBuilder foreignKeySearchFieldBuilder(final ForeignKey foreignKey, final Value<Entity> value,
-                                                                   final EntitySearchModel searchModel) {
+  public ForeignKeySearchFieldBuilder foreignKeySearchFieldBuilder(final ForeignKey foreignKey, final EntitySearchModel searchModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return new DefaultForeignKeySearchFieldBuilder(value, searchModel)
+    return new DefaultForeignKeySearchFieldBuilder(searchModel)
             .description(foreignKeyProperty.getDescription() == null ? searchModel.getDescription() : foreignKeyProperty.getDescription());
   }
 
   /**
    * Creates a builder.
    * @param foreignKey the foreign key
-   * @param value the value
    * @return a builder
    */
-  public ForeignKeyFieldBuilder foreignKeyFieldBuilder(final ForeignKey foreignKey, final Value<Entity> value) {
+  public ForeignKeyFieldBuilder foreignKeyFieldBuilder(final ForeignKey foreignKey) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return new DefaultForeignKeyFieldBuilder(value)
+    return new DefaultForeignKeyFieldBuilder()
             .description(foreignKeyProperty.getDescription());
   }
 
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @param <T> the attribute type
    * @return a builder
    */
-  public <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute, final Value<T> value) {
+  public <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
     }
 
-    return ComponentBuilders.valueListComboBoxBuilder(value, ((ValueListProperty<T>) property).getValues())
+    return ComponentBuilders.valueListComboBoxBuilder(((ValueListProperty<T>) property).getValues())
             .description(property.getDescription())
             .nullable(property.isNullable());
   }
@@ -229,83 +220,77 @@ public final class EntityInputComponents {
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @param comboBoxModel the combo box model
    * @param <T> the attribute type
    * @return a builder
    */
-  public <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute, final Value<T> value,
-                                                final ComboBoxModel<T> comboBoxModel) {
+  public <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.comboBoxBuilder(value, attribute.getTypeClass(), comboBoxModel)
+    return ComponentBuilders.comboBoxBuilder(attribute.getTypeClass(), comboBoxModel)
             .description(property.getDescription());
   }
 
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @param <T> the attribute type
    * @return a builder
    */
-  public <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute, final Value<T> value) {
+  public <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute) {
     if (!attribute.isTemporal()) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    final TemporalField<T> temporalField = (TemporalField<T>) ComponentBuilders.textFieldBuilder(value, attribute.getTypeClass())
-            .dateTimePattern(property.getDateTimePattern())
-            .build();
-
-    return ComponentBuilders.temporalInputPanelBuiler(value, temporalField)
-            .description(property.getDescription());
+    return ComponentBuilders.temporalInputPanelBuiler(attribute.getTypeClass())
+            .description(property.getDescription())
+            .dateTimePattern(property.getDateTimePattern());
   }
 
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @return a builder
    */
-  public TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute, final Value<String> value) {
+  public TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute) {
     final Property<String> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.textInputPanelBuilder(value)
+    return ComponentBuilders.textInputPanelBuilder()
             .description(property.getDescription())
+            .maximumLength(property.getMaximumLength())
             .caption(property.getCaption());
   }
 
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @return a builder
    */
-  public TextAreaBuilder textAreaBuilder(final Attribute<String> attribute, final Value<String> value) {
+  public TextAreaBuilder textAreaBuilder(final Attribute<String> attribute) {
     final Property<String> property = entityDefinition.getProperty(attribute);
     if (!attribute.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
 
-    return ComponentBuilders.textAreaBuilder(value)
-            .description(property.getDescription());
+    return ComponentBuilders.textAreaBuilder()
+            .description(property.getDescription())
+            .maximumLength(property.getMaximumLength());
   }
 
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @param <T> the attribute type
    * @return a builder
    */
-  public <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute, final Value<T> value) {
+  public <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.textFieldBuilder(value, attribute.getTypeClass())
+    return ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
             .format(property.getFormat())
             .dateTimePattern(property.getDateTimePattern())
+            .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
             .description(property.getDescription());
@@ -314,13 +299,12 @@ public final class EntityInputComponents {
   /**
    * Creates a builder.
    * @param attribute the attribute
-   * @param value the value
    * @return a builder
    */
-  public FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute, final Value<String> value) {
+  public FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute) {
     final Property<String> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.formattedTextFieldBuilder(value)
+    return ComponentBuilders.formattedTextFieldBuilder()
             .description(property.getDescription());
   }
 }

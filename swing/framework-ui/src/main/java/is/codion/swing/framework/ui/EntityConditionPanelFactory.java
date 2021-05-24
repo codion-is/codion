@@ -11,6 +11,7 @@ import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.ui.component.EntityInputComponents;
 
 import org.slf4j.Logger;
@@ -115,7 +116,9 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public JComponent createEqualField() {
-      final JComponent component = inputComponents.createInputComponent(attribute, conditionModel.getEqualValueSet().value());
+      final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
+      componentValue.link(conditionModel.getEqualValueSet().value());
+      final JComponent component = componentValue.getComponent();
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
@@ -129,7 +132,9 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
         return null;//no upper bound field required for booleans
       }
 
-      final JComponent component = inputComponents.createInputComponent(attribute, conditionModel.getUpperBoundValue());
+      final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
+      componentValue.link(conditionModel.getUpperBoundValue());
+      final JComponent component = componentValue.getComponent();
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
@@ -143,7 +148,9 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
         return null;//no lower bound field required for booleans
       }
 
-      final JComponent component = inputComponents.createInputComponent(attribute, conditionModel.getLowerBoundValue());
+      final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
+      componentValue.link(conditionModel.getLowerBoundValue());
+      final JComponent component = componentValue.getComponent();
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }

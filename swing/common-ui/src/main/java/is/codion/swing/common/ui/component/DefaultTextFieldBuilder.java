@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -12,6 +11,7 @@ import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.Action;
@@ -39,8 +39,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   private Double maximumValue;
   private Double minimumValue;
 
-  DefaultTextFieldBuilder(final Value<T> value, final Class<T> valueClass) {
-    super(value);
+  DefaultTextFieldBuilder(final Class<T> valueClass) {
     this.valueClass = valueClass;
   }
 
@@ -90,7 +89,6 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   @Override
   protected JTextField buildComponent() {
     final JTextField textField = createTextField();
-    ComponentValues.textFieldValue(textField, valueClass, value, updateOn, format);
     textField.setEditable(editable);
     textField.setColumns(columns);
     if (action != null) {
@@ -110,6 +108,11 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     }
 
     return textField;
+  }
+
+  @Override
+  protected ComponentValue<T, JTextField> buildComponentValue(final JTextField component) {
+    return ComponentValues.textFieldValue(component, valueClass, updateOn, format);
   }
 
   private JTextField createTextField() {
@@ -175,6 +178,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   }
 
   private TemporalField<Temporal> initializeTemporalField() {
+    if (dateTimePattern == null) {
+      throw new IllegalStateException("dateTimePattern must be specified for temporal fields");
+    }
     return TemporalField.builder((Class<Temporal>) valueClass)
             .dateTimePattern(dateTimePattern)
             .build();

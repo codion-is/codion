@@ -15,16 +15,22 @@ import java.time.temporal.Temporal;
 public interface TemporalInputPanelBuilder<T extends Temporal> extends ComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>> {
 
   /**
+   * @param columns the number of colums in the temporal field
+   * @return this builder instance
+   */
+  TemporalInputPanelBuilder<T> columns(int columns);
+
+  /**
    * @param updateOn specifies when the underlying value should be updated
    * @return this builder instance
    */
   TemporalInputPanelBuilder<T> updateOn(UpdateOn updateOn);
 
   /**
-   * @param columns the number of colums in the text field
+   * @param dateTimePattern the date time pattern, if applicable
    * @return this builder instance
    */
-  TemporalInputPanelBuilder<T> columns(int columns);
+  TemporalInputPanelBuilder<T> dateTimePattern(String dateTimePattern);
 
   /**
    * @param calendarButton true if a calendar button should be included (may not be supported)

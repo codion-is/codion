@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
@@ -17,19 +17,15 @@ final class DefaultFormattedTextFieldBuilder
         extends AbstractComponentBuilder<String, JFormattedTextField, FormattedTextFieldBuilder>
         implements FormattedTextFieldBuilder {
 
-  private String formatMaskString;
+  private String formatMask;
   private boolean valueContainsLiterals = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int columns;
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-  DefaultFormattedTextFieldBuilder(final Value<String> value) {
-    super(value);
-  }
-
   @Override
-  public FormattedTextFieldBuilder formatMaskString(final String formatMaskString) {
-    this.formatMaskString = requireNonNull(formatMaskString);
+  public FormattedTextFieldBuilder formatMask(final String formatMask) {
+    this.formatMask = requireNonNull(formatMask);
     return this;
   }
 
@@ -60,9 +56,8 @@ final class DefaultFormattedTextFieldBuilder
   @Override
   protected JFormattedTextField buildComponent() {
     try {
-      final JFormattedTextField textField = new JFormattedTextField(TextFields.fieldFormatter(formatMaskString, valueContainsLiterals));
+      final JFormattedTextField textField = new JFormattedTextField(TextFields.fieldFormatter(formatMask, valueContainsLiterals));
       textField.setFocusLostBehavior(focusLostBehaviour);
-      ComponentValues.textComponent(textField, null, updateOn).link(value);
       textField.setColumns(columns);
 
       return textField;
@@ -70,5 +65,10 @@ final class DefaultFormattedTextFieldBuilder
     catch (final ParseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  protected ComponentValue<String, JFormattedTextField> buildComponentValue(final JFormattedTextField component) {
+    return ComponentValues.textComponent(component, null, updateOn);
   }
 }

@@ -3,9 +3,10 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JTextField;
@@ -22,10 +23,6 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   private Dimension textAreaSize;
   private int maximumLength;
   private String caption;
-
-  DefaultTextInputPanelBuilder(final Value<String> value) {
-    super(value);
-  }
 
   @Override
   public TextInputPanelBuilder updateOn(final UpdateOn updateOn) {
@@ -65,20 +62,22 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final JTextField field = new DefaultTextFieldBuilder<>(value, String.class)
+    final JTextField field = new DefaultTextFieldBuilder<>(String.class)
             .updateOn(updateOn)
             .columns(columns)
+            .maximumLength(maximumLength)
             .build();
-    final TextInputPanel panel = TextInputPanel.builder(field)
+
+    return TextInputPanel.builder(field)
             .dialogTitle(caption)
             .textAreaSize(textAreaSize)
             .buttonFocusable(buttonFocusable)
             .build();
-    if (maximumLength > 0) {
-      panel.setMaximumLength(maximumLength);
-    }
+  }
 
-    return panel;
+  @Override
+  protected ComponentValue<String, TextInputPanel> buildComponentValue(final TextInputPanel component) {
+    return ComponentValues.textInputPanel(component);
   }
 
   @Override

@@ -13,10 +13,10 @@ import javax.swing.JFormattedTextField;
 public interface FormattedTextFieldBuilder extends ComponentBuilder<String, JFormattedTextField, FormattedTextFieldBuilder> {
 
   /**
-   * @param formatMaskString the format mask string
+   * @param formatMask the format mask string
    * @return this builder instance
    */
-  FormattedTextFieldBuilder formatMaskString(String formatMaskString);
+  FormattedTextFieldBuilder formatMask(String formatMask);
 
   /**
    * @param valueContainsLiterals true if the value should contain literal characters

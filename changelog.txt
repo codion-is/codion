@@ -7086,3 +7086,6 @@
   AbstractComponentBuilder, major refactoring, no longer depends on domain
   ComponentBuilder moved to swing.common.ui.component
   TextFieldBuilder now handles creating type specific text fields
+  ComponentBuilder, major refactoring, value linking no longer happens during component construction
+  EntityComponentValues now uses EntityInputComponents
+  FormattedTextFieldBuilder.formatMaskString() renamed formatMask()

@@ -118,10 +118,11 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * A new Builder instance
    * @param <T> the Temporal type
+   * @param temporalField the temporal field
    * @return a new builder
    */
-  public static <T extends Temporal> Builder<T> builder() {
-    return new TemporalPanelBuilder<>();
+  public static <T extends Temporal> Builder<T> builder(final TemporalField<T> temporalField) {
+    return new TemporalPanelBuilder<>(temporalField);
   }
 
   /**
@@ -214,12 +215,6 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   public interface Builder<T extends Temporal> {
 
     /**
-     * @param temporalField the temporal input field
-     * @return this builder instance
-     */
-    Builder<T> temporalField(TemporalField<T> temporalField);
-
-    /**
      * @param initialValue the initial value to present
      * @return this builder instance
      */
@@ -245,15 +240,14 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   private static final class TemporalPanelBuilder<T extends Temporal> implements Builder<T> {
 
-    protected TemporalField<T> temporalField;
-    protected T initialValue;
-    protected StateObserver enabledState;
-    protected boolean calendarButton;
+    private final TemporalField<T> temporalField;
 
-    @Override
-    public Builder<T> temporalField(final TemporalField<T> temporalField) {
+    private T initialValue;
+    private StateObserver enabledState;
+    private boolean calendarButton;
+
+    private TemporalPanelBuilder(final TemporalField<T> temporalField) {
       this.temporalField = requireNonNull(temporalField);
-      return this;
     }
 
     @Override
@@ -276,10 +270,6 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     @Override
     public TemporalInputPanel<T> build() {
-      if (temporalField == null) {
-        throw new IllegalStateException("temporalField must be set before building");
-      }
-
       final TemporalInputPanel<T> inputPanel;
       final Class<T> temporalClass = temporalField.getTemporalClass();
       if (temporalClass.equals(LocalDate.class)) {
