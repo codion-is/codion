@@ -3,11 +3,11 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValues;
+import is.codion.swing.common.ui.value.AbstractComponentValue;
+import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JTextField;
 
@@ -16,8 +16,7 @@ final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entit
 
   private int columns;
 
-  DefaultForeignKeyFieldBuilder(final Value<Entity> value) {
-    super(value);
+  DefaultForeignKeyFieldBuilder() {
     preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
@@ -32,10 +31,22 @@ final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entit
     final JTextField textField = new JTextField(columns);
     textField.setEditable(false);
     textField.setFocusable(false);
-    final Value<String> entityStringValue = Value.value();
-    value.addDataListener(entity -> entityStringValue.set(entity == null ? "" : entity.toString()));
-    ComponentValues.textComponent(textField).link(entityStringValue);
 
     return textField;
+  }
+
+  @Override
+  protected ComponentValue<Entity, JTextField> buildComponentValue(final JTextField textField) {
+    return new AbstractComponentValue<Entity, JTextField>(textField) {
+      @Override
+      protected Entity getComponentValue(final JTextField component) {
+        return null;
+      }
+
+      @Override
+      protected void setComponentValue(final JTextField component, final Entity entity) {
+        component.setText(entity == null ? "" : entity.toString());
+      }
+    };
   }
 }

@@ -185,12 +185,12 @@ public class TemporalValuesTest {
     final TemporalField<LocalDate> localDateField = TemporalField.builder(LocalDate.class).dateTimePattern("dd-MM-yyyy").build();
     localDateField.setTemporal(date);
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            ComponentValues.temporalInputPanel(TemporalInputPanel.<LocalDate>builder().temporalField(localDateField).initialValue(date).build());
+            ComponentValues.temporalInputPanel(TemporalInputPanel.builder(localDateField).initialValue(date).build());
     assertEquals(date, componentValue.get());
 
     localDateField.setTemporal(null);
 
-    componentValue = new TemporalInputPanelValue<>(TemporalInputPanel.<LocalDate>builder().temporalField(localDateField).build());
+    componentValue = new TemporalInputPanelValue<>(TemporalInputPanel.builder(localDateField).build());
     assertNull(componentValue.get());
 
     componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));

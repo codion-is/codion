@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JTextArea;
@@ -19,10 +19,6 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private int rows;
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
-
-  DefaultTextAreaBuilder(final Value<String> value) {
-    super(value);
-  }
 
   @Override
   public TextAreaBuilder rows(final int rows) {
@@ -58,8 +54,12 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(
               parsingDocumentFilter(stringLengthValidator(maximumLength)));
     }
-    ComponentValues.textComponent(textArea, null, updateOn).link(value);
 
     return textArea;
+  }
+
+  @Override
+  protected ComponentValue<String, JTextArea> buildComponentValue(final JTextArea component) {
+    return ComponentValues.textComponent(component, null, updateOn);
   }
 }

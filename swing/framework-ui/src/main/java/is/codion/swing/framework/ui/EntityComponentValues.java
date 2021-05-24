@@ -128,11 +128,13 @@ public class EntityComponentValues {
   private static <T, C extends JComponent> ComponentValue<T, C> createTemporalInputPanel(final Attribute<T> attribute,
                                                                                          final Temporal initialValue,
                                                                                          final Property<T> property) {
-    return (ComponentValue<T, C>) temporalInputPanel(TemporalInputPanel.builder()
-            .temporalField(TemporalField.builder((Class<Temporal>) attribute.getTypeClass())
-                    .dateTimePattern(property.getDateTimePattern())
-                    .build())
+    final TemporalField<Temporal> temporalField = TemporalField.builder((Class<Temporal>) attribute.getTypeClass())
+            .dateTimePattern(property.getDateTimePattern())
+            .build();
+
+    return (ComponentValue<T, C>) temporalInputPanel(TemporalInputPanel.builder(temporalField)
             .initialValue(initialValue)
+            .calendarButton(true)
             .build());
   }
 

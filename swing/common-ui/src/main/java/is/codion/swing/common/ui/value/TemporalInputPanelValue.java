@@ -25,15 +25,7 @@ final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponen
   @Override
   protected V getComponentValue(final TemporalInputPanel<V> component) {
     try {
-      final String dateText = component.getInputField().getText();
-      if (dateText.isEmpty()) {
-        return null;
-      }
-      if (!dateText.contains("_")) {
-        return component.getTemporal();
-      }
-
-      return null;
+      return component.getTemporal();
     }
     catch (final DateTimeParseException e) {
       throw new IllegalArgumentException("Wrong date format " + component.getDateTimePattern() + " expected", e);

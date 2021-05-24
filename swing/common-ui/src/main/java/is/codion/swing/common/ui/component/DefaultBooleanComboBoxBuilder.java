@@ -4,12 +4,12 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JComponent;
@@ -17,8 +17,7 @@ import javax.swing.JComponent;
 final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boolean, SteppedComboBox<Item<Boolean>>, BooleanComboBoxBuilder>
         implements BooleanComboBoxBuilder {
 
-  DefaultBooleanComboBoxBuilder(final Value<Boolean> value) {
-    super(value);
+  DefaultBooleanComboBoxBuilder() {
     preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
@@ -26,10 +25,14 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
   protected SteppedComboBox<Item<Boolean>> buildComponent() {
     final BooleanComboBoxModel comboBoxModel = new BooleanComboBoxModel();
     final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
-    ComponentValues.itemComboBox(comboBox).link(value);
     Completion.addComboBoxCompletion(comboBox);
 
     return comboBox;
+  }
+
+  @Override
+  protected ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> buildComponentValue(final SteppedComboBox<Item<Boolean>> component) {
+    return ComponentValues.itemComboBox(component);
   }
 
   @Override

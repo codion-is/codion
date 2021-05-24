@@ -3,15 +3,13 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.ui.EntitySearchField;
 
-import java.util.List;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
@@ -27,8 +25,7 @@ final class DefaultForeignKeySearchFieldBuilder
   private boolean lowerCase;
   private Function<EntitySearchModel, EntitySearchField.SelectionProvider> selectionProviderFactory;
 
-  DefaultForeignKeySearchFieldBuilder(final Value<Entity> value, final EntitySearchModel searchModel) {
-    super(value);
+  DefaultForeignKeySearchFieldBuilder(final EntitySearchModel searchModel) {
     this.searchModel = searchModel;
   }
 
@@ -72,35 +69,18 @@ final class DefaultForeignKeySearchFieldBuilder
     if (selectionProviderFactory != null) {
       searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.getModel()));
     }
-    new SearchUIValue(searchField.getModel()).link(value);
     selectAllOnFocusGained(searchField);
 
     return searchField;
   }
 
   @Override
-  protected void setTransferFocusOnEnter(final EntitySearchField component) {
-    component.setTransferFocusOnEnter(true);
+  protected ComponentValue<Entity, EntitySearchField> buildComponentValue(final EntitySearchField component) {
+    return component.componentValueSingle();
   }
 
-  private static final class SearchUIValue extends AbstractValue<Entity> {
-
-    private final EntitySearchModel searchModel;
-
-    private SearchUIValue(final EntitySearchModel searchModel) {
-      this.searchModel = searchModel;
-      this.searchModel.addSelectedEntitiesListener(selected -> notifyValueChange());
-    }
-
-    @Override
-    public Entity get() {
-      final List<Entity> selectedEntities = searchModel.getSelectedEntities();
-      return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
-    }
-
-    @Override
-    protected void setValue(final Entity value) {
-      searchModel.setSelectedEntity(value);
-    }
+  @Override
+  protected void setTransferFocusOnEnter(final EntitySearchField component) {
+    component.setTransferFocusOnEnter(true);
   }
 }
