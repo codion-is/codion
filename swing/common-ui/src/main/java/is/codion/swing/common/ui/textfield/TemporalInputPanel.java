@@ -1,9 +1,8 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.time;
+package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
@@ -11,7 +10,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TemporalField;
 
 import com.github.lgooddatepicker.components.CalendarPanel;
 import com.github.lgooddatepicker.components.TimePicker;
@@ -31,6 +29,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,9 +38,12 @@ import static java.util.Objects.requireNonNull;
  * A panel for Temporal input
  * @param <T> the Temporal type supplied by this panel
  */
-public class TemporalInputPanel<T extends Temporal> extends JPanel {
+public final class TemporalInputPanel<T extends Temporal> extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalInputPanel.class.getName());
 
   private final TemporalField<T> inputField;
+  private final JButton calendarButton;
 
   /**
    * Instantiates a new TemporalInputPanel.
@@ -58,7 +61,13 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   public TemporalInputPanel(final TemporalField<T> temporalField, final StateObserver enabledState) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
+    this.calendarButton = Control.builder(this::displayCalendar)
+            .name("...")
+            .enabledState(enabledState)
+            .build().createButton();
+    this.calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     add(temporalField, BorderLayout.CENTER);
+    add(calendarButton, BorderLayout.EAST);
     addFocusListener(new InputFocusAdapter(temporalField));
     if (enabledState != null) {
       Components.linkToEnabledState(enabledState, temporalField);
@@ -70,6 +79,13 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public final TemporalField<T> getInputField() {
     return inputField;
+  }
+
+  /**
+   * @return the calendar button
+   */
+  public final JButton getCalendarButton() {
+    return calendarButton;
   }
 
   /**
@@ -96,11 +112,17 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
-   * Returns null by default.
-   * @return the button, if any
+   * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
-  public JButton getCalendarButton() {
-    return null;
+  public final void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+    if (transferFocusOnEnter) {
+      Components.transferFocusOnEnter(inputField);
+      Components.transferFocusOnEnter(calendarButton);
+    }
+    else {
+      Components.removeTransferFocusOnEnter(inputField);
+      Components.removeTransferFocusOnEnter(calendarButton);
+    }
   }
 
   @Override
@@ -115,14 +137,44 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     super.addFocusListener(listener);
   }
 
-  /**
-   * A new Builder instance
-   * @param <T> the Temporal type
-   * @param temporalField the temporal field
-   * @return a new builder
-   */
-  public static <T extends Temporal> Builder<T> builder(final TemporalField<T> temporalField) {
-    return new TemporalPanelBuilder<>(temporalField);
+  private void displayCalendar() {
+    if (inputField.getTemporalClass().equals(LocalDate.class)) {
+      displayCalendarForLocalDate();
+    }
+    else if (inputField.getTemporalClass().equals(LocalDateTime.class)) {
+      displayCalendarForLocalDateTime();
+    }
+    else {
+      throw new IllegalStateException("Unsupported Temporal type: " + inputField.getTemporalClass());
+    }
+  }
+
+  private void displayCalendarForLocalDate() {
+    T currentValue = null;
+    try {
+      currentValue = getTemporal();
+    }
+    catch (final DateTimeParseException ignored) {/*ignored*/}
+    final JFormattedTextField inputField = getInputField();
+    getLocalDateWithCalendar((LocalDate) currentValue, MESSAGES.getString("select_date"), inputField)
+            .ifPresent(localDate -> {
+              inputField.setText(getInputField().getDateTimeFormatter().format(localDate));
+              inputField.requestFocusInWindow();
+            });
+  }
+
+  private void displayCalendarForLocalDateTime() {
+    T currentValue = null;
+    try {
+      currentValue = getTemporal();
+    }
+    catch (final DateTimeParseException ignored) {/*ignored*/}
+    final JFormattedTextField inputField = getInputField();
+    getLocalDateTimeWithCalendar((LocalDateTime) currentValue, MESSAGES.getString("select_date_time"), inputField)
+            .ifPresent(localDateTime -> {
+              inputField.setText(getInputField().getDateTimeFormatter().format(localDateTime));
+              inputField.requestFocusInWindow();
+            });
   }
 
   /**
@@ -130,10 +182,9 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param startDate the starting date, if null the current date is used
    * @param message the message to display as dialog title
    * @param parent the dialog parent
-   * @return a LocalDate from the user
-   * @throws is.codion.common.model.CancelException in case the user cancelled
+   * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static LocalDate getLocalDateWithCalendar(final LocalDate startDate, final String message, final JComponent parent) {
+  public static Optional<LocalDate> getLocalDateWithCalendar(final LocalDate startDate, final String message, final JComponent parent) {
     final CalendarPanel calendarPanel = new CalendarPanel();
     calendarPanel.setSelectedDate(startDate);
     final State okPressed = State.state();
@@ -146,23 +197,19 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
               Windows.getParentDialog(calendarPanel).dispose();
             }))
             .show();
-    if (okPressed.get()) {
-      return calendarPanel.getSelectedDate();
-    }
 
-    throw new CancelException();
+    return okPressed.get() ? Optional.of(calendarPanel.getSelectedDate()) : Optional.empty();
   }
 
   /**
    * Retrieves a LocalDateTime from the user.
    * @param startDateTime the starting date, if null the current date is used
-   * @param message the message to display as dialog title
+   * @param dialogTitle the dialog title
    * @param parent the dialog parent
-   * @return a LocalDateTime from the user
-   * @throws is.codion.common.model.CancelException in case the user cancelled
+   * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static LocalDateTime getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String message,
-                                                           final JComponent parent) {
+  public static Optional<LocalDateTime> getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String dialogTitle,
+                                                                     final JComponent parent) {
     final TimePickerSettings timeSettings = new TimePickerSettings();
     timeSettings.use24HourClockFormat();
     timeSettings.setDisplaySpinnerButtons(true);
@@ -181,18 +228,15 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     final State okPressed = State.state();
     Dialogs.okCancelDialogBuilder()
             .owner(parent)
-            .title(message)
+            .title(dialogTitle)
             .component(dateTimePanel)
             .okAction(Control.control(() -> {
               okPressed.set(true);
               Windows.getParentDialog(dateTimePanel).dispose();
             }))
             .show();
-    if (okPressed.get()) {
-      return LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime());
-    }
 
-    throw new CancelException();
+    return okPressed.get() ? Optional.of(LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime())) : Optional.empty();
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
@@ -205,88 +249,6 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     @Override
     public void focusGained(final FocusEvent e) {
       inputField.requestFocusInWindow();
-    }
-  }
-
-  /**
-   * A builder for {@link TemporalInputPanel}s
-   * @param <T> the Temporal type
-   */
-  public interface Builder<T extends Temporal> {
-
-    /**
-     * @param initialValue the initial value to present
-     * @return this builder instance
-     */
-    Builder<T> initialValue(T initialValue);
-
-    /**
-     * @param enabledState the enabled state
-     * @return this builder instance
-     */
-    Builder<T> enabledState(StateObserver enabledState);
-
-    /**
-     * @param calendarButton true if a calendar button should be included, has no effect if not supported
-     * @return this builder instance
-     */
-    Builder<T> calendarButton(boolean calendarButton);
-
-    /**
-     * @return a new {@link TemporalInputPanel} instance
-     */
-    TemporalInputPanel<T> build();
-  }
-
-  private static final class TemporalPanelBuilder<T extends Temporal> implements Builder<T> {
-
-    private final TemporalField<T> temporalField;
-
-    private T initialValue;
-    private StateObserver enabledState;
-    private boolean calendarButton;
-
-    private TemporalPanelBuilder(final TemporalField<T> temporalField) {
-      this.temporalField = requireNonNull(temporalField);
-    }
-
-    @Override
-    public Builder<T> initialValue(final T initialValue) {
-      this.initialValue = initialValue;
-      return this;
-    }
-
-    @Override
-    public Builder<T> enabledState(final StateObserver enabledState) {
-      this.enabledState = enabledState;
-      return this;
-    }
-
-    @Override
-    public Builder<T> calendarButton(final boolean calendarButton) {
-      this.calendarButton = calendarButton;
-      return this;
-    }
-
-    @Override
-    public TemporalInputPanel<T> build() {
-      final TemporalInputPanel<T> inputPanel;
-      final Class<T> temporalClass = temporalField.getTemporalClass();
-      if (temporalClass.equals(LocalDate.class)) {
-        inputPanel = (TemporalInputPanel<T>) new LocalDateInputPanel((TemporalField<LocalDate>) temporalField,
-                calendarButton, enabledState);
-      }
-      else if (temporalClass.equals(LocalDateTime.class)) {
-        inputPanel = (TemporalInputPanel<T>) new LocalDateTimeInputPanel((TemporalField<LocalDateTime>) temporalField,
-                calendarButton, enabledState);
-      }
-      else {
-        inputPanel = new TemporalInputPanel<>(temporalField, enabledState);
-      }
-
-      inputPanel.setTemporal(initialValue);
-
-      return inputPanel;
     }
   }
 }

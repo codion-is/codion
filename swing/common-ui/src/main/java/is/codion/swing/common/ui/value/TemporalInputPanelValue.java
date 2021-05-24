@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;

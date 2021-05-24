@@ -3,9 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -20,7 +19,6 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   private final Class<T> valueClass;
 
-  private boolean calendarButton = true;
   private int columns;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private String dateTimePattern;
@@ -48,23 +46,12 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
-  public TemporalInputPanelBuilder<T> calendarButton(final boolean calendarButton) {
-    this.calendarButton = calendarButton;
-    return this;
-  }
-
-  @Override
   protected TemporalInputPanel<T> buildComponent() {
-    final TemporalField<T> temporalField = (TemporalField<T>) ComponentBuilders.textFieldBuilder(valueClass)
+    return new TemporalInputPanel<>((TemporalField<T>) ComponentBuilders.textFieldBuilder(valueClass)
             .updateOn(updateOn)
             .columns(columns)
             .dateTimePattern(dateTimePattern)
-            .build();
-
-    return TemporalInputPanel.builder(temporalField)
-            .calendarButton(calendarButton)
-            .enabledState(enabledState)
-            .build();
+            .build(), enabledState);
   }
 
   @Override
@@ -74,9 +61,6 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected void setTransferFocusOnEnter(final TemporalInputPanel<T> component) {
-    Components.transferFocusOnEnter(component.getInputField());
-    if (component.getCalendarButton() != null) {
-      Components.transferFocusOnEnter(component.getCalendarButton());
-    }
+    component.setTransferFocusOnEnter(true);
   }
 }

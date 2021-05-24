@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import java.time.temporal.Temporal;
@@ -31,10 +31,4 @@ public interface TemporalInputPanelBuilder<T extends Temporal> extends Component
    * @return this builder instance
    */
   TemporalInputPanelBuilder<T> dateTimePattern(String dateTimePattern);
-
-  /**
-   * @param calendarButton true if a calendar button should be included (may not be supported)
-   * @return this builder instance
-   */
-  TemporalInputPanelBuilder<T> calendarButton(boolean calendarButton);
 }

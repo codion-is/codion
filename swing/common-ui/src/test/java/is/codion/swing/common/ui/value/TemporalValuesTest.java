@@ -3,7 +3,7 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 
@@ -185,12 +185,12 @@ public class TemporalValuesTest {
     final TemporalField<LocalDate> localDateField = TemporalField.builder(LocalDate.class).dateTimePattern("dd-MM-yyyy").build();
     localDateField.setTemporal(date);
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            ComponentValues.temporalInputPanel(TemporalInputPanel.builder(localDateField).initialValue(date).build());
+            ComponentValues.temporalInputPanel(new TemporalInputPanel<>(localDateField));
     assertEquals(date, componentValue.get());
 
     localDateField.setTemporal(null);
 
-    componentValue = new TemporalInputPanelValue<>(TemporalInputPanel.builder(localDateField).build());
+    componentValue = new TemporalInputPanelValue<>(new TemporalInputPanel<>(localDateField));
     assertNull(componentValue.get());
 
     componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
