@@ -1,6 +1,7 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
@@ -33,7 +34,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
     averageCityPopulationValue.set(value);
   }
 
-  public Value<Double> getAvarageCityPopulationValue() {
-    return averageCityPopulationValue;
+  public ValueObserver<Double> getAvarageCityPopulationValue() {
+    return averageCityPopulationValue.getObserver();
   }
 }

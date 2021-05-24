@@ -95,9 +95,9 @@ public final class CityTableModel extends SwingEntityTableModel {
     @Override
     protected Comparable<?> getComparable(Entity entity, Attribute<?> attribute) {
       if (attribute.equals(City.LOCATION)) {
-        Object location = entity.get(attribute);
-
-        return location == null ? null : location.toString();
+        return entity.getOptional(attribute)
+                .map(Object::toString)
+                .orElse(null);
       }
 
       return super.getComparable(entity, attribute);

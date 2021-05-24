@@ -136,10 +136,12 @@ public final class WorldImpl extends DefaultDomain {
             // end::denormalizedViewProperty[]
             // tag::subqueryProperty[]
             subqueryProperty(Country.NO_OF_CITIES, "No. of cities",
-                    "select count(*) from world.city where city.countrycode = country.code"),
+                    "select count(*) from world.city " +
+                            "where city.countrycode = country.code"),
             // end::subqueryProperty[]
             subqueryProperty(Country.NO_OF_LANGUAGES, "No. of languages",
-                    "select count(*) from world.countrylanguage where countrycode = code"),
+                    "select count(*) from world.countrylanguage " +
+                            "where countrylanguage.countrycode = country.code"),
             // tag::blobProperty[]
             blobProperty(Country.FLAG, "Flag")
                     .eagerlyLoaded(),

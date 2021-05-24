@@ -47,7 +47,7 @@ public final class WorldImplTest extends EntityTestUnit {
                                         Map<EntityType<?>, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
     if (entityType.equals(Country.TYPE)) {
-      entity.put(Country.CODE, "XXX");
+      entity.put(Country.CODE, "XYZ");
       entity.put(Country.CONTINENT, "Asia");
     }
     else if (entityType.equals(City.TYPE)) {
