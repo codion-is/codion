@@ -13,7 +13,6 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui.layout;
   exports is.codion.swing.common.ui.table;
   exports is.codion.swing.common.ui.textfield;
-  exports is.codion.swing.common.ui.time;
   exports is.codion.swing.common.ui.value;
   exports is.codion.swing.common.ui.worker;
 
