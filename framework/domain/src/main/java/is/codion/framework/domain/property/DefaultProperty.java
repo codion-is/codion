@@ -250,7 +250,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   @Override
   public final int getMaximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Maximum fraction digits are only apply to numerical formats");
+      return -1;
     }
 
     return ((NumberFormat) format).getMaximumFractionDigits();

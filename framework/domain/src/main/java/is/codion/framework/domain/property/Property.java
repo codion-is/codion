@@ -154,7 +154,7 @@ public interface Property<T> {
 
   /**
    * @return the maximum number of fraction digits to use for this property value,
-   * only applicable to properties based on Types.DOUBLE and Types.DECIMAL
+   * -1 if this property is not based on Types.DOUBLE or Types.DECIMAL
    * @see #getDecimalRoundingMode()
    */
   int getMaximumFractionDigits();

@@ -38,6 +38,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   private String dateTimePattern;
   private Double maximumValue;
   private Double minimumValue;
+  private int maximumFractionDigits = -1;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
     this.valueClass = requireNonNull(valueClass);
@@ -85,6 +86,13 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     this.maximumValue = maximumValue;
     return this;
   }
+
+  @Override
+  public TextFieldBuilder<T> maximumFractionDigits(final int maximumFractionDigits) {
+    this.maximumFractionDigits = maximumFractionDigits;
+    return this;
+  }
+
 
   @Override
   protected JTextField buildComponent() {
@@ -182,6 +190,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     if (minimumValue != null && maximumValue != null) {
       field.setRange(Math.min(minimumValue, 0), maximumValue);
     }
+    if (maximumFractionDigits > 0) {
+      field.setMaximumFractionDigits(maximumFractionDigits);
+    }
 
     return field;
   }
@@ -190,6 +201,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) format));
     if (minimumValue != null && maximumValue != null) {
       field.setRange(Math.min(minimumValue, 0), maximumValue);
+    }
+    if (maximumFractionDigits > 0) {
+      field.setMaximumFractionDigits(maximumFractionDigits);
     }
 
     return field;

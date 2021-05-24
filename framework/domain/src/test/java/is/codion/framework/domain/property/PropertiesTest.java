@@ -120,7 +120,7 @@ public final class PropertiesTest {
 
   @Test
   public void getMaximumFractionDigitsNotNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).get().getMaximumFractionDigits());
+    assertEquals(-1, columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).get().getMaximumFractionDigits());
   }
 
   @Test

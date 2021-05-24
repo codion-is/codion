@@ -206,6 +206,7 @@ public class EntityComponentBuilders {
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
+            .maximumFractionDigits(property.getMaximumFractionDigits())
             .description(property.getDescription());
   }
 

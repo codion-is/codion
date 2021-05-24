@@ -59,4 +59,10 @@ public interface TextFieldBuilder<T> extends TextComponentBuilder<T, JTextField,
    * @return this builder instance
    */
   TextFieldBuilder<T> maximumValue(Double maximumValue);
+
+  /**
+   * @param maximumFractionDigits the maximum fraction digits for floating point numbers, if applicable
+   * @return this builder instance
+   */
+  TextFieldBuilder<T> maximumFractionDigits(int maximumFractionDigits);
 }
