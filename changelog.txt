@@ -7062,3 +7062,4 @@
   EntityComponentBuilders split from EntityInputComponents, which extends it, further cleanup
   RemoteClient.remoteClient(remoteClient, databaseUser) replaced with RemoteClient.withDatabaseUser(databaseUser)
   TemporalInputPanel.Builder removed, TemporalInputPanel refactored, now final, handles calendar input
+  TemporalInputPanel moved to textfield package, not perfect, but better than the time package

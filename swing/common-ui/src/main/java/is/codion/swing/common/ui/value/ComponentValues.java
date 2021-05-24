@@ -10,8 +10,8 @@ import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
-import is.codion.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.JComboBox;
 import javax.swing.JProgressBar;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.time;
+package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -10,8 +10,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.textfield.TextFields;
 
 import com.github.lgooddatepicker.components.CalendarPanel;
 import com.github.lgooddatepicker.components.TimePicker;

@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -47,13 +47,11 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected TemporalInputPanel<T> buildComponent() {
-    final TemporalField<T> temporalField = (TemporalField<T>) ComponentBuilders.textFieldBuilder(valueClass)
+    return new TemporalInputPanel<>((TemporalField<T>) ComponentBuilders.textFieldBuilder(valueClass)
             .updateOn(updateOn)
             .columns(columns)
             .dateTimePattern(dateTimePattern)
-            .build();
-
-    return new TemporalInputPanel<>(temporalField, enabledState);
+            .build(), enabledState);
   }
 
   @Override
