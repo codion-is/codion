@@ -7063,3 +7063,4 @@
   RemoteClient.remoteClient(remoteClient, databaseUser) replaced with RemoteClient.withDatabaseUser(databaseUser)
   TemporalInputPanel.Builder removed, TemporalInputPanel refactored, now final, handles calendar input
   TemporalInputPanel moved to textfield package, not perfect, but better than the time package
+  FileInputPanelValue.FileInputPanel moved to textfield package, was public in a package protected class
