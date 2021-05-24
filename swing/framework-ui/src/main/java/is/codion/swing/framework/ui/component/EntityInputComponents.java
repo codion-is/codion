@@ -47,8 +47,6 @@ public final class EntityInputComponents {
    */
   public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("codion.swing.labelTextAlignment", JLabel.LEFT);
 
-  private static final String ATTRIBUTE_PARAM_NAME = "attribute";
-
   /**
    * The underlying entity definition
    */
@@ -85,7 +83,7 @@ public final class EntityInputComponents {
   public <T, C extends JComponent> ComponentValue<T, C> createInputComponent(final Attribute<T> attribute,
                                                                              final StateObserver enabledState) {
     if (attribute instanceof ForeignKey) {
-      throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeySearchField() for ForeignKeys");
+      throw new IllegalArgumentException("ForeignKeys are not supported");
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (property instanceof ValueListProperty) {
@@ -107,33 +105,6 @@ public final class EntityInputComponents {
     }
 
     throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.getTypeClass() + ")");
-  }
-
-  /**
-   * Creates a JLabel with a caption from the given attribute, using the default label text alignment
-   * @param attribute the attribute for which to create the label
-   * @return a JLabel for the given attribute
-   * @see EntityInputComponents#LABEL_TEXT_ALIGNMENT
-   */
-  public JLabel createLabel(final Attribute<?> attribute) {
-    return createLabel(attribute, LABEL_TEXT_ALIGNMENT.get());
-  }
-
-  /**
-   * Creates a JLabel with a caption from the given attribute
-   * @param attribute the attribute for which to create the label
-   * @param horizontalAlignment the horizontal text alignment
-   * @return a JLabel for the given attribute
-   */
-  public JLabel createLabel(final Attribute<?> attribute, final int horizontalAlignment) {
-    requireNonNull(attribute, ATTRIBUTE_PARAM_NAME);
-    final Property<?> property = entityDefinition.getProperty(attribute);
-    final JLabel label = new JLabel(property.getCaption(), horizontalAlignment);
-    if (property.getMnemonic() != null) {
-      label.setDisplayedMnemonic(property.getMnemonic());
-    }
-
-    return label;
   }
 
   /**

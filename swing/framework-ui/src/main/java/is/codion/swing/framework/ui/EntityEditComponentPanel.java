@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -492,7 +493,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final <T extends Temporal> TemporalInputPanelBuilder<T> createTemporalInputPanel(final Attribute<T> attribute) {
     final TemporalInputPanelBuilder<T> builder = inputComponents.temporalInputPanelBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
-            .addBuildListener(inputPanel -> EntityComponentValidators.addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel()));
+            .addBuildListener(inputPanel -> addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel()));
     setComponentBuilder(attribute, builder);
 
     return builder;
@@ -521,7 +522,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final FormattedTextFieldBuilder createFormattedTextField(final Attribute<String> attribute) {
     final FormattedTextFieldBuilder builder = inputComponents.formattedTextFieldBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
-            .addBuildListener(textField -> EntityComponentValidators.addFormattedValidator(attribute, textField, getEditModel()));
+            .addBuildListener(textField -> addFormattedValidator(attribute, textField, getEditModel()));
     setComponentBuilder(attribute, builder);
 
     return builder;
@@ -661,7 +662,13 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JLabel for the given attribute
    */
   protected final <T> JLabel createLabel(final Attribute<T> attribute, final int horizontalAlignment) {
-    return setLabelForComponent(inputComponents.createLabel(attribute, horizontalAlignment), getComponent(attribute));
+    final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
+    final JLabel label = new JLabel(property.getCaption(), horizontalAlignment);
+    if (property.getMnemonic() != null) {
+      label.setDisplayedMnemonic(property.getMnemonic());
+    }
+
+    return setLabelForComponent(label, getComponent(attribute));
   }
 
   /**

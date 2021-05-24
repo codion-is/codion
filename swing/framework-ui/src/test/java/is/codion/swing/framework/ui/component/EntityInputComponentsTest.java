@@ -6,7 +6,6 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
@@ -25,15 +24,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityInputComponentsTest {
-
-  private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -42,12 +38,6 @@ public class EntityInputComponentsTest {
 
   private final EntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
   private final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
-
-  @Test
-  public void createLabel() {
-    final JLabel label = inputComponents.createLabel(TestDomain.DETAIL_STRING);
-    assertEquals(DOMAIN.getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_STRING).getCaption(), label.getText());
-  }
 
   @Test
   public void createCheckBox() {
