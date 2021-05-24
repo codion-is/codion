@@ -14,16 +14,20 @@ import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JComponent;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boolean, SteppedComboBox<Item<Boolean>>, BooleanComboBoxBuilder>
         implements BooleanComboBoxBuilder {
 
-  DefaultBooleanComboBoxBuilder() {
+  private final BooleanComboBoxModel comboBoxModel;
+
+  DefaultBooleanComboBoxBuilder(final BooleanComboBoxModel comboBoxModel) {
+    this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(TextFields.getPreferredTextFieldHeight());
   }
 
   @Override
   protected SteppedComboBox<Item<Boolean>> buildComponent() {
-    final BooleanComboBoxModel comboBoxModel = new BooleanComboBoxModel();
     final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
     Completion.addComboBoxCompletion(comboBox);
 

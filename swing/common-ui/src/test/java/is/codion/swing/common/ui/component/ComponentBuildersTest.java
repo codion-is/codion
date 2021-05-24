@@ -71,7 +71,7 @@ public final class ComponentBuildersTest {
   public void createBooleanComboBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
-            ComponentBuilders.booleanComboBoxBuilder()
+            ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
             .transferFocusOnEnter(true).buildComponentValue();
     componentValue.link(value);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)

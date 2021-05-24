@@ -13,6 +13,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
@@ -157,7 +158,7 @@ public final class EntityInputComponents {
   public BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.booleanComboBoxBuilder()
+    return ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
             .description(property.getDescription());
   }
 
@@ -257,6 +258,7 @@ public final class EntityInputComponents {
 
     return ComponentBuilders.textInputPanelBuilder()
             .description(property.getDescription())
+            .maximumLength(property.getMaximumLength())
             .caption(property.getCaption());
   }
 
@@ -272,7 +274,8 @@ public final class EntityInputComponents {
     }
 
     return ComponentBuilders.textAreaBuilder()
-            .description(property.getDescription());
+            .description(property.getDescription())
+            .maximumLength(property.getMaximumLength());
   }
 
   /**
@@ -287,6 +290,7 @@ public final class EntityInputComponents {
     return ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
             .format(property.getFormat())
             .dateTimePattern(property.getDateTimePattern())
+            .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
             .description(property.getDescription());

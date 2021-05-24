@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import java.time.temporal.Temporal;
@@ -24,10 +25,11 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @param comboBoxModel the combo box model
    * @return a builder for a component linked to the given value
    */
-  public static BooleanComboBoxBuilder booleanComboBoxBuilder() {
-    return new DefaultBooleanComboBoxBuilder();
+  public static BooleanComboBoxBuilder booleanComboBoxBuilder(final BooleanComboBoxModel comboBoxModel) {
+    return new DefaultBooleanComboBoxBuilder(comboBoxModel);
   }
 
   /**

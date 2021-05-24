@@ -3,43 +3,26 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.textfield.SizedDocument;
-import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.component.EntityInputComponents;
 
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.temporal.Temporal;
-import java.util.List;
 
-import static is.codion.swing.common.ui.value.ComponentValues.*;
+import static is.codion.swing.common.ui.value.ComponentValues.fileInputPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Provides {@link ComponentValue} implementations.
  */
 public class EntityComponentValues {
-
-  private static final int DEFAULT_COLUMNS = 16;
 
   /**
    * Provides value input components for multiple entity update, override to supply
@@ -59,39 +42,23 @@ public class EntityComponentValues {
     if (attribute instanceof ForeignKey) {
       return (ComponentValue<T, C>) createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
-    final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
-    if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) itemComboBox(createValueListComboBox((ValueListProperty<T>) property, initialValue));
-    }
-    if (attribute.isBoolean()) {
-      return createBooleanComboBox(initialValue);
-    }
+
+    final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
     if (attribute.isTemporal()) {
-      return createTemporalInputPanel(attribute, (Temporal) initialValue, property);
-    }
-    if (attribute.isDouble()) {
-      return createDoubleField((Double) initialValue, property);
-    }
-    if (attribute.isBigDecimal()) {
-      return createBigDecimalField((BigDecimal) initialValue, property);
-    }
-    if (attribute.isInteger()) {
-      return createIntegerField((Integer) initialValue, property);
-    }
-    if (attribute.isLong()) {
-      return createLongField((Long) initialValue, property);
-    }
-    if (attribute.isCharacter()) {
-      return createTextInpuPanel((Character) initialValue, property);
-    }
-    if (attribute.isString()) {
-      return createTextInputPanel((String) initialValue, property);
+      final ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
+              inputComponents.temporalInputPanelBuilder((Attribute<Temporal>) attribute).buildComponentValue();
+      componentValue.set((Temporal) initialValue);
+
+      return (ComponentValue<T, C>) componentValue;
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) fileInputPanel();
     }
 
-    throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + attribute.getTypeClass() + ")");
+    final ComponentValue<T, C> componentValue = inputComponents.createInputComponent(attribute);
+    componentValue.set(initialValue);
+
+    return componentValue;
   }
 
   /**
@@ -105,108 +72,19 @@ public class EntityComponentValues {
   protected <T extends JComponent> ComponentValue<Entity, T> createForeignKeyComponentValue(final ForeignKey foreignKey,
                                                                                             final SwingEntityEditModel editModel,
                                                                                             final Entity initialValue) {
+    final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<Entity, T>) comboBox(new EntityComboBox(comboBoxModel).refreshOnSetVisible());
+      return (ComponentValue<Entity, T>) inputComponents.foreignKeyComboBoxBuilder(foreignKey, comboBoxModel)
+              .addBuildListener(EntityComboBox::refreshOnSetVisible).buildComponentValue();
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
-    return (ComponentValue<Entity, T>) new EntitySearchField(searchModel).componentValueSingle();
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createBooleanComboBox(final T initialValue) {
-    final BooleanComboBoxModel model = new BooleanComboBoxModel();
-    model.setSelectedItem(initialValue);
-
-    return (ComponentValue<T, C>) booleanComboBox(new JComboBox<>(model));
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createTemporalInputPanel(final Attribute<T> attribute,
-                                                                                         final Temporal initialValue,
-                                                                                         final Property<T> property) {
-    final TemporalField<Temporal> temporalField = TemporalField.builder((Class<Temporal>) attribute.getTypeClass())
-            .dateTimePattern(property.getDateTimePattern())
-            .build();
-
-    return (ComponentValue<T, C>) temporalInputPanel(TemporalInputPanel.builder(temporalField)
-            .initialValue(initialValue)
-            .calendarButton(true)
-            .build());
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createDoubleField(final Double initialValue,
-                                                                                  final Property<T> property) {
-    return (ComponentValue<T, C>) doubleFieldBuilder()
-            .initalValue(initialValue)
-            .format((DecimalFormat) property.getFormat())
-            .build();
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createBigDecimalField(final BigDecimal initialValue,
-                                                                                      final Property<T> property) {
-    return (ComponentValue<T, C>) bigDecimalFieldBuilder()
-            .initalValue(initialValue)
-            .format((DecimalFormat) property.getFormat())
-            .build();
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createIntegerField(final Integer initialValue,
-                                                                                   final Property<T> property) {
-    return (ComponentValue<T, C>) integerFieldBuilder()
-            .initalValue(initialValue)
-            .format((NumberFormat) property.getFormat())
-            .build();
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createLongField(final Long initialValue,
-                                                                                final Property<T> property) {
-    return (ComponentValue<T, C>)  longFieldBuilder()
-            .initalValue(initialValue)
-            .format((NumberFormat) property.getFormat())
-            .build();
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createTextInpuPanel(final Character initialValue,
-                                                                                    final Property<T> property) {
-    return (ComponentValue<T, C>) textInputPanel(TextInputPanel.builder(createTextField(initialValue, 1))
-            .dialogTitle(property.getCaption())
-            .build());
-  }
-
-  private static <T, C extends JComponent> ComponentValue<T, C> createTextInputPanel(final String initialValue,
-                                                                                     final Property<T> property) {
-    return (ComponentValue<T, C>) textInputPanel(TextInputPanel.builder(createTextField(initialValue, property.getMaximumLength()))
-            .dialogTitle(property.getCaption())
-            .build());
-  }
-
-  private static <T> JComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final T initialValue) {
-    final List<Item<T>> values = property.getValues();
-    final ItemComboBoxModel<T> comboBoxModel = new ItemComboBoxModel<>(values);
-    final JComboBox<Item<T>> comboBox = Completion.maximumMatch(new SteppedComboBox<>(comboBoxModel));
-    final Item<T> currentItem = Item.item(initialValue, "");
-    final int currentValueIndex = values.indexOf(currentItem);
-    if (currentValueIndex >= 0) {
-      comboBoxModel.setSelectedItem(values.get(currentValueIndex));
-    }
-
-    return comboBox;
-  }
-
-  private static JTextField createTextField(final Character initialValue, final int maximumLength) {
-    return createTextField(initialValue == null ? null : String.valueOf(initialValue), maximumLength);
-  }
-
-  private static JTextField createTextField(final String initialValue, final int maximumLength) {
-    final SizedDocument document = new SizedDocument();
-    if (maximumLength > 0) {
-      document.setMaximumLength(maximumLength);
-    }
-
-    return new JTextField(document, initialValue, DEFAULT_COLUMNS);
+    return (ComponentValue<Entity, T>) inputComponents.foreignKeySearchFieldBuilder(foreignKey, searchModel)
+            .buildComponentValue();
   }
 }

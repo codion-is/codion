@@ -58,7 +58,10 @@ public class TrackTablePanel extends EntityTablePanel {
                                                                                final SwingEntityEditModel editModel,
                                                                                final T initialValue) {
       if (attribute.equals(Track.MILLISECONDS)) {
-        return (ComponentValue<T, C>) new MinutesSecondsPanelValue();
+        final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue();
+        minutesSecondsPanelValue.set((Integer) initialValue);
+
+        return (ComponentValue<T, C>) minutesSecondsPanelValue;
       }
 
       return super.createComponentValue(attribute, editModel, initialValue);
