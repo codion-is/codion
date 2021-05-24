@@ -197,12 +197,13 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @param <T> the attribute type
    * @param <C> the text field type
+   * @param <B> the builder type
    * @return a builder
    */
-  public final <T, C extends JTextField> TextFieldBuilder<T, C> textFieldBuilder(final Attribute<T> attribute) {
+  public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return (TextFieldBuilder<T, C>) ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
+    return (TextFieldBuilder<T, C, B>) ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
             .format(property.getFormat())
             .dateTimePattern(property.getDateTimePattern())
             .maximumLength(property.getMaximumLength())

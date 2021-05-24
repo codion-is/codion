@@ -5,9 +5,14 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.LongField;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
+import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -78,11 +83,40 @@ public final class ComponentBuilders {
   /**
    * @param <T> the value type
    * @param <C> the text field type
+   * @param <B> the builder type
    * @param valueClass the value class
    * @return a builder for a component linked to the given value
    */
-  public static <T, C extends JTextField> TextFieldBuilder<T, C> textFieldBuilder(final Class<T> valueClass) {
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Class<T> valueClass) {
     return new DefaultTextFieldBuilder<>(valueClass);
+  }
+
+  /**
+   * @return a builder for a component linked to the given value
+   */
+  public static TextFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> integerFieldBuilder() {
+    return new DefaultTextFieldBuilder<>(Integer.class);
+  }
+
+  /**
+   * @return a builder for a component linked to the given value
+   */
+  public static TextFieldBuilder<Long, LongField, LongFieldBuilder> longFieldBuilder() {
+    return new DefaultTextFieldBuilder<>(Long.class);
+  }
+
+  /**
+   * @return a builder for a component linked to the given value
+   */
+  public static TextFieldBuilder<Double, DoubleField, DoubleFieldBuilder> doubleFieldBuilder() {
+    return new DefaultTextFieldBuilder<>(Double.class);
+  }
+
+  /**
+   * @return a builder for a component linked to the given value
+   */
+  public static TextFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> bigDecimalFieldBuilder() {
+    return new DefaultTextFieldBuilder<>(BigDecimal.class);
   }
 
   /**

@@ -513,10 +513,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a text field
    * @param <T> the value type
    * @param <C> the text field type
+   * @param <B> the builder type
    * @return a text field builder
    */
-  protected final <T, C extends JTextField> TextFieldBuilder<T, C> createTextField(final Attribute<T> attribute) {
-    final TextFieldBuilder<T, C> builder = (TextFieldBuilder<T, C>) entityComponentBuilders.textFieldBuilder(attribute)
+  protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(final Attribute<T> attribute) {
+    final TextFieldBuilder<T, C, B> builder = (TextFieldBuilder<T, C, B>) entityComponentBuilders.textFieldBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns);
     setComponentBuilder(attribute, builder);

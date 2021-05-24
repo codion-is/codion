@@ -7067,3 +7067,4 @@
   TextFieldBuilder.maximumFractionDigits() added
   DefaultProperty.getMaximumFractionDigits() now returns -1 for non floating point properties
   TextFieldBuilder, added text field type parameter
+  TextFieldBuilder sub-interfaces added for Integer, Long, Double and BigDecimal, ComponentBuilders factory methods added
