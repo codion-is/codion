@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 
@@ -95,28 +94,28 @@ public final class ComponentBuilders {
    * @return a builder for a component linked to the given value
    */
   public static TextFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> integerFieldBuilder() {
-    return new DefaultTextFieldBuilder<>(Integer.class);
+    return new DefaultIntegerFieldBuilder();
   }
 
   /**
    * @return a builder for a component linked to the given value
    */
   public static TextFieldBuilder<Long, LongField, LongFieldBuilder> longFieldBuilder() {
-    return new DefaultTextFieldBuilder<>(Long.class);
+    return new DefaultLongFieldBuilder();
   }
 
   /**
    * @return a builder for a component linked to the given value
    */
-  public static TextFieldBuilder<Double, DoubleField, DoubleFieldBuilder> doubleFieldBuilder() {
-    return new DefaultTextFieldBuilder<>(Double.class);
+  public static DoubleFieldBuilder doubleFieldBuilder() {
+    return new DefaultDoubleFieldBuilder();
   }
 
   /**
    * @return a builder for a component linked to the given value
    */
   public static TextFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> bigDecimalFieldBuilder() {
-    return new DefaultTextFieldBuilder<>(BigDecimal.class);
+    return new DefaultBigDecimalFieldBuilder();
   }
 
   /**
