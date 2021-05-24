@@ -32,15 +32,21 @@ public final class ClientArchitecture {
    */
   static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
     // initialize a default edit model
-    SwingEntityEditModel artistEditModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
+    SwingEntityEditModel artistEditModel =
+            new SwingEntityEditModel(Artist.TYPE, connectionProvider);
+
     // initialize a default table model
-    SwingEntityTableModel artistTableModel = new SwingEntityTableModel(Artist.TYPE, connectionProvider);
+    SwingEntityTableModel artistTableModel =
+            new SwingEntityTableModel(Artist.TYPE, connectionProvider);
+
     // initialize a default model using the edit and table models
-    SwingEntityModel artistModel = new SwingEntityModel(artistEditModel, artistTableModel);
+    SwingEntityModel artistModel =
+            new SwingEntityModel(artistEditModel, artistTableModel);
 
     // Note that this does the same as the above, that is, initializes
     // a SwingEntityModel with a default edit and table model
-    SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
+    SwingEntityModel albumModel =
+            new SwingEntityModel(Album.TYPE, connectionProvider);
 
     artistModel.addDetailModel(albumModel);
 
@@ -54,13 +60,16 @@ public final class ClientArchitecture {
    * @param connectionProvider the connection provider
    */
   static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
-    // initialize the EntityModel to base the panel on
+    // initialize the EntityModel to base the panel on (calling the above method)
     SwingEntityModel artistModel = artistModel(connectionProvider);
-    // fetch the edit model
+
+    // the edit model
     SwingEntityEditModel artistEditModel = artistModel.getEditModel();
-    // fetch the table model
+
+    // the table model
     SwingEntityTableModel artistTableModel = artistModel.getTableModel();
-    // fetch the album detail model
+
+    // the album detail model
     SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
 
     // create a EntityEditPanel instance, based on the artist edit model
@@ -73,6 +82,7 @@ public final class ClientArchitecture {
     };
     // create a EntityTablePanel instance, based on the artist table model
     EntityTablePanel artistTablePanel = new EntityTablePanel(artistTableModel);
+
     // create a EntityPanel instance, based on the artist model and
     // the edit and table panels from above
     EntityPanel artistPanel = new EntityPanel(artistModel, artistEditPanel, artistTablePanel);
@@ -91,6 +101,7 @@ public final class ClientArchitecture {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+
     // initialize a connection provider, this class is responsible
     // for supplying a valid connection or throwing an exception
     // in case a connection can not be established
@@ -100,8 +111,10 @@ public final class ClientArchitecture {
                     .setUser(User.parseUser("scott:tiger"));
 
     final EntityPanel artistPanel = artistPanel(connectionProvider);
+
     // lazy initialization of the UI
     artistPanel.initializePanel();
+
     // fetch data from the database
     artistPanel.getModel().refresh();
 
