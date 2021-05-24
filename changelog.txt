@@ -7095,3 +7095,7 @@
   TemporalInputPanel.Builder removed, TemporalInputPanel refactored, now final, handles calendar input
   TemporalInputPanel moved to textfield package, not perfect, but better than the time package
   FileInputPanelValue.FileInputPanel moved to textfield package, was public in a package protected class
+  TextFieldBuilder.maximumFractionDigits() added
+  DefaultProperty.getMaximumFractionDigits() now returns -1 for non floating point properties
+  TextFieldBuilder, added text field type parameter
+  TextFieldBuilder sub-interfaces added for Integer, Long, Double and BigDecimal, ComponentBuilders factory methods added

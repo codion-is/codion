@@ -173,11 +173,6 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void setMaximumFractionDigitsToZero() {
-    assertThrows(IllegalArgumentException.class, () -> new DoubleField().setMaximumFractionDigits(0));
-  }
-
-  @Test
   public void setSeparatorsSameCharacter() {
     assertThrows(IllegalArgumentException.class, () -> new DoubleField().setSeparators('.', '.'));
   }

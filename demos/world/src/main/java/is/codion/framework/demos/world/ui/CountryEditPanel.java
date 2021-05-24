@@ -4,6 +4,7 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -29,11 +30,15 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Country.CODE);
 
-    createTextField(Country.CODE).upperCase();
-    createTextField(Country.CODE_2).upperCase();
+    createTextField(Country.CODE)
+            .upperCase();
+    createTextField(Country.CODE_2)
+            .upperCase();
     createTextField(Country.NAME);
-    createValueListComboBox(Country.CONTINENT).preferredWidth(120);
-    createAttributeComboBox(Country.REGION).preferredWidth(120);
+    createValueListComboBox(Country.CONTINENT)
+            .preferredWidth(120);
+    createAttributeComboBox(Country.REGION)
+            .preferredWidth(120);
     createTextField(Country.SURFACEAREA);
     createTextField(Country.INDEPYEAR);
     createTextField(Country.POPULATION);
@@ -41,12 +46,13 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(Country.GNP);
     createTextField(Country.GNPOLD);
     createTextField(Country.LOCALNAME);
-    createAttributeComboBox(Country.GOVERNMENTFORM).preferredWidth(120).editable(true);
+    createAttributeComboBox(Country.GOVERNMENTFORM)
+            .preferredWidth(120)
+            .editable(true);
     createTextField(Country.HEADOFSTATE);
-    EntityComboBox capitalComboBox =
-            createForeignKeyComboBox(Country.CAPITAL_FK)
-                    .preferredWidth(120)
-                    .build();
+    EntityComboBox capitalComboBox = createForeignKeyComboBox(Country.CAPITAL_FK)
+            .preferredWidth(120)
+            .build();
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
             EntityPanel.builder(City.TYPE)
@@ -54,9 +60,11 @@ public final class CountryEditPanel extends EntityEditPanel {
                     .editPanelInitializer(this::initializeCapitalEditPanel)
                     .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
-    DoubleField averageCityPopulationField = new DoubleField();
-    averageCityPopulationField.setEditable(false);
-    averageCityPopulationField.setFocusable(false);
+    DoubleField averageCityPopulationField = ComponentBuilders.doubleFieldBuilder()
+            .maximumFractionDigits(2)
+            .focusable(false)
+            .editable(false)
+            .build();
     ComponentValue<Double, DoubleField> averageCityPopulationFieldValue =
             ComponentValues.doubleField(averageCityPopulationField);
     averageCityPopulationFieldValue.link(((CountryEditModel) getEditModel()).getAvarageCityPopulationValue());

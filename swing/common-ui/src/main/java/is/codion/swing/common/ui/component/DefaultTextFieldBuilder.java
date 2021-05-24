@@ -26,8 +26,8 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, JTextField, TextFieldBuilder<T>>
-        implements TextFieldBuilder<T> {
+class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
+        implements TextFieldBuilder<T, C, B> {
 
   private final Class<T> valueClass;
 
@@ -38,56 +38,64 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   private String dateTimePattern;
   private Double maximumValue;
   private Double minimumValue;
+  private int maximumFractionDigits = -1;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
     this.valueClass = requireNonNull(valueClass);
   }
 
   @Override
-  public TextFieldBuilder<T> action(final Action action) {
+  public final B action(final Action action) {
     this.action = requireNonNull(action);
 
     return transferFocusOnEnter(false);
   }
 
   @Override
-  public TextFieldBuilder<T> selectAllOnFocusGained() {
+  public final B selectAllOnFocusGained() {
     this.selectAllOnFocusGained = true;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public TextFieldBuilder<T> lookupDialog(final Supplier<Collection<T>> valueSupplier) {
+  public final B lookupDialog(final Supplier<Collection<T>> valueSupplier) {
     this.valueSupplier = requireNonNull(valueSupplier);
-    return this;
+    return (B) this;
   }
 
   @Override
-  public TextFieldBuilder<T> format(final Format format) {
+  public final B format(final Format format) {
     this.format = format;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public TextFieldBuilder<T> dateTimePattern(final String dateTimePattern) {
+  public final B dateTimePattern(final String dateTimePattern) {
     this.dateTimePattern = dateTimePattern;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public TextFieldBuilder<T> minimumValue(final Double minimumValue) {
+  public final B minimumValue(final Double minimumValue) {
     this.minimumValue = minimumValue;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public TextFieldBuilder<T> maximumValue(final Double maximumValue) {
+  public final B maximumValue(final Double maximumValue) {
     this.maximumValue = maximumValue;
-    return this;
+    return (B) this;
   }
 
   @Override
-  protected JTextField buildComponent() {
+  public final B maximumFractionDigits(final int maximumFractionDigits) {
+    this.maximumFractionDigits = maximumFractionDigits;
+    return (B) this;
+  }
+
+
+  @Override
+  protected final C buildComponent() {
     final JTextField textField = createTextField();
     textField.setEditable(editable);
     textField.setColumns(columns);
@@ -107,7 +115,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
       Dialogs.addLookupDialog(textField, valueSupplier);
     }
 
-    return textField;
+    return (C) textField;
   }
 
   @Override
@@ -182,6 +190,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     if (minimumValue != null && maximumValue != null) {
       field.setRange(Math.min(minimumValue, 0), maximumValue);
     }
+    if (maximumFractionDigits > 0) {
+      field.setMaximumFractionDigits(maximumFractionDigits);
+    }
 
     return field;
   }
@@ -190,6 +201,9 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) format));
     if (minimumValue != null && maximumValue != null) {
       field.setRange(Math.min(minimumValue, 0), maximumValue);
+    }
+    if (maximumFractionDigits > 0) {
+      field.setMaximumFractionDigits(maximumFractionDigits);
     }
 
     return field;

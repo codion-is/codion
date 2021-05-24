@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.ValueListComboBoxBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JTextField;
 import java.time.temporal.Temporal;
 
 import static java.util.Objects.requireNonNull;
@@ -195,17 +196,20 @@ public class EntityComponentBuilders {
    * Creates a builder.
    * @param attribute the attribute
    * @param <T> the attribute type
+   * @param <C> the text field type
+   * @param <B> the builder type
    * @return a builder
    */
-  public final <T> TextFieldBuilder<T> textFieldBuilder(final Attribute<T> attribute) {
+  public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
+    return (TextFieldBuilder<T, C, B>) ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
             .format(property.getFormat())
             .dateTimePattern(property.getDateTimePattern())
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
+            .maximumFractionDigits(property.getMaximumFractionDigits())
             .description(property.getDescription());
   }
 
