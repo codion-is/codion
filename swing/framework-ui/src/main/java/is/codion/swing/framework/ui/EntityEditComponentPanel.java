@@ -33,6 +33,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.time.temporal.Temporal;
@@ -511,10 +512,11 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a builder for text fields.
    * @param attribute the attribute for which to build a text field
    * @param <T> the value type
+   * @param <C> the text field type
    * @return a text field builder
    */
-  protected final <T> TextFieldBuilder<T> createTextField(final Attribute<T> attribute) {
-    final TextFieldBuilder<T> builder = entityComponentBuilders.textFieldBuilder(attribute)
+  protected final <T, C extends JTextField> TextFieldBuilder<T, C> createTextField(final Attribute<T> attribute) {
+    final TextFieldBuilder<T, C> builder = (TextFieldBuilder<T, C>) entityComponentBuilders.textFieldBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns);
     setComponentBuilder(attribute, builder);

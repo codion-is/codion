@@ -7066,3 +7066,4 @@
   FileInputPanelValue.FileInputPanel moved to textfield package, was public in a package protected class
   TextFieldBuilder.maximumFractionDigits() added
   DefaultProperty.getMaximumFractionDigits() now returns -1 for non floating point properties
+  TextFieldBuilder, added text field type parameter

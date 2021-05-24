@@ -26,8 +26,8 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, JTextField, TextFieldBuilder<T>>
-        implements TextFieldBuilder<T> {
+final class DefaultTextFieldBuilder<T, C extends JTextField> extends AbstractTextComponentBuilder<T, C, TextFieldBuilder<T, C>>
+        implements TextFieldBuilder<T, C> {
 
   private final Class<T> valueClass;
 
@@ -45,57 +45,57 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   }
 
   @Override
-  public TextFieldBuilder<T> action(final Action action) {
+  public TextFieldBuilder<T, C> action(final Action action) {
     this.action = requireNonNull(action);
 
     return transferFocusOnEnter(false);
   }
 
   @Override
-  public TextFieldBuilder<T> selectAllOnFocusGained() {
+  public TextFieldBuilder<T, C> selectAllOnFocusGained() {
     this.selectAllOnFocusGained = true;
     return this;
   }
 
   @Override
-  public TextFieldBuilder<T> lookupDialog(final Supplier<Collection<T>> valueSupplier) {
+  public TextFieldBuilder<T, C> lookupDialog(final Supplier<Collection<T>> valueSupplier) {
     this.valueSupplier = requireNonNull(valueSupplier);
     return this;
   }
 
   @Override
-  public TextFieldBuilder<T> format(final Format format) {
+  public TextFieldBuilder<T, C> format(final Format format) {
     this.format = format;
     return this;
   }
 
   @Override
-  public TextFieldBuilder<T> dateTimePattern(final String dateTimePattern) {
+  public TextFieldBuilder<T, C> dateTimePattern(final String dateTimePattern) {
     this.dateTimePattern = dateTimePattern;
     return this;
   }
 
   @Override
-  public TextFieldBuilder<T> minimumValue(final Double minimumValue) {
+  public TextFieldBuilder<T, C> minimumValue(final Double minimumValue) {
     this.minimumValue = minimumValue;
     return this;
   }
 
   @Override
-  public TextFieldBuilder<T> maximumValue(final Double maximumValue) {
+  public TextFieldBuilder<T, C> maximumValue(final Double maximumValue) {
     this.maximumValue = maximumValue;
     return this;
   }
 
   @Override
-  public TextFieldBuilder<T> maximumFractionDigits(final int maximumFractionDigits) {
+  public TextFieldBuilder<T, C> maximumFractionDigits(final int maximumFractionDigits) {
     this.maximumFractionDigits = maximumFractionDigits;
     return this;
   }
 
 
   @Override
-  protected JTextField buildComponent() {
+  protected C buildComponent() {
     final JTextField textField = createTextField();
     textField.setEditable(editable);
     textField.setColumns(columns);
@@ -115,7 +115,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
       Dialogs.addLookupDialog(textField, valueSupplier);
     }
 
-    return textField;
+    return (C) textField;
   }
 
   @Override

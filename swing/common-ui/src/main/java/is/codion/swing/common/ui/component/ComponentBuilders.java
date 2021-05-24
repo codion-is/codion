@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JTextField;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -76,10 +77,11 @@ public final class ComponentBuilders {
 
   /**
    * @param <T> the value type
+   * @param <C> the text field type
    * @param valueClass the value class
    * @return a builder for a component linked to the given value
    */
-  public static <T> TextFieldBuilder<T> textFieldBuilder(final Class<T> valueClass) {
+  public static <T, C extends JTextField> TextFieldBuilder<T, C> textFieldBuilder(final Class<T> valueClass) {
     return new DefaultTextFieldBuilder<>(valueClass);
   }
 
