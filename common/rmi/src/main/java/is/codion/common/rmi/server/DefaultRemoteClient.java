@@ -83,6 +83,14 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
   }
 
   @Override
+  public RemoteClient withDatabaseUser(final User databaseUser) {
+    final RemoteClient client = new DefaultRemoteClient(connectionRequest, databaseUser);
+    client.setClientHost(clientHost);
+
+    return client;
+  }
+
+  @Override
   public int hashCode() {
     return connectionRequest.hashCode();
   }
