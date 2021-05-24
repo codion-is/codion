@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCheckBox, CheckBoxBuilder>
         implements CheckBoxBuilder {
@@ -16,6 +17,7 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
   private String caption;
   private boolean includeCaption;
   private boolean nullable = false;
+  private int horizontalAlignment = SwingConstants.LEADING;
 
   @Override
   public CheckBoxBuilder caption(final String caption) {
@@ -36,6 +38,12 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
   }
 
   @Override
+  public CheckBoxBuilder horizontalAlignment(final int horizontalAlignment) {
+    this.horizontalAlignment = horizontalAlignment;
+    return this;
+  }
+
+  @Override
   protected JCheckBox buildComponent() {
     return nullable ? createNullableCheckBox() : createCheckBox();
   }
@@ -47,12 +55,14 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
 
   private NullableCheckBox createNullableCheckBox() {
     final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel(), includeCaption ? caption : null);
+    checkBox.setHorizontalAlignment(horizontalAlignment);
 
     return checkBox;
   }
 
   private JCheckBox createCheckBox() {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(caption) : new JCheckBox();
+    checkBox.setHorizontalAlignment(horizontalAlignment);
 
     return checkBox;
   }

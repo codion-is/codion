@@ -350,10 +350,7 @@ public final class InputControls {
                     int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
-            ComponentValues.integerFieldBuilder()
-                    .component(horizontalAlignmentField)
-                    .nullable(false)
-                    .build();
+            ComponentValues.integerField(horizontalAlignmentField, false);
 
     fieldValue.link(horizontalAlignmentValue);
 

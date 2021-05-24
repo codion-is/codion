@@ -112,7 +112,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
 
   @Override
   protected ComponentValue<T, JTextField> buildComponentValue(final JTextField component) {
-    return ComponentValues.textFieldValue(component, valueClass, updateOn, format);
+    return textFieldValue(component);
   }
 
   private JTextField createTextField() {
@@ -139,6 +139,33 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
     }
 
     throw new IllegalArgumentException("Creating text fields for type: " + valueClass + " is not supported");
+  }
+
+  private <C extends JTextField, T> ComponentValue<T, C> textFieldValue(final C textField) {
+    requireNonNull(textField);
+    if (valueClass.equals(String.class)) {
+      return (ComponentValue<T, C>) ComponentValues.textComponent(textField, format, updateOn);
+    }
+    if (valueClass.equals(Character.class)) {
+      return (ComponentValue<T, C>) ComponentValues.characterTextField(textField, updateOn);
+    }
+    if (valueClass.equals(Integer.class)) {
+      return (ComponentValue<T, C>) ComponentValues.integerField((IntegerField) textField, true, updateOn);
+    }
+    if (valueClass.equals(Double.class)) {
+      return (ComponentValue<T, C>) ComponentValues.doubleField((DoubleField) textField, true, updateOn);
+    }
+    if (valueClass.equals(BigDecimal.class)) {
+      return (ComponentValue<T, C>) ComponentValues.bigDecimalField((BigDecimalField) textField, true, updateOn);
+    }
+    if (valueClass.equals(Long.class)) {
+      return (ComponentValue<T, C>) ComponentValues.longField((LongField) textField, true, updateOn);
+    }
+    if (Temporal.class.isAssignableFrom(valueClass)) {
+      return (ComponentValue<T, C>) ComponentValues.temporalField((TemporalField<Temporal>) textField, updateOn);
+    }
+
+    throw new IllegalArgumentException("Text fields not implemented for type: " + valueClass);
   }
 
   private IntegerField initializeIntegerField() {

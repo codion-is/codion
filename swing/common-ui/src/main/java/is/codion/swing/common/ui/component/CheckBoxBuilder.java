@@ -29,4 +29,10 @@ public interface CheckBoxBuilder extends ComponentBuilder<Boolean, JCheckBox, Ch
    * @return this builder instance
    */
   CheckBoxBuilder nullable(boolean nullable);
+
+  /**
+   * @param horizontalAlignment the horizontal text alignment
+   * @return this builder instance
+   */
+  CheckBoxBuilder horizontalAlignment(int horizontalAlignment);
 }

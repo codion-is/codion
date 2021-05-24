@@ -21,12 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.text.JTextComponent;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.Format;
-import java.text.NumberFormat;
 import java.time.temporal.Temporal;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link ComponentValue}.
@@ -194,16 +190,28 @@ public final class ComponentValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimalField bigDecimalField) {
-    return bigDecimalFieldBuilder()
-            .component(bigDecimalField)
-            .build();
+    return bigDecimalField(bigDecimalField, true);
   }
 
   /**
-   * @return a BigDecimal based NumberFieldValueBuilder
+   * @param bigDecimalField the component
+   * @param nullable true if the value should be nullable
+   * @return a Value bound to the given component
    */
-  public static NumberFieldValueBuilder<BigDecimal, BigDecimalField, DecimalFormat> bigDecimalFieldBuilder() {
-    return new BigDecimalFieldValueBuilder();
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimalField bigDecimalField,
+                                                                            final boolean nullable) {
+    return bigDecimalField(bigDecimalField, nullable, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param bigDecimalField the component
+   * @param nullable true if the value should be nullable
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimalField bigDecimalField,
+                                                                            final boolean nullable, final UpdateOn updateOn) {
+    return new BigDecimalFieldValue(bigDecimalField, nullable, updateOn);
   }
 
   /**
@@ -219,16 +227,26 @@ public final class ComponentValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Double, DoubleField> doubleField(final DoubleField doubleField) {
-    return doubleFieldBuilder()
-            .component(doubleField)
-            .build();
+    return doubleField(doubleField, true);
   }
 
   /**
-   * @return a Double based NumberFieldValueBuilder
+   * @param doubleField the component
+   * @param nullable true if the value should be nullable
+   * @return a Value bound to the given component
    */
-  public static NumberFieldValueBuilder<Double, DoubleField, DecimalFormat> doubleFieldBuilder() {
-    return new DoubleFieldValueBuilder();
+  public static ComponentValue<Double, DoubleField> doubleField(final DoubleField doubleField, final boolean nullable) {
+    return doubleField(doubleField, nullable, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param doubleField the component
+   * @param nullable true if the value should be nullable
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Double, DoubleField> doubleField(final DoubleField doubleField, final boolean nullable, final UpdateOn updateOn) {
+    return new DoubleFieldValue(doubleField, nullable, updateOn);
   }
 
   /**
@@ -236,16 +254,53 @@ public final class ComponentValues {
    * @return a Value bound to the given component
    */
   public static ComponentValue<Integer, IntegerField> integerField(final IntegerField integerField) {
-    return integerFieldBuilder()
-            .component(integerField)
-            .build();
+    return integerField(integerField, true);
   }
 
   /**
-   * @return a Integer based NumberFieldValueBuilder
+   * @param integerField the component
+   * @param nullable true if the value should be nullable
+   * @return a Value bound to the given component
    */
-  public static NumberFieldValueBuilder<Integer, IntegerField, NumberFormat> integerFieldBuilder() {
-    return new IntegerFieldValueBuilder();
+  public static ComponentValue<Integer, IntegerField> integerField(final IntegerField integerField, final boolean nullable) {
+    return integerField(integerField, nullable, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param integerField the component
+   * @param nullable true if the value should be nullable
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Integer, IntegerField> integerField(final IntegerField integerField, final boolean nullable, final UpdateOn updateOn) {
+    return new IntegerFieldValue(integerField, nullable, updateOn);
+  }
+
+  /**
+   * @param longField the component
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Long, LongField> longField(final LongField longField) {
+    return longField(longField, true);
+  }
+
+  /**
+   * @param longField the component
+   * @param nullable true if the value should be nullable
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Long, LongField> longField(final LongField longField, final boolean nullable) {
+    return longField(longField, nullable, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param longField the component
+   * @param nullable true if the value should be nullable
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Long, LongField> longField(final LongField longField, final boolean nullable, final UpdateOn updateOn) {
+    return new LongFieldValue(longField, nullable, updateOn);
   }
 
   /**
@@ -270,91 +325,5 @@ public final class ComponentValues {
    */
   public static ComponentValue<Integer, JSlider> slider(final JSlider slider) {
     return new IntegerSliderValue(slider);
-  }
-
-  /**
-   * @param longField the component
-   * @return a Value bound to the given component
-   */
-  public static ComponentValue<Long, LongField> longField(final LongField longField) {
-    return longFieldBuilder()
-            .component(longField)
-            .build();
-  }
-
-  /**
-   * @return a Long based NumberFieldValueBuilder
-   */
-  public static NumberFieldValueBuilder<Long, LongField, NumberFormat> longFieldBuilder() {
-    return new LongFieldValueBuilder();
-  }
-
-  /**
-   * Links the given text field with the given value.
-   * @param textField the text field
-   * @param valueClass the value class
-   * @param updateOn the update on
-   * @param format the format, if any
-   * @param <C> the component type
-   * @param <T> the value type
-   * @return the text field
-   * @throws IllegalArgumentException in case the value class is not supported
-   */
-  public static <C extends JTextField, T> ComponentValue<T, C> textFieldValue(final C textField, final Class<T> valueClass,
-                                                                              final UpdateOn updateOn, final Format format) {
-    requireNonNull(textField);
-    requireNonNull(valueClass);
-    requireNonNull(updateOn);
-    if (valueClass.equals(String.class)) {
-      final ComponentValue<String, C> componentValue = textComponent(textField, format, updateOn);
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else if (valueClass.equals(Character.class)) {
-      final ComponentValue<Character, JTextField> componentValue = characterTextField(textField, updateOn);
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else if (valueClass.equals(Integer.class)) {
-      final ComponentValue<Integer, IntegerField> componentValue = integerFieldBuilder()
-              .component((IntegerField) textField)
-              .updateOn(updateOn)
-              .build();
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else if (valueClass.equals(Double.class)) {
-      final ComponentValue<Double, DoubleField> componentValue = doubleFieldBuilder()
-              .component((DoubleField) textField)
-              .updateOn(updateOn)
-              .build();
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else if (valueClass.equals(BigDecimal.class)) {
-      final ComponentValue<BigDecimal, BigDecimalField> componentValue = bigDecimalFieldBuilder()
-              .component((BigDecimalField) textField)
-              .updateOn(updateOn)
-              .build();
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else if (valueClass.equals(Long.class)) {
-      final ComponentValue<Long, LongField> componentValue = longFieldBuilder()
-              .component((LongField) textField)
-              .updateOn(updateOn)
-              .build();
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else if (Temporal.class.isAssignableFrom(valueClass)) {
-      final ComponentValue<Temporal, TemporalField<Temporal>> componentValue =
-              temporalField((TemporalField<Temporal>) textField, updateOn);
-
-      return (ComponentValue<T, C>) componentValue;
-    }
-    else {
-      throw new IllegalArgumentException("Text fields not implemented for type: " + valueClass);
-    }
   }
 }
