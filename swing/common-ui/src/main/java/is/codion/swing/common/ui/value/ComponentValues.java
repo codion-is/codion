@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.textfield.FileInputPanel;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TemporalField;
@@ -157,7 +158,7 @@ public final class ComponentValues {
   /**
    * @return a file based ComponentValue
    */
-  public static ComponentValue<byte[], FileInputPanelValue.FileInputPanel> fileInputPanel() {
+  public static ComponentValue<byte[], FileInputPanel> fileInputPanel() {
     return new FileInputPanelValue();
   }
 
