@@ -75,8 +75,7 @@ public final class EntityEditPanelTest {
       createForeignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
       createTextField(TestDomain.EMP_SALARY);
       createTextField(TestDomain.EMP_COMMISSION);
-      createTemporalInputPanel(TestDomain.EMP_HIREDATE)
-              .calendarButton(true);
+      createTemporalInputPanel(TestDomain.EMP_HIREDATE);
 
       setInitialFocusAttribute(TestDomain.EMP_NAME);
 

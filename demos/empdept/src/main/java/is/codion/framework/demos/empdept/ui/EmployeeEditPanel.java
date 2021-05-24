@@ -38,8 +38,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(Employee.MGR_FK);
     createTextField(Employee.SALARY);
     createTextField(Employee.COMMISSION);
-    createTemporalInputPanel(Employee.HIREDATE)
-            .calendarButton(true);
+    createTemporalInputPanel(Employee.HIREDATE);
 
     setLayout(flexibleGridLayoutBuilder()
             .rows(3).columns(3)
