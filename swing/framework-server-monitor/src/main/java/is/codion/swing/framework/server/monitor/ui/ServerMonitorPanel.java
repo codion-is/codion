@@ -244,11 +244,7 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    ComponentValues.integerFieldBuilder()
-            .component(connectionCountField)
-            .nullable(false)
-            .build()
-            .link(model.getConnectionCountObserver());
+    ComponentValues.integerField(connectionCountField, false).link(model.getConnectionCountObserver());
 
     return connectionCountField;
   }

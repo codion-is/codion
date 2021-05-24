@@ -9,21 +9,17 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -43,8 +39,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
@@ -59,8 +53,6 @@ import static javax.swing.SwingConstants.CENTER;
  * @param <T> the column value type
  */
 public class ColumnConditionPanel<C, T> extends JPanel {
-
-  public static final int DEFAULT_FIELD_COLUMNS = 4;
 
   /**
    * Specifies whether a condition panel should include
@@ -387,49 +379,60 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     private JComponent createField(final Value<?> value) {
       final Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
-        final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
-        checkBox.setHorizontalAlignment(CENTER);
-        ComponentValues.toggleButton(checkBox).link((Value<Boolean>) value);
+        final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
+                .nullable(true)
+                .horizontalAlignment(CENTER)
+                .buildComponentValue();
+        componentValue.link((Value<Boolean>) value);
 
-        return checkBox;
+        return componentValue.getComponent();
       }
       if (typeClass.equals(Integer.class)) {
-        final IntegerField integerField = new IntegerField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ComponentValues.integerField(integerField).link((Value<Integer>) value);
+        final ComponentValue<Integer, JTextField> componentValue = ComponentBuilders.textFieldBuilder(Integer.class)
+                .format(columnConditionModel.getFormat())
+                .buildComponentValue();
+        componentValue.link((Value<Integer>) value);
 
-        return integerField;
+        return componentValue.getComponent();
       }
       else if (typeClass.equals(Double.class)) {
-        final DoubleField doubleField = new DoubleField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ComponentValues.doubleField(doubleField).link((Value<Double>) value);
+        final ComponentValue<Double, JTextField> componentValue = ComponentBuilders.textFieldBuilder(Double.class)
+                .format(columnConditionModel.getFormat())
+                .buildComponentValue();
+        componentValue.link((Value<Double>) value);
 
-        return doubleField;
+        return componentValue.getComponent();
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        final BigDecimalField bigDecimalField = new BigDecimalField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ComponentValues.bigDecimalField(bigDecimalField).link((Value<BigDecimal>) value);
+        final ComponentValue<BigDecimal, JTextField> componentValue = ComponentBuilders.textFieldBuilder(BigDecimal.class)
+                .format(columnConditionModel.getFormat())
+                .buildComponentValue();
+        componentValue.link((Value<BigDecimal>) value);
 
-        return bigDecimalField;
+        return componentValue.getComponent();
       }
       else if (typeClass.equals(Long.class)) {
-        final LongField longField = new LongField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ComponentValues.longField(longField).link((Value<Long>) value);
+        final ComponentValue<Long, JTextField> componentValue = ComponentBuilders.textFieldBuilder(Long.class)
+                .format(columnConditionModel.getFormat())
+                .buildComponentValue();
+        componentValue.link((Value<Long>) value);
 
-        return longField;
+        return componentValue.getComponent();
       }
       else if (Temporal.class.isAssignableFrom(typeClass)) {
-        final TemporalField<Temporal> temporalField = TemporalField.builder((Class<Temporal>) typeClass)
+        final ComponentValue<Temporal, JTextField> componentValue = (ComponentValue<Temporal, JTextField>) ComponentBuilders.textFieldBuilder(typeClass)
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
-                .build();
-        ComponentValues.temporalField(temporalField).link((Value<Temporal>) value);
+                .buildComponentValue();
+        componentValue.link((Value<Temporal>) value);
 
-        return temporalField;
+        return componentValue.getComponent();
       }
       else if (typeClass.equals(String.class)) {
-        final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
-        ComponentValues.textComponent(textField).link((Value<String>) value);
+        final ComponentValue<String, JTextField> componentValue = ComponentBuilders.textFieldBuilder(String.class)
+                .buildComponentValue();
+        componentValue.link((Value<String>) value);
 
-        return textField;
+        return componentValue.getComponent();
       }
 
       throw new IllegalArgumentException("Unsupported type: " + typeClass);

@@ -84,7 +84,6 @@ public class EntityComponentValues {
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
-    return (ComponentValue<Entity, T>) inputComponents.foreignKeySearchFieldBuilder(foreignKey, searchModel)
-            .buildComponentValue();
+    return (ComponentValue<Entity, T>) inputComponents.foreignKeySearchFieldBuilder(foreignKey, searchModel).buildComponentValue();
   }
 }
