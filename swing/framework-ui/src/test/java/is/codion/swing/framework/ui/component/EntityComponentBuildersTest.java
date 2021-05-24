@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.db.database.DatabaseFactory;
@@ -29,7 +32,7 @@ import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EntityInputComponentsTest {
+public final class EntityComponentBuildersTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -37,7 +40,7 @@ public class EntityInputComponentsTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final EntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
-  private final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
+  private final EntityComponentBuilders inputComponents = new EntityComponentBuilders(editModel.getEntityDefinition());
 
   @Test
   public void createCheckBox() {

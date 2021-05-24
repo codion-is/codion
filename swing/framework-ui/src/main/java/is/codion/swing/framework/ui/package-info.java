@@ -1,10 +1,10 @@
 /**
  * Package configuration values:<br>
- * {@link is.codion.swing.framework.ui.component.EntityInputComponents#LABEL_TEXT_ALIGNMENT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#PERSIST_ENTITY_PANELS}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#TAB_PLACEMENT}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#LABEL_TEXT_ALIGNMENT}<br>
  * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#DEFAULT_TEXT_FIELD_COLUMNS}<br>
  * {@link is.codion.swing.framework.ui.EntityEditComponentPanel#TRANSFER_FOCUS_ON_ENTER}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE}<br>

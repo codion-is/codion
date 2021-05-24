@@ -15,8 +15,7 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultForeignKeySearchFieldBuilder
-        extends AbstractComponentBuilder<Entity, EntitySearchField, ForeignKeySearchFieldBuilder>
+final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, ForeignKeySearchFieldBuilder>
         implements ForeignKeySearchFieldBuilder {
 
   private final EntitySearchModel searchModel;

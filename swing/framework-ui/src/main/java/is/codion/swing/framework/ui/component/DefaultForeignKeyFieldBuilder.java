@@ -5,11 +5,12 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JTextField;
+
+import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entity, JTextField, ForeignKeyFieldBuilder>
         implements ForeignKeyFieldBuilder {
@@ -17,7 +18,7 @@ final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entit
   private int columns;
 
   DefaultForeignKeyFieldBuilder() {
-    preferredHeight(TextFields.getPreferredTextFieldHeight());
+    preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override

@@ -40,7 +40,7 @@ final class DefaultTextFieldBuilder<T> extends AbstractTextComponentBuilder<T, J
   private Double minimumValue;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
-    this.valueClass = valueClass;
+    this.valueClass = requireNonNull(valueClass);
   }
 
   @Override

@@ -9,12 +9,13 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JComponent;
 import java.util.List;
+
+import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ValueListComboBoxBuilder<T>>
         implements ValueListComboBoxBuilder<T> {
@@ -27,7 +28,7 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
 
   DefaultValueListComboBoxBuilder(final List<Item<T>> values) {
     this.values = values;
-    preferredHeight(TextFields.getPreferredTextFieldHeight());
+    preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override
@@ -52,7 +53,7 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
   protected SteppedComboBox<Item<T>> buildComponent() {
     final ItemComboBoxModel<T> valueListComboBoxModel = createValueListComboBoxModel();
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(valueListComboBoxModel);
-    Completion.addComboBoxCompletion(comboBox);
+    Completion.enableComboBoxCompletion(comboBox);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
     }
