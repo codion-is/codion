@@ -184,7 +184,7 @@ public class EntityInputComponentsTest {
   public void createFormattedTextField() {
     final ComponentValue<String, JFormattedTextField> componentValue =
             inputComponents.formattedTextFieldBuilder(TestDomain.DETAIL_STRING)
-            .formatMaskString("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
+            .formatMask("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
             .focusLostBehaviour(JFormattedTextField.COMMIT).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
     final JFormattedTextField field = componentValue.getComponent();

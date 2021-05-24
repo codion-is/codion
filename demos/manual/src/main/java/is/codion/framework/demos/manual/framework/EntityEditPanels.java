@@ -149,7 +149,7 @@ public final class EntityEditPanels {
 
       JFormattedTextField formattedField =
               createFormattedTextField(Demo.FORMATTED_TEXT)
-                      .formatMaskString("###:###")
+                      .formatMask("###:###")
                       .valueContainsLiterals(true)
                       .build();
       // end::textValue[]

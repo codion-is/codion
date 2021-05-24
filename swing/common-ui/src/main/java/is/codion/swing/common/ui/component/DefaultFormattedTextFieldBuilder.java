@@ -17,15 +17,15 @@ final class DefaultFormattedTextFieldBuilder
         extends AbstractComponentBuilder<String, JFormattedTextField, FormattedTextFieldBuilder>
         implements FormattedTextFieldBuilder {
 
-  private String formatMaskString;
+  private String formatMask;
   private boolean valueContainsLiterals = true;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int columns;
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
   @Override
-  public FormattedTextFieldBuilder formatMaskString(final String formatMaskString) {
-    this.formatMaskString = requireNonNull(formatMaskString);
+  public FormattedTextFieldBuilder formatMask(final String formatMask) {
+    this.formatMask = requireNonNull(formatMask);
     return this;
   }
 
@@ -56,7 +56,7 @@ final class DefaultFormattedTextFieldBuilder
   @Override
   protected JFormattedTextField buildComponent() {
     try {
-      final JFormattedTextField textField = new JFormattedTextField(TextFields.fieldFormatter(formatMaskString, valueContainsLiterals));
+      final JFormattedTextField textField = new JFormattedTextField(TextFields.fieldFormatter(formatMask, valueContainsLiterals));
       textField.setFocusLostBehavior(focusLostBehaviour);
       textField.setColumns(columns);
 

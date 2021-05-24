@@ -172,7 +172,7 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, JFormattedTextField> componentValue =
             ComponentBuilders.formattedTextFieldBuilder()
-            .formatMaskString("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
+            .formatMask("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
             .focusLostBehaviour(JFormattedTextField.COMMIT).buildComponentValue();
     componentValue.link(value);
     final JFormattedTextField field = componentValue.getComponent();
