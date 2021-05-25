@@ -14,22 +14,14 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.BorderLayout;
@@ -387,84 +379,60 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     private JComponent createField(final Value<?> value) {
       final Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
-        final ComponentValue<Boolean, JCheckBox> componentValue = checkBoxBuilder()
+        return checkBoxBuilder()
                 .nullable(true)
                 .horizontalAlignment(CENTER)
-                .buildComponentValue();
-        componentValue.link((Value<Boolean>) value);
-
-        return componentValue.getComponent();
+                .linkedValue((Value<Boolean>) value)
+                .buildComponentValue().getComponent();
       }
       if (typeClass.equals(Integer.class)) {
-        final ComponentValue<Integer, IntegerField> componentValue = integerFieldBuilder()
+        return integerFieldBuilder()
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue();
-        componentValue.link((Value<Integer>) value);
-
-        return componentValue.getComponent();
+                .linkedValue((Value<Integer>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(Double.class)) {
-        final ComponentValue<Double, DoubleField> componentValue = doubleFieldBuilder()
+        return doubleFieldBuilder()
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue();
-        componentValue.link((Value<Double>) value);
-
-        return componentValue.getComponent();
+                .linkedValue((Value<Double>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        final ComponentValue<BigDecimal, BigDecimalField> componentValue = bigDecimalFieldBuilder()
+        return bigDecimalFieldBuilder()
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue();
-        componentValue.link((Value<BigDecimal>) value);
-
-        return componentValue.getComponent();
+                .linkedValue((Value<BigDecimal>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(Long.class)) {
-        final ComponentValue<Long, LongField> componentValue = longFieldBuilder()
+        return longFieldBuilder()
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue();
-        componentValue.link((Value<Long>) value);
-
-        return componentValue.getComponent();
+                .linkedValue((Value<Long>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(LocalTime.class)) {
-        final ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
-                localTimeFieldBuilder(columnConditionModel.getDateTimePattern())
-                        .buildComponentValue();
-        componentValue.link((Value<LocalTime>) value);
-
-        return componentValue.getComponent();
+        return localTimeFieldBuilder(columnConditionModel.getDateTimePattern())
+                .linkedValue((Value<LocalTime>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(LocalDate.class)) {
-        final ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
-                localDateFieldBuilder(columnConditionModel.getDateTimePattern())
-                        .buildComponentValue();
-        componentValue.link((Value<LocalDate>) value);
-
-        return componentValue.getComponent();
+        return localDateFieldBuilder(columnConditionModel.getDateTimePattern())
+                .linkedValue((Value<LocalDate>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(LocalDateTime.class)) {
-        final ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
-                localDateTimeFieldBuilder(columnConditionModel.getDateTimePattern())
-                        .buildComponentValue();
-        componentValue.link((Value<LocalDateTime>) value);
-
-        return componentValue.getComponent();
+        return localDateTimeFieldBuilder(columnConditionModel.getDateTimePattern())
+                .linkedValue((Value<LocalDateTime>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(OffsetDateTime.class)) {
-        final ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
-                offsetDateTimeFieldBuilder(columnConditionModel.getDateTimePattern())
-                        .buildComponentValue();
-        componentValue.link((Value<OffsetDateTime>) value);
-
-        return componentValue.getComponent();
+        return offsetDateTimeFieldBuilder(columnConditionModel.getDateTimePattern())
+                .linkedValue((Value<OffsetDateTime>) value)
+                .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(String.class)) {
-        final ComponentValue<String, JTextField> componentValue = textFieldBuilder(String.class)
-                .buildComponentValue();
-        componentValue.link((Value<String>) value);
-
-        return componentValue.getComponent();
+        return textFieldBuilder(String.class)
+                .linkedValue((Value<String>) value)
+                .buildComponentValue().getComponent();
       }
 
       throw new IllegalArgumentException("Unsupported type: " + typeClass);

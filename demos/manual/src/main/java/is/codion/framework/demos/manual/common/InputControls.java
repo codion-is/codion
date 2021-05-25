@@ -161,9 +161,8 @@ public final class InputControls {
             ComponentBuilders.checkBoxBuilder()
                     .caption("Check")
                     .nullable(true)
+                    .linkedValue(booleanValue)
                     .buildComponentValue();
-
-    componentValue.link(booleanValue);
 
     NullableCheckBox nullableCheckBox =
             (NullableCheckBox) componentValue.getComponent();
@@ -177,9 +176,8 @@ public final class InputControls {
     ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
             ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
                     .description("Select a value")
+                    .linkedValue(booleanValue)
                     .buildComponentValue();
-
-    componentValue.link(booleanValue);
 
     SteppedComboBox<Item<Boolean>> comboBox =
             componentValue.getComponent();
@@ -194,9 +192,8 @@ public final class InputControls {
             ComponentBuilders.textFieldBuilder(String.class)
                     .preferredWidth(120)
                     .transferFocusOnEnter(true)
+                    .linkedValue(stringValue)
                     .buildComponentValue();
-
-    componentValue.link(stringValue);
 
     JTextField textField = componentValue.getComponent();
     // end::textField[]
@@ -210,9 +207,8 @@ public final class InputControls {
             ComponentBuilders.textAreaBuilder()
                     .rows(10).columns(20)
                     .lineWrap(true)
+                    .linkedValue(stringValue)
                     .buildComponentValue();
-
-    componentValue.link(stringValue);
 
     JTextArea textArea = componentValue.getComponent();
     // end::textArea[]
@@ -226,9 +222,8 @@ public final class InputControls {
             ComponentBuilders.integerFieldBuilder()
                     .minimumValue(0d).maximumValue(10000d)
                     .groupingUsed(false)
+                    .linkedValue(integerValue)
                     .buildComponentValue();
-
-    componentValue.link(integerValue);
 
     IntegerField integerField = componentValue.getComponent();
     // end::integerField[]
@@ -241,9 +236,8 @@ public final class InputControls {
     ComponentValue<Long, LongField> componentValue =
             ComponentBuilders.longFieldBuilder()
                     .groupingUsed(true)
+                    .linkedValue(longValue)
                     .buildComponentValue();
-
-    componentValue.link(longValue);
 
     final LongField longField = componentValue.getComponent();
     // end::longField[]
@@ -257,9 +251,8 @@ public final class InputControls {
             ComponentBuilders.doubleFieldBuilder()
                     .maximumFractionDigits(3)
                     .decimalSeparator('.')
+                    .linkedValue(doubleValue)
                     .buildComponentValue();
-
-    componentValue.link(doubleValue);
 
     DoubleField doubleField = componentValue.getComponent();
     // end::doubleField[]
@@ -274,9 +267,8 @@ public final class InputControls {
                     .maximumFractionDigits(2)
                     .groupingSeparator('.')
                     .decimalSeparator(',')
+                    .linkedValue(bigDecimalValue)
                     .buildComponentValue();
-
-    componentValue.link(bigDecimalValue);
 
     BigDecimalField decimalField = componentValue.getComponent();
     // end::bigDecimalField[]
@@ -288,9 +280,8 @@ public final class InputControls {
 
     ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
             ComponentBuilders.localTimeFieldBuilder("HH:mm:ss")
+                    .linkedValue(localTimeValue)
                     .buildComponentValue();
-
-    componentValue.link(localTimeValue);
 
     TemporalField<LocalTime> temporalField = componentValue.getComponent();
     // end::localTime[]
@@ -302,9 +293,8 @@ public final class InputControls {
 
     ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
             ComponentBuilders.localDateFieldBuilder("dd-MM-yyyy")
+                    .linkedValue(localDateValue)
                     .buildComponentValue();
-
-    componentValue.link(localDateValue);
 
     TemporalField<LocalDate> temporalField = componentValue.getComponent();
     // end::localDate[]
@@ -316,9 +306,8 @@ public final class InputControls {
 
     ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
             ComponentBuilders.localDateTimeFieldBuilder("dd-MM-yyyy HH:mm")
+                    .linkedValue(localDateTimeValue)
                     .buildComponentValue();
-
-    componentValue.link(localDateTimeValue);
 
     TemporalField<LocalDateTime> temporalField = componentValue.getComponent();
     // end::localDateTime[]
@@ -334,9 +323,8 @@ public final class InputControls {
     ComponentValue<String, SteppedComboBox<String>> componentValue =
             ComponentBuilders.comboBoxBuilder(String.class, comboBoxModel)
                     .preferredWidth(160)
+                    .linkedValue(stringValue)
                     .buildComponentValue();
-
-    componentValue.link(stringValue);
 
     SteppedComboBox<String> comboBox = componentValue.getComponent();
     // end::selectionComboBox[]
