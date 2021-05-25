@@ -12,7 +12,7 @@ public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuil
 
   /**
    * @param text the label text
-   * @return
+   * @return this builder instance
    */
   LabelBuilder text(String text);
 }
