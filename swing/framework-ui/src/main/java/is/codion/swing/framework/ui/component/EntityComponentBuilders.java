@@ -11,11 +11,19 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
+import is.codion.swing.common.ui.component.IntegerFieldBuilder;
+import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
+import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
+import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
+import is.codion.swing.common.ui.component.LongFieldBuilder;
+import is.codion.swing.common.ui.component.OffsetDateTimeFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
@@ -25,6 +33,11 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
 import static java.util.Objects.requireNonNull;
@@ -203,9 +216,129 @@ public class EntityComponentBuilders {
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
+    if (Temporal.class.isAssignableFrom(attribute.getTypeClass())) {
+      return (TextFieldBuilder<T, C, B>) ComponentBuilders.temporalFieldBuilder((Class<Temporal>) attribute.getTypeClass())
+              .dateTimePattern(property.getDateTimePattern())
+              .description(property.getDescription());
+    }
+
     return (TextFieldBuilder<T, C, B>) ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
             .format(property.getFormat())
+            .maximumLength(property.getMaximumLength())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final LocalTimeFieldBuilder localTimeFieldBuilder(final Attribute<LocalTime> attribute) {
+    final Property<LocalTime> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.localTimeFieldBuilder()
             .dateTimePattern(property.getDateTimePattern())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final LocalDateFieldBuilder localDateFieldBuilder(final Attribute<LocalDate> attribute) {
+    final Property<LocalDate> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.localDateFieldBuilder()
+            .dateTimePattern(property.getDateTimePattern())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final LocalDateTimeFieldBuilder localDateTimeFieldBuilder(final Attribute<LocalDateTime> attribute) {
+    final Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.localDateTimeFieldBuilder()
+            .dateTimePattern(property.getDateTimePattern())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final OffsetDateTimeFieldBuilder offsetDateTimeFieldBuilder(final Attribute<OffsetDateTime> attribute) {
+    final Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.offsetDateTimeFieldBuilder()
+            .dateTimePattern(property.getDateTimePattern())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final IntegerFieldBuilder integerFieldBuilder(final Attribute<Integer> attribute) {
+    final Property<Integer> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.integerFieldBuilder()
+            .format(property.getFormat())
+            .maximumLength(property.getMaximumLength())
+            .minimumValue(property.getMinimumValue())
+            .maximumValue(property.getMaximumValue())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final LongFieldBuilder longFieldBuilder(final Attribute<Long> attribute) {
+    final Property<Long> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.longFieldBuilder()
+            .format(property.getFormat())
+            .maximumLength(property.getMaximumLength())
+            .minimumValue(property.getMinimumValue())
+            .maximumValue(property.getMaximumValue())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final DoubleFieldBuilder doubleFieldBuilder(final Attribute<Double> attribute) {
+    final Property<Double> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.doubleFieldBuilder()
+            .format(property.getFormat())
+            .maximumLength(property.getMaximumLength())
+            .minimumValue(property.getMinimumValue())
+            .maximumValue(property.getMaximumValue())
+            .maximumFractionDigits(property.getMaximumFractionDigits())
+            .description(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final BigDecimalFieldBuilder bigDecimalFieldBuilder(final Attribute<BigDecimal> attribute) {
+    final Property<BigDecimal> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.bigDecimalFieldBuilder()
+            .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())

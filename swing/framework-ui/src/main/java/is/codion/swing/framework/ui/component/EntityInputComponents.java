@@ -10,9 +10,13 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JComponent;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 /**
  * Provides input components for editing entities.
@@ -58,16 +62,76 @@ public final class EntityInputComponents extends EntityComponentBuilders {
               .enabledState(enabledState)
               .buildComponentValue();
     }
+    if (attribute.isLocalTime()) {
+      return (ComponentValue<T, C>) localTimeFieldBuilder((Attribute<LocalTime>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isLocalDate()) {
+      return (ComponentValue<T, C>) localDateFieldBuilder((Attribute<LocalDate>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isLocalDateTime()) {
+      return (ComponentValue<T, C>) localDateTimeFieldBuilder((Attribute<LocalDateTime>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isOffsetDateTime()) {
+      return (ComponentValue<T, C>) offsetDateTimeFieldBuilder((Attribute<OffsetDateTime>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isString() || attribute.isCharacter()) {
+      return (ComponentValue<T, C>) textFieldBuilder(attribute)
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
     if (attribute.isBoolean()) {
       return (ComponentValue<T, C>) checkBoxBuilder((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
               .nullable(property.isNullable())
               .buildComponentValue();
     }
-    if (attribute.isTemporal() || attribute.isNumerical() || attribute.isString() || attribute.isCharacter()) {
-      return (ComponentValue<T, C>) textFieldBuilder(attribute)
+    if (attribute.isInteger()) {
+      return (ComponentValue<T, C>) integerFieldBuilder((Attribute<Integer>) attribute)
               .enabledState(enabledState)
-              .updateOn(UpdateOn.KEYSTROKE)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumLength(property.getMaximumLength())
+              .buildComponentValue();
+
+    }
+    if (attribute.isLong()) {
+      return (ComponentValue<T, C>) longFieldBuilder((Attribute<Long>) attribute)
+              .enabledState(enabledState)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumLength(property.getMaximumLength())
+              .buildComponentValue();
+
+    }
+    if (attribute.isDouble()) {
+      return (ComponentValue<T, C>) doubleFieldBuilder((Attribute<Double>) attribute)
+              .enabledState(enabledState)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumFractionDigits(property.getMaximumFractionDigits())
+              .maximumLength(property.getMaximumLength())
+              .buildComponentValue();
+
+    }
+    if (attribute.isBigDecimal()) {
+      return (ComponentValue<T, C>) bigDecimalFieldBuilder((Attribute<BigDecimal>) attribute)
+              .enabledState(enabledState)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumFractionDigits(property.getMaximumFractionDigits())
+              .maximumLength(property.getMaximumLength())
               .buildComponentValue();
     }
 

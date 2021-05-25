@@ -43,28 +43,4 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @return this builder instance
    */
   B format(Format format);
-
-  /**
-   * @param dateTimePattern the date time pattern, if applicable
-   * @return this builder instance
-   */
-  B dateTimePattern(String dateTimePattern);
-
-  /**
-   * @param minimumValue the minimum numerical value, if applicable
-   * @return this builder instance
-   */
-  B minimumValue(Double minimumValue);
-
-  /**
-   * @param maximumValue the maximum numerical value, if applicable
-   * @return this builder instance
-   */
-  B maximumValue(Double maximumValue);
-
-  /**
-   * @param maximumFractionDigits the maximum fraction digits for floating point numbers, if applicable
-   * @return this builder instance
-   */
-  B maximumFractionDigits(int maximumFractionDigits);
 }

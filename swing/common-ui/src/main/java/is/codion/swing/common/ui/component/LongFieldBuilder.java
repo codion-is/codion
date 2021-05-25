@@ -5,6 +5,9 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.textfield.LongField;
 
-public interface LongFieldBuilder extends TextFieldBuilder<Long, LongField, LongFieldBuilder> {
+/**
+ * A builder {@link LongField}.
+ */
+public interface LongFieldBuilder extends NumberFieldBuilder<Long, LongField, LongFieldBuilder> {
 
 }

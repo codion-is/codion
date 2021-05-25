@@ -5,6 +5,9 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.textfield.IntegerField;
 
-public interface IntegerFieldBuilder extends TextFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> {
+/**
+ * A builder {@link IntegerField}.
+ */
+public interface IntegerFieldBuilder extends NumberFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> {
 
 }

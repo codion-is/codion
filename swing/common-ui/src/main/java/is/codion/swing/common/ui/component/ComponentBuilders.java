@@ -5,13 +5,15 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.TemporalField;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
  * A factory for {@link ComponentBuilder}.
  */
 public final class ComponentBuilders {
-  
+
   private ComponentBuilders() {}
 
   /**
@@ -87,39 +89,103 @@ public final class ComponentBuilders {
    * @return a builder for a component linked to the given value
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Class<T> valueClass) {
+    if (valueClass.equals(LocalTime.class)) {
+      return (TextFieldBuilder<T, C, B>) localTimeFieldBuilder();
+    }
+    if (valueClass.equals(LocalDate.class)) {
+      return (TextFieldBuilder<T, C, B>) localDateFieldBuilder();
+    }
+    if (valueClass.equals(LocalDateTime.class)) {
+      return (TextFieldBuilder<T, C, B>) localDateTimeFieldBuilder();
+    }
+    if (valueClass.equals(OffsetDateTime.class)) {
+      return (TextFieldBuilder<T, C, B>) offsetDateTimeFieldBuilder();
+    }
+    if (valueClass.equals(Integer.class)) {
+      return (TextFieldBuilder<T, C, B>) integerFieldBuilder();
+    }
+    else if (valueClass.equals(Long.class)) {
+      return (TextFieldBuilder<T, C, B>) longFieldBuilder();
+    }
+    else if (valueClass.equals(Double.class)) {
+      return (TextFieldBuilder<T, C, B>) doubleFieldBuilder();
+    }
+    else if (valueClass.equals(BigDecimal.class)) {
+      return (TextFieldBuilder<T, C, B>) bigDecimalFieldBuilder();
+    }
+
     return new DefaultTextFieldBuilder<>(valueClass);
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @param valueClass the temporal value type
+   * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @return a builder for temporal fields
    */
-  public static TextFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> integerFieldBuilder() {
+  public static <T extends Temporal, C extends TemporalField<T>, B extends TemporalFieldBuilder<T, C, B>> TemporalFieldBuilder<T, C, B> temporalFieldBuilder(final Class<T> valueClass) {
+    return new DefaultTemporalFieldBuilder<>(valueClass);
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static LocalTimeFieldBuilder localTimeFieldBuilder() {
+    return new DefaultLocalTimeFieldBuilder();
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static LocalDateFieldBuilder localDateFieldBuilder() {
+    return new DefaultLocalDateFieldBuilder();
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static LocalDateTimeFieldBuilder localDateTimeFieldBuilder() {
+    return new DefaultLocalDateTimeFieldBuilder();
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static OffsetDateTimeFieldBuilder offsetDateTimeFieldBuilder() {
+    return new DefaultOffsetDateTimeFieldBuilder();
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static IntegerFieldBuilder integerFieldBuilder() {
     return new DefaultIntegerFieldBuilder();
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
-  public static TextFieldBuilder<Long, LongField, LongFieldBuilder> longFieldBuilder() {
+  public static LongFieldBuilder longFieldBuilder() {
     return new DefaultLongFieldBuilder();
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static DoubleFieldBuilder doubleFieldBuilder() {
     return new DefaultDoubleFieldBuilder();
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
-  public static TextFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> bigDecimalFieldBuilder() {
+  public static BigDecimalFieldBuilder bigDecimalFieldBuilder() {
     return new DefaultBigDecimalFieldBuilder();
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static FormattedTextFieldBuilder formattedTextFieldBuilder() {
     return new DefaultFormattedTextFieldBuilder();

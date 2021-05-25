@@ -7100,3 +7100,5 @@
   TextFieldBuilder, added text field type parameter
   TextFieldBuilder sub-interfaces added for Integer, Long, Double and BigDecimal, ComponentBuilders factory methods added
   ComponentBuilders bug fixed, added some bare bone implementations of the above numerical field builders
+  NumberFieldBuilder added along with sub-interfaces, related refactoring
+  TemporalFieldBuilder added along with sub-interfaces, related refactoring
