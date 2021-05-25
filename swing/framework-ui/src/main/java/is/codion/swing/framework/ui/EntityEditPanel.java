@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -792,7 +793,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private void bindEventsInternal() {
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_V)
-            .modifiers(KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK)
+            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(this::showEntityMenu))
             .enable(this);

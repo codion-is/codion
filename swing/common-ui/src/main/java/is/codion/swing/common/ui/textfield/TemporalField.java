@@ -31,7 +31,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
 
   private TemporalField(final Class<T> temporalClass, final String dateTimePattern,
-                       final DateTimeParser<T> dateTimeParser) {
+                        final DateTimeParser<T> dateTimeParser) {
     super(initializeFormatter(dateTimePattern));
     this.temporalClass = temporalClass;
     this.dateTimePattern = dateTimePattern;
@@ -125,32 +125,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     TemporalField<T> build();
   }
 
-  private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
-    if (typeClass.equals(LocalTime.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
-    }
-    else if (typeClass.equals(LocalDate.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<LocalDate>) LocalDate::parse;
-    }
-    else if (typeClass.equals(LocalDateTime.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<LocalDateTime>) LocalDateTime::parse;
-    }
-    else if (typeClass.equals(OffsetDateTime.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<OffsetDateTime>) OffsetDateTime::parse;
-    }
-
-    throw new IllegalArgumentException("TemporalField not implemented for: " + typeClass);
-  }
-
-  private static FieldFormatter initializeFormatter(final String dateTimePattern) {
-    try {
-      return new FieldFormatter(LocaleDateTimePattern.getMask(dateTimePattern), true);
-    }
-    catch (final ParseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   private static final class DefaultBuilder<T extends Temporal> implements Builder<T> {
 
     private final Class<T> temporalClass;
@@ -182,6 +156,32 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       }
 
       return new TemporalField<>(temporalClass, dateTimePattern, dateTimeParser);
+    }
+  }
+
+  private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
+    if (typeClass.equals(LocalTime.class)) {
+      return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
+    }
+    else if (typeClass.equals(LocalDate.class)) {
+      return (DateTimeParser<T>) (DateTimeParser<LocalDate>) LocalDate::parse;
+    }
+    else if (typeClass.equals(LocalDateTime.class)) {
+      return (DateTimeParser<T>) (DateTimeParser<LocalDateTime>) LocalDateTime::parse;
+    }
+    else if (typeClass.equals(OffsetDateTime.class)) {
+      return (DateTimeParser<T>) (DateTimeParser<OffsetDateTime>) OffsetDateTime::parse;
+    }
+
+    throw new IllegalArgumentException("TemporalField not implemented for: " + typeClass);
+  }
+
+  private static FieldFormatter initializeFormatter(final String dateTimePattern) {
+    try {
+      return new FieldFormatter(LocaleDateTimePattern.getMask(dateTimePattern), true);
+    }
+    catch (final ParseException e) {
+      throw new RuntimeException(e);
     }
   }
 }

@@ -7,7 +7,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
-import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ButtonModel;
@@ -105,7 +104,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @param item the item for which to create a configuration panel
    * @return a control panel for the item weight
    */
-  private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
+  private JPanel initializeWeightPanel(final ItemRandomizer.RandomItem<T> item) {
     final JPanel panel = new JPanel(Layouts.borderLayout());
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);

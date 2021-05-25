@@ -15,6 +15,7 @@ import ro.nextreports.engine.util.ReportUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.sql.Connection;
@@ -60,8 +61,13 @@ final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Repor
       throw new ReportException(e);
     }
     finally {
-      if (file != null) {
-        file.delete();
+      try {
+        if (file != null) {
+          Files.delete(file.toPath());
+        }
+      }
+      catch (final IOException e) {
+        throw new RuntimeException(e);
       }
     }
   }

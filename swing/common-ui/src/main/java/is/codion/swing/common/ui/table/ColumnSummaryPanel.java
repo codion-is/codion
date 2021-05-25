@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -47,7 +48,7 @@ public final class ColumnSummaryPanel extends JPanel {
 
   private void initialize() {
     setLayout(new BorderLayout());
-    summaryField.setHorizontalAlignment(JTextField.RIGHT);
+    summaryField.setHorizontalAlignment(SwingConstants.RIGHT);
     summaryField.setEditable(false);
     summaryField.setFocusable(false);
     add(summaryField, BorderLayout.CENTER);

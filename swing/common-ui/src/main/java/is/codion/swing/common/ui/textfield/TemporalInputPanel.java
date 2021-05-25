@@ -155,7 +155,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       currentValue = getTemporal();
     }
     catch (final DateTimeParseException ignored) {/*ignored*/}
-    final JFormattedTextField inputField = getInputField();
     getLocalDateWithCalendar((LocalDate) currentValue, MESSAGES.getString("select_date"), inputField)
             .ifPresent(localDate -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDate));
@@ -169,7 +168,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       currentValue = getTemporal();
     }
     catch (final DateTimeParseException ignored) {/*ignored*/}
-    final JFormattedTextField inputField = getInputField();
     getLocalDateTimeWithCalendar((LocalDateTime) currentValue, MESSAGES.getString("select_date_time"), inputField)
             .ifPresent(localDateTime -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDateTime));

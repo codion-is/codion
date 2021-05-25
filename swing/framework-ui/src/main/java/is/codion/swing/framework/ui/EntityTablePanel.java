@@ -62,6 +62,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -73,6 +75,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
@@ -1277,7 +1280,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
     button.setFocusable(false);
 
-    final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+    final JToolBar toolBar = new JToolBar(SwingConstants.HORIZONTAL);
     toolBar.setFocusable(false);
     toolBar.setFloatable(false);
     toolBar.setRollover(true);
@@ -1342,7 +1345,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder()
               .keyEvent(KeyEvent.VK_V)
-              .modifiers(KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .action(control(this::showEntityMenu))
               .enable(table);
     }
@@ -1426,7 +1429,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_G)
-            .modifiers(KeyEvent.CTRL_DOWN_MASK)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(control(() -> {
               final Point location = getPopupLocation(table);
               popupMenu.show(table, location.x, location.y);
@@ -1515,7 +1518,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
-    final JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    final JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     Components.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
     scrollPane.setVisible(false);
 
@@ -1523,7 +1526,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static JLabel initializeStatusMessageLabel() {
-    final JLabel label = new JLabel("", JLabel.CENTER);
+    final JLabel label = new JLabel("", SwingConstants.CENTER);
     label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
 
     return label;
@@ -1532,7 +1535,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private static JPanel createDependenciesPanel(final Map<EntityType<?>, Collection<Entity>> dependencies,
                                                 final EntityConnectionProvider connectionProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
+    final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
     for (final Map.Entry<EntityType<?>, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {

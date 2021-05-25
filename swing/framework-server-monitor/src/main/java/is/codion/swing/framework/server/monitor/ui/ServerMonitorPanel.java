@@ -33,6 +33,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -114,16 +115,16 @@ public final class ServerMonitorPanel extends JPanel {
 
   private void initializeUI() throws RemoteException {
     final JPanel serverPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    serverPanel.add(new JLabel("Connections", JLabel.RIGHT));
+    serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
     serverPanel.add(initializeConnectionCountField());
-    serverPanel.add(new JLabel("limit", JLabel.RIGHT));
+    serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
     final JSpinner connectionLimitSpinner = new JSpinner();
     ComponentValues.integerSpinner(connectionLimitSpinner).link(model.getConnectionLimitValue());
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     serverPanel.add(connectionLimitSpinner);
-    serverPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
+    serverPanel.add(new JLabel("Mem. usage", SwingConstants.RIGHT));
     serverPanel.add(initializeMemoryField());
-    serverPanel.add(new JLabel("Logging", JLabel.RIGHT));
+    serverPanel.add(new JLabel("Logging", SwingConstants.RIGHT));
     serverPanel.add(initializeLogLevelField());
 
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
@@ -243,7 +244,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JTextField initializeConnectionCountField() {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
-    connectionCountField.setHorizontalAlignment(JLabel.CENTER);
+    connectionCountField.setHorizontalAlignment(SwingConstants.CENTER);
     ComponentValues.integerField(connectionCountField, false).link(model.getConnectionCountObserver());
 
     return connectionCountField;
@@ -252,7 +253,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JTextField initializeMemoryField() {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
-    memoryField.setHorizontalAlignment(JLabel.CENTER);
+    memoryField.setHorizontalAlignment(SwingConstants.CENTER);
     ComponentValues.textComponent(memoryField).link(model.getMemoryUsageObserver());
 
     return memoryField;

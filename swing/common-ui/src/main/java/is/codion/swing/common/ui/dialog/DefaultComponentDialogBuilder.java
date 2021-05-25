@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -122,7 +123,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
         }
       });
     if (closeEvent == null) {
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
         KeyEvents.builder()
                 .keyEvent(KeyEvent.VK_ESCAPE)

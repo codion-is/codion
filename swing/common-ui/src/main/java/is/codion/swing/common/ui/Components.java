@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
@@ -33,6 +34,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.JTextComponent;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -44,6 +46,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -223,7 +226,7 @@ public final class Components {
    */
   public static synchronized int getPreferredScrollBarWidth() {
     if (verticalScrollBar == null) {
-      verticalScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+      verticalScrollBar = new JScrollBar(Adjustable.VERTICAL);
     }
 
     return verticalScrollBar.getPreferredSize().width;
@@ -353,7 +356,7 @@ public final class Components {
   public static JTextField createMemoryUsageField(final int updateIntervalMilliseconds) {
     final JTextField textField = new JTextField(8);
     textField.setEditable(false);
-    textField.setHorizontalAlignment(JTextField.CENTER);
+    textField.setHorizontalAlignment(SwingConstants.CENTER);
     TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> textField.setText(Memory.getMemoryUsage())))
             .interval(updateIntervalMilliseconds)
             .timeUnit(TimeUnit.MILLISECONDS)
@@ -676,7 +679,7 @@ public final class Components {
 
   private static <T extends JComponent> KeyEvents.KeyEventBuilder transferFocusBackwardsBuilder(final T component) {
     return KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER)
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(transferFocusBackwardAction(component));

@@ -30,7 +30,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -1055,7 +1055,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     if (TOOLBAR_BUTTONS.get()) {
-      return editPanel.createControlToolBar(JToolBar.VERTICAL);
+      return editPanel.createControlToolBar(SwingConstants.VERTICAL);
     }
     if (alignment == FlowLayout.CENTER) {
       return editPanel.createHorizontalControlPanel();

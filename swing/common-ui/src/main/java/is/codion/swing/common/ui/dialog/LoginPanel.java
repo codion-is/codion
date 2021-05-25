@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
@@ -124,9 +125,9 @@ final class LoginPanel extends JPanel {
             .rows(2).columns(2)
             .fixRowHeights(true)
             .build());
-    credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
+    credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT));
     credentialsPanel.add(usernameField);
-    credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
+    credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT));
     credentialsPanel.add(passwordField);
     final JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
     credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);

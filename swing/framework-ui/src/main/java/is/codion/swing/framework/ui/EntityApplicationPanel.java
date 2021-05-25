@@ -67,6 +67,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -79,6 +80,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
@@ -476,7 +478,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             resourceBundle.getString(HELP));
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     Windows.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
     dialog.setLocationRelativeTo(this);
     dialog.setResizable(true);
@@ -493,7 +495,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             resourceBundle.getString(ABOUT));
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     dialog.pack();
     dialog.setLocationRelativeTo(this);
     dialog.setModal(true);
@@ -902,7 +904,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           entityPanel.savePreferences();
         }
       });
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
       KeyEvents.builder()
@@ -1061,7 +1063,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     Windows.centerWindow(frame);
     if (maximizeFrame) {
-      frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+      frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
     frame.setTitle(getFrameTitle());
     if (mainMenu) {
@@ -1341,7 +1343,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     tree.setRootVisible(false);
     Components.expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
-    return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {

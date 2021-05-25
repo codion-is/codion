@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
@@ -90,7 +91,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .build().createButton(), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
+    actionBase.add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT));
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));

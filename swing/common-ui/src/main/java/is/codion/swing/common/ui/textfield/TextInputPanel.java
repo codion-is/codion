@@ -144,18 +144,18 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
-    final JButton button = new JButton(new AbstractAction("...") {
+    final JButton actionButton = new JButton(new AbstractAction("...") {
       @Override
       public void actionPerformed(final ActionEvent e) {
         getInputFromUser();
       }
     });
-    button.setFocusable(buttonFocusable);
+    actionButton.setFocusable(buttonFocusable);
     if (buttonSize != null) {
-      button.setPreferredSize(buttonSize);
+      actionButton.setPreferredSize(buttonSize);
     }
 
-    return button;
+    return actionButton;
   }
 
   private void getInputFromUser() {

@@ -40,6 +40,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -110,7 +112,7 @@ public final class LoadTestPanel<T> extends JPanel {
     final JFrame frame = new JFrame();
     frame.setIconImage(icons().logoTransparent().getImage());
     final String title = "Codion - " + loadTestModel.getTitle();
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -203,7 +205,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel initializeApplicationPanel() {
     final IntegerField applicationCountField = new IntegerField();
-    applicationCountField.setHorizontalAlignment(JTextField.CENTER);
+    applicationCountField.setHorizontalAlignment(SwingConstants.CENTER);
     ComponentValues.integerField(applicationCountField, false)
             .link(loadTestModel.applicationCountObserver());
     final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
@@ -361,9 +363,9 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
             .build();
     final JPanel thinkTimePanel = new JPanel(layout);
-    thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
+    thinkTimePanel.add(new JLabel("Max. think time", SwingConstants.CENTER));
     thinkTimePanel.add(maxThinkTimeSpinner);
-    thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
+    thinkTimePanel.add(new JLabel("Min. think time", SwingConstants.CENTER));
     thinkTimePanel.add(minThinkTimeSpinner);
     thinkTimePanel.add(pauseControl.createToggleButton());
 

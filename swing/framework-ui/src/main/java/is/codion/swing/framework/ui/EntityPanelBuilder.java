@@ -21,7 +21,9 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -434,7 +436,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       final JOptionPane optionPane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = optionPane.createDialog(component, getCaption() == null ?
               connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption());
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       Components.addInitialFocusHack(editPanel, Control.control(editPanel::requestInitialFocus));
       try {
         boolean insertPerformed = false;
@@ -465,12 +467,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
               .enable(keyComponent);
       KeyEvents.builder()
               .keyEvent(KeyEvent.VK_ADD)
-              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(this)
               .enable(keyComponent);
       KeyEvents.builder()
               .keyEvent(KeyEvent.VK_PLUS)
-              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(this)
               .enable(keyComponent);
     }

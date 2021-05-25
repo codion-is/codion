@@ -32,7 +32,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
    * @return a builder for this property instance
    */
   @Override
-  SubqueryProperty.Builder<T> builder() {
+  ColumnProperty.Builder<T> builder() {
     return new DefaultSubqueryPropertyBuilder<>(this);
   }
 
@@ -62,12 +62,12 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     }
 
     @Override
-    public SubqueryProperty.Builder<T> insertable(final boolean insertable) {
+    public ColumnProperty.Builder<T> insertable(final boolean insertable) {
       throw new UnsupportedOperationException("Subquery properties are never insertable: " + property.getAttribute());
     }
 
     @Override
-    public SubqueryProperty.Builder<T> updatable(final boolean updatable) {
+    public ColumnProperty.Builder<T> updatable(final boolean updatable) {
       throw new UnsupportedOperationException("Subquery properties are never updatable: " + property.getAttribute());
     }
   }

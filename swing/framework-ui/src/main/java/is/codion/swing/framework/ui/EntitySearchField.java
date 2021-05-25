@@ -53,6 +53,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -261,7 +262,7 @@ public final class EntitySearchField extends JTextField {
     return KeyEvents.builder()
             .keyEvent(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_FOCUSED)
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .onKeyPressed()
             .action(transferFocusBackwardAction);
   }
@@ -558,7 +559,7 @@ public final class EntitySearchField extends JTextField {
       }).name(Messages.get(Messages.OK)).build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       final String enterActionKey = "EntitySearchField.enter";
-      table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
+      table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
       final Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
       tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));

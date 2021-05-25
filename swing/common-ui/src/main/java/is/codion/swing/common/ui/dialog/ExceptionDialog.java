@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
@@ -146,7 +147,7 @@ final class ExceptionDialog extends JDialog {
     messageArea.setBackground(exceptionField.getBackground());
     messageArea.setBorder(exceptionField.getBorder());
     final JScrollPane messageScroller = new JScrollPane(messageArea,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     //detail
     detailPanel.add(exceptionLabel);
     detailPanel.add(exceptionField);
