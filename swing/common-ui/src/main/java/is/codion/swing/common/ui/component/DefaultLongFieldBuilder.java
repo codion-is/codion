@@ -16,13 +16,8 @@ class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongField
   }
 
   @Override
-  protected LongField createTextField() {
-    final LongField field = format == null ? new LongField() : new LongField(cloneFormat((NumberFormat) format));
-    if (minimumValue != null && maximumValue != null) {
-      field.setRange(minimumValue, maximumValue);
-    }
-
-    return field;
+  protected LongField createNumberField(final NumberFormat format) {
+    return format == null ? new LongField() : new LongField(format);
   }
 
   @Override

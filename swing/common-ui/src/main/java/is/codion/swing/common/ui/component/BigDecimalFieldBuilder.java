@@ -13,8 +13,16 @@ import java.math.BigDecimal;
 public interface BigDecimalFieldBuilder extends NumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> {
 
   /**
-   * @param maximumFractionDigits the maximum fraction digits for floating point numbers, if applicable
+   * @param maximumFractionDigits the maximum fraction digits
    * @return this builder instance
    */
   BigDecimalFieldBuilder maximumFractionDigits(int maximumFractionDigits);
+
+  /**
+   * Set the decimal separator for this field
+   * @param decimalSeparator the decimal separator
+   * @return this builder instance
+   * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
+   */
+  BigDecimalFieldBuilder decimalSeparator(char decimalSeparator);
 }

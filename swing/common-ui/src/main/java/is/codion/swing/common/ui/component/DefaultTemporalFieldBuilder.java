@@ -12,7 +12,7 @@ import java.time.temporal.Temporal;
 import static java.util.Objects.requireNonNull;
 
 class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>, B extends TemporalFieldBuilder<T, C, B>>
-  extends DefaultTextFieldBuilder<T, C, B> implements TemporalFieldBuilder<T, C, B> {
+        extends DefaultTextFieldBuilder<T, C, B> implements TemporalFieldBuilder<T, C, B> {
 
   private final String dateTimePattern;
 
@@ -23,7 +23,7 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
 
   @Override
   protected final C createTextField() {
-    return (C) TemporalField.builder((Class<Temporal>) valueClass)
+    return (C) TemporalField.builder((Class<Temporal>) getValueClass())
             .dateTimePattern(dateTimePattern)
             .build();
   }

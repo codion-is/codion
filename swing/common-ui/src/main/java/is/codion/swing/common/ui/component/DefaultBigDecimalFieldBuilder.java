@@ -11,9 +11,11 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> implements BigDecimalFieldBuilder {
+final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder>
+        implements BigDecimalFieldBuilder {
 
   private int maximumFractionDigits = -1;
+  private char decimalSeparator = 0;
 
   DefaultBigDecimalFieldBuilder() {
     super(BigDecimal.class);
@@ -26,10 +28,19 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected BigDecimalField createTextField() {
-    final BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) format));
-    if (minimumValue != null && maximumValue != null) {
-      field.setRange(Math.min(minimumValue, 0), maximumValue);
+  public BigDecimalFieldBuilder decimalSeparator(final char decimalSeparator) {
+    if (decimalSeparator == groupingSeparator) {
+      throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
+    }
+    this.decimalSeparator = decimalSeparator;
+    return this;
+  }
+
+  @Override
+  protected BigDecimalField createNumberField(final NumberFormat format) {
+    final BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) format);
+    if (decimalSeparator != 0) {
+      field.setSeparators(decimalSeparator, groupingSeparator);
     }
     if (maximumFractionDigits > 0) {
       field.setMaximumFractionDigits(maximumFractionDigits);

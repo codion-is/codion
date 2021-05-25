@@ -11,8 +11,16 @@ import is.codion.swing.common.ui.textfield.DoubleField;
 public interface DoubleFieldBuilder extends NumberFieldBuilder<Double, DoubleField, DoubleFieldBuilder> {
 
   /**
-   * @param maximumFractionDigits the maximum fraction digits for floating point numbers, if applicable
+   * @param maximumFractionDigits the maximum fraction digits
    * @return this builder instance
    */
   DoubleFieldBuilder maximumFractionDigits(int maximumFractionDigits);
+
+  /**
+   * Set the decimal separator for this field
+   * @param decimalSeparator the decimal separator
+   * @return this builder instance
+   * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
+   */
+  DoubleFieldBuilder decimalSeparator(char decimalSeparator);
 }

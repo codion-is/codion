@@ -20,15 +20,19 @@ import static java.util.Objects.requireNonNull;
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
         implements TextFieldBuilder<T, C, B> {
 
-  protected final Class<T> valueClass;
+  private final Class<T> valueClass;
 
   private Action action;
   private boolean selectAllOnFocusGained;
   private Supplier<Collection<T>> valueSupplier;
-  protected Format format;
+  private Format format;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
-    this.valueClass = requireNonNull(valueClass);
+    requireNonNull(valueClass);
+    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
+      throw new IllegalArgumentException("TextFieldBuilder only supports String and Character");
+    }
+    this.valueClass = valueClass;
   }
 
   @Override
@@ -82,7 +86,12 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   @Override
   protected ComponentValue<T, C> buildComponentValue(final C component) {
-    return textFieldValue(component);
+    requireNonNull(component);
+    if (valueClass.equals(String.class)) {
+      return (ComponentValue<T, C>) ComponentValues.textComponent(component, format, updateOn);
+    }
+
+    return (ComponentValue<T, C>) ComponentValues.characterTextField(component, updateOn);
   }
 
   /**
@@ -93,23 +102,16 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     if (valueClass.equals(String.class)) {
       return (C) initializeStringField();
     }
-    if (valueClass.equals(Character.class)) {
-      return (C) new JTextField(new SizedDocument(1), "", 1);
-    }
 
-    throw new IllegalArgumentException("Creating text fields for type: " + valueClass + " is not supported");
+    return (C) new JTextField(new SizedDocument(1), "", 1);
   }
 
-  private <C extends JTextField, T> ComponentValue<T, C> textFieldValue(final C textField) {
-    requireNonNull(textField);
-    if (valueClass.equals(String.class)) {
-      return (ComponentValue<T, C>) ComponentValues.textComponent(textField, format, updateOn);
-    }
-    if (valueClass.equals(Character.class)) {
-      return (ComponentValue<T, C>) ComponentValues.characterTextField(textField, updateOn);
-    }
+  protected final Class<T> getValueClass() {
+    return valueClass;
+  }
 
-    throw new IllegalArgumentException("Text fields not implemented for type: " + valueClass);
+  protected final Format getFormat() {
+    return format;
   }
 
   private JTextField initializeStringField() {
