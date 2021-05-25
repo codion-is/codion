@@ -10,7 +10,7 @@ import java.time.LocalTime;
 final class DefaultLocalTimeFieldBuilder extends DefaultTemporalFieldBuilder<LocalTime, TemporalField<LocalTime>, LocalTimeFieldBuilder>
         implements LocalTimeFieldBuilder {
 
-  DefaultLocalTimeFieldBuilder() {
-    super(LocalTime.class);
+  DefaultLocalTimeFieldBuilder(final String dateTimePattern) {
+    super(LocalTime.class, dateTimePattern);
   }
 }

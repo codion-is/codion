@@ -81,7 +81,7 @@ public final class ComponentBuildersTest {
   public void localTimeField() {
     final Value<LocalTime> value = Value.value(LocalTime.now());
     final ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
-            ComponentBuilders.localTimeFieldBuilder().dateTimePattern("HH:mm").buildComponentValue();
+            ComponentBuilders.localTimeFieldBuilder("HH:mm").buildComponentValue();
     componentValue.link(value);
     assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
   }
@@ -90,7 +90,7 @@ public final class ComponentBuildersTest {
   public void localDateField() {
     final Value<LocalDate> value = Value.value(LocalDate.now());
     final ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
-            ComponentBuilders.localDateFieldBuilder().dateTimePattern("dd-MM-yyyy").buildComponentValue();
+            ComponentBuilders.localDateFieldBuilder("dd-MM-yyyy").buildComponentValue();
     componentValue.link(value);
     assertEquals(componentValue.get(), value.get());
   }
@@ -99,7 +99,7 @@ public final class ComponentBuildersTest {
   public void localDateTimeField() {
     final Value<LocalDateTime> value = Value.value(LocalDateTime.now());
     final ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
-            ComponentBuilders.localDateTimeFieldBuilder().dateTimePattern("dd-MM-yyyy HH:mm").buildComponentValue();
+            ComponentBuilders.localDateTimeFieldBuilder("dd-MM-yyyy HH:mm").buildComponentValue();
     componentValue.link(value);
     assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
   }
@@ -108,7 +108,7 @@ public final class ComponentBuildersTest {
   public void offsetDateTimeField() {
     final Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
     final ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
-            ComponentBuilders.offsetDateTimeFieldBuilder().dateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").buildComponentValue();
+            ComponentBuilders.offsetDateTimeFieldBuilder("yyyy-MM-dd'T'HH:mm:ss.SSSZ").buildComponentValue();
     componentValue.link(value);
 //    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
   }

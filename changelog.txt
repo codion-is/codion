@@ -7071,3 +7071,4 @@
   ComponentBuilders bug fixed, added some bare bone implementations of the above numerical field builders
   NumberFieldBuilder added along with sub-interfaces, related refactoring
   TemporalFieldBuilder added along with sub-interfaces, related refactoring
+  DefaultTemporalFieldBuilder now takes dateTimePattern as parameter

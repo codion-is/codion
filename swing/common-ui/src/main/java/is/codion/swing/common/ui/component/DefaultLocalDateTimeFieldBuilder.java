@@ -8,9 +8,9 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import java.time.LocalDateTime;
 
 final class DefaultLocalDateTimeFieldBuilder extends DefaultTemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>, LocalDateTimeFieldBuilder>
-        implements LocalDateTimeFieldBuilder{
+        implements LocalDateTimeFieldBuilder {
 
-  DefaultLocalDateTimeFieldBuilder() {
-    super(LocalDateTime.class);
+  DefaultLocalDateTimeFieldBuilder(final String dateTimePattern) {
+    super(LocalDateTime.class, dateTimePattern);
   }
 }

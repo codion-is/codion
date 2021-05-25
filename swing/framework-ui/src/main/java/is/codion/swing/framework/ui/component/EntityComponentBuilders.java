@@ -216,13 +216,25 @@ public class EntityComponentBuilders {
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    if (Temporal.class.isAssignableFrom(attribute.getTypeClass())) {
-      return (TextFieldBuilder<T, C, B>) ComponentBuilders.temporalFieldBuilder((Class<Temporal>) attribute.getTypeClass())
-              .dateTimePattern(property.getDateTimePattern())
+    final Class<T> typeClass = attribute.getTypeClass();
+    if (typeClass.equals(LocalTime.class)) {
+      return (TextFieldBuilder<T, C, B>) localTimeFieldBuilder((Attribute<LocalTime>) attribute)
+              .description(property.getDescription());
+    }
+    else if (typeClass.equals(LocalDate.class)) {
+      return (TextFieldBuilder<T, C, B>) localDateFieldBuilder((Attribute<LocalDate>) attribute)
+              .description(property.getDescription());
+    }
+    else if (typeClass.equals(LocalDateTime.class)) {
+      return (TextFieldBuilder<T, C, B>) localDateTimeFieldBuilder((Attribute<LocalDateTime>) attribute)
+              .description(property.getDescription());
+    }
+    else if (typeClass.equals(OffsetDateTime.class)) {
+      return (TextFieldBuilder<T, C, B>) offsetDateTimeFieldBuilder((Attribute<OffsetDateTime>) attribute)
               .description(property.getDescription());
     }
 
-    return (TextFieldBuilder<T, C, B>) ComponentBuilders.textFieldBuilder(attribute.getTypeClass())
+    return (TextFieldBuilder<T, C, B>) ComponentBuilders.textFieldBuilder(typeClass)
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .description(property.getDescription());
@@ -236,8 +248,7 @@ public class EntityComponentBuilders {
   public final LocalTimeFieldBuilder localTimeFieldBuilder(final Attribute<LocalTime> attribute) {
     final Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.localTimeFieldBuilder()
-            .dateTimePattern(property.getDateTimePattern())
+    return ComponentBuilders.localTimeFieldBuilder(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -249,8 +260,7 @@ public class EntityComponentBuilders {
   public final LocalDateFieldBuilder localDateFieldBuilder(final Attribute<LocalDate> attribute) {
     final Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.localDateFieldBuilder()
-            .dateTimePattern(property.getDateTimePattern())
+    return ComponentBuilders.localDateFieldBuilder(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -262,8 +272,7 @@ public class EntityComponentBuilders {
   public final LocalDateTimeFieldBuilder localDateTimeFieldBuilder(final Attribute<LocalDateTime> attribute) {
     final Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.localDateTimeFieldBuilder()
-            .dateTimePattern(property.getDateTimePattern())
+    return ComponentBuilders.localDateTimeFieldBuilder(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -275,8 +284,7 @@ public class EntityComponentBuilders {
   public final OffsetDateTimeFieldBuilder offsetDateTimeFieldBuilder(final Attribute<OffsetDateTime> attribute) {
     final Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.offsetDateTimeFieldBuilder()
-            .dateTimePattern(property.getDateTimePattern())
+    return ComponentBuilders.offsetDateTimeFieldBuilder(property.getDateTimePattern())
             .description(property.getDescription());
   }
 

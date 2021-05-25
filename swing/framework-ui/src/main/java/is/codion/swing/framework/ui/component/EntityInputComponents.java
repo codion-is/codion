@@ -64,25 +64,21 @@ public final class EntityInputComponents extends EntityComponentBuilders {
     }
     if (attribute.isLocalTime()) {
       return (ComponentValue<T, C>) localTimeFieldBuilder((Attribute<LocalTime>) attribute)
-              .dateTimePattern(property.getDateTimePattern())
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDate()) {
       return (ComponentValue<T, C>) localDateFieldBuilder((Attribute<LocalDate>) attribute)
-              .dateTimePattern(property.getDateTimePattern())
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDateTime()) {
       return (ComponentValue<T, C>) localDateTimeFieldBuilder((Attribute<LocalDateTime>) attribute)
-              .dateTimePattern(property.getDateTimePattern())
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isOffsetDateTime()) {
       return (ComponentValue<T, C>) offsetDateTimeFieldBuilder((Attribute<OffsetDateTime>) attribute)
-              .dateTimePattern(property.getDateTimePattern())
               .enabledState(enabledState)
               .buildComponentValue();
     }
