@@ -28,10 +28,7 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
 
   @Override
   protected SteppedComboBox<Item<Boolean>> buildComponent() {
-    final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
-    Completion.enableComboBoxCompletion(comboBox);
-
-    return comboBox;
+    return Completion.enable(new SteppedComboBox<>(comboBoxModel));
   }
 
   @Override

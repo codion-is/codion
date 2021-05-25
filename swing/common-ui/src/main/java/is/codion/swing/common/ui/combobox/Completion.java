@@ -96,11 +96,14 @@ public final class Completion {
   }
 
   /**
-   * Enables the default completion type on the given combo box
+   * Enables the default completion mode on the given combo box
    * @param comboBox the combo box
+   * @param <C> the combo box type
+   * @param <T> the value type
+   * @return the combo box
    * @see #COMBO_BOX_COMPLETION_MODE
    */
-  public static void enableComboBoxCompletion(final JComboBox<?> comboBox) {
+  public static <C extends JComboBox<T>, T> C enable(final C comboBox) {
     requireNonNull(comboBox);
     final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
@@ -115,6 +118,8 @@ public final class Completion {
       default:
         throw new IllegalArgumentException("Unknown completion mode: " + completionMode);
     }
+
+    return comboBox;
   }
 
   /**

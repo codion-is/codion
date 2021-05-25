@@ -7083,3 +7083,4 @@
   EntityComponentBuilders.toggleButtonBuilder() added
   ComponentValue.linkedValueObserver() added
   LabelBuilder added
+  Completion.enableComboBoxCompletion() renamed enable

@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.ui.EntitySearchField;
+import is.codion.swing.framework.ui.EntitySearchField.SelectionProvider;
 
 import java.util.function.Function;
 
@@ -19,10 +20,11 @@ final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder
         implements ForeignKeySearchFieldBuilder {
 
   private final EntitySearchModel searchModel;
+
   private int columns;
   private boolean upperCase;
   private boolean lowerCase;
-  private Function<EntitySearchModel, EntitySearchField.SelectionProvider> selectionProviderFactory;
+  private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
 
   DefaultForeignKeySearchFieldBuilder(final EntitySearchModel searchModel) {
     this.searchModel = searchModel;
@@ -49,8 +51,7 @@ final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder
   }
 
   @Override
-  public ForeignKeySearchFieldBuilder selectionProviderFactory(final Function<EntitySearchModel,
-          EntitySearchField.SelectionProvider> selectionProviderFactory) {
+  public ForeignKeySearchFieldBuilder selectionProviderFactory(final Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
     this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
     return this;
   }

@@ -35,8 +35,7 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
 
   @Override
   protected EntityComboBox buildComponent() {
-    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    Completion.enableComboBoxCompletion(comboBox);
+    final EntityComboBox comboBox = Completion.enable(new EntityComboBox(comboBoxModel));
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
     }
