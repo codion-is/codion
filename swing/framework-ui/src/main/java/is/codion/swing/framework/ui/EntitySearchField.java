@@ -20,12 +20,12 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -35,7 +35,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -338,9 +337,9 @@ public final class EntitySearchField extends JTextField {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder(() -> Dialogs.componentDialogBuilder(settingsPanel)
-                    .owner(EntitySearchField.this)
-                    .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
-                    .show())
+            .owner(EntitySearchField.this)
+            .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+            .show())
             .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 
@@ -409,19 +408,21 @@ public final class EntitySearchField extends JTextField {
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
-      final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      ComponentValues.toggleButton(boxAllowMultipleValues).link(searchModel.getMultipleSelectionEnabledValue());
-      final JTextField multipleValueSeparatorField = new JTextField(new SizedDocument(1), "", 1);
-      ComponentValues.textComponent(multipleValueSeparatorField).link(searchModel.getMultipleItemSeparatorValue());
-
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
-
-      generalSettingsPanel.add(boxAllowMultipleValues);
+      generalSettingsPanel.add(ComponentBuilders.checkBoxBuilder()
+              .caption(MESSAGES.getString("enable_multiple_search_values"))
+              .includeCaption(true)
+              .linkedValue(searchModel.getMultipleSelectionEnabledValue())
+              .build());
 
       final JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
-      valueSeparatorPanel.add(multipleValueSeparatorField, BorderLayout.WEST);
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
+      valueSeparatorPanel.add(ComponentBuilders.textFieldBuilder(String.class)
+              .columns(1)
+              .maximumLength(1)
+              .linkedValue(searchModel.getMultipleItemSeparatorValue())
+              .build(), BorderLayout.WEST);
 
       generalSettingsPanel.add(valueSeparatorPanel);
 
@@ -433,16 +434,21 @@ public final class EntitySearchField extends JTextField {
 
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
-      final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      ComponentValues.toggleButton(boxCaseSensitive).link(settings.getCaseSensitiveValue());
-      final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      ComponentValues.toggleButton(boxPrefixWildcard).link(settings.getWildcardPrefixValue());
-      final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      ComponentValues.toggleButton(boxPostfixWildcard).link(settings.getWildcardPostfixValue());
-
-      panel.add(boxCaseSensitive);
-      panel.add(boxPrefixWildcard);
-      panel.add(boxPostfixWildcard);
+      panel.add(ComponentBuilders.checkBoxBuilder()
+              .caption(MESSAGES.getString("case_sensitive"))
+              .includeCaption(true)
+              .linkedValue(settings.getCaseSensitiveValue())
+              .build());
+      panel.add(ComponentBuilders.checkBoxBuilder()
+              .caption(MESSAGES.getString("prefix_wildcard"))
+              .includeCaption(true)
+              .linkedValue(settings.getWildcardPrefixValue())
+              .build());
+      panel.add(ComponentBuilders.checkBoxBuilder()
+              .caption(MESSAGES.getString("postfix_wildcard"))
+              .includeCaption(true)
+              .linkedValue(settings.getWildcardPostfixValue())
+              .build());
 
       return panel;
     }
