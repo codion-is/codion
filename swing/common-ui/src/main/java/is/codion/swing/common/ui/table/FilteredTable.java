@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
@@ -52,6 +53,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -472,7 +474,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_ENTER)
             .onKeyPressed()
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .action(findAndSelectNext)
             .enable(field);
     KeyEvents.builder()
@@ -483,7 +485,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_DOWN)
             .onKeyPressed()
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .action(findAndSelectNext)
             .enable(field);
     KeyEvents.builder()
@@ -721,7 +723,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       if (component instanceof JLabel) {
         final JLabel label = (JLabel) component;
         final TableColumn tableColumn = table.getColumnModel().getColumn(column);
-        label.setHorizontalTextPosition(JLabel.LEFT);
+        label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }
 

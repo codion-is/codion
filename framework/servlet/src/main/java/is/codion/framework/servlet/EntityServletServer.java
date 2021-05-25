@@ -40,8 +40,7 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
   EntityServletServer(final Server<RemoteEntityConnection, ? extends ServerAdmin> server, final HttpServerConfiguration configuration) {
     super(configuration);
     requireNonNull(server, "server");
-    EntityService.setServer(server);
-    EntityJsonService.setServer(server);
+    AbstractEntityService.setServer(server);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");
     final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/entities/ser/*");
@@ -51,9 +50,6 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
     jsonHolder.setInitOrder(0);
     jsonHolder.setInitParameter("jersey.config.server.provider.classnames", EntityJsonService.class.getCanonicalName());
     addHandler(servletHandler);
-    addServerStoppedListener(() -> {
-      EntityService.setServer(null);
-      EntityJsonService.setServer(null);
-    });
+    addServerStoppedListener(() -> AbstractEntityService.setServer(null));
   }
 }

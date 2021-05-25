@@ -11,8 +11,8 @@ import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
-import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -200,7 +200,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
       super(new NullableToggleButtonModel());
       this.tableModel = tableModel;
       this.property = property;
-      setHorizontalAlignment(JLabel.CENTER);
+      setHorizontalAlignment(SwingConstants.CENTER);
       setBorderPainted(true);
     }
 

@@ -8,6 +8,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.scheduler.TaskScheduler;
@@ -413,7 +414,7 @@ public final class ServerMonitor {
   private void updateStatistics() {
     try {
       if (!shutdown) {
-        final EntityServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
+        final ServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
         final long timestamp = statistics.getTimestamp();
         lastStatisticsUpdateTime = timestamp;
         connectionLimitValue.set(statistics.getConnectionLimit());
@@ -434,7 +435,7 @@ public final class ServerMonitor {
     catch (final RemoteException ignored) {/*ignored*/}
   }
 
-  private void addThreadStatistics(final long timestamp, final EntityServerAdmin.ThreadStatistics threadStatistics) {
+  private void addThreadStatistics(final long timestamp, final ServerAdmin.ThreadStatistics threadStatistics) {
     threadCountSeries.add(timestamp, threadStatistics.getThreadCount());
     daemonThreadCountSeries.add(timestamp, threadStatistics.getDaemonThreadCount());
     for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
@@ -448,8 +449,8 @@ public final class ServerMonitor {
     }
   }
 
-  private void addGCInfo(final List<EntityServerAdmin.GcEvent> gcEvents) {
-    for (final EntityServerAdmin.GcEvent event : gcEvents) {
+  private void addGCInfo(final List<ServerAdmin.GcEvent> gcEvents) {
+    for (final ServerAdmin.GcEvent event : gcEvents) {
       XYSeries typeSeries = gcTypeSeries.get(GC_EVENT_PREFIX + event.getGcName());
       if (typeSeries == null) {
         typeSeries = new XYSeries(GC_EVENT_PREFIX + event.getGcName());

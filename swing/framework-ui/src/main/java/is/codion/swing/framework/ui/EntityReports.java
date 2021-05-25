@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Windows;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.util.ResourceBundle;
 
@@ -84,7 +85,7 @@ public final class EntityReports {
   public static <R> void viewReport(final R reportResult, final ReportComponentProvider<R, JComponent> uiWrapper, final String frameTitle) {
     SwingUtilities.invokeLater(() -> {
       final JFrame frame = new JFrame(frameTitle == null ? MESSAGES.getString("report_printer") : frameTitle);
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       frame.getContentPane().add(uiWrapper.createReportComponent(reportResult));
       Windows.resizeWindow(frame, SCREEN_SIZE_RATIO, MINIMUM_REPORT_WINDOW_SIZE);
       Windows.centerWindow(frame);

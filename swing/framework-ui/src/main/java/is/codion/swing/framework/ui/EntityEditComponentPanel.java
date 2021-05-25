@@ -41,6 +41,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.math.BigDecimal;
@@ -67,11 +68,11 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Specifies the default horizontal alignment used in labels<br>
-   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
+   * Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)<br>
    * Default value: JLabel.LEFT
    */
   public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue(
-          "is.codion.swing.framework.ui.EntityEditComponentPanel.labelTextAlignment", JLabel.LEFT);
+          "is.codion.swing.framework.ui.EntityEditComponentPanel.labelTextAlignment", SwingConstants.LEFT);
 
   /**
    * Specifies whether focus should be transferred from components on enter.
@@ -423,7 +424,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
                                           final String labelBorderLayoutConstraints) {
-    return createInputPanel(attribute, inputComponent, labelBorderLayoutConstraints, JLabel.LEADING);
+    return createInputPanel(attribute, inputComponent, labelBorderLayoutConstraints, SwingConstants.LEADING);
   }
 
   /**
