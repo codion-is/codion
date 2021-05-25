@@ -5,8 +5,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JTable;
@@ -108,7 +108,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
     if (!Objects.equals(requireNonNull(tableModel).getEntityType(), requireNonNull(property).getEntityType())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityType());
     }
-    if (property.getAttribute().isBoolean() && !(property instanceof ValueListProperty)) {
+    if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
       return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, (Property<Boolean>) property);
     }
 

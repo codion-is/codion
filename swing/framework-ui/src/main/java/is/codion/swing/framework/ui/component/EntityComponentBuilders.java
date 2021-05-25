@@ -7,8 +7,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
@@ -134,13 +134,13 @@ public class EntityComponentBuilders {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T> ItemComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute) {
+  public final <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
-    if (!(property instanceof ValueListProperty)) {
-      throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
+    if (!(property instanceof ItemProperty)) {
+      throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ItemProperty");
     }
 
-    return ComponentBuilders.itemComboBoxBuilder(((ValueListProperty<T>) property).getValues())
+    return ComponentBuilders.itemComboBoxBuilder(((ItemProperty<T>) property).getValues())
             .description(property.getDescription())
             .nullable(property.isNullable());
   }

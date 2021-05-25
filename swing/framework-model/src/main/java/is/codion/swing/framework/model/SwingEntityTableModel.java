@@ -23,8 +23,8 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityModel;
@@ -677,7 +677,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     requireNonNull(entity, "entity");
     requireNonNull(attribute, "attribute");
     final Property<?> property = entityDefinition.getProperty(attribute);
-    if (property instanceof ValueListProperty) {
+    if (property instanceof ItemProperty) {
       return entity.getAsString(property);
     }
 

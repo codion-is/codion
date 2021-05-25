@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static java.util.Collections.unmodifiableList;
 
-final class DefaultValueListProperty<T> extends DefaultColumnProperty<T> implements ValueListProperty<T> {
+final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements ItemProperty<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -20,9 +20,9 @@ final class DefaultValueListProperty<T> extends DefaultColumnProperty<T> impleme
   /**
    * @param attribute the attribute
    * @param caption the property caption
-   * @param items the allowed values for this property
+   * @param items the allowed items for this property
    */
-  DefaultValueListProperty(final Attribute<T> attribute, final String caption, final List<Item<T>> items) {
+  DefaultItemProperty(final Attribute<T> attribute, final String caption, final List<Item<T>> items) {
     super(attribute, caption);
     this.items = unmodifiableList(items);
   }

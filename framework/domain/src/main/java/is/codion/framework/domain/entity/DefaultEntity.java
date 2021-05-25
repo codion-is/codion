@@ -7,9 +7,9 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
-import is.codion.framework.domain.property.ValueListProperty;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -193,8 +193,8 @@ final class DefaultEntity implements Entity, Serializable {
       throw new IllegalArgumentException("Property " + property + " is not part of entity " + getEntityType());
     }
     final Property<Object> objectProperty = (Property<Object>) property;
-    if (property instanceof ValueListProperty) {
-      return ((ValueListProperty<Object>) property).getCaption(get(objectProperty));
+    if (property instanceof ItemProperty) {
+      return ((ItemProperty<Object>) property).getCaption(get(objectProperty));
     }
     final Attribute<?> attribute = property.getAttribute();
     if (attribute instanceof ForeignKey && !isLoaded(((ForeignKey) attribute))) {
@@ -505,8 +505,8 @@ final class DefaultEntity implements Entity, Serializable {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
-    if (property instanceof ValueListProperty && value != null && !((ValueListProperty<T>) property).isValid(value)) {
-      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getAttribute());
+    if (property instanceof ItemProperty && value != null && !((ItemProperty<T>) property).isValid(value)) {
+      throw new IllegalArgumentException("Invalid item value: " + value + " for property " + property.getAttribute());
     }
     if (value != null && property instanceof ForeignKeyProperty) {
       validateForeignKeyValue((ForeignKeyProperty) property, (Entity) value);

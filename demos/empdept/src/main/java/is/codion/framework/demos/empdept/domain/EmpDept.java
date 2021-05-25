@@ -153,7 +153,7 @@ public final class EmpDept extends DefaultDomain {
                     .nullable(false),
             foreignKeyProperty(Employee.DEPARTMENT_FK, "Department")
                     .beanProperty("department"),
-            valueListProperty(Employee.JOB, "Job", Employee.JOB_VALUES)
+            itemProperty(Employee.JOB, "Job", Employee.JOB_VALUES)
                     .beanProperty("job"),
             columnProperty(Employee.SALARY, "Salary")
                     .nullable(false)

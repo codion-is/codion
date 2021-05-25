@@ -5,8 +5,8 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -128,7 +128,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
    */
   @Override
   protected void setValue(final Object value) {
-    if (property instanceof ValueListProperty) {
+    if (property instanceof ItemProperty) {
       setText((String) value);
     }
     else if (value instanceof Temporal) {

@@ -35,7 +35,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(Country.CODE_2)
             .upperCase();
     createTextField(Country.NAME);
-    createValueListComboBox(Country.CONTINENT)
+    createItemComboBox(Country.CONTINENT)
             .preferredWidth(120);
     createAttributeComboBox(Country.REGION)
             .preferredWidth(120);

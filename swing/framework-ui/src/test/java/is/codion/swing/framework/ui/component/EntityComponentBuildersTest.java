@@ -100,9 +100,9 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createValueListComboBox() {
+  public void createItemComboBox() {
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
-            inputComponents.valueListComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST).transferFocusOnEnter(true)
+            inputComponents.itemComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST).transferFocusOnEnter(true)
             .buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_INT_VALUE_LIST));
     final JComboBox<Item<Integer>> box = componentValue.getComponent();
@@ -198,10 +198,10 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void valueListComboBox() {
+  public void itemComboBox() {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
-            inputComponents.valueListComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST).buildComponentValue();
+            inputComponents.itemComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST).buildComponentValue();
     componentValue.link(value);
     final SteppedComboBox<Item<Integer>> comboBox = componentValue.getComponent();
     final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();

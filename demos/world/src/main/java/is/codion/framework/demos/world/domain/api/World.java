@@ -1,6 +1,5 @@
 package is.codion.framework.demos.world.domain.api;
 
-import is.codion.common.item.Item;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -9,11 +8,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 
 import org.jxmapviewer.viewer.GeoPosition;
 
-import java.util.List;
 import java.util.Objects;
-
-import static is.codion.common.item.Item.item;
-import static java.util.Arrays.asList;
 
 /**
  * World domain api.
@@ -21,12 +16,6 @@ import static java.util.Arrays.asList;
 public interface World {
 
   DomainType DOMAIN = DomainType.domainType("WorldImpl");
-
-  List<Item<String>> CONTINENTS = asList(
-          item("Africa"), item("Antarctica"), item("Asia"),
-          item("Europe"), item("North America"), item("Oceania"),
-          item("South America")
-  );
 
   interface City extends Entity {
     EntityType<City> TYPE = DOMAIN.entityType("world.city", City.class);

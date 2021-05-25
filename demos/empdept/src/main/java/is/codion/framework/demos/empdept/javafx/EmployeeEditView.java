@@ -22,7 +22,7 @@ public final class EmployeeEditView extends EntityEditView {
 
     createTextField(Employee.ID);
     createTextField(Employee.NAME);
-    createValueListComboBox(Employee.JOB);
+    createItemComboBox(Employee.JOB);
     createTextField(Employee.SALARY);
     createForeignKeyComboBox(Employee.DEPARTMENT_FK);
     createDatePicker(Employee.HIREDATE);

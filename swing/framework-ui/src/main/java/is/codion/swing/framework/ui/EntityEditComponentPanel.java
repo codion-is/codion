@@ -655,13 +655,13 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for value list combo boxes.
+   * Creates a builder for value item list combo boxes.
    * @param attribute the attribute for which to build a value list combo box
    * @param <T> the value type
-   * @return a value list combo box builder
+   * @return a value item list combo box builder
    */
-  protected final <T> ItemComboBoxBuilder<T> createValueListComboBox(final Attribute<T> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.valueListComboBoxBuilder(attribute)
+  protected final <T> ItemComboBoxBuilder<T> createItemComboBox(final Attribute<T> attribute) {
+    return setComponentBuilder(attribute, entityComponentBuilders.itemComboBoxBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter));
   }
 

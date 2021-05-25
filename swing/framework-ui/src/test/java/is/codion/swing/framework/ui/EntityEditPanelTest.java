@@ -70,7 +70,7 @@ public final class EntityEditPanelTest {
     @Override
     protected void initializeUI() {
       createTextField(TestDomain.EMP_NAME);
-      createValueListComboBox(TestDomain.EMP_JOB);
+      createItemComboBox(TestDomain.EMP_JOB);
       createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
       createForeignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
       createTextField(TestDomain.EMP_SALARY);

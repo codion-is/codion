@@ -212,8 +212,8 @@ public final class Properties {
    * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> valueListProperty(final Attribute<T> attribute, final List<Item<T>> validItems) {
-    return valueListProperty(attribute, null, validItems);
+  public static <T> ColumnProperty.Builder<T> itemProperty(final Attribute<T> attribute, final List<Item<T>> validItems) {
+    return itemProperty(attribute, null, validItems);
   }
 
   /**
@@ -224,9 +224,9 @@ public final class Properties {
    * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> valueListProperty(final Attribute<T> attribute, final String caption,
-                                                                final List<Item<T>> validItems) {
-    return new DefaultValueListProperty<>(attribute, caption, validItems).builder();
+  public static <T> ColumnProperty.Builder<T> itemProperty(final Attribute<T> attribute, final String caption,
+                                                           final List<Item<T>> validItems) {
+    return new DefaultItemProperty<>(attribute, caption, validItems).builder();
   }
 
   /**

@@ -7,8 +7,8 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -57,8 +57,8 @@ public final class EntityInputComponents extends EntityComponentBuilders {
       throw new IllegalArgumentException("ForeignKeys are not supported");
     }
     final Property<T> property = getEntityDefinition().getProperty(attribute);
-    if (property instanceof ValueListProperty) {
-      return (ComponentValue<T, C>) valueListComboBoxBuilder(attribute)
+    if (property instanceof ItemProperty) {
+      return (ComponentValue<T, C>) itemComboBoxBuilder(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }

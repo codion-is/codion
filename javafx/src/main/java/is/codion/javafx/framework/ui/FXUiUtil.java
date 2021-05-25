@@ -16,8 +16,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
@@ -248,7 +248,7 @@ public final class FXUiUtil {
         return (Value<T>) entityValue;
       }
     }
-    if (property instanceof ValueListProperty) {
+    if (property instanceof ItemProperty) {
       final Value<T> listValue = PropertyValues.selectedItemValue(((ComboBox<Item<T>>) control).getSelectionModel());
       listValue.set(defaultValue);
 
@@ -360,8 +360,8 @@ public final class FXUiUtil {
     if (property instanceof ForeignKeyProperty) {
       return new ComboBox<>(createEntityListModel((ForeignKeyProperty) property, connectionProvider));
     }
-    if (property instanceof ValueListProperty) {
-      return new ComboBox<>(createValueListComboBoxModel((ValueListProperty<T>) property));
+    if (property instanceof ItemProperty) {
+      return new ComboBox<>(createItemComboBoxModel((ItemProperty<T>) property));
     }
 
     final Attribute<?> attribute = property.getAttribute();
@@ -711,15 +711,15 @@ public final class FXUiUtil {
 
   /**
    * Instantiates a {@link ComboBox} based on the values of the given property and linked to the given edit model
-   * @param valueListProperty the property
+   * @param itemProperty the property
    * @param editModel the edit model
    * @param <T> the property type
    * @return a {@link ComboBox} based on the values of the given property
    */
-  public static <T> ComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> valueListProperty,
-                                                              final FXEntityEditModel editModel) {
-    final ComboBox<Item<T>> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
-    PropertyValues.selectedItemValue(comboBox.getSelectionModel()).link(editModel.value(valueListProperty.getAttribute()));
+  public static <T> ComboBox<Item<T>> createItemComboBox(final ItemProperty<T> itemProperty, final FXEntityEditModel editModel) {
+    final ComboBox<Item<T>> comboBox = new ComboBox<>(createItemComboBoxModel(itemProperty));
+    PropertyValues.selectedItemValue(comboBox.getSelectionModel()).link(editModel.value(itemProperty.getAttribute()));
+
     return comboBox;
   }
 
@@ -751,7 +751,7 @@ public final class FXUiUtil {
    * @param <T> the value type
    * @return a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    */
-  public static <T> ObservableList<Item<T>> createValueListComboBoxModel(final ValueListProperty<T> property) {
+  public static <T> ObservableList<Item<T>> createItemComboBoxModel(final ItemProperty<T> property) {
     return new SortedList<>(FXCollections.observableArrayList(property.getValues()),
             Comparator.comparing(Item::toString));
   }

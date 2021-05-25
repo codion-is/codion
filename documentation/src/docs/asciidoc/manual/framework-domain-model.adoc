@@ -195,6 +195,15 @@ entity.put(Customer.IS_ACTIVE, true);
 boolean isActive = entity.get(Customer.IS_ACTIVE);
 ----
 
+=== ItemProperty
+
+A property based on a finite  of valid items.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=item]
+----
+
 === DenormalizedViewProperty
 
 An entity can include a property value from a entity referenced via foreign key, by defining a denormalized view property.

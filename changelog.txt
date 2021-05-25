@@ -7079,3 +7079,4 @@
   ComponentBuilder.minimum and maximumSize() added
   ToggleButtonBuilder added
   ValueListComboBoxBuilder renamed ItemComboBoxBuilder
+  ValueListProperty renamed ItemProperty and related changes
