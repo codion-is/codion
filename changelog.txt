@@ -7081,3 +7081,5 @@
   ValueListComboBoxBuilder renamed ItemComboBoxBuilder
   ValueListProperty renamed ItemProperty and related changes
   EntityComponentBuilders.toggleButtonBuilder() added
+  ComponentValue.linkedValueObserver() added
+  LabelBuilder added

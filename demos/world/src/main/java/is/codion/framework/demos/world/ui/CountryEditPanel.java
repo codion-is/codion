@@ -7,7 +7,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -60,14 +59,13 @@ public final class CountryEditPanel extends EntityEditPanel {
                     .editPanelInitializer(this::initializeCapitalEditPanel)
                     .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
-    DoubleField averageCityPopulationField = ComponentBuilders.doubleFieldBuilder()
-            .maximumFractionDigits(2)
-            .focusable(false)
-            .editable(false)
-            .build();
     ComponentValue<Double, DoubleField> averageCityPopulationFieldValue =
-            ComponentValues.doubleField(averageCityPopulationField);
-    averageCityPopulationFieldValue.link(((CountryEditModel) getEditModel()).getAvarageCityPopulationValue());
+            ComponentBuilders.doubleFieldBuilder()
+                    .maximumFractionDigits(2)
+                    .focusable(false)
+                    .editable(false)
+                    .linkedValueObserver(((CountryEditModel) getEditModel()).getAvarageCityPopulationValue())
+                    .buildComponentValue();
 
     setLayout(gridLayout(4, 5));
 
@@ -86,7 +84,8 @@ public final class CountryEditPanel extends EntityEditPanel {
     addInputPanel(Country.GOVERNMENTFORM);
     addInputPanel(Country.HEADOFSTATE);
     addInputPanel(Country.CAPITAL_FK, capitalPanel);
-    add(createInputPanel(new JLabel("Avg. city population"), averageCityPopulationField));
+    add(createInputPanel(new JLabel("Avg. city population"),
+            averageCityPopulationFieldValue.getComponent()));
   }
 
   private void initializeCapitalEditPanel(EntityEditPanel capitalEditPanel) {

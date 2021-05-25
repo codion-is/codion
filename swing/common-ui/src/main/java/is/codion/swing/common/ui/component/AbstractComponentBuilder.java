@@ -7,6 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.value.ComponentValue;
 
@@ -31,6 +32,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   protected String description;
   protected StateObserver enabledState;
   private Value<T> linkedValue;
+  private ValueObserver<T> linkedValueObserver;
   private T initialValue;
 
   @Override
@@ -91,7 +93,19 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B linkedValue(final Value<T> value) {
+    if (linkedValueObserver != null) {
+      throw new IllegalStateException("linkeValueObserver has already been set");
+    }
     this.linkedValue = value;
+    return (B) this;
+  }
+
+  @Override
+  public B linkedValueObserver(final ValueObserver<T> linkedValueObserver) {
+    if (linkedValueObserver != null) {
+      throw new IllegalStateException("linkeValue has already been set");
+    }
+    this.linkedValueObserver = linkedValueObserver;
     return (B) this;
   }
 
@@ -126,13 +140,14 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }
-    if (linkedValue == null) {
-      if (initialValue != null) {
-        setInitialValue(component, initialValue);
-      }
+    if (initialValue != null) {
+      setInitialValue(component, initialValue);
     }
-    else {
+    if (linkedValue != null) {
       buildComponentValue().link(linkedValue);
+    }
+    if (linkedValueObserver != null) {
+      buildComponentValue().link(linkedValueObserver);
     }
     buildEvent.onEvent(component);
 
