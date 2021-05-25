@@ -5,6 +5,7 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -20,7 +21,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -207,11 +207,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
 
-    final JCheckBox collectSnapshotCheckBox = new JCheckBox("Snapshot");
-    ComponentValues.toggleButton(collectSnapshotCheckBox)
-            .link(model.getCollectSnapshotStatisticsState());
-    collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
-    chartConfig.add(collectSnapshotCheckBox);
+    chartConfig.add(ComponentBuilders.checkBoxBuilder()
+            .caption("Snapshot")
+            .maximumSize(TextFields.getPreferredTextFieldSize())
+            .linkedValue(model.getCollectSnapshotStatisticsState())
+            .build());
 
     final JButton clearButton = Control.builder(model::clearInPoolStatistics)
             .name("Clear")

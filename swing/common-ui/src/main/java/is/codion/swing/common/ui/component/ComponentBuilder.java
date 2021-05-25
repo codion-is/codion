@@ -44,6 +44,18 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B preferredSize(Dimension preferredSize);
 
   /**
+   * @param maximumSize the maximum component size
+   * @return this builder instance
+   */
+  B maximumSize(Dimension maximumSize);
+
+  /**
+   * @param minimumSize the minimum component size
+   * @return this builder instance
+   */
+  B minimumSize(Dimension minimumSize);
+
+  /**
    * @param transferFocusOnEnter true if the component should transfer focus on Enter
    * @return this builder instance
    */

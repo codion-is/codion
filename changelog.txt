@@ -7076,3 +7076,4 @@
   ComponentBuilder.linkedValue() added
   ComponentBuilder.initialValue() added
   DefaultCheckBoxBuilder.includeCaption is now true by default
+  ComponentBuilder.minimum and maximumSize() added
