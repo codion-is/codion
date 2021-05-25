@@ -7080,3 +7080,4 @@
   ToggleButtonBuilder added
   ValueListComboBoxBuilder renamed ItemComboBoxBuilder
   ValueListProperty renamed ItemProperty and related changes
+  EntityComponentBuilders.toggleButtonBuilder() added

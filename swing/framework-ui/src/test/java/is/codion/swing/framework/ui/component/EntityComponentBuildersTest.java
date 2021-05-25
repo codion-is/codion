@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,6 +51,26 @@ public final class EntityComponentBuildersTest {
             .transferFocusOnEnter(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN));
     final JCheckBox box = componentValue.getComponent();
+    assertTrue(box.isSelected());//default value is true
+    assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN));
+
+    box.doClick();
+
+    assertFalse(box.isSelected());
+    assertFalse(editModel.get(TestDomain.DETAIL_BOOLEAN));
+
+    editModel.put(TestDomain.DETAIL_BOOLEAN, true);
+    assertTrue(box.isSelected());
+  }
+
+  @Test
+  public void createToggleButton() {
+    editModel.setDefaultValues();
+    final ComponentValue<Boolean, JToggleButton> componentValue =
+            inputComponents.toggleButtonBuilder(TestDomain.DETAIL_BOOLEAN)
+            .transferFocusOnEnter(true).buildComponentValue();
+    componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN));
+    final JToggleButton box = componentValue.getComponent();
     assertTrue(box.isSelected());//default value is true
     assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
