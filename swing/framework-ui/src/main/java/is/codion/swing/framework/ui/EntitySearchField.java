@@ -412,7 +412,6 @@ public final class EntitySearchField extends JTextField {
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
       generalSettingsPanel.add(ComponentBuilders.checkBoxBuilder()
               .caption(MESSAGES.getString("enable_multiple_search_values"))
-              .includeCaption(true)
               .linkedValue(searchModel.getMultipleSelectionEnabledValue())
               .build());
 
@@ -436,17 +435,14 @@ public final class EntitySearchField extends JTextField {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       panel.add(ComponentBuilders.checkBoxBuilder()
               .caption(MESSAGES.getString("case_sensitive"))
-              .includeCaption(true)
               .linkedValue(settings.getCaseSensitiveValue())
               .build());
       panel.add(ComponentBuilders.checkBoxBuilder()
               .caption(MESSAGES.getString("prefix_wildcard"))
-              .includeCaption(true)
               .linkedValue(settings.getWildcardPrefixValue())
               .build());
       panel.add(ComponentBuilders.checkBoxBuilder()
               .caption(MESSAGES.getString("postfix_wildcard"))
-              .includeCaption(true)
               .linkedValue(settings.getWildcardPostfixValue())
               .build());
 

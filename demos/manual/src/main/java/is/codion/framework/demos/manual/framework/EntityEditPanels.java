@@ -69,7 +69,6 @@ public final class EntityEditPanels {
       // tag::booleanValue[]
       JCheckBox checkBox =
               createCheckBox(Demo.BOOLEAN)
-                      .includeCaption(true)
                       .build();
 
       NullableCheckBox nullableCheckBox =
@@ -158,7 +157,7 @@ public final class EntityEditPanels {
     private void selectionValue() {
       // tag::selectionValue[]
       final DefaultComboBoxModel<String> comboBoxModel =
-              new DefaultComboBoxModel<>(new String[]{"One", "Two"});
+              new DefaultComboBoxModel<>(new String[] {"One", "Two"});
 
       final SteppedComboBox<String> comboBox =
               createComboBox(Demo.TEXT, comboBoxModel)

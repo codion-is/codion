@@ -7075,3 +7075,4 @@
   NumberFieldBuilder.groupingSeparator() and groupingUsed() added, DoubleFieldBuilder and BigDecimalFieldBuilder.decimalSeparator() added
   ComponentBuilder.linkedValue() added
   ComponentBuilder.initialValue() added
+  DefaultCheckBoxBuilder.includeCaption is now true by default

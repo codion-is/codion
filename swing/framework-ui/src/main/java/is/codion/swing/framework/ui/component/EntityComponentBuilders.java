@@ -74,7 +74,8 @@ public class EntityComponentBuilders {
     return ComponentBuilders.checkBoxBuilder()
             .description(property.getDescription())
             .nullable(property.isNullable())
-            .caption(property.getCaption());
+            .caption(property.getCaption())
+            .includeCaption(false);
   }
 
   /**
