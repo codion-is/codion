@@ -200,12 +200,12 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void valueListComboBox() {
+  public void itemComboBox() {
     final List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
-            ComponentBuilders.valueListComboBoxBuilder(items)
+            ComponentBuilders.itemComboBoxBuilder(items)
             .transferFocusOnEnter(true)
             .nullable(true).buildComponentValue();
     componentValue.link(value);

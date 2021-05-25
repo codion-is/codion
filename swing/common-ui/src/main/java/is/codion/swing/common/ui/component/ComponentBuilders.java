@@ -46,8 +46,8 @@ public final class ComponentBuilders {
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final List<Item<T>> values) {
-    return new DefaultValueListComboBoxBuilder<>(values);
+  public static <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final List<Item<T>> values) {
+    return new DefaultItemComboBoxBuilder<>(values);
   }
 
   /**

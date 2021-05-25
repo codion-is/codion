@@ -7,26 +7,26 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 /**
- * Builds a value list combo box.
+ * Builds a item combo box.
  * @param <T> the value type
  */
-public interface ValueListComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<Item<T>>, ValueListComboBoxBuilder<T>> {
+public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
 
   /**
    * @param nullable true if a null value should be added to the model if missing
    * @return this builder instance
    */
-  ValueListComboBoxBuilder<T> nullable(boolean nullable);
+  ItemComboBoxBuilder<T> nullable(boolean nullable);
 
   /**
    * @param popupWidth the required popup with
    * @return this builder instance
    */
-  ValueListComboBoxBuilder<T> popupWidth(final int popupWidth);
+  ItemComboBoxBuilder<T> popupWidth(final int popupWidth);
 
   /**
    * @param sorted true if the combo box content should be sorted
    * @return this builder instance
    */
-  ValueListComboBoxBuilder<T> sorted(boolean sorted);
+  ItemComboBoxBuilder<T> sorted(boolean sorted);
 }

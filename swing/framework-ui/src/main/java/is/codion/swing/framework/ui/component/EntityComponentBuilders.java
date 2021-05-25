@@ -19,6 +19,7 @@ import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
+import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
 import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
 import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
@@ -28,7 +29,6 @@ import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
-import is.codion.swing.common.ui.component.ValueListComboBoxBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -134,13 +134,13 @@ public class EntityComponentBuilders {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute) {
+  public final <T> ItemComboBoxBuilder<T> valueListComboBoxBuilder(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ValueListProperty");
     }
 
-    return ComponentBuilders.valueListComboBoxBuilder(((ValueListProperty<T>) property).getValues())
+    return ComponentBuilders.itemComboBoxBuilder(((ValueListProperty<T>) property).getValues())
             .description(property.getDescription())
             .nullable(property.isNullable());
   }

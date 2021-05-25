@@ -7078,3 +7078,4 @@
   DefaultCheckBoxBuilder.includeCaption is now true by default
   ComponentBuilder.minimum and maximumSize() added
   ToggleButtonBuilder added
+  ValueListComboBoxBuilder renamed ItemComboBoxBuilder
