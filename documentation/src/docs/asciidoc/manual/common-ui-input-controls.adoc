@@ -4,29 +4,6 @@
 
 Here are the basics of linking input controls to model values.
 
-== Boolean
-
-=== CheckBox
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=checkBox]
-----
-
-=== NullableCheckBox
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=nullableCheckBox]
-----
-
-=== ComboBox
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=booleanComboBox]
-----
-
 == Text
 
 === TextField
@@ -94,6 +71,29 @@ include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=localDateTime]
+----
+
+== Boolean
+
+=== CheckBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=checkBox]
+----
+
+=== NullableCheckBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=nullableCheckBox]
+----
+
+=== ComboBox
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=booleanComboBox]
 ----
 
 == Selection
