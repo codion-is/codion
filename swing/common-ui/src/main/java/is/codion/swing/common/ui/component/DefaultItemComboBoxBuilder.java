@@ -52,8 +52,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
     final ItemComboBoxModel<T> itemComboBoxModel = createItemComboBoxModel();
-    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
-    Completion.enableComboBoxCompletion(comboBox);
+    final SteppedComboBox<Item<T>> comboBox = Completion.enable(new SteppedComboBox<>(itemComboBoxModel));
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
     }
