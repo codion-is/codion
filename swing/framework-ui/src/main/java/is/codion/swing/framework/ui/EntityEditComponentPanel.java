@@ -11,11 +11,15 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
+import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
+import is.codion.swing.common.ui.component.IntegerFieldBuilder;
+import is.codion.swing.common.ui.component.LongFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
@@ -36,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -522,6 +527,62 @@ public class EntityEditComponentPanel extends JPanel {
             .columns(defaultTextFieldColumns);
     setComponentBuilder(attribute, builder);
 
+    return builder;
+  }
+
+  /**
+   * Creates a builder for integer fields.
+   * @param attribute the attribute for which to build a text field
+   * @return a integer field builder
+   */
+  protected final IntegerFieldBuilder createIntegerField(final Attribute<Integer> attribute) {
+    final IntegerFieldBuilder builder = entityComponentBuilders.integerFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+
+    return builder;
+  }
+
+  /**
+   * Creates a builder for long fields.
+   * @param attribute the attribute for which to build a text field
+   * @return a long field builder
+   */
+  protected final LongFieldBuilder createLongField(final Attribute<Long> attribute) {
+    final LongFieldBuilder builder = entityComponentBuilders.longFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+
+    return builder;
+  }
+
+  /**
+   * Creates a builder for double fields.
+   * @param attribute the attribute for which to build a text field
+   * @return a double field builder
+   */
+  protected final DoubleFieldBuilder createDoubleField(final Attribute<Double> attribute) {
+    final DoubleFieldBuilder builder = entityComponentBuilders.doubleFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+    
+    return builder;
+  }
+
+  /**
+   * Creates a builder for big decimal fields.
+   * @param attribute the attribute for which to build a text field
+   * @return a big decimal field builder
+   */
+  protected final BigDecimalFieldBuilder createBigDecimalField(final Attribute<BigDecimal> attribute) {
+    final BigDecimalFieldBuilder builder = entityComponentBuilders.bigDecimalFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+    
     return builder;
   }
 

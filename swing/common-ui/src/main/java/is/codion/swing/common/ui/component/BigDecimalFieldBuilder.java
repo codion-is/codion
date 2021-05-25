@@ -7,6 +7,14 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 
 import java.math.BigDecimal;
 
-public interface BigDecimalFieldBuilder extends TextFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> {
+/**
+ * A builder {@link BigDecimalField}.
+ */
+public interface BigDecimalFieldBuilder extends NumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> {
 
+  /**
+   * @param maximumFractionDigits the maximum fraction digits for floating point numbers, if applicable
+   * @return this builder instance
+   */
+  BigDecimalFieldBuilder maximumFractionDigits(int maximumFractionDigits);
 }

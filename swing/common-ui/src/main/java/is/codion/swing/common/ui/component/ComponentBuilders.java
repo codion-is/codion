@@ -5,9 +5,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
@@ -87,20 +84,33 @@ public final class ComponentBuilders {
    * @return a builder for a component linked to the given value
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Class<T> valueClass) {
+    if (valueClass.equals(Integer.class)) {
+      return (TextFieldBuilder<T, C, B>) integerFieldBuilder();
+    }
+    else if (valueClass.equals(Long.class)) {
+      return (TextFieldBuilder<T, C, B>) longFieldBuilder();
+    }
+    else if (valueClass.equals(Double.class)) {
+      return (TextFieldBuilder<T, C, B>) doubleFieldBuilder();
+    }
+    else if (valueClass.equals(BigDecimal.class)) {
+      return (TextFieldBuilder<T, C, B>) bigDecimalFieldBuilder();
+    }
+
     return new DefaultTextFieldBuilder<>(valueClass);
   }
 
   /**
    * @return a builder for a component linked to the given value
    */
-  public static TextFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> integerFieldBuilder() {
+  public static IntegerFieldBuilder integerFieldBuilder() {
     return new DefaultIntegerFieldBuilder();
   }
 
   /**
    * @return a builder for a component linked to the given value
    */
-  public static TextFieldBuilder<Long, LongField, LongFieldBuilder> longFieldBuilder() {
+  public static LongFieldBuilder longFieldBuilder() {
     return new DefaultLongFieldBuilder();
   }
 
@@ -114,7 +124,7 @@ public final class ComponentBuilders {
   /**
    * @return a builder for a component linked to the given value
    */
-  public static TextFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> bigDecimalFieldBuilder() {
+  public static BigDecimalFieldBuilder bigDecimalFieldBuilder() {
     return new DefaultBigDecimalFieldBuilder();
   }
 

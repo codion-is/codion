@@ -10,9 +10,9 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JComponent;
+import java.math.BigDecimal;
 
 /**
  * Provides input components for editing entities.
@@ -58,16 +58,52 @@ public final class EntityInputComponents extends EntityComponentBuilders {
               .enabledState(enabledState)
               .buildComponentValue();
     }
+    if (attribute.isTemporal() || attribute.isString() || attribute.isCharacter()) {
+      return (ComponentValue<T, C>) textFieldBuilder(attribute)
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
     if (attribute.isBoolean()) {
       return (ComponentValue<T, C>) checkBoxBuilder((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
               .nullable(property.isNullable())
               .buildComponentValue();
     }
-    if (attribute.isTemporal() || attribute.isNumerical() || attribute.isString() || attribute.isCharacter()) {
-      return (ComponentValue<T, C>) textFieldBuilder(attribute)
+    if (attribute.isInteger()) {
+      return (ComponentValue<T, C>) integerFieldBuilder((Attribute<Integer>) attribute)
               .enabledState(enabledState)
-              .updateOn(UpdateOn.KEYSTROKE)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumLength(property.getMaximumLength())
+              .buildComponentValue();
+
+    }
+    if (attribute.isLong()) {
+      return (ComponentValue<T, C>) longFieldBuilder((Attribute<Long>) attribute)
+              .enabledState(enabledState)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumLength(property.getMaximumLength())
+              .buildComponentValue();
+
+    }
+    if (attribute.isDouble()) {
+      return (ComponentValue<T, C>) doubleFieldBuilder((Attribute<Double>) attribute)
+              .enabledState(enabledState)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumFractionDigits(property.getMaximumFractionDigits())
+              .maximumLength(property.getMaximumLength())
+              .buildComponentValue();
+
+    }
+    if (attribute.isBigDecimal()) {
+      return (ComponentValue<T, C>) bigDecimalFieldBuilder((Attribute<BigDecimal>) attribute)
+              .enabledState(enabledState)
+              .minimumValue(property.getMinimumValue())
+              .maximumValue(property.getMaximumValue())
+              .maximumFractionDigits(property.getMaximumFractionDigits())
+              .maximumLength(property.getMaximumLength())
               .buildComponentValue();
     }
 
