@@ -553,7 +553,7 @@ public class DomainTest {
   }
 
   @Test
-  public void setValueValueList() {
+  public void setValueItem() {
     final Entity entity = entities.entity(Detail.TYPE);
     assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_VALUE_LIST, -10));
   }

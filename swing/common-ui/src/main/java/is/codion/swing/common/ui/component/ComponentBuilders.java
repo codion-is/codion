@@ -20,15 +20,22 @@ public final class ComponentBuilders {
   private ComponentBuilders() {}
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static CheckBoxBuilder checkBoxBuilder() {
     return new DefaultCheckBoxBuilder();
   }
 
   /**
+   * @return a builder for a component
+   */
+  public static ToggleButtonBuilder toggleButtonBuilder() {
+    return new DefaultToggleButtonBuilder();
+  }
+
+  /**
    * @param comboBoxModel the combo box model
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static BooleanComboBoxBuilder booleanComboBoxBuilder(final BooleanComboBoxModel comboBoxModel) {
     return new DefaultBooleanComboBoxBuilder(comboBoxModel);
@@ -37,17 +44,17 @@ public final class ComponentBuilders {
   /**
    * @param values the values
    * @param <T> the value type
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
-  public static <T> ValueListComboBoxBuilder<T> valueListComboBoxBuilder(final List<Item<T>> values) {
-    return new DefaultValueListComboBoxBuilder<>(values);
+  public static <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final List<Item<T>> values) {
+    return new DefaultItemComboBoxBuilder<>(values);
   }
 
   /**
    * @param valueClass the value class
    * @param comboBoxModel the combo box model
    * @param <T> the value type
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static <T> ComboBoxBuilder<T> comboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
     return new DefaultComboBoxBuilder<>(valueClass, comboBoxModel);
@@ -56,21 +63,21 @@ public final class ComponentBuilders {
   /**
    * @param <T> the value type
    * @param valueClass the value class
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuiler(final Class<T> valueClass) {
     return new DefaultTemporalInputPanelBuiler<>(valueClass);
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static TextInputPanelBuilder textInputPanelBuilder() {
     return new DefaultTextInputPanelBuilder();
   }
 
   /**
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static TextAreaBuilder textAreaBuilder() {
     return new DefaultTextAreaBuilder();
@@ -81,7 +88,7 @@ public final class ComponentBuilders {
    * @param <C> the text field type
    * @param <B> the builder type
    * @param valueClass the value class
-   * @return a builder for a component linked to the given value
+   * @return a builder for a component
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Class<T> valueClass) {
     if (valueClass.equals(Integer.class)) {

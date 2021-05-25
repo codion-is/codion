@@ -22,8 +22,8 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -205,8 +205,8 @@ public class EntityTestUnit {
     if (property instanceof ForeignKeyProperty) {
       return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
     }
-    if (property instanceof ValueListProperty) {
-      return getRandomListValue((ValueListProperty<?>) property);
+    if (property instanceof ItemProperty) {
+      return getRandomItem((ItemProperty<?>) property);
     }
     final Attribute<?> attribute = property.getAttribute();
     if (attribute.isBoolean()) {
@@ -492,7 +492,7 @@ public class EntityTestUnit {
     return referenceEntities == null ? null : referenceEntities.get(property.getReferencedEntityType());
   }
 
-  private static <T> T getRandomListValue(final ValueListProperty<T> property) {
+  private static <T> T getRandomItem(final ItemProperty<T> property) {
     final List<Item<T>> items = property.getValues();
     final Item<T> item = items.get(RANDOM.nextInt(items.size()));
 

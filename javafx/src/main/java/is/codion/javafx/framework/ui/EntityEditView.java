@@ -11,9 +11,9 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 
@@ -194,14 +194,14 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   /**
-   * Creates a {@link ComboBox} based on the values of the given property
+   * Creates a {@link ComboBox} based on the items of the given property
    * @param attribute the attribute
    * @param <T> the property type
    * @return a {@link ComboBox} for the given property
    */
-  protected final <T> ComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute) {
+  protected final <T> ComboBox<Item<T>> createItemComboBox(final Attribute<T> attribute) {
     checkControl(attribute);
-    final ComboBox<Item<T>> box = FXUiUtil.createValueListComboBox((ValueListProperty<T>)
+    final ComboBox<Item<T>> box = FXUiUtil.createItemComboBox((ItemProperty<T>)
             getEditModel().getEntityDefinition().getProperty(attribute), editModel);
 
     controls.put(attribute, box);

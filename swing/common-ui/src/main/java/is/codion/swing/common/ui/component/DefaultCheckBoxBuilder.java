@@ -15,7 +15,7 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
         implements CheckBoxBuilder {
 
   private String caption;
-  private boolean includeCaption;
+  private boolean includeCaption = true;
   private boolean nullable = false;
   private int horizontalAlignment = SwingConstants.LEADING;
 

@@ -17,8 +17,8 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
-final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ValueListComboBoxBuilder<T>>
-        implements ValueListComboBoxBuilder<T> {
+final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>>
+        implements ItemComboBoxBuilder<T> {
 
   private final List<Item<T>> values;
 
@@ -26,33 +26,33 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
   private boolean sorted = true;
   private boolean nullable;
 
-  DefaultValueListComboBoxBuilder(final List<Item<T>> values) {
+  DefaultItemComboBoxBuilder(final List<Item<T>> values) {
     this.values = values;
     preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override
-  public ValueListComboBoxBuilder<T> nullable(final boolean nullable) {
+  public ItemComboBoxBuilder<T> nullable(final boolean nullable) {
     this.nullable = nullable;
     return this;
   }
 
   @Override
-  public ValueListComboBoxBuilder<T> popupWidth(final int popupWidth) {
+  public ItemComboBoxBuilder<T> popupWidth(final int popupWidth) {
     this.popupWidth = popupWidth;
     return this;
   }
 
   @Override
-  public ValueListComboBoxBuilder<T> sorted(final boolean sorted) {
+  public ItemComboBoxBuilder<T> sorted(final boolean sorted) {
     this.sorted = sorted;
     return this;
   }
 
   @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
-    final ItemComboBoxModel<T> valueListComboBoxModel = createValueListComboBoxModel();
-    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(valueListComboBoxModel);
+    final ItemComboBoxModel<T> itemComboBoxModel = createItemComboBoxModel();
+    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
     Completion.enableComboBoxCompletion(comboBox);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
@@ -77,7 +77,7 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
     component.setSelectedItem(initialValue);
   }
 
-  private ItemComboBoxModel<T> createValueListComboBoxModel() {
+  private ItemComboBoxModel<T> createItemComboBoxModel() {
     final ItemComboBoxModel<T> model = sorted ?
             new ItemComboBoxModel<>(values) : new ItemComboBoxModel<>(null, values);
     final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());

@@ -56,7 +56,7 @@ public final class EntityEditPanels {
     Attribute<String> TEXT = TYPE.stringAttribute("text");
     Attribute<String> LONG_TEXT = TYPE.stringAttribute("long_text");
     Attribute<String> FORMATTED_TEXT = TYPE.stringAttribute("formatted_text");
-    Attribute<String> VALUE_LIST = TYPE.stringAttribute("value_list");
+    Attribute<String> ITEM_LIST = TYPE.stringAttribute("item_list");
   }
 
   private static final class EditPanelDemo extends EntityEditPanel {
@@ -69,7 +69,6 @@ public final class EntityEditPanels {
       // tag::booleanValue[]
       JCheckBox checkBox =
               createCheckBox(Demo.BOOLEAN)
-                      .includeCaption(true)
                       .build();
 
       NullableCheckBox nullableCheckBox =
@@ -158,7 +157,7 @@ public final class EntityEditPanels {
     private void selectionValue() {
       // tag::selectionValue[]
       final DefaultComboBoxModel<String> comboBoxModel =
-              new DefaultComboBoxModel<>(new String[]{"One", "Two"});
+              new DefaultComboBoxModel<>(new String[] {"One", "Two"});
 
       final SteppedComboBox<String> comboBox =
               createComboBox(Demo.TEXT, comboBoxModel)
@@ -167,12 +166,12 @@ public final class EntityEditPanels {
       // end::selectionValue[]
     }
 
-    private void valueList() {
-      // tag::valueList[]
+    private void item() {
+      // tag::item[]
       SteppedComboBox<Item<String>> comboBox =
-              createValueListComboBox(Demo.VALUE_LIST)
+              createItemComboBox(Demo.ITEM_LIST)
                       .build();
-      // end::valueList[]
+      // end::item[]
     }
 
     private void panelLabel() {

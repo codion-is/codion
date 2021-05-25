@@ -27,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -125,7 +126,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createCheckBox() {
+  public void checkBox() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
             .transferFocusOnEnter(true).buildComponentValue();
@@ -144,7 +145,26 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createNullableCheckBox() {
+  public void toggleButton() {
+    final Value<Boolean> value = Value.value(true, false);
+    final ComponentValue<Boolean, JToggleButton> componentValue = ComponentBuilders.toggleButtonBuilder()
+            .transferFocusOnEnter(true).buildComponentValue();
+    componentValue.link(value);
+    final JToggleButton box = componentValue.getComponent();
+    assertTrue(box.isSelected());
+    assertTrue(value.get());
+
+    box.doClick();
+
+    assertFalse(box.isSelected());
+    assertFalse(value.get());
+
+    value.set(true);
+    assertTrue(box.isSelected());
+  }
+
+  @Test
+  public void nullableCheckBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
             .transferFocusOnEnter(true).nullable(true).buildComponentValue();
@@ -163,7 +183,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createBooleanComboBox() {
+  public void booleanComboBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
             ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
@@ -180,12 +200,12 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createValueListComboBox() {
+  public void itemComboBox() {
     final List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
-            ComponentBuilders.valueListComboBoxBuilder(items)
+            ComponentBuilders.itemComboBoxBuilder(items)
             .transferFocusOnEnter(true)
             .nullable(true).buildComponentValue();
     componentValue.link(value);
@@ -206,7 +226,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createComboBox() {
+  public void comboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
@@ -227,7 +247,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createTextField() {
+  public void textField() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextField> componentValue =
             ComponentBuilders.textFieldBuilder(String.class)
@@ -239,7 +259,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createTextArea() {
+  public void textArea() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextArea> componentValue = ComponentBuilders.textAreaBuilder()
             .transferFocusOnEnter(true).rows(4).columns(2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
@@ -251,7 +271,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createTextInputPanel() {
+  public void textInputPanel() {
     final Value<String> value = Value.value();
     final ComponentValue<String, TextInputPanel> componentValue =
             ComponentBuilders.textInputPanelBuilder()
@@ -263,7 +283,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void createFormattedTextField() {
+  public void formattedTextField() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JFormattedTextField> componentValue =
             ComponentBuilders.formattedTextFieldBuilder()

@@ -18,6 +18,7 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
+import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
 import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
 import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
@@ -27,7 +28,6 @@ import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
-import is.codion.swing.common.ui.component.ValueListComboBoxBuilder;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -655,13 +655,13 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for value list combo boxes.
+   * Creates a builder for value item list combo boxes.
    * @param attribute the attribute for which to build a value list combo box
    * @param <T> the value type
-   * @return a value list combo box builder
+   * @return a value item list combo box builder
    */
-  protected final <T> ValueListComboBoxBuilder<T> createValueListComboBox(final Attribute<T> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.valueListComboBoxBuilder(attribute)
+  protected final <T> ItemComboBoxBuilder<T> createItemComboBox(final Attribute<T> attribute) {
+    return setComponentBuilder(attribute, entityComponentBuilders.itemComboBoxBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter));
   }
 

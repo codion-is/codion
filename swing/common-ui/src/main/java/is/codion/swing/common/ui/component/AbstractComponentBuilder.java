@@ -25,6 +25,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private boolean focusable = true;
   private int preferredHeight;
   private int preferredWidth;
+  private Dimension maximumSize;
+  private Dimension minimumSize;
   private boolean transferFocusOnEnter;
   protected String description;
   protected StateObserver enabledState;
@@ -54,6 +56,18 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     requireNonNull(preferredSize);
     this.preferredHeight = preferredSize.height;
     this.preferredWidth = preferredSize.width;
+    return (B) this;
+  }
+
+  @Override
+  public B maximumSize(final Dimension maximumSize) {
+    this.maximumSize = maximumSize;
+    return (B) this;
+  }
+
+  @Override
+  public B minimumSize(final Dimension minimumSize) {
+    this.minimumSize = minimumSize;
     return (B) this;
   }
 
@@ -102,7 +116,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (component.isFocusable() && !focusable) {
       component.setFocusable(false);
     }
-    setPreferredSize(component);
+    setSizes(component);
     if (enabledState != null) {
       Components.linkToEnabledState(enabledState, component);
     }
@@ -162,7 +176,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     Components.transferFocusOnEnter(component);
   }
 
-  private void setPreferredSize(final C component) {
+  private void setSizes(final C component) {
+    if (minimumSize != null) {
+      component.setMinimumSize(minimumSize);
+    }
+    if (maximumSize != null) {
+      component.setMaximumSize(maximumSize);
+    }
     if (preferredHeight > 0) {
       Components.setPreferredHeight(component, preferredHeight);
     }

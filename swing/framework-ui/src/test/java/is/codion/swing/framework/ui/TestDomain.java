@@ -88,7 +88,7 @@ public final class TestDomain extends DefaultDomain {
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName()),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
-            valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
+            itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
               final Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
@@ -148,7 +148,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
-            valueListProperty(EMP_JOB, EMP_JOB.getName(),
+            itemProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(),
             columnProperty(EMP_SALARY, EMP_SALARY.getName())

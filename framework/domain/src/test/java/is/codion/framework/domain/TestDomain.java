@@ -177,7 +177,7 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("master"),
             denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.getName(), Detail.MASTER_FK, Master.NAME),
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
-            valueListProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
+            itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.getName(), linkedValues -> {
               final Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
@@ -276,7 +276,7 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("deptno"),
             foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName())
                     .beanProperty("department"),
-            valueListProperty(Employee.JOB, Employee.JOB.getName(),
+            itemProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty()

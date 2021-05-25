@@ -25,11 +25,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static is.codion.common.Util.notNull;
+import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.lang.Double.parseDouble;
+import static java.util.Arrays.asList;
 
 public final class WorldImpl extends DefaultDomain {
 
@@ -92,9 +94,13 @@ public final class WorldImpl extends DefaultDomain {
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(52),
-            valueListProperty(Country.CONTINENT, "Continent", World.CONTINENTS)
-                    .nullable(false)
-                    .maximumLength(20),
+            // tag::item[]
+            itemProperty(Country.CONTINENT, "Continent", asList(
+                    item("Africa"), item("Antarctica"), item("Asia"),
+                    item("Europe"), item("North America"), item("Oceania"),
+                    item("South America")))
+                    .nullable(false),
+            // end::item[]
             // tag::columnProperty[]
             columnProperty(Country.REGION, "Region")
                     .nullable(false)

@@ -8,10 +8,10 @@ import is.codion.common.item.Item;
 import java.util.List;
 
 /**
- * A property based on a list of valid values.
+ * A property based on a list of valid items.
  * @param <T> the value type
  */
-public interface ValueListProperty<T> extends ColumnProperty<T> {
+public interface ItemProperty<T> extends ColumnProperty<T> {
 
   /**
    * @param value the value to validate
@@ -20,7 +20,7 @@ public interface ValueListProperty<T> extends ColumnProperty<T> {
   boolean isValid(T value);
 
   /**
-   * @return an unmodifiable view of the available values
+   * @return an unmodifiable view of the available items
    */
   List<Item<T>> getValues();
 

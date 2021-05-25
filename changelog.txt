@@ -7106,3 +7106,8 @@
   NumberFieldBuilder.groupingSeparator() and groupingUsed() added, DoubleFieldBuilder and BigDecimalFieldBuilder.decimalSeparator() added
   ComponentBuilder.linkedValue() added
   ComponentBuilder.initialValue() added
+  DefaultCheckBoxBuilder.includeCaption is now true by default
+  ComponentBuilder.minimum and maximumSize() added
+  ToggleButtonBuilder added
+  ValueListComboBoxBuilder renamed ItemComboBoxBuilder
+  ValueListProperty renamed ItemProperty and related changes
