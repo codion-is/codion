@@ -72,6 +72,11 @@ final class DefaultValueListComboBoxBuilder<T> extends AbstractComponentBuilder<
     Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
 
+  @Override
+  protected void setInitialValue(final SteppedComboBox<Item<T>> component, final T initialValue) {
+    component.setSelectedItem(initialValue);
+  }
+
   private ItemComboBoxModel<T> createValueListComboBoxModel() {
     final ItemComboBoxModel<T> model = sorted ?
             new ItemComboBoxModel<>(values) : new ItemComboBoxModel<>(null, values);

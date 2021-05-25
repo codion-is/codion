@@ -79,6 +79,11 @@ final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder
   }
 
   @Override
+  protected void setInitialValue(final EntitySearchField component, final Entity initialValue) {
+    component.getModel().setSelectedEntity(initialValue);
+  }
+
+  @Override
   protected void setTransferFocusOnEnter(final EntitySearchField component) {
     component.setTransferFocusOnEnter(true);
   }

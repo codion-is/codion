@@ -86,4 +86,9 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   protected void setTransferFocusOnEnter(final TemporalInputPanel<T> component) {
     component.setTransferFocusOnEnter(true);
   }
+
+  @Override
+  protected void setInitialValue(final TemporalInputPanel<T> component, final T initialValue) {
+    component.setTemporal(initialValue);
+  }
 }

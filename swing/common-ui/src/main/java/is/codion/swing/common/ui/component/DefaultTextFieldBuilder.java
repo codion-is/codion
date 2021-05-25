@@ -91,6 +91,16 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     return (ComponentValue<T, C>) ComponentValues.characterTextField(component, updateOn);
   }
 
+  @Override
+  protected void setInitialValue(final C component, final T initialValue) {
+    if (initialValue instanceof String) {
+      component.setText((String) initialValue);
+    }
+    else if (initialValue instanceof Character) {
+      component.setText(String.valueOf(initialValue));
+    }
+  }
+
   /**
    * Creates the text field built by this builder.
    * @return a JTextField or subclass

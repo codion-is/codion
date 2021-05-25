@@ -53,6 +53,11 @@ final class DefaultCheckBoxBuilder extends AbstractComponentBuilder<Boolean, JCh
     return ComponentValues.toggleButton(component);
   }
 
+  @Override
+  protected void setInitialValue(final JCheckBox component, final Boolean initialValue) {
+    component.setSelected(initialValue);
+  }
+
   private NullableCheckBox createNullableCheckBox() {
     final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel(), includeCaption ? caption : null);
     checkBox.setHorizontalAlignment(horizontalAlignment);

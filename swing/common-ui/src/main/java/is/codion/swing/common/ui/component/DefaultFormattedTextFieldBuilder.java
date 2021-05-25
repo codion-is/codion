@@ -71,4 +71,9 @@ final class DefaultFormattedTextFieldBuilder
   protected ComponentValue<String, JFormattedTextField> buildComponentValue(final JFormattedTextField component) {
     return ComponentValues.textComponent(component, null, updateOn);
   }
+
+  @Override
+  protected void setInitialValue(final JFormattedTextField component, final String initialValue) {
+    component.setText(initialValue);
+  }
 }

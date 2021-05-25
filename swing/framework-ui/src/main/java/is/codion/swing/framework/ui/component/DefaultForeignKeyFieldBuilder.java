@@ -50,4 +50,9 @@ final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entit
       }
     };
   }
+
+  @Override
+  protected void setInitialValue(final JTextField component, final Entity initialValue) {
+    component.setText(initialValue.toString());
+  }
 }

@@ -50,6 +50,11 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
   }
 
   @Override
+  protected void setInitialValue(final EntityComboBox component, final Entity initialValue) {
+    component.setSelectedItem(initialValue);
+  }
+
+  @Override
   protected void setTransferFocusOnEnter(final EntityComboBox component) {
     component.setTransferFocusOnEnter(true);
     Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
