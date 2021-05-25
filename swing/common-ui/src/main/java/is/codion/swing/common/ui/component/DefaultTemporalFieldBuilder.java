@@ -32,4 +32,9 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
   protected final ComponentValue<T, C> buildComponentValue(final C component) {
     return (ComponentValue<T, C>) ComponentValues.temporalField((TemporalField<Temporal>) component, updateOn);
   }
+
+  @Override
+  protected void setInitialValue(final C component, final T initialValue) {
+    component.setTemporal(initialValue);
+  }
 }

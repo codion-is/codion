@@ -68,6 +68,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B linkedValue(Value<T> linkedValue);
 
   /**
+   * Sets the initial value for the component, overridden by {@link #linkedValue(Value)}.
+   * @param initialValue the initial value
+   * @return this builder instance
+   */
+  B initialValue(T initialValue);
+
+  /**
    * @param listener called after a component is built
    * @return this builder instance
    */

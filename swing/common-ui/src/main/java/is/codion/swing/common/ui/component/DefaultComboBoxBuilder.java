@@ -54,4 +54,9 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
     component.setTransferFocusOnEnter(true);
     Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
+
+  @Override
+  protected void setInitialValue(final SteppedComboBox<T> component, final T initialValue) {
+    component.setSelectedItem(initialValue);
+  }
 }

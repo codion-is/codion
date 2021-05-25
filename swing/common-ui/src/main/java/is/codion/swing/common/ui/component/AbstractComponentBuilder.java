@@ -29,6 +29,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   protected String description;
   protected StateObserver enabledState;
   private Value<T> linkedValue;
+  private T initialValue;
 
   @Override
   public final B focusable(final boolean focusable) {
@@ -69,14 +70,20 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public B description(final String description) {
+  public final B description(final String description) {
     this.description = description;
     return (B) this;
   }
 
   @Override
-  public B linkedValue(final Value<T> value) {
+  public final B linkedValue(final Value<T> value) {
     this.linkedValue = value;
+    return (B) this;
+  }
+
+  @Override
+  public final B initialValue(final T initialValue) {
+    this.initialValue = requireNonNull(initialValue);
     return (B) this;
   }
 
@@ -105,7 +112,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }
-    if (linkedValue != null) {
+    if (linkedValue == null) {
+      if (initialValue != null) {
+        setInitialValue(component, initialValue);
+      }
+    }
+    else {
       buildComponentValue().link(linkedValue);
     }
     buildEvent.onEvent(component);
@@ -134,6 +146,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    * @return a component value based on the component
    */
   protected abstract ComponentValue<T, C> buildComponentValue(final C component);
+
+  /**
+   * Sets the initial value in the component, only called for non-null values.
+   * @param component the component
+   * @param initialValue the initial value, not null
+   */
+  protected abstract void setInitialValue(final C component, final T initialValue);
 
   /**
    * Enables focus transfer on Enter, override for special handling

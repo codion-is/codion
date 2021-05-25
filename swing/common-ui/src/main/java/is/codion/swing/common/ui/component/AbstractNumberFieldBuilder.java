@@ -59,6 +59,11 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
 
   protected abstract C createNumberField(final NumberFormat format);
 
+  @Override
+  protected void setInitialValue(final C component, final T initialValue) {
+    component.setNumber(initialValue);
+  }
+
   private static NumberFormat cloneFormat(final NumberFormat format) {
     final NumberFormat cloned = (NumberFormat) format.clone();
     cloned.setGroupingUsed(format.isGroupingUsed());

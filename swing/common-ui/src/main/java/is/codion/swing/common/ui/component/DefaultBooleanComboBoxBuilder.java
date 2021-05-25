@@ -44,4 +44,9 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
     component.setTransferFocusOnEnter(true);
     Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
   }
+
+  @Override
+  protected void setInitialValue(final SteppedComboBox<Item<Boolean>> component, final Boolean initialValue) {
+    component.setSelectedItem(initialValue);
+  }
 }

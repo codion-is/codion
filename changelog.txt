@@ -7074,3 +7074,4 @@
   DefaultTemporalFieldBuilder now takes dateTimePattern as parameter
   NumberFieldBuilder.groupingSeparator() and groupingUsed() added, DoubleFieldBuilder and BigDecimalFieldBuilder.decimalSeparator() added
   ComponentBuilder.linkedValue() added
+  ComponentBuilder.initialValue() added
