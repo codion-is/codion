@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -78,6 +79,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B linkedValue(Value<T> linkedValue);
+
+  /**
+   * @param linkedValueObserver a value to link to the component value
+   * @return this builder instance
+   */
+  B linkedValueObserver(ValueObserver<T> linkedValueObserver);
 
   /**
    * Sets the initial value for the component, overridden by {@link #linkedValue(Value)}.

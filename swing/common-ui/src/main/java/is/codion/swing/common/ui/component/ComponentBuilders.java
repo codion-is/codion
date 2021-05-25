@@ -173,4 +173,11 @@ public final class ComponentBuilders {
   public static FormattedTextFieldBuilder formattedTextFieldBuilder() {
     return new DefaultFormattedTextFieldBuilder();
   }
+
+  /**
+   * @return a label builder
+   */
+  public static LabelBuilder labelBuilder() {
+    return new DefaultLabelBuilder();
+  }
 }

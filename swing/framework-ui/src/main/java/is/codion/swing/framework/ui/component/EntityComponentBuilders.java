@@ -29,6 +29,7 @@ import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
+import is.codion.swing.common.ui.component.ToggleButtonBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -74,6 +75,20 @@ public class EntityComponentBuilders {
     return ComponentBuilders.checkBoxBuilder()
             .description(property.getDescription())
             .nullable(property.isNullable())
+            .caption(property.getCaption())
+            .includeCaption(false);
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
+  public final ToggleButtonBuilder toggleButtonBuilder(final Attribute<Boolean> attribute) {
+    final Property<Boolean> property = entityDefinition.getProperty(attribute);
+
+    return ComponentBuilders.toggleButtonBuilder()
+            .description(property.getDescription())
             .caption(property.getCaption())
             .includeCaption(false);
   }
