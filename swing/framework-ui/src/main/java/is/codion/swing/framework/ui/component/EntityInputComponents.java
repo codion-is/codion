@@ -13,6 +13,10 @@ import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 /**
  * Provides input components for editing entities.
@@ -58,7 +62,31 @@ public final class EntityInputComponents extends EntityComponentBuilders {
               .enabledState(enabledState)
               .buildComponentValue();
     }
-    if (attribute.isTemporal() || attribute.isString() || attribute.isCharacter()) {
+    if (attribute.isLocalTime()) {
+      return (ComponentValue<T, C>) localTimeFieldBuilder((Attribute<LocalTime>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isLocalDate()) {
+      return (ComponentValue<T, C>) localDateFieldBuilder((Attribute<LocalDate>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isLocalDateTime()) {
+      return (ComponentValue<T, C>) localDateTimeFieldBuilder((Attribute<LocalDateTime>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isOffsetDateTime()) {
+      return (ComponentValue<T, C>) offsetDateTimeFieldBuilder((Attribute<OffsetDateTime>) attribute)
+              .dateTimePattern(property.getDateTimePattern())
+              .enabledState(enabledState)
+              .buildComponentValue();
+    }
+    if (attribute.isString() || attribute.isCharacter()) {
       return (ComponentValue<T, C>) textFieldBuilder(attribute)
               .enabledState(enabledState)
               .buildComponentValue();

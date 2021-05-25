@@ -43,10 +43,4 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @return this builder instance
    */
   B format(Format format);
-
-  /**
-   * @param dateTimePattern the date time pattern, if applicable
-   * @return this builder instance
-   */
-  B dateTimePattern(String dateTimePattern);
 }

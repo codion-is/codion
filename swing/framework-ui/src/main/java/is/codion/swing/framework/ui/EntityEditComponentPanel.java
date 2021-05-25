@@ -19,7 +19,11 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
+import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
+import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
+import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
 import is.codion.swing.common.ui.component.LongFieldBuilder;
+import is.codion.swing.common.ui.component.OffsetDateTimeFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
@@ -41,6 +45,10 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -523,6 +531,62 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(final Attribute<T> attribute) {
     final TextFieldBuilder<T, C, B> builder = (TextFieldBuilder<T, C, B>) entityComponentBuilders.textFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+
+    return builder;
+  }
+
+  /**
+   * Creates a builder for temporal fields.
+   * @param attribute the attribute for which to build a temporal field
+   * @return a local time field builder
+   */
+  protected LocalTimeFieldBuilder createLocalTimeField(final Attribute<LocalTime> attribute) {
+    final LocalTimeFieldBuilder builder = entityComponentBuilders.localTimeFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+
+    return builder;
+  }
+
+  /**
+   * Creates a builder for temporal fields.
+   * @param attribute the attribute for which to build a temporal field
+   * @return a local date field builder
+   */
+  protected LocalDateFieldBuilder createLocalDateField(final Attribute<LocalDate> attribute) {
+    final LocalDateFieldBuilder builder = entityComponentBuilders.localDateFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+
+    return builder;
+  }
+
+  /**
+   * Creates a builder for temporal fields.
+   * @param attribute the attribute for which to build a temporal field
+   * @return a local date time field builder
+   */
+  protected LocalDateTimeFieldBuilder createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
+    final LocalDateTimeFieldBuilder builder = entityComponentBuilders.localDateTimeFieldBuilder(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
+            .columns(defaultTextFieldColumns);
+    setComponentBuilder(attribute, builder);
+
+    return builder;
+  }
+
+  /**
+   * Creates a builder for temporal fields.
+   * @param attribute the attribute for which to build a temporal field
+   * @return a offset date time field builder
+   */
+  protected OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
+    final OffsetDateTimeFieldBuilder builder = entityComponentBuilders.offsetDateTimeFieldBuilder(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns);
     setComponentBuilder(attribute, builder);

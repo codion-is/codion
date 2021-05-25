@@ -9,6 +9,12 @@ import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.UpdateOn;
@@ -21,6 +27,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
@@ -28,6 +40,89 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ComponentBuildersTest {
+
+  @Test
+  public void integerField() {
+    final Value<Integer> value = Value.value(42);
+    final ComponentValue<Integer, IntegerField> componentValue =
+            ComponentBuilders.integerFieldBuilder().buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.getComponent().getText(), "42");
+  }
+
+  @Test
+  public void longField() {
+    final Value<Long> value = Value.value(42L);
+    final ComponentValue<Long, LongField> componentValue =
+            ComponentBuilders.longFieldBuilder().buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.getComponent().getText(), "42");
+  }
+
+  @Test
+  public void doubleField() {
+    final Value<Double> value = Value.value(42.2);
+    final ComponentValue<Double, DoubleField> componentValue =
+            ComponentBuilders.doubleFieldBuilder().buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.getComponent().getNumber(), value.get());
+  }
+
+  @Test
+  public void bigDecimalField() {
+    final Value<BigDecimal> value = Value.value(BigDecimal.valueOf(42.2));
+    final ComponentValue<BigDecimal, BigDecimalField> componentValue =
+            ComponentBuilders.bigDecimalFieldBuilder().buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.getComponent().getNumber(), value.get());
+  }
+
+  @Test
+  public void localTimeField() {
+    final Value<LocalTime> value = Value.value(LocalTime.now());
+    final ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
+            ComponentBuilders.localTimeFieldBuilder().dateTimePattern("HH:mm").buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
+  }
+
+  @Test
+  public void localDateField() {
+    final Value<LocalDate> value = Value.value(LocalDate.now());
+    final ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
+            ComponentBuilders.localDateFieldBuilder().dateTimePattern("dd-MM-yyyy").buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.get(), value.get());
+  }
+
+  @Test
+  public void localDateTimeField() {
+    final Value<LocalDateTime> value = Value.value(LocalDateTime.now());
+    final ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
+            ComponentBuilders.localDateTimeFieldBuilder().dateTimePattern("dd-MM-yyyy HH:mm").buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
+  }
+
+  @Test
+  public void offsetDateTimeField() {
+    final Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
+    final ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
+            ComponentBuilders.offsetDateTimeFieldBuilder().dateTimePattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").buildComponentValue();
+    componentValue.link(value);
+//    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
+  }
+
+  @Test
+  public void temporalInputPanel() {
+    final Value<LocalDate> value = Value.value(LocalDate.now());
+    final ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
+            ComponentBuilders.temporalInputPanelBuiler(LocalDate.class)
+            .dateTimePattern("dd-MM-yyyy")
+            .buildComponentValue();
+    componentValue.link(value);
+    assertEquals(componentValue.get(), value.get());
+  }
 
   @Test
   public void createCheckBox() {

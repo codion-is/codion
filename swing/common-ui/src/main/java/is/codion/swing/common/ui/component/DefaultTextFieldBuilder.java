@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.SizedDocument;
-import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -13,7 +12,6 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import javax.swing.Action;
 import javax.swing.JTextField;
 import java.text.Format;
-import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -22,13 +20,12 @@ import static java.util.Objects.requireNonNull;
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
         implements TextFieldBuilder<T, C, B> {
 
-  private final Class<T> valueClass;
+  protected final Class<T> valueClass;
 
   private Action action;
   private boolean selectAllOnFocusGained;
   private Supplier<Collection<T>> valueSupplier;
   protected Format format;
-  private String dateTimePattern;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
     this.valueClass = requireNonNull(valueClass);
@@ -56,12 +53,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   @Override
   public final B format(final Format format) {
     this.format = format;
-    return (B) this;
-  }
-
-  @Override
-  public final B dateTimePattern(final String dateTimePattern) {
-    this.dateTimePattern = dateTimePattern;
     return (B) this;
   }
 
@@ -99,9 +90,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
    * @return a JTextField or subclass
    */
   protected C createTextField() {
-    if (Temporal.class.isAssignableFrom(valueClass)) {
-      return (C) initializeTemporalField();
-    }
     if (valueClass.equals(String.class)) {
       return (C) initializeStringField();
     }
@@ -114,9 +102,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   private <C extends JTextField, T> ComponentValue<T, C> textFieldValue(final C textField) {
     requireNonNull(textField);
-    if (Temporal.class.isAssignableFrom(valueClass)) {
-      return (ComponentValue<T, C>) ComponentValues.temporalField((TemporalField<Temporal>) textField, updateOn);
-    }
     if (valueClass.equals(String.class)) {
       return (ComponentValue<T, C>) ComponentValues.textComponent(textField, format, updateOn);
     }
@@ -125,15 +110,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
 
     throw new IllegalArgumentException("Text fields not implemented for type: " + valueClass);
-  }
-
-  private TemporalField<Temporal> initializeTemporalField() {
-    if (dateTimePattern == null) {
-      throw new IllegalStateException("dateTimePattern must be specified for temporal fields");
-    }
-    return TemporalField.builder((Class<Temporal>) valueClass)
-            .dateTimePattern(dateTimePattern)
-            .build();
   }
 
   private JTextField initializeStringField() {

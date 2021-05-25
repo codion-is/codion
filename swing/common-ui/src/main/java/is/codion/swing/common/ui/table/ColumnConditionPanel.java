@@ -15,6 +15,11 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -39,7 +44,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-import java.time.temporal.Temporal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -388,7 +396,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
         return componentValue.getComponent();
       }
       if (typeClass.equals(Integer.class)) {
-        final ComponentValue<Integer, JTextField> componentValue = ComponentBuilders.textFieldBuilder(Integer.class)
+        final ComponentValue<Integer, IntegerField> componentValue = ComponentBuilders.integerFieldBuilder()
                 .format(columnConditionModel.getFormat())
                 .buildComponentValue();
         componentValue.link((Value<Integer>) value);
@@ -396,7 +404,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
         return componentValue.getComponent();
       }
       else if (typeClass.equals(Double.class)) {
-        final ComponentValue<Double, JTextField> componentValue = ComponentBuilders.textFieldBuilder(Double.class)
+        final ComponentValue<Double, DoubleField> componentValue = ComponentBuilders.doubleFieldBuilder()
                 .format(columnConditionModel.getFormat())
                 .buildComponentValue();
         componentValue.link((Value<Double>) value);
@@ -404,7 +412,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
         return componentValue.getComponent();
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        final ComponentValue<BigDecimal, JTextField> componentValue = ComponentBuilders.textFieldBuilder(BigDecimal.class)
+        final ComponentValue<BigDecimal, BigDecimalField> componentValue = ComponentBuilders.bigDecimalFieldBuilder()
                 .format(columnConditionModel.getFormat())
                 .buildComponentValue();
         componentValue.link((Value<BigDecimal>) value);
@@ -412,18 +420,42 @@ public class ColumnConditionPanel<C, T> extends JPanel {
         return componentValue.getComponent();
       }
       else if (typeClass.equals(Long.class)) {
-        final ComponentValue<Long, JTextField> componentValue = ComponentBuilders.textFieldBuilder(Long.class)
+        final ComponentValue<Long, LongField> componentValue = ComponentBuilders.longFieldBuilder()
                 .format(columnConditionModel.getFormat())
                 .buildComponentValue();
         componentValue.link((Value<Long>) value);
 
         return componentValue.getComponent();
       }
-      else if (Temporal.class.isAssignableFrom(typeClass)) {
-        final ComponentValue<Temporal, JTextField> componentValue = (ComponentValue<Temporal, JTextField>) ComponentBuilders.textFieldBuilder(typeClass)
+      else if (typeClass.equals(LocalTime.class)) {
+        final ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue = ComponentBuilders.localTimeFieldBuilder()
                 .dateTimePattern(columnConditionModel.getDateTimePattern())
                 .buildComponentValue();
-        componentValue.link((Value<Temporal>) value);
+        componentValue.link((Value<LocalTime>) value);
+
+        return componentValue.getComponent();
+      }
+      else if (typeClass.equals(LocalDate.class)) {
+        final ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue = ComponentBuilders.localDateFieldBuilder()
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .buildComponentValue();
+        componentValue.link((Value<LocalDate>) value);
+
+        return componentValue.getComponent();
+      }
+      else if (typeClass.equals(LocalDateTime.class)) {
+        final ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue = ComponentBuilders.localDateTimeFieldBuilder()
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .buildComponentValue();
+        componentValue.link((Value<LocalDateTime>) value);
+
+        return componentValue.getComponent();
+      }
+      else if (typeClass.equals(OffsetDateTime.class)) {
+        final ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue = ComponentBuilders.offsetDateTimeFieldBuilder()
+                .dateTimePattern(columnConditionModel.getDateTimePattern())
+                .buildComponentValue();
+        componentValue.link((Value<OffsetDateTime>) value);
 
         return componentValue.getComponent();
       }
