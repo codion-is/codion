@@ -7104,3 +7104,4 @@
   TemporalFieldBuilder added along with sub-interfaces, related refactoring
   DefaultTemporalFieldBuilder now takes dateTimePattern as parameter
   NumberFieldBuilder.groupingSeparator() and groupingUsed() added, DoubleFieldBuilder and BigDecimalFieldBuilder.decimalSeparator() added
+  ComponentBuilder.linkedValue() added

@@ -10,10 +10,9 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
@@ -93,11 +92,11 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link IntegerField} bound to the selected value
    */
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
-    final IntegerField integerField = new IntegerField(2);
-    TextFields.selectAllOnFocusGained(integerField);
-    ComponentValues.integerField(integerField).link(getModel().selectorValue(attribute));
-
-    return integerField;
+    return ComponentBuilders.integerFieldBuilder()
+            .columns(2)
+            .selectAllOnFocusGained()
+            .linkedValue(getModel().selectorValue(attribute))
+            .build();
   }
 
   /**
@@ -107,11 +106,11 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link IntegerField} bound to the selected value
    */
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
-    final IntegerField integerField = new IntegerField(2);
-    TextFields.selectAllOnFocusGained(integerField);
-    ComponentValues.integerField(integerField).link(getModel().selectorValue(attribute, finder));
-
-    return integerField;
+    return ComponentBuilders.integerFieldBuilder()
+            .columns(2)
+            .selectAllOnFocusGained()
+            .linkedValue(getModel().selectorValue(attribute, finder))
+            .build();
   }
 
   /**
@@ -120,11 +119,11 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} bound to the selected value
    */
   public JTextField textFieldSelector(final Attribute<String> attribute) {
-    final JTextField textField = new JTextField(2);
-    TextFields.selectAllOnFocusGained(textField);
-    ComponentValues.textComponent(textField).link(getModel().selectorValue(attribute));
-
-    return textField;
+    return ComponentBuilders.textFieldBuilder(String.class)
+            .columns(2)
+            .selectAllOnFocusGained()
+            .linkedValue(getModel().selectorValue(attribute))
+            .build();
   }
 
   /**
@@ -134,11 +133,11 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} bound to the selected value
    */
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
-    final JTextField textField = new IntegerField(2);
-    TextFields.selectAllOnFocusGained(textField);
-    ComponentValues.textComponent(textField).link(getModel().selectorValue(attribute, finder));
-
-    return textField;
+    return ComponentBuilders.textFieldBuilder(String.class)
+            .columns(2)
+            .selectAllOnFocusGained()
+            .linkedValue(getModel().selectorValue(attribute, finder))
+            .build();
   }
 
   private JPopupMenu initializePopupMenu() {

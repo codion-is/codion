@@ -29,9 +29,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
     requireNonNull(valueClass);
-    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
-      throw new IllegalArgumentException("TextFieldBuilder only supports String and Character");
-    }
     this.valueClass = valueClass;
   }
 
@@ -99,6 +96,9 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
    * @return a JTextField or subclass
    */
   protected C createTextField() {
+    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
+      throw new IllegalArgumentException("TextFieldBuilder only supports String and Character");
+    }
     if (valueClass.equals(String.class)) {
       return (C) initializeStringField();
     }
