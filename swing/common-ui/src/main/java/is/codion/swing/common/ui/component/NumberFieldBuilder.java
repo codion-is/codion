@@ -24,4 +24,16 @@ public interface NumberFieldBuilder<T extends Number, C extends NumberField<T>, 
    * @return this builder instance
    */
   B maximumValue(Double maximumValue);
+
+  /**
+   * @param groupingSeparator the grouping separator
+   * @return this builder instance
+   */
+  B groupingSeparator(char groupingSeparator);
+
+  /**
+   * @param groupingUsed true if grouping should be used
+   * @return this builder instance
+   */
+  B groupingUsed(boolean groupingUsed);
 }

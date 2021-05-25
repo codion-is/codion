@@ -3,13 +3,19 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.common.ui.value.UpdateOn;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
+import static is.codion.swing.common.ui.component.ComponentBuilders.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultTemporalInputPanelBuiler<T extends Temporal>
@@ -46,11 +52,29 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected TemporalInputPanel<T> buildComponent() {
-    return new TemporalInputPanel<>(ComponentBuilders.temporalFieldBuilder(valueClass)
-            .updateOn(updateOn)
-            .columns(columns)
-            .dateTimePattern(dateTimePattern)
-            .build(), enabledState);
+
+    if (valueClass.equals(LocalTime.class)) {
+      return new TemporalInputPanel<>((TemporalField<T>) localTimeFieldBuilder(dateTimePattern)
+              .updateOn(updateOn)
+              .columns(columns).build(), enabledState);
+    }
+    else if (valueClass.equals(LocalDate.class)) {
+      return new TemporalInputPanel<>((TemporalField<T>) localDateFieldBuilder(dateTimePattern)
+              .updateOn(updateOn)
+              .columns(columns).build(), enabledState);
+    }
+    else if (valueClass.equals(LocalDateTime.class)) {
+      return new TemporalInputPanel<>((TemporalField<T>) localDateTimeFieldBuilder(dateTimePattern)
+              .updateOn(updateOn)
+              .columns(columns).build(), enabledState);
+    }
+    else if (valueClass.equals(OffsetDateTime.class)) {
+      return new TemporalInputPanel<>((TemporalField<T>) offsetDateTimeFieldBuilder(dateTimePattern)
+              .updateOn(updateOn)
+              .columns(columns).build(), enabledState);
+    }
+
+    throw new IllegalStateException("Unsopported temporal type: " + valueClass);
   }
 
   @Override

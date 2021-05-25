@@ -8,9 +8,9 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import java.time.OffsetDateTime;
 
 final class DefaultOffsetDateTimeFieldBuilder extends DefaultTemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>, OffsetDateTimeFieldBuilder>
-        implements OffsetDateTimeFieldBuilder{
+        implements OffsetDateTimeFieldBuilder {
 
-  DefaultOffsetDateTimeFieldBuilder() {
-    super(OffsetDateTime.class);
+  DefaultOffsetDateTimeFieldBuilder(final String dateTimePattern) {
+    super(OffsetDateTime.class, dateTimePattern);
   }
 }

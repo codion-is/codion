@@ -10,9 +10,11 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, DoubleField, DoubleFieldBuilder> implements DoubleFieldBuilder {
+final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, DoubleField, DoubleFieldBuilder>
+        implements DoubleFieldBuilder {
 
   private int maximumFractionDigits = -1;
+  private char decimalSeparator = 0;
 
   DefaultDoubleFieldBuilder() {
     super(Double.class);
@@ -25,10 +27,19 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
-  protected DoubleField createTextField() {
-    final DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) cloneFormat((NumberFormat) format));
-    if (minimumValue != null && maximumValue != null) {
-      field.setRange(Math.min(minimumValue, 0), maximumValue);
+  public DoubleFieldBuilder decimalSeparator(final char decimalSeparator) {
+    if (decimalSeparator == groupingSeparator) {
+      throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
+    }
+    this.decimalSeparator = decimalSeparator;
+    return this;
+  }
+
+  @Override
+  protected DoubleField createNumberField(final NumberFormat format) {
+    final DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) format);
+    if (decimalSeparator != 0) {
+      field.setSeparators(decimalSeparator, groupingSeparator);
     }
     if (maximumFractionDigits > 0) {
       field.setMaximumFractionDigits(maximumFractionDigits);

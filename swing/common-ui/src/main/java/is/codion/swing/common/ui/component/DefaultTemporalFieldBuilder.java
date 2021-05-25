@@ -9,27 +9,21 @@ import is.codion.swing.common.ui.value.ComponentValues;
 
 import java.time.temporal.Temporal;
 
+import static java.util.Objects.requireNonNull;
+
 class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>, B extends TemporalFieldBuilder<T, C, B>>
-  extends DefaultTextFieldBuilder<T, C, B> implements TemporalFieldBuilder<T, C, B> {
+        extends DefaultTextFieldBuilder<T, C, B> implements TemporalFieldBuilder<T, C, B> {
 
-  private String dateTimePattern;
+  private final String dateTimePattern;
 
-  DefaultTemporalFieldBuilder(final Class<T> valueClass) {
+  DefaultTemporalFieldBuilder(final Class<T> valueClass, final String dateTimePattern) {
     super(valueClass);
-  }
-
-  @Override
-  public final B dateTimePattern(final String dateTimePattern) {
-    this.dateTimePattern = dateTimePattern;
-    return (B) this;
+    this.dateTimePattern = requireNonNull(dateTimePattern);
   }
 
   @Override
   protected final C createTextField() {
-    if (dateTimePattern == null) {
-      throw new IllegalStateException("dateTimePattern must be specified for temporal fields");
-    }
-    return (C) TemporalField.builder((Class<Temporal>) valueClass)
+    return (C) TemporalField.builder((Class<Temporal>) getValueClass())
             .dateTimePattern(dateTimePattern)
             .build();
   }

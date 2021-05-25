@@ -10,6 +10,8 @@ import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -20,17 +22,19 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
+import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
@@ -53,10 +57,10 @@ public final class InputControls {
     JButton somethingButton = control.createButton();
 
     Control actionControl = Control.actionControlBuilder(actionEvent -> {
-              if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
-                System.out.println("Doing something else");
-              }
-            })
+      if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+        System.out.println("Doing something else");
+      }
+    })
             .name("Do something else")
             .mnemonic('S')
             .build();
@@ -130,15 +134,20 @@ public final class InputControls {
 
   static void checkBox() {
     // tag::checkBox[]
-    //non-nullable boolean value
-    boolean initialValue = true;
+    //non-nullable so use this value instead of null
     boolean nullValue = false;
 
-    Value<Boolean> booleanValue = Value.value(initialValue, nullValue);
+    Value<Boolean> booleanValue = Value.value(true, nullValue);
 
-    JCheckBox checkBox = new JCheckBox();
+    ComponentValue<Boolean, JCheckBox> componentValue =
+            ComponentBuilders.checkBoxBuilder()
+                    .caption("Check")
+                    .horizontalAlignment(SwingConstants.CENTER)
+                    .buildComponentValue();
 
-    ComponentValues.toggleButton(checkBox).link(booleanValue);
+    componentValue.link(booleanValue);
+
+    JCheckBox checkBox = componentValue.getComponent();
 
     // end::checkBox[]
   }
@@ -148,10 +157,16 @@ public final class InputControls {
     //nullable boolean value
     Value<Boolean> booleanValue = Value.value();
 
-    NullableCheckBox checkBox = new NullableCheckBox();
+    ComponentValue<Boolean, JCheckBox> componentValue =
+            ComponentBuilders.checkBoxBuilder()
+                    .caption("Check")
+                    .nullable(true)
+                    .buildComponentValue();
 
-    ComponentValues.toggleButton(checkBox).link(booleanValue);
+    componentValue.link(booleanValue);
 
+    NullableCheckBox nullableCheckBox =
+            (NullableCheckBox) componentValue.getComponent();
     // end::nullableCheckBox[]
   }
 
@@ -159,9 +174,15 @@ public final class InputControls {
     // tag::booleanComboBox[]
     Value<Boolean> booleanValue = Value.value();
 
-    JComboBox<Item<Boolean>> comboBox = new JComboBox<>(new BooleanComboBoxModel());
+    ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
+            ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
+                    .description("Select a value")
+                    .buildComponentValue();
 
-    ComponentValues.booleanComboBox(comboBox).link(booleanValue);
+    componentValue.link(booleanValue);
+
+    SteppedComboBox<Item<Boolean>> comboBox =
+            componentValue.getComponent();
     // end::booleanComboBox[]
   }
 
@@ -169,9 +190,15 @@ public final class InputControls {
     // tag::textField[]
     Value<String> stringValue = Value.value();
 
-    JTextField textField = new JTextField();
+    ComponentValue<String, JTextField> componentValue =
+            ComponentBuilders.textFieldBuilder(String.class)
+                    .preferredWidth(120)
+                    .transferFocusOnEnter(true)
+                    .buildComponentValue();
 
-    ComponentValues.textComponent(textField).link(stringValue);
+    componentValue.link(stringValue);
+
+    JTextField textField = componentValue.getComponent();
     // end::textField[]
   }
 
@@ -179,9 +206,15 @@ public final class InputControls {
     // tag::textArea[]
     Value<String> stringValue = Value.value();
 
-    JTextArea textArea = new JTextArea();
+    ComponentValue<String, JTextArea> componentValue =
+            ComponentBuilders.textAreaBuilder()
+                    .rows(10).columns(20)
+                    .lineWrap(true)
+                    .buildComponentValue();
 
-    ComponentValues.textComponent(textArea).link(stringValue);
+    componentValue.link(stringValue);
+
+    JTextArea textArea = componentValue.getComponent();
     // end::textArea[]
   }
 
@@ -189,9 +222,15 @@ public final class InputControls {
     // tag::integerField[]
     Value<Integer> integerValue = Value.value();
 
-    IntegerField integerField = new IntegerField();
+    ComponentValue<Integer, IntegerField> componentValue =
+            ComponentBuilders.integerFieldBuilder()
+                    .minimumValue(0d).maximumValue(10000d)
+                    .groupingUsed(false)
+                    .buildComponentValue();
 
-    ComponentValues.integerField(integerField).link(integerValue);
+    componentValue.link(integerValue);
+
+    IntegerField integerField = componentValue.getComponent();
     // end::integerField[]
   }
 
@@ -199,9 +238,14 @@ public final class InputControls {
     // tag::longField[]
     Value<Long> longValue = Value.value();
 
-    LongField longField = new LongField();
+    ComponentValue<Long, LongField> componentValue =
+            ComponentBuilders.longFieldBuilder()
+                    .groupingUsed(true)
+                    .buildComponentValue();
 
-    ComponentValues.longField(longField).link(longValue);
+    componentValue.link(longValue);
+
+    final LongField longField = componentValue.getComponent();
     // end::longField[]
   }
 
@@ -209,9 +253,15 @@ public final class InputControls {
     // tag::doubleField[]
     Value<Double> doubleValue = Value.value();
 
-    DoubleField doubleField = new DoubleField();
+    ComponentValue<Double, DoubleField> componentValue =
+            ComponentBuilders.doubleFieldBuilder()
+                    .maximumFractionDigits(3)
+                    .decimalSeparator('.')
+                    .buildComponentValue();
 
-    ComponentValues.doubleField(doubleField).link(doubleValue);
+    componentValue.link(doubleValue);
+
+    DoubleField doubleField = componentValue.getComponent();
     // end::doubleField[]
   }
 
@@ -219,9 +269,16 @@ public final class InputControls {
     // tag::bigDecimalField[]
     Value<BigDecimal> bigDecimalValue = Value.value();
 
-    BigDecimalField bigDecimalField = new BigDecimalField();
+    ComponentValue<BigDecimal, BigDecimalField> componentValue =
+            ComponentBuilders.bigDecimalFieldBuilder()
+                    .maximumFractionDigits(2)
+                    .groupingSeparator('.')
+                    .decimalSeparator(',')
+                    .buildComponentValue();
 
-    ComponentValues.bigDecimalField(bigDecimalField).link(bigDecimalValue);
+    componentValue.link(bigDecimalValue);
+
+    BigDecimalField decimalField = componentValue.getComponent();
     // end::bigDecimalField[]
   }
 
@@ -229,13 +286,13 @@ public final class InputControls {
     // tag::localTime[]
     Value<LocalTime> localTimeValue = Value.value();
 
-    String dateTimePattern = "HH:mm:ss";
+    ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
+            ComponentBuilders.localTimeFieldBuilder("HH:mm:ss")
+                    .buildComponentValue();
 
-    TemporalField<LocalTime> textField = TemporalField.builder(LocalTime.class)
-            .dateTimePattern(dateTimePattern)
-            .build();
+    componentValue.link(localTimeValue);
 
-    ComponentValues.temporalField(textField).link(localTimeValue);
+    TemporalField<LocalTime> temporalField = componentValue.getComponent();
     // end::localTime[]
   }
 
@@ -243,13 +300,13 @@ public final class InputControls {
     // tag::localDate[]
     Value<LocalDate> localDateValue = Value.value();
 
-    String dateTimePattern = "dd-MM-yyyy";
+    ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
+            ComponentBuilders.localDateFieldBuilder("dd-MM-yyyy")
+                    .buildComponentValue();
 
-    TemporalField<LocalDate> textField = TemporalField.builder(LocalDate.class)
-            .dateTimePattern(dateTimePattern)
-            .build();
+    componentValue.link(localDateValue);
 
-    ComponentValues.temporalField(textField).link(localDateValue);
+    TemporalField<LocalDate> temporalField = componentValue.getComponent();
     // end::localDate[]
   }
 
@@ -257,13 +314,13 @@ public final class InputControls {
     // tag::localDateTime[]
     Value<LocalDateTime> localDateTimeValue = Value.value();
 
-    String dateTimePattern = "dd-MM-yyyy HH:mm";
+    ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
+            ComponentBuilders.localDateTimeFieldBuilder("dd-MM-yyyy HH:mm")
+                    .buildComponentValue();
 
-    TemporalField<LocalDateTime> textField = TemporalField.builder(LocalDateTime.class)
-            .dateTimePattern(dateTimePattern)
-            .build();
+    componentValue.link(localDateTimeValue);
 
-    ComponentValues.temporalField(textField).link(localDateTimeValue);
+    TemporalField<LocalDateTime> temporalField = componentValue.getComponent();
     // end::localDateTime[]
   }
 
@@ -271,9 +328,17 @@ public final class InputControls {
     // tag::selectionComboBox[]
     Value<String> stringValue = Value.value();
 
-    JComboBox<String> comboBox = new JComboBox<>(new String[] {"one", "two", "three"});
+    DefaultComboBoxModel<String> comboBoxModel =
+            new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
-    ComponentValues.comboBox(comboBox).link(stringValue);
+    ComponentValue<String, SteppedComboBox<String>> componentValue =
+            ComponentBuilders.comboBoxBuilder(String.class, comboBoxModel)
+                    .preferredWidth(160)
+                    .buildComponentValue();
+
+    componentValue.link(stringValue);
+
+    SteppedComboBox<String> comboBox = componentValue.getComponent();
     // end::selectionComboBox[]
   }
 
