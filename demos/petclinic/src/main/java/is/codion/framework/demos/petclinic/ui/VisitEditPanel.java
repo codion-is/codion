@@ -24,7 +24,7 @@ public final class VisitEditPanel extends EntityEditPanel {
 
     createForeignKeyComboBox(Visit.PET_FK);
     createTextField(Visit.DATE);
-    createTextArea(Visit.DESCRIPTION).rows(4).columns(20);
+    createTextArea(Visit.DESCRIPTION).rowsColumns(4, 20);
 
     JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
     northPanel.add(createInputPanel(Visit.PET_FK));

@@ -139,7 +139,7 @@ public final class EntityEditPanels {
 
       JTextArea textArea =
               createTextArea(Demo.LONG_TEXT)
-                      .rows(5).columns(20)
+                      .rowsColumns(5, 20)
                       .build();
 
       TextInputPanel inputPanel =

@@ -430,7 +430,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(String.class)) {
-        return textFieldBuilder(String.class)
+        return textFieldBuilder()
                 .linkedValue((Value<String>) value)
                 .buildComponentValue().getComponent();
       }
