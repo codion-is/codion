@@ -20,6 +20,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A JFormattedTextField for Temporal types.<br>
+ * @see #localTimeField(String)
+ * @see #localDateField(String)
+ * @see #localDateTimeField(String)
+ * @see #offsetDateTimeField(String)
  * @see #builder(Class)
  * @param <T> the temporal type
  */
@@ -90,6 +94,42 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   }
 
   /**
+   * A LocalTime based {@link TemporalField}.
+   * @param timePattern the time pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<LocalTime> localTimeField(final String timePattern) {
+    return builder(LocalTime.class).dateTimePattern(timePattern).build();
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param datePattern the date pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<LocalDate> localDateField(final String datePattern) {
+    return builder(LocalDate.class).dateTimePattern(datePattern).build();
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param dateTimePattern the date time pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<LocalDateTime> localDateTimeField(final String dateTimePattern) {
+    return builder(LocalDateTime.class).dateTimePattern(dateTimePattern).build();
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param dateTimePattern the date time pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<OffsetDateTime> offsetDateTimeField(final String dateTimePattern) {
+    return builder(OffsetDateTime.class).dateTimePattern(dateTimePattern).build();
+  }
+
+  /**
    * A builder for {@link TemporalField}.
    * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
    * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
@@ -120,6 +160,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser);
 
     /**
+     * @param initialValue the initial value
+     * @return this builder instance
+     */
+    Builder<T> initialValue(T initialValue);
+
+    /**
      * @return a new {@link TemporalField} instance
      */
     TemporalField<T> build();
@@ -131,6 +177,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
     private String dateTimePattern;
     private DateTimeParser<T> dateTimeParser;
+    private T initialValue;
 
     private DefaultBuilder(final Class<T> temporalClass) {
       this.temporalClass = temporalClass;
@@ -150,12 +197,21 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
 
     @Override
+    public Builder<T> initialValue(final T initialValue) {
+      this.initialValue = initialValue;
+      return this;
+    }
+
+    @Override
     public TemporalField<T> build() {
       if (dateTimePattern == null) {
         throw new IllegalStateException("dateTimePattern must be specified");
       }
 
-      return new TemporalField<>(temporalClass, dateTimePattern, dateTimeParser);
+      final TemporalField<T> temporalField = new TemporalField<>(temporalClass, dateTimePattern, dateTimeParser);
+      temporalField.setTemporal(initialValue);
+
+      return temporalField;
     }
   }
 
