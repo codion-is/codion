@@ -8,6 +8,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -231,6 +232,7 @@ public final class ComponentBuildersTest {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
             ComponentBuilders.comboBoxBuilder(Integer.class, boxModel)
+                    .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
             .transferFocusOnEnter().buildComponentValue();
     componentValue.link(value);
     final JComboBox<Integer> box = componentValue.getComponent();
