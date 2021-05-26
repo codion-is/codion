@@ -410,14 +410,14 @@ public final class EntitySearchField extends JTextField {
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
-      generalSettingsPanel.add(ComponentBuilders.checkBoxBuilder()
+      generalSettingsPanel.add(ComponentBuilders.checkBox()
               .caption(MESSAGES.getString("enable_multiple_search_values"))
               .linkedValue(searchModel.getMultipleSelectionEnabledValue())
               .build());
 
       final JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
-      valueSeparatorPanel.add(ComponentBuilders.textFieldBuilder()
+      valueSeparatorPanel.add(ComponentBuilders.textField()
               .columns(1)
               .maximumLength(1)
               .linkedValue(searchModel.getMultipleItemSeparatorValue())
@@ -433,15 +433,15 @@ public final class EntitySearchField extends JTextField {
 
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
-      panel.add(ComponentBuilders.checkBoxBuilder()
+      panel.add(ComponentBuilders.checkBox()
               .caption(MESSAGES.getString("case_sensitive"))
               .linkedValue(settings.getCaseSensitiveValue())
               .build());
-      panel.add(ComponentBuilders.checkBoxBuilder()
+      panel.add(ComponentBuilders.checkBox()
               .caption(MESSAGES.getString("prefix_wildcard"))
               .linkedValue(settings.getWildcardPrefixValue())
               .build());
-      panel.add(ComponentBuilders.checkBoxBuilder()
+      panel.add(ComponentBuilders.checkBox()
               .caption(MESSAGES.getString("postfix_wildcard"))
               .linkedValue(settings.getWildcardPostfixValue())
               .build());

@@ -69,10 +69,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final CheckBoxBuilder checkBoxBuilder(final Attribute<Boolean> attribute) {
+  public final CheckBoxBuilder checkBox(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.checkBoxBuilder()
+    return ComponentBuilders.checkBox()
             .description(property.getDescription())
             .nullable(property.isNullable())
             .caption(property.getCaption())
@@ -84,10 +84,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final ToggleButtonBuilder toggleButtonBuilder(final Attribute<Boolean> attribute) {
+  public final ToggleButtonBuilder toggleButton(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.toggleButtonBuilder()
+    return ComponentBuilders.toggleButton()
             .description(property.getDescription())
             .caption(property.getCaption())
             .includeCaption(false);
@@ -98,10 +98,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute) {
+  public final BooleanComboBoxBuilder booleanComboBox(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.booleanComboBoxBuilder(ItemComboBoxModel.createBooleanModel())
+    return ComponentBuilders.booleanComboBox(ItemComboBoxModel.createBooleanModel())
             .description(property.getDescription());
   }
 
@@ -111,7 +111,7 @@ public class EntityComponentBuilders {
    * @param comboBoxModel the combo box model
    * @return a builder
    */
-  public final ForeignKeyComboBoxBuilder foreignKeyComboBoxBuilder(final ForeignKey foreignKey, final SwingEntityComboBoxModel comboBoxModel) {
+  public final ForeignKeyComboBoxBuilder foreignKeyComboBox(final ForeignKey foreignKey, final SwingEntityComboBoxModel comboBoxModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return new DefaultForeignKeyComboBoxBuilder(comboBoxModel)
@@ -124,7 +124,7 @@ public class EntityComponentBuilders {
    * @param searchModel the search model
    * @return a builder
    */
-  public final ForeignKeySearchFieldBuilder foreignKeySearchFieldBuilder(final ForeignKey foreignKey, final EntitySearchModel searchModel) {
+  public final ForeignKeySearchFieldBuilder foreignKeySearchField(final ForeignKey foreignKey, final EntitySearchModel searchModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return new DefaultForeignKeySearchFieldBuilder(searchModel)
@@ -136,7 +136,7 @@ public class EntityComponentBuilders {
    * @param foreignKey the foreign key
    * @return a builder
    */
-  public final ForeignKeyFieldBuilder foreignKeyFieldBuilder(final ForeignKey foreignKey) {
+  public final ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return new DefaultForeignKeyFieldBuilder()
@@ -149,13 +149,13 @@ public class EntityComponentBuilders {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final Attribute<T> attribute) {
+  public final <T> ItemComboBoxBuilder<T> itemComboBox(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
     if (!(property instanceof ItemProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ItemProperty");
     }
 
-    return ComponentBuilders.itemComboBoxBuilder(((ItemProperty<T>) property).getValues())
+    return ComponentBuilders.itemComboBox(((ItemProperty<T>) property).getValues())
             .description(property.getDescription())
             .nullable(property.isNullable());
   }
@@ -167,10 +167,10 @@ public class EntityComponentBuilders {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T> ComboBoxBuilder<T> comboBoxBuilder(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
+  public final <T> ComboBoxBuilder<T> comboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.comboBoxBuilder(attribute.getTypeClass(), comboBoxModel)
+    return ComponentBuilders.comboBox(attribute.getTypeClass(), comboBoxModel)
             .description(property.getDescription());
   }
 
@@ -180,13 +180,13 @@ public class EntityComponentBuilders {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuilder(final Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Attribute<T> attribute) {
     if (!attribute.isTemporal()) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.temporalInputPanelBuiler(attribute.getTypeClass())
+    return ComponentBuilders.temporalInputPanel(attribute.getTypeClass())
             .description(property.getDescription())
             .dateTimePattern(property.getDateTimePattern());
   }
@@ -196,10 +196,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TextInputPanelBuilder textInputPanelBuilder(final Attribute<String> attribute) {
+  public final TextInputPanelBuilder textInputPanel(final Attribute<String> attribute) {
     final Property<String> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.textInputPanelBuilder()
+    return ComponentBuilders.textInputPanel()
             .description(property.getDescription())
             .maximumLength(property.getMaximumLength())
             .caption(property.getCaption());
@@ -210,13 +210,13 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TextAreaBuilder textAreaBuilder(final Attribute<String> attribute) {
+  public final TextAreaBuilder textArea(final Attribute<String> attribute) {
     final Property<String> property = entityDefinition.getProperty(attribute);
     if (!attribute.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
 
-    return ComponentBuilders.textAreaBuilder()
+    return ComponentBuilders.textArea()
             .description(property.getDescription())
             .maximumLength(property.getMaximumLength());
   }
@@ -229,28 +229,28 @@ public class EntityComponentBuilders {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Attribute<T> attribute) {
+  public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(final Attribute<T> attribute) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
     final Class<T> typeClass = attribute.getTypeClass();
     if (typeClass.equals(LocalTime.class)) {
-      return (TextFieldBuilder<T, C, B>) localTimeFieldBuilder((Attribute<LocalTime>) attribute)
+      return (TextFieldBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute)
               .description(property.getDescription());
     }
     else if (typeClass.equals(LocalDate.class)) {
-      return (TextFieldBuilder<T, C, B>) localDateFieldBuilder((Attribute<LocalDate>) attribute)
+      return (TextFieldBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute)
               .description(property.getDescription());
     }
     else if (typeClass.equals(LocalDateTime.class)) {
-      return (TextFieldBuilder<T, C, B>) localDateTimeFieldBuilder((Attribute<LocalDateTime>) attribute)
+      return (TextFieldBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute)
               .description(property.getDescription());
     }
     else if (typeClass.equals(OffsetDateTime.class)) {
-      return (TextFieldBuilder<T, C, B>) offsetDateTimeFieldBuilder((Attribute<OffsetDateTime>) attribute)
+      return (TextFieldBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
               .description(property.getDescription());
     }
 
-    return (TextFieldBuilder<T, C, B>) ComponentBuilders.textFieldBuilder(typeClass)
+    return (TextFieldBuilder<T, C, B>) ComponentBuilders.textField(typeClass)
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .description(property.getDescription());
@@ -261,10 +261,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LocalTimeFieldBuilder localTimeFieldBuilder(final Attribute<LocalTime> attribute) {
+  public final LocalTimeFieldBuilder localTimeField(final Attribute<LocalTime> attribute) {
     final Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.localTimeFieldBuilder(property.getDateTimePattern())
+    return ComponentBuilders.localTimeField(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -273,10 +273,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LocalDateFieldBuilder localDateFieldBuilder(final Attribute<LocalDate> attribute) {
+  public final LocalDateFieldBuilder localDateField(final Attribute<LocalDate> attribute) {
     final Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.localDateFieldBuilder(property.getDateTimePattern())
+    return ComponentBuilders.localDateField(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -285,10 +285,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LocalDateTimeFieldBuilder localDateTimeFieldBuilder(final Attribute<LocalDateTime> attribute) {
+  public final LocalDateTimeFieldBuilder localDateTimeField(final Attribute<LocalDateTime> attribute) {
     final Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.localDateTimeFieldBuilder(property.getDateTimePattern())
+    return ComponentBuilders.localDateTimeField(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -297,10 +297,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final OffsetDateTimeFieldBuilder offsetDateTimeFieldBuilder(final Attribute<OffsetDateTime> attribute) {
+  public final OffsetDateTimeFieldBuilder offsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
     final Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.offsetDateTimeFieldBuilder(property.getDateTimePattern())
+    return ComponentBuilders.offsetDateTimeField(property.getDateTimePattern())
             .description(property.getDescription());
   }
 
@@ -309,10 +309,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final IntegerFieldBuilder integerFieldBuilder(final Attribute<Integer> attribute) {
+  public final IntegerFieldBuilder integerField(final Attribute<Integer> attribute) {
     final Property<Integer> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.integerFieldBuilder()
+    return ComponentBuilders.integerField()
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
@@ -325,10 +325,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LongFieldBuilder longFieldBuilder(final Attribute<Long> attribute) {
+  public final LongFieldBuilder longField(final Attribute<Long> attribute) {
     final Property<Long> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.longFieldBuilder()
+    return ComponentBuilders.longField()
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
@@ -341,10 +341,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final DoubleFieldBuilder doubleFieldBuilder(final Attribute<Double> attribute) {
+  public final DoubleFieldBuilder doubleField(final Attribute<Double> attribute) {
     final Property<Double> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.doubleFieldBuilder()
+    return ComponentBuilders.doubleField()
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
@@ -358,10 +358,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final BigDecimalFieldBuilder bigDecimalFieldBuilder(final Attribute<BigDecimal> attribute) {
+  public final BigDecimalFieldBuilder bigDecimalField(final Attribute<BigDecimal> attribute) {
     final Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.bigDecimalFieldBuilder()
+    return ComponentBuilders.bigDecimalField()
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
@@ -375,10 +375,10 @@ public class EntityComponentBuilders {
    * @param attribute the attribute
    * @return a builder
    */
-  public final FormattedTextFieldBuilder formattedTextFieldBuilder(final Attribute<String> attribute) {
+  public final FormattedTextFieldBuilder formattedTextField(final Attribute<String> attribute) {
     final Property<String> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.formattedTextFieldBuilder()
+    return ComponentBuilders.formattedTextField()
             .description(property.getDescription());
   }
 }

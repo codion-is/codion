@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.ComponentValue;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -13,6 +14,8 @@ class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, Label
 
   private String text;
   private int horizontalAlignment = SwingConstants.LEADING;
+  private char displayedMnemonic = 0;
+  private JComponent component;
 
   @Override
   public LabelBuilder text(final String text) {
@@ -27,8 +30,28 @@ class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, Label
   }
 
   @Override
+  public LabelBuilder displayedMnemonic(final char displayedMnemonic) {
+    this.displayedMnemonic = displayedMnemonic;
+    return this;
+  }
+
+  @Override
+  public LabelBuilder labelFor(final JComponent component) {
+    this.component = component;
+    return this;
+  }
+
+  @Override
   protected JLabel buildComponent() {
-    return new JLabel(text, horizontalAlignment);
+    final JLabel label = new JLabel(text, horizontalAlignment);
+    if (displayedMnemonic != 0) {
+      label.setDisplayedMnemonic(displayedMnemonic);
+    }
+    if (component != null) {
+      label.setLabelFor(component);
+    }
+
+    return label;
   }
 
   @Override

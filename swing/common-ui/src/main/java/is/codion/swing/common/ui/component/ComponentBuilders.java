@@ -22,29 +22,29 @@ public final class ComponentBuilders {
   /**
    * @return a builder for a component
    */
-  public static CheckBoxBuilder checkBoxBuilder() {
+  public static CheckBoxBuilder checkBox() {
     return new DefaultCheckBoxBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static ToggleButtonBuilder toggleButtonBuilder() {
+  public static ToggleButtonBuilder toggleButton() {
     return new DefaultToggleButtonBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBoxBuilder() {
-    return booleanComboBoxBuilder(ItemComboBoxModel.createBooleanModel());
+  public static BooleanComboBoxBuilder booleanComboBox() {
+    return booleanComboBox(ItemComboBoxModel.createBooleanModel());
   }
 
   /**
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBoxBuilder(final ItemComboBoxModel<Boolean> comboBoxModel) {
+  public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel) {
     return new DefaultBooleanComboBoxBuilder(comboBoxModel);
   }
 
@@ -53,7 +53,7 @@ public final class ComponentBuilders {
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel) {
+  public static <T> ItemComboBoxBuilder<T> itemComboBox(final ItemComboBoxModel<T> comboBoxModel) {
     return new DefaultItemComboBoxBuilder<>(comboBoxModel);
   }
 
@@ -62,7 +62,7 @@ public final class ComponentBuilders {
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final List<Item<T>> values) {
+  public static <T> ItemComboBoxBuilder<T> itemComboBox(final List<Item<T>> values) {
     return new DefaultItemComboBoxBuilder<>(values);
   }
 
@@ -72,7 +72,7 @@ public final class ComponentBuilders {
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
+  public static <T> ComboBoxBuilder<T> comboBox(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
     return new DefaultComboBoxBuilder<>(valueClass, comboBoxModel);
   }
 
@@ -81,21 +81,21 @@ public final class ComponentBuilders {
    * @param valueClass the value class
    * @return a builder for a component
    */
-  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanelBuiler(final Class<T> valueClass) {
+  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Class<T> valueClass) {
     return new DefaultTemporalInputPanelBuiler<>(valueClass);
   }
 
   /**
    * @return a builder for a component
    */
-  public static TextInputPanelBuilder textInputPanelBuilder() {
+  public static TextInputPanelBuilder textInputPanel() {
     return new DefaultTextInputPanelBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static TextAreaBuilder textAreaBuilder() {
+  public static TextAreaBuilder textArea() {
     return new DefaultTextAreaBuilder();
   }
 
@@ -103,7 +103,7 @@ public final class ComponentBuilders {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> B textFieldBuilder() {
+  public static <B extends TextFieldBuilder<String, JTextField, B>> B textField() {
     return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class);
   }
 
@@ -114,18 +114,18 @@ public final class ComponentBuilders {
    * @param valueClass the value class
    * @return a builder for a component
    */
-  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textFieldBuilder(final Class<T> valueClass) {
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textField(final Class<T> valueClass) {
     if (valueClass.equals(Integer.class)) {
-      return (B) integerFieldBuilder();
+      return (B) integerField();
     }
     else if (valueClass.equals(Long.class)) {
-      return (B) longFieldBuilder();
+      return (B) longField();
     }
     else if (valueClass.equals(Double.class)) {
-      return (B) doubleFieldBuilder();
+      return (B) doubleField();
     }
     else if (valueClass.equals(BigDecimal.class)) {
-      return (B) bigDecimalFieldBuilder();
+      return (B) bigDecimalField();
     }
 
     return (B) new DefaultTextFieldBuilder<T, C, B>(valueClass);
@@ -135,7 +135,7 @@ public final class ComponentBuilders {
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static LocalTimeFieldBuilder localTimeFieldBuilder(final String dateTimePattern) {
+  public static LocalTimeFieldBuilder localTimeField(final String dateTimePattern) {
     return new DefaultLocalTimeFieldBuilder(dateTimePattern);
   }
 
@@ -143,7 +143,7 @@ public final class ComponentBuilders {
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static LocalDateFieldBuilder localDateFieldBuilder(final String dateTimePattern) {
+  public static LocalDateFieldBuilder localDateField(final String dateTimePattern) {
     return new DefaultLocalDateFieldBuilder(dateTimePattern);
   }
 
@@ -151,7 +151,7 @@ public final class ComponentBuilders {
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static LocalDateTimeFieldBuilder localDateTimeFieldBuilder(final String dateTimePattern) {
+  public static LocalDateTimeFieldBuilder localDateTimeField(final String dateTimePattern) {
     return new DefaultLocalDateTimeFieldBuilder(dateTimePattern);
   }
 
@@ -159,49 +159,49 @@ public final class ComponentBuilders {
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static OffsetDateTimeFieldBuilder offsetDateTimeFieldBuilder(final String dateTimePattern) {
+  public static OffsetDateTimeFieldBuilder offsetDateTimeField(final String dateTimePattern) {
     return new DefaultOffsetDateTimeFieldBuilder(dateTimePattern);
   }
 
   /**
    * @return a builder for a component
    */
-  public static IntegerFieldBuilder integerFieldBuilder() {
+  public static IntegerFieldBuilder integerField() {
     return new DefaultIntegerFieldBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static LongFieldBuilder longFieldBuilder() {
+  public static LongFieldBuilder longField() {
     return new DefaultLongFieldBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static DoubleFieldBuilder doubleFieldBuilder() {
+  public static DoubleFieldBuilder doubleField() {
     return new DefaultDoubleFieldBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static BigDecimalFieldBuilder bigDecimalFieldBuilder() {
+  public static BigDecimalFieldBuilder bigDecimalField() {
     return new DefaultBigDecimalFieldBuilder();
   }
 
   /**
    * @return a builder for a component
    */
-  public static FormattedTextFieldBuilder formattedTextFieldBuilder() {
+  public static FormattedTextFieldBuilder formattedTextField() {
     return new DefaultFormattedTextFieldBuilder();
   }
 
   /**
    * @return a label builder
    */
-  public static LabelBuilder labelBuilder() {
+  public static LabelBuilder label() {
     return new DefaultLabelBuilder();
   }
 }
