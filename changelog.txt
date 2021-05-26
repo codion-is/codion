@@ -7097,3 +7097,4 @@
   NumberDocument, NumberField and AbstractNumberFieldBuilder, bug fixed, separators now handled correctly
   Completion.Mode added, replaces old string constants
   ComboBoxBuilder, ItemComboBoxBuilder.completionMode() added
+  Component.itemComboBoxBuilder(ItemComboBoxModel) added
