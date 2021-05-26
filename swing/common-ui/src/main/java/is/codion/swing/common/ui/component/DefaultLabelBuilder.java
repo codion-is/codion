@@ -7,10 +7,12 @@ import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, LabelBuilder> implements LabelBuilder {
 
   private String text;
+  private int horizontalAlignment = SwingConstants.LEADING;
 
   @Override
   public LabelBuilder text(final String text) {
@@ -19,8 +21,14 @@ class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, Label
   }
 
   @Override
+  public LabelBuilder horizontalAlignment(final int horizontalAlignment) {
+    this.horizontalAlignment = horizontalAlignment;
+    return this;
+  }
+
+  @Override
   protected JLabel buildComponent() {
-    return new JLabel(text);
+    return new JLabel(text, horizontalAlignment);
   }
 
   @Override

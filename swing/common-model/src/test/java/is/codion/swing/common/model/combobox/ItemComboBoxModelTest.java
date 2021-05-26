@@ -7,7 +7,6 @@ import is.codion.common.item.Item;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
@@ -19,7 +18,7 @@ public class ItemComboBoxModelTest {
 
   @Test
   public void test() throws Exception {
-    new ItemComboBoxModel();
+    ItemComboBoxModel.createModel();
     final Item<Integer> nullItem = item(null, "");
     final Item<Integer> aOne = item(1, "AOne");
     final Item<Integer> bTwo = item(2, "BTwo");
@@ -27,12 +26,7 @@ public class ItemComboBoxModelTest {
     final Item<Integer> dFour = item(4, "DFour");
 
     final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-    final ItemComboBoxModel<Integer> model = new ItemComboBoxModel<Integer>(items) {
-      @Override
-      protected Collection<Item<Integer>> refreshItems() {
-        return items;//so we can clear the model later on without removing all items
-      }
-    };
+    final ItemComboBoxModel<Integer> model = ItemComboBoxModel.createSortedModel(items);
 
     assertEquals(0, model.indexOf(null));
     assertEquals(1, model.indexOf(1));
@@ -54,8 +48,6 @@ public class ItemComboBoxModelTest {
     assertNull(model.getSelectedValue().getValue());
     assertEquals(model.getSelectedItem(), nullItem);
 
-    model.clear();
-    assertEquals(0, model.getSize());
     model.refresh();
 
     assertEquals(0, model.indexOf(null));
@@ -65,17 +57,24 @@ public class ItemComboBoxModelTest {
     assertEquals(4, model.indexOf(4));
 
     //test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-    final ItemComboBoxModel<Integer> unsortedModel = new ItemComboBoxModel<Integer>(null, items) {
-      @Override
-      protected Collection<Item<Integer>> refreshItems() {
-        return items;
-      }
-    };
+    final ItemComboBoxModel<Integer> unsortedModel = ItemComboBoxModel.createModel(items);
 
     assertEquals(0, unsortedModel.indexOf(null));
     assertEquals(1, unsortedModel.indexOf(3));
     assertEquals(2, unsortedModel.indexOf(2));
     assertEquals(3, unsortedModel.indexOf(1));
     assertEquals(4, unsortedModel.indexOf(4));
+  }
+
+  @Test
+  public void booleanComboBoxModel() throws Exception {
+    final ItemComboBoxModel<Boolean> model = ItemComboBoxModel.createBooleanModel();
+
+    model.setSelectedItem(false);
+    assertEquals(false, ((Item) model.getSelectedItem()).getValue());
+    model.setSelectedItem(true);
+    assertEquals(true, ((Item) model.getSelectedItem()).getValue());
+    model.setSelectedItem(null);
+    assertNull(((Item) model.getSelectedItem()).getValue());
   }
 }

@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -187,11 +186,11 @@ public final class ComponentBuildersTest {
   public void booleanComboBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
-            ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
+            ComponentBuilders.booleanComboBoxBuilder(ItemComboBoxModel.createBooleanModel())
             .transferFocusOnEnter().buildComponentValue();
     componentValue.link(value);
-    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
-            componentValue.getComponent().getModel();
+    final ItemComboBoxModel<Boolean> boxModel =
+            (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
     assertTrue(boxModel.getSelectedValue().getValue());
     boxModel.setSelectedItem(null);
     assertNull(value.get());

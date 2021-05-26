@@ -11,7 +11,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -112,7 +111,7 @@ public final class EntityComponentBuildersTest {
             inputComponents.booleanComboBoxBuilder(TestDomain.DETAIL_BOOLEAN)
             .transferFocusOnEnter().buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN));
-    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) componentValue.getComponent().getModel();
+    final ItemComboBoxModel<Boolean> boxModel = (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
     assertTrue(boxModel.getSelectedValue().getValue());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));

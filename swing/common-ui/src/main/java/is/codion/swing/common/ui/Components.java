@@ -10,6 +10,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -426,22 +427,25 @@ public final class Components {
    * @return the selected look and feel provider, null if none was selected
    */
   public static LookAndFeelProvider selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
-    final ItemComboBoxModel<LookAndFeelProvider> lookAndFeelModel = new ItemComboBoxModel<>();
+    final List<Item<LookAndFeelProvider>> items = new ArrayList<>();
+    final Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
     final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
     LOOK_AND_FEEL_PROVIDERS.values().stream()
             .sorted(Comparator.comparing(LookAndFeelProvider::getName))
             .map(provider -> Item.item(provider, provider.getName()))
             .forEach(item -> {
-      lookAndFeelModel.addItem(item);
+      items.add(item);
       if (currentLookAndFeelClassName.equals(item.getValue().getClassName())) {
-        lookAndFeelModel.setSelectedItem(item);
+        currentLookAndFeel.set(item);
       }
     });
+    final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
+    currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
 
-    final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(lookAndFeelModel),
+    final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(comboBoxModel),
             dialogTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-    return option == JOptionPane.OK_OPTION ? lookAndFeelModel.getSelectedValue().getValue() : null;
+    return option == JOptionPane.OK_OPTION ? comboBoxModel.getSelectedValue().getValue() : null;
   }
 
   /**

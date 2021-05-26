@@ -15,4 +15,10 @@ public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuil
    * @return this builder instance
    */
   LabelBuilder text(String text);
+
+  /**
+   * @param horizontalAlignment the horizontal text alignment
+   * @return this builder instance
+   */
+  LabelBuilder horizontalAlignment(int horizontalAlignment);
 }

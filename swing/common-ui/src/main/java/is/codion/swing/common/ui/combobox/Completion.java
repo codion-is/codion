@@ -119,6 +119,7 @@ public final class Completion {
    */
   public static <C extends JComboBox<T>, T> C enable(final C comboBox, final Mode completionMode) {
     requireNonNull(comboBox);
+    requireNonNull(completionMode);
     switch (completionMode) {
       case NONE:
         break;

@@ -7099,3 +7099,8 @@
   ComboBoxBuilder, ItemComboBoxBuilder.completionMode() added
   Component.itemComboBoxBuilder(ItemComboBoxModel) added
   AbstractComponentBuilder.linkedValueObserver() bug fixed
+  LabelBuilder.horizontalAlignment() added
+  BooleanComboBoxModel removed
+  ItemComboBoxModel.createBooleanModel() added
+  ItemComboBoxModel now final, constructors private, factory methods added
+  Components.selectLookAndFeel() refactored

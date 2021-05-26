@@ -7,7 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class BooleanValuesTest {
 
   @Test
   public void booleanComboBox() {
-    final BooleanComboBoxModel model = new BooleanComboBoxModel();
+    final ItemComboBoxModel<Boolean> model = ItemComboBoxModel.createBooleanModel();
     model.setSelectedItem(false);
     ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = ComponentValues.booleanComboBox(new JComboBox<>(model));
     assertEquals(false, componentValue.get());
@@ -56,7 +56,7 @@ public class BooleanValuesTest {
     assertEquals(true, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(null);
     assertNull(componentValue.get());
-    componentValue = new BooleanComboBoxValue(new JComboBox<>(new BooleanComboBoxModel()));
+    componentValue = new BooleanComboBoxValue(new JComboBox<>(ItemComboBoxModel.createBooleanModel()));
     assertNull(componentValue.get());
   }
 

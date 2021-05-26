@@ -7,6 +7,8 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
+import java.util.Comparator;
+
 /**
  * Builds a item combo box.
  * @param <T> the value type
@@ -26,10 +28,16 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedCombo
   ItemComboBoxBuilder<T> popupWidth(final int popupWidth);
 
   /**
-   * @param sorted true if the combo box content should be sorted
+   * Sorts the contents by caption
    * @return this builder instance
    */
-  ItemComboBoxBuilder<T> sorted(boolean sorted);
+  ItemComboBoxBuilder<T> sorted();
+
+  /**
+   * @param sortComparator if specified the combo box contents are sorted using this comparator
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> sortComparator(Comparator<Item<T>> sortComparator);
 
   /**
    * @param completionMode the completion mode

@@ -55,13 +55,13 @@ public class SelectedValuesTest {
   public void selectedItemValue() {
     final List<Item<String>> items = asList(item(null), item("one"),
             item("two"), item("three"), item("four"));
-    ItemComboBoxModel<String> boxModel = new ItemComboBoxModel<>(items);
+    ItemComboBoxModel<String> boxModel = ItemComboBoxModel.createModel(items);
     boxModel.setSelectedItem("two");
     ComponentValue<String, JComboBox<Item<String>>> componentValue = ComponentValues.itemComboBox(new JComboBox<>(boxModel));
     assertEquals(5, boxModel.getSize());
     assertEquals("two", componentValue.get());
 
-    boxModel = new ItemComboBoxModel<>(items);
+    boxModel = ItemComboBoxModel.createModel(items);
     componentValue = ComponentValues.itemComboBox(new JComboBox<>(boxModel));
     assertEquals(5, boxModel.getSize());
     assertNull(componentValue.get());

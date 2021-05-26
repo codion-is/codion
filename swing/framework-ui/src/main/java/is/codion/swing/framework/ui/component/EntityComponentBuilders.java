@@ -10,7 +10,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
@@ -101,7 +101,7 @@ public class EntityComponentBuilders {
   public final BooleanComboBoxBuilder booleanComboBoxBuilder(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
+    return ComponentBuilders.booleanComboBoxBuilder(ItemComboBoxModel.createBooleanModel())
             .description(property.getDescription());
   }
 
