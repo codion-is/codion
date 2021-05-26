@@ -35,13 +35,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
 
   private TemporalField(final Class<T> temporalClass, final String dateTimePattern,
-                        final DateTimeParser<T> dateTimeParser) {
+                        final DateTimeParser<T> dateTimeParser, final int focusLostBehaviour) {
     super(initializeFormatter(dateTimePattern));
     this.temporalClass = temporalClass;
     this.dateTimePattern = dateTimePattern;
     this.formatter = DateTimeFormatter.ofPattern(dateTimePattern);
     this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
-    setFocusLostBehavior(JFormattedTextField.COMMIT);
+    setFocusLostBehavior(focusLostBehaviour);
   }
 
   /**
@@ -160,6 +160,16 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser);
 
     /**
+     * @param focusLostBehaviour the focus lost behaviour, JFormattedTextField.COMMIT by default
+     * @return this builder instance
+     * @see JFormattedTextField#COMMIT
+     * @see JFormattedTextField#COMMIT_OR_REVERT
+     * @see JFormattedTextField#REVERT
+     * @see JFormattedTextField#PERSIST
+     */
+    Builder<T> focusLostBehaviour(int focusLostBehaviour);
+
+    /**
      * @param initialValue the initial value
      * @return this builder instance
      */
@@ -178,6 +188,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private String dateTimePattern;
     private DateTimeParser<T> dateTimeParser;
     private T initialValue;
+    private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
     private DefaultBuilder(final Class<T> temporalClass) {
       this.temporalClass = temporalClass;
@@ -197,6 +208,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
 
     @Override
+    public Builder<T> focusLostBehaviour(final int focusLostBehaviour) {
+      this.focusLostBehaviour = focusLostBehaviour;
+      return this;
+    }
+
+    @Override
     public Builder<T> initialValue(final T initialValue) {
       this.initialValue = initialValue;
       return this;
@@ -207,8 +224,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       if (dateTimePattern == null) {
         throw new IllegalStateException("dateTimePattern must be specified");
       }
+      if (dateTimeParser == null) {
+        throw new IllegalStateException("dateTimeParser must be specified");
+      }
 
-      final TemporalField<T> temporalField = new TemporalField<>(temporalClass, dateTimePattern, dateTimeParser);
+      final TemporalField<T> temporalField = new TemporalField<>(temporalClass, dateTimePattern, dateTimeParser, focusLostBehaviour);
       temporalField.setTemporal(initialValue);
 
       return temporalField;
@@ -229,7 +249,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       return (DateTimeParser<T>) (DateTimeParser<OffsetDateTime>) OffsetDateTime::parse;
     }
 
-    throw new IllegalArgumentException("TemporalField not implemented for: " + typeClass);
+    return null;
   }
 
   private static FieldFormatter initializeFormatter(final String dateTimePattern) {
