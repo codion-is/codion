@@ -50,7 +50,7 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
       field.setRange(Math.min(minimumValue, 0), maximumValue);
     }
     if (groupingSeparator != 0) {
-      field.setSeparators((char) 0, groupingSeparator);
+      field.setGroupingSeparator(groupingSeparator);
     }
     field.setGroupingUsed(groupingUsed);
 

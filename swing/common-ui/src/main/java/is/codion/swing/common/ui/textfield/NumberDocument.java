@@ -102,4 +102,14 @@ class NumberDocument<T extends Number> extends PlainDocument {
     ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
     setNumber(number);
   }
+
+  void setDecimalSeparator(final char decimalSeparator) {
+    final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    symbols.setDecimalSeparator(decimalSeparator);
+  }
+
+  void setGroupingSeparator(final char groupingSeparator) {
+    final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    symbols.setGroupingSeparator(groupingSeparator);
+  }
 }

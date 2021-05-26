@@ -39,8 +39,11 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   @Override
   protected BigDecimalField createNumberField(final NumberFormat format) {
     final BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) format);
+    if (groupingSeparator != 0) {
+      field.setGroupingSeparator(groupingSeparator);
+    }
     if (decimalSeparator != 0) {
-      field.setSeparators(decimalSeparator, groupingSeparator);
+      field.setDecimalSeparator(decimalSeparator);
     }
     if (maximumFractionDigits > 0) {
       field.setMaximumFractionDigits(maximumFractionDigits);

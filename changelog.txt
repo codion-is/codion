@@ -7093,3 +7093,5 @@
   TemporalField.Builder.initialValue(added)
   TemporalField.Builder.focusLostBehaviour() added
   OkCancelDialogBuilder.onOk() and onCancel() added
+  TextFieldBuilder.transferFocusOnEnter() now parameterless
+  NumberDocument, NumberField and AbstractNumberFieldBuilder, bug fixed, separators now handled correctly

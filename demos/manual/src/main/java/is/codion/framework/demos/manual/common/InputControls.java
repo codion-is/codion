@@ -192,7 +192,7 @@ public final class InputControls {
     ComponentValue<String, JTextField> componentValue =
             ComponentBuilders.textFieldBuilder()
                     .preferredWidth(120)
-                    .transferFocusOnEnter(true)
+                    .transferFocusOnEnter()
                     .linkedValue(stringValue)
                     .buildComponentValue();
 

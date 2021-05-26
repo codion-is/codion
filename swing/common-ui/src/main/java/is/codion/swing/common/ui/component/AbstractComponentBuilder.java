@@ -74,8 +74,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B transferFocusOnEnter(final boolean transferFocusOnEnter) {
-    this.transferFocusOnEnter = transferFocusOnEnter;
+  public final B transferFocusOnEnter() {
+    this.transferFocusOnEnter = true;
     return (B) this;
   }
 

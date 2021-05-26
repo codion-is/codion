@@ -129,7 +129,7 @@ public final class ComponentBuildersTest {
   public void checkBox() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
-            .transferFocusOnEnter(true).buildComponentValue();
+            .transferFocusOnEnter().buildComponentValue();
     componentValue.link(value);
     final JCheckBox box = componentValue.getComponent();
     assertTrue(box.isSelected());
@@ -148,7 +148,7 @@ public final class ComponentBuildersTest {
   public void toggleButton() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JToggleButton> componentValue = ComponentBuilders.toggleButtonBuilder()
-            .transferFocusOnEnter(true).buildComponentValue();
+            .transferFocusOnEnter().buildComponentValue();
     componentValue.link(value);
     final JToggleButton box = componentValue.getComponent();
     assertTrue(box.isSelected());
@@ -167,7 +167,7 @@ public final class ComponentBuildersTest {
   public void nullableCheckBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBoxBuilder()
-            .transferFocusOnEnter(true).nullable(true).buildComponentValue();
+            .transferFocusOnEnter().nullable(true).buildComponentValue();
     componentValue.link(value);
     final NullableCheckBox box = (NullableCheckBox) componentValue.getComponent();
     assertTrue(box.isSelected());
@@ -187,7 +187,7 @@ public final class ComponentBuildersTest {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
             ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
-            .transferFocusOnEnter(true).buildComponentValue();
+            .transferFocusOnEnter().buildComponentValue();
     componentValue.link(value);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
             componentValue.getComponent().getModel();
@@ -206,7 +206,7 @@ public final class ComponentBuildersTest {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
             ComponentBuilders.itemComboBoxBuilder(items)
-            .transferFocusOnEnter(true)
+            .transferFocusOnEnter()
             .nullable(true).buildComponentValue();
     componentValue.link(value);
     final JComboBox<Item<Integer>> comboBox = componentValue.getComponent();
@@ -231,7 +231,7 @@ public final class ComponentBuildersTest {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
             ComponentBuilders.comboBoxBuilder(Integer.class, boxModel)
-            .transferFocusOnEnter(true).buildComponentValue();
+            .transferFocusOnEnter().buildComponentValue();
     componentValue.link(value);
     final JComboBox<Integer> box = componentValue.getComponent();
 
@@ -261,7 +261,7 @@ public final class ComponentBuildersTest {
   public void textArea() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextArea> componentValue = ComponentBuilders.textAreaBuilder()
-            .transferFocusOnEnter(true).rowsColumns(4, 2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
+            .transferFocusOnEnter().rowsColumns(4, 2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
             .buildComponentValue();
     componentValue.link(value);
     final JTextArea textArea = componentValue.getComponent();
@@ -274,7 +274,7 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, TextInputPanel> componentValue =
             ComponentBuilders.textInputPanelBuilder()
-            .transferFocusOnEnter(true).columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE).buildComponentValue();
+            .transferFocusOnEnter().columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE).buildComponentValue();
     componentValue.link(value);
     final TextInputPanel inputPanel = componentValue.getComponent();
     inputPanel.setText("hello");
