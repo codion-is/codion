@@ -14,6 +14,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -144,6 +145,7 @@ public final class EntityComponentBuildersTest {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
             inputComponents.comboBoxBuilder(TestDomain.DETAIL_INT, boxModel)
+                    .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
             .transferFocusOnEnter().buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_INT));
     final JComboBox<Integer> box = componentValue.getComponent();
