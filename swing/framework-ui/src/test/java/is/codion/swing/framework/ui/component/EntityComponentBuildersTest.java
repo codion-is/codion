@@ -174,7 +174,7 @@ public final class EntityComponentBuildersTest {
   public void createTextArea() {
     final ComponentValue<String, JTextArea> componentValue =
             inputComponents.textAreaBuilder(TestDomain.DETAIL_STRING)
-            .transferFocusOnEnter(true).rows(4).columns(2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
+            .transferFocusOnEnter(true).rowsColumns(4, 2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
             .buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
     final JTextArea textArea = componentValue.getComponent();

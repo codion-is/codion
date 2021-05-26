@@ -17,6 +17,13 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
   TextAreaBuilder rows(int rows);
 
   /**
+   * @param rows the rows
+   * @param columns the columns
+   * @return this builder instance
+   */
+  TextAreaBuilder rowsColumns(int rows, int columns);
+
+  /**
    * @param lineWrap true if line wrap should be used
    * @return this builder instance
    */

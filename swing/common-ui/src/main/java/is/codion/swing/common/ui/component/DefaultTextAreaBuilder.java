@@ -27,6 +27,12 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   }
 
   @Override
+  public TextAreaBuilder rowsColumns(final int rows, final int columns) {
+    this.rows = rows;
+    return columns(columns);
+  }
+
+  @Override
   public TextAreaBuilder lineWrap(final boolean lineWrap) {
     this.lineWrap = lineWrap;
     return this;
