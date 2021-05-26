@@ -41,7 +41,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTemporalInputPanel(Employee.HIREDATE);
 
     setLayout(flexibleGridLayoutBuilder()
-            .rows(3).columns(3)
+            .rowsColumns(3, 3)
             .fixRowHeights(true)
             .build());
 

@@ -79,7 +79,7 @@ public final class EntityEditPanelTest {
 
       setInitialFocusAttribute(TestDomain.EMP_NAME);
 
-      setLayout(FlexibleGridLayout.builder().rows(3).columns(3).fixRowHeights(true).build());
+      setLayout(FlexibleGridLayout.builder().rowsColumns(3, 3).fixRowHeights(true).build());
 
       addInputPanel(TestDomain.EMP_NAME);
       addInputPanel(TestDomain.EMP_JOB);

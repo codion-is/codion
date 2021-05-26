@@ -122,7 +122,7 @@ final class LoginPanel extends JPanel {
             .enable(passwordField);
 
     final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
-            .rows(2).columns(2)
+            .rowsColumns(2, 2)
             .fixRowHeights(true)
             .build());
     credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT));
