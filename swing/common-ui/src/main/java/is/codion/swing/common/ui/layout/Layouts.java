@@ -70,8 +70,7 @@ public final class Layouts {
    */
   public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns) {
     return flexibleGridLayoutBuilder()
-            .rows(rows)
-            .columns(columns)
+            .rowsColumns(rows, columns)
             .build();
   }
 

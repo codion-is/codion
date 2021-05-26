@@ -552,9 +552,8 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(FlexibleGridLayout.builder()
-            .rows(2).columns(1)
-            .horizontalGap(0)
-            .verticalGap(0)
+            .rowsColumns(2, 1)
+            .gap(0)
             .fixRowHeights(true)
             .build());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);

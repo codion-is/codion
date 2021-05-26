@@ -142,6 +142,19 @@ public final class FlexibleGridLayout extends GridLayout {
     Builder columns(int columns);
 
     /**
+     * @param rows the rows
+     * @param columns the columns
+     * @return this builder instance
+     */
+    Builder rowsColumns(int rows, int columns);
+
+    /**
+     * @param gap the horizontal and vertical gap to use
+     * @return this builder instance
+     */
+    Builder gap(int gap);
+
+    /**
      * @param horizontalGap the horizontal gap
      * @return this builder instance
      */
@@ -269,6 +282,20 @@ public final class FlexibleGridLayout extends GridLayout {
     @Override
     public Builder columns(final int columns) {
       this.columns = columns;
+      return this;
+    }
+
+    @Override
+    public Builder rowsColumns(final int rows, final int columns) {
+      this.rows = rows;
+      this.columns = columns;
+      return this;
+    }
+
+    @Override
+    public Builder gap(final int gap) {
+      this.horizontalGap = gap;
+      this.verticalGap = gap;
       return this;
     }
 

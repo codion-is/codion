@@ -126,7 +126,7 @@ final class ExceptionDialog extends JDialog {
 
   private JPanel createNorthPanel() {
     final FlexibleGridLayout layout = FlexibleGridLayout.builder()
-            .rows(2).columns(2)
+            .rowsColumns(2, 2)
             .fixRowHeights(true)
             .build();
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);

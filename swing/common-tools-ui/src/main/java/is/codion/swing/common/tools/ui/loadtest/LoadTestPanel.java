@@ -137,7 +137,7 @@ public final class LoadTestPanel<T> extends JPanel {
     final JPanel chartControlPanel = initializeChartControlPanel();
 
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
-            .rows(5).columns(1)
+            .rowsColumns(5, 1)
             .fixColumnWidths(true)
             .build());
     controlPanel.add(applicationPanel);
@@ -189,7 +189,7 @@ public final class LoadTestPanel<T> extends JPanel {
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
     final JPanel userBase = new JPanel(Layouts.flexibleGridLayoutBuilder()
-            .rows(2).columns(2)
+            .rowsColumns(2, 2)
             .fixRowHeights(true)
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
             .build());
@@ -253,7 +253,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
-            .rows(1).columns(2)
+            .rowsColumns(1, 2)
             .fixRowHeights(true)
             .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
@@ -358,7 +358,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
 
     final FlexibleGridLayout layout = Layouts.flexibleGridLayoutBuilder()
-            .rows(4).columns(2)
+            .rowsColumns(4, 2)
             .fixRowHeights(true)
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
             .build();
