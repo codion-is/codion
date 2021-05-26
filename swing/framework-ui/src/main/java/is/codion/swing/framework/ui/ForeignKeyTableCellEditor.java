@@ -39,15 +39,17 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignEntityType, connectionProvider);
       comboBoxModel.refresh();
 
-      final ComponentValue<Entity, EntityComboBox> componentValue = getInputComponents()
-              .foreignKeyComboBoxBuilder(foreignKey, comboBoxModel).buildComponentValue();
+      final ComponentValue<Entity, EntityComboBox> componentValue =
+              getInputComponents().foreignKeyComboBox(foreignKey, comboBoxModel)
+                      .buildComponentValue();
       getCellValue().link(componentValue);
 
       return componentValue.getComponent();
     }
 
-    final ComponentValue<Entity, EntitySearchField> componentValue = getInputComponents()
-            .foreignKeySearchFieldBuilder(foreignKey, new DefaultEntitySearchModel(foreignEntityType, connectionProvider)).buildComponentValue();
+    final ComponentValue<Entity, EntitySearchField> componentValue =
+            getInputComponents().foreignKeySearchField(foreignKey, new DefaultEntitySearchModel(foreignEntityType, connectionProvider))
+                    .buildComponentValue();
     getCellValue().link(componentValue);
 
     return componentValue.getComponent();

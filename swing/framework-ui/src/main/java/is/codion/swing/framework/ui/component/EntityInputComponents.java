@@ -58,43 +58,43 @@ public final class EntityInputComponents extends EntityComponentBuilders {
     }
     final Property<T> property = getEntityDefinition().getProperty(attribute);
     if (property instanceof ItemProperty) {
-      return (ComponentValue<T, C>) itemComboBoxBuilder(attribute)
+      return (ComponentValue<T, C>) itemComboBox(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalTime()) {
-      return (ComponentValue<T, C>) localTimeFieldBuilder((Attribute<LocalTime>) attribute)
+      return (ComponentValue<T, C>) localTimeField((Attribute<LocalTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDate()) {
-      return (ComponentValue<T, C>) localDateFieldBuilder((Attribute<LocalDate>) attribute)
+      return (ComponentValue<T, C>) localDateField((Attribute<LocalDate>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDateTime()) {
-      return (ComponentValue<T, C>) localDateTimeFieldBuilder((Attribute<LocalDateTime>) attribute)
+      return (ComponentValue<T, C>) localDateTimeField((Attribute<LocalDateTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isOffsetDateTime()) {
-      return (ComponentValue<T, C>) offsetDateTimeFieldBuilder((Attribute<OffsetDateTime>) attribute)
+      return (ComponentValue<T, C>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isString() || attribute.isCharacter()) {
-      return (ComponentValue<T, C>) textFieldBuilder(attribute)
+      return (ComponentValue<T, C>) textField(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isBoolean()) {
-      return (ComponentValue<T, C>) checkBoxBuilder((Attribute<Boolean>) attribute)
+      return (ComponentValue<T, C>) checkBox((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
               .nullable(property.isNullable())
               .buildComponentValue();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) integerFieldBuilder((Attribute<Integer>) attribute)
+      return (ComponentValue<T, C>) integerField((Attribute<Integer>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())
@@ -103,7 +103,7 @@ public final class EntityInputComponents extends EntityComponentBuilders {
 
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>) longFieldBuilder((Attribute<Long>) attribute)
+      return (ComponentValue<T, C>) longField((Attribute<Long>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())
@@ -112,7 +112,7 @@ public final class EntityInputComponents extends EntityComponentBuilders {
 
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) doubleFieldBuilder((Attribute<Double>) attribute)
+      return (ComponentValue<T, C>) doubleField((Attribute<Double>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())
@@ -122,7 +122,7 @@ public final class EntityInputComponents extends EntityComponentBuilders {
 
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) bigDecimalFieldBuilder((Attribute<BigDecimal>) attribute)
+      return (ComponentValue<T, C>) bigDecimalField((Attribute<BigDecimal>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())

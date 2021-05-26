@@ -207,7 +207,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(updateIntervalSpinner);
 
-    chartConfig.add(ComponentBuilders.checkBoxBuilder()
+    chartConfig.add(ComponentBuilders.checkBox()
             .caption("Snapshot")
             .maximumSize(TextFields.getPreferredTextFieldSize())
             .linkedValue(model.getCollectSnapshotStatisticsState())

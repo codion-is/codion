@@ -110,7 +110,7 @@ public final class DemoPanel extends JPanel {
     JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(11, 2));
 
     inputPanel.add(new JLabel("Upper Case String"));
-    inputPanel.add(ComponentBuilders.textFieldBuilder()
+    inputPanel.add(ComponentBuilders.textField()
             .columns(12)
             .upperCase()
             .maximumLength(20)
@@ -120,7 +120,7 @@ public final class DemoPanel extends JPanel {
             .build());
 
     inputPanel.add(new JLabel("Lower Case String"));
-    inputPanel.add(ComponentBuilders.textFieldBuilder()
+    inputPanel.add(ComponentBuilders.textField()
             .columns(12)
             .lowerCase()
             .maximumLength(10)
@@ -130,13 +130,13 @@ public final class DemoPanel extends JPanel {
             .build());
 
     inputPanel.add(new JLabel("Local Date Time"));
-    inputPanel.add(ComponentBuilders.localDateTimeFieldBuilder("dd-MM-yyyy HH:mm")
+    inputPanel.add(ComponentBuilders.localDateTimeField("dd-MM-yyyy HH:mm")
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateTimeValue())
             .build());
 
     inputPanel.add(new JLabel("Formatted String"));
-    inputPanel.add(ComponentBuilders.formattedTextFieldBuilder()
+    inputPanel.add(ComponentBuilders.formattedTextField()
             .formatMask("##:##")
             .valueContainsLiterals(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -145,7 +145,7 @@ public final class DemoPanel extends JPanel {
             .build());
 
     inputPanel.add(new JLabel("Integer"));
-    inputPanel.add(ComponentBuilders.integerFieldBuilder()
+    inputPanel.add(ComponentBuilders.integerField()
             .groupingUsed(true)
             .range(0, 1_000_000)
             .groupingSeparator('.')
@@ -155,7 +155,7 @@ public final class DemoPanel extends JPanel {
             .build());
 
     inputPanel.add(new JLabel("Double"));
-    inputPanel.add(ComponentBuilders.doubleFieldBuilder()
+    inputPanel.add(ComponentBuilders.doubleField()
             .groupingUsed(true)
             .maximumFractionDigits(2)
             .range(0, 1_000_000_000)
@@ -167,7 +167,7 @@ public final class DemoPanel extends JPanel {
             .build());
 
     inputPanel.add(new JLabel("Boolean"));
-    inputPanel.add(ComponentBuilders.checkBoxBuilder()
+    inputPanel.add(ComponentBuilders.checkBox()
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(model.getBooleanValue())
             .transferFocusOnEnter(true)
@@ -175,7 +175,7 @@ public final class DemoPanel extends JPanel {
             .build());
 
     inputPanel.add(new JLabel("Boolean Selection"));
-    inputPanel.add(ComponentBuilders.booleanComboBoxBuilder()
+    inputPanel.add(ComponentBuilders.booleanComboBox()
             .transferFocusOnEnter(true)
             .linkedValue(model.getBooleanSelectionValue())
             .build());
@@ -187,7 +187,7 @@ public final class DemoPanel extends JPanel {
     ));
 
     inputPanel.add(new JLabel("Integer Item"));
-    inputPanel.add(ComponentBuilders.itemComboBoxBuilder(itemComboBoxModel)
+    inputPanel.add(ComponentBuilders.itemComboBox(itemComboBoxModel)
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerItemValue())
@@ -197,14 +197,14 @@ public final class DemoPanel extends JPanel {
             new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
 
     inputPanel.add(new JLabel("String Selection"));
-    inputPanel.add(ComponentBuilders.comboBoxBuilder(String.class, comboBoxModel)
+    inputPanel.add(ComponentBuilders.comboBox(String.class, comboBoxModel)
             .editable(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getStringSelectionValue())
             .build());
 
     add(inputPanel, BorderLayout.CENTER);
-    add(ComponentBuilders.labelBuilder()
+    add(ComponentBuilders.label()
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValueObserver(model.getMessageValue())
             .build(), BorderLayout.NORTH);

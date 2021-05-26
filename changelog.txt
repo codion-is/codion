@@ -7105,3 +7105,5 @@
   ItemComboBoxModel now final, constructors private, factory methods added
   Components.selectLookAndFeel() refactored
   TextFieldBuilder.transferFocusOnEnter() no longer parameterless, parameter actually useful
+  ComponentBuilders, EntityComponentBuilders, Builder suffix removed from factory method names
+  LabelBuilder.labelFor() and displayedMnemonic() added

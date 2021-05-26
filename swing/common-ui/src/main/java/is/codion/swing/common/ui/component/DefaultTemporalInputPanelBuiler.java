@@ -52,24 +52,23 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected TemporalInputPanel<T> buildComponent() {
-
     if (valueClass.equals(LocalTime.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) localTimeFieldBuilder(dateTimePattern)
+      return new TemporalInputPanel<>((TemporalField<T>) localTimeField(dateTimePattern)
               .updateOn(updateOn)
               .columns(columns).build(), enabledState);
     }
     else if (valueClass.equals(LocalDate.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) localDateFieldBuilder(dateTimePattern)
+      return new TemporalInputPanel<>((TemporalField<T>) localDateField(dateTimePattern)
               .updateOn(updateOn)
               .columns(columns).build(), enabledState);
     }
     else if (valueClass.equals(LocalDateTime.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) localDateTimeFieldBuilder(dateTimePattern)
+      return new TemporalInputPanel<>((TemporalField<T>) localDateTimeField(dateTimePattern)
               .updateOn(updateOn)
               .columns(columns).build(), enabledState);
     }
     else if (valueClass.equals(OffsetDateTime.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) offsetDateTimeFieldBuilder(dateTimePattern)
+      return new TemporalInputPanel<>((TemporalField<T>) offsetDateTimeField(dateTimePattern)
               .updateOn(updateOn)
               .columns(columns).build(), enabledState);
     }

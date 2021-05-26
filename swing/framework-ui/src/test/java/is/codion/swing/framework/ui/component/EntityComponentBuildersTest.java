@@ -47,8 +47,8 @@ public final class EntityComponentBuildersTest {
   public void createCheckBox() {
     editModel.setDefaultValues();
     final ComponentValue<Boolean, JCheckBox> componentValue =
-            inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN)
-            .transferFocusOnEnter().buildComponentValue();
+            inputComponents.checkBox(TestDomain.DETAIL_BOOLEAN)
+            .transferFocusOnEnter(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN));
     final JCheckBox box = componentValue.getComponent();
     assertTrue(box.isSelected());//default value is true
@@ -67,8 +67,8 @@ public final class EntityComponentBuildersTest {
   public void createToggleButton() {
     editModel.setDefaultValues();
     final ComponentValue<Boolean, JToggleButton> componentValue =
-            inputComponents.toggleButtonBuilder(TestDomain.DETAIL_BOOLEAN)
-            .transferFocusOnEnter().buildComponentValue();
+            inputComponents.toggleButton(TestDomain.DETAIL_BOOLEAN)
+            .transferFocusOnEnter(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN));
     final JToggleButton box = componentValue.getComponent();
     assertTrue(box.isSelected());//default value is true
@@ -87,8 +87,8 @@ public final class EntityComponentBuildersTest {
   public void createNullableCheckBox() {
     editModel.setDefaultValues();
     final ComponentValue<Boolean, JCheckBox> componentValue =
-            inputComponents.checkBoxBuilder(TestDomain.DETAIL_BOOLEAN_NULLABLE)
-            .transferFocusOnEnter().nullable(true).buildComponentValue();
+            inputComponents.checkBox(TestDomain.DETAIL_BOOLEAN_NULLABLE)
+            .transferFocusOnEnter(true).nullable(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE));
     final NullableCheckBox box = (NullableCheckBox) componentValue.getComponent();
     assertTrue(box.isSelected());//default value is true
@@ -108,8 +108,8 @@ public final class EntityComponentBuildersTest {
     editModel.setDefaultValues();
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
-            inputComponents.booleanComboBoxBuilder(TestDomain.DETAIL_BOOLEAN)
-            .transferFocusOnEnter().buildComponentValue();
+            inputComponents.booleanComboBox(TestDomain.DETAIL_BOOLEAN)
+            .transferFocusOnEnter(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_BOOLEAN));
     final ItemComboBoxModel<Boolean> boxModel = (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
     assertTrue(boxModel.getSelectedValue().getValue());
@@ -123,7 +123,7 @@ public final class EntityComponentBuildersTest {
   @Test
   public void createItemComboBox() {
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
-            inputComponents.itemComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST).transferFocusOnEnter()
+            inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST).transferFocusOnEnter(true)
             .buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_INT_VALUE_LIST));
     final JComboBox<Item<Integer>> box = componentValue.getComponent();
@@ -143,9 +143,9 @@ public final class EntityComponentBuildersTest {
   public void createComboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
-            inputComponents.comboBoxBuilder(TestDomain.DETAIL_INT, boxModel)
+            inputComponents.comboBox(TestDomain.DETAIL_INT, boxModel)
                     .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
-            .transferFocusOnEnter().buildComponentValue();
+            .transferFocusOnEnter(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_INT));
     final JComboBox<Integer> box = componentValue.getComponent();
 
@@ -163,7 +163,7 @@ public final class EntityComponentBuildersTest {
   @Test
   public void createTextField() {
     final ComponentValue<String, JTextField> componentValue =
-            inputComponents.textFieldBuilder(TestDomain.DETAIL_STRING)
+            inputComponents.textField(TestDomain.DETAIL_STRING)
             .columns(10).upperCase().selectAllOnFocusGained().buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
     final JTextField field = componentValue.getComponent();
@@ -174,8 +174,8 @@ public final class EntityComponentBuildersTest {
   @Test
   public void createTextArea() {
     final ComponentValue<String, JTextArea> componentValue =
-            inputComponents.textAreaBuilder(TestDomain.DETAIL_STRING)
-            .transferFocusOnEnter().rowsColumns(4, 2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
+            inputComponents.textArea(TestDomain.DETAIL_STRING)
+            .transferFocusOnEnter(true).rowsColumns(4, 2).updateOn(UpdateOn.KEYSTROKE).lineWrap(true).wrapStyleWord(true)
             .buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
     final JTextArea textArea = componentValue.getComponent();
@@ -186,8 +186,8 @@ public final class EntityComponentBuildersTest {
   @Test
   public void createTextInputPanel() {
     final ComponentValue<String, TextInputPanel> componentValue =
-            inputComponents.textInputPanelBuilder(TestDomain.DETAIL_STRING)
-            .transferFocusOnEnter().columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE)
+            inputComponents.textInputPanel(TestDomain.DETAIL_STRING)
+            .transferFocusOnEnter(true).columns(10).buttonFocusable(true).updateOn(UpdateOn.KEYSTROKE)
             .buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
     final TextInputPanel inputPanel = componentValue.getComponent();
@@ -198,7 +198,7 @@ public final class EntityComponentBuildersTest {
   @Test
   public void createFormattedTextField() {
     final ComponentValue<String, JFormattedTextField> componentValue =
-            inputComponents.formattedTextFieldBuilder(TestDomain.DETAIL_STRING)
+            inputComponents.formattedTextField(TestDomain.DETAIL_STRING)
             .formatMask("##:##").valueContainsLiterals(true).columns(6).updateOn(UpdateOn.KEYSTROKE)
             .focusLostBehaviour(JFormattedTextField.COMMIT).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
@@ -210,7 +210,7 @@ public final class EntityComponentBuildersTest {
   @Test
   public void createForeignKeyField() {
     final ComponentValue<Entity, JTextField> componentValue =
-            inputComponents.foreignKeyFieldBuilder(TestDomain.DETAIL_MASTER_FK)
+            inputComponents.foreignKeyField(TestDomain.DETAIL_MASTER_FK)
             .columns(10).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_MASTER_FK));
     final JTextField field = componentValue.getComponent();
@@ -223,7 +223,7 @@ public final class EntityComponentBuildersTest {
   public void itemComboBox() {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
-            inputComponents.itemComboBoxBuilder(TestDomain.DETAIL_INT_VALUE_LIST).buildComponentValue();
+            inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST).buildComponentValue();
     componentValue.link(value);
     final SteppedComboBox<Item<Integer>> comboBox = componentValue.getComponent();
     final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
