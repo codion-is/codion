@@ -222,10 +222,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Dialogs.okCancelDialogBuilder(panel)
             .owner(this)
             .title("Update interval (s)")
-            .okAction(Control.control(() -> {
-              getModel().setUpdateInterval(componentValue.get());
-              Windows.getParentDialog(panel).dispose();
-            }))
+            .onOk(() -> getModel().setUpdateInterval(componentValue.get()))
             .show();
   }
 

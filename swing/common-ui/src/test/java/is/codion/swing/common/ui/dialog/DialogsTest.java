@@ -69,8 +69,8 @@ public final class DialogsTest {
             .owner(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
-            .okAction(Control.control(() -> {}))
-            .cancelAction(Control.control(() -> {}))
+            .onOk(() -> {})
+            .onCancel(() -> {})
             .build();
   }
 
