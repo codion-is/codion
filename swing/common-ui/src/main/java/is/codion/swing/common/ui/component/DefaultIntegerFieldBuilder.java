@@ -17,6 +17,13 @@ final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Intege
   }
 
   @Override
+  public IntegerFieldBuilder range(final int from, final int to) {
+    minimumValue((double) from);
+    maximumValue((double) to);
+    return this;
+  }
+
+  @Override
   protected IntegerField createNumberField(final NumberFormat format) {
     return format == null ? new IntegerField() : new IntegerField(format);
   }

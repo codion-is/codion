@@ -16,6 +16,13 @@ class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongField
   }
 
   @Override
+  public LongFieldBuilder range(final long from, final long to) {
+    minimumValue((double) from);
+    maximumValue((double) to);
+    return this;
+  }
+
+  @Override
   protected LongField createNumberField(final NumberFormat format) {
     return format == null ? new LongField() : new LongField(format);
   }

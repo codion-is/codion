@@ -10,4 +10,11 @@ import is.codion.swing.common.ui.textfield.IntegerField;
  */
 public interface IntegerFieldBuilder extends NumberFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> {
 
+  /**
+   * Sets the allowed value range
+   * @param from the from value
+   * @param to the to value
+   * @return this builder instance
+   */
+  IntegerFieldBuilder range(int from, int to);
 }
