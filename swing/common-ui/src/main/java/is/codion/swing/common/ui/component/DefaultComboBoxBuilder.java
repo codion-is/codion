@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -12,6 +13,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<T>, ComboBoxBuilder<T>>
         implements ComboBoxBuilder<T> {
@@ -20,6 +22,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   private final Class<T> valueClass;
 
   private boolean editable = false;
+  private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 
   DefaultComboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
     this.valueClass = valueClass;
@@ -37,9 +40,20 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   }
 
   @Override
+  public ComboBoxBuilder<T> completionMode(final Completion.Mode completionMode) {
+    this.completionMode = requireNonNull(completionMode);
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<T> buildComponent() {
     final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
-    comboBox.setEditable(editable);
+    if (editable) {
+      comboBox.setEditable(true);
+    }
+    else {
+      Completion.enable(comboBox, completionMode);
+    }
 
     return comboBox;
   }

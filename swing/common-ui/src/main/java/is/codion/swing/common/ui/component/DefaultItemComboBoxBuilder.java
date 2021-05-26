@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import java.util.List;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>>
         implements ItemComboBoxBuilder<T> {
@@ -25,6 +26,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private int popupWidth;
   private boolean sorted = true;
   private boolean nullable;
+  private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 
   DefaultItemComboBoxBuilder(final List<Item<T>> values) {
     this.values = values;
@@ -50,9 +52,16 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
+  public ItemComboBoxBuilder<T> completionMode(final Completion.Mode completionMode) {
+    this.completionMode = requireNonNull(completionMode);
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
     final ItemComboBoxModel<T> itemComboBoxModel = createItemComboBoxModel();
-    final SteppedComboBox<Item<T>> comboBox = Completion.enable(new SteppedComboBox<>(itemComboBoxModel));
+    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
+    Completion.enable(comboBox, completionMode);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
     }

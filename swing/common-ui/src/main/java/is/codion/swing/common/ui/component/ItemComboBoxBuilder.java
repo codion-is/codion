@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 /**
@@ -29,4 +30,10 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedCombo
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> sorted(boolean sorted);
+
+  /**
+   * @param completionMode the completion mode
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
 }
