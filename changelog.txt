@@ -7098,3 +7098,4 @@
   Completion.Mode added, replaces old string constants
   ComboBoxBuilder, ItemComboBoxBuilder.completionMode() added
   Component.itemComboBoxBuilder(ItemComboBoxModel) added
+  AbstractComponentBuilder.linkedValueObserver() bug fixed

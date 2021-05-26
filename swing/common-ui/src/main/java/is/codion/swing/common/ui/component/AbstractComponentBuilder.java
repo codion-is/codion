@@ -102,8 +102,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public B linkedValueObserver(final ValueObserver<T> linkedValueObserver) {
-    if (linkedValueObserver != null) {
-      throw new IllegalStateException("linkeValue has already been set");
+    if (linkedValue != null) {
+      throw new IllegalStateException("linkedValue has already been set");
     }
     this.linkedValueObserver = linkedValueObserver;
     return (B) this;
