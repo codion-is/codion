@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends TextComponentBuilder<T, C, B> {
 
   /**
-   * Note that this disables {@link #transferFocusOnEnter()}.
+   * Note that this disables {@link #transferFocusOnEnter(boolean)}.
    * @param action the action to associate with the text field
    * @return this builder instance
    */

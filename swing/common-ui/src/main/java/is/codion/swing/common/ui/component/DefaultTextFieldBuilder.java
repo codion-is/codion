@@ -36,7 +36,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   public final B action(final Action action) {
     this.action = requireNonNull(action);
 
-    return transferFocusOnEnter();
+    return transferFocusOnEnter(false);
   }
 
   @Override
