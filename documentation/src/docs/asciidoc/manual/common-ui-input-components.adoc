@@ -1,4 +1,4 @@
-= Input Controls
+= Input Components
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 

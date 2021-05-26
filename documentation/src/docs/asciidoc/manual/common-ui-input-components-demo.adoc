@@ -1,0 +1,11 @@
+= Input Components Demo
+:dir-source: ../../../../../demos/manual/src/main/java
+
+.Show example code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/DemoPanel.java[tags=inputDemo]
+----
+====
