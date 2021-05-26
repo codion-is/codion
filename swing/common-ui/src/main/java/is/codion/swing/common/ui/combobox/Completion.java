@@ -17,31 +17,32 @@ import static java.util.Objects.requireNonNull;
 public final class Completion {
 
   /**
-   * Identifies the completion mode MaximumMatch
-   * @see Completion#maximumMatch(JComboBox)
+   * The available completion modes.
    */
-  public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
-
-  /**
-   * Identifies the completion mode AutoCompletion
-   * @see Completion#autoComplete(JComboBox)
-   */
-  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
-
-  /**
-   * No completion.
-   * @see Completion#autoComplete(JComboBox)
-   */
-  public static final String COMPLETION_MODE_NONE = "none";
+  public enum Mode {
+    /**
+     * Identifies the completion mode MaximumMatch
+     */
+    MAXIMUM_MATCH,
+    /**
+     * Identifies the completion mode AutoCompletion
+     */
+    AUTOCOMPLETE,
+    /**
+     * Identifies the no completion mode
+     */
+    NONE
+  }
 
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link Completion#COMPLETION_MODE_MAXIMUM_MATCH} for maximum match
-   * and {@link Completion#COMPLETION_MODE_AUTOCOMPLETE} for auto completion.<br>
+   * {@link Completion.Mode#MAXIMUM_MATCH} for maximum match
+   * and {@link Completion.Mode#AUTOCOMPLETE} for auto completion.<br>
    * Value type:String<br>
-   * Default value: {@link Completion#COMPLETION_MODE_MAXIMUM_MATCH}
+   * Default value: {@link Completion.Mode#MAXIMUM_MATCH}
    */
-  public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("codion.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
+  public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE = Configuration.enumValue("codion.swing.comboBoxCompletionMode",
+          Mode.class, Mode.MAXIMUM_MATCH);
 
   /**
    * Enables maximum match on the given combobox
@@ -104,15 +105,27 @@ public final class Completion {
    * @see #COMBO_BOX_COMPLETION_MODE
    */
   public static <C extends JComboBox<T>, T> C enable(final C comboBox) {
+    return enable(comboBox, COMBO_BOX_COMPLETION_MODE.get());
+  }
+
+  /**
+   * Enables the given completion mode on the given combo box
+   * @param comboBox the combo box
+   * @param completionMode the mode to enable
+   * @param <C> the combo box type
+   * @param <T> the value type
+   * @return the combo box
+   * @see #COMBO_BOX_COMPLETION_MODE
+   */
+  public static <C extends JComboBox<T>, T> C enable(final C comboBox, final Mode completionMode) {
     requireNonNull(comboBox);
-    final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
-      case COMPLETION_MODE_NONE:
+      case NONE:
         break;
-      case COMPLETION_MODE_AUTOCOMPLETE:
+      case AUTOCOMPLETE:
         autoComplete(comboBox);
         break;
-      case COMPLETION_MODE_MAXIMUM_MATCH:
+      case MAXIMUM_MATCH:
         maximumMatch(comboBox);
         break;
       default:

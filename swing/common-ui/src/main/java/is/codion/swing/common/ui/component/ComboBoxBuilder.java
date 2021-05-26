@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 public interface ComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<T>, ComboBoxBuilder<T>> {
@@ -12,4 +13,10 @@ public interface ComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<
    * @return this builder instance
    */
   ComboBoxBuilder<T> editable(boolean editable);
+
+  /**
+   * @param completionMode the completion mode
+   * @return this builder instance
+   */
+  ComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
 }

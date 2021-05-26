@@ -45,8 +45,11 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   @Override
   protected DoubleField createNumberField(final NumberFormat format) {
     final DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) format);
+    if (groupingSeparator != 0) {
+      field.setGroupingSeparator(groupingSeparator);
+    }
     if (decimalSeparator != 0) {
-      field.setSeparators(decimalSeparator, groupingSeparator);
+      field.setDecimalSeparator(decimalSeparator);
     }
     if (maximumFractionDigits > 0) {
       field.setMaximumFractionDigits(maximumFractionDigits);

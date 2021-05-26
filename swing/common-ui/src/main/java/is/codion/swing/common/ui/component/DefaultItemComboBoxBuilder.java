@@ -16,18 +16,24 @@ import javax.swing.JComponent;
 import java.util.List;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>>
         implements ItemComboBoxBuilder<T> {
 
-  private final List<Item<T>> values;
+  private final ItemComboBoxModel<T> comboBoxModel;
 
   private int popupWidth;
   private boolean sorted = true;
   private boolean nullable;
+  private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 
   DefaultItemComboBoxBuilder(final List<Item<T>> values) {
-    this.values = values;
+    this(new ItemComboBoxModel<>(values));
+  }
+
+  DefaultItemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel) {
+    this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(getPreferredTextFieldHeight());
   }
 
@@ -50,9 +56,16 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
+  public ItemComboBoxBuilder<T> completionMode(final Completion.Mode completionMode) {
+    this.completionMode = requireNonNull(completionMode);
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
-    final ItemComboBoxModel<T> itemComboBoxModel = createItemComboBoxModel();
-    final SteppedComboBox<Item<T>> comboBox = Completion.enable(new SteppedComboBox<>(itemComboBoxModel));
+    final ItemComboBoxModel<T> itemComboBoxModel = configureItemComboBoxModel();
+    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
+    Completion.enable(comboBox, completionMode);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
     }
@@ -76,15 +89,16 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
     component.setSelectedItem(initialValue);
   }
 
-  private ItemComboBoxModel<T> createItemComboBoxModel() {
-    final ItemComboBoxModel<T> model = sorted ?
-            new ItemComboBoxModel<>(values) : new ItemComboBoxModel<>(null, values);
+  private ItemComboBoxModel<T> configureItemComboBoxModel() {
+    if (!sorted) {
+      comboBoxModel.setSortComparator(null);
+    }
     final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
-    if (nullable && !model.containsItem(nullItem)) {
-      model.addItem(nullItem);
-      model.setSelectedItem(nullItem);
+    if (nullable && !comboBoxModel.containsItem(nullItem)) {
+      comboBoxModel.addItem(nullItem);
+      comboBoxModel.setSelectedItem(nullItem);
     }
 
-    return model;
+    return comboBoxModel;
   }
 }

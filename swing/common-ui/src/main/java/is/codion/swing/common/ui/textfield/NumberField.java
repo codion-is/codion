@@ -100,6 +100,22 @@ public class NumberField<T extends Number> extends JTextField {
   }
 
   /**
+   * Sets the decimal separator
+   * @param decimalSeparator the separator
+   */
+  public final void setDecimalSeparator(final char decimalSeparator) {
+    getTypedDocument().setDecimalSeparator(decimalSeparator);
+  }
+
+  /**
+   * Sets the grouping separator
+   * @param groupingSeparator the separator
+   */
+  public final void setGroupingSeparator(final char groupingSeparator) {
+    getTypedDocument().setGroupingSeparator(groupingSeparator);
+  }
+
+  /**
    * @param listener a listener notified when the value changes
    */
   public void addValueListener(final EventDataListener<T> listener) {
