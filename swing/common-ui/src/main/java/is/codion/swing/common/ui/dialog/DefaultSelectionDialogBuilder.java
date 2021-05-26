@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.Windows;
 
-import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -15,7 +14,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -110,13 +108,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
             .owner(dialogOwner)
             .title(dialogTitle)
             .okAction(okAction)
-            .cancelAction(new AbstractAction() {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                list.clearSelection();
-                Windows.getParentDialog(list).dispose();
-              }
-            })
+            .onCancel(list::clearSelection)
             .build();
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
       dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));

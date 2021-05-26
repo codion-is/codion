@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.textfield;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -189,10 +188,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     Dialogs.okCancelDialogBuilder(calendarPanel)
             .owner(parent)
             .title(message)
-            .okAction(Control.control(() -> {
-              okPressed.set(true);
-              Windows.getParentDialog(calendarPanel).dispose();
-            }))
+            .onOk(() -> okPressed.set(true))
             .show();
 
     return okPressed.get() ? Optional.of(calendarPanel.getSelectedDate()) : Optional.empty();
@@ -226,10 +222,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     Dialogs.okCancelDialogBuilder(dateTimePanel)
             .owner(parent)
             .title(dialogTitle)
-            .okAction(Control.control(() -> {
-              okPressed.set(true);
-              Windows.getParentDialog(dateTimePanel).dispose();
-            }))
+            .onOk(() -> okPressed.set(true))
             .show();
 
     return okPressed.get() ? Optional.of(LocalDateTime.of(calendarPanel.getSelectedDate(), timePicker.getTime())) : Optional.empty();

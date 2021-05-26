@@ -15,6 +15,18 @@ import javax.swing.JDialog;
 public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuilder> {
 
   /**
+   * @param runnable run on ok pressed, after the dialog has been disposed
+   * @return this builder instance
+   */
+  OkCancelDialogBuilder onOk(Runnable runnable);
+
+  /**
+   * @param runnable run on cancel pressed, after the dialog has been disposed
+   * @return this builder instance
+   */
+  OkCancelDialogBuilder onCancel(Runnable runnable);
+
+  /**
    * @param okAction the action for the OK button
    * @return this builder instance
    */

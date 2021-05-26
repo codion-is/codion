@@ -56,11 +56,12 @@ public final class InputControls {
 
     JButton somethingButton = control.createButton();
 
-    Control actionControl = Control.actionControlBuilder(actionEvent -> {
+    Control.ActionCommand actionCommand = actionEvent -> {
       if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
         System.out.println("Doing something else");
       }
-    })
+    };
+    Control actionControl = Control.actionControlBuilder(actionCommand)
             .name("Do something else")
             .mnemonic('S')
             .build();
@@ -220,7 +221,7 @@ public final class InputControls {
 
     ComponentValue<Integer, IntegerField> componentValue =
             ComponentBuilders.integerFieldBuilder()
-                    .minimumValue(0d).maximumValue(10000d)
+                    .range(0, 10_000)
                     .groupingUsed(false)
                     .linkedValue(integerValue)
                     .buildComponentValue();

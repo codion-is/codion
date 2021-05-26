@@ -3,11 +3,9 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -169,17 +167,10 @@ public final class TextInputPanel extends JPanel {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setEditable(textField.isEditable());
-    final Action okAction = new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        textField.setText(textArea.getText());
-        Windows.getParentDialog(textArea).dispose();
-      }
-    };
     Dialogs.okCancelDialogBuilder(new JScrollPane(textArea))
             .owner(textField)
             .title(dialogTitle)
-            .okAction(okAction)
+            .onOk(() -> textField.setText(textArea.getText()))
             .show();
     textField.requestFocusInWindow();
   }

@@ -98,21 +98,21 @@ public final class ComponentBuilders {
    * @param valueClass the value class
    * @return a builder for a component
    */
-  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(final Class<T> valueClass) {
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textFieldBuilder(final Class<T> valueClass) {
     if (valueClass.equals(Integer.class)) {
-      return (TextFieldBuilder<T, C, B>) integerFieldBuilder();
+      return (B) integerFieldBuilder();
     }
     else if (valueClass.equals(Long.class)) {
-      return (TextFieldBuilder<T, C, B>) longFieldBuilder();
+      return (B) longFieldBuilder();
     }
     else if (valueClass.equals(Double.class)) {
-      return (TextFieldBuilder<T, C, B>) doubleFieldBuilder();
+      return (B) doubleFieldBuilder();
     }
     else if (valueClass.equals(BigDecimal.class)) {
-      return (TextFieldBuilder<T, C, B>) bigDecimalFieldBuilder();
+      return (B) bigDecimalFieldBuilder();
     }
 
-    return new DefaultTextFieldBuilder<>(valueClass);
+    return (B) new DefaultTextFieldBuilder<T, C, B>(valueClass);
   }
 
   /**

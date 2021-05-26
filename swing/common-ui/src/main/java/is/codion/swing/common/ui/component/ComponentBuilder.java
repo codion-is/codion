@@ -13,7 +13,9 @@ import javax.swing.JComponent;
 import java.awt.Dimension;
 
 /**
- * Builds a JComponent
+ * Builds a JComponent.<br>
+ * Note that this builder is a single-user builder, once {@link #build} or {@link #buildComponentValue()}
+ * have been called they will return the same instance on subsequent calls.
  * @param <T> the type of the value the component represents
  * @param <C> the component type
  * @param <B> the builder type
