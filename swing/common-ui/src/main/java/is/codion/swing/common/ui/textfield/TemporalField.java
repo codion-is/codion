@@ -20,6 +20,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A JFormattedTextField for Temporal types.<br>
+ * @see #localTimeField(String)
+ * @see #localDateField(String)
+ * @see #localDateTimeField(String)
+ * @see #offsetDateTimeField(String)
  * @see #builder(Class)
  * @param <T> the temporal type
  */
@@ -87,6 +91,42 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public DateTimeParser<T> getDateTimeParser() {
     return dateTimeParser;
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param timePattern the time pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<LocalTime> localTimeField(final String timePattern) {
+    return builder(LocalTime.class).dateTimePattern(timePattern).build();
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param datePattern the date pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<LocalDate> localDateField(final String datePattern) {
+    return builder(LocalDate.class).dateTimePattern(datePattern).build();
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param dateTimePattern the date time pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<LocalDateTime> localDateTimeField(final String dateTimePattern) {
+    return builder(LocalDateTime.class).dateTimePattern(dateTimePattern).build();
+  }
+
+  /**
+   * A LocalTime based {@link TemporalField}.
+   * @param dateTimePattern the date time pattern
+   * @return a new temporal field
+   */
+  public static TemporalField<OffsetDateTime> offsetDateTimeField(final String dateTimePattern) {
+    return builder(OffsetDateTime.class).dateTimePattern(dateTimePattern).build();
   }
 
   /**

@@ -7089,3 +7089,4 @@
   ComponentBuilders.textFieldBuilder() no arguments, defaults to String
   TextAreaBuilder.rowsColumns() added
   FlexibleGridLayout.Builder.rowsColumns() and gap() added
+  TemporalField, added factory methods for most common types

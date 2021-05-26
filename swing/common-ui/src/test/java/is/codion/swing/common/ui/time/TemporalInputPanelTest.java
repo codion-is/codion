@@ -19,7 +19,7 @@ public class TemporalInputPanelTest {
 
   @Test
   public void constructor() {
-    final TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class).dateTimePattern("dd.MM.yyyy").build();
+    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     field.setTemporal(LocalDate.now());
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     assertEquals("dd.MM.yyyy", panel.getDateTimePattern());
@@ -28,7 +28,7 @@ public class TemporalInputPanelTest {
 
   @Test
   public void setText() {
-    final TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class).dateTimePattern("dd.MM.yyyy").build();
+    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     panel.getInputField().setText("01.03.2010");
     assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
@@ -37,7 +37,7 @@ public class TemporalInputPanelTest {
   @Test
   public void setDate() {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    final TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class).dateTimePattern("dd.MM.yyyy").build();
+    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
     assertEquals("03.04.2010", panel.getInputField().getText());
@@ -47,7 +47,7 @@ public class TemporalInputPanelTest {
 
   @Test
   public void getDate() {
-    final TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class).dateTimePattern("dd.MM.yyyy").build();
+    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     assertNull(panel.getTemporal());
     panel.getInputField().setText("03");
@@ -66,7 +66,7 @@ public class TemporalInputPanelTest {
   @Test
   public void enabledState() {
     final State enabledState = State.state();
-    final TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class).dateTimePattern("dd.MM.yyyy").build();
+    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, enabledState.getObserver());
     assertFalse(field.isEnabled());
     assertFalse(inputPanel.getCalendarButton().isEnabled());
