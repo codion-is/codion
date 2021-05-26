@@ -106,8 +106,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
         }
       }
     });
-    final JDialog dialog = new DefaultOkCancelDialogBuilder()
-            .component(new JScrollPane(list))
+    final JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
             .owner(dialogOwner)
             .title(dialogTitle)
             .okAction(okAction)

@@ -65,11 +65,10 @@ public final class DialogsTest {
 
   @Test
   public void okCancelDialogBuilder() {
-    Dialogs.okCancelDialogBuilder()
+    Dialogs.okCancelDialogBuilder(new JLabel())
             .owner(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
-            .component(new JLabel())
             .okAction(Control.control(() -> {}))
             .cancelAction(Control.control(() -> {}))
             .build();

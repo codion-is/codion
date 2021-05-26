@@ -231,10 +231,9 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    Dialogs.okCancelDialogBuilder()
+    Dialogs.okCancelDialogBuilder(selectionProvider.getSelectionComponent(entities))
             .owner(this)
             .title(MESSAGES.getString("select_entity"))
-            .component(selectionProvider.getSelectionComponent(entities))
             .okAction(selectionProvider.getSelectControl())
             .show();
   }
