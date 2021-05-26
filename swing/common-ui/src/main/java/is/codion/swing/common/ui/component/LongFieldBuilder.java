@@ -10,4 +10,11 @@ import is.codion.swing.common.ui.textfield.LongField;
  */
 public interface LongFieldBuilder extends NumberFieldBuilder<Long, LongField, LongFieldBuilder> {
 
+  /**
+   * Sets the allowed value range
+   * @param from the from value
+   * @param to the to value
+   * @return this builder instance
+   */
+  LongFieldBuilder range(long from, long to);
 }

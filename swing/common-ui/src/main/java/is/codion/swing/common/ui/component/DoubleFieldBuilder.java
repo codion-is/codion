@@ -23,4 +23,12 @@ public interface DoubleFieldBuilder extends NumberFieldBuilder<Double, DoubleFie
    * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
    */
   DoubleFieldBuilder decimalSeparator(char decimalSeparator);
+
+  /**
+   * Sets the allowed value range
+   * @param from the from value
+   * @param to the to value
+   * @return this builder instance
+   */
+  DoubleFieldBuilder range(double from, double to);
 }

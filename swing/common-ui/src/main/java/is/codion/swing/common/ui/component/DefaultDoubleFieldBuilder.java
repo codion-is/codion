@@ -36,6 +36,13 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
+  public DoubleFieldBuilder range(final double from, final double to) {
+    minimumValue(from);
+    maximumValue(to);
+    return this;
+  }
+
+  @Override
   protected DoubleField createNumberField(final NumberFormat format) {
     final DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) format);
     if (decimalSeparator != 0) {
