@@ -360,7 +360,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (int i = 100; i <= 200; i += 5) {
       values.add(Item.item(i, i + "%"));
     }
-    final ItemComboBoxModel<Integer> comboBoxModel = new ItemComboBoxModel<>(values);
+    final ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
     final Integer defaultFontSize = getDefaultFontSize();
     comboBoxModel.setSelectedItem(defaultFontSize);
 

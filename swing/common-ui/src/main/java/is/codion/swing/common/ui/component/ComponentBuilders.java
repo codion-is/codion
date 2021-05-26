@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -35,10 +34,17 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @return a builder for a component
+   */
+  public static BooleanComboBoxBuilder booleanComboBoxBuilder() {
+    return booleanComboBoxBuilder(ItemComboBoxModel.createBooleanModel());
+  }
+
+  /**
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBoxBuilder(final BooleanComboBoxModel comboBoxModel) {
+  public static BooleanComboBoxBuilder booleanComboBoxBuilder(final ItemComboBoxModel<Boolean> comboBoxModel) {
     return new DefaultBooleanComboBoxBuilder(comboBoxModel);
   }
 
@@ -48,7 +54,7 @@ public final class ComponentBuilders {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<T>(comboBoxModel);
+    return new DefaultItemComboBoxBuilder<>(comboBoxModel);
   }
 
   /**

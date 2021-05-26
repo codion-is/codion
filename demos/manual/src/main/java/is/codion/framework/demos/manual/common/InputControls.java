@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.common;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
@@ -175,7 +174,7 @@ public final class InputControls {
     Value<Boolean> booleanValue = Value.value();
 
     ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
-            ComponentBuilders.booleanComboBoxBuilder(new BooleanComboBoxModel())
+            ComponentBuilders.booleanComboBoxBuilder()
                     .description("Select a value")
                     .linkedValue(booleanValue)
                     .buildComponentValue();

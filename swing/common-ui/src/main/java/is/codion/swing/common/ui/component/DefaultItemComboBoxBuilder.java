@@ -13,6 +13,8 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JComponent;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
@@ -21,19 +23,22 @@ import static java.util.Objects.requireNonNull;
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>>
         implements ItemComboBoxBuilder<T> {
 
-  private final ItemComboBoxModel<T> comboBoxModel;
+  private final List<Item<T>> items;
 
+  private ItemComboBoxModel<T> comboBoxModel;
   private int popupWidth;
+  private Comparator<Item<T>> sortComparator;
   private boolean sorted = true;
   private boolean nullable;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 
-  DefaultItemComboBoxBuilder(final List<Item<T>> values) {
-    this(new ItemComboBoxModel<>(values));
+  DefaultItemComboBoxBuilder(final List<Item<T>> items) {
+    this.items = requireNonNull(items);
   }
 
   DefaultItemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel) {
     this.comboBoxModel = requireNonNull(comboBoxModel);
+    this.items = Collections.emptyList();
     preferredHeight(getPreferredTextFieldHeight());
   }
 
@@ -50,8 +55,20 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> sorted(final boolean sorted) {
-    this.sorted = sorted;
+  public ItemComboBoxBuilder<T> sorted() {
+    if (comboBoxModel != null) {
+      throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting");
+    }
+    this.sorted = true;
+    return this;
+  }
+
+  @Override
+  public ItemComboBoxBuilder<T> sortComparator(final Comparator<Item<T>> sortComparator) {
+    if (comboBoxModel != null) {
+      throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting comparator");
+    }
+    this.sortComparator = sortComparator;
     return this;
   }
 
@@ -63,7 +80,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
 
   @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
-    final ItemComboBoxModel<T> itemComboBoxModel = configureItemComboBoxModel();
+    final ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
     if (popupWidth > 0) {
@@ -89,9 +106,17 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
     component.setSelectedItem(initialValue);
   }
 
-  private ItemComboBoxModel<T> configureItemComboBoxModel() {
-    if (!sorted) {
-      comboBoxModel.setSortComparator(null);
+  private ItemComboBoxModel<T> initializeItemComboBoxModel() {
+    if (comboBoxModel == null) {
+      if (sortComparator != null) {
+        comboBoxModel = ItemComboBoxModel.createSortedModel(items, sortComparator);
+      }
+      else if (sorted) {
+        comboBoxModel = ItemComboBoxModel.createSortedModel(items);
+      }
+      else {
+        comboBoxModel = ItemComboBoxModel.createModel(items);
+      }
     }
     final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     if (nullable && !comboBoxModel.containsItem(nullItem)) {
