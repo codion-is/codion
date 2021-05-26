@@ -21,14 +21,13 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
-  private JComponent component;
+  private final JComponent component;
+
   private Action okAction;
   private Action cancelAction;
 
-  @Override
-  public OkCancelDialogBuilder component(final JComponent component) {
+  DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
-    return this;
   }
 
   @Override

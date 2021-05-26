@@ -176,9 +176,8 @@ public final class TextInputPanel extends JPanel {
         Windows.getParentDialog(textArea).dispose();
       }
     };
-    Dialogs.okCancelDialogBuilder()
+    Dialogs.okCancelDialogBuilder(new JScrollPane(textArea))
             .owner(textField)
-            .component(new JScrollPane(textArea))
             .title(dialogTitle)
             .okAction(okAction)
             .show();

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 
 
@@ -14,12 +13,6 @@ import javax.swing.JDialog;
  * An OK action must be provided and the default Cancel action simply disposes the dialog.
  */
 public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuilder> {
-
-  /**
-   * @param component the component to display
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder component(JComponent component);
 
   /**
    * @param okAction the action for the OK button

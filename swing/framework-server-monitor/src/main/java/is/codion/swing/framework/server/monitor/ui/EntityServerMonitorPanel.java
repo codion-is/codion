@@ -219,7 +219,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     final ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(field);
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
-    Dialogs.okCancelDialogBuilder()
+    Dialogs.okCancelDialogBuilder(panel)
             .owner(this)
             .title("Update interval (s)")
             .okAction(Control.control(() -> {

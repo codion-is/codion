@@ -186,10 +186,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     final CalendarPanel calendarPanel = new CalendarPanel();
     calendarPanel.setSelectedDate(startDate);
     final State okPressed = State.state();
-    Dialogs.okCancelDialogBuilder()
+    Dialogs.okCancelDialogBuilder(calendarPanel)
             .owner(parent)
             .title(message)
-            .component(calendarPanel)
             .okAction(Control.control(() -> {
               okPressed.set(true);
               Windows.getParentDialog(calendarPanel).dispose();
@@ -224,10 +223,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     dateTimePanel.add(calendarPanel, BorderLayout.CENTER);
     dateTimePanel.add(timePanel, BorderLayout.EAST);
     final State okPressed = State.state();
-    Dialogs.okCancelDialogBuilder()
+    Dialogs.okCancelDialogBuilder(dateTimePanel)
             .owner(parent)
             .title(dialogTitle)
-            .component(dateTimePanel)
             .okAction(Control.control(() -> {
               okPressed.set(true);
               Windows.getParentDialog(dateTimePanel).dispose();

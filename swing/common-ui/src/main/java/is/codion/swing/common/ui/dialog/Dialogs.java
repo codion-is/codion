@@ -74,10 +74,11 @@ public final class Dialogs {
   }
 
   /**
+   * @param component the component to display
    * @return a new OkCancelDialogBuilder
    */
-  public static OkCancelDialogBuilder okCancelDialogBuilder() {
-    return new DefaultOkCancelDialogBuilder();
+  public static OkCancelDialogBuilder okCancelDialogBuilder(final JComponent component) {
+    return new DefaultOkCancelDialogBuilder(component);
   }
 
   /**
