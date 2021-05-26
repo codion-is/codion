@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
+import javax.swing.JFormattedTextField;
 import java.time.temporal.Temporal;
 
 import static java.util.Objects.requireNonNull;
@@ -16,15 +17,24 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
 
   private final String dateTimePattern;
 
+  private int focusLostBehaviour = JFormattedTextField.COMMIT;
+
   DefaultTemporalFieldBuilder(final Class<T> valueClass, final String dateTimePattern) {
     super(valueClass);
     this.dateTimePattern = requireNonNull(dateTimePattern);
   }
 
   @Override
+  public B focusLostBehaviour(final int focusLostBehaviour) {
+    this.focusLostBehaviour = focusLostBehaviour;
+    return (B) this;
+  }
+
+  @Override
   protected final C createTextField() {
     return (C) TemporalField.builder((Class<Temporal>) getValueClass())
             .dateTimePattern(dateTimePattern)
+            .focusLostBehaviour(focusLostBehaviour)
             .build();
   }
 
