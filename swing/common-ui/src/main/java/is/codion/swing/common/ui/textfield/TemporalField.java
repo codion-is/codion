@@ -233,23 +233,23 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
       return temporalField;
     }
-  }
 
-  private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
-    if (typeClass.equals(LocalTime.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
-    }
-    else if (typeClass.equals(LocalDate.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<LocalDate>) LocalDate::parse;
-    }
-    else if (typeClass.equals(LocalDateTime.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<LocalDateTime>) LocalDateTime::parse;
-    }
-    else if (typeClass.equals(OffsetDateTime.class)) {
-      return (DateTimeParser<T>) (DateTimeParser<OffsetDateTime>) OffsetDateTime::parse;
-    }
+    private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
+      if (typeClass.equals(LocalTime.class)) {
+        return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
+      }
+      else if (typeClass.equals(LocalDate.class)) {
+        return (DateTimeParser<T>) (DateTimeParser<LocalDate>) LocalDate::parse;
+      }
+      else if (typeClass.equals(LocalDateTime.class)) {
+        return (DateTimeParser<T>) (DateTimeParser<LocalDateTime>) LocalDateTime::parse;
+      }
+      else if (typeClass.equals(OffsetDateTime.class)) {
+        return (DateTimeParser<T>) (DateTimeParser<OffsetDateTime>) OffsetDateTime::parse;
+      }
 
-    return null;
+      return null;
+    }
   }
 
   private static FieldFormatter initializeFormatter(final String dateTimePattern) {

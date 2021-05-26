@@ -59,10 +59,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B minimumSize(Dimension minimumSize);
 
   /**
-   * Makes the text field transfer focus on enter (shift-enter for backwards)
+   * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)
    * @return this builder instance
    */
-  B transferFocusOnEnter();
+  B transferFocusOnEnter(boolean transferFocusOnEnter);
 
   /**
    * @param description the description
