@@ -7086,3 +7086,4 @@
   Completion.enableComboBoxCompletion() renamed enable
   Dialogs.okCancelDialogBuilder() now takes the component to display as parameter
   NumberFieldBuilder descendants, range() added
+  ComponentBuilders.textFieldBuilder() no arguments, defaults to String

@@ -84,6 +84,14 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends TextFieldBuilder<String, JTextField, B>> B textFieldBuilder() {
+    return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class);
+  }
+
+  /**
    * @param <T> the value type
    * @param <C> the text field type
    * @param <B> the builder type

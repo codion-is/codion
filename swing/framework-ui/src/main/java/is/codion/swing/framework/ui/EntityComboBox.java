@@ -119,7 +119,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} bound to the selected value
    */
   public JTextField textFieldSelector(final Attribute<String> attribute) {
-    return ComponentBuilders.textFieldBuilder(String.class)
+    return ComponentBuilders.textFieldBuilder()
             .columns(2)
             .selectAllOnFocusGained()
             .linkedValue(getModel().selectorValue(attribute))
@@ -133,7 +133,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} bound to the selected value
    */
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
-    return ComponentBuilders.textFieldBuilder(String.class)
+    return ComponentBuilders.textFieldBuilder()
             .columns(2)
             .selectAllOnFocusGained()
             .linkedValue(getModel().selectorValue(attribute, finder))
