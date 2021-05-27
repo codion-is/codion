@@ -7119,3 +7119,4 @@
   DefaultSpinnerBuilder overrides setTransferFocusOnEnter(), editor text field needed to be handled as well
   ComponentBuilders.label() now takes text as parameter
   ComponentBuilder.onBuild() added, addBuildListener() removed
+  ComponentBuilder.build() overloaded with onBuild consumer

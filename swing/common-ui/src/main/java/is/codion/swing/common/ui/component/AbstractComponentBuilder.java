@@ -131,6 +131,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final C build() {
+    return build(null);
+  }
+
+  @Override
+  public final C build(final Consumer<C> onBuild) {
     if (component != null) {
       return component;
     }
@@ -161,6 +166,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       buildComponentValue().link(linkedValueObserver);
     }
     buildEvent.onEvent(component);
+    if (onBuild != null) {
+      onBuild.accept(component);
+    }
 
     return component;
   }

@@ -115,6 +115,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   C build();
 
   /**
+   * Builds and returns the component, note that subsequent calls return the same component.
+   * @param onBuild called after the first call when the component is built, not called on subsequent calls.
+   * @return the component
+   */
+  C build(Consumer<C> onBuild);
+
+  /**
    * Builds and returns the component value, note that subsequent calls return the same component value.
    * @return the component value
    */
