@@ -10,4 +10,9 @@ import javax.swing.JSpinner;
  */
 public interface SpinnerBuilder<T extends Number> extends ComponentBuilder<T, JSpinner, SpinnerBuilder<T>> {
 
+  /**
+   * @param columns the number of colums in the spinner text component
+   * @return this builder instance
+   */
+  SpinnerBuilder<T> columns(int columns);
 }

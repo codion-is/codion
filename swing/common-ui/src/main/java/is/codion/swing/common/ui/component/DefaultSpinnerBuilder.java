@@ -15,6 +15,7 @@ final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBui
 
   private final SpinnerNumberModel spinnerNumberModel;
   private final Class<T> valueClass;
+  private int columns = 0;
 
   DefaultSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
     this.spinnerNumberModel = requireNonNull(spinnerNumberModel);
@@ -25,8 +26,19 @@ final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBui
   }
 
   @Override
+  public SpinnerBuilder<T> columns(final int columns) {
+    this.columns = columns;
+    return this;
+  }
+
+  @Override
   protected JSpinner buildComponent() {
-    return new JSpinner(spinnerNumberModel);
+    final JSpinner spinner = new JSpinner(spinnerNumberModel);
+    if (columns > 0) {
+      ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(columns);
+    }
+
+    return spinner;
   }
 
   @Override
