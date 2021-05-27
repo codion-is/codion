@@ -55,22 +55,22 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
     if (valueClass.equals(LocalTime.class)) {
       return new TemporalInputPanel<>((TemporalField<T>) localTimeField(dateTimePattern)
               .updateOn(updateOn)
-              .columns(columns).build(), enabledState);
+              .columns(columns).build(), getEnabledState());
     }
     else if (valueClass.equals(LocalDate.class)) {
       return new TemporalInputPanel<>((TemporalField<T>) localDateField(dateTimePattern)
               .updateOn(updateOn)
-              .columns(columns).build(), enabledState);
+              .columns(columns).build(), getEnabledState());
     }
     else if (valueClass.equals(LocalDateTime.class)) {
       return new TemporalInputPanel<>((TemporalField<T>) localDateTimeField(dateTimePattern)
               .updateOn(updateOn)
-              .columns(columns).build(), enabledState);
+              .columns(columns).build(), getEnabledState());
     }
     else if (valueClass.equals(OffsetDateTime.class)) {
       return new TemporalInputPanel<>((TemporalField<T>) offsetDateTimeField(dateTimePattern)
               .updateOn(updateOn)
-              .columns(columns).build(), enabledState);
+              .columns(columns).build(), getEnabledState());
     }
 
     throw new IllegalStateException("Unsopported temporal type: " + valueClass);
