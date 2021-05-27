@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, LabelBuilder> implements LabelBuilder {
+final class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, LabelBuilder> implements LabelBuilder {
 
   private final String text;
   private int horizontalAlignment = LABEL_TEXT_ALIGNMENT.get();
@@ -20,6 +20,7 @@ class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, Label
 
   DefaultLabelBuilder(final String text) {
     this.text = requireNonNull(text);
+    focusable(false);
   }
 
   @Override

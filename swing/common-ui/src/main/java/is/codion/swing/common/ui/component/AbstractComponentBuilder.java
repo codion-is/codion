@@ -65,19 +65,19 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public B maximumSize(final Dimension maximumSize) {
+  public final B maximumSize(final Dimension maximumSize) {
     this.maximumSize = maximumSize;
     return (B) this;
   }
 
   @Override
-  public B minimumSize(final Dimension minimumSize) {
+  public final B minimumSize(final Dimension minimumSize) {
     this.minimumSize = minimumSize;
     return (B) this;
   }
 
   @Override
-  public B border(final Border border) {
+  public final B border(final Border border) {
     this.border = border;
     return (B) this;
   }
@@ -110,7 +110,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public B linkedValueObserver(final ValueObserver<T> linkedValueObserver) {
+  public final B linkedValueObserver(final ValueObserver<T> linkedValueObserver) {
     if (linkedValue != null) {
       throw new IllegalStateException("linkedValue has already been set");
     }

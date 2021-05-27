@@ -8,7 +8,8 @@ import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JToggleButton;
 
-class DefaultToggleButtonBuilder extends AbstractComponentBuilder<Boolean, JToggleButton, ToggleButtonBuilder> implements ToggleButtonBuilder {
+final class DefaultToggleButtonBuilder extends AbstractComponentBuilder<Boolean, JToggleButton, ToggleButtonBuilder>
+        implements ToggleButtonBuilder {
 
   private String caption;
   private boolean includeCaption = true;

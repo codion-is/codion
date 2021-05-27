@@ -20,25 +20,25 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   protected int maximumLength;
 
   @Override
-  public B editable(final boolean editable) {
+  public final B editable(final boolean editable) {
     this.editable = editable;
     return (B) this;
   }
 
   @Override
-  public B updateOn(final UpdateOn updateOn) {
+  public final B updateOn(final UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
     return (B) this;
   }
 
   @Override
-  public B columns(final int columns) {
+  public final B columns(final int columns) {
     this.columns = columns;
     return (B) this;
   }
 
   @Override
-  public B upperCase(final boolean upperCase) {
+  public final B upperCase(final boolean upperCase) {
     if (upperCase && lowerCase) {
       throw new IllegalArgumentException("Field is already lowercase");
     }
@@ -47,7 +47,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
-  public B lowerCase(final boolean lowerCase) {
+  public final B lowerCase(final boolean lowerCase) {
     if (lowerCase && upperCase) {
       throw new IllegalArgumentException("Field is already uppercase");
     }
@@ -56,7 +56,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
-  public B maximumLength(final int maximumLength) {
+  public final B maximumLength(final int maximumLength) {
     this.maximumLength = maximumLength;
     return (B) this;
   }

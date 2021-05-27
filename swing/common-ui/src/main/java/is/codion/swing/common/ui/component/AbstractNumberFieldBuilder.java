@@ -60,7 +60,7 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   protected abstract C createNumberField(final NumberFormat format);
 
   @Override
-  protected void setInitialValue(final C component, final T initialValue) {
+  protected final void setInitialValue(final C component, final T initialValue) {
     component.setNumber(initialValue);
   }
 

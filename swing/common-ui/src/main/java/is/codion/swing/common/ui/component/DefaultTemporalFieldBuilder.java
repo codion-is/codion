@@ -25,7 +25,7 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
   }
 
   @Override
-  public B focusLostBehaviour(final int focusLostBehaviour) {
+  public final B focusLostBehaviour(final int focusLostBehaviour) {
     this.focusLostBehaviour = focusLostBehaviour;
     return (B) this;
   }
@@ -44,7 +44,7 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
   }
 
   @Override
-  protected void setInitialValue(final C component, final T initialValue) {
+  protected final void setInitialValue(final C component, final T initialValue) {
     component.setTemporal(initialValue);
   }
 }
