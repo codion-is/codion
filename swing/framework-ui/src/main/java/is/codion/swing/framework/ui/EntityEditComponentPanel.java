@@ -734,8 +734,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> JLabel createLabel(final Attribute<T> attribute, final int horizontalAlignment) {
     final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    return ComponentBuilders.label()
-            .text(property.getCaption())
+    return ComponentBuilders.label(property.getCaption())
             .horizontalAlignment(horizontalAlignment)
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
             .labelFor(getComponent(attribute))

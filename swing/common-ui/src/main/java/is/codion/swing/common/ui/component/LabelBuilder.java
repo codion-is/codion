@@ -12,12 +12,6 @@ import javax.swing.JLabel;
 public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuilder> {
 
   /**
-   * @param text the label text
-   * @return this builder instance
-   */
-  LabelBuilder text(String text);
-
-  /**
    * @param horizontalAlignment the horizontal text alignment
    * @return this builder instance
    */
