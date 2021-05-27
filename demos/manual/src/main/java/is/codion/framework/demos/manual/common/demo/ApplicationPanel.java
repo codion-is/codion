@@ -4,21 +4,29 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 
+import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+
+/*
+// tag::demoPanelImport[]
+import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+// end::demoPanelImport[]
+ */
 // tag::demoPanel[]
+
 public final class ApplicationPanel extends JPanel {
 
   public ApplicationPanel(ApplicationModel model) {
@@ -26,10 +34,10 @@ public final class ApplicationPanel extends JPanel {
 
     setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(11, 2));
+    JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(13, 2));
 
-    inputPanel.add(new JLabel("Short String"));
-    inputPanel.add(ComponentBuilders.textField()
+    inputPanel.add(label("Short String").build());
+    inputPanel.add(textField()
             .columns(20)
             .upperCase()
             .maximumLength(20)
@@ -38,8 +46,8 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getShortStringValue())
             .build());
 
-    inputPanel.add(new JLabel("Long String"));
-    inputPanel.add(ComponentBuilders.textInputPanel()
+    inputPanel.add(label("Long String").build());
+    inputPanel.add(textInputPanel()
             .columns(20)
             .maximumLength(400)
             .buttonFocusable(true)
@@ -48,14 +56,14 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getLongStringValue())
             .build());
 
-    inputPanel.add(new JLabel("Date Time"));
-    inputPanel.add(ComponentBuilders.localDateTimeField("dd-MM-yyyy HH:mm")
+    inputPanel.add(label("Date Time").build());
+    inputPanel.add(localDateTimeField("dd-MM-yyyy HH:mm")
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateTimeValue())
             .build());
 
-    inputPanel.add(new JLabel("Formatted String"));
-    inputPanel.add(ComponentBuilders.formattedTextField()
+    inputPanel.add(label("Formatted String").build());
+    inputPanel.add(formattedTextField()
             .formatMask("(##) ##-##")
             .valueContainsLiterals(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -63,8 +71,8 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getFormattedStringValue())
             .build());
 
-    inputPanel.add(new JLabel("Integer"));
-    inputPanel.add(ComponentBuilders.integerField()
+    inputPanel.add(label("Integer").build());
+    inputPanel.add(integerField()
             .range(0, 1_000_000)
             .groupingUsed(true)
             .groupingSeparator('.')
@@ -72,8 +80,8 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getIntegerValue())
             .build());
 
-    inputPanel.add(new JLabel("Double"));
-    inputPanel.add(ComponentBuilders.doubleField()
+    inputPanel.add(label("Double").build());
+    inputPanel.add(doubleField()
             .range(0, 1_000_000_000)
             .groupingUsed(true)
             .maximumFractionDigits(2)
@@ -83,28 +91,28 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getDoubleValue())
             .build());
 
-    inputPanel.add(new JLabel("Boolean"));
-    inputPanel.add(ComponentBuilders.checkBox()
+    inputPanel.add(label("Boolean").build());
+    inputPanel.add(checkBox()
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(model.getBooleanValue())
             .transferFocusOnEnter(true)
             .linkedValue(model.getBooleanValue())
             .build());
 
-    inputPanel.add(new JLabel("Boolean Selection"));
-    inputPanel.add(ComponentBuilders.booleanComboBox()
+    inputPanel.add(label("Boolean Selection").build());
+    inputPanel.add(booleanComboBox()
             .transferFocusOnEnter(true)
             .linkedValue(model.getBooleanSelectionValue())
             .build());
 
-    ItemComboBoxModel<Integer> itemComboBoxModel = ItemComboBoxModel.createModel(Arrays.asList(
+    ItemComboBoxModel<Integer> integerItemComboBoxModel = ItemComboBoxModel.createModel(Arrays.asList(
             Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
             Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
     ));
 
-    inputPanel.add(new JLabel("Integer Item"));
-    inputPanel.add(ComponentBuilders.itemComboBox(itemComboBoxModel)
+    inputPanel.add(label("Integer Item").build());
+    inputPanel.add(itemComboBox(integerItemComboBoxModel)
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerItemValue())
@@ -113,16 +121,31 @@ public final class ApplicationPanel extends JPanel {
     DefaultComboBoxModel<String> comboBoxModel =
             new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
 
-    inputPanel.add(new JLabel("String Selection"));
-    inputPanel.add(ComponentBuilders.comboBox(String.class, comboBoxModel)
+    inputPanel.add(label("String Selection").build());
+    inputPanel.add(comboBox(String.class, comboBoxModel)
             .editable(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getStringSelectionValue())
             .build());
 
+    inputPanel.add(label("Integer Slide").build());
+    inputPanel.add(slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
+            .paintTicks(true)
+            .paintTrack(true)
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getIntegerSlideValue())
+            .build());
+
+    inputPanel.add(label("Integer Spin").build());
+    inputPanel.add(integerSpinner(new SpinnerNumberModel(0, 0, 100, 10))
+            .columns(4)
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getIntegerSpinValue())
+            .build());
+
     add(inputPanel, BorderLayout.CENTER);
 
-    add(ComponentBuilders.textField()
+    add(textField()
             .columns(20)
             .editable(false)
             .focusable(false)
@@ -134,11 +157,11 @@ public final class ApplicationPanel extends JPanel {
   }
 
   public static void main(String[] args) {
-    ApplicationModel model = new ApplicationModel();
+    ApplicationModel applicationModel = new ApplicationModel();
 
-    ApplicationPanel panel = new ApplicationPanel(model);
+    ApplicationPanel applicationPanel = new ApplicationPanel(applicationModel);
 
-    Dialogs.componentDialogBuilder(panel)
+    Dialogs.componentDialogBuilder(applicationPanel)
             .title("Codion Input Components Demo")
             .icon(Icons.icons().logoTransparent())
             .show();

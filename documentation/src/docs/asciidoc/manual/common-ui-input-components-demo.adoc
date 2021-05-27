@@ -8,6 +8,7 @@
 ====
 [source,java,indent=0]
 ----
+include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModelImport]
 include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModel]
 ----
 ====
@@ -19,6 +20,7 @@ include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationMo
 ====
 [source,java,indent=0]
 ----
+include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanelImport]
 include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanel]
 ----
 ====
