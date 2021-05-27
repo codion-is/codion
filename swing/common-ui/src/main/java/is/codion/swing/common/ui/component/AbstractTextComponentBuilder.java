@@ -38,16 +38,20 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
-  public B upperCase() {
-    this.upperCase = true;
-    this.lowerCase = false;
+  public B upperCase(final boolean upperCase) {
+    if (upperCase && lowerCase) {
+      throw new IllegalArgumentException("Field is already lowercase");
+    }
+    this.upperCase = upperCase;
     return (B) this;
   }
 
   @Override
-  public B lowerCase() {
-    this.lowerCase = true;
-    this.upperCase = false;
+  public B lowerCase(final boolean lowerCase) {
+    if (lowerCase && upperCase) {
+      throw new IllegalArgumentException("Field is already uppercase");
+    }
+    this.lowerCase = lowerCase;
     return (B) this;
   }
 

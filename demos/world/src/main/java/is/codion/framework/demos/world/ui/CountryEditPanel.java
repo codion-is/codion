@@ -30,9 +30,9 @@ public final class CountryEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Country.CODE);
 
     createTextField(Country.CODE)
-            .upperCase();
+            .upperCase(true);
     createTextField(Country.CODE_2)
-            .upperCase();
+            .upperCase(true);
     createTextField(Country.NAME);
     createItemComboBox(Country.CONTINENT)
             .preferredWidth(120);

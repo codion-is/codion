@@ -7122,3 +7122,4 @@
   ComponentBuilder.build() overloaded with onBuild consumer
   ComponentBuilder.selectAllOnFocusGained() now with parameter, parameterless builder methods can be problematic
   TemporalInputPanelBuilder.selectAllOnFocusGained() added
+  TextComponentBuilder and TextInputPanelBuilder, upperCase() and lowerCase() parameters added

@@ -26,7 +26,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTextField(Employee.ADDRESS);
     createTextField(Employee.CITY);
     createTextField(Employee.STATE)
-            .upperCase();
+            .upperCase(true);
     createTextField(Employee.COUNTRY);
     createTextField(Employee.POSTALCODE);
     createTextField(Employee.PHONE);

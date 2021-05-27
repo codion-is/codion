@@ -265,7 +265,7 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextField> componentValue = ComponentBuilders.textField()
             .columns(10)
-            .upperCase()
+            .upperCase(true)
             .selectAllOnFocusGained(true)
             .linkedValue(value)
             .buildComponentValue();
