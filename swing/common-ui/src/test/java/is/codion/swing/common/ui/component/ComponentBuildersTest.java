@@ -21,10 +21,12 @@ import is.codion.swing.common.ui.value.UpdateOn;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -341,5 +343,16 @@ public final class ComponentBuildersTest {
     assertEquals(10d, componentValue.get());
     value.set(50d);
     assertEquals(50d, componentValue.get());
+  }
+
+  @Test
+  public void slider() {
+    final Value<Integer> value = Value.value(10);
+    final ComponentValue<Integer, JSlider> componentValue = ComponentBuilders.slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
+            .linkedValue(value)
+            .buildComponentValue();
+    assertEquals(10, componentValue.get());
+    value.set(50);
+    assertEquals(50, componentValue.get());
   }
 }

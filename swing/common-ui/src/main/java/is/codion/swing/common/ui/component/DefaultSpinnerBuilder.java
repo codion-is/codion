@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBuilder<T, JSpinner, SpinnerBuilder<T>> implements SpinnerBuilder<T> {
 
   private final SpinnerNumberModel spinnerNumberModel;
+
   private final Class<T> valueClass;
   private int columns = 0;
 

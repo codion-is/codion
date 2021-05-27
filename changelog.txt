@@ -7114,3 +7114,4 @@
   TextInputPanelBuilder.upperCase(), lowerCase() and selectAllOnFocusGained() added
   SpinnerBuilder added along with ComponentBuilders.doubleSpinner() and integerSpinner() added
   SpinnerBuilder.columns() added
+  SliderBuilder added along with ComponentBuilders.slider()
