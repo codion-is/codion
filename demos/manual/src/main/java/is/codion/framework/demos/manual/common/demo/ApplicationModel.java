@@ -5,22 +5,31 @@ import is.codion.common.value.ValueObserver;
 
 import java.time.LocalDateTime;
 
+import static is.codion.common.value.Value.value;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 
+/*
+// tag::demoModelImport[]
+import static is.codion.common.value.Value.value;
+// end::demoModelImport[]
+ */
 // tag::demoModel[]
+
 public final class ApplicationModel {
 
-  private final Value<String> shortStringValue = Value.value();
-  private final Value<String> longStringValue = Value.value();
-  private final Value<LocalDateTime> localDateTimeValue = Value.value();
-  private final Value<String> formattedStringValue = Value.value();
-  private final Value<Integer> integerValue = Value.value();
-  private final Value<Double> doubleValue = Value.value();
-  private final Value<Boolean> booleanValue = Value.value();
-  private final Value<Boolean> booleanSelectionValue = Value.value();
-  private final Value<Integer> integerItemValue = Value.value();
-  private final Value<String> stringSelectionValue = Value.value();
-  private final Value<String> messageValue = Value.value();
+  private final Value<String> shortStringValue = value();
+  private final Value<String> longStringValue = value();
+  private final Value<LocalDateTime> localDateTimeValue = value();
+  private final Value<String> formattedStringValue = value();
+  private final Value<Integer> integerValue = value();
+  private final Value<Double> doubleValue = value();
+  private final Value<Boolean> booleanValue = value();
+  private final Value<Boolean> booleanSelectionValue = value();
+  private final Value<Integer> integerItemValue = value();
+  private final Value<String> stringSelectionValue = value();
+  private final Value<Integer> integerSlideValue = value();
+  private final Value<Integer> integerSpinValue = value();
+  private final Value<String> messageValue = value();
 
   public ApplicationModel() {
     setDefaultUncaughtExceptionHandler(this::exceptionHandler);
@@ -63,6 +72,14 @@ public final class ApplicationModel {
     return integerItemValue;
   }
 
+  public Value<Integer> getIntegerSlideValue() {
+    return integerSlideValue;
+  }
+
+  public Value<Integer> getIntegerSpinValue() {
+    return integerSpinValue;
+  }
+
   public Value<String> getStringSelectionValue() {
     return stringSelectionValue;
   }
@@ -83,6 +100,8 @@ public final class ApplicationModel {
     integerItemValue.addDataListener(this::setMessage);
     stringSelectionValue.addValidator(this::setMessage);
     stringSelectionValue.addDataListener(this::setMessage);
+    integerSlideValue.addDataListener(this::setMessage);
+    integerSpinValue.addDataListener(this::setMessage);
   }
 
   private void exceptionHandler(Thread thread, Throwable exception) {
