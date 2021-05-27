@@ -15,7 +15,6 @@ module is.codion.common.db {
   exports is.codion.common.db.pool;
   exports is.codion.common.db.report;
   exports is.codion.common.db.result;
-  exports is.codion.common.db;
 
   uses is.codion.common.db.database.DatabaseFactory;
   uses is.codion.common.db.pool.ConnectionPoolFactory;
