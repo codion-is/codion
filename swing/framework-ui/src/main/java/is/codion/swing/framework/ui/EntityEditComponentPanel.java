@@ -3,9 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
@@ -20,6 +18,7 @@ import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.LabelBuilder;
 import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
 import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
 import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
@@ -66,31 +65,6 @@ import static java.util.Objects.requireNonNull;
  * A base class for entity edit panels, providing components for editing entities.
  */
 public class EntityEditComponentPanel extends JPanel {
-
-  /**
-   * Specifies the default horizontal alignment used in labels<br>
-   * Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)<br>
-   * Default value: JLabel.LEFT
-   */
-  public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue(
-          "is.codion.swing.framework.ui.EntityEditComponentPanel.labelTextAlignment", SwingConstants.LEFT);
-
-  /**
-   * Specifies whether focus should be transferred from components on enter.
-   * Note that this does not apply to text areas<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
-
-  /**
-   * Specifies the default number of columns in text fields created by this component panel<br>
-   * Value type: Integer<br>
-   * Default value: 12
-   */
-  public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS = Configuration.integerValue(
-          "is.codion.swing.framework.ui.EntityEditComponentPanel.defaultTextFieldColumns", 12);
 
   /**
    * The edit model these edit components are associated with
@@ -140,12 +114,12 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Specifies whether components created by this edit component panel should transfer focus on enter.
    */
-  private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
+  private boolean transferFocusOnEnter = ComponentBuilder.TRANSFER_FOCUS_ON_ENTER.get();
 
   /**
    * The default number of text field columns
    */
-  private int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.get();
+  private int defaultTextFieldColumns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
 
   /**
    * Instantiates a new EntityEditComponentPanel
@@ -316,7 +290,7 @@ public class EntityEditComponentPanel extends JPanel {
    * If set to true then components created subsequently will transfer focus on enter, otherwise not.
    * Note that this has no effect on components that have already been created.
    * @param transferFocusOnEnter the new value
-   * @see #TRANSFER_FOCUS_ON_ENTER
+   * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
    */
   protected final void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
     this.transferFocusOnEnter = transferFocusOnEnter;
@@ -721,7 +695,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JLabel for the given attribute
    */
   protected final <T> JLabel createLabel(final Attribute<T> attribute) {
-    return createLabel(attribute, LABEL_TEXT_ALIGNMENT.get());
+    return createLabel(attribute, LabelBuilder.LABEL_TEXT_ALIGNMENT.get());
   }
 
   /**

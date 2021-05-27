@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
+
 import javax.swing.Action;
 import javax.swing.JTextField;
 import java.text.Format;
@@ -16,6 +19,14 @@ import java.util.function.Supplier;
  * @param <B> the builder type
  */
 public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends TextComponentBuilder<T, C, B> {
+
+  /**
+   * Specifies the default number of columns in text fields created by component builders<br>
+   * Value type: Integer<br>
+   * Default value: 12
+   */
+  PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS = Configuration.integerValue(
+          "is.codion.swing.common.ui.TextFieldBuilder.defaultTextFieldColumns", 12);
 
   /**
    * Note that this disables {@link #transferFocusOnEnter(boolean)}.
