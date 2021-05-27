@@ -55,11 +55,11 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> sorted() {
+  public ItemComboBoxBuilder<T> sorted(boolean sorted) {
     if (comboBoxModel != null) {
       throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting");
     }
-    this.sorted = true;
+    this.sorted = sorted;
     return this;
   }
 

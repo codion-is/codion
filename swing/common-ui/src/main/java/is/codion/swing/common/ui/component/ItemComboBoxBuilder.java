@@ -25,13 +25,14 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedCombo
    * @param popupWidth the required popup with
    * @return this builder instance
    */
-  ItemComboBoxBuilder<T> popupWidth(final int popupWidth);
+  ItemComboBoxBuilder<T> popupWidth(int popupWidth);
 
   /**
    * Sorts the contents by caption
+   * @param sorted if true then the items will be sorted by caption
    * @return this builder instance
    */
-  ItemComboBoxBuilder<T> sorted();
+  ItemComboBoxBuilder<T> sorted(boolean sorted);
 
   /**
    * @param sortComparator if specified the combo box contents are sorted using this comparator

@@ -7107,3 +7107,4 @@
   TextFieldBuilder.transferFocusOnEnter() no longer parameterless, parameter actually useful
   ComponentBuilders, EntityComponentBuilders, Builder suffix removed from factory method names
   LabelBuilder.labelFor() and displayedMnemonic() added
+  ItemComboBoxBuilder.sorted() added parameter
