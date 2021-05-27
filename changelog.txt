@@ -7115,3 +7115,5 @@
   SpinnerBuilder added along with ComponentBuilders.doubleSpinner() and integerSpinner() added
   SpinnerBuilder.columns() added
   SliderBuilder added along with ComponentBuilders.slider()
+  SpinnerNumberValue translates null to zero, Spinner can't handle nulls
+  DefaultSpinnerBuilder overrides setTransferFocusOnEnter(), editor text field needed to be handled as well

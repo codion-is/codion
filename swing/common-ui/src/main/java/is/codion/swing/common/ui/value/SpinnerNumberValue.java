@@ -19,6 +19,6 @@ final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<
 
   @Override
   protected void setComponentValue(final JSpinner component, final V value) {
-    component.setValue(value);
+    component.setValue(value == null ? 0 : value);
   }
 }
