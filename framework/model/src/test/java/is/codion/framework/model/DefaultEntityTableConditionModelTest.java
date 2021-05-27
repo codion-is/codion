@@ -4,7 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;

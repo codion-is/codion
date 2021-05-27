@@ -4,7 +4,7 @@
 package is.codion.common.model.table;
 
 import is.codion.common.Configuration;
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.state.State;

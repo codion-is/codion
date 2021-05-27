@@ -4,8 +4,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
+import is.codion.common.Operator;
 import is.codion.common.Util;
-import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventListener;

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;

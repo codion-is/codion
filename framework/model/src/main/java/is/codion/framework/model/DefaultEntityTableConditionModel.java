@@ -4,8 +4,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.Operator;
 import is.codion.common.Util;
-import is.codion.common.db.Operator;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;

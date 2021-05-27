@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jackson.json.db;
 
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Entity;

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.table;
 
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
