@@ -37,22 +37,22 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   @Override
-  public OkCancelDialogBuilder onOk(final Runnable runnable) {
-    requireNonNull(runnable);
+  public OkCancelDialogBuilder onOk(final Control.Command command) {
+    requireNonNull(command);
 
     return okAction(Control.builder(() -> {
+      command.perform();
       Windows.getParentDialog(component).dispose();
-      runnable.run();
     }).name(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build());
   }
 
   @Override
-  public OkCancelDialogBuilder onCancel(final Runnable runnable) {
-    requireNonNull(runnable);
+  public OkCancelDialogBuilder onCancel(final Control.Command command) {
+    requireNonNull(command);
 
     return cancelAction(Control.builder(() -> {
+      command.perform();
       Windows.getParentDialog(component).dispose();
-      runnable.run();
     }).name(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build());
   }
 
