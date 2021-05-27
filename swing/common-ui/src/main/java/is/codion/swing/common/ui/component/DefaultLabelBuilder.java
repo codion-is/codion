@@ -8,14 +8,13 @@ import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 import static java.util.Objects.requireNonNull;
 
 class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, LabelBuilder> implements LabelBuilder {
 
   private final String text;
-  private int horizontalAlignment = SwingConstants.LEADING;
+  private int horizontalAlignment = LABEL_TEXT_ALIGNMENT.get();
   private char displayedMnemonic = 0;
   private JComponent component;
 

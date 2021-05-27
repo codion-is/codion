@@ -7155,3 +7155,4 @@
   TemporalInputPanelBuilder.selectAllOnFocusGained() added
   TextComponentBuilder and TextInputPanelBuilder, upperCase() and lowerCase() parameters added
   TextInputPanel bug fixed, caret is now at end of existing text when dialog is opened
+  Component related configuration values moved to common.ui

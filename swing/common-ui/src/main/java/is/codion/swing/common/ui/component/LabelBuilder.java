@@ -3,13 +3,25 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  * A builder for JLabel.
  */
 public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuilder> {
+
+  /**
+   * Specifies the default horizontal alignment used in labels<br>
+   * Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)<br>
+   * Default value: SwingConstants.LEADING
+   */
+  PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue(
+          "is.codion.swing.common.ui.LabelBuilder.labelTextAlignment", SwingConstants.LEADING);
 
   /**
    * @param horizontalAlignment the horizontal text alignment

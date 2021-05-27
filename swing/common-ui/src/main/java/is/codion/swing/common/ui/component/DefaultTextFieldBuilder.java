@@ -28,8 +28,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private Format format;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
-    requireNonNull(valueClass);
-    this.valueClass = valueClass;
+    this.valueClass = requireNonNull(valueClass);
+    columns(DEFAULT_TEXT_FIELD_COLUMNS.get());
   }
 
   @Override

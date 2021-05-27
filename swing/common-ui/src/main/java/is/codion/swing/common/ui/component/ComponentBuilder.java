@@ -3,7 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.Configuration;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -22,6 +24,15 @@ import java.util.function.Consumer;
  * @param <B> the builder type
  */
 public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> {
+
+  /**
+   * Specifies whether focus should be transferred from components on enter.
+   * Note that this does not apply to text areas<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
+          "is.codion.swing.common.ui.ComponentBuilder.transferFocusOnEnter", true);
 
   /**
    * @param focusable false if the component should not be focusable

@@ -31,7 +31,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Dimension maximumSize;
   private Dimension minimumSize;
   private Border border;
-  private boolean transferFocusOnEnter;
+  private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
   private String description;
   private StateObserver enabledState;
   private Value<T> linkedValue;
