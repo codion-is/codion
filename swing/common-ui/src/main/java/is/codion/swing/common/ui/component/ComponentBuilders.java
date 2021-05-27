@@ -11,8 +11,13 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link ComponentBuilder}.
@@ -84,7 +89,31 @@ public final class ComponentBuilders {
    * @return a builder for a component
    */
   public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Class<T> valueClass) {
-    return new DefaultTemporalInputPanelBuiler<>(valueClass);
+    return new DefaultTemporalInputPanelBuiler<>(valueClass, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(final String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, requireNonNull(dateTimePattern));
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(final String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, requireNonNull(dateTimePattern));
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(final String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, requireNonNull(dateTimePattern));
   }
 
   /**

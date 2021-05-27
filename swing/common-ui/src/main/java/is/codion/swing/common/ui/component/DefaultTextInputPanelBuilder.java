@@ -85,15 +85,13 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class);
+    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class)
+            .selectAllOnFocusGained(selectAllOnFocusGained);
     if (upperCase) {
       textFieldBuilder.upperCase();
     }
     if (lowerCase) {
       textFieldBuilder.lowerCase();
-    }
-    if (selectAllOnFocusGained) {
-      textFieldBuilder.selectAllOnFocusGained();
     }
 
     return TextInputPanel.builder(textFieldBuilder.build())

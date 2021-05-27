@@ -164,7 +164,7 @@ public final class EntityComponentBuildersTest {
   public void createTextField() {
     final ComponentValue<String, JTextField> componentValue =
             inputComponents.textField(TestDomain.DETAIL_STRING)
-            .columns(10).upperCase().selectAllOnFocusGained().buildComponentValue();
+            .columns(10).upperCase().selectAllOnFocusGained(true).buildComponentValue();
     componentValue.link(editModel.value(TestDomain.DETAIL_STRING));
     final JTextField field = componentValue.getComponent();
     field.setText("hello");

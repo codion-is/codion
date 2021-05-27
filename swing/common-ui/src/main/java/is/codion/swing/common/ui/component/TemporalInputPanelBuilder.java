@@ -15,6 +15,12 @@ import java.time.temporal.Temporal;
 public interface TemporalInputPanelBuilder<T extends Temporal> extends ComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>> {
 
   /**
+   * @param selectAllOnFocusGained if true the component will transfer focus on enter
+   * @return this builder instance
+   */
+  TemporalInputPanelBuilder<T> selectAllOnFocusGained(boolean selectAllOnFocusGained);
+
+  /**
    * @param columns the number of colums in the temporal field
    * @return this builder instance
    */
