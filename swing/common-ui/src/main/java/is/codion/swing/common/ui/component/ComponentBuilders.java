@@ -8,6 +8,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -196,6 +197,22 @@ public final class ComponentBuilders {
    */
   public static FormattedTextFieldBuilder formattedTextField() {
     return new DefaultFormattedTextFieldBuilder();
+  }
+
+  /**
+   * @param spinnerNumberModel the spinner model
+   * @return a builder for a component
+   */
+  public static SpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
+    return new DefaultSpinnerBuilder<>(spinnerNumberModel, Double.class);
+  }
+
+  /**
+   * @param spinnerNumberModel the spinner model
+   * @return a builder for a component
+   */
+  public static SpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel) {
+    return new DefaultSpinnerBuilder<>(spinnerNumberModel, Integer.class);
   }
 
   /**

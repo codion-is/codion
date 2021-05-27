@@ -25,9 +25,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -293,5 +295,29 @@ public final class ComponentBuildersTest {
     final JFormattedTextField field = componentValue.getComponent();
     field.setText("1234");
     assertEquals("12:34", value.get());
+  }
+
+  @Test
+  public void integerSpinner() {
+    final Value<Integer> value = Value.value(10);
+    final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0, 0, 100, 10);
+    final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.integerSpinner(spinnerNumberModel)
+            .linkedValue(value)
+            .buildComponentValue();
+    assertEquals(10, componentValue.get());
+    value.set(50);
+    assertEquals(50, componentValue.get());
+  }
+
+  @Test
+  public void doubleSpinner() {
+    final Value<Double> value = Value.value(10d);
+    final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0d, 0d, 100d, 10d);
+    final ComponentValue<Double, JSpinner> componentValue = ComponentBuilders.doubleSpinner(spinnerNumberModel)
+            .linkedValue(value)
+            .buildComponentValue();
+    assertEquals(10d, componentValue.get());
+    value.set(50d);
+    assertEquals(50d, componentValue.get());
   }
 }
