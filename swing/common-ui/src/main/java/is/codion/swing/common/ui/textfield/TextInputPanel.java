@@ -163,6 +163,7 @@ public final class TextInputPanel extends JPanel {
         return new SizedDocument(getMaximumLength());
       }
     };
+    textArea.setCaretPosition(textArea.getText().length());
     textArea.setPreferredSize(textAreaSize);
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
