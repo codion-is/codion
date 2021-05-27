@@ -10,17 +10,17 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import static java.util.Objects.requireNonNull;
+
 class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, LabelBuilder> implements LabelBuilder {
 
-  private String text;
+  private final String text;
   private int horizontalAlignment = SwingConstants.LEADING;
   private char displayedMnemonic = 0;
   private JComponent component;
 
-  @Override
-  public LabelBuilder text(final String text) {
-    this.text = text;
-    return this;
+  DefaultLabelBuilder(final String text) {
+    this.text = requireNonNull(text);
   }
 
   @Override

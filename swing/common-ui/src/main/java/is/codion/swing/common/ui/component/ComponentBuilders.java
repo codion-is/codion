@@ -225,9 +225,10 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @param text the label text
    * @return a label builder
    */
-  public static LabelBuilder label() {
-    return new DefaultLabelBuilder();
+  public static LabelBuilder label(final String text) {
+    return new DefaultLabelBuilder(text);
   }
 }
