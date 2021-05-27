@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -57,5 +58,11 @@ final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBui
   @Override
   protected void setInitialValue(final JSpinner component, final T initialValue) {
     component.setValue(initialValue);
+  }
+
+  @Override
+  protected void setTransferFocusOnEnter(final JSpinner component) {
+    super.setTransferFocusOnEnter(component);
+    Components.transferFocusOnEnter(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
   }
 }
