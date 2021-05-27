@@ -3,6 +3,7 @@ package is.codion.framework.demos.manual.common.demo;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static is.codion.common.value.Value.value;
@@ -19,6 +20,7 @@ public final class ApplicationModel {
 
   private final Value<String> shortStringValue = value();
   private final Value<String> longStringValue = value();
+  private final Value<LocalDate> localDateValue = value();
   private final Value<LocalDateTime> localDateTimeValue = value();
   private final Value<String> formattedStringValue = value();
   private final Value<Integer> integerValue = value();
@@ -42,6 +44,10 @@ public final class ApplicationModel {
 
   public Value<String> getLongStringValue() {
     return longStringValue;
+  }
+
+  public Value<LocalDate> getLocalDateValue() {
+    return localDateValue;
   }
 
   public Value<LocalDateTime> getLocalDateTimeValue() {
@@ -92,6 +98,7 @@ public final class ApplicationModel {
     shortStringValue.addDataListener(this::setMessage);
     longStringValue.addDataListener(this::setMessage);
     formattedStringValue.addDataListener(this::setMessage);
+    localDateValue.addDataListener(this::setMessage);
     localDateTimeValue.addDataListener(this::setMessage);
     integerValue.addDataListener(this::setMessage);
     doubleValue.addDataListener(this::setMessage);
