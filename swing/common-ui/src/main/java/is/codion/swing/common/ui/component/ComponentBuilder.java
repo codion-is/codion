@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -12,6 +11,7 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 
 /**
  * Builds a JComponent.<br>
@@ -103,10 +103,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B initialValue(T initialValue);
 
   /**
-   * @param listener called after a component is built
+   * @param onBuild called when the component has been built
    * @return this builder instance
    */
-  B addBuildListener(EventDataListener<C> listener);
+  B onBuild(Consumer<C> onBuild);
 
   /**
    * Builds and returns the component, note that subsequent calls return the same component.

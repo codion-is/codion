@@ -7118,3 +7118,4 @@
   SpinnerNumberValue translates null to zero, Spinner can't handle nulls
   DefaultSpinnerBuilder overrides setTransferFocusOnEnter(), editor text field needed to be handled as well
   ComponentBuilders.label() now takes text as parameter
+  ComponentBuilder.onBuild() added, addBuildListener() removed

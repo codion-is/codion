@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -14,6 +13,7 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -124,8 +124,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B addBuildListener(final EventDataListener<C> listener) {
-    buildEvent.addDataListener(listener);
+  public final B onBuild(final Consumer<C> onBuild) {
+    buildEvent.addDataListener(onBuild::accept);
     return (B) this;
   }
 

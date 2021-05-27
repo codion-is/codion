@@ -484,7 +484,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextAreaBuilder createTextArea(final Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.textArea(attribute)
-            .addBuildListener(textArea -> EntityComponentValidators.addValidator(attribute, textArea, getEditModel())));
+            .onBuild(textArea -> EntityComponentValidators.addValidator(attribute, textArea, getEditModel())));
   }
 
   /**
@@ -507,7 +507,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final <T extends Temporal> TemporalInputPanelBuilder<T> createTemporalInputPanel(final Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.temporalInputPanel(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
-            .addBuildListener(inputPanel -> addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel())));
+            .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel())));
   }
 
   /**
@@ -620,7 +620,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected final FormattedTextFieldBuilder createFormattedTextField(final Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.formattedTextField(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
-            .addBuildListener(textField -> addFormattedValidator(attribute, textField, getEditModel())));
+            .onBuild(textField -> addFormattedValidator(attribute, textField, getEditModel())));
   }
 
   /**
