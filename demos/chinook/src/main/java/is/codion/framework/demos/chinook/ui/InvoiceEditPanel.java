@@ -38,7 +38,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
-            .addBuildListener(InvoiceEditPanel::configureCustomerSearch);
+            .onBuild(InvoiceEditPanel::configureCustomerSearch);
     createTemporalInputPanel(Invoice.DATE);
     createTextField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained();

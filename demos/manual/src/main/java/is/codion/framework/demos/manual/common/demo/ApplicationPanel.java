@@ -36,52 +36,52 @@ public final class ApplicationPanel extends JPanel {
 
     JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(13, 2));
 
-    inputPanel.add(label("Short String").build());
-    inputPanel.add(textField()
+    label("Short String").build(inputPanel::add);
+    textField()
             .columns(20)
             .upperCase()
             .maximumLength(20)
             .selectAllOnFocusGained()
             .transferFocusOnEnter(true)
             .linkedValue(model.getShortStringValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Long String").build());
-    inputPanel.add(textInputPanel()
+    label("Long String").build(inputPanel::add);
+    textInputPanel()
             .columns(20)
             .maximumLength(400)
             .buttonFocusable(true)
             .selectAllOnFocusGained()
             .transferFocusOnEnter(true)
             .linkedValue(model.getLongStringValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Date Time").build());
-    inputPanel.add(localDateTimeField("dd-MM-yyyy HH:mm")
+    label("Date Time").build(inputPanel::add);
+    localDateTimeField("dd-MM-yyyy HH:mm")
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateTimeValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Formatted String").build());
-    inputPanel.add(formattedTextField()
+    label("Formatted String").build(inputPanel::add);
+    formattedTextField()
             .formatMask("(##) ##-##")
             .valueContainsLiterals(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)
             .transferFocusOnEnter(true)
             .linkedValue(model.getFormattedStringValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Integer").build());
-    inputPanel.add(integerField()
+    label("Integer").build(inputPanel::add);
+    integerField()
             .range(0, 1_000_000)
             .groupingUsed(true)
             .groupingSeparator('.')
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Double").build());
-    inputPanel.add(doubleField()
+    label("Double").build(inputPanel::add);
+    doubleField()
             .range(0, 1_000_000_000)
             .groupingUsed(true)
             .maximumFractionDigits(2)
@@ -89,21 +89,21 @@ public final class ApplicationPanel extends JPanel {
             .groupingSeparator('.')
             .transferFocusOnEnter(true)
             .linkedValue(model.getDoubleValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Boolean").build());
-    inputPanel.add(checkBox()
+    label("Boolean").build(inputPanel::add);
+    checkBox()
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(model.getBooleanValue())
             .transferFocusOnEnter(true)
             .linkedValue(model.getBooleanValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Boolean Selection").build());
-    inputPanel.add(booleanComboBox()
+    label("Boolean Selection").build(inputPanel::add);
+    booleanComboBox()
             .transferFocusOnEnter(true)
             .linkedValue(model.getBooleanSelectionValue())
-            .build());
+            .build(inputPanel::add);
 
     ItemComboBoxModel<Integer> integerItemComboBoxModel = ItemComboBoxModel.createModel(Arrays.asList(
             Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
@@ -111,47 +111,47 @@ public final class ApplicationPanel extends JPanel {
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
     ));
 
-    inputPanel.add(label("Integer Item").build());
-    inputPanel.add(itemComboBox(integerItemComboBoxModel)
+    label("Integer Item").build(inputPanel::add);
+    itemComboBox(integerItemComboBoxModel)
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerItemValue())
-            .build());
+            .build(inputPanel::add);
 
     DefaultComboBoxModel<String> comboBoxModel =
             new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
 
-    inputPanel.add(label("String Selection").build());
-    inputPanel.add(comboBox(String.class, comboBoxModel)
+    label("String Selection").build(inputPanel::add);
+    comboBox(String.class, comboBoxModel)
             .editable(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getStringSelectionValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Integer Slide").build());
-    inputPanel.add(slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
+    label("Integer Slide").build(inputPanel::add);
+    slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
             .paintTicks(true)
             .paintTrack(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerSlideValue())
-            .build());
+            .build(inputPanel::add);
 
-    inputPanel.add(label("Integer Spin").build());
-    inputPanel.add(integerSpinner(new SpinnerNumberModel(0, 0, 100, 10))
+    label("Integer Spin").build(inputPanel::add);
+    integerSpinner(new SpinnerNumberModel(0, 0, 100, 10))
             .columns(4)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerSpinValue())
-            .build());
+            .build(inputPanel::add);
 
     add(inputPanel, BorderLayout.CENTER);
 
-    add(textField()
+    textField()
             .columns(20)
             .editable(false)
             .focusable(false)
             .border(BorderFactory.createTitledBorder("Message"))
             .linkedValueObserver(model.getMessageValue())
-            .build(), BorderLayout.SOUTH);
+            .build(component -> add(component, BorderLayout.SOUTH));
 
     Components.setPreferredWidth(this, 380);
   }
