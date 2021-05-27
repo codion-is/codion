@@ -10,6 +10,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
+import javax.swing.border.Border;
 import java.awt.Dimension;
 
 /**
@@ -57,6 +58,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B minimumSize(Dimension minimumSize);
+
+  /**
+   * @param border the component border
+   * @return this builder instance
+   */
+  B border(Border border);
 
   /**
    * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)

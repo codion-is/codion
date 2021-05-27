@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
+import javax.swing.border.Border;
 import java.awt.Dimension;
 
 import static java.util.Objects.requireNonNull;
@@ -28,6 +29,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private int preferredWidth;
   private Dimension maximumSize;
   private Dimension minimumSize;
+  private Border border;
   private boolean transferFocusOnEnter;
   protected String description;
   protected StateObserver enabledState;
@@ -70,6 +72,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   @Override
   public B minimumSize(final Dimension minimumSize) {
     this.minimumSize = minimumSize;
+    return (B) this;
+  }
+
+  @Override
+  public B border(final Border border) {
+    this.border = border;
     return (B) this;
   }
 
@@ -131,6 +139,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       component.setFocusable(false);
     }
     setSizes(component);
+    if (border != null) {
+      component.setBorder(border);
+    }
     if (enabledState != null) {
       Components.linkToEnabledState(enabledState, component);
     }

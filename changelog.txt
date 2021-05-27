@@ -7110,3 +7110,4 @@
   ItemComboBoxBuilder.sorted() added parameter
   OkCancelDialogBuilder.onOk() and onCancel() now take Control.Command as parameter, which throws Exception
   DefaultOkCancelDialogBuilder, onOk() and onCancel() commands now run before the dialog is closed, that way errors are displayed
+  ComponentBuilder.border() added
