@@ -19,9 +19,11 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 /**
- * Provides input components for editing entities.
+ * Provides default input components for editing entities.
  */
-public final class EntityInputComponents extends EntityComponentBuilders {
+public final class EntityInputComponents {
+
+  private final EntityComponentBuilders builders;
 
   /**
    * Instantiates a new EntityInputComponents, for creating input
@@ -29,7 +31,14 @@ public final class EntityInputComponents extends EntityComponentBuilders {
    * @param entityDefinition the definition of the entity
    */
   public EntityInputComponents(final EntityDefinition entityDefinition) {
-    super(entityDefinition);
+    this.builders = new EntityComponentBuilders(entityDefinition);
+  }
+
+  /**
+   * @return the {@link EntityComponentBuilders} instance.
+   */
+  public EntityComponentBuilders getComponentBuilders() {
+    return builders;
   }
 
   /**
@@ -56,54 +65,53 @@ public final class EntityInputComponents extends EntityComponentBuilders {
     if (attribute instanceof ForeignKey) {
       throw new IllegalArgumentException("ForeignKeys are not supported");
     }
-    final Property<T> property = getEntityDefinition().getProperty(attribute);
+    final Property<T> property = builders.getEntityDefinition().getProperty(attribute);
     if (property instanceof ItemProperty) {
-      return (ComponentValue<T, C>) itemComboBox(attribute)
+      return (ComponentValue<T, C>) builders.itemComboBox(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalTime()) {
-      return (ComponentValue<T, C>) localTimeField((Attribute<LocalTime>) attribute)
+      return (ComponentValue<T, C>) builders.localTimeField((Attribute<LocalTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDate()) {
-      return (ComponentValue<T, C>) localDateField((Attribute<LocalDate>) attribute)
+      return (ComponentValue<T, C>) builders.localDateField((Attribute<LocalDate>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDateTime()) {
-      return (ComponentValue<T, C>) localDateTimeField((Attribute<LocalDateTime>) attribute)
+      return (ComponentValue<T, C>) builders.localDateTimeField((Attribute<LocalDateTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isOffsetDateTime()) {
-      return (ComponentValue<T, C>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
+      return (ComponentValue<T, C>) builders.offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isString() || attribute.isCharacter()) {
-      return (ComponentValue<T, C>) textField(attribute)
+      return (ComponentValue<T, C>) builders.textField(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isBoolean()) {
-      return (ComponentValue<T, C>) checkBox((Attribute<Boolean>) attribute)
+      return (ComponentValue<T, C>) builders.checkBox((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
               .nullable(property.isNullable())
               .buildComponentValue();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) integerField((Attribute<Integer>) attribute)
+      return (ComponentValue<T, C>) builders.integerField((Attribute<Integer>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())
               .maximumLength(property.getMaximumLength())
               .buildComponentValue();
-
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>) longField((Attribute<Long>) attribute)
+      return (ComponentValue<T, C>) builders.longField((Attribute<Long>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())
@@ -112,17 +120,16 @@ public final class EntityInputComponents extends EntityComponentBuilders {
 
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) doubleField((Attribute<Double>) attribute)
+      return (ComponentValue<T, C>) builders.doubleField((Attribute<Double>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())
               .maximumFractionDigits(property.getMaximumFractionDigits())
               .maximumLength(property.getMaximumLength())
               .buildComponentValue();
-
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) bigDecimalField((Attribute<BigDecimal>) attribute)
+      return (ComponentValue<T, C>) builders.bigDecimalField((Attribute<BigDecimal>) attribute)
               .enabledState(enabledState)
               .minimumValue(property.getMinimumValue())
               .maximumValue(property.getMaximumValue())

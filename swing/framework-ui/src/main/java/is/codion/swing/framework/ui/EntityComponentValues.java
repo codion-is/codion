@@ -46,7 +46,7 @@ public class EntityComponentValues {
     final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
     if (attribute.isTemporal()) {
       final ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
-              inputComponents.temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
+              inputComponents.getComponentBuilders().temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
       componentValue.set((Temporal) initialValue);
 
       return (ComponentValue<T, C>) componentValue;
@@ -77,13 +77,13 @@ public class EntityComponentValues {
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<Entity, T>) inputComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
+      return (ComponentValue<Entity, T>) inputComponents.getComponentBuilders().foreignKeyComboBox(foreignKey, comboBoxModel)
               .onBuild(EntityComboBox::refreshOnSetVisible).buildComponentValue();
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
-    return (ComponentValue<Entity, T>) inputComponents.foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
+    return (ComponentValue<Entity, T>) inputComponents.getComponentBuilders().foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
   }
 }
