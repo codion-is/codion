@@ -3,7 +3,7 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 
 import org.junit.jupiter.api.Test;
 

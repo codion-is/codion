@@ -3,8 +3,8 @@
  */
 package is.codion.framework.model.tests;
 
+import is.codion.common.Operator;
 import is.codion.common.Util;
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;

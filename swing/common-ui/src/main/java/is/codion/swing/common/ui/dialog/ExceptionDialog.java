@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.Configuration;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
@@ -264,7 +263,7 @@ final class ExceptionDialog extends JDialog {
     setModal(modal);
     setTitle(title);
 
-    final String name = translateExceptionClass(throwable.getClass());
+    final String name = throwable.getClass().getSimpleName();
     descriptionLabel.setText(message == null ? name : truncateMessage(message));
     descriptionLabel.setToolTipText(message);
 
@@ -296,13 +295,5 @@ final class ExceptionDialog extends JDialog {
     }
 
     return message;
-  }
-
-  private static String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
-    if (exceptionClass.equals(DatabaseException.class)) {
-      return MESSAGES.getString("database_exception");
-    }
-
-    return exceptionClass.getSimpleName();
   }
 }

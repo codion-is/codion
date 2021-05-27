@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;

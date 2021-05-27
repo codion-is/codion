@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.ConditionType;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
-import static is.codion.common.db.Operator.EQUAL;
-import static is.codion.common.db.Operator.NOT_EQUAL;
+import static is.codion.common.Operator.EQUAL;
+import static is.codion.common.Operator.NOT_EQUAL;
 import static is.codion.framework.domain.entity.Entity.getValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

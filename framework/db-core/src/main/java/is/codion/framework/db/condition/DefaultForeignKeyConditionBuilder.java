@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.db.Operator;
+import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -15,8 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.db.Operator.EQUAL;
-import static is.codion.common.db.Operator.NOT_EQUAL;
+import static is.codion.common.Operator.EQUAL;
+import static is.codion.common.Operator.NOT_EQUAL;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;

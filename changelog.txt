@@ -7157,3 +7157,5 @@
   TextInputPanel bug fixed, caret is now at end of existing text when dialog is opened
   Component related configuration values moved to common.ui
   DefaultLabelBuilder bug fixed, label should not be focusable by default
+  EntityInputComponents no longer extends EntityComponentBuilders, composition used instead
+  Operator moved to common package, ExceptionDialog no longer uses DatabaseException, dependencies on common.db removed
