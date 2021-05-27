@@ -20,6 +20,9 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean buttonFocusable;
   private int columns;
+  private boolean upperCase;
+  private boolean lowerCase;
+  private boolean selectAllOnFocusGained;
   private Dimension textAreaSize;
   private int maximumLength;
   private String caption;
@@ -33,6 +36,26 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   @Override
   public TextInputPanelBuilder columns(final int columns) {
     this.columns = columns;
+    return this;
+  }
+
+  @Override
+  public TextInputPanelBuilder upperCase() {
+    this.upperCase = true;
+    this.lowerCase = false;
+    return this;
+  }
+
+  @Override
+  public TextInputPanelBuilder lowerCase() {
+    this.lowerCase = true;
+    this.upperCase = false;
+    return this;
+  }
+
+  @Override
+  public TextInputPanelBuilder selectAllOnFocusGained() {
+    this.selectAllOnFocusGained = true;
     return this;
   }
 
@@ -62,13 +85,18 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final JTextField field = new DefaultTextFieldBuilder<>(String.class)
-            .updateOn(updateOn)
-            .columns(columns)
-            .maximumLength(maximumLength)
-            .build();
+    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class);
+    if (upperCase) {
+      textFieldBuilder.upperCase();
+    }
+    if (lowerCase) {
+      textFieldBuilder.lowerCase();
+    }
+    if (selectAllOnFocusGained) {
+      textFieldBuilder.selectAllOnFocusGained();
+    }
 
-    return TextInputPanel.builder(field)
+    return TextInputPanel.builder(textFieldBuilder.build())
             .dialogTitle(caption)
             .textAreaSize(textAreaSize)
             .buttonFocusable(buttonFocusable)

@@ -26,6 +26,24 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
   TextInputPanelBuilder columns(int columns);
 
   /**
+   * Makes the text component convert all lower case input to upper case
+   * @return this builder instance
+   */
+  TextInputPanelBuilder upperCase();
+
+  /**
+   * Makes the text component convert all upper case input to lower case
+   * @return this builder instance
+   */
+  TextInputPanelBuilder lowerCase();
+
+  /**
+   * Makes the text field select all when it gains focus
+   * @return this builder instance
+   */
+  TextInputPanelBuilder selectAllOnFocusGained();
+
+  /**
    * @param buttonFocusable true if the dialog button should be focusable
    * @return this builder instance
    */
