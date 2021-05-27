@@ -20,8 +20,8 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean buttonFocusable;
   private int columns;
-  private boolean upperCase;
-  private boolean lowerCase;
+  private boolean upperCase = false;
+  private boolean lowerCase = false;
   private boolean selectAllOnFocusGained;
   private Dimension textAreaSize;
   private int maximumLength;
@@ -40,16 +40,20 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  public TextInputPanelBuilder upperCase() {
-    this.upperCase = true;
-    this.lowerCase = false;
+  public TextInputPanelBuilder upperCase(final boolean upperCase) {
+    if (upperCase && lowerCase) {
+      throw new IllegalArgumentException("Field is already lowercase");
+    }
+    this.upperCase = upperCase;
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder lowerCase() {
-    this.lowerCase = true;
-    this.upperCase = false;
+  public TextInputPanelBuilder lowerCase(final boolean lowerCase) {
+    if (lowerCase && upperCase) {
+      throw new IllegalArgumentException("Field is already uppercase");
+    }
+    this.lowerCase = lowerCase;
     return this;
   }
 
@@ -85,16 +89,13 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class);
-    if (upperCase) {
-      textFieldBuilder.upperCase();
-    }
-    if (lowerCase) {
-      textFieldBuilder.lowerCase();
-    }
-    if (selectAllOnFocusGained) {
-      textFieldBuilder.selectAllOnFocusGained();
-    }
+    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class)
+            .selectAllOnFocusGained(selectAllOnFocusGained)
+            .updateOn(updateOn)
+            .columns(columns)
+            .maximumLength(maximumLength)
+            .upperCase(upperCase)
+            .lowerCase(lowerCase);
 
     return TextInputPanel.builder(textFieldBuilder.build())
             .dialogTitle(caption)

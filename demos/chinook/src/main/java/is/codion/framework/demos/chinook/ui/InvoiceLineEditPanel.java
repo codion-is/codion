@@ -32,7 +32,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
             .selectionProviderFactory(TrackSelectionProvider::new)
             .columns(15);
     createTextField(InvoiceLine.QUANTITY)
-            .selectAllOnFocusGained()
+            .selectAllOnFocusGained(true)
             .action(Control.control(this::save));
 
     setLayout(borderLayout());

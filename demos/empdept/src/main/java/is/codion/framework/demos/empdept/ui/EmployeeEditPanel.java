@@ -33,7 +33,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     createTextField(Employee.NAME)
             .columns(8)
-            .upperCase();
+            .upperCase(true);
     createItemComboBox(Employee.JOB);
     createForeignKeyComboBox(Employee.MGR_FK);
     createTextField(Employee.SALARY);

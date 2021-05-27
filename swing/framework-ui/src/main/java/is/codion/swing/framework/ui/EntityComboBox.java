@@ -94,7 +94,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     return ComponentBuilders.integerField()
             .columns(2)
-            .selectAllOnFocusGained()
+            .selectAllOnFocusGained(true)
             .linkedValue(getModel().selectorValue(attribute))
             .build();
   }
@@ -108,7 +108,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     return ComponentBuilders.integerField()
             .columns(2)
-            .selectAllOnFocusGained()
+            .selectAllOnFocusGained(true)
             .linkedValue(getModel().selectorValue(attribute, finder))
             .build();
   }
@@ -121,7 +121,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute) {
     return ComponentBuilders.textField()
             .columns(2)
-            .selectAllOnFocusGained()
+            .selectAllOnFocusGained(true)
             .linkedValue(getModel().selectorValue(attribute))
             .build();
   }
@@ -135,7 +135,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
     return ComponentBuilders.textField()
             .columns(2)
-            .selectAllOnFocusGained()
+            .selectAllOnFocusGained(true)
             .linkedValue(getModel().selectorValue(attribute, finder))
             .build();
   }

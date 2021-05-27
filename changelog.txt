@@ -7151,3 +7151,7 @@
   ComponentBuilders.label() now takes text as parameter
   ComponentBuilder.onBuild() added, addBuildListener() removed
   ComponentBuilder.build() overloaded with onBuild consumer
+  ComponentBuilder.selectAllOnFocusGained() now with parameter, parameterless builder methods can be problematic
+  TemporalInputPanelBuilder.selectAllOnFocusGained() added
+  TextComponentBuilder and TextInputPanelBuilder, upperCase() and lowerCase() parameters added
+  TextInputPanel bug fixed, caret is now at end of existing text when dialog is opened

@@ -15,6 +15,7 @@ import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.Components.*;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
@@ -31,8 +32,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Dimension minimumSize;
   private Border border;
   private boolean transferFocusOnEnter;
-  protected String description;
-  protected StateObserver enabledState;
+  private String description;
+  private StateObserver enabledState;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
   private T initialValue;
@@ -148,7 +149,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       component.setBorder(border);
     }
     if (enabledState != null) {
-      Components.linkToEnabledState(enabledState, component);
+      linkToEnabledState(enabledState, component);
     }
     if (description != null) {
       component.setToolTipText(description);
@@ -210,6 +211,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     Components.transferFocusOnEnter(component);
   }
 
+  /**
+   * @return the enabled state
+   */
+  protected final StateObserver getEnabledState() {
+    return enabledState;
+  }
+
   private void setSizes(final C component) {
     if (minimumSize != null) {
       component.setMinimumSize(minimumSize);
@@ -218,10 +226,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       component.setMaximumSize(maximumSize);
     }
     if (preferredHeight > 0) {
-      Components.setPreferredHeight(component, preferredHeight);
+      setPreferredHeight(component, preferredHeight);
     }
     if (preferredWidth > 0) {
-      Components.setPreferredWidth(component, preferredWidth);
+      setPreferredWidth(component, preferredWidth);
     }
   }
 }

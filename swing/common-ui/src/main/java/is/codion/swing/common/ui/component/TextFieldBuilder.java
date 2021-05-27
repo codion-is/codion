@@ -26,9 +26,10 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 
   /**
    * Makes the text field select all when it gains focus
+   * @param selectAllOnFocusGained if true the component will transfer focus on enter
    * @return this builder instance
    */
-  B selectAllOnFocusGained();
+  B selectAllOnFocusGained(final boolean selectAllOnFocusGained);
 
   /**
    * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided

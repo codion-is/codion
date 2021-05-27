@@ -32,16 +32,16 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   B columns(int columns);
 
   /**
-   * Makes the text component convert all lower case input to upper case
+   * @param upperCase if true the text component convert all lower case input to upper case
    * @return this builder instance
    */
-  B upperCase();
+  B upperCase(final boolean upperCase);
 
   /**
-   * Makes the text component convert all upper case input to lower case
+   * @param lowerCase if true the text component convert all upper case input to lower case
    * @return this builder instance
    */
-  B lowerCase();
+  B lowerCase(final boolean lowerCase);
 
   /**
    * @param maximumLength the maximum text length

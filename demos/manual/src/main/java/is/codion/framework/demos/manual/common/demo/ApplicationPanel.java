@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
@@ -34,9 +35,10 @@ public final class ApplicationPanel extends JPanel {
 
     setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(13, 2));
+    JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(0, 2));
 
-    label("Short String").build(inputPanel::add);
+    label("Short String")
+            .build(inputPanel::add);
     textField()
             .columns(20)
             .upperCase()
@@ -46,7 +48,8 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getShortStringValue())
             .build(inputPanel::add);
 
-    label("Long String").build(inputPanel::add);
+    label("Long String")
+            .build(inputPanel::add);
     textInputPanel()
             .columns(20)
             .maximumLength(400)
@@ -56,13 +59,15 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getLongStringValue())
             .build(inputPanel::add);
 
-    label("Date Time").build(inputPanel::add);
+    label("Date Time")
+            .build(inputPanel::add);
     localDateTimeField("dd-MM-yyyy HH:mm")
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateTimeValue())
             .build(inputPanel::add);
 
-    label("Formatted String").build(inputPanel::add);
+    label("Formatted String")
+            .build(inputPanel::add);
     formattedTextField()
             .formatMask("(##) ##-##")
             .valueContainsLiterals(true)
@@ -71,18 +76,20 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getFormattedStringValue())
             .build(inputPanel::add);
 
-    label("Integer").build(inputPanel::add);
+    label("Integer")
+            .build(inputPanel::add);
     integerField()
-            .range(0, 1_000_000)
+            .range(0, 10_000)
             .groupingUsed(true)
             .groupingSeparator('.')
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerValue())
             .build(inputPanel::add);
 
-    label("Double").build(inputPanel::add);
+    label("Double")
+            .build(inputPanel::add);
     doubleField()
-            .range(0, 1_000_000_000)
+            .range(0, 1_000_000)
             .groupingUsed(true)
             .maximumFractionDigits(2)
             .decimalSeparator(',')
@@ -91,7 +98,8 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getDoubleValue())
             .build(inputPanel::add);
 
-    label("Boolean").build(inputPanel::add);
+    label("Boolean")
+            .build(inputPanel::add);
     checkBox()
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(model.getBooleanValue())
@@ -99,45 +107,41 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getBooleanValue())
             .build(inputPanel::add);
 
-    label("Boolean Selection").build(inputPanel::add);
+    label("Boolean Selection")
+            .build(inputPanel::add);
     booleanComboBox()
             .transferFocusOnEnter(true)
             .linkedValue(model.getBooleanSelectionValue())
             .build(inputPanel::add);
 
-    ItemComboBoxModel<Integer> integerItemComboBoxModel = ItemComboBoxModel.createModel(Arrays.asList(
-            Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
-            Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
-            Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
-    ));
-
-    label("Integer Item").build(inputPanel::add);
-    itemComboBox(integerItemComboBoxModel)
+    label("Integer Item")
+            .build(inputPanel::add);
+    itemComboBox(createIntegerItemComboBoxModel())
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerItemValue())
             .build(inputPanel::add);
 
-    DefaultComboBoxModel<String> comboBoxModel =
-            new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
-
-    label("String Selection").build(inputPanel::add);
-    comboBox(String.class, comboBoxModel)
+    label("String Selection")
+            .build(inputPanel::add);
+    comboBox(String.class, createStringComboBoxModel())
             .editable(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getStringSelectionValue())
             .build(inputPanel::add);
 
-    label("Integer Slide").build(inputPanel::add);
-    slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
+    label("Integer Slide")
+            .build(inputPanel::add);
+    slider(createSliderModel())
             .paintTicks(true)
             .paintTrack(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerSlideValue())
             .build(inputPanel::add);
 
-    label("Integer Spin").build(inputPanel::add);
-    integerSpinner(new SpinnerNumberModel(0, 0, 100, 10))
+    label("Integer Spin")
+            .build(inputPanel::add);
+    integerSpinner(createSpinnerModel())
             .columns(4)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerSpinValue())
@@ -154,6 +158,26 @@ public final class ApplicationPanel extends JPanel {
             .build(component -> add(component, BorderLayout.SOUTH));
 
     Components.setPreferredWidth(this, 380);
+  }
+
+  private static SpinnerNumberModel createSpinnerModel() {
+    return new SpinnerNumberModel(0, 0, 100, 10);
+  }
+
+  private static DefaultBoundedRangeModel createSliderModel() {
+    return new DefaultBoundedRangeModel(0, 0, 0, 100);
+  }
+
+  private static ComboBoxModel<String> createStringComboBoxModel() {
+    return new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
+  }
+
+  private static ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
+    return ItemComboBoxModel.createModel(Arrays.asList(
+            Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
+            Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
+            Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
+    ));
   }
 
   public static void main(String[] args) {

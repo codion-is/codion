@@ -40,8 +40,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  public final B selectAllOnFocusGained() {
-    this.selectAllOnFocusGained = true;
+  public final B selectAllOnFocusGained(final boolean selectAllOnFocusGained) {
+    this.selectAllOnFocusGained = selectAllOnFocusGained;
     return (B) this;
   }
 
