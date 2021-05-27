@@ -1,12 +1,12 @@
-package is.codion.framework.demos.manual.common;
+package is.codion.framework.demos.manual.common.demo;
 
 import is.codion.common.item.Item;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
@@ -16,120 +16,39 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public final class DemoPanel extends JPanel {
-  // tag::inputDemo[]
-  private static class DemoModel {
+// tag::demoPanel[]
+public final class ApplicationPanel extends JPanel {
 
-    private final Value<String> upperCaseStringValue = Value.value();
-    private final Value<String> lowerCaseStringValue = Value.value();
-    private final Value<LocalDateTime> localDateTimeValue = Value.value();
-    private final Value<String> formattedStringValue = Value.value();
-    private final Value<Integer> integerValue = Value.value();
-    private final Value<Double> doubleValue = Value.value();
-    private final Value<Boolean> booleanValue = Value.value();
-    private final Value<Boolean> booleanSelectionValue = Value.value();
-    private final Value<Integer> integerItemValue = Value.value();
-    private final Value<String> stringSelectionValue = Value.value();
-    private final Value<String> messageValue = Value.value();
-
-    public DemoModel() {
-      bindEvents();
-    }
-
-    public Value<String> getUpperCaseStringValue() {
-      return upperCaseStringValue;
-    }
-
-    public Value<String> getLowerCaseStringValue() {
-      return lowerCaseStringValue;
-    }
-
-    public Value<LocalDateTime> getLocalDateTimeValue() {
-      return localDateTimeValue;
-    }
-
-    public Value<Integer> getIntegerValue() {
-      return integerValue;
-    }
-
-    public Value<Double> getDoubleValue() {
-      return doubleValue;
-    }
-
-    public Value<String> getFormattedStringValue() {
-      return formattedStringValue;
-    }
-
-    public Value<Boolean> getBooleanValue() {
-      return booleanValue;
-    }
-
-    public Value<Boolean> getBooleanSelectionValue() {
-      return booleanSelectionValue;
-    }
-
-    public Value<Integer> getIntegerItemValue() {
-      return integerItemValue;
-    }
-
-    public Value<String> getStringSelectionValue() {
-      return stringSelectionValue;
-    }
-
-    public ValueObserver<String> getMessageValue() {
-      return messageValue.getObserver();
-    }
-
-    private void bindEvents() {
-      upperCaseStringValue.addDataListener(this::setMessage);
-      lowerCaseStringValue.addDataListener(this::setMessage);
-      formattedStringValue.addDataListener(this::setMessage);
-      localDateTimeValue.addDataListener(this::setMessage);
-      integerValue.addDataListener(this::setMessage);
-      doubleValue.addDataListener(this::setMessage);
-      booleanValue.addDataListener(this::setMessage);
-      booleanValue.addDataListener(this::setMessage);
-      integerItemValue.addDataListener(this::setMessage);
-      stringSelectionValue.addValidator(this::setMessage);
-      stringSelectionValue.addDataListener(this::setMessage);
-    }
-
-    private <T> void setMessage(T value) {
-      messageValue.set("Last Value:" + (value == null ? " " : value.toString()));
-    }
-  }
-
-  public DemoPanel(DemoModel model) {
+  public ApplicationPanel(ApplicationModel model) {
     super(Layouts.borderLayout());
 
     setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
     JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(11, 2));
 
-    inputPanel.add(new JLabel("Upper Case String"));
+    inputPanel.add(new JLabel("Short String"));
     inputPanel.add(ComponentBuilders.textField()
-            .columns(12)
+            .columns(20)
             .upperCase()
             .maximumLength(20)
             .selectAllOnFocusGained()
             .transferFocusOnEnter(true)
-            .linkedValue(model.getUpperCaseStringValue())
+            .linkedValue(model.getShortStringValue())
             .build());
 
-    inputPanel.add(new JLabel("Lower Case String"));
-    inputPanel.add(ComponentBuilders.textField()
-            .columns(12)
-            .lowerCase()
-            .maximumLength(10)
+    inputPanel.add(new JLabel("Long String"));
+    inputPanel.add(ComponentBuilders.textInputPanel()
+            .columns(20)
+            .maximumLength(400)
+            .buttonFocusable(true)
             .selectAllOnFocusGained()
             .transferFocusOnEnter(true)
-            .linkedValue(model.getLowerCaseStringValue())
+            .linkedValue(model.getLongStringValue())
             .build());
 
-    inputPanel.add(new JLabel("Local Date Time"));
+    inputPanel.add(new JLabel("Date Time"));
     inputPanel.add(ComponentBuilders.localDateTimeField("dd-MM-yyyy HH:mm")
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateTimeValue())
@@ -137,7 +56,7 @@ public final class DemoPanel extends JPanel {
 
     inputPanel.add(new JLabel("Formatted String"));
     inputPanel.add(ComponentBuilders.formattedTextField()
-            .formatMask("##:##")
+            .formatMask("(##) ##-##")
             .valueContainsLiterals(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)
             .transferFocusOnEnter(true)
@@ -146,22 +65,20 @@ public final class DemoPanel extends JPanel {
 
     inputPanel.add(new JLabel("Integer"));
     inputPanel.add(ComponentBuilders.integerField()
-            .groupingUsed(true)
             .range(0, 1_000_000)
+            .groupingUsed(true)
             .groupingSeparator('.')
-            .preferredWidth(60)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerValue())
             .build());
 
     inputPanel.add(new JLabel("Double"));
     inputPanel.add(ComponentBuilders.doubleField()
+            .range(0, 1_000_000_000)
             .groupingUsed(true)
             .maximumFractionDigits(2)
-            .range(0, 1_000_000_000)
             .decimalSeparator(',')
             .groupingSeparator('.')
-            .preferredWidth(80)
             .transferFocusOnEnter(true)
             .linkedValue(model.getDoubleValue())
             .build());
@@ -204,18 +121,27 @@ public final class DemoPanel extends JPanel {
             .build());
 
     add(inputPanel, BorderLayout.CENTER);
-    add(ComponentBuilders.label()
-            .horizontalAlignment(SwingConstants.CENTER)
+
+    add(ComponentBuilders.textField()
+            .columns(20)
+            .editable(false)
+            .focusable(false)
+            .border(BorderFactory.createTitledBorder("Message"))
             .linkedValueObserver(model.getMessageValue())
-            .build(), BorderLayout.NORTH);
+            .build(), BorderLayout.SOUTH);
+
+    Components.setPreferredWidth(this, 380);
   }
 
   public static void main(String[] args) {
-    DemoModel model = new DemoModel();
+    ApplicationModel model = new ApplicationModel();
 
-    DemoPanel panel = new DemoPanel(model);
+    ApplicationPanel panel = new ApplicationPanel(model);
 
-    Dialogs.componentDialogBuilder(panel).show();
+    Dialogs.componentDialogBuilder(panel)
+            .title("Codion Input Components Demo")
+            .icon(Icons.icons().logoTransparent())
+            .show();
   }
-  // end::inputDemo[]
 }
+// end::demoPanel[]

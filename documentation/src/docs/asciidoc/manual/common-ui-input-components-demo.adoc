@@ -1,11 +1,24 @@
 = Input Components Demo
 :dir-source: ../../../../../demos/manual/src/main/java
 
-.Show example code
+== Application Model
+
+.Show code
 [%collapsible]
 ====
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/common/DemoPanel.java[tags=inputDemo]
+include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModel]
+----
+====
+
+== Application Panel
+
+.Show code
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanel]
 ----
 ====
