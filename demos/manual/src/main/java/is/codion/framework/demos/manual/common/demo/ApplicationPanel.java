@@ -41,10 +41,9 @@ public final class ApplicationPanel extends JPanel {
             .build(inputPanel::add);
     textField()
             .columns(20)
-            .upperCase()
+            .upperCase(true)
             .maximumLength(20)
-            .selectAllOnFocusGained()
-            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
             .linkedValue(model.getShortStringValue())
             .build(inputPanel::add);
 
@@ -55,15 +54,7 @@ public final class ApplicationPanel extends JPanel {
             .maximumLength(400)
             .buttonFocusable(true)
             .selectAllOnFocusGained()
-            .transferFocusOnEnter(true)
             .linkedValue(model.getLongStringValue())
-            .build(inputPanel::add);
-
-    label("Date Time")
-            .build(inputPanel::add);
-    localDateTimeField("dd-MM-yyyy HH:mm")
-            .transferFocusOnEnter(true)
-            .linkedValue(model.getLocalDateTimeValue())
             .build(inputPanel::add);
 
     label("Formatted String")
@@ -74,6 +65,28 @@ public final class ApplicationPanel extends JPanel {
             .focusLostBehaviour(JFormattedTextField.COMMIT)
             .transferFocusOnEnter(true)
             .linkedValue(model.getFormattedStringValue())
+            .build(inputPanel::add);
+
+    label("String Selection")
+            .build(inputPanel::add);
+    comboBox(String.class, createStringComboBoxModel())
+            .editable(true)
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getStringSelectionValue())
+            .build(inputPanel::add);
+
+    label("Date")
+            .build(inputPanel::add);
+    localDateField("dd-MM-yyyy")
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getLocalDateValue())
+            .build(inputPanel::add);
+
+    label("Date Time")
+            .build(inputPanel::add);
+    localDateTimeInputPanel("dd-MM-yyyy HH:mm")
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getLocalDateTimeValue())
             .build(inputPanel::add);
 
     label("Integer")
@@ -98,36 +111,12 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getDoubleValue())
             .build(inputPanel::add);
 
-    label("Boolean")
-            .build(inputPanel::add);
-    checkBox()
-            .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValue(model.getBooleanValue())
-            .transferFocusOnEnter(true)
-            .linkedValue(model.getBooleanValue())
-            .build(inputPanel::add);
-
-    label("Boolean Selection")
-            .build(inputPanel::add);
-    booleanComboBox()
-            .transferFocusOnEnter(true)
-            .linkedValue(model.getBooleanSelectionValue())
-            .build(inputPanel::add);
-
     label("Integer Item")
             .build(inputPanel::add);
     itemComboBox(createIntegerItemComboBoxModel())
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerItemValue())
-            .build(inputPanel::add);
-
-    label("String Selection")
-            .build(inputPanel::add);
-    comboBox(String.class, createStringComboBoxModel())
-            .editable(true)
-            .transferFocusOnEnter(true)
-            .linkedValue(model.getStringSelectionValue())
             .build(inputPanel::add);
 
     label("Integer Slide")
@@ -145,6 +134,22 @@ public final class ApplicationPanel extends JPanel {
             .columns(4)
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerSpinValue())
+            .build(inputPanel::add);
+
+    label("Boolean")
+            .build(inputPanel::add);
+    checkBox()
+            .horizontalAlignment(SwingConstants.CENTER)
+            .linkedValue(model.getBooleanValue())
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getBooleanValue())
+            .build(inputPanel::add);
+
+    label("Boolean Selection")
+            .build(inputPanel::add);
+    booleanComboBox()
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getBooleanSelectionValue())
             .build(inputPanel::add);
 
     add(inputPanel, BorderLayout.CENTER);
