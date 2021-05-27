@@ -20,6 +20,7 @@ class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel, Label
 
   DefaultLabelBuilder(final String text) {
     this.text = requireNonNull(text);
+    focusable(false);
   }
 
   @Override
