@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -39,5 +40,11 @@ public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuil
    * @param component the component to associate with this label
    * @return this builder instance
    */
-  LabelBuilder labelFor(final JComponent component);
+  LabelBuilder labelFor(JComponent component);
+
+  /**
+   * @param icon the label icon
+   * @return this builder instance
+   */
+  LabelBuilder icon(Icon icon);
 }

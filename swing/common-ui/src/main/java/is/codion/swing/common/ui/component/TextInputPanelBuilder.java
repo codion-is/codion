@@ -39,9 +39,10 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
 
   /**
    * Makes the text field select all when it gains focus
+   * @param selectAllOnFocusGained if true the component will select contents on focus gained
    * @return this builder instance
    */
-  TextInputPanelBuilder selectAllOnFocusGained();
+  TextInputPanelBuilder selectAllOnFocusGained(boolean selectAllOnFocusGained);
 
   /**
    * @param buttonFocusable true if the dialog button should be focusable

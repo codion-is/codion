@@ -4,6 +4,7 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -18,6 +19,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Arrays;
+import java.util.Random;
 
 import static is.codion.swing.common.ui.component.ComponentBuilders.*;
 
@@ -44,6 +46,7 @@ public final class ApplicationPanel extends JPanel {
             .upperCase(true)
             .maximumLength(20)
             .selectAllOnFocusGained(true)
+            .transferFocusOnEnter(true)
             .linkedValue(model.getShortStringValue())
             .build(inputPanel::add);
 
@@ -54,6 +57,7 @@ public final class ApplicationPanel extends JPanel {
             .maximumLength(400)
             .buttonFocusable(true)
             .selectAllOnFocusGained()
+            .transferFocusOnEnter(true)
             .linkedValue(model.getLongStringValue())
             .build(inputPanel::add);
 
@@ -113,8 +117,10 @@ public final class ApplicationPanel extends JPanel {
 
     label("Integer Item")
             .build(inputPanel::add);
-    itemComboBox(createIntegerItemComboBoxModel())
+    ItemComboBoxModel<Integer> integerItemComboBoxModel = createIntegerItemComboBoxModel();
+    itemComboBox(integerItemComboBoxModel)
             .completionMode(Completion.Mode.AUTOCOMPLETE)
+            .popupMenuControl(createSelectRandomItemControl(integerItemComboBoxModel))
             .transferFocusOnEnter(true)
             .linkedValue(model.getIntegerItemValue())
             .build(inputPanel::add);
@@ -159,7 +165,7 @@ public final class ApplicationPanel extends JPanel {
             .editable(false)
             .focusable(false)
             .border(BorderFactory.createTitledBorder("Message"))
-            .linkedValueObserver(model.getMessageValue())
+            .linkedValueObserver(model.getMessageObserver())
             .build(component -> add(component, BorderLayout.SOUTH));
 
     Components.setPreferredWidth(this, 380);
@@ -183,6 +189,14 @@ public final class ApplicationPanel extends JPanel {
             Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
     ));
+  }
+
+  private static Control createSelectRandomItemControl(final ItemComboBoxModel<Integer> integerItemComboBoxModel) {
+    Random random = new Random();
+    return Control.builder(() ->
+            integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize() - 1) + 1))
+            .name("Select Random Item")
+            .build();
   }
 
   public static void main(String[] args) {
