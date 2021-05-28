@@ -37,16 +37,20 @@ final class DefaultForeignKeySearchFieldBuilder extends AbstractComponentBuilder
   }
 
   @Override
-  public ForeignKeySearchFieldBuilder upperCase() {
-    this.upperCase = true;
-    this.lowerCase = false;
+  public ForeignKeySearchFieldBuilder upperCase(final boolean upperCase) {
+    if (upperCase && lowerCase) {
+      throw new IllegalArgumentException("Field is already lowercase");
+    }
+    this.upperCase = upperCase;
     return this;
   }
 
   @Override
-  public ForeignKeySearchFieldBuilder lowerCase() {
-    this.lowerCase = true;
-    this.upperCase = false;
+  public ForeignKeySearchFieldBuilder lowerCase(final boolean lowerCase) {
+    if (lowerCase && upperCase) {
+      throw new IllegalArgumentException("Field is already uppercase");
+    }
+    this.lowerCase = lowerCase;
     return this;
   }
 

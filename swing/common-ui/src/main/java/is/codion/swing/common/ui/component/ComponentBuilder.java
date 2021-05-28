@@ -109,7 +109,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B popupMenuControls(Controls popupMenuControls);
 
   /**
-   * Creates a bi-directional link to the given value.
+   * Creates a bi-directional link to the given value. Overrides any initial value set.
    * @param linkedValue a value to link to the component value
    * @return this builder instance
    */

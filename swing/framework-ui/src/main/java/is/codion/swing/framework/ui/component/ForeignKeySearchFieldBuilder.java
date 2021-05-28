@@ -23,15 +23,17 @@ public interface ForeignKeySearchFieldBuilder extends ComponentBuilder<Entity, E
 
   /**
    * Makes the field convert all lower case input to upper case
+   * @param upperCase if true the text component convert all lower case input to upper case
    * @return this builder instance
    */
-  ForeignKeySearchFieldBuilder upperCase();
+  ForeignKeySearchFieldBuilder upperCase(boolean upperCase);
 
   /**
    * Makes the field convert all upper case input to lower case
+   * @param lowerCase if true the text component convert all upper case input to lower case
    * @return this builder instance
    */
-  ForeignKeySearchFieldBuilder lowerCase();
+  ForeignKeySearchFieldBuilder lowerCase(boolean lowerCase);
 
   /**
    * @param selectionProviderFactory the selection provider factory to use
