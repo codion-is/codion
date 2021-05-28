@@ -11,8 +11,11 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,7 +46,8 @@ public final class TestDomain extends DefaultDomain {
   void master() {
     define(T_MASTER,
             primaryKeyProperty(MASTER_ID),
-            columnProperty(MASTER_NAME),
+            columnProperty(MASTER_NAME)
+                    .searchProperty(),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
             .stringFactory(stringFactory(MASTER_NAME));
@@ -53,13 +57,18 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
   public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
+  public static final Attribute<BigDecimal> DETAIL_BIG_DECIMAL = T_DETAIL.bigDecimalAttribute("big_decimal");
   public static final Attribute<String> DETAIL_STRING = T_DETAIL.stringAttribute("string");
+  public static final Attribute<LocalTime> DETAIL_TIME = T_DETAIL.localTimeAttribute("time");
   public static final Attribute<LocalDate> DETAIL_DATE = T_DETAIL.localDateAttribute("date");
   public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = T_DETAIL.localDateTimeAttribute("timestamp");
+  public static final Attribute<OffsetDateTime> DETAIL_OFFSET = T_DETAIL.offsetDateTimeAttribute("offset");
   public static final Attribute<Boolean> DETAIL_BOOLEAN = T_DETAIL.booleanAttribute("boolean");
   public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
   public static final Attribute<Long> DETAIL_MASTER_ID = T_DETAIL.longAttribute("master_id");
   public static final ForeignKey DETAIL_MASTER_FK = T_DETAIL.foreignKey("master_fk", DETAIL_MASTER_ID, MASTER_ID);
+  public static final Attribute<Long> DETAIL_DETAIL_ID = T_DETAIL.longAttribute("detail_id");
+  public static final ForeignKey DETAIL_DETAIL_FK = T_DETAIL.foreignKey("detail_fk", DETAIL_DETAIL_ID, DETAIL_ID);
   public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
   public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
@@ -75,9 +84,12 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(DETAIL_ID),
             columnProperty(DETAIL_INT, DETAIL_INT.getName()),
             columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.getName()),
+            columnProperty(DETAIL_BIG_DECIMAL, DETAIL_BIG_DECIMAL.getName()),
             columnProperty(DETAIL_STRING, "Detail string"),
             columnProperty(DETAIL_DATE, DETAIL_DATE.getName()),
+            columnProperty(DETAIL_TIME, DETAIL_TIME.getName()),
             columnProperty(DETAIL_TIMESTAMP, DETAIL_TIMESTAMP.getName()),
+            columnProperty(DETAIL_OFFSET, DETAIL_OFFSET.getName()),
             columnProperty(DETAIL_BOOLEAN, DETAIL_BOOLEAN.getName())
                     .nullable(false)
                     .defaultValue(true)
@@ -86,6 +98,8 @@ public final class TestDomain extends DefaultDomain {
                     .defaultValue(true),
             columnProperty(DETAIL_MASTER_ID),
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName()),
+            columnProperty(DETAIL_DETAIL_ID),
+            foreignKeyProperty(DETAIL_DETAIL_FK, DETAIL_DETAIL_FK.getName()),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
             itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),

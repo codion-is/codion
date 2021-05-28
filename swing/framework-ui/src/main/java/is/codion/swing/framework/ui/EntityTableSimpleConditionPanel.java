@@ -5,6 +5,7 @@ import is.codion.common.event.EventListener;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -25,8 +26,9 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableSimpleConditionPanel.class.getName());
 
-  private final JTextField simpleSearchTextField = new JTextField(12);
+  private final JTextField simpleSearchTextField;
   private final EventListener onSearchListener;
+  private final Control searchControl;
 
   /**
    * Instantiates a new EntityTableSimpleConditionPanel
@@ -38,6 +40,14 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
                                          final SwingFilteredTableColumnModel<?> columnModel,
                                          final EventListener onSearchListener) {
     super(tableConditionModel, columnModel.getAllColumns());
+    this.searchControl = Control.builder(this::performSimpleSearch)
+            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .build();
+    this.simpleSearchTextField = ComponentBuilders.textField()
+            .columns(12)
+            .linkedValue(tableConditionModel.getSimpleConditionStringValue())
+            .action(searchControl)
+            .build();
     this.onSearchListener = requireNonNull(onSearchListener);
     setLayout(Layouts.borderLayout());
     add(initializeSimpleConditionPanel(tableConditionModel), BorderLayout.CENTER);
@@ -63,12 +73,15 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
     simpleSearchTextField.requestFocusInWindow();
   }
 
+  /**
+   * Performs the search, notifying the search listener.
+   */
+  public void performSearch() {
+    performSimpleSearch();
+  }
+
   private JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
-    final Control simpleSearchControl = Control.builder(this::performSimpleSearch)
-            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
-            .build();
-    final JButton simpleSearchButton = simpleSearchControl.createButton();
-    simpleSearchTextField.addActionListener(simpleSearchControl);
+    final JButton simpleSearchButton = searchControl.createButton();
     final JPanel panel = new JPanel(Layouts.borderLayout());
     ComponentValues.textComponent(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));

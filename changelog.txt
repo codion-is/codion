@@ -7166,3 +7166,4 @@
   TemporalField.addTemporalListener() added, refactored
   TemporalInputPanelValue bug fixed, now uses the above to notify value changes
   NumberField uses a Value for value change notifications, now only notifies when the value actually changes
+  ForeignKeySearchFieldBuilder.upperCase() and lowerCase(), parameters added
