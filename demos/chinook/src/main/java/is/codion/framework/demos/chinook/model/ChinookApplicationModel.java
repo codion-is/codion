@@ -17,26 +17,13 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   public ChinookApplicationModel(final EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
-    final SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
-    final SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
-    final SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
 
-    albumModel.addDetailModel(trackModel);
-    artistModel.addDetailModel(albumModel);
+    final SwingEntityModel artistModel = initializeArtistModel(connectionProvider);
+    final SwingEntityModel playlistModel = initializePlaylistModel(connectionProvider);
+    final SwingEntityModel customerModel = initializeCustomerModel(connectionProvider);
+
     addEntityModel(artistModel);
-
-    final SwingEntityModel playlistModel = new SwingEntityModel(Playlist.TYPE, connectionProvider);
-    final SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
-
-    playlistModel.addDetailModel(playlistTrackModel);
     addEntityModel(playlistModel);
-
-    final SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-    final SwingEntityModel invoiceModel = new SwingEntityModel(new InvoiceEditModel(connectionProvider));
-    final SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
-    invoiceModel.addDetailModel(invoiceLineModel);
-    invoiceModel.addLinkedDetailModel(invoiceLineModel);
-    customerModel.addDetailModel(invoiceModel);
     addEntityModel(customerModel);
 
     artistModel.refresh();
@@ -46,5 +33,34 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   public List<Entity> updateInvoiceTotals() throws DatabaseException {
     return getConnectionProvider().getConnection().executeFunction(Invoice.UPDATE_TOTALS);
+  }
+
+  private static SwingEntityModel initializeArtistModel(final EntityConnectionProvider connectionProvider) {
+    final SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+    final SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
+    final SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
+    albumModel.addDetailModel(trackModel);
+    artistModel.addDetailModel(albumModel);
+
+    return artistModel;
+  }
+
+  private static SwingEntityModel initializePlaylistModel(final EntityConnectionProvider connectionProvider) {
+    final SwingEntityModel playlistModel = new SwingEntityModel(Playlist.TYPE, connectionProvider);
+    final SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
+    playlistModel.addDetailModel(playlistTrackModel);
+
+    return playlistModel;
+  }
+
+  private static SwingEntityModel initializeCustomerModel(final EntityConnectionProvider connectionProvider) {
+    final SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+    final SwingEntityModel invoiceModel = new SwingEntityModel(new InvoiceEditModel(connectionProvider));
+    final SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
+    invoiceModel.addDetailModel(invoiceLineModel);
+    invoiceModel.addLinkedDetailModel(invoiceLineModel);
+    customerModel.addDetailModel(invoiceModel);
+
+    return customerModel;
   }
 }
