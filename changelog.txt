@@ -7160,3 +7160,4 @@
   EntityInputComponents no longer extends EntityComponentBuilders, composition used instead
   Operator moved to common package, ExceptionDialog no longer uses DatabaseException, dependencies on common.db removed
   DefaultComponentDialogBuilder bug fixed, disposeOnEscape did not work when the displayed component was not focusable (JLabel f.ex), condition changed from WHEN_ANCESTOR_OF_FOCUSED_COMPONENT to WHEN_IN_FOCUSED_WINDOW
+  ComponentBuilder.popupMenuControl() and popupMenuControls() added

@@ -8,6 +8,8 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -95,12 +97,26 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B enabledState(StateObserver enabledState);
 
   /**
+   * @param popupMenuControl the control to base a popup menu on
+   * @return this builder instance
+   */
+  B popupMenuControl(Control popupMenuControl);
+
+  /**
+   * @param popupMenuControls the controls to base a popup menu on
+   * @return this builder instance
+   */
+  B popupMenuControls(Controls popupMenuControls);
+
+  /**
+   * Creates a bi-directional link to the given value.
    * @param linkedValue a value to link to the component value
    * @return this builder instance
    */
   B linkedValue(Value<T> linkedValue);
 
   /**
+   * Creates a read-only link to the given {@link ValueObserver}.
    * @param linkedValueObserver a value to link to the component value
    * @return this builder instance
    */

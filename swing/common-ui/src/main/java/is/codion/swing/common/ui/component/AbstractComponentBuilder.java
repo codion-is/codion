@@ -8,6 +8,8 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
@@ -34,6 +36,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
   private String description;
   private StateObserver enabledState;
+  private Controls popupMenuControls;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
   private T initialValue;
@@ -95,6 +98,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public B popupMenuControl(final Control popupMenuControl) {
+    return popupMenuControls(Controls.controls(popupMenuControl));
+  }
+
+  @Override
+  public B popupMenuControls(final Controls popupMenuControls) {
+    this.popupMenuControls = popupMenuControls;
+    return (B) this;
+  }
+
+  @Override
   public final B description(final String description) {
     this.description = description;
     return (B) this;
@@ -150,6 +164,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (enabledState != null) {
       linkToEnabledState(enabledState, component);
+    }
+    if (popupMenuControls != null) {
+      component.setComponentPopupMenu(popupMenuControls.createPopupMenu());
     }
     if (description != null) {
       component.setToolTipText(description);
