@@ -1,5 +1,6 @@
 package is.codion.framework.demos.manual.common.demo;
 
+import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
@@ -81,14 +82,23 @@ public final class ApplicationPanel extends JPanel {
 
     label("Date")
             .build(inputPanel::add);
-    localDateField("dd-MM-yyyy")
+    localDateField(LocaleDateTimePattern.builder()
+            .delimiterDash()
+            .yearFourDigits()
+            .build()
+            .getDateTimePattern())
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateValue())
             .build(inputPanel::add);
 
     label("Date Time")
             .build(inputPanel::add);
-    localDateTimeInputPanel("dd-MM-yyyy HH:mm")
+    localDateTimeInputPanel(LocaleDateTimePattern.builder()
+            .delimiterDot()
+            .yearTwoDigits()
+            .hoursMinutes()
+            .build()
+            .getDateTimePattern())
             .transferFocusOnEnter(true)
             .linkedValue(model.getLocalDateTimeValue())
             .build(inputPanel::add);
