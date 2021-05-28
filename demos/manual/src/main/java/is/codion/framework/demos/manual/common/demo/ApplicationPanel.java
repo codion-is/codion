@@ -56,7 +56,7 @@ public final class ApplicationPanel extends JPanel {
             .columns(20)
             .maximumLength(400)
             .buttonFocusable(true)
-            .selectAllOnFocusGained()
+            .selectAllOnFocusGained(true)
             .transferFocusOnEnter(true)
             .linkedValue(model.getLongStringValue())
             .build(inputPanel::add);
