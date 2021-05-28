@@ -90,7 +90,7 @@ public final class ApplicationModel {
     return stringSelectionValue;
   }
 
-  public ValueObserver<String> getMessageValue() {
+  public ValueObserver<String> getMessageObserver() {
     return messageValue.getObserver();
   }
 
