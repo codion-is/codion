@@ -4,7 +4,10 @@
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.DateTimeParser;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.value.Value;
+import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JFormattedTextField;
 import java.text.ParseException;
@@ -33,6 +36,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final String dateTimePattern;
   private final DateTimeFormatter formatter;
   private final DateTimeParser<T> dateTimeParser;
+  private final Value<T> value = Value.value();
 
   private TemporalField(final Class<T> temporalClass, final String dateTimePattern,
                         final DateTimeParser<T> dateTimeParser, final int focusLostBehaviour) {
@@ -42,6 +46,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.formatter = DateTimeFormatter.ofPattern(dateTimePattern);
     this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
     setFocusLostBehavior(focusLostBehaviour);
+    getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
   }
 
   /**
@@ -52,16 +57,15 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   }
 
   /**
-   * @return the Temporal value currently being displayed, null in case of an incomplete date
-   * @throws DateTimeParseException if unable to parse the text
+   * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
    */
-  public T getTemporal() throws DateTimeParseException {
-    final String text = getText();
-    if (!text.contains("_")) {
-      return dateTimeParser.parse(text, formatter);
+  public T getTemporal() {
+    try {
+      return dateTimeParser.parse(getText(), formatter);
     }
-
-    return null;
+    catch (final DateTimeParseException e) {
+      return null;
+    }
   }
 
   /**
@@ -70,6 +74,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public void setTemporal(final Temporal date) {
     setText(date == null ? "" : formatter.format(date));
+  }
+
+  /**
+   * @param listener notified each time the value changes
+   */
+  public void addTemporalListener(final EventDataListener<T> listener) {
+    value.addDataListener(listener);
   }
 
   /**

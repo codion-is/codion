@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.textfield;
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
@@ -28,6 +29,8 @@ public class NumberField<T extends Number> extends JTextField {
   public static final PropertyValue<Boolean> DISABLE_GROUPING =
           Configuration.booleanValue("codion.swing.common.ui.disableNumberFieldGrouping", false);
 
+  private final Value<T> value = Value.value();
+
   /**
    * Instantiates a new NumberField
    * @param document the document to use
@@ -42,6 +45,7 @@ public class NumberField<T extends Number> extends JTextField {
     if (DISABLE_GROUPING.get()) {
       document.getFormat().setGroupingUsed(false);
     }
+    document.addDocumentListener((DocumentAdapter) e -> value.set(document.getNumber()));
   }
 
   /**
@@ -119,8 +123,7 @@ public class NumberField<T extends Number> extends JTextField {
    * @param listener a listener notified when the value changes
    */
   public void addValueListener(final EventDataListener<T> listener) {
-    final NumberDocument<T> document = getTypedDocument();
-    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getNumber()));
+    value.addDataListener(listener);
   }
 
   /**

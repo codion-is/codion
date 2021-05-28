@@ -19,14 +19,11 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -76,22 +73,21 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @return the input field
    */
-  public final TemporalField<T> getInputField() {
+  public TemporalField<T> getInputField() {
     return inputField;
   }
 
   /**
    * @return the calendar button
    */
-  public final JButton getCalendarButton() {
+  public JButton getCalendarButton() {
     return calendarButton;
   }
 
   /**
-   * @return the Date currently being displayed, null in case of an incomplete date
-   * @throws DateTimeParseException if unable to parse the text
+   * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
    */
-  public final T getTemporal() throws DateTimeParseException {
+  public T getTemporal() {
     return inputField.getTemporal();
   }
 
@@ -99,21 +95,21 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * Sets the date in the input field, clears the field if {@code date} is null.
    * @param temporal the temporal value to set
    */
-  public final void setTemporal(final Temporal temporal) {
+  public void setTemporal(final Temporal temporal) {
     inputField.setTemporal(temporal);
   }
 
   /**
    * @return the format pattern
    */
-  public final String getDateTimePattern() {
+  public String getDateTimePattern() {
     return inputField.getDateTimePattern();
   }
 
   /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
-  public final void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
       Components.transferFocusOnEnter(inputField);
       Components.transferFocusOnEnter(calendarButton);
@@ -122,18 +118,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       Components.removeTransferFocusOnEnter(inputField);
       Components.removeTransferFocusOnEnter(calendarButton);
     }
-  }
-
-  @Override
-  public final void add(final Component component, final Object constraints) {
-    //prevent override of method used in constructor
-    super.add(component, constraints);
-  }
-
-  @Override
-  public final synchronized void addFocusListener(final FocusListener listener) {
-    //prevent override of method used in constructor
-    super.addFocusListener(listener);
   }
 
   private void displayCalendar() {
@@ -149,12 +133,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendarForLocalDate() {
-    T currentValue = null;
-    try {
-      currentValue = getTemporal();
-    }
-    catch (final DateTimeParseException ignored) {/*ignored*/}
-    getLocalDateWithCalendar((LocalDate) currentValue, MESSAGES.getString("select_date"), inputField)
+    getLocalDateWithCalendar((LocalDate) getTemporal(), MESSAGES.getString("select_date"), inputField)
             .ifPresent(localDate -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDate));
               inputField.requestFocusInWindow();
@@ -162,12 +141,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendarForLocalDateTime() {
-    T currentValue = null;
-    try {
-      currentValue = getTemporal();
-    }
-    catch (final DateTimeParseException ignored) {/*ignored*/}
-    getLocalDateTimeWithCalendar((LocalDateTime) currentValue, MESSAGES.getString("select_date_time"), inputField)
+    getLocalDateTimeWithCalendar((LocalDateTime) getTemporal(), MESSAGES.getString("select_date_time"), inputField)
             .ifPresent(localDateTime -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDateTime));
               inputField.requestFocusInWindow();

@@ -60,32 +60,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected TemporalInputPanel<T> buildComponent() {
-    if (valueClass.equals(LocalTime.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) localTimeField(dateTimePattern)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns).build(), getEnabledState());
-    }
-    else if (valueClass.equals(LocalDate.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) localDateField(dateTimePattern)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns).build(), getEnabledState());
-    }
-    else if (valueClass.equals(LocalDateTime.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) localDateTimeField(dateTimePattern)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns).build(), getEnabledState());
-    }
-    else if (valueClass.equals(OffsetDateTime.class)) {
-      return new TemporalInputPanel<>((TemporalField<T>) offsetDateTimeField(dateTimePattern)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns).build(), getEnabledState());
-    }
-
-    throw new IllegalStateException("Unsopported temporal type: " + valueClass);
+    return new TemporalInputPanel<>(createTemporalField());
   }
 
   @Override
@@ -101,5 +76,34 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   @Override
   protected void setInitialValue(final TemporalInputPanel<T> component, final T initialValue) {
     component.setTemporal(initialValue);
+  }
+
+  private TemporalField<T> createTemporalField() {
+    if (valueClass.equals(LocalTime.class)) {
+      return (TemporalField<T>) localTimeField(dateTimePattern)
+              .updateOn(updateOn)
+              .selectAllOnFocusGained(selectAllOnFocusGained)
+              .columns(columns).build();
+    }
+    else if (valueClass.equals(LocalDate.class)) {
+      return (TemporalField<T>) localDateField(dateTimePattern)
+              .updateOn(updateOn)
+              .selectAllOnFocusGained(selectAllOnFocusGained)
+              .columns(columns).build();
+    }
+    else if (valueClass.equals(LocalDateTime.class)) {
+      return (TemporalField<T>) localDateTimeField(dateTimePattern)
+              .updateOn(updateOn)
+              .selectAllOnFocusGained(selectAllOnFocusGained)
+              .columns(columns).build();
+    }
+    else if (valueClass.equals(OffsetDateTime.class)) {
+      return (TemporalField<T>) offsetDateTimeField(dateTimePattern)
+              .updateOn(updateOn)
+              .selectAllOnFocusGained(selectAllOnFocusGained)
+              .columns(columns).build();
+    }
+
+    throw new IllegalStateException("Unsopported temporal type: " + valueClass);
   }
 }
