@@ -13,7 +13,6 @@ import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -76,6 +75,15 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
+  protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
+    return Arrays.asList(
+            new CustomerPanel(applicationModel.getEntityModel(Customer.TYPE)),
+            new ArtistPanel(applicationModel.getEntityModel(Artist.TYPE)),
+            new PlaylistPanel(applicationModel.getEntityModel(Playlist.TYPE))
+    );
+  }
+
+  @Override
   protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final ChinookApplicationModel applicationModel) {
     final EntityPanel.Builder trackBuilder =
             EntityPanel.builder(SwingEntityModel.builder(Track.TYPE))
@@ -111,52 +119,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                     .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     return Arrays.asList(genreBuilder, mediaTypeBuilder, employeeBuilder);
-  }
-
-  @Override
-  protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
-    final SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
-    final EntityPanel customerPanel = new EntityPanel(customerModel, new CustomerEditPanel(customerModel.getEditModel()),
-            new CustomerTablePanel(customerModel.getTableModel()));
-    final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-    final EntityPanel invoicePanel = new EntityPanel(invoiceModel, new InvoiceEditPanel(invoiceModel.getEditModel()));
-    invoicePanel.setIncludeDetailPanelTabPane(false);
-    invoicePanel.setShowDetailPanelControls(false);
-
-    final SwingEntityModel invoiceLineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
-    final InvoiceLineTablePanel invoiceLineTablePanel = new InvoiceLineTablePanel(invoiceLineModel.getTableModel());
-    final InvoiceLineEditPanel invoiceLineEditPanel = new InvoiceLineEditPanel(invoiceLineModel.getEditModel(),
-            invoiceLineTablePanel.getTable().getSearchField());
-    final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, invoiceLineEditPanel, invoiceLineTablePanel);
-    invoiceLinePanel.setIncludeControlPanel(false);
-    invoiceLinePanel.initializePanel();
-    ((InvoiceEditPanel) invoicePanel.getEditPanel()).setInvoiceLinePanel(invoiceLinePanel);
-
-    invoicePanel.addDetailPanel(invoiceLinePanel);
-    customerPanel.addDetailPanel(invoicePanel);
-
-    final SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
-    final EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
-    final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
-    final SwingEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
-    final EntityPanel trackPanel = new EntityPanel(trackModel,
-            new TrackEditPanel(trackModel.getEditModel()),
-            new TrackTablePanel(trackModel.getTableModel()));
-
-    albumPanel.addDetailPanel(trackPanel);
-    artistPanel.addDetailPanel(albumPanel);
-
-    final SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
-    final EntityPanel playlistPanel = new EntityPanel(playlistModel, new PlaylistEditPanel(playlistModel.getEditModel()));
-    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
-    final EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,
-            new PlaylistTrackEditPanel(playlistTrackModel.getEditModel()),
-            new PlaylistTrackTablePanel(playlistTrackModel.getTableModel()));
-
-    playlistPanel.addDetailPanel(playlistTrackPanel);
-
-    return Arrays.asList(customerPanel, artistPanel, playlistPanel);
   }
 
   @Override
@@ -199,12 +161,12 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   private void handleUpdateTotalsSuccess(final List<Entity> updatedInvoices) {
     getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
             .getTableModel().replaceEntities(updatedInvoices);
-    showMessageDialog(Windows.getParentWindow(this), bundle.getString(TOTALS_UPDATED));
+    showMessageDialog(this, bundle.getString(TOTALS_UPDATED));
   }
 
   private void handleUpdateTotalsException(final Throwable exception) {
     Dialogs.exceptionDialogBuilder()
-            .owner(Windows.getParentWindow(this))
+            .owner(this)
             .title(bundle.getString(UPDATING_TOTALS_FAILED))
             .show(exception);
   }
