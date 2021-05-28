@@ -9,6 +9,8 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -23,21 +25,26 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import java.awt.Dimension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
@@ -50,6 +57,7 @@ public final class ComponentBuildersTest {
   public void integerField() {
     final Value<Integer> value = Value.value(42);
     final ComponentValue<Integer, IntegerField> componentValue = ComponentBuilders.integerField()
+            .range(0, 100)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(componentValue.getComponent().getText(), "42");
@@ -59,6 +67,8 @@ public final class ComponentBuildersTest {
   public void longField() {
     final Value<Long> value = Value.value(42L);
     final ComponentValue<Long, LongField> componentValue = ComponentBuilders.longField()
+            .range(0, 100)
+            .groupingSeparator('.')
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(componentValue.getComponent().getText(), "42");
@@ -68,8 +78,12 @@ public final class ComponentBuildersTest {
   public void doubleField() {
     final Value<Double> value = Value.value(42.2);
     final ComponentValue<Double, DoubleField> componentValue = ComponentBuilders.doubleField()
+            .range(0, 100)
+            .maximumFractionDigits(2)
+            .groupingSeparator('.')
+            .decimalSeparator(',')
             .linkedValue(value)
-                    .buildComponentValue();
+            .buildComponentValue();
     assertEquals(componentValue.getComponent().getNumber(), value.get());
   }
 
@@ -77,8 +91,11 @@ public final class ComponentBuildersTest {
   public void bigDecimalField() {
     final Value<BigDecimal> value = Value.value(BigDecimal.valueOf(42.2));
     final ComponentValue<BigDecimal, BigDecimalField> componentValue = ComponentBuilders.bigDecimalField()
-                    .linkedValue(value)
-                    .buildComponentValue();
+            .maximumFractionDigits(2)
+            .groupingSeparator('.')
+            .decimalSeparator(',')
+            .linkedValue(value)
+            .buildComponentValue();
     assertEquals(componentValue.getComponent().getNumber(), value.get());
   }
 
@@ -87,6 +104,7 @@ public final class ComponentBuildersTest {
     final Value<LocalTime> value = Value.value(LocalTime.now());
     final ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
             ComponentBuilders.localTimeField("HH:mm")
+                    .focusLostBehaviour(JFormattedTextField.COMMIT)
                     .linkedValue(value)
                     .buildComponentValue();
     assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
@@ -97,6 +115,7 @@ public final class ComponentBuildersTest {
     final Value<LocalDate> value = Value.value(LocalDate.now());
     final ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
             ComponentBuilders.localDateField("dd-MM-yyyy")
+                    .focusLostBehaviour(JFormattedTextField.COMMIT)
                     .linkedValue(value)
                     .buildComponentValue();
     assertEquals(componentValue.get(), value.get());
@@ -107,6 +126,7 @@ public final class ComponentBuildersTest {
     final Value<LocalDateTime> value = Value.value(LocalDateTime.now());
     final ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
             ComponentBuilders.localDateTimeField("dd-MM-yyyy HH:mm")
+                    .focusLostBehaviour(JFormattedTextField.COMMIT)
                     .linkedValue(value)
                     .buildComponentValue();
     assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
@@ -117,6 +137,7 @@ public final class ComponentBuildersTest {
     final Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
     final ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
             ComponentBuilders.offsetDateTimeField("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                    .focusLostBehaviour(JFormattedTextField.COMMIT)
                     .linkedValue(value)
                     .buildComponentValue();
 //    assertEquals(componentValue.get(), value.get().truncatedTo(ChronoUnit.MINUTES));
@@ -128,6 +149,9 @@ public final class ComponentBuildersTest {
     final ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
             ComponentBuilders.temporalInputPanel(LocalDate.class)
                     .dateTimePattern("dd-MM-yyyy")
+                    .columns(8)
+                    .selectAllOnFocusGained(true)
+                    .updateOn(UpdateOn.KEYSTROKE)
                     .linkedValue(value)
                     .buildComponentValue();
     assertEquals(componentValue.get(), value.get());
@@ -137,6 +161,9 @@ public final class ComponentBuildersTest {
   public void checkBox() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBox()
+            .caption("caption")
+            .horizontalAlignment(SwingConstants.CENTER)
+            .includeCaption(true)
             .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
@@ -157,6 +184,8 @@ public final class ComponentBuildersTest {
   public void toggleButton() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JToggleButton> componentValue = ComponentBuilders.toggleButton()
+            .caption("caption")
+            .includeCaption(true)
             .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
@@ -219,6 +248,7 @@ public final class ComponentBuildersTest {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue = ComponentBuilders.itemComboBox(items)
             .transferFocusOnEnter(true)
+            .sorted(true)
             .linkedValue(value)
             .nullable(true)
             .buildComponentValue();
@@ -241,23 +271,24 @@ public final class ComponentBuildersTest {
 
   @Test
   public void comboBox() {
-    final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
-    final Value<Integer> value = Value.value();
-    final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue = ComponentBuilders.comboBox(Integer.class, boxModel)
+    final DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
+    final Value<String> value = Value.value();
+    final ComponentValue<String, SteppedComboBox<String>> componentValue = ComponentBuilders.comboBox(String.class, boxModel)
             .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
+            .editable(true)
             .linkedValue(value)
             .transferFocusOnEnter(true).buildComponentValue();
-    final JComboBox<Integer> box = componentValue.getComponent();
+    final JComboBox<String> box = componentValue.getComponent();
 
     assertNull(value.get());
-    box.setSelectedItem(1);
-    assertEquals(1, value.get());
-    box.setSelectedItem(2);
-    assertEquals(2, value.get());
-    box.setSelectedItem(3);
-    assertEquals(3, value.get());
-    box.setSelectedItem(4);//does not exist
-    assertEquals(3, value.get());
+    box.setSelectedItem("1");
+    assertEquals("1", value.get());
+    box.setSelectedItem("2");
+    assertEquals("2", value.get());
+    box.setSelectedItem("3");
+    assertEquals("3", value.get());
+    box.setSelectedItem("4");//does not exist, but editable
+    assertEquals("4", value.get());
   }
 
   @Test
@@ -267,6 +298,9 @@ public final class ComponentBuildersTest {
             .columns(10)
             .upperCase(true)
             .selectAllOnFocusGained(true)
+            .action(Control.control(() -> {}))
+            .lookupDialog(Collections::emptyList)
+            .format(null)
             .linkedValue(value)
             .buildComponentValue();
     final JTextField field = componentValue.getComponent();
@@ -297,6 +331,12 @@ public final class ComponentBuildersTest {
             .transferFocusOnEnter(true)
             .columns(10)
             .buttonFocusable(true)
+            .upperCase(false)
+            .lowerCase(true)
+            .selectAllOnFocusGained(true)
+            .textAreaSize(new Dimension(100, 100))
+            .maximumLength(100)
+            .caption("caption")
             .updateOn(UpdateOn.KEYSTROKE)
             .linkedValue(value)
             .buildComponentValue();
@@ -338,6 +378,7 @@ public final class ComponentBuildersTest {
     final Value<Double> value = Value.value(10d);
     final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0d, 0d, 100d, 10d);
     final ComponentValue<Double, JSpinner> componentValue = ComponentBuilders.doubleSpinner(spinnerNumberModel)
+            .columns(5)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10d, componentValue.get());
@@ -349,10 +390,30 @@ public final class ComponentBuildersTest {
   public void slider() {
     final Value<Integer> value = Value.value(10);
     final ComponentValue<Integer, JSlider> componentValue = ComponentBuilders.slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
+            .snapToTicks(true)
+            .paintTrack(true)
+            .paintTicks(true)
+            .paintLabels(true)
+            .inverted(false)
+            .minorTickSpacing(1)
+            .majorTickSpacing(10)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10, componentValue.get());
     value.set(50);
     assertEquals(50, componentValue.get());
+  }
+
+  @Test
+  public void label() {
+    final Value<String> textValue = Value.value("label");
+    final ComponentValue<String, JLabel> componentValue = ComponentBuilders.label(Icons.icons().filter())
+            .displayedMnemonic('l')
+            .labelFor(new JButton())
+            .linkedValue(textValue)
+            .buildComponentValue();
+    assertEquals("label", componentValue.getComponent().getText());
+    textValue.set("hello");
+    assertEquals("hello", componentValue.getComponent().getText());
   }
 }

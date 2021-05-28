@@ -8,6 +8,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
@@ -251,6 +252,21 @@ public final class ComponentBuilders {
    */
   public static SliderBuilder slider(final BoundedRangeModel boundedRangeModel) {
     return new DefaultSliderBuilder(boundedRangeModel);
+  }
+
+  /**
+   * @return a label builder
+   */
+  public static LabelBuilder label() {
+    return label((String) null);
+  }
+
+  /**
+   * @param icon the label icon
+   * @return a label builder
+   */
+  public static LabelBuilder label(final Icon icon) {
+    return new DefaultLabelBuilder(icon);
   }
 
   /**

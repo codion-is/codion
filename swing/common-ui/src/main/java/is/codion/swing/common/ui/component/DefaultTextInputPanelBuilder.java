@@ -58,8 +58,8 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  public TextInputPanelBuilder selectAllOnFocusGained() {
-    this.selectAllOnFocusGained = true;
+  public TextInputPanelBuilder selectAllOnFocusGained(final boolean selectAllOnFocusGained) {
+    this.selectAllOnFocusGained = selectAllOnFocusGained;
     return this;
   }
 
