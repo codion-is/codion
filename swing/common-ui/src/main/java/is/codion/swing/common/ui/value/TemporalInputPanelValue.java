@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.value;
 
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 
-import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 
 /**
@@ -20,16 +19,12 @@ final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponen
    */
   TemporalInputPanelValue(final TemporalInputPanel<V> inputPanel) {
     super(inputPanel);
+    inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
   }
 
   @Override
   protected V getComponentValue(final TemporalInputPanel<V> component) {
-    try {
-      return component.getTemporal();
-    }
-    catch (final DateTimeParseException e) {
-      throw new IllegalArgumentException("Wrong date format " + component.getDateTimePattern() + " expected", e);
-    }
+    return component.getTemporal();
   }
 
   @Override
