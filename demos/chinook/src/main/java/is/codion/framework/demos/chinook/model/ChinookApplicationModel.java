@@ -17,18 +17,9 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   public ChinookApplicationModel(final EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
-
-    final SwingEntityModel artistModel = initializeArtistModel(connectionProvider);
-    final SwingEntityModel playlistModel = initializePlaylistModel(connectionProvider);
-    final SwingEntityModel customerModel = initializeCustomerModel(connectionProvider);
-
-    addEntityModel(artistModel);
-    addEntityModel(playlistModel);
-    addEntityModel(customerModel);
-
-    artistModel.refresh();
-    playlistModel.refresh();
-    customerModel.refresh();
+    addEntityModel(initializeArtistModel(connectionProvider));
+    addEntityModel(initializePlaylistModel(connectionProvider));
+    addEntityModel(initializeCustomerModel(connectionProvider));
   }
 
   public List<Entity> updateInvoiceTotals() throws DatabaseException {
@@ -39,8 +30,11 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     final SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
     final SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
     final SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
+
     albumModel.addDetailModel(trackModel);
     artistModel.addDetailModel(albumModel);
+
+    artistModel.refresh();
 
     return artistModel;
   }
@@ -48,7 +42,10 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   private static SwingEntityModel initializePlaylistModel(final EntityConnectionProvider connectionProvider) {
     final SwingEntityModel playlistModel = new SwingEntityModel(Playlist.TYPE, connectionProvider);
     final SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
+
     playlistModel.addDetailModel(playlistTrackModel);
+
+    playlistModel.refresh();
 
     return playlistModel;
   }
@@ -57,9 +54,12 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     final SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
     final SwingEntityModel invoiceModel = new SwingEntityModel(new InvoiceEditModel(connectionProvider));
     final SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
+
     invoiceModel.addDetailModel(invoiceLineModel);
     invoiceModel.addLinkedDetailModel(invoiceLineModel);
     customerModel.addDetailModel(invoiceModel);
+
+    customerModel.refresh();
 
     return customerModel;
   }
