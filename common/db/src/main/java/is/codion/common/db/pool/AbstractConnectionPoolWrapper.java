@@ -68,7 +68,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
     }
     catch (final SQLException e) {
       counter.incrementFailedRequestCounter();
-      throw new DatabaseException(e, e.getMessage());
+      throw new DatabaseException(e);
     }
     finally {
       counter.addCheckOutTime((int) (System.nanoTime() - nanoTime) / 1000000);

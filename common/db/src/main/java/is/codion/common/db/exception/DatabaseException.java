@@ -44,6 +44,14 @@ public class DatabaseException extends Exception {
   /**
    * Constructs a new DatabaseException instance
    * @param cause the root cause, the stack trace is copied and used
+   */
+  public DatabaseException(final SQLException cause) {
+    this(cause, cause.getMessage());
+  }
+
+  /**
+   * Constructs a new DatabaseException instance
+   * @param cause the root cause, the stack trace is copied and used
    * @param message the exception message
    */
   public DatabaseException(final SQLException cause, final String message) {
