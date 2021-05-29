@@ -155,8 +155,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final Entities entities = tableModel.getEntities();
     final Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
     final Key pk2 = entities.primaryKey(TestDomain.T_EMP, 2);
+    tableModel.getConnectionProvider().getConnection().beginTransaction();
     try {
-      tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByKey(singletonList(pk1));
       tableModel.getSelectionModel().setSelectedIndex(0);
       Entity selected = tableModel.getSelectionModel().getSelectedItem();

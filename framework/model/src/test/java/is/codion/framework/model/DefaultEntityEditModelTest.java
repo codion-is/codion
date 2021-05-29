@@ -68,8 +68,8 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setPostEditEvents(true);
 
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Entity jones = connection.selectSingle(TestDomain.EMP_NAME, "JONES");
       employeeEditModel.setEntity(jones);
       employeeEditModel.put(TestDomain.EMP_NAME, "Noname");
@@ -115,8 +115,8 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void refreshEntity() throws DatabaseException {
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "MARTIN");
       employeeEditModel.refreshEntity();
       employeeEditModel.setEntity(employee);
@@ -337,9 +337,10 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void insert() throws Exception {
+    assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
+    final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
-      employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.put(TestDomain.EMP_COMMISSION, 1000d);
       employeeEditModel.put(TestDomain.EMP_HIREDATE, LocalDate.now());
       employeeEditModel.put(TestDomain.EMP_JOB, "CLERK");
@@ -351,8 +352,8 @@ public final class DefaultEntityEditModelTest {
       tmpDept.put(TestDomain.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.put(TestDomain.DEPARTMENT_NAME, "Judgment");
 
-      final Entity department = employeeEditModel.getConnectionProvider().getConnection()
-              .selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(tmpDept));
+      final Entity department = connection
+              .selectSingle(connection.insert(tmpDept));
 
       employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, department);
 
@@ -379,17 +380,18 @@ public final class DefaultEntityEditModelTest {
       }
     }
     finally {
-      employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
   }
 
   @Test
   public void update() throws Exception {
+    assertThrows(UpdateException.class, () -> employeeEditModel.update());
+    assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
+    final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      assertThrows(UpdateException.class, () -> employeeEditModel.update());
-      assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
-      employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
-      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MILLER"));
+      employeeEditModel.setEntity(connection.selectSingle(TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.put(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = singletonList(employeeEditModel.getEntityCopy());
       final EventDataListener<Map<Key, Entity>> listener = updatedEntities ->
@@ -406,16 +408,17 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.removeAfterUpdateListener(listener);
     }
     finally {
-      employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
   }
 
   @Test
   public void delete() throws Exception {
+    assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
+    final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
-      employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
-      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MILLER"));
+      employeeEditModel.setEntity(connection.selectSingle(TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = singletonList(employeeEditModel.getEntityCopy());
       employeeEditModel.addAfterDeleteListener(deletedEntities -> assertEquals(toDelete, deletedEntities));
       employeeEditModel.setDeleteEnabled(false);
@@ -427,7 +430,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.delete();
     }
     finally {
-      employeeEditModel.getConnectionProvider().getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
   }
 

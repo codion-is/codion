@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.empdept.testing.scenarios;
 
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
@@ -28,7 +29,8 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
       selectRandomRow(departmentModel.getTableModel());
       final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
       if (employeeModel.getTableModel().getRowCount() > 0) {
-        employeeModel.getConnectionProvider().getConnection().beginTransaction();
+        final EntityConnection connection = employeeModel.getConnectionProvider().getConnection();
+        connection.beginTransaction();
         try {
           selectRandomRow(employeeModel.getTableModel());
           Entity selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
@@ -43,10 +45,10 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
         }
         finally {
           if (random.nextBoolean()) {
-            employeeModel.getConnectionProvider().getConnection().rollbackTransaction();
+            connection.rollbackTransaction();
           }
           else {
-            employeeModel.getConnectionProvider().getConnection().commitTransaction();
+            connection.commitTransaction();
           }
         }
       }

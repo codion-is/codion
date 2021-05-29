@@ -4,6 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
@@ -93,8 +94,9 @@ public final class SwingEntityModelTest
     final Key primaryKey = getConnectionProvider().getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
     departmentModel.getTableModel().setSelectedByKey(Collections.singletonList(primaryKey));
     final Entity operations = departmentModel.getTableModel().getSelectionModel().getSelectedItem();
+    final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      departmentModel.getConnectionProvider().getConnection().beginTransaction();
       departmentModel.getEditModel().delete();
       assertFalse(departmentsComboBoxModel.containsItem(operations));
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_ID, 99);
@@ -116,7 +118,7 @@ public final class SwingEntityModelTest
       }
     }
     finally {
-      departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
   }
 
@@ -128,11 +130,12 @@ public final class SwingEntityModelTest
   @Test
   public void test() throws Exception {
     super.test();
+    final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
+    connection.beginTransaction();
     try {
-      departmentModel.getConnectionProvider().getConnection().beginTransaction();
       departmentModel.refresh();
       final Entity department =
-              departmentModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+              connection.selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
       final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
       final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel()
@@ -144,7 +147,7 @@ public final class SwingEntityModelTest
       assertNotNull(employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSelectedValue());
     }
     finally {
-      departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
+      connection.rollbackTransaction();
     }
   }
 

@@ -72,8 +72,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void delete() throws Exception {
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Key key = ENTITIES.primaryKey(Department.TYPE, 40);
       assertEquals(0, connection.delete(new ArrayList<>()));
       assertTrue(connection.delete(key));
@@ -86,8 +86,8 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       connection.rollbackTransaction();
     }
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Key key = ENTITIES.primaryKey(Department.TYPE, 40);
       assertEquals(1, connection.delete(Conditions.condition(key)));
       try {
@@ -99,8 +99,8 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       connection.rollbackTransaction();
     }
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       //scott, james, adams
       assertEquals(3, connection.delete(where(EMP_NAME).equalTo("%S%")
               .and(where(EMP_JOB).equalTo("CLERK"))));
@@ -388,8 +388,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void insertOnlyNullValues() throws DatabaseException {
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Entity department = ENTITIES.entity(Department.TYPE);
       assertThrows(DatabaseException.class, () -> connection.insert(department));
     }
@@ -400,8 +400,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateNoModifiedValues() throws DatabaseException {
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Entity department = connection.selectSingle(Department.DEPTNO, 10);
       assertThrows(DatabaseException.class, () -> connection.update(department));
     }
@@ -477,8 +477,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateDifferentEntities() throws DatabaseException {
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Entity sales = connection.selectSingle(Department.DNAME, "SALES");
       final Entity king = connection.selectSingle(EMP_NAME, "KING");
       final String newName = "New name";
@@ -526,8 +526,8 @@ public class DefaultLocalEntityConnectionTest {
     final UpdateCondition updateCondition = where(EMP_COMMISSION).isNull().asUpdateCondition()
             .set(EMP_COMMISSION, 500d)
             .set(EMP_SALARY, 4200d);
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(condition));
       final List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
@@ -545,8 +545,8 @@ public class DefaultLocalEntityConnectionTest {
   public void updateWithConditionNoRows() throws DatabaseException {
     final UpdateCondition updateCondition = where(EMP_ID).isNull().asUpdateCondition()
             .set(EMP_SALARY, 4200d);
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       assertEquals(0, connection.update(updateCondition));
     }
     finally {
@@ -869,9 +869,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void beans() throws DatabaseException {
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
-
       final List<Entity> departments = connection.select(condition(Department.TYPE));
       Department department = departments.get(0).castTo(Department.TYPE);
       department.setName("New Name");
