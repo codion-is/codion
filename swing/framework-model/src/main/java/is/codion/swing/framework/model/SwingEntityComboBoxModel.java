@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.where;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -311,7 +312,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         condition = selectConditionProvider.getCondition();
       }
 
-      return connectionProvider.getConnection().select(condition.select()
+      return connectionProvider.getConnection().select(condition.asSelectCondition()
               .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
@@ -397,7 +398,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private void linkCondition(final ForeignKey foreignKey, final EntityComboBoxModel foreignKeyModel) {
     final EventDataListener<Entity> listener = selected -> {
-      setSelectConditionProvider(() -> condition(foreignKey).equalTo(selected));
+      setSelectConditionProvider(() -> where(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);

@@ -42,7 +42,7 @@ final class AttributeConditionDeserializer implements Serializable {
         values.add((T) EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
       }
     }
-    final AttributeCondition.Builder<T> builder = Conditions.condition(property.getAttribute());
+    final AttributeCondition.Builder<T> builder = Conditions.where(property.getAttribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
         return builder.equalTo(values);

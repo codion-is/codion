@@ -81,8 +81,18 @@ public final class Conditions {
    * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
    * @param foreignKey the foreign key to base the condition on
    * @return a {@link ForeignKeyConditionBuilder} instance
+   * @deprecated use {@link #where(ForeignKey)}
    */
   public static ForeignKeyConditionBuilder condition(final ForeignKey foreignKey) {
+    return where(foreignKey);
+  }
+
+  /**
+   * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
+   * @param foreignKey the foreign key to base the condition on
+   * @return a {@link ForeignKeyConditionBuilder} instance
+   */
+  public static ForeignKeyConditionBuilder where(final ForeignKey foreignKey) {
     return new DefaultForeignKeyConditionBuilder(foreignKey);
   }
 
@@ -91,8 +101,19 @@ public final class Conditions {
    * @param attribute the attribute to base the condition on
    * @param <T> the attribute type
    * @return a {@link AttributeCondition.Builder} instance
+   * @deprecated use {@link #where(Attribute)}
    */
   public static <T> AttributeCondition.Builder<T> condition(final Attribute<T> attribute) {
+    return where(attribute);
+  }
+
+  /**
+   * Creates a {@link AttributeCondition.Builder} instance based on the given attribute.
+   * @param attribute the attribute to base the condition on
+   * @param <T> the attribute type
+   * @return a {@link AttributeCondition.Builder} instance
+   */
+  public static <T> AttributeCondition.Builder<T> where(final Attribute<T> attribute) {
     return new DefaultAttributeConditionBuilder<>(attribute);
   }
 
@@ -159,7 +180,7 @@ public final class Conditions {
   }
 
   private static Condition condition(final Attribute<?> conditionAttribute, final Operator operator, final Object value) {
-    final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) conditionAttribute);
+    final AttributeCondition.Builder<Object> condition = where((Attribute<Object>) conditionAttribute);
     if (operator == EQUAL) {
       return condition.equalTo(value);
     }

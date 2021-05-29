@@ -69,6 +69,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.where;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -169,7 +170,7 @@ public class EntityServletServerTest {
     //count
     uriBuilder.setPath("count");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
-    AttributeCondition<Integer> condition = condition(TestDomain.DEPARTMENT_ID).equalTo(10);
+    AttributeCondition<Integer> condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
     final String conditionJson = conditionObjectMapper.writeValueAsString(condition);
 
     httpPost.setEntity(new StringEntity(conditionJson));
@@ -252,8 +253,8 @@ public class EntityServletServerTest {
     response.close();
 
     //update condition
-    final UpdateCondition updateCondition = Conditions.condition(TestDomain.DEPARTMENT_ID)
-            .between(-20, -10).update().set(TestDomain.DEPARTMENT_LOCATION, "aloc");
+    final UpdateCondition updateCondition = where(TestDomain.DEPARTMENT_ID)
+            .between(-20, -10).asUpdateCondition().set(TestDomain.DEPARTMENT_LOCATION, "aloc");
     uriBuilder.setPath("updateByCondition");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new StringEntity(conditionObjectMapper.writeValueAsString(updateCondition)));
@@ -266,7 +267,7 @@ public class EntityServletServerTest {
     response.close();
 
     //delete condition
-    final Condition deleteCondition = Conditions.condition(TestDomain.DEPARTMENT_ID).equalTo(-10);
+    final Condition deleteCondition = where(TestDomain.DEPARTMENT_ID).equalTo(-10);
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new StringEntity(conditionObjectMapper.writeValueAsString(deleteCondition)));
@@ -289,7 +290,7 @@ public class EntityServletServerTest {
     response.close();
 
     //select values
-    condition = Conditions.condition(TestDomain.DEPARTMENT_ID).equalTo(10);
+    condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
     final ObjectNode node = entityObjectMapper.createObjectNode();
     node.set("attribute", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.getName()));
     node.set("entityType", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.getEntityType().getName()));
@@ -522,7 +523,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.DEPARTMENT_NAME).equalTo("New name"))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(where(TestDomain.DEPARTMENT_NAME).equalTo("New name"))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -544,7 +545,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.DEPARTMENT_ID).equalTo(-42))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(where(TestDomain.DEPARTMENT_ID).equalTo(-42))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();

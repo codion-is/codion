@@ -59,12 +59,12 @@ public interface Condition {
   /**
    * @return a {@link SelectCondition} based on this condition
    */
-  SelectCondition select();
+  SelectCondition asSelectCondition();
 
   /**
    * @return a {@link UpdateCondition} based on this condition
    */
-  UpdateCondition update();
+  UpdateCondition asUpdateCondition();
 
   /**
    * An interface encapsulating a combination of Condition objects,

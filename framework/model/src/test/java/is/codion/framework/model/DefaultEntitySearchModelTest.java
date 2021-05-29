@@ -187,7 +187,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(true);
     searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(true);
     searchModel.setAdditionalConditionProvider(() ->
-            Conditions.condition(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
+            Conditions.where(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));

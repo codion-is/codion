@@ -31,7 +31,7 @@ import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.db.condition.Conditions.combination;
-import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.where;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -283,7 +283,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
       final SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (final String rawSearchText : searchTexts) {
         final String searchText = prepareSearchText(rawSearchText, searchSettings);
-        final AttributeCondition<String> condition = condition(searchAttribute)
+        final AttributeCondition<String> condition = where(searchAttribute)
                 .equalTo(searchText).caseSensitive(searchSettings.getCaseSensitiveValue().get());
         conditionCombination.add(condition);
       }
@@ -291,7 +291,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
     return (additionalConditionProvider == null ? conditionCombination :
             additionalConditionProvider.getCondition().and(conditionCombination))
-            .select().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
+            .asSelectCondition().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 
   private String prepareSearchText(final String rawSearchText, final SearchSettings searchSettings) {

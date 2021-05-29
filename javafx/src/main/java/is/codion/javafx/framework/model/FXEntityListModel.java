@@ -432,7 +432,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     try {
       return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
-              .select().fetchCount(fetchCount).orderBy(getOrderBy()));
+              .asSelectCondition().fetchCount(fetchCount).orderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
