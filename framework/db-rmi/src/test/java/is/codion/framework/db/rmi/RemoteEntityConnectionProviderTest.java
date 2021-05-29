@@ -3,13 +3,30 @@
  */
 package is.codion.framework.db.rmi;
 
+import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.rmi.client.Clients;
+import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.server.EntityServer;
+import is.codion.framework.server.EntityServerAdmin;
+import is.codion.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+
+import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.where;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: Bjorn Darri
@@ -22,6 +39,38 @@ public class RemoteEntityConnectionProviderTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
+  public void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
+    final EntityServerConfiguration configuration = configure();
+
+    final String serverName = configuration.getServerName();
+    EntityServer.startServer(configuration);
+    final Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+            LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), configuration.getRegistryPort()).lookup(serverName);
+    final EntityServerAdmin admin = server.getServerAdmin(User.parseUser("scott:tiger"));
+
+    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(Clients.SERVER_HOST_NAME.get(),
+            configuration.getServerPort(), configuration.getRegistryPort());
+    provider.setClientTypeId("RemoteEntityConnectionProviderTest");
+    provider.setDomainClassName("is.codion.framework.db.rmi.TestDomain");
+    provider.setUser(User.parseUser("scott:tiger"));
+
+    final EntityConnection connection = provider.getConnection();
+    connection.select(condition(TestDomain.T_DEPARTMENT));
+
+    assertThrows(DatabaseException.class, () -> connection.delete(where(TestDomain.EMP_NAME).equalTo("JONES")));
+
+    admin.shutdown();
+
+    assertFalse(connection.isConnected());
+
+    provider.close();
+
+    assertTrue(provider.isConnected());
+
+    assertThrows(RuntimeException.class, provider::getConnection);
+  }
+
+  @Test
   public void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
@@ -30,5 +79,22 @@ public class RemoteEntityConnectionProviderTest {
     assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
+  }
+
+  private static EntityServerConfiguration configure() {
+    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.TRUSTSTORE.set("../server/src/main/security/truststore.jks");
+    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
+    ServerConfiguration.KEYSTORE.set("../server/src/main/security/keystore.jks");
+    ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
+    configuration.setServerAdminPort(3223);
+    configuration.setAdminUser(User.parseUser("scott:tiger"));
+    configuration.setDatabase(DatabaseFactory.getDatabase());
+    configuration.setDomainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"));
+    configuration.setSslEnabled(true);
+
+    return configuration;
   }
 }
