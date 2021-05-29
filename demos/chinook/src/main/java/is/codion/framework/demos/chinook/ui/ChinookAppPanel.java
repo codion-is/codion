@@ -136,7 +136,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     return super.getViewControls()
             .addSeparator()
             .add(Control.builder(this::selectLanguage)
-                    .name(bundle.getString(SELECT_LANGUAGE))
+                    .caption(bundle.getString(SELECT_LANGUAGE))
                     .build());
   }
 
@@ -145,7 +145,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     return super.getToolsControls()
             .addSeparator()
             .add(Control.builder(this::updateInvoiceTotals)
-                    .name(bundle.getString(UPDATE_TOTALS))
+                    .caption(bundle.getString(UPDATE_TOTALS))
                     .build());
   }
 

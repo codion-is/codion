@@ -179,16 +179,16 @@ final class ExceptionDialog extends JDialog {
 
   private JPanel createButtonPanel() {
     final ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
-            .name(MESSAGES.getString("details"))
+            .caption(MESSAGES.getString("details"))
             .description(MESSAGES.getString("show_details"))
             .build();
     final Control printControl = Control.builder(() -> detailsArea.print())
-            .name(Messages.get(Messages.PRINT))
+            .caption(Messages.get(Messages.PRINT))
             .description(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build();
     final Control closeControl = Control.builder(this::dispose)
-            .name(Messages.get(Messages.CLOSE))
+            .caption(Messages.get(Messages.CLOSE))
             .description(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
@@ -197,12 +197,12 @@ final class ExceptionDialog extends JDialog {
                     .selectFileToSave("error.txt")
                     .toPath(),
             Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
-            .name(MESSAGES.getString("save"))
+            .caption(MESSAGES.getString("save"))
             .description(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
     final Control copyControl = Control.builder(() -> Components.setClipboard(detailsArea.getText()))
-            .name(Messages.get(Messages.COPY))
+            .caption(Messages.get(Messages.COPY))
             .description(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
             .build();

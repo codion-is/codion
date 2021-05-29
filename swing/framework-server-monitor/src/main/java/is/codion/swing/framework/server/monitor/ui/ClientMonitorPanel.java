@@ -56,7 +56,7 @@ public final class ClientMonitorPanel extends JPanel {
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
     clientInstanceBase.add(Control.builder(this::refresh)
-            .name("Refresh")
+            .caption("Refresh")
             .build().createButton(), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
@@ -92,7 +92,7 @@ public final class ClientMonitorPanel extends JPanel {
         model.getServer().disconnect(remoteClient.getClientId());
         model.getRemoteClientListModel().removeElement(remoteClient);
       }
-    }).name("Disconnect").build());
+    }).caption("Disconnect").build());
 
     return controls.createPopupMenu();
   }

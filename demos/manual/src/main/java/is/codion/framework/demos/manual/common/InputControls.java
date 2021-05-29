@@ -48,7 +48,7 @@ public final class InputControls {
     State somethingEnabledState = State.state(true);
 
     Control control = Control.builder(() -> System.out.println("Doing something"))
-            .name("Do something")
+            .caption("Do something")
             .enabledState(somethingEnabledState)
             .mnemonic('D')
             .build();
@@ -61,7 +61,7 @@ public final class InputControls {
       }
     };
     Control actionControl = Control.actionControlBuilder(actionCommand)
-            .name("Do something else")
+            .caption("Do something else")
             .mnemonic('S')
             .build();
 
@@ -72,7 +72,7 @@ public final class InputControls {
     State state = State.state();
 
     ToggleControl stateControl = ToggleControl.builder(state)
-            .name("Change state")
+            .caption("Change state")
             .mnemonic('C')
             .build();
 
@@ -81,7 +81,7 @@ public final class InputControls {
     Value<Boolean> booleanValue = Value.value();
 
     ToggleControl valueControl = ToggleControl.builder(booleanValue)
-            .name("Change value")
+            .caption("Change value")
             .mnemonic('V')
             .build();
 
@@ -93,29 +93,29 @@ public final class InputControls {
     // tag::controls[]
     Controls controls = Controls.builder()
             .control(Control.builder(this::doFirst)
-                    .name("First")
+                    .caption("First")
                     .mnemonic('F'))
             .control(Control.builder(this::doSecond)
-                    .name("Second")
+                    .caption("Second")
                     .mnemonic('S'))
             .control(Controls.builder()
-                    .name("Submenu")
+                    .caption("Submenu")
                     .control(Control.builder(this::doSubFirst)
-                            .name("Sub-first")
+                            .caption("Sub-first")
                             .mnemonic('b'))
                     .control(Control.builder(this::doSubSecond)
-                            .name("Sub-second")
+                            .caption("Sub-second")
                             .mnemonic('u')))
             .build();
 
     JMenu menu = controls.createMenu();
 
     Control firstControl = Control.builder(this::doFirst)
-            .name("First")
+            .caption("First")
             .mnemonic('F')
             .build();
     Control secondControl = Control.builder(this::doSecond)
-            .name("Second")
+            .caption("Second")
             .mnemonic('S')
             .build();
 

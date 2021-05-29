@@ -176,10 +176,10 @@ public interface Controls extends Control {
   interface Builder extends Control.Builder {
 
     /**
-     * @param name the name for this controls instance
+     * @param caption the name for this controls instance
      * @return this Builder instance
      */
-    Builder name(String name);
+    Builder caption(String caption);
 
     /**
      * @param description a description for this controls instance

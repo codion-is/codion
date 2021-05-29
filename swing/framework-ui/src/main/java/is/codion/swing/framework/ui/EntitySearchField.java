@@ -340,7 +340,7 @@ public final class EntitySearchField extends JTextField {
             .owner(EntitySearchField.this)
             .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .show())
-            .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+            .caption(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 
     return popupMenu;
@@ -353,7 +353,7 @@ public final class EntitySearchField extends JTextField {
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
     final JButton okButton = Control.builder(closeEvent::onEvent)
-            .name(Messages.get(Messages.OK))
+            .caption(Messages.get(Messages.OK))
             .build().createButton();
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_ENTER)
@@ -493,7 +493,7 @@ public final class EntitySearchField extends JTextField {
       selectControl = Control.builder(() -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).dispose();
-      }).name(Messages.get(Messages.OK)).build();
+      }).caption(Messages.get(Messages.OK)).build();
       list.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
@@ -555,7 +555,7 @@ public final class EntitySearchField extends JTextField {
       selectControl = Control.builder(() -> {
         searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         Windows.getParentDialog(table).dispose();
-      }).name(Messages.get(Messages.OK)).build();
+      }).caption(Messages.get(Messages.OK)).build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       final String enterActionKey = "EntitySearchField.enter";
       table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);

@@ -87,7 +87,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
     clientTypeBase.add(Control.builder(model::refresh)
-            .name("Refresh")
+            .caption("Refresh")
             .build().createButton(), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
@@ -102,11 +102,11 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
     actionBase.add(Control.builder(model::disconnectTimedOut)
-            .name("Disconnect idle")
+            .caption("Disconnect idle")
             .description("Disconnect those that have exceeded the allowed idle time")
             .build().createButton());
     actionBase.add(Control.builder(this::disconnectAll)
-            .name("Disconnect all")
+            .caption("Disconnect all")
             .description("Disconnect all clients")
             .build().createButton());
 
@@ -142,7 +142,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
     configBase.add(Control.builder(model::resetHistory)
-            .name("Reset")
+            .caption("Reset")
             .build().createButton(), BorderLayout.EAST);
 
     final FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());

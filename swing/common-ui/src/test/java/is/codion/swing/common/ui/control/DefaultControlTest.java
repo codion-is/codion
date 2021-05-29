@@ -86,7 +86,7 @@ public final class DefaultControlTest {
   @Test
   public void setEnabled() {
     final State enabledState = State.state();
-    final Control control = Control.builder(this::doNothing).name("control").enabledState(enabledState.getObserver()).build();
+    final Control control = Control.builder(this::doNothing).caption("control").enabledState(enabledState.getObserver()).build();
     assertEquals("control", control.getName());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());
     assertFalse(control.isEnabled());

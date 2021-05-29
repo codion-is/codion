@@ -15,7 +15,7 @@ final class ControlBuilder implements Control.Builder {
   private final Control.Command command;
   private final Control.ActionCommand actionCommand;
 
-  private String name;
+  private String caption;
   private StateObserver enabledState;
   private char mnemonic;
   private Icon icon;
@@ -34,7 +34,12 @@ final class ControlBuilder implements Control.Builder {
 
   @Override
   public Control.Builder name(final String name) {
-    this.name = name;
+    return caption(name);
+  }
+
+  @Override
+  public Control.Builder caption(final String caption) {
+    this.caption = caption;
     return this;
   }
 
@@ -72,10 +77,10 @@ final class ControlBuilder implements Control.Builder {
   public Control build() {
     final Control control;
     if (command != null) {
-      control = new DefaultControl(command, name, enabledState);
+      control = new DefaultControl(command, caption, enabledState);
     }
     else {
-      control = new DefaultActionControl(actionCommand, name, enabledState);
+      control = new DefaultActionControl(actionCommand, caption, enabledState);
     }
 
     return control.setMnemonic(mnemonic)

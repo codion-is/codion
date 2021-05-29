@@ -120,14 +120,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   @Override
   public Controls getControls() {
     final Controls.Builder controls = Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter());
     if (hasAdvancedView()) {
       controls.control(ToggleControl.builder(getAdvancedState())
-              .name(FrameworkMessages.get(FrameworkMessages.ADVANCED)));
+              .caption(FrameworkMessages.get(FrameworkMessages.ADVANCED)));
     }
     controls.control(Control.builder(getTableConditionModel()::clearConditionModels)
-            .name(FrameworkMessages.get(FrameworkMessages.CLEAR)));
+            .caption(FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
     return controls.build();
   }

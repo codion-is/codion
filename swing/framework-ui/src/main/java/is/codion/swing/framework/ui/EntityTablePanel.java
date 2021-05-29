@@ -549,7 +549,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
     final Controls updateControls = Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.UPDATE))
+            .caption(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
             .icon(frameworkIcons().edit())
             .description(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP))
@@ -558,7 +558,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
         final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
         updateControls.add(Control.builder(() -> updateSelectedEntities(property))
-                .name(caption)
+                .caption(caption)
                 .enabledState(enabled)
                 .build());
       }
@@ -572,7 +572,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
-            .name(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...")
+            .caption(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + "...")
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
             .description(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP))
             .mnemonic('W')
@@ -589,7 +589,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
     return Control.builder(this::delete)
-            .name(FrameworkMessages.get(FrameworkMessages.DELETE))
+            .caption(FrameworkMessages.get(FrameworkMessages.DELETE))
             .enabledState(State.and(
                     tableModel.getEditModel().getDeleteEnabledObserver(),
                     tableModel.getSelectionModel().getSelectionNotEmptyObserver()))
@@ -604,7 +604,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control createPrintTableControl() {
     final String printCaption = MESSAGES.getString("print_table");
     return Control.builder(this::printTable)
-            .name(printCaption)
+            .caption(printCaption)
             .description(printCaption)
             .mnemonic(printCaption.charAt(0))
             .icon(frameworkIcons().print())
@@ -617,7 +617,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control createRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
     return Control.builder(tableModel::refresh)
-            .name(refreshCaption)
+            .caption(refreshCaption)
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP))
             .mnemonic(refreshCaption.charAt(0))
             .icon(frameworkIcons().refresh()).build();
@@ -629,7 +629,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control createClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
     return Control.builder(tableModel::clear)
-            .name(clearCaption)
+            .caption(clearCaption)
             .mnemonic(clearCaption.charAt(0))
             .build();
   }
@@ -1085,7 +1085,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected Controls createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
     return Controls.builder()
-            .name(printCaption)
+            .caption(printCaption)
             .mnemonic(printCaption.charAt(0))
             .icon(frameworkIcons().print())
             .control(controls.get(ControlCode.PRINT_TABLE))
@@ -1094,26 +1094,26 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected final Control createConditionPanelControl() {
     return ToggleControl.builder(conditionPanelVisibleState)
-            .name(FrameworkMessages.get(FrameworkMessages.SHOW))
+            .caption(FrameworkMessages.get(FrameworkMessages.SHOW))
             .build();
   }
 
   protected final Controls createCopyControls() {
     return Controls.builder()
-            .name(Messages.get(Messages.COPY))
+            .caption(Messages.get(Messages.COPY))
             .icon(frameworkIcons().copy())
             .controls(createCopyCellControl(), createCopyTableWithHeaderControl()).build();
   }
 
   protected final Control createCopyCellControl() {
     return Control.builder(this::copySelectedCell)
-            .name(FrameworkMessages.get(FrameworkMessages.COPY_CELL))
+            .caption(FrameworkMessages.get(FrameworkMessages.COPY_CELL))
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver()).build();
   }
 
   protected final Control createCopyTableWithHeaderControl() {
     return Control.builder(this::copyTableAsDelimitedString)
-            .name(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER))
+            .caption(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER))
             .build();
   }
 
@@ -1445,7 +1445,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void addConditionControls(final Controls popupControls) {
     final Controls conditionControls = Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .icon(frameworkIcons().filter()).build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
@@ -1456,7 +1456,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       conditionControls.addSeparator();
     }
     conditionControls.add(ToggleControl.builder(tableModel.getQueryConditionRequiredState())
-            .name(MESSAGES.getString("require_query_condition"))
+            .caption(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description")).build());
     if (!conditionControls.isEmpty()) {
       popupControls.add(conditionControls);

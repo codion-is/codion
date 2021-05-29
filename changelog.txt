@@ -7172,3 +7172,4 @@
   Property.Builder, intruduced recursive generics, lots of redundant overrides removed
   Call to beginTransaction() moved outside try clause
   DatabaseException, added a convenient constructor overload
+  Control.name renamed caption, name deprecated

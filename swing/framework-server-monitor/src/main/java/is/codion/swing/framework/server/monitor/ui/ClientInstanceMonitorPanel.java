@@ -97,7 +97,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
     settingsPanel.add(Control.builder(this::updateView)
-            .name("Refresh log")
+            .caption("Refresh log")
             .build().createButton());
     infoBase.add(settingsPanel, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
@@ -106,7 +106,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     logArea.setEditable(false);
     logArea.setComponentPopupMenu(Controls.builder()
             .control(Control.builder(this::saveLogToFile)
-                    .name("Save to file..."))
+                    .caption("Save to file..."))
             .build().createPopupMenu());
 
     KeyEvents.builder()

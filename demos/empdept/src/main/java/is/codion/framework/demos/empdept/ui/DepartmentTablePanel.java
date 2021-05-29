@@ -46,7 +46,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
     return super.createPrintControls()
             .add(Control.builder(this::viewEmployeeReport)
-                    .name("Employee Report")
+                    .caption("Employee Report")
                     .enabledState(selectionNotEmptyObserver)
                     .build());
   }

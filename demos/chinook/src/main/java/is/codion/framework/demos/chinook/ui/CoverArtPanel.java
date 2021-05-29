@@ -56,9 +56,9 @@ final class CoverArtPanel extends JPanel {
 
     final JPanel coverButtonPanel = Controls.builder()
             .control(Control.builder(this::setCover)
-                    .name(BUNDLE.getString(SELECT_COVER)))
+                    .caption(BUNDLE.getString(SELECT_COVER)))
             .control(Control.builder(this::removeCover)
-                    .name(BUNDLE.getString(REMOVE_COVER)))
+                    .caption(BUNDLE.getString(REMOVE_COVER)))
             .build().createHorizontalButtonPanel();
 
     add(coverPanel, BorderLayout.CENTER);

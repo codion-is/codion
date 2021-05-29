@@ -41,7 +41,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
                                          final EventListener onSearchListener) {
     super(tableConditionModel, columnModel.getAllColumns());
     this.searchControl = Control.builder(this::performSimpleSearch)
-            .name(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .build();
     this.simpleSearchTextField = ComponentBuilders.textField()
             .columns(12)
