@@ -132,8 +132,8 @@ public class EntityTestUnit {
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
   public final void test(final EntityType<?> entityType) throws DatabaseException {
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       final Map<EntityType<?>, Entity> foreignKeyEntities = initializeReferencedEntities(entityType, new HashMap<>());
       Entity testEntity = null;
       final EntityDefinition entityDefinition = getEntities().getDefinition(entityType);

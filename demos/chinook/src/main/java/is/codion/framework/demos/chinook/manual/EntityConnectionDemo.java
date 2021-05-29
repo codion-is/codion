@@ -7,12 +7,11 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
+import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
@@ -23,6 +22,8 @@ import is.codion.framework.domain.entity.Key;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -41,15 +42,13 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    Condition condition = where(Artist.NAME).equalTo("The %");
+    List<Entity> artists = connection.select(
+            where(Artist.NAME).equalTo("The %"));
 
-    List<Entity> artists = connection.select(condition);
-
-    condition = where(Album.ARTIST_FK).equalTo(artists)
-            .and(where(Album.TITLE).notEqualTo("%live%")
-                    .caseSensitive(false));
-
-    List<Entity> nonLiveAlbums = connection.select(condition);
+    List<Entity> nonLiveAlbums = connection.select(
+            where(Album.ARTIST_FK).equalTo(artists)
+                    .and(where(Album.TITLE).notEqualTo("%live%")
+                            .caseSensitive(false)));
     // end::selectCondition[]
   }
 
@@ -71,11 +70,10 @@ public final class EntityConnectionDemo {
 
   static void fetchDepthCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthCondition[]
-    SelectCondition selectCondition =
+    List<Entity> tracks = connection.select(
             where(Track.NAME).equalTo("Bad%")
-                    .asSelectCondition().fetchDepth(0);
-
-    List<Entity> tracks = connection.select(selectCondition);
+                    .asSelectCondition()
+                    .fetchDepth(0));
 
     Entity track = tracks.get(0);
 
@@ -87,11 +85,10 @@ public final class EntityConnectionDemo {
 
   static void fetchDepthForeignKeyCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthConditionForeignKey[]
-    SelectCondition selectCondition =
+    List<Entity> tracks = connection.select(
             where(Track.NAME).equalTo("Bad%")
-                    .asSelectCondition().fetchDepth(Track.ALBUM_FK, 0);
-
-    List<Entity> tracks = connection.select(selectCondition);
+                    .asSelectCondition()
+                    .fetchDepth(Track.ALBUM_FK, 0));
 
     Entity track = tracks.get(0);
 
@@ -107,6 +104,7 @@ public final class EntityConnectionDemo {
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
     Entities entities = connection.getEntities();
+
     Key key42 = entities.primaryKey(Artist.TYPE, 42L);
     Key key43 = entities.primaryKey(Artist.TYPE, 43L);
 
@@ -114,12 +112,14 @@ public final class EntityConnectionDemo {
     // end::selectKeys[]
   }
 
-  static void selectValue(EntityConnection connection) throws DatabaseException {
-    // tag::selectValue[]
-    Entity aliceInChains = connection.selectSingle(Artist.NAME, "Alice In Chains");
+  static void selectByValue(EntityConnection connection) throws DatabaseException {
+    // tag::selectByValue[]
+    Entity aliceInChains =
+            connection.selectSingle(Artist.NAME, "Alice In Chains");
 
-    List<Entity> albums = connection.select(Album.ARTIST_FK, aliceInChains);
-    // end::selectValue[]
+    List<Entity> albums =
+            connection.select(Album.ARTIST_FK, aliceInChains);
+    // end::selectByValue[]
   }
 
   static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
@@ -136,7 +136,9 @@ public final class EntityConnectionDemo {
 
   static void selectSingleKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleKeys[]
-    Key key42 = connection.getEntities().primaryKey(Artist.TYPE, 42L);
+    Entities entities = connection.getEntities();
+
+    Key key42 = entities.primaryKey(Artist.TYPE, 42L);
 
     Entity artists = connection.selectSingle(key42);
     // end::selectSingleKeys[]
@@ -186,12 +188,16 @@ public final class EntityConnectionDemo {
 
     connection.insert(myBand);
 
-    Entity album = entities.builder(Album.TYPE)
+    Entity firstAlbum = entities.builder(Album.TYPE)
             .with(Album.ARTIST_FK, myBand)
             .with(Album.TITLE, "First album")
             .build();
+    Entity secondAlbum = entities.builder(Album.TYPE)
+            .with(Album.ARTIST_FK, myBand)
+            .with(Album.TITLE, "Second album")
+            .build();
 
-    connection.insert(album);
+    List<Key> keys = connection.insert(asList(firstAlbum, secondAlbum));
     // end::insert[]
   }
 
@@ -202,33 +208,85 @@ public final class EntityConnectionDemo {
     myBand.put(Artist.NAME, "Proper Name");
 
     connection.update(myBand);
+
+    List<Entity> customersWithoutPhoneNo =
+            connection.select(where(Customer.PHONE).isNull());
+
+    Entity.put(Customer.PHONE, "<none>", customersWithoutPhoneNo);
+
+    connection.update(customersWithoutPhoneNo);
     // end::update[]
   }
 
   static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
-    UpdateCondition updateCondition = where(Artist.NAME).equalTo("Azymuth").asUpdateCondition();
+    connection.update(
+            where(Artist.NAME).equalTo("Azymuth")
+                    .asUpdateCondition()
+                    .set(Artist.NAME, "Azymouth"));
 
-    updateCondition.set(Artist.NAME, "Another Name");
-
-    connection.update(updateCondition);
+    int updateCount = connection.update(
+            where(Customer.EMAIL).isNull()
+                    .asUpdateCondition()
+                    .set(Customer.EMAIL, "<none>"));
     // end::updateCondition[]
   }
 
   static void deleteCondition(EntityConnection connection) throws DatabaseException {
     // tag::deleteCondition[]
-    Entity myBand = connection.selectSingle(Artist.NAME, "Proper Name");
+    Entity aquaman = connection.selectSingle(Artist.NAME, "Aquaman");
 
-    int deleteCount = connection.delete(where(Album.ARTIST_FK).equalTo(myBand));
+    List<Long> aquamanAlbumIds = connection.select(Album.ID,
+            where(Album.ARTIST_FK).equalTo(aquaman));
+
+    List<Long> aquamanTrackIds = connection.select(Track.ID,
+            where(Track.ALBUM_ID).equalTo(aquamanAlbumIds));
+
+    int playlistTracksDeleted = connection.delete(
+            where(PlaylistTrack.TRACK_ID).equalTo(aquamanTrackIds));
+
+    int tracksDeleted = connection.delete(
+            where(Track.ALBUM_ID).equalTo(aquamanAlbumIds));
+
+    int albumsDeleted = connection.delete(
+            where(Album.ARTIST_FK).equalTo(aquaman));
     // end::deleteCondition[]
   }
 
   static void deleteKey(EntityConnection connection) throws DatabaseException {
     // tag::deleteKey[]
-    Entity myBand = connection.selectSingle(Artist.NAME, "Proper Name");
+    Entity audioslave = connection.selectSingle(Artist.NAME, "Audioslave");
 
-    boolean deleted = connection.delete(myBand.getPrimaryKey());
+    List<Entity> albums = connection.select(Album.ARTIST_FK, audioslave);
+    List<Entity> tracks = connection.select(Track.ALBUM_FK, albums);
+    List<Entity> playlistTracks = connection.select(PlaylistTrack.TRACK_FK, tracks);
+    List<Entity> invoiceLines = connection.select(InvoiceLine.TRACK_FK, tracks);
+
+    List<Key> toDelete = new ArrayList<>();
+    toDelete.addAll(Entity.getPrimaryKeys(invoiceLines));
+    toDelete.addAll(Entity.getPrimaryKeys(playlistTracks));
+    toDelete.addAll(Entity.getPrimaryKeys(tracks));
+    toDelete.addAll(Entity.getPrimaryKeys(albums));
+    toDelete.add(audioslave.getPrimaryKey());
+
+    int deletedCount = connection.delete(toDelete);
     // end::deleteKey[]
+  }
+
+  static void iterator(EntityConnection connection) throws DatabaseException {
+    // tag::iterator[]
+    LocalEntityConnection localConnection = (LocalEntityConnection) connection;
+
+    try (ResultIterator<Entity> iterator =
+                 localConnection.iterator(where(Customer.EMAIL).isNotNull())) {
+      while (iterator.hasNext()) {
+        System.out.println(iterator.next().get(Customer.EMAIL));
+      }
+    }
+    catch (SQLException e) {
+      throw new DatabaseException(e);
+    }
+    // end::iterator[]
   }
 
   static void function(EntityConnection connection) throws DatabaseException {
@@ -236,9 +294,12 @@ public final class EntityConnectionDemo {
     List<Long> trackIds = asList(123L, 1234L);
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
-    List<Entity> modifiedTracks = connection.executeFunction(Track.RAISE_PRICE, asList(trackIds, priceIncrease));
+    List<Entity> modifiedTracks =
+            connection.executeFunction(Track.RAISE_PRICE,
+                    asList(trackIds, priceIncrease));
 
-    List<Entity> modifiedInvoices = connection.executeFunction(Invoice.UPDATE_TOTALS);
+    List<Entity> modifiedInvoices =
+            connection.executeFunction(Invoice.UPDATE_TOTALS);
     // end::function[]
   }
 
@@ -253,12 +314,26 @@ public final class EntityConnectionDemo {
 
   static void transaction(EntityConnection connection) throws DatabaseException {
     // tag::transaction[]
-    try {
-      connection.beginTransaction();
+    Entities entities = connection.getEntities();
 
-      //perform insert/update/delete
+    connection.beginTransaction();
+    try {
+      Entity artist = entities.builder(Artist.TYPE)
+              .with(Artist.NAME, "The Band")
+              .build();
+      connection.insert(artist);
+
+      Entity album = entities.builder(Album.TYPE)
+              .with(Album.ARTIST_FK, artist)
+              .with(Album.TITLE, "The Album")
+              .build();
+      connection.insert(album);
 
       connection.commitTransaction();
+    }
+    catch (DatabaseException e) {
+      connection.rollbackTransaction();
+      throw e;
     }
     catch (Exception e) {
       connection.rollbackTransaction();
@@ -282,7 +357,8 @@ public final class EntityConnectionDemo {
     fetchDepthCondition(connection);
     fetchDepthForeignKeyCondition(connection);
     selectKeys(connection);
-    selectValue(connection);
+    selectByValue(connection);
+    iterator(connection);
     selectSingleCondition(connection);
     selectSingleKeys(connection);
     selectSingleValue(connection);

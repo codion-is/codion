@@ -41,7 +41,7 @@ public final class DatabaseExplorerModel {
       bindEvents();
     }
     catch (final SQLException e) {
-      throw new DatabaseException(e, e.getMessage());
+      throw new DatabaseException(e);
     }
   }
 

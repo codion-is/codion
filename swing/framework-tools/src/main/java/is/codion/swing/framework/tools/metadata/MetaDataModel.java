@@ -27,7 +27,7 @@ public final class MetaDataModel {
       this.schemas = discoverSchemas(metaData);
     }
     catch (final SQLException e) {
-      throw new DatabaseException(e, e.getMessage());
+      throw new DatabaseException(e);
     }
   }
 

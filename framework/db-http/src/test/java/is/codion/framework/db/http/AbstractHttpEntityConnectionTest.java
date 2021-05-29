@@ -137,8 +137,8 @@ abstract class AbstractHttpEntityConnectionTest {
     final UpdateCondition updateCondition = where(TestDomain.EMP_COMMISSION).isNull().asUpdateCondition()
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
       final List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
@@ -155,8 +155,8 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   public void deleteByKey() throws IOException, DatabaseException {
     final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       assertTrue(connection.delete(employee.getPrimaryKey()));
       final List<Entity> selected = connection.select(singletonList(employee.getPrimaryKey()));
       assertTrue(selected.isEmpty());
@@ -170,8 +170,8 @@ abstract class AbstractHttpEntityConnectionTest {
   public void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
     final Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);
     final Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 1);
+    connection.beginTransaction();
     try {
-      connection.beginTransaction();
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
       assertEquals(2, connection.delete(asList(deptKey, empKey)));
       final List<Entity> selected = connection.select(asList(deptKey, empKey));

@@ -3,6 +3,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :dir-petstore-source: ../../../../../demos/petstore/src/main/java
 :dir-world-source: ../../../../../demos/world/src/main/java
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
 The domain model in Codion is based on the {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table. Defining the domain model involves creating constants representing the domain ({url-javadoc}/is/codion/framework/domain/DomainType.html[DomainType]), the table ({url-javadoc}/is/codion/framework/domain/entity/EntityType.html[EntityType]), columns ({url-javadoc}/is/codion/framework/domain/entity/Attribute.html[Attribute]) and foreign keys ({url-javadoc}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey]). These constants represent the domain API and are used when referring to tables, columns or foreign keys.
@@ -289,9 +290,18 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 [#_keygenerator]
 == KeyGenerator
 
-The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] class serves as a factory for {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most commonly used primary key generation strategies, identity column, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] class serves as a factory for {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
-=== Auto-increment
+=== Identity
+
+Based on identity columns, supported by most DBMSs.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=identity]
+----
+
+=== Automatic
 
 This assumes the underlying primary key column is either an auto-increment column or is populated from a sequence using a trigger during insert.
 For auto-increment columns the **valueSource** parameter should be the table name and for a sequence/trigger it should be the sequence name.
