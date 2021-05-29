@@ -30,8 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsTest {
 
@@ -114,9 +113,28 @@ public class JasperReportsTest {
 
   @Test
   public void classPathReport() throws DatabaseException, ReportException {
-    final HashMap<String, Object> reportParameters = new HashMap<>();
+    final JRReportType report = JasperReports.reportType("report");
+    final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
-    TestDomain.EMPLOYEE_CLASSPATH_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
+    report.fillReport(connection.getDatabaseConnection().getConnection(), TestDomain.EMPLOYEE_CLASSPATH_REPORT, reportParameters);
+
+    assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").loadReport());
+  }
+
+  @Test
+  public void fileReport() throws DatabaseException, ReportException {
+    final JRReportType report = JasperReports.reportType("report");
+    final Map<String, Object> reportParameters = new HashMap<>();
+    reportParameters.put("DEPTNO", asList(10, 20));
+    final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+    report.fillReport(connection.getDatabaseConnection().getConnection(), TestDomain.EMPLOYEE_FILE_REPORT, reportParameters);
+
+    assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper").loadReport());
+  }
+
+  @Test
+  public void reportType() {
+    assertNotEquals(JasperReports.reportType("name"), JasperReports.reportType("another"));
   }
 }
