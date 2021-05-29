@@ -4,6 +4,7 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 :url-entity-connection: {url-javadoc}/is/codion/framework/db/EntityConnection.html
+:url-local-entity-connection: {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html
 
 The Codion database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
 
@@ -19,9 +20,9 @@ By default, when you select a row using {url-entity-connection}[EntityConnection
 
 .The N+1 problem
 
-This means that selecting tracks performs four queries, but that number of queries is the same whether you select one or a thousand tracks.
+This means that selecting tracks performs four queries (track + album, mediatype and genre), but that number of queries is the same whether you select one or a thousand tracks.
 
-The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *codion.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitFetchDepth-boolean-[connection.setLimitFetchDepth(false)].
+The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *codion.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitFetchDepth-boolean-[connection.setLimitFetchDepth(false)].
 
 [source,java,indent=0]
 ----
@@ -72,7 +73,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValue]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectByValue]
 ----
 
 === selectSingle
@@ -109,6 +110,17 @@ For selecting the values of a single column.
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
+----
+
+=== iterator
+
+*LocalEntityConnection* provides a way to iterate over a result set, instead of loading it into memory.
+
+{url-local-entity-connection}#iterator-is.codion.framework.db.condition.Condition-[iterator(Condition condition)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=iterator]
 ----
 
 === selectDependencies
@@ -150,7 +162,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === update
 
-For updating one or more entity instances. These methods throw an exception if the entities are not modified.
+For updating one or more entity instances. These methods throw an exception if any of the entities is unmodified.
 
 ** {url-entity-connection}#update-is.codion.framework.domain.entity.Entity-[update(Entity entity)]
 
@@ -161,7 +173,7 @@ For updating one or more entity instances. These methods throw an exception if t
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
 ----
 
-=== Optimistic locking
+==== Optimistic locking
 
 The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all the original property values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system wide using the *codion.db.useOptimisticLocking=false* system property or {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled-boolean-[connection.setOptimisticLockingEnabled(false)].
 
