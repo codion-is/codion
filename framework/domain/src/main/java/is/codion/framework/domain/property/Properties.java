@@ -26,10 +26,11 @@ public final class Properties {
   /**
    * Creates a new {@link ColumnProperty.Builder} instance.
    * @param attribute the attribute
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> columnProperty(final Attribute<T> attribute) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(final Attribute<T> attribute) {
     return columnProperty(attribute, null);
   }
 
@@ -37,10 +38,11 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance.
    * @param attribute the attribute
    * @param caption the property caption
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> columnProperty(final Attribute<T> attribute, final String caption) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(final Attribute<T> attribute, final String caption) {
     return new DefaultColumnProperty<>(attribute, caption).builder();
   }
 
@@ -48,10 +50,11 @@ public final class Properties {
    * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
    * with the primary key index set to 0.
    * @param attribute the attribute
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  public static <T> ColumnProperty.Builder<T> primaryKeyProperty(final Attribute<T> attribute) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B>  primaryKeyProperty(final Attribute<T> attribute) {
     return primaryKeyProperty(attribute, null);
   }
 
@@ -60,11 +63,12 @@ public final class Properties {
    * with the primary key index set to 0.
    * @param attribute the attribute
    * @param caption the property caption
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  public static <T> ColumnProperty.Builder<T> primaryKeyProperty(final Attribute<T> attribute, final String caption) {
-    return columnProperty(attribute, caption).primaryKeyIndex(0);
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B>  primaryKeyProperty(final Attribute<T> attribute, final String caption) {
+    return (ColumnProperty.Builder<T, B>) columnProperty(attribute, caption).primaryKeyIndex(0);
   }
 
   /**
@@ -88,30 +92,32 @@ public final class Properties {
 
   /**
    * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a entity attribute.
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @param attribute the attribute
    * @param entityAttribute the entity attribute from which this property gets its value
    * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
-  public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute,
-                                                                          final Attribute<Entity> entityAttribute,
-                                                                          final Attribute<T> denormalizedAttribute) {
+  public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedViewProperty(final Attribute<T> attribute,
+                                                                                                                        final Attribute<Entity> entityAttribute,
+                                                                                                                        final Attribute<T> denormalizedAttribute) {
     return denormalizedViewProperty(attribute, null, entityAttribute, denormalizedAttribute);
   }
 
   /**
    * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a entity attribute.
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @param attribute the attribute
    * @param caption the caption of this property
    * @param entityAttribute the entity attribute from which this property gets its value
    * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
-  public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute, final String caption,
-                                                                          final Attribute<Entity> entityAttribute,
-                                                                          final Attribute<T> denormalizedAttribute) {
+  public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedViewProperty(final Attribute<T> attribute, final String caption,
+                                                                                                                        final Attribute<Entity> entityAttribute,
+                                                                                                                        final Attribute<T> denormalizedAttribute) {
     final DerivedProperty.Provider<T> valueProvider = sourceValues -> {
       final Entity foreignKeyValue = sourceValues.get(entityAttribute);
 
@@ -126,13 +132,14 @@ public final class Properties {
    * @param attribute the attribute
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
    * @param linkedAttributes the attributes from which this property derives its value
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link TransientProperty.Builder}
    * @throws IllegalArgumentException in case no linked property ids are provided
    */
-  public static <T> TransientProperty.Builder<T> derivedProperty(final Attribute<T> attribute,
-                                                                 final DerivedProperty.Provider<T> valueProvider,
-                                                                 final Attribute<?>... linkedAttributes) {
+  public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> derivedProperty(final Attribute<T> attribute,
+                                                                                                               final DerivedProperty.Provider<T> valueProvider,
+                                                                                                               final Attribute<?>... linkedAttributes) {
     return derivedProperty(attribute, null, valueProvider, linkedAttributes);
   }
 
@@ -142,13 +149,14 @@ public final class Properties {
    * @param caption the caption
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
    * @param linkedAttributes the ids of the properties from which this property derives its value
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link TransientProperty.Builder}
    * @throws IllegalArgumentException in case no linked property ids are provided
    */
-  public static <T> TransientProperty.Builder<T> derivedProperty(final Attribute<T> attribute, final String caption,
-                                                                 final DerivedProperty.Provider<T> valueProvider,
-                                                                 final Attribute<?>... linkedAttributes) {
+  public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> derivedProperty(final Attribute<T> attribute, final String caption,
+                                                                                                               final DerivedProperty.Provider<T> valueProvider,
+                                                                                                               final Attribute<?>... linkedAttributes) {
     return new DefaultDerivedProperty<>(attribute, caption, valueProvider, linkedAttributes).builder();
   }
 
@@ -157,12 +165,13 @@ public final class Properties {
    * @param attribute the attribute to base this property on
    * @param entityAttribute the entity attribute owning the attribute which value to mirror
    * @param denormalizedAttribute the attribute from which this attribute should get its value
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute,
-                                                                   final Attribute<Entity> entityAttribute,
-                                                                   final Attribute<T> denormalizedAttribute) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> denormalizedProperty(final Attribute<T> attribute,
+                                                                                                              final Attribute<Entity> entityAttribute,
+                                                                                                              final Attribute<T> denormalizedAttribute) {
     return denormalizedProperty(attribute, null, entityAttribute, denormalizedAttribute);
   }
 
@@ -172,12 +181,13 @@ public final class Properties {
    * @param caption the property caption
    * @param entityAttribute the entity attribute owning the attribute which value to mirror
    * @param denormalizedAttribute the attribute from which this attribute should get its value
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute, final String caption,
-                                                                   final Attribute<Entity> entityAttribute,
-                                                                   final Attribute<T> denormalizedAttribute) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> denormalizedProperty(final Attribute<T> attribute, final String caption,
+                                                                                                              final Attribute<Entity> entityAttribute,
+                                                                                                              final Attribute<T> denormalizedAttribute) {
     return new DefaultDenormalizedProperty<>(attribute, entityAttribute, denormalizedAttribute, caption).builder();
   }
 
@@ -185,10 +195,11 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, based on a subquery.
    * @param attribute the attribute
    * @param subquery the sql query
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> subqueryProperty(final Attribute<T> attribute, final String subquery) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(final Attribute<T> attribute, final String subquery) {
     return subqueryProperty(attribute, null, subquery);
   }
 
@@ -197,11 +208,12 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param subquery the sql query
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> subqueryProperty(final Attribute<T> attribute, final String caption,
-                                                               final String subquery) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(final Attribute<T> attribute, final String caption,
+                                                                                                          final String subquery) {
     return new DefaultSubqueryProperty<>(attribute, caption, subquery).builder();
   }
 
@@ -209,10 +221,11 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, based on the given items.
    * @param attribute the attribute
    * @param validItems the Items representing all the valid values for this property
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> itemProperty(final Attribute<T> attribute, final List<Item<T>> validItems) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(final Attribute<T> attribute, final List<Item<T>> validItems) {
     return itemProperty(attribute, null, validItems);
   }
 
@@ -221,21 +234,23 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param validItems the Items representing all the valid values for this property
-   * @param <T> the property type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> itemProperty(final Attribute<T> attribute, final String caption,
-                                                           final List<Item<T>> validItems) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(final Attribute<T> attribute, final String caption,
+                                                                                                      final List<Item<T>> validItems) {
     return new DefaultItemProperty<>(attribute, caption, validItems).builder();
   }
 
   /**
    * Creates a new {@link TransientProperty.Builder} instance, which does not map to an underlying table column.
    * @param attribute the attribute
-   * @param <T> the attribute type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link TransientProperty.Builder}
    */
-  public static <T> TransientProperty.Builder<T> transientProperty(final Attribute<T> attribute) {
+  public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> transientProperty(final Attribute<T> attribute) {
     return transientProperty(attribute, null);
   }
 
@@ -243,30 +258,33 @@ public final class Properties {
    * Creates a new {@link TransientProperty.Builder} instance, which does not map to an underlying table column.
    * @param attribute the attribute
    * @param caption the property caption
-   * @param <T> the attribute type
+   * @param <T> the attribute value type
+   * @param <B> the builder type
    * @return a new {@link TransientProperty.Builder}
    */
-  public static <T> TransientProperty.Builder<T> transientProperty(final Attribute<T> attribute, final String caption) {
+  public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> transientProperty(final Attribute<T> attribute, final String caption) {
     return new DefaultTransientProperty<>(attribute, caption).builder();
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param <C> the column type
+   * @param <B> the builder type
    * @param attribute the attribute
    * @param columnClass the underlying column data type class
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <C> ColumnProperty.Builder<Boolean> booleanProperty(final Attribute<Boolean> attribute, final Class<C> columnClass,
-                                                                    final C trueValue, final C falseValue) {
+  public static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(final Attribute<Boolean> attribute, final Class<C> columnClass,
+                                                                                                                     final C trueValue, final C falseValue) {
     return booleanProperty(attribute, null, columnClass, trueValue, falseValue);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param <C> the column type
+   * @param <B> the builder type
    * @param columnClass the underlying column data type class
    * @param attribute the attribute
    * @param caption the property caption
@@ -274,9 +292,9 @@ public final class Properties {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <C> ColumnProperty.Builder<Boolean> booleanProperty(final Attribute<Boolean> attribute, final String caption,
-                                                                    final Class<C> columnClass, final C trueValue, final C falseValue) {
-    return new DefaultColumnProperty<>(attribute, caption).builder()
+  public static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B>booleanProperty(final Attribute<Boolean> attribute, final String caption,
+                                                                                                                    final Class<C> columnClass, final C trueValue, final C falseValue) {
+    return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnProperty<>(attribute, caption).builder()
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }
 
@@ -303,9 +321,10 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
    * @param attribute the attribute
    * @param <T> the Temporal type to base this property on
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T extends Temporal> ColumnProperty.Builder<T> auditInsertTimeProperty(final Attribute<T> attribute) {
+  public static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(final Attribute<T> attribute) {
     return auditInsertTimeProperty(attribute, null);
   }
 
@@ -314,9 +333,10 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param <T> the Temporal type to base this property on
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T extends Temporal> ColumnProperty.Builder<T> auditInsertTimeProperty(final Attribute<T> attribute, final String caption) {
+  public static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(final Attribute<T> attribute, final String caption) {
     return new DefaultAuditTimeProperty<>(attribute, INSERT, caption).builder();
   }
 
@@ -324,9 +344,10 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
    * @param attribute the attribute
    * @param <T> the Temporal type to base this property on
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T extends Temporal> ColumnProperty.Builder<T> auditUpdateTimeProperty(final Attribute<T> attribute) {
+  public static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(final Attribute<T> attribute) {
     return auditUpdateTimeProperty(attribute, null);
   }
 
@@ -335,37 +356,41 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param <T> the Temporal type to base this property on
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T extends Temporal> ColumnProperty.Builder<T> auditUpdateTimeProperty(final Attribute<T> attribute, final String caption) {
+  public static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(final Attribute<T> attribute, final String caption) {
     return new DefaultAuditTimeProperty<>(attribute, UPDATE, caption).builder();
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who inserted a record.
    * @param attribute the attribute
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<String> auditInsertUserProperty(final Attribute<String> attribute) {
+  public static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(final Attribute<String> attribute) {
     return auditInsertUserProperty(attribute, null);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who inserted a record.
    * @param attribute the attribute
+   * @param <B> the builder type
    * @param caption the property caption
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<String> auditInsertUserProperty(final Attribute<String> attribute, final String caption) {
+  public static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(final Attribute<String> attribute, final String caption) {
     return new DefaultAuditUserProperty(attribute, INSERT, caption).builder();
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who updated a record.
    * @param attribute the attribute
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<String> auditUpdateUserProperty(final Attribute<String> attribute) {
+  public static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(final Attribute<String> attribute) {
     return auditUpdateUserProperty(attribute, null);
   }
 
@@ -373,9 +398,10 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who updated a record.
    * @param attribute the attribute
    * @param caption the property caption
+   * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder<String> auditUpdateUserProperty(final Attribute<String> attribute, final String caption) {
+  public static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(final Attribute<String> attribute, final String caption) {
     return new DefaultAuditUserProperty(attribute, UPDATE, caption).builder();
   }
 

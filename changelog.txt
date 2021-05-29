@@ -7138,3 +7138,4 @@
   ForeignKeySearchFieldBuilder.upperCase() and lowerCase(), parameters added
   Conditions.condition(Attribute) deprecated, where() added, Condition.select() and update() renamed asSelect() and asUpdate()
   RemoteEntityConnectionProvider.RemoteEntityConnectionHandler.isConnected(), ConnectException added, tests improved
+  Property.Builder, intruduced recursive generics, lots of redundant overrides removed

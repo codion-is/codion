@@ -22,7 +22,7 @@ public interface TransientProperty<T> extends Property<T> {
    * Builds a TransientProperty instance
    * @param <T> the property value type
    */
-  interface Builder<T> extends Property.Builder<T> {
+  interface Builder<T, B extends Builder<T, B>> extends Property.Builder<T, B> {
 
     /**
      * @return the property
@@ -33,6 +33,6 @@ public interface TransientProperty<T> extends Property<T> {
      * @param modifiesEntity if true then modifications to the value result in the owning entity becoming modified
      * @return this property instance
      */
-    TransientProperty.Builder<T> modifiesEntity(boolean modifiesEntity);
+    TransientProperty.Builder<T, B> modifiesEntity(boolean modifiesEntity);
   }
 }

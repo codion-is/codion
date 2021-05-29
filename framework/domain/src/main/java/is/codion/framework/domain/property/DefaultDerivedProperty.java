@@ -46,27 +46,8 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
     return sourceAttributes;
   }
 
-  /**
-   * @return a builder for this property instance
-   */
   @Override
-  TransientProperty.Builder<T> builder() {
-    return new DefaultDerivedPropertyBuilder<>(this);
-  }
-
-  private static final class DefaultDerivedPropertyBuilder<T>
-          extends DefaultTransientPropertyBuilder<T> implements Property.Builder<T> {
-
-    private final DefaultDerivedProperty<T> derivedProperty;
-
-    private DefaultDerivedPropertyBuilder(final DefaultDerivedProperty<T> derivedProperty) {
-      super(derivedProperty);
-      this.derivedProperty = derivedProperty;
-    }
-
-    @Override
-    public DerivedProperty<T> get() {
-      return derivedProperty;
-    }
+  <B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> builder() {
+    return new DefaultTransientPropertyBuilder<>(this);
   }
 }

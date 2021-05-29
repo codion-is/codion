@@ -145,7 +145,7 @@ public final class PropertiesTest {
 
   @Test
   public void minimumMaximumValue() {
-    final ColumnProperty.Builder<Double> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
+    final ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
     builder.minimumValue(5);
     assertThrows(IllegalArgumentException.class, () -> builder.maximumValue(4));
     builder.maximumValue(6);

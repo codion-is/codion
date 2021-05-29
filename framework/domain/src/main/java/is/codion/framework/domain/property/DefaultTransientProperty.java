@@ -26,15 +26,12 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
     return modifiesEntity;
   }
 
-  /**
-   * @return a builder for this property instance
-   */
-  TransientProperty.Builder<T> builder() {
+  <B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> builder() {
     return new DefaultTransientPropertyBuilder<>(this);
   }
 
-  static class DefaultTransientPropertyBuilder<T>
-          extends DefaultPropertyBuilder<T> implements TransientProperty.Builder<T> {
+  static class DefaultTransientPropertyBuilder<T, B extends TransientProperty.Builder<T, B>>
+          extends DefaultPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
 
     private final DefaultTransientProperty<T> transientProperty;
 
@@ -49,7 +46,7 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
     }
 
     @Override
-    public TransientProperty.Builder<T> modifiesEntity(final boolean modifiesEntity) {
+    public TransientProperty.Builder<T, B> modifiesEntity(final boolean modifiesEntity) {
       transientProperty.modifiesEntity = modifiesEntity;
       return this;
     }

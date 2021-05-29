@@ -195,7 +195,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
   DefaultEntityDefinition(final String domainName, final EntityType<?> entityType, final String tableName,
-                          final List<Property.Builder<?>> propertyBuilders) {
+                          final List<Property.Builder<?, ?>> propertyBuilders) {
     if (propertyBuilders.isEmpty()) {
       throw new IllegalArgumentException("An entity must have one or more properties");
     }
@@ -809,7 +809,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final int serializationVersion;
 
-    private EntityProperties(final EntityType<?> entityType, final List<Property.Builder<?>> propertyBuilders) {
+    private EntityProperties(final EntityType<?> entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.attributeMap = initializeAttributeMap();
@@ -832,9 +832,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.serializationVersion = createSerializationVersion();
     }
 
-    private Map<Attribute<?>, Property<?>> initializePropertyMap(final List<Property.Builder<?>> propertyBuilders) {
+    private Map<Attribute<?>, Property<?>> initializePropertyMap(final List<Property.Builder<?, ?>> propertyBuilders) {
       final Map<Attribute<?>, Property<?>> map = new LinkedHashMap<>(propertyBuilders.size());
-      for (final Property.Builder<?> builder : propertyBuilders) {
+      for (final Property.Builder<?, ?> builder : propertyBuilders) {
         validateAndAddProperty(builder.get(), map);
       }
       validatePrimaryKeyProperties(map);

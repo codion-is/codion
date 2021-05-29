@@ -28,16 +28,13 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     return subquery;
   }
 
-  /**
-   * @return a builder for this property instance
-   */
   @Override
-  ColumnProperty.Builder<T> builder() {
+  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
     return new DefaultSubqueryPropertyBuilder<>(this);
   }
 
-  private static final class DefaultSubqueryPropertyBuilder<T>
-          extends DefaultColumnPropertyBuilder<T> implements Property.Builder<T> {
+  private static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
     private final DefaultSubqueryProperty<T> subqueryProperty;
 
@@ -52,22 +49,22 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     }
 
     @Override
-    public ColumnProperty.Builder<T> readOnly() {
+    public ColumnProperty.Builder<T, B> readOnly() {
       throw new UnsupportedOperationException("Subquery properties are read only by default: " + property.getAttribute());
     }
 
     @Override
-    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
+    public ColumnProperty.Builder<T, B> readOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are read only by default: " + property.getAttribute());
     }
 
     @Override
-    public ColumnProperty.Builder<T> insertable(final boolean insertable) {
+    public ColumnProperty.Builder<T, B> insertable(final boolean insertable) {
       throw new UnsupportedOperationException("Subquery properties are never insertable: " + property.getAttribute());
     }
 
     @Override
-    public ColumnProperty.Builder<T> updatable(final boolean updatable) {
+    public ColumnProperty.Builder<T, B> updatable(final boolean updatable) {
       throw new UnsupportedOperationException("Subquery properties are never updatable: " + property.getAttribute());
     }
   }
