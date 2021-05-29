@@ -106,10 +106,10 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     final List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {
-      return Conditions.condition((Attribute<Object>) reference.getAttribute()).equalTo(values);
+      return Conditions.where((Attribute<Object>) reference.getAttribute()).equalTo(values);
     }
     if (operator == NOT_EQUAL) {
-      return Conditions.condition((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
+      return Conditions.where((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
     }
 
     throw new IllegalArgumentException("Unsupported operator: " + operator);

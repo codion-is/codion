@@ -366,7 +366,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityType() + " failed equals comparison");
     }
     else {
-      connection.select(condition(entityType).select().fetchCount(SELECT_FETCH_COUNT));
+      connection.select(condition(entityType).asSelectCondition().fetchCount(SELECT_FETCH_COUNT));
     }
   }
 

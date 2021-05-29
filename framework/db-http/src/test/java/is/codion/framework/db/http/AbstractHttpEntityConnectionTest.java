@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -129,11 +130,11 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final Condition selectCondition = condition(TestDomain.EMP_COMMISSION).isNull();
+    final Condition selectCondition = where(TestDomain.EMP_COMMISSION).isNull();
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final UpdateCondition updateCondition = condition(TestDomain.EMP_COMMISSION).isNull().update()
+    final UpdateCondition updateCondition = where(TestDomain.EMP_COMMISSION).isNull().asUpdateCondition()
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     try {

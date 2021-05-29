@@ -42,7 +42,7 @@ public final class ObservableEntityListTest {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(Conditions.condition(TestDomain.DEPARTMENT_NAME).notEqualTo("SALES", "OPERATIONS"));
+    list.setSelectCondition(Conditions.where(TestDomain.DEPARTMENT_NAME).notEqualTo("SALES", "OPERATIONS"));
     list.refresh();
     assertEquals(2, list.size());
   }

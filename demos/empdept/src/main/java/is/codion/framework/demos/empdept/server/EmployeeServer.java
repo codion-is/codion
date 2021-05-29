@@ -55,7 +55,7 @@ public final class EmployeeServer extends EntityServer {
     @Override
     public List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        final List<Entity> employees = connectionProxy.select(condition(Employee.TYPE).select().fetchDepth(-1));
+        final List<Entity> employees = connectionProxy.select(condition(Employee.TYPE).asSelectCondition().fetchDepth(-1));
 
         return Entity.castTo(Employee.TYPE, employees);
       }

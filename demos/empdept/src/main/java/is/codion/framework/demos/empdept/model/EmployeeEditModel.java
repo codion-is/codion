@@ -35,7 +35,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.setFilterSelectedItem(false);
       //Only select the president and managers from the database
       comboBoxModel.setSelectConditionProvider(() ->
-              Conditions.condition(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
+              Conditions.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
     }
 
     return comboBoxModel;

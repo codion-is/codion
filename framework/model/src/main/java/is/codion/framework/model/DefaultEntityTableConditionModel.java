@@ -329,7 +329,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private static Condition getForeignKeyCondition(final ForeignKeyConditionModel conditionModel) {
     final ForeignKey foreignKey = conditionModel.getColumnIdentifier();
     final Collection<Entity> values = conditionModel.getEqualValueSet().get();
-    final ForeignKeyConditionBuilder builder = Conditions.condition(foreignKey);
+    final ForeignKeyConditionBuilder builder = Conditions.where(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         return builder.equalTo(values);
@@ -342,7 +342,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private static <T> AttributeCondition<T> getCondition(final ColumnConditionModel<?, T> conditionModel) {
     final Collection<T> equalToValues = conditionModel.getEqualValues();
-    final AttributeCondition.Builder<T> builder = Conditions.condition((Attribute<T>) conditionModel.getColumnIdentifier());
+    final AttributeCondition.Builder<T> builder = Conditions.where((Attribute<T>) conditionModel.getColumnIdentifier());
     switch (conditionModel.getOperator()) {
       case EQUAL:
         final AttributeCondition<T> equalCondition = builder.equalTo(equalToValues);

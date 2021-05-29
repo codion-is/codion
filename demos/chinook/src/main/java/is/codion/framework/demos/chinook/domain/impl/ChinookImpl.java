@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
@@ -340,9 +341,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
   private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Object, List<Entity>> {
 
-    private static final SelectCondition ALL_INVOICES =
-            condition(Invoice.TYPE).select()
-                    .forUpdate().fetchDepth(0);
+    private static final SelectCondition ALL_INVOICES = condition(Invoice.TYPE)
+            .asSelectCondition().forUpdate().fetchDepth(0);
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
@@ -363,9 +363,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       List<Long> trackIds = (List<Long>) arguments.get(0);
       BigDecimal priceIncrease = (BigDecimal) arguments.get(1);
 
-      SelectCondition selectCondition =
-              condition(Track.ID).equalTo(trackIds).select()
-                      .forUpdate();
+      SelectCondition selectCondition = where(Track.ID).equalTo(trackIds)
+              .asSelectCondition().forUpdate();
 
       return entityConnection.update(Entity.castTo(Track.TYPE,
               entityConnection.select(selectCondition)).stream()

@@ -306,7 +306,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
         condition = condition(entityType);
       }
 
-      return connectionProvider.getConnection().select(condition.select()
+      return connectionProvider.getConnection().select(condition.asSelectCondition()
               .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
