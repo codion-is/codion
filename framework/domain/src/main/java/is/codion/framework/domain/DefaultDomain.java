@@ -101,7 +101,7 @@ public abstract class DefaultDomain implements Domain {
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final Property.Builder<?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final Property.Builder<?, ?>... propertyBuilders) {
     return define(entityType, entityType.getName(), propertyBuilders);
   }
 
@@ -117,7 +117,7 @@ public abstract class DefaultDomain implements Domain {
    * @throws IllegalArgumentException in case no properties are specified
    */
   protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
-                                                  final Property.Builder<?>... propertyBuilders) {
+                                                  final Property.Builder<?, ?>... propertyBuilders) {
     requireNonNull(entityType, "entityType");
     if (!domainType.contains(entityType)) {
       throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
@@ -248,7 +248,7 @@ public abstract class DefaultDomain implements Domain {
     }
 
     protected EntityDefinition.Builder defineInternal(final EntityType<?> entityType, final String tableName,
-                                                      final Property.Builder<?>... propertyBuilders) {
+                                                      final Property.Builder<?, ?>... propertyBuilders) {
       return super.define(entityType, tableName, propertyBuilders);
     }
 

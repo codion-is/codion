@@ -52,7 +52,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
   /**
    * Provides setters for ForeignKeyProperty properties
    */
-  interface Builder extends Property.Builder<Entity> {
+  interface Builder extends Property.Builder<Entity, Builder> {
 
     /**
      * @return the property

@@ -68,7 +68,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   private static final class DefaultForeignKeyPropertyBuilder
-          extends DefaultPropertyBuilder<Entity> implements ForeignKeyProperty.Builder {
+          extends DefaultPropertyBuilder<Entity, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
 
     private final DefaultForeignKeyProperty foreignKeyProperty;
 

@@ -69,10 +69,14 @@ public final class EntitiesTutorial {
 
     public Chinook() {
       super(DOMAIN);
-      // create properties for the columns in the table 'chinook.artist'
-      Property.Builder<Integer> artistId = primaryKeyProperty(Artist.ID);
+      //Note that the below demo code is unusual since the property builders are
+      //exposed for illustration purposes, the builders are usually hidden behind
+      //a fluent call chain in the *define* methods parameter list.
 
-      Property.Builder<String> artistName = columnProperty(Artist.NAME, "Name");
+      // create properties for the columns in the table 'chinook.artist'
+      Property.Builder<Integer, ?> artistId = primaryKeyProperty(Artist.ID);
+
+      Property.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name");
 
       artistName.nullable(false).maximumLength(120);
 
@@ -85,17 +89,17 @@ public final class EntitiesTutorial {
               .caption("Artist");
 
       // create properties for the columns in the table 'chinook.album'
-      Property.Builder<Integer> albumId = primaryKeyProperty(Album.ID);
+      Property.Builder<Integer, ?> albumId = primaryKeyProperty(Album.ID);
 
-      Property.Builder<String> albumTitle = columnProperty(Album.TITLE, "Title");
+      Property.Builder<String, ?> albumTitle = columnProperty(Album.TITLE, "Title");
 
       albumTitle.nullable(false).maximumLength(160);
 
-      Property.Builder<Integer> albumArtistId = columnProperty(Album.ARTIST_ID);
+      Property.Builder<Integer, ?> albumArtistId = columnProperty(Album.ARTIST_ID);
 
       albumId.nullable(false);
 
-      Property.Builder<Entity> albumArtist =
+      Property.Builder<Entity, ?> albumArtist =
               foreignKeyProperty(Album.ARTIST_FK, "Artist");
 
       // define an entity based on the table 'chinook.album',

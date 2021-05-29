@@ -139,7 +139,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
-                                                  final Property.Builder<?>... propertyBuilders) {
+                                                  final Property.Builder<?, ?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
     final DefaultEntityDefinition.DefaultBuilder definitionBuilder =
             new DefaultEntityDefinition(domainType.getName(), entityType, tableName,

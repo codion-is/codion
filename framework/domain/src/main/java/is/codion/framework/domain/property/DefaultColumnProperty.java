@@ -4,17 +4,14 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -140,9 +137,11 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   /**
+   * @param <T> the value type
+   * @param <B> the builder type
    * @return a builder for this property instance
    */
-  ColumnProperty.Builder<T> builder() {
+  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
     return new DefaultColumnPropertyBuilder<>(this);
   }
 
@@ -355,7 +354,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
   }
 
-  static class DefaultColumnPropertyBuilder<T> extends DefaultPropertyBuilder<T> implements ColumnProperty.Builder<T> {
+  static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
 
     private final DefaultColumnProperty<T> columnProperty;
 
@@ -370,121 +369,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public ColumnProperty.Builder<T> captionResourceKey(final String captionResourceKey) {
-      super.captionResourceKey(captionResourceKey);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> beanProperty(final String beanProperty) {
-      super.beanProperty(beanProperty);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> hidden() {
-      super.hidden();
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> hidden(final boolean hidden) {
-      super.hidden(hidden);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> defaultValue(final T defaultValue) {
-      return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> defaultValueSupplier(final ValueSupplier<T> supplier) {
-      super.defaultValueSupplier(supplier);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> nullable(final boolean nullable) {
-      super.nullable(nullable);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> maximumLength(final int maximumLength) {
-      super.maximumLength(maximumLength);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> maximumValue(final double maximumValue) {
-      super.maximumValue(maximumValue);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> minimumValue(final double minimumValue) {
-      super.minimumValue(minimumValue);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> numberFormatGrouping(final boolean numberFormatGrouping) {
-      super.numberFormatGrouping(numberFormatGrouping);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> preferredColumnWidth(final int preferredColumnWidth) {
-      super.preferredColumnWidth(preferredColumnWidth);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> description(final String description) {
-      super.description(description);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> mnemonic(final Character mnemonic) {
-      super.mnemonic(mnemonic);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> format(final Format format) {
-      super.format(format);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> dateTimePattern(final String dateTimePattern) {
-      super.dateTimePattern(dateTimePattern);
-      return this;
-    }
-
-    @Override
-    public ColumnProperty.Builder<T> localeDateTimePattern(final LocaleDateTimePattern localeDateTimePattern) {
-      super.localeDateTimePattern(localeDateTimePattern);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
-      super.maximumFractionDigits(maximumFractionDigits);
-      return this;
-    }
-
-    @Override
-    public final ColumnProperty.Builder<T> decimalRoundingMode(final RoundingMode decimalRoundingMode) {
-      super.decimalRoundingMode(decimalRoundingMode);
-      return this;
-    }
-
-    @Override
-    public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass,
-                                                     final ValueConverter<T, C> valueConverter) {
+    public final <C> ColumnProperty.Builder<T, B> columnClass(final Class<C> columnClass,
+                                                              final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
@@ -492,8 +378,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
-                                                     final ValueFetcher<C> valueFetcher) {
+    public final <C> ColumnProperty.Builder<T, B> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
+                                                              final ValueFetcher<C> valueFetcher) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
@@ -501,43 +387,43 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> columnName(final String columnName) {
+    public final ColumnProperty.Builder<T, B> columnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T> columnHasDefaultValue() {
+    public final ColumnProperty.Builder<T, B> columnHasDefaultValue() {
       columnProperty.columnHasDefaultValue = true;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder<T> readOnly() {
+    public ColumnProperty.Builder<T, B> readOnly() {
       return readOnly(true);
     }
 
     @Override
-    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
+    public ColumnProperty.Builder<T, B> readOnly(final boolean readOnly) {
       columnProperty.insertable = !readOnly;
       columnProperty.updatable = !readOnly;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder<T> insertable(final boolean insertable) {
+    public ColumnProperty.Builder<T, B> insertable(final boolean insertable) {
       columnProperty.insertable = insertable;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder<T> updatable(final boolean updatable) {
+    public ColumnProperty.Builder<T, B> updatable(final boolean updatable) {
       columnProperty.updatable = updatable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T> primaryKeyIndex(final int index) {
+    public final ColumnProperty.Builder<T, B> primaryKeyIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0: " + property.getAttribute());
       }
@@ -548,7 +434,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> groupingColumn() {
+    public final ColumnProperty.Builder<T, B> groupingColumn() {
       if (columnProperty.aggregateColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + property.getAttribute());
       }
@@ -557,7 +443,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> aggregateColumn() {
+    public final ColumnProperty.Builder<T, B> aggregateColumn() {
       if (columnProperty.groupingColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + property.getAttribute());
       }
@@ -566,13 +452,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> nonSelectable() {
+    public final ColumnProperty.Builder<T, B> nonSelectable() {
       columnProperty.selectable = false;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T> searchProperty() {
+    public final ColumnProperty.Builder<T, B> searchProperty() {
       if (!columnProperty.getAttribute().isString()) {
         throw new IllegalStateException("Search properties must be String based: " + property.getAttribute());
       }

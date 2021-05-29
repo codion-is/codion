@@ -47,15 +47,15 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private void define(final EntityType<?> entityType, final List<Property.Builder<?>> propertyBuilders) {
+  private void define(final EntityType<?> entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
     if (!propertyBuilders.isEmpty()) {
       define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
     }
   }
 
-  private List<Property.Builder<?>> getPropertyBuilders(final Table table, final EntityType<?> entityType,
+  private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType<?> entityType,
                                                         final List<ForeignKeyConstraint> foreignKeyConstraints) {
-    final List<Property.Builder<?>> builders = new ArrayList<>();
+    final List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
@@ -69,7 +69,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType<?> entityType) {
+  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType<?> entityType) {
     final Table referencedTable = foreignKeyConstraint.getReferencedTable();
     //todo foreign keys to a table of the same name in different schemas, attribute name clash
     final EntityType<?> referencedEntityType = tableEntityTypes.get(referencedTable);
@@ -81,10 +81,10 @@ final class DatabaseDomain extends DefaultDomain {
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
   }
 
-  private static ColumnProperty.Builder<?> getColumnPropertyBuilder(final Column column, final EntityType<?> entityType) {
+  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(final Column column, final EntityType<?> entityType) {
     final String caption = getCaption(column.getColumnName());
     final Attribute<?> attribute = getAttribute(entityType, column);
-    final ColumnProperty.Builder<?> builder;
+    final ColumnProperty.Builder<?, ?> builder;
     if (attribute.isByteArray()) {
       builder = blobProperty((Attribute<byte[]>) attribute, caption);
     }

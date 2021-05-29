@@ -16,7 +16,7 @@ public interface BlobProperty extends ColumnProperty<byte[]> {
   /**
    * Provides setters for BlobProperty properties
    */
-  interface Builder extends ColumnProperty.Builder<byte[]> {
+  interface Builder extends ColumnProperty.Builder<byte[], Builder> {
 
     /**
      * @return the property

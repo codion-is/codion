@@ -215,8 +215,9 @@ public interface Property<T> {
   /**
    * Builds a Property instance
    * @param <T> the property value type
+   * @param <B> the builder type
    */
-  interface Builder<T> {
+  interface Builder<T, B extends Builder<T, B>> {
 
     /**
      * Returns the underlying property.
@@ -233,55 +234,55 @@ public interface Property<T> {
      * @throws IllegalStateException in case the caption has already been set
      * @see EntityType#getResourceBundleName()
      */
-    Property.Builder<T> captionResourceKey(String captionResourceKey);
+    Property.Builder<T, B> captionResourceKey(String captionResourceKey);
 
     /**
      * Sets the bean name property to associate with this property
      * @param beanProperty the bean property name
      * @return this instance
      */
-    Property.Builder<T> beanProperty(String beanProperty);
+    Property.Builder<T, B> beanProperty(String beanProperty);
 
     /**
      * Sets the default value for this property, overrides the underlying column default value, if any
      * @param defaultValue the value to use as default
      * @return this instance
      */
-    Property.Builder<T> defaultValue(T defaultValue);
+    Property.Builder<T, B> defaultValue(T defaultValue);
 
     /**
      * Sets the default value supplier, use in case of dynamic default values.
      * @param supplier the default value supplier
      * @return this instance
      */
-    Property.Builder<T> defaultValueSupplier(ValueSupplier<T> supplier);
+    Property.Builder<T, B> defaultValueSupplier(ValueSupplier<T> supplier);
 
     /**
      * Specifies that this property should be hidden in table views
      * @return this instance
      */
-    Property.Builder<T> hidden();
+    Property.Builder<T, B> hidden();
 
     /**
      * Specifies whether this property should be hidden in table views
      * @param hidden true if this property should be hidden
      * @return this instance
      */
-    Property.Builder<T> hidden(boolean hidden);
+    Property.Builder<T, B> hidden(boolean hidden);
 
     /**
      * Sets the maximum allowed value for this property, only applicable to numerical properties
      * @param maximumValue the maximum allowed value
      * @return this instance
      */
-    Property.Builder<T> maximumValue(double maximumValue);
+    Property.Builder<T, B> maximumValue(double maximumValue);
 
     /**
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
      * @return this instance
      */
-    Property.Builder<T> minimumValue(double minimumValue);
+    Property.Builder<T, B> minimumValue(double minimumValue);
 
     /**
      * Sets the maximum fraction digits to show for this property, only applicable to properties based on decimal types.
@@ -292,7 +293,7 @@ public interface Property<T> {
      * @throws IllegalStateException in case the underlying attribute is not a decimal type
      * @see #decimalRoundingMode(RoundingMode)
      */
-    Property.Builder<T> maximumFractionDigits(int maximumFractionDigits);
+    Property.Builder<T, B> maximumFractionDigits(int maximumFractionDigits);
 
     /**
      * Sets the rounding mode to use when working with decimals
@@ -301,7 +302,7 @@ public interface Property<T> {
      * @throws IllegalStateException in case the underlying attribute is not a decimal
      * @see #maximumFractionDigits(int)
      */
-    Property.Builder<T> decimalRoundingMode(RoundingMode decimalRoundingMode);
+    Property.Builder<T, B> decimalRoundingMode(RoundingMode decimalRoundingMode);
 
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.
@@ -312,14 +313,14 @@ public interface Property<T> {
      * @param numberFormatGrouping if true then number grouping is used
      * @return this instance
      */
-    Property.Builder<T> numberFormatGrouping(boolean numberFormatGrouping);
+    Property.Builder<T, B> numberFormatGrouping(boolean numberFormatGrouping);
 
     /**
      * Specifies the preferred column width when displaying this property in a table.
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
      * @return this instance
      */
-    Property.Builder<T> preferredColumnWidth(int preferredColumnWidth);
+    Property.Builder<T, B> preferredColumnWidth(int preferredColumnWidth);
 
     /**
      * Specifies whether or not this property is nullable. Note that this will not prevent
@@ -327,28 +328,28 @@ public interface Property<T> {
      * @param nullable specifies whether or not this property accepts a null value
      * @return this instance
      */
-    Property.Builder<T> nullable(boolean nullable);
+    Property.Builder<T, B> nullable(boolean nullable);
 
     /**
      * Sets the maximum length of this property value, this applies to String (varchar) based properties
      * @param maximumLength the maximum length
      * @return this instance
      */
-    Property.Builder<T> maximumLength(int maximumLength);
+    Property.Builder<T, B> maximumLength(int maximumLength);
 
     /**
      * Sets the mnemonic to use when creating a label for this property
      * @param mnemonic the mnemonic character
      * @return this instance
      */
-    Property.Builder<T> mnemonic(Character mnemonic);
+    Property.Builder<T, B> mnemonic(Character mnemonic);
 
     /**
      * Sets the description for this property, used for tooltips f.ex.
      * @param description a String describing this property
      * @return this instance
      */
-    Property.Builder<T> description(String description);
+    Property.Builder<T, B> description(String description);
 
     /**
      * Sets the Format to use when presenting property values
@@ -360,7 +361,7 @@ public interface Property<T> {
      * @throws IllegalStateException if the underlying attribute is temporal, in which case
      * {@link #dateTimePattern(String)} or {@link #localeDateTimePattern(LocaleDateTimePattern)} should be used.
      */
-    Property.Builder<T> format(Format format);
+    Property.Builder<T, B> format(Format format);
 
     /**
      * Sets the date/time format pattern used when presenting and inputtind values
@@ -370,7 +371,7 @@ public interface Property<T> {
      * @throws IllegalStateException in case the underlying attribute is not a date/time based one
      * @throws IllegalStateException in case {@link #localeDateTimePattern(LocaleDateTimePattern)} has been set
      */
-    Property.Builder<T> dateTimePattern(String dateTimePattern);
+    Property.Builder<T, B> dateTimePattern(String dateTimePattern);
 
     /**
      * Sets the locale aware date/time format pattern used when presenting and inputting values
@@ -379,6 +380,6 @@ public interface Property<T> {
      * @throws IllegalStateException in case the underlying attribute is not a date/time based one
      * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
-    Property.Builder<T> localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
+    Property.Builder<T, B> localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
   }
 }

@@ -4,13 +4,10 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.common.formats.LocaleDateTimePattern;
 
-import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.Format;
 
 /**
  * Specifies a property based on a table column
@@ -159,68 +156,12 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * Provides setters for ColumnProperty properties
    * @param <T> the underlying type
+   * @param <B> the builder type
    */
-  interface Builder<T> extends Property.Builder<T> {
+  interface Builder<T, B extends Builder<T, B>> extends Property.Builder<T, B> {
 
     @Override
     ColumnProperty<T> get();
-
-    @Override
-    ColumnProperty.Builder<T> captionResourceKey(String captionResourceKey);
-
-    @Override
-    ColumnProperty.Builder<T> beanProperty(String beanProperty);
-
-    @Override
-    ColumnProperty.Builder<T> defaultValue(T defaultValue);
-
-    @Override
-    ColumnProperty.Builder<T> defaultValueSupplier(ValueSupplier<T> supplier);
-
-    @Override
-    ColumnProperty.Builder<T> hidden();
-
-    @Override
-    ColumnProperty.Builder<T> hidden(boolean hidden);
-
-    @Override
-    ColumnProperty.Builder<T> maximumValue(double maximumValue);
-
-    @Override
-    ColumnProperty.Builder<T> minimumValue(double minimumValue);
-
-    @Override
-    ColumnProperty.Builder<T> maximumFractionDigits(int maximumFractionDigits);
-
-    @Override
-    ColumnProperty.Builder<T> decimalRoundingMode(RoundingMode decimalRoundingMode);
-
-    @Override
-    ColumnProperty.Builder<T> numberFormatGrouping(boolean numberFormatGrouping);
-
-    @Override
-    ColumnProperty.Builder<T> preferredColumnWidth(int preferredColumnWidth);
-
-    @Override
-    ColumnProperty.Builder<T> nullable(boolean nullable);
-
-    @Override
-    ColumnProperty.Builder<T> maximumLength(int maximumLength);
-
-    @Override
-    ColumnProperty.Builder<T> mnemonic(Character mnemonic);
-
-    @Override
-    ColumnProperty.Builder<T> description(String description);
-
-    @Override
-    ColumnProperty.Builder<T> format(Format format);
-
-    @Override
-    ColumnProperty.Builder<T> dateTimePattern(String dateTimePattern);
-
-    @Override
-    ColumnProperty.Builder<T> localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
 
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.
@@ -229,7 +170,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * @param valueConverter the converter to use when converting to and from column values
      * @return this instance
      */
-    <C> ColumnProperty.Builder<T> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
+    <C> ColumnProperty.Builder<T, B> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
 
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.
@@ -239,46 +180,46 @@ public interface ColumnProperty<T> extends Property<T> {
      * @param valueFetcher the value fetcher used to retrieve the value from a ResultSet
      * @return this instance
      */
-    <C> ColumnProperty.Builder<T> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
-                                              ValueFetcher<C> valueFetcher);
+    <C> ColumnProperty.Builder<T, B> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
+                                                 ValueFetcher<C> valueFetcher);
 
     /**
      * Sets the actual string used as column when querying
      * @param columnName the column name
      * @return this instance
      */
-    ColumnProperty.Builder<T> columnName(String columnName);
+    ColumnProperty.Builder<T, B> columnName(String columnName);
 
     /**
      * Specifies that this property should not be included during insert and update operations
      * @return this instance
      */
-    ColumnProperty.Builder<T> readOnly();
+    ColumnProperty.Builder<T, B> readOnly();
 
     /**
      * Specifies whether this property should be included during insert and update operations
      * @param readOnly true if this property should be read-only
      * @return this instance
      */
-    ColumnProperty.Builder<T> readOnly(boolean readOnly);
+    ColumnProperty.Builder<T, B> readOnly(boolean readOnly);
 
     /**
      * @param insertable specifies whether this property should be included during insert operations
      * @return this instance
      */
-    ColumnProperty.Builder<T> insertable(boolean insertable);
+    ColumnProperty.Builder<T, B> insertable(boolean insertable);
 
     /**
      * @param updatable specifies whether this property is updatable
      * @return this instance
      */
-    ColumnProperty.Builder<T> updatable(boolean updatable);
+    ColumnProperty.Builder<T, B> updatable(boolean updatable);
 
     /**
      * Specifies that the underlying table column has a default value
      * @return this instance
      */
-    ColumnProperty.Builder<T> columnHasDefaultValue();
+    ColumnProperty.Builder<T, B> columnHasDefaultValue();
 
     /**
      * Sets the zero based primary key index of this property.
@@ -290,27 +231,27 @@ public interface ColumnProperty<T> extends Property<T> {
      * @see #nullable(boolean)
      * @see #updatable(boolean)
      */
-    ColumnProperty.Builder<T> primaryKeyIndex(int index);
+    ColumnProperty.Builder<T, B> primaryKeyIndex(int index);
 
     /**
      * Specifies that this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    ColumnProperty.Builder<T> groupingColumn();
+    ColumnProperty.Builder<T, B> groupingColumn();
 
     /**
      * Specifies that this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    ColumnProperty.Builder<T> aggregateColumn();
+    ColumnProperty.Builder<T, B> aggregateColumn();
 
     /**
      * Specifies that this property should not be included in select queries
      * @return this instance
      */
-    ColumnProperty.Builder<T> nonSelectable();
+    ColumnProperty.Builder<T, B> nonSelectable();
 
     /**
      * Specifies that this property is included when searching for an entity by a string value.
@@ -318,6 +259,6 @@ public interface ColumnProperty<T> extends Property<T> {
      * @throws IllegalStateException in case this property type is not String
      * @return this instance
      */
-    ColumnProperty.Builder<T> searchProperty();
+    ColumnProperty.Builder<T, B> searchProperty();
   }
 }

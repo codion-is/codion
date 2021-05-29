@@ -21,15 +21,13 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     return eagerlyLoaded;
   }
 
-  /**
-   * @return a builder for this property instance
-   */
   @Override
   BlobProperty.Builder builder() {
     return new DefaultBlobPropertyBuilder(this);
   }
 
-  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[]> implements BlobProperty.Builder {
+  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[], BlobProperty.Builder>
+          implements BlobProperty.Builder {
 
     private final DefaultBlobProperty blobProperty;
 
