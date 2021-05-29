@@ -374,7 +374,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
-            .name(MESSAGES.getString(SELECT_COLUMNS) + "...")
+            .caption(MESSAGES.getString(SELECT_COLUMNS) + "...")
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
@@ -385,7 +385,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public ToggleControl createSingleSelectionModeControl() {
     return ToggleControl.builder(tableModel.getSelectionModel().getSingleSelectionModeState())
-            .name(MESSAGES.getString(SINGLE_SELECTION_MODE))
+            .caption(MESSAGES.getString(SINGLE_SELECTION_MODE))
             .build();
   }
 
@@ -541,7 +541,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     panel.add(boxRegexp);
 
     final Control control = Control.builder(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()))
-            .name(Messages.get(Messages.OK))
+            .caption(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
             .build();
 
@@ -552,7 +552,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             .title(settingsMessage)
             .onClosedAction(control)
             .show())
-            .name(settingsMessage)
+            .caption(settingsMessage)
             .build());
 
     return popupMenu;
@@ -568,10 +568,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     });
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
     southPanel.add(Control.builder(() -> setSelected(checkBoxes, true))
-            .name(MESSAGES.getString("select_all"))
+            .caption(MESSAGES.getString("select_all"))
             .build().createButton());
     southPanel.add(Control.builder(() -> setSelected(checkBoxes, false))
-            .name(MESSAGES.getString("select_none"))
+            .caption(MESSAGES.getString("select_none"))
             .build().createButton());
 
     final JPanel base = new JPanel(Layouts.borderLayout());

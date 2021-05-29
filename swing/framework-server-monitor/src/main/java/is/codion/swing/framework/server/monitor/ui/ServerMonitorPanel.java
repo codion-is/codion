@@ -131,7 +131,7 @@ public final class ServerMonitorPanel extends JPanel {
     northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     shutdownBasePanel.add(Control.builder(this::shutdownServer)
-            .name("Shutdown")
+            .caption("Shutdown")
             .build().createButton(), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
     northPanel.setBorder(BorderFactory.createTitledBorder("Server"));
@@ -165,7 +165,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
     chartsPanel.add(Control.builder(model::clearStatistics)
-            .name("Clear")
+            .caption("Clear")
             .build().createButton(), BorderLayout.EAST);
 
     controlPanel.add(chartsPanel);
@@ -175,7 +175,7 @@ public final class ServerMonitorPanel extends JPanel {
     ComponentValues.toggleButton(synchronizedZoomCheckBox).link(synchronizedZoomState);
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
     zoomPanel.add(Control.builder(this::resetZoom)
-            .name("Reset zoom")
+            .caption("Reset zoom")
             .build().createButton(), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
 
@@ -221,7 +221,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
     refreshPanel.add(Control.builder(model::refreshDomainList)
-            .name("Refresh")
+            .caption("Refresh")
             .build().createButton());
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);

@@ -29,16 +29,16 @@ public class DefaultControlsTest {
   }
 
   private final Controls controls = Controls.builder().controls(
-          Control.builder(() -> {}).name("one"),
-          Control.builder(() -> {}).name("two"),
+          Control.builder(() -> {}).caption("one"),
+          Control.builder(() -> {}).caption("two"),
           ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-                  .name("three")).build();
+                  .caption("three")).build();
 
   @Test
   public void test() {
     final Control one = Control.control(() -> {});
     final Control two = Control.control(() -> {});
-    final Controls list = Controls.builder().name("list").controls(one, two).build();
+    final Controls list = Controls.builder().caption("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);

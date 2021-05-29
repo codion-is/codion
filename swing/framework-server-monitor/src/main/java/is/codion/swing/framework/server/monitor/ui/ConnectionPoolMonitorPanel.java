@@ -214,7 +214,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .build());
 
     final JButton clearButton = Control.builder(model::clearInPoolStatistics)
-            .name("Clear")
+            .caption("Clear")
             .build().createButton();
     clearButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(clearButton);
@@ -249,7 +249,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statisticsBase.add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Since"), resetTimeField));
     statisticsBase.add(Control.builder(model::clearStatistics)
-            .name("Clear")
+            .caption("Clear")
             .build().createButton(), BorderLayout.SOUTH);
 
     statisticsBase.setBorder(BorderFactory.createTitledBorder("Statistics"));

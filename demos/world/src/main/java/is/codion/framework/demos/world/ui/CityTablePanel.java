@@ -25,7 +25,7 @@ public final class CityTablePanel extends EntityTablePanel {
 
   private Control createUpdateLocationControl() {
     return Control.builder(this::updateLocation)
-            .name("Update location")
+            .caption("Update location")
             .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
             .build();
   }
@@ -39,7 +39,7 @@ public final class CityTablePanel extends EntityTablePanel {
             .stringPainted(true)
             .controls(Controls.builder()
                     .control(Control.builder(cityTableModel::cancelLocationUpdate)
-                            .name("Cancel")
+                            .caption("Cancel")
                             .enabledState(cityTableModel.getLocationUpdateCancelledObserver().getReversedObserver()))
                     .build())
             .onSuccess(cityTableModel::replaceEntities)

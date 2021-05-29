@@ -243,7 +243,7 @@ public final class LoadTestPanel<T> extends JPanel {
       else {
         loadTestModel.removeApplicationBatch();
       }
-    }).name(add ? "+" : "-").build().createButton();
+    }).caption(add ? "+" : "-").build().createButton();
     button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(0, 0, 0, 0));
     button.setToolTipText(add ? "Add application batch" : "Remove application batch");
@@ -258,10 +258,10 @@ public final class LoadTestPanel<T> extends JPanel {
             .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ToggleControl.builder(loadTestModel.getCollectChartDataState())
-            .name("Collect chart data")
+            .caption("Collect chart data")
             .build().createCheckBox());
     controlPanel.add(new JButton(Control.builder(loadTestModel::resetChartData)
-            .name("Reset")
+            .caption("Reset")
             .build()));
 
     return controlPanel;
@@ -353,7 +353,7 @@ public final class LoadTestPanel<T> extends JPanel {
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final ToggleControl pauseControl = ToggleControl.builder(loadTestModel.getPausedState())
-            .name("Pause")
+            .caption("Pause")
             .mnemonic('P')
             .build();
 

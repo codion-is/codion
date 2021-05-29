@@ -607,7 +607,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getFileControls() {
     return Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.FILE))
+            .caption(FrameworkMessages.get(FrameworkMessages.FILE))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0))
             .control(createExitControl())
             .build();
@@ -618,7 +618,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getSettingsControls() {
     return Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+            .caption(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .control(createLogLevelControl())
             .build();
   }
@@ -628,7 +628,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getToolsControls() {
     return Controls.builder()
-            .name(resourceBundle.getString("tools"))
+            .caption(resourceBundle.getString("tools"))
             .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
             .control(getSettingsControls())
             .build();
@@ -639,7 +639,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getViewControls() {
     return Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.VIEW))
+            .caption(FrameworkMessages.get(FrameworkMessages.VIEW))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
             .control(createRefreshAllControl())
             .separator()
@@ -657,7 +657,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getHelpControls() {
     return Controls.builder()
-            .name(resourceBundle.getString(HELP))
+            .caption(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
             .control(createHelpControl())
             .separator()
@@ -670,7 +670,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createExitControl() {
     return Control.builder(this::exit)
-            .name(FrameworkMessages.get(FrameworkMessages.EXIT))
+            .caption(FrameworkMessages.get(FrameworkMessages.EXIT))
             .description(FrameworkMessages.get(FrameworkMessages.EXIT_TIP))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0))
             .build();
@@ -681,7 +681,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createLogLevelControl() {
     return Control.builder(this::setLogLevel)
-            .name(resourceBundle.getString(SET_LOG_LEVEL))
+            .caption(resourceBundle.getString(SET_LOG_LEVEL))
             .description(resourceBundle.getString(SET_LOG_LEVEL_DESC))
             .build();
   }
@@ -691,7 +691,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createRefreshAllControl() {
     return Control.builder(applicationModel::refresh)
-            .name(FrameworkMessages.get(FrameworkMessages.REFRESH_ALL))
+            .caption(FrameworkMessages.get(FrameworkMessages.REFRESH_ALL))
             .build();
   }
 
@@ -700,7 +700,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewApplicationTreeControl() {
     return Control.builder(this::viewApplicationTree)
-            .name(resourceBundle.getString("view_application_tree"))
+            .caption(resourceBundle.getString("view_application_tree"))
             .build();
   }
 
@@ -709,7 +709,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewDependencyTree() {
     return Control.builder(this::viewDependencyTree)
-            .name(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
+            .caption(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
             .build();
   }
 
@@ -718,7 +718,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createSelectLookAndFeelControl() {
     return Control.builder(this::selectLookAndFeel)
-            .name(resourceBundle.getString(SELECT_LOOK_AND_FEEL))
+            .caption(resourceBundle.getString(SELECT_LOOK_AND_FEEL))
             .build();
   }
 
@@ -727,7 +727,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createSelectFontSizeControl() {
     return Control.builder(this::selectFontSize)
-            .name(resourceBundle.getString("select_font_size"))
+            .caption(resourceBundle.getString("select_font_size"))
             .build();
   }
 
@@ -736,7 +736,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final ToggleControl createAlwaysOnTopControl() {
     return ToggleControl.builder(alwaysOnTopState)
-            .name(resourceBundle.getString(ALWAYS_ON_TOP))
+            .caption(resourceBundle.getString(ALWAYS_ON_TOP))
             .build();
   }
 
@@ -745,7 +745,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createAboutControl() {
     return Control.builder(this::displayAbout)
-            .name(resourceBundle.getString(ABOUT) + "...")
+            .caption(resourceBundle.getString(ABOUT) + "...")
             .build();
   }
 
@@ -754,7 +754,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createHelpControl() {
     return Control.builder(this::displayHelp)
-            .name(resourceBundle.getString(HELP) + "...")
+            .caption(resourceBundle.getString(HELP) + "...")
             .build();
   }
 
@@ -854,11 +854,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return comparator.compare(thisCompare, thatCompare);
     });
     final Controls controls = Controls.builder()
-            .name(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
+            .caption(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0))
             .build();
     supportPanelBuilders.forEach(panelBuilder -> controls.add(Control.builder(() -> displayEntityPanelDialog(panelBuilder))
-            .name(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+            .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
             .build()));
 
     return controls;

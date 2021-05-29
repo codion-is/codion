@@ -143,7 +143,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder(((EntityComboBoxModel) getModel())::forceRefresh)
-            .name(FrameworkMessages.get(FrameworkMessages.REFRESH))
+            .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
             .build());
 
     return popupMenu;

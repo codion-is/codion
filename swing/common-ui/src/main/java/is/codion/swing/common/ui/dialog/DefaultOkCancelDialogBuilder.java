@@ -31,9 +31,9 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
     this.okAction = Control.builder(() -> Windows.getParentDialog(component).dispose())
-            .name(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build();
+            .caption(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build();
     this.cancelAction = Control.builder(() -> Windows.getParentDialog(component).dispose())
-            .name(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build();
+            .caption(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build();
   }
 
   @Override
@@ -43,7 +43,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     return okAction(Control.builder(() -> {
       command.perform();
       Windows.getParentDialog(component).dispose();
-    }).name(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build());
+    }).caption(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build());
   }
 
   @Override
@@ -53,7 +53,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     return cancelAction(Control.builder(() -> {
       command.perform();
       Windows.getParentDialog(component).dispose();
-    }).name(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build());
+    }).caption(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build());
   }
 
   @Override

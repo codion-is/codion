@@ -76,7 +76,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   protected Controls getToolsControls() {
     return super.getToolsControls()
             .add(Control.builder(this::importJSON)
-                    .name("Import JSON")
+                    .caption("Import JSON")
                     .build());
   }
   // end::getToolsControls[]

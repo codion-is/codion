@@ -151,18 +151,18 @@ public final class EntityServerMonitorPanel extends JPanel {
   private Controls initializeMainMenuControls() {
     return Controls.builder()
             .control(Controls.builder()
-                    .name("File")
+                    .caption("File")
                     .mnemonic('F')
                     .control(initializeExitControl()).build())
             .control(Controls.builder()
-                    .name("View")
+                    .caption("View")
                     .mnemonic('V')
                     .control(initializeRefreshControl())
                     .control(initializeUpateIntervalControl())
                     .separator()
                     .control(initializeAlwaysOnTopControl()).build())
             .control(Controls.builder()
-                    .name("Tools")
+                    .caption("Tools")
                     .mnemonic('T')
                     .control(initializeSetJDKDirControl())
                     .control(initializeJConsoleControl()).build())
@@ -171,41 +171,41 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private Control initializeRefreshControl() {
     return Control.builder(model::refresh)
-            .name("Refresh")
+            .caption("Refresh")
             .mnemonic('R')
             .build();
   }
 
   private Control initializeAlwaysOnTopControl() {
     return ToggleControl.builder(alwaysOnTopState)
-            .name("Always on Top")
+            .caption("Always on Top")
             .mnemonic('A')
             .build();
   }
 
   private Control initializeUpateIntervalControl() {
     return Control.builder(this::setUpdateInterval)
-            .name("Chart update interval...")
+            .caption("Chart update interval...")
             .build();
   }
 
   private Control initializeSetJDKDirControl() {
     return Control.builder(this::setJDKDir)
-            .name("Set JDK home...")
+            .caption("Set JDK home...")
             .mnemonic('S')
             .build();
   }
 
   private Control initializeJConsoleControl() {
     return Control.builder(this::runJConsole)
-            .name("Run JConsole")
+            .caption("Run JConsole")
             .mnemonic('J')
             .build();
   }
 
   private Control initializeExitControl() {
     return Control.builder(() -> System.exit(0))
-            .name("Exit")
+            .caption("Exit")
             .mnemonic('X')
             .build();
   }

@@ -15,7 +15,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   private final Value<Boolean> value;
 
-  private String name;
+  private String caption;
   private StateObserver enabledState;
   private char mnemonic;
   private Icon icon;
@@ -28,7 +28,12 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl.Builder name(final String name) {
-    this.name = requireNonNull(name);
+    return caption(name);
+  }
+
+  @Override
+  public ToggleControl.Builder caption(final String caption) {
+    this.caption = requireNonNull(caption);
     return this;
   }
 
@@ -64,7 +69,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl build() {
-    final DefaultToggleControl toggleControl = new DefaultToggleControl(name, value, enabledState);
+    final DefaultToggleControl toggleControl = new DefaultToggleControl(caption, value, enabledState);
     toggleControl.setMnemonic(mnemonic);
     toggleControl.setIcon(icon);
     toggleControl.setDescription(description);

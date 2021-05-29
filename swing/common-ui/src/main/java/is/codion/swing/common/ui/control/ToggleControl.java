@@ -98,8 +98,16 @@ public interface ToggleControl extends Control {
     /**
      * @param name the name of the control
      * @return this Builder instance
+     * @deprecated use {@link #caption(String)}
      */
+    @Deprecated
     Builder name(String name);
+
+    /**
+     * @param caption the caption of the control
+     * @return this Builder instance
+     */
+    Builder caption(String caption);
 
     /**
      * @param enabledState the state which controls the enabled state of the control
