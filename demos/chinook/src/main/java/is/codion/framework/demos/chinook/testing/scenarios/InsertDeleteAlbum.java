@@ -5,9 +5,8 @@ import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -27,7 +26,7 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
     selectRandomRow(artistModel.getTableModel());
     final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
     final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    final EntityEditModel albumEditModel = albumModel.getEditModel();
+    final SwingEntityEditModel albumEditModel = albumModel.getEditModel();
     albumEditModel.setEntity(application.getEntities().builder(Album.TYPE)
             .with(Album.ARTIST_FK, artist)
             .with(Album.TITLE, "Title")
@@ -35,9 +34,9 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
     try {
       final Entity insertedAlbum = albumEditModel.insert();
       final SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).getEditModel();
-      final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.GENRE_FK);
+      final SwingEntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.GENRE_FK);
       selectRandomItem(genreComboBoxModel);
-      final EntityComboBoxModel mediaTypeComboBoxModel =
+      final SwingEntityComboBoxModel mediaTypeComboBoxModel =
               trackEditModel.getForeignKeyComboBoxModel(Track.MEDIATYPE_FK);
       selectRandomItem(mediaTypeComboBoxModel);
       for (int i = 0; i < 10; i++) {

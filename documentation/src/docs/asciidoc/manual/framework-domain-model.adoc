@@ -198,7 +198,7 @@ boolean isActive = entity.get(Customer.IS_ACTIVE);
 
 === ItemProperty
 
-A property based on a finite  of valid items.
+A property based on a list of valid items.
 
 [source,java,indent=0]
 ----

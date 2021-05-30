@@ -67,9 +67,11 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Text
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-is.codion.framework.domain.entity.Attribute-[createTextArea(attribute)]
-
 {url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-is.codion.framework.domain.entity.Attribute-[createTextField(attribute)]
+
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createFormattedTextField-is.codion.framework.domain.entity.Attribute-[createFormattedTextField(attribute)]
+
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-is.codion.framework.domain.entity.Attribute-[createTextArea(attribute)]
 
 {url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-is.codion.framework.domain.entity.Attribute-[createTextInputPanel(attribute)]
 

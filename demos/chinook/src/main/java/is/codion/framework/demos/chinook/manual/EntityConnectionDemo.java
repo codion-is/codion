@@ -337,7 +337,7 @@ public final class EntityConnectionDemo {
     }
     catch (Exception e) {
       connection.rollbackTransaction();
-      throw e;
+      throw new RuntimeException(e);
     }
     // end::transaction[]
   }

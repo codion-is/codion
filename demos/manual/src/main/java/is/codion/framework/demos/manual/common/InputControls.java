@@ -49,8 +49,8 @@ public final class InputControls {
 
     Control control = Control.builder(() -> System.out.println("Doing something"))
             .caption("Do something")
-            .enabledState(somethingEnabledState)
             .mnemonic('D')
+            .enabledState(somethingEnabledState)
             .build();
 
     JButton somethingButton = control.createButton();
@@ -179,8 +179,7 @@ public final class InputControls {
                     .linkedValue(booleanValue)
                     .buildComponentValue();
 
-    SteppedComboBox<Item<Boolean>> comboBox =
-            componentValue.getComponent();
+    SteppedComboBox<Item<Boolean>> comboBox = componentValue.getComponent();
     // end::booleanComboBox[]
   }
 
