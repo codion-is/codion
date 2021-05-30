@@ -184,7 +184,7 @@ public interface Control extends Action {
      * @return this Builder instance
      * @deprecated use {@link #caption(String)}
      */
-    @Deprecated
+    @Deprecated(since = "0.17.13", forRemoval = true)
     Builder name(String name);
 
     /**

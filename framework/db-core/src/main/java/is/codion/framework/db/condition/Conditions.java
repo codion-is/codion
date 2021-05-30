@@ -83,7 +83,7 @@ public final class Conditions {
    * @return a {@link ForeignKeyConditionBuilder} instance
    * @deprecated use {@link #where(ForeignKey)}
    */
-  @Deprecated
+  @Deprecated(since = "0.17.13", forRemoval = true)
   public static ForeignKeyConditionBuilder condition(final ForeignKey foreignKey) {
     return where(foreignKey);
   }
@@ -104,7 +104,7 @@ public final class Conditions {
    * @return a {@link AttributeCondition.Builder} instance
    * @deprecated use {@link #where(Attribute)}
    */
-  @Deprecated
+  @Deprecated(since = "0.17.13", forRemoval = true)
   public static <T> AttributeCondition.Builder<T> condition(final Attribute<T> attribute) {
     return where(attribute);
   }
