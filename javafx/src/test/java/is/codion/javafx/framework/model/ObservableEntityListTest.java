@@ -38,7 +38,7 @@ public final class ObservableEntityListTest {
   }
 
   @Test
-  public void selectCondition() {
+  void selectCondition() {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
@@ -48,7 +48,7 @@ public final class ObservableEntityListTest {
   }
 
   @Test
-  public void includeCondition() throws DatabaseException {
+  void includeCondition() throws DatabaseException {
     final AtomicInteger counter = new AtomicInteger();
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final EventListener listener = counter::incrementAndGet;
@@ -80,7 +80,7 @@ public final class ObservableEntityListTest {
   }
 
   @Test
-  public void selection() throws DatabaseException {
+  void selection() throws DatabaseException {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final ListView<Entity> listView = new ListView<>(list);
     list.setSelectionModel(listView.getSelectionModel());

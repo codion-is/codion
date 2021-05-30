@@ -29,7 +29,7 @@ public class DefaultForeignKeyConditionModelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void getSearchEntitiesLookupModel() throws DatabaseException {
+  void getSearchEntitiesLookupModel() throws DatabaseException {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             singletonList(TestDomain.DEPARTMENT_NAME));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, searchModel);

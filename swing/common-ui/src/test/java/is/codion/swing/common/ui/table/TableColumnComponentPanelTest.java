@@ -28,7 +28,7 @@ public class TableColumnComponentPanelTest {
   }
 
   @Test
-  public void wrongColumn() {
+  void wrongColumn() {
     final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     final Map<TableColumn, JPanel> columnComponents = createColumnComponents(columnModel);
@@ -37,7 +37,7 @@ public class TableColumnComponentPanelTest {
   }
 
   @Test
-  public void showColumn() {
+  void showColumn() {
     final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     columnModel.hideColumn(1);
@@ -55,7 +55,7 @@ public class TableColumnComponentPanelTest {
   }
 
   @Test
-  public void width() {
+  void width() {
     final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
     final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));

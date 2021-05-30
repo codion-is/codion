@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class SerializerTest {
 
   @Test
-  public void serializeDeserialize() throws IOException, ClassNotFoundException {
+  void serializeDeserialize() throws IOException, ClassNotFoundException {
     assertNull(Serializer.deserialize(new byte[0]));
     assertEquals(0, Serializer.serialize(null).length);
     assertEquals(Integer.valueOf(4), Serializer.deserialize(Serializer.serialize(4)));
   }
 
   @Test
-  public void serialize() throws IOException, ClassNotFoundException {
+  void serialize() throws IOException, ClassNotFoundException {
     final List<Integer> ints = asList(1, 2, 3, 4);
     final File file = File.createTempFile("FileUtilTest.serialize", ".txt");
     file.deleteOnExit();

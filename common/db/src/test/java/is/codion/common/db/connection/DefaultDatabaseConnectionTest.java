@@ -29,12 +29,12 @@ public class DefaultDatabaseConnectionTest {
   private DefaultDatabaseConnection dbConnection;
 
   @BeforeEach
-  public void before() throws Exception {
+  void before() throws Exception {
     dbConnection = new DefaultDatabaseConnection(DATABASE, UNIT_TEST_USER);
   }
 
   @AfterEach
-  public void after() {
+  void after() {
     try {
       if (dbConnection != null) {
         dbConnection.close();
@@ -44,31 +44,31 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void constructorWithConnection() throws DatabaseException, SQLException {
+  void constructorWithConnection() throws DatabaseException, SQLException {
     final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     new DefaultDatabaseConnection(DATABASE, connection).close();
     assertTrue(connection.isClosed());
   }
 
   @Test
-  public void constructorWithInvalidConnection() throws DatabaseException, SQLException {
+  void constructorWithInvalidConnection() throws DatabaseException, SQLException {
     final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     connection.close();
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
   }
 
   @Test
-  public void wrongUsername() throws Exception {
+  void wrongUsername() throws Exception {
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user("foo", "bar".toCharArray())));
   }
 
   @Test
-  public void wrongPassword() throws Exception {
+  void wrongPassword() throws Exception {
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())));
   }
 
   @Test
-  public void queryInteger() throws Exception {
+  void queryInteger() throws Exception {
     try (final DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
       final int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10, qInt);
@@ -76,7 +76,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void queryLong() throws Exception {
+  void queryLong() throws Exception {
     try (final DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
       final long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10L, qLong);
@@ -84,17 +84,17 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void getDatabase() {
+  void getDatabase() {
     assertEquals(DATABASE, dbConnection.getDatabase());
   }
 
   @Test
-  public void getUser() {
+  void getUser() {
     assertEquals(dbConnection.getUser(), UNIT_TEST_USER);
   }
 
   @Test
-  public void close() throws Exception {
+  void close() throws Exception {
     dbConnection.close();
     assertFalse(dbConnection.isConnected());
     assertNull(dbConnection.getConnection());
@@ -106,44 +106,44 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void getConnection() throws Exception {
+  void getConnection() throws Exception {
     assertNotNull(dbConnection.getConnection());
   }
 
   @Test
-  public void beginTransactionAlreadyOpen() {
+  void beginTransactionAlreadyOpen() {
     dbConnection.beginTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
   }
 
   @Test
-  public void commitWithinTransaction() throws SQLException {
+  void commitWithinTransaction() throws SQLException {
     dbConnection.beginTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.commit());
   }
 
   @Test
-  public void rollbackWithinTransaction() throws SQLException {
+  void rollbackWithinTransaction() throws SQLException {
     dbConnection.beginTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
   }
 
   @Test
-  public void commitTransactionAlreadyCommitted() {
+  void commitTransactionAlreadyCommitted() {
     dbConnection.beginTransaction();
     dbConnection.commitTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
   }
 
   @Test
-  public void rollbackTransactionAlreadyRollbacked() {
+  void rollbackTransactionAlreadyRollbacked() {
     dbConnection.beginTransaction();
     dbConnection.rollbackTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
   }
 
   @Test
-  public void commitTransaction() throws Exception {
+  void commitTransaction() throws Exception {
     dbConnection.beginTransaction();
     assertTrue(dbConnection.isTransactionOpen());
     dbConnection.commitTransaction();
@@ -151,7 +151,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void rollbackTransaction() throws Exception {
+  void rollbackTransaction() throws Exception {
     dbConnection.beginTransaction();
     assertTrue(dbConnection.isTransactionOpen());
     dbConnection.rollbackTransaction();

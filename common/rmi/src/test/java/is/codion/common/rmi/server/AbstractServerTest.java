@@ -27,7 +27,7 @@ public class AbstractServerTest {
   public static final int PORT = 1234;
 
   @Test
-  public void testConnectionCount() throws RemoteException, ServerException {
+  void testConnectionCount() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
     final ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
@@ -52,7 +52,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testConnectionLimitReached() throws RemoteException, ServerException {
+  void testConnectionLimitReached() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
     final ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
@@ -64,7 +64,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testConnect() throws RemoteException, ServerException {
+  void testConnect() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
     final ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
@@ -86,7 +86,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testLoginProxy() throws RemoteException, ServerException {
+  void testLoginProxy() throws RemoteException, ServerException {
     TestLoginProxy.LOGIN_COUNTER.set(0);
     TestLoginProxy.LOGOUT_COUNTER.set(0);
     TestLoginProxy.CLOSE_COUNTER.set(0);
@@ -120,7 +120,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void connectionTheftWrongPassword() throws RemoteException, ServerException {
+  void connectionTheftWrongPassword() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
 
@@ -137,7 +137,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void connectionTheftWrongUsername() throws RemoteException, ServerException {
+  void connectionTheftWrongUsername() throws RemoteException, ServerException {
     final TestServer server = new TestServer();
     final String clientTypeId = "clientTypeId";
 

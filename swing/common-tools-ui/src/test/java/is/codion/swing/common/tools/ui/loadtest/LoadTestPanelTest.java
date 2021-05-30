@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class LoadTestPanelTest {
 
   @Test
-  public void test() {
+  void test() {
     final LoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     final LoadTestPanel panel = new LoadTestPanel(model);
     assertEquals(model, panel.getModel());
@@ -24,7 +24,7 @@ public class LoadTestPanelTest {
   }
 
   @Test
-  public void constructorNullModel() {
+  void constructorNullModel() {
     assertThrows(NullPointerException.class, () -> new LoadTestPanel(null));
   }
 

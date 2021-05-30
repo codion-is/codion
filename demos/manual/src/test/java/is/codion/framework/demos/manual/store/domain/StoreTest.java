@@ -28,7 +28,7 @@ public final class StoreTest extends EntityTestUnit {
   }
 
   @Test
-  public void customerAddress() throws Exception {
+  void customerAddress() throws Exception {
     test(CustomerAddress.TYPE);
   }
 }

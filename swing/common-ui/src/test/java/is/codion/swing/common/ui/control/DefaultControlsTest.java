@@ -35,7 +35,7 @@ public class DefaultControlsTest {
                   .caption("three")).build();
 
   @Test
-  public void test() {
+  void test() {
     final Control one = Control.control(() -> {});
     final Control two = Control.control(() -> {});
     final Controls list = Controls.builder().caption("list").controls(one, two).build();
@@ -74,7 +74,7 @@ public class DefaultControlsTest {
   }
 
   @Test
-  public void menuBar() {
+  void menuBar() {
     final Controls base = Controls.controls();
     base.add(controls);
 
@@ -91,7 +91,7 @@ public class DefaultControlsTest {
   }
 
   @Test
-  public void popupMenu() {
+  void popupMenu() {
     final Controls base = Controls.controls();
     base.add(controls);
 
@@ -99,19 +99,19 @@ public class DefaultControlsTest {
   }
 
   @Test
-  public void horizontalButtonPanel() {
+  void horizontalButtonPanel() {
     final JPanel base = new JPanel();
     base.add(controls.createHorizontalButtonPanel());
   }
 
   @Test
-  public void verticalButtonPanel() {
+  void verticalButtonPanel() {
     final JPanel base = new JPanel();
     base.add(controls.createVerticalButtonPanel());
   }
 
   @Test
-  public void toolBar() {
+  void toolBar() {
     controls.createVerticalToolBar();
     controls.createHorizontalToolBar();
   }

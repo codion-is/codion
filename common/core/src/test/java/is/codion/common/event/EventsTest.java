@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EventsTest {
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final Event<Integer> event = Event.event();
     final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = counter::incrementAndGet;

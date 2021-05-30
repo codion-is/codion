@@ -28,12 +28,12 @@ public class FilteredTableTest {
           singletonList("a"), singletonList("b"), singletonList("c"), singletonList("d"), singletonList("e"));
 
   @Test
-  public void constructorNullTableModel() {
+  void constructorNullTableModel() {
     assertThrows(Exception.class, () -> new FilteredTable(null));
   }
 
   @Test
-  public void searchField() throws AWTException {
+  void searchField() throws AWTException {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     final ColumnFilterModel<List<String>, Integer, String> filterModel =

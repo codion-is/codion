@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AbstractTableSortModelTest {
 
   @Test
-  public void test() {
+  void test() {
     final TableColumn firstColumn = new TableColumn(0);
     firstColumn.setIdentifier(0);
     final TableColumn secondColumn = new TableColumn(1);
@@ -75,7 +75,7 @@ public class AbstractTableSortModelTest {
   }
 
   @Test
-  public void nonComparableColumnClass() {
+  void nonComparableColumnClass() {
     final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>() {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {

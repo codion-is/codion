@@ -19,7 +19,7 @@ public class EntityComponentValuesTest {
   private final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
 
   @Test
-  public void test() {
+  void test() {
     final EntityComponentValues componentValues = new EntityComponentValues();
     final EntityDefinition definition = CONNECTION_PROVIDER.getEntities().getDefinition(TestDomain.T_DETAIL);
     definition.getColumnProperties()

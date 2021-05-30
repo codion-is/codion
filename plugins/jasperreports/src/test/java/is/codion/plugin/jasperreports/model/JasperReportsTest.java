@@ -50,7 +50,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void fillJdbcReport() throws ReportException, DatabaseException {
+  void fillJdbcReport() throws ReportException, DatabaseException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
     final HashMap<String, Object> reportParameters = new HashMap<>();
@@ -61,7 +61,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
+  void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
     final Report<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
@@ -85,7 +85,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void fillJdbcReportInvalidReport() throws Exception {
+  void fillJdbcReportInvalidReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
     final ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
@@ -93,7 +93,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void urlReport() throws Exception {
+  void urlReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set("http://localhost:1234");
     final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, ServerHttps.FALSE);
@@ -112,7 +112,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void classPathReport() throws DatabaseException, ReportException {
+  void classPathReport() throws DatabaseException, ReportException {
     final JRReportType report = JasperReports.reportType("report");
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
@@ -123,7 +123,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void fileReport() throws DatabaseException, ReportException {
+  void fileReport() throws DatabaseException, ReportException {
     final JRReportType report = JasperReports.reportType("report");
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
@@ -134,7 +134,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  public void reportType() {
+  void reportType() {
     assertNotEquals(JasperReports.reportType("name"), JasperReports.reportType("another"));
   }
 }

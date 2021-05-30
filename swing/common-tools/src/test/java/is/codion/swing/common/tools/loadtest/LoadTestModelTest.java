@@ -34,58 +34,58 @@ public class LoadTestModelTest {
   };
 
   @Test
-  public void constructorNegativeThinkTime() {
+  void constructorNegativeThinkTime() {
     assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5));
   }
 
   @Test
-  public void constructorNegativeLoginDelayFactor() {
+  void constructorNegativeLoginDelayFactor() {
     assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5));
   }
 
   @Test
-  public void constructorNegativeApplicationBatchSize() {
+  void constructorNegativeApplicationBatchSize() {
     assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5));
   }
 
   @Test
-  public void setApplicationBatchSizeNegative() {
+  void setApplicationBatchSizeNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getApplicationBatchSizeValue().set(-5));
   }
 
   @Test
-  public void setUpdateIntervalNegative() {
+  void setUpdateIntervalNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 
   @Test
-  public void setLoginDelayFactorNegative() {
+  void setLoginDelayFactorNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getLoginDelayFactorValue().set(-1));
   }
 
   @Test
-  public void setMinimumThinkTimeNegative() {
+  void setMinimumThinkTimeNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getMinimumThinkTimeValue().set(-1));
   }
 
   @Test
-  public void setMaximumThinkTimeNegative() {
+  void setMaximumThinkTimeNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getMaximumThinkTimeValue().set(-1));
   }
 
   @Test
-  public void getUnknownUsageScenario() {
+  void getUnknownUsageScenario() {
     final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getUsageScenario("bla"));
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
     assertEquals(2, model.getApplicationBatchSizeValue().get());
     model.getCollectChartDataState().set(true);

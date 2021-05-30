@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ReportTest {
 
   @Test
-  public void getReportPathNotSpecified() {
+  void getReportPathNotSpecified() {
     Report.REPORT_PATH.set(null);
     assertThrows(IllegalStateException.class, Report::getReportPath);
   }
 
   @Test
-  public void getReportPath() {
+  void getReportPath() {
     final String path = "test/path";
     Report.REPORT_PATH.set(path);
     assertEquals(path, Report.getReportPath());

@@ -19,7 +19,7 @@ public class LocalEntityConnectionProviderTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void test() {
+  void test() {
     final Database database = DatabaseFactory.getDatabase();
     final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(database);
     provider.setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
@@ -39,7 +39,7 @@ public class LocalEntityConnectionProviderTest {
   }
 
   @Test
-  public void entityConnectionProviders() {
+  void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     final EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()

@@ -32,7 +32,7 @@ public final class EmployeeServerTest {
   public static final int SERVER_ADMIN_PORT = 3224;
 
   @Test
-  public void test() throws RemoteException, NotBoundException, LoginException,
+  void test() throws RemoteException, NotBoundException, LoginException,
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 

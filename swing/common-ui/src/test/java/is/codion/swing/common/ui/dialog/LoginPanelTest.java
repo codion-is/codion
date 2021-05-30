@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 public final class LoginPanelTest {
 
   @Test
-  public void test() {
+  void test() {
     new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, new JLabel());
   }
 }

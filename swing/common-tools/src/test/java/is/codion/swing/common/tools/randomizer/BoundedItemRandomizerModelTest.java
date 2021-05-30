@@ -20,41 +20,41 @@ public class BoundedItemRandomizerModelTest {
   private final String three = "three";
 
   @Test
-  public void constructWithoutObjects() {
+  void constructWithoutObjects() {
     assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(10, emptyList()));
   }
 
   @Test
-  public void constructWithoutParemeters() {
+  void constructWithoutParemeters() {
     assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(emptyList()));
   }
 
   @Test
-  public void constructNegativeWeight() {
+  void constructNegativeWeight() {
     assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(-10, emptyList()));
   }
 
   @Test
-  public void construct() {
+  void construct() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
     assertEquals(3, model.getItemCount());
     assertEquals(10, model.getWeightBounds());
   }
 
   @Test
-  public void setWeight() {
+  void setWeight() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
     assertThrows(UnsupportedOperationException.class, () -> model.setWeight(one, 10));
   }
 
   @Test
-  public void addItem() {
+  void addItem() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
     assertThrows(UnsupportedOperationException.class, () -> model.addItem("four"));
   }
 
   @Test
-  public void test() {
+  void test() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
 
     assertEquals(3, model.getWeight(one));//last

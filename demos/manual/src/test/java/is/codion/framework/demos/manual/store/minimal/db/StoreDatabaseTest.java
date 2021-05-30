@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public final class StoreDatabaseTest {
 
   @Test
-  public void run() throws DatabaseException, SQLException {
+  void run() throws DatabaseException, SQLException {
     StoreDatabase.storeEntityConnection();
   }
 }

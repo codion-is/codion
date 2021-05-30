@@ -19,7 +19,7 @@ import java.util.Collections;
 public final class DialogsTest {
 
   @Test
-  public void dialogBuilder() {
+  void dialogBuilder() {
     Dialogs.componentDialogBuilder(new JLabel())
             .owner(new JLabel())
             .title("title")
@@ -35,7 +35,7 @@ public final class DialogsTest {
   }
 
   @Test
-  public void exceptionDialogBuilder() {
+  void exceptionDialogBuilder() {
     Dialogs.exceptionDialogBuilder()
             .owner(new JLabel())
             .title("title")
@@ -44,7 +44,7 @@ public final class DialogsTest {
   }
 
   @Test
-  public void fileSelectionDialogBuilder() {
+  void fileSelectionDialogBuilder() {
     Dialogs.fileSelectionDialogBuilder()
             .owner(new JLabel())
             .title("title")
@@ -53,7 +53,7 @@ public final class DialogsTest {
   }
 
   @Test
-  public void loginDialogBuilder() {
+  void loginDialogBuilder() {
     Dialogs.loginDialogBuilder()
             .owner(new JLabel())
             .title("title")
@@ -64,7 +64,7 @@ public final class DialogsTest {
   }
 
   @Test
-  public void okCancelDialogBuilder() {
+  void okCancelDialogBuilder() {
     Dialogs.okCancelDialogBuilder(new JLabel())
             .owner(new JLabel())
             .title("title")
@@ -75,7 +75,7 @@ public final class DialogsTest {
   }
 
   @Test
-  public void progressDialogBuilder() {
+  void progressDialogBuilder() {
     Dialogs.progressDialogBuilder()
             .owner(new JLabel())
             .title("title")
@@ -90,7 +90,7 @@ public final class DialogsTest {
   }
 
   @Test
-  public void selectionDialogBuilder() {
+  void selectionDialogBuilder() {
     Dialogs.selectionDialogBuilder(Collections.singletonList("hello"))
             .owner(new JLabel())
             .title("title")
@@ -99,12 +99,12 @@ public final class DialogsTest {
   }
 
   @Test
-  public void addLookupDialog() {
+  void addLookupDialog() {
     Dialogs.addLookupDialog(new JTextField(), () -> Collections.singletonList("hello"));
   }
 
   @Test
-  public void createBrowseAction() {
+  void createBrowseAction() {
     Dialogs.createBrowseAction(new JTextField());
   }
 }

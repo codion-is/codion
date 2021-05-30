@@ -19,7 +19,7 @@ public final class AbstractEntityConnectionProviderTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
-  public void connectClose() {
+  void connectClose() {
     final EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
     assertEquals("description", provider.getDescription());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());

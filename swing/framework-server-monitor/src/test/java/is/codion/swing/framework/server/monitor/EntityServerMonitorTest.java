@@ -50,7 +50,7 @@ public class EntityServerMonitorTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final String clientTypeId = EntityServerMonitorTest.class.getName();
     final EntityConnectionProvider connectionProvider =
             new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())

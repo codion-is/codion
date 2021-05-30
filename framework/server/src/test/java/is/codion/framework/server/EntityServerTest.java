@@ -66,7 +66,7 @@ public class EntityServerTest {
   }
 
   @Test
-  public void customCondition() throws Exception {
+  void customCondition() throws Exception {
     //Fix side-effect from remoteEntityConnectionProvider() test,
     //which registers the entities received from the server
     //thus overwriting the entities containing the custom conditions
@@ -86,7 +86,7 @@ public class EntityServerTest {
   }
 
   @Test
-  public void testWrongPassword() throws Exception {
+  void testWrongPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
             .user(User.user(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()))
             .clientTypeId(getClass().getSimpleName())
@@ -94,27 +94,27 @@ public class EntityServerTest {
   }
 
   @Test
-  public void getServerAdminEmptyPassword() throws Exception {
+  void getServerAdminEmptyPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test", "".toCharArray())));
   }
 
   @Test
-  public void getServerAdminNullPassword() throws Exception {
+  void getServerAdminNullPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test")));
   }
 
   @Test
-  public void getServerAdminWrongPassword() throws Exception {
+  void getServerAdminWrongPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test", "test".toCharArray())));
   }
 
   @Test
-  public void getServerAdminWrongUsername() throws Exception {
+  void getServerAdminWrongUsername() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(User.user("test", "test".toCharArray())));
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
             .user(UNIT_TEST_USER)
             .clientTypeId("ClientTypeID").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
@@ -244,7 +244,7 @@ public class EntityServerTest {
   }
 
   @Test
-  public void remoteEntityConnectionProvider() throws Exception {
+  void remoteEntityConnectionProvider() throws Exception {
     final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
             new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
                     .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
@@ -282,12 +282,12 @@ public class EntityServerTest {
   }
 
   @Test
-  public void getClientLogNotConnected() throws RemoteException {
+  void getClientLogNotConnected() throws RemoteException {
     assertThrows(IllegalArgumentException.class, () -> admin.getClientLog(UUID.randomUUID()));
   }
 
   @Test
-  public void coverAdmin() throws RemoteException {
+  void coverAdmin() throws RemoteException {
     admin.getAllocatedMemory();
     admin.setConnectionTimeout(30);
     try {

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FileUtilTest {
 
   @Test
-  public void countLines() throws IOException {
+  void countLines() throws IOException {
     final File file = File.createTempFile("FileUtilTest.countLines", ".txt");
     file.deleteOnExit();
 

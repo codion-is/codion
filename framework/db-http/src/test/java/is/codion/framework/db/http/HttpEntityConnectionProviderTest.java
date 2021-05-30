@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HttpEntityConnectionProviderTest {
 
   @Test
-  public void entityConnectionProviders() {
+  void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(8089);

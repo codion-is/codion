@@ -41,7 +41,7 @@ public class SwingFilteredComboBoxModelTest {
   };
 
   @Test
-  public void testRefreshClear() {
+  void testRefreshClear() {
     testModel.refresh();
     assertEquals(5, testModel.getVisibleItems().size());
     testModel.clear();
@@ -50,13 +50,13 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void testDataListeners() {
+  void testDataListeners() {
     testModel.addListDataListener(listDataListener);
     testModel.removeListDataListener(listDataListener);
   }
 
   @Test
-  public void testSorting() {
+  void testSorting() {
     assertEquals(ANNA, testModel.getElementAt(1));
     assertEquals(BJORN, testModel.getElementAt(2));
     assertEquals(KALLI, testModel.getElementAt(3));
@@ -110,7 +110,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void testSelection() {
+  void testSelection() {
     final AtomicInteger selectionChangedCounter = new AtomicInteger();
     final EventDataListener<String> selectionListener = selectedItem -> selectionChangedCounter.incrementAndGet();
     testModel.addSelectionListener(selectionListener);
@@ -140,7 +140,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void filterWithSelection() {
+  void filterWithSelection() {
     testModel.setSelectedItem(BJORN);
     testModel.setIncludeCondition(item -> !item.equals(BJORN));
     assertEquals(NULL, testModel.getSelectedItem());
@@ -156,7 +156,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void setIncludeCondition() {
+  void setIncludeCondition() {
     final AtomicInteger filteringEndedCounter = new AtomicInteger();
     final EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
@@ -193,7 +193,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void removeItem() {
+  void removeItem() {
     //remove filtered item
     testModel.setIncludeCondition(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
@@ -206,7 +206,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void addItem() {
+  void addItem() {
     testModel.clear();
     //add filtered item
     testModel.setIncludeCondition(item -> !item.equals(BJORN));
@@ -222,7 +222,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void setNullValueString() throws Exception {
+  void setNullValueString() throws Exception {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
     assertEquals(5, testModel.getVisibleItems().size());
@@ -237,7 +237,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
-  public void setContentsSelectedItem() {
+  void setContentsSelectedItem() {
     class Data {
       final int id;
       final String data;
@@ -273,7 +273,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     testModel = new SwingFilteredComboBoxModel<>();
     testModel.setNullString(NULL);
     final List<String> names = new ArrayList<>();
@@ -286,7 +286,7 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     testModel = null;
   }
 }

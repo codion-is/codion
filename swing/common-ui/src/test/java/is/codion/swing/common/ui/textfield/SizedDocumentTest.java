@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SizedDocumentTest {
 
   @Test
-  public void test() throws BadLocationException {
+  void test() throws BadLocationException {
     final JTextField textField = new JTextField();
     final SizedDocument document = new SizedDocument();
     textField.setDocument(document);

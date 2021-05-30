@@ -31,7 +31,7 @@ public final class QueryLoadTestModelTest {
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
           new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from scott.dept", true);
   @Test
-  public void test() throws DatabaseException {
+  void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.getMinimumThinkTimeValue().set(10);

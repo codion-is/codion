@@ -40,33 +40,33 @@ public final class DefaultEntitySearchModelTest {
   private Collection<Attribute<String>> searchAttributes;
 
   @Test
-  public void constructorNullEntityType() {
+  void constructorNullEntityType() {
     assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(null, CONNECTION_PROVIDER, new ArrayList<>()));
   }
 
   @Test
-  public void constructorNullConnectionProvider() {
+  void constructorNullConnectionProvider() {
     assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, null, new ArrayList<>()));
   }
 
   @Test
-  public void constructorNullSearchProperties() {
+  void constructorNullSearchProperties() {
     assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null));
   }
 
   @Test
-  public void searchWithNoSearchProperties() {
+  void searchWithNoSearchProperties() {
     assertThrows(IllegalStateException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, emptyList()).performQuery());
   }
 
   @Test
-  public void constructorIncorrectEntitySearchProperty() {
+  void constructorIncorrectEntitySearchProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
             singletonList(TestDomain.DEPARTMENT_NAME)));
   }
 
   @Test
-  public void theRest() {
+  void theRest() {
     searchModel.setDescription("description");
     assertEquals("description", searchModel.getDescription());
     assertNotNull(searchModel.getConnectionProvider());
@@ -75,19 +75,19 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  public void wrongEntityType() {
+  void wrongEntityType() {
     assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntity(ENTITIES.entity(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
-  public void setMultipleSelectionNotEnabled() {
+  void setMultipleSelectionNotEnabled() {
     searchModel.getMultipleSelectionEnabledValue().set(false);
     final List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntities(entities));
   }
 
   @Test
-  public void setToStringProvider() {
+  void setToStringProvider() {
     final Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
     searchModel.setToStringProvider(entity -> entity.getAsString(job.getAttribute()));
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
@@ -101,7 +101,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  public void searchModel() throws Exception {
+  void searchModel() throws Exception {
     searchModel.getMultipleSelectionEnabledValue().set(true);
     searchModel.setWildcard("%");
     searchModel.setSearchString("joh");
@@ -194,7 +194,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  public void setAdditionalConditionProvider() {
+  void setAdditionalConditionProvider() {
     searchModel.getMultipleSelectionEnabledValue().set(false);
     searchModel.setWildcard("%");
     searchModel.setSearchString("johnson");
@@ -208,7 +208,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     searchAttributes = asList(TestDomain.EMP_NAME, TestDomain.EMP_JOB);
     searchModel = new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, searchAttributes);
 
@@ -217,7 +217,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     CONNECTION_PROVIDER.getConnection().rollbackTransaction();
   }
 

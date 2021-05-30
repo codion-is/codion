@@ -18,24 +18,24 @@ public final class DefaultControlTest {
 
   private int callCount = 0;
 
-  public void method() {
+  void method() {
     callCount++;
   }
 
-  public void errorMethod() throws Exception {
+  void errorMethod() throws Exception {
     throw new Exception("test");
   }
 
-  public void runtimeErrorMethod() {
+  void runtimeErrorMethod() {
     throw new RuntimeException("test");
   }
 
-  public void cancelMethod() {
+  void cancelMethod() {
     throw new CancelException();
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final State enabledState = State.state();
     final Control control = Control.builder(this::method).enabledState(enabledState).build();
     final JButton button = control.createButton();
@@ -47,7 +47,7 @@ public final class DefaultControlTest {
   }
 
   @Test
-  public void eventControl() {
+  void eventControl() {
     final State state = State.state();
     final Event<ActionEvent> event = Event.event();
     event.addListener(() -> state.set(true));
@@ -56,7 +56,7 @@ public final class DefaultControlTest {
   }
 
   @Test
-  public void basics() throws Exception {
+  void basics() throws Exception {
     final Control test = Control.control(this::doNothing);
     test.setName("test");
     assertEquals("test", test.toString());
@@ -72,7 +72,7 @@ public final class DefaultControlTest {
   }
 
   @Test
-  public void actionCommand() {
+  void actionCommand() {
     final ActionEvent event = new ActionEvent(this, -1, "test");
     final Control test = Control.actionControl(actionEvent -> {
       assertSame(this, actionEvent.getSource());
@@ -84,7 +84,7 @@ public final class DefaultControlTest {
   }
 
   @Test
-  public void setEnabled() {
+  void setEnabled() {
     final State enabledState = State.state();
     final Control control = Control.builder(this::doNothing).caption("control").enabledState(enabledState.getObserver()).build();
     assertEquals("control", control.getName());
@@ -97,25 +97,25 @@ public final class DefaultControlTest {
   }
 
   @Test
-  public void setEnabledViaMethod() {
+  void setEnabledViaMethod() {
     final Control test = Control.control(this::doNothing);
     assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
   }
 
   @Test
-  public void exceptionOnExecute() {
+  void exceptionOnExecute() {
     final Control control = Control.control(this::errorMethod);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test
-  public void runtimeExceptionOnExecute() {
+  void runtimeExceptionOnExecute() {
     final Control control = Control.control(this::runtimeErrorMethod);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test
-  public void cancelOnExecute() {
+  void cancelOnExecute() {
     final Control control = Control.control(this::cancelMethod);
     control.actionPerformed(null);
   }

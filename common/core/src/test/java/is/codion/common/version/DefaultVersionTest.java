@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultVersionTest {
 
   @Test
-  public void parse() {
+  void parse() {
     Version version = Version.parse("2.12.4 2018.01.02 15:27");
     assertEquals(version.getMajor(), 2);
     assertEquals(version.getMinor(), 12);
@@ -42,17 +42,17 @@ public final class DefaultVersionTest {
   }
 
   @Test
-  public void parseIllegalNull() {
+  void parseIllegalNull() {
     assertThrows(IllegalArgumentException.class, () -> Version.parse(null));
   }
 
   @Test
-  public void parseIllegalEmpty() {
+  void parseIllegalEmpty() {
     assertThrows(IllegalArgumentException.class, () -> Version.parse(""));
   }
 
   @Test
-  public void constructor() {
+  void constructor() {
     Version version = Version.version(1);
     assertEquals(version.getMajor(), 1);
     assertEquals(version.getMinor(), 0);
@@ -70,7 +70,7 @@ public final class DefaultVersionTest {
   }
 
   @Test
-  public void compare() {
+  void compare() {
     final Version version0 = Version.version(0, 0, 1);
     final Version version1 = Version.version(0, 1, 0);
     final Version version2 = Version.version(0, 1, 1);
@@ -88,7 +88,7 @@ public final class DefaultVersionTest {
   }
 
   @Test
-  public void equalsHashCodeToString() {
+  void equalsHashCodeToString() {
     final Version version0 = Version.version(2, 1, 5, "RC");
     final Version version1 = Version.parse("2.1.5");
     assertNotEquals(version0, version1);
@@ -122,17 +122,17 @@ public final class DefaultVersionTest {
   }
 
   @Test
-  public void constructorIllegalMajor() {
+  void constructorIllegalMajor() {
     assertThrows(IllegalArgumentException.class, () -> Version.version(-1, 0, 0));
   }
 
   @Test
-  public void constructorIllegalMinor() {
+  void constructorIllegalMinor() {
     assertThrows(IllegalArgumentException.class, () -> Version.version(0, -1, 0));
   }
 
   @Test
-  public void constructorIllegalPatch() {
+  void constructorIllegalPatch() {
     assertThrows(IllegalArgumentException.class, () -> Version.version(0, 0, -1));
   }
 }

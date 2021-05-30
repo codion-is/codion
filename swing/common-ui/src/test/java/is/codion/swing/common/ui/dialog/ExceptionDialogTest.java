@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public final class ExceptionDialogTest {
 
   @Test
-  public void test() {
+  void test() {
     new ExceptionDialog(null);
   }
 }

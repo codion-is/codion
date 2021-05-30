@@ -18,7 +18,7 @@ public class HikariConnectionPoolFactoryTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final long startTime = System.currentTimeMillis();
     final HikariConnectionPoolFactory provider = new HikariConnectionPoolFactory();
     final ConnectionPoolWrapper pool = provider.createConnectionPoolWrapper(new H2DatabaseFactory().createDatabase("jdbc:h2:mem:HikariConnectionPoolProviderTest",

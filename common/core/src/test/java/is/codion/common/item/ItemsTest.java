@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ItemsTest {
 
   @Test
-  public void item() throws IOException, ClassNotFoundException {
+  void item() throws IOException, ClassNotFoundException {
     final Item<String> item = Item.item("hello", "world");
     assertEquals("hello", item.getValue());
     assertEquals("world", item.getCaption());
@@ -41,7 +41,7 @@ public class ItemsTest {
   }
 
   @Test
-  public void itemI18n() {
+  void itemI18n() {
     assertThrows(NullPointerException.class, () -> Item.itemI18n("value", null, "item"));
     assertThrows(NullPointerException.class, () -> Item.itemI18n("value", ItemsTest.class.getName(), null));
 

@@ -20,7 +20,7 @@ public class EntityTreeTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() {
+  void test() {
     new EntityTree(new SwingEntityTreeModel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER), TestDomain.EMP_MGR_FK));
   }
 }

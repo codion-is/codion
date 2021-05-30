@@ -26,7 +26,7 @@ public class EntityServerMonitorPanelTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost",
             EntityServerMonitorTest.CONFIGURATION.getRegistryPort(), EntityServerMonitorTest.CONFIGURATION.getAdminUser()));
     final ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();

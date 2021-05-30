@@ -53,7 +53,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void testTime() throws Exception {
+  void testTime() throws Exception {
     final String format = "HH:mm";
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
@@ -74,7 +74,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void testDate() throws Exception {
+  void testDate() throws Exception {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     final TemporalField<LocalDate> textField = TemporalField.localDateField("dd.MM.yyyy");
@@ -94,7 +94,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void testTimestamp() throws Exception {
+  void testTimestamp() throws Exception {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
     final TemporalField<LocalDateTime> textField = TemporalField.localDateTimeField("dd-MM-yy HH:mm");
@@ -114,7 +114,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void localTimeUiValue() {
+  void localTimeUiValue() {
     final String format = "HH:mm";
 
     final TemporalField<LocalTime> textField = TemporalField.localTimeField(format);
@@ -138,7 +138,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void localDateUiValue() {
+  void localDateUiValue() {
     final TemporalField<LocalDate> textField = TemporalField.localDateField("dd-MM-yyyy");
     final Value<LocalDate> value = ComponentValues.temporalField(textField);
 
@@ -159,7 +159,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void localDateTimeUiValue() {
+  void localDateTimeUiValue() {
     final TemporalField<LocalDateTime> textField = TemporalField.localDateTimeField("dd-MM-yyyy HH:mm");
     final Value<LocalDateTime> value = ComponentValues.temporalField(textField);
 
@@ -180,7 +180,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  public void temporalValue() {
+  void temporalValue() {
     final LocalDate date = LocalDate.now();
     final TemporalField<LocalDate> localDateField = TemporalField.localDateField("dd-MM-yyyy");
     localDateField.setTemporal(date);

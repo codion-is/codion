@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StateTest {
 
   @Test
-  public void listeners() {
+  void listeners() {
     final State state = State.state();
     final AtomicInteger stateChangeCounter = new AtomicInteger();
     final EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
@@ -40,7 +40,7 @@ public class StateTest {
   }
 
   @Test
-  public void reversedState() {
+  void reversedState() {
     final AtomicInteger stateCounter = new AtomicInteger();
     final EventListener listener = stateCounter::incrementAndGet;
     final AtomicInteger reversedStateCounter = new AtomicInteger();
@@ -70,7 +70,7 @@ public class StateTest {
   }
 
   @Test
-  public void test() {
+  void test() {
     final State state = State.state();
     assertFalse(state.get(), "State should be inactive when initialized");
     state.set(true);
@@ -85,7 +85,7 @@ public class StateTest {
   }
 
   @Test
-  public void group() throws Exception {
+  void group() throws Exception {
     final State stateOne = State.state(true);
     final State stateTwo = State.state(true);
     final State stateThree = State.state(true);
@@ -106,13 +106,13 @@ public class StateTest {
   }
 
   @Test
-  public void stateCombinationSetActive() {
+  void stateCombinationSetActive() {
     final State.Combination orState = State.or();
     assertThrows(UnsupportedOperationException.class, () -> orState.set(true));
   }
 
   @Test
-  public void stateCombination() {
+  void stateCombination() {
     State.Combination orState = State.or();
     final State stateOne = State.state();
     final State stateTwo = State.state();
@@ -196,7 +196,7 @@ public class StateTest {
   }
 
   @Test
-  public void stateCombinationDataListener() {
+  void stateCombinationDataListener() {
     final State one = State.state();
     final State two = State.state();
     final State three = State.state();
@@ -221,7 +221,7 @@ public class StateTest {
   }
 
   @Test
-  public void stateCombinationEvents() {
+  void stateCombinationEvents() {
     final State stateOne = State.state(false);
     final State stateTwo = State.state(true);
     final State.Combination combination = State.or(stateOne, stateTwo);

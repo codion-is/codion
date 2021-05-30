@@ -37,7 +37,7 @@ public class ValuesTest {
   }
 
   @Test
-  public void validator() {
+  void validator() {
     final Value.Validator<Integer> validator = value -> {
       if (value != null && value > 10) {
         throw new IllegalArgumentException();
@@ -59,7 +59,7 @@ public class ValuesTest {
   }
 
   @Test
-  public void value() {
+  void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Value.value(42, -1);
     assertFalse(intValue.isNullable());
@@ -110,7 +110,7 @@ public class ValuesTest {
   }
 
   @Test
-  public void linkValues() {
+  void linkValues() {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Value.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Value.value();
@@ -155,7 +155,7 @@ public class ValuesTest {
   }
 
   @Test
-  public void linkValuesReadOnly() {
+  void linkValuesReadOnly() {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Value.propertyValue(this, "intValue", int.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Value.value();
@@ -190,40 +190,40 @@ public class ValuesTest {
   }
 
   @Test
-  public void getOrThrow() {
+  void getOrThrow() {
     final PropertyValue<Integer> integerValue = Value.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     integerValue.set(null);
     assertThrows(IllegalStateException.class, integerValue::getOrThrow);
   }
 
   @Test
-  public void propertyValueNoGetter() {
+  void propertyValueNoGetter() {
     assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
   }
 
   @Test
-  public void propertyValueNoOwner() {
+  void propertyValueNoOwner() {
     assertThrows(NullPointerException.class, () -> Value.propertyValue(null, "integerValue", Integer.class, integerValueChange.getObserver()));
   }
 
   @Test
-  public void propertyValueNoPropertyName() {
+  void propertyValueNoPropertyName() {
     assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, null, Integer.class, integerValueChange.getObserver()));
   }
 
   @Test
-  public void propertyValueNoValueClass() {
+  void propertyValueNoValueClass() {
     assertThrows(NullPointerException.class, () -> Value.propertyValue(this, "integerValue", null, integerValueChange.getObserver()));
   }
 
   @Test
-  public void setReadOnlyPropertyValue() {
+  void setReadOnlyPropertyValue() {
     final Value<Integer> modelValue = Value.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     assertThrows(IllegalStateException.class, () -> modelValue.set(42));
   }
 
   @Test
-  public void valueSet() {
+  void valueSet() {
     ValueSet<Integer> valueSet = Value.valueSet();
     assertTrue(valueSet.isEmpty());
     assertFalse(valueSet.isNotEmpty());
@@ -293,7 +293,7 @@ public class ValuesTest {
   }
 
   @Test
-  public void valueSetEvents() {
+  void valueSetEvents() {
     final ValueSet<Integer> valueSet = Value.valueSet();
     final Value<Integer> value = valueSet.value();
 
@@ -322,7 +322,7 @@ public class ValuesTest {
   }
 
   @Test
-  public void valueLinks() {
+  void valueLinks() {
     final Value<Integer> value1 = Value.value();
     final Value<Integer> value2 = Value.value();
     final Value<Integer> value3 = Value.value();

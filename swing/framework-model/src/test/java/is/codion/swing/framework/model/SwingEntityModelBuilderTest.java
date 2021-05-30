@@ -21,7 +21,7 @@ public final class SwingEntityModelBuilderTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void setModelClass() {
+  void setModelClass() {
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
             .editModelClass(DepartmentEditModel.class).modelClass(SwingEntityModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
@@ -34,7 +34,7 @@ public final class SwingEntityModelBuilderTest {
   }
 
   @Test
-  public void testDetailModelBuilder() {
+  void testDetailModelBuilder() {
     final SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .editModelClass(DepartmentEditModel.class)
             .tableModelClass(DepartmentTableModel.class);

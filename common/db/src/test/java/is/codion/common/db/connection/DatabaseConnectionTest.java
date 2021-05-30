@@ -24,7 +24,7 @@ public class DatabaseConnectionTest {
   private static final Database DATABASE = DatabaseFactory.getDatabase();
 
   @Test
-  public void createConnection() throws Exception {
+  void createConnection() throws Exception {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(UNIT_TEST_USER);
@@ -39,7 +39,7 @@ public class DatabaseConnectionTest {
   }
 
   @Test
-  public void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
+  void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
     assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {

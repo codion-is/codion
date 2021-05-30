@@ -87,7 +87,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
+  void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
     final SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
     final Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
@@ -103,7 +103,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void nonMatchingConditionModelEntityType() {
+  void nonMatchingConditionModelEntityType() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
@@ -111,12 +111,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void nullConditionModel() {
+  void nullConditionModel() {
     assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, null));
   }
 
   @Test
-  public void testFiltering() {
+  void testFiltering() {
     testModel.refresh();
     final ColumnConditionModel<Attribute<String>, String> filterModel = testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setEqualValue("a");
@@ -125,7 +125,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void getColumnIndex() {
+  void getColumnIndex() {
     assertEquals(0, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_INT));
     assertEquals(1, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
     assertEquals(2, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_STRING));
@@ -139,7 +139,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void getValueAt() {
+  void getValueAt() {
     testModel.refresh();
     assertEquals(1, testModel.getValueAt(0, 0));
     assertEquals(2, testModel.getValueAt(1, 0));
@@ -154,7 +154,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void isEditable() {
+  void isEditable() {
     testModel.setEditable(true);
     assertTrue(testModel.isCellEditable(0, 0));
     assertFalse(testModel.isCellEditable(0, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_INT_DERIVED)));
@@ -162,7 +162,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void setValueAt() {
+  void setValueAt() {
     final SwingEntityTableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
     assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
@@ -174,20 +174,20 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void testSortComparator() {
+  void testSortComparator() {
     final Comparator<?> comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(TestDomain.DETAIL_MASTER_FK);
     //make sure we get the comparator from the entity referenced by the foreign key
     assertEquals(comparator, getConnectionProvider().getEntities().getDefinition(TestDomain.T_MASTER).getComparator());
   }
 
   @Test
-  public void columnModel() {
+  void columnModel() {
     final TableColumn column = testModel.getColumnModel().getTableColumn(TestDomain.DETAIL_STRING);
     assertEquals(TestDomain.DETAIL_STRING, column.getIdentifier());
   }
 
   @Test
-  public void getColumnClass() {
+  void getColumnClass() {
     assertEquals(Integer.class, testModel.getColumnClass(0));
     assertEquals(Double.class, testModel.getColumnClass(1));
     assertEquals(String.class, testModel.getColumnClass(2));
@@ -199,7 +199,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void indexOf() {
+  void indexOf() {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(TestDomain.EMP_NAME, SortingDirective.ASCENDING);
@@ -213,7 +213,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  public void preferences() throws Exception {
+  void preferences() throws Exception {
     testModel.clearPreferences();
 
     final SwingEntityTableModel tableModel = createTestTableModel();

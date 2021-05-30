@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DefaultClientLogTest {
 
   @Test
-  public void clientLog() {
+  void clientLog() {
     final UUID uuid = UUID.randomUUID();
     final LocalDateTime currentTime = LocalDateTime.now();
     final ClientLog log = ClientLog.clientLog(uuid, currentTime, emptyList());

@@ -39,7 +39,7 @@ public class RemoteEntityConnectionProviderTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
+  void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
     final EntityServerConfiguration configuration = configure();
 
     final String serverName = configuration.getServerName();
@@ -71,7 +71,7 @@ public class RemoteEntityConnectionProviderTest {
   }
 
   @Test
-  public void entityConnectionProviders() {
+  void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     final EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()

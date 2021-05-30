@@ -23,7 +23,7 @@ public class EntityInputComponentsTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() {
+  void test() {
     final EntityDefinition definition = CONNECTION_PROVIDER.getEntities().getDefinition(TestDomain.T_DETAIL);
     final EntityInputComponents inputComponents = new EntityInputComponents(definition);
     final State enabledState = State.state();

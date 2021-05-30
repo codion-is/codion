@@ -21,7 +21,7 @@ public class EntityTableSimpleConditionPanelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() {
+  void test() {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final EntityTableSimpleConditionPanel panel = new EntityTableSimpleConditionPanel(tableModel.getTableConditionModel(),
             tableModel.getColumnModel(), tableModel::refresh);

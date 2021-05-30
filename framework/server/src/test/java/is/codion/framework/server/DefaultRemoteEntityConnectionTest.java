@@ -35,21 +35,21 @@ public class DefaultRemoteEntityConnectionTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void wrongUsername() throws Exception {
+  void wrongUsername() throws Exception {
     final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(User.user("foo", "bar".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1234));
   }
 
   @Test
-  public void wrongPassword() throws Exception {
+  void wrongPassword() throws Exception {
     final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1235));
   }
 
   @Test
-  public void rollbackOnClose() throws Exception {
+  void rollbackOnClose() throws Exception {
     final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
@@ -64,7 +64,7 @@ public class DefaultRemoteEntityConnectionTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     Registry registry = null;
     DefaultRemoteEntityConnection adapter = null;
     final String serviceName = "DefaultRemoteEntityConnectionTest";

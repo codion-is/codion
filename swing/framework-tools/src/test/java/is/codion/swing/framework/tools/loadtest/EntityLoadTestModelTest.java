@@ -73,17 +73,17 @@ public class EntityLoadTestModelTest {
   }
 
   @Test
-  public void setLoginDelayFactorNegative() {
+  void setLoginDelayFactorNegative() {
     assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().getLoginDelayFactorValue().set(-1));
   }
 
   @Test
-  public void setUpdateIntervalNegative() {
+  void setUpdateIntervalNegative() {
     assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().setUpdateInterval(-1));
   }
 
   @Test
-  public void testLoadTesting() throws Exception {
+  void testLoadTesting() throws Exception {
     final TestLoadTestModel loadTest = new TestLoadTestModel();
 
     loadTest.getCollectChartDataState().set(true);

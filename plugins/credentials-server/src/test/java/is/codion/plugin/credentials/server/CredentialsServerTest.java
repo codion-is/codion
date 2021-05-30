@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public final class CredentialsServerTest {
 
   @Test
-  public void test() throws AlreadyBoundException, RemoteException, InterruptedException, CredentialsException {
+  void test() throws AlreadyBoundException, RemoteException, InterruptedException, CredentialsException {
     try {
       final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 

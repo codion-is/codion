@@ -12,7 +12,7 @@ public class MySQLDatabaseTest {
   private static final String URL = "jdbc:mysql://host:1234/sid";
 
   @Test
-  public void getName() {
+  void getName() {
     MySQLDatabase database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname");
     assertEquals("dbname", database.getName());
     database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname;option=true;option2=false");
@@ -20,24 +20,24 @@ public class MySQLDatabaseTest {
   }
 
   @Test
-  public void getSequenceQuery() {
+  void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase(URL).getSequenceQuery("seq"));
   }
 
   @Test
-  public void supportsIsValid() {
+  void supportsIsValid() {
     final MySQLDatabase db = new MySQLDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
-  public void getAutoIncrementQuery() {
+  void getAutoIncrementQuery() {
     final MySQLDatabase db = new MySQLDatabase(URL);
     assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void constructorNullUrl() {
+  void constructorNullUrl() {
     assertThrows(NullPointerException.class, () -> new MySQLDatabase(null));
   }
 }

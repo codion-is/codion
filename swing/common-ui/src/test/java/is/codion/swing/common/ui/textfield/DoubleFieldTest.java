@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DoubleFieldTest {
 
   @Test
-  public void testNoGrouping() {
+  void testNoGrouping() {
     final DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators(',', '.');
@@ -48,7 +48,7 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void testGrouping() {
+  void testGrouping() {
     final DecimalFormat decimalFormat = new DecimalFormat();
     final DoubleField doubleField = new DoubleField(decimalFormat);
     doubleField.setGroupingUsed(true);
@@ -99,7 +99,7 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void caretPosition() throws BadLocationException {
+  void caretPosition() throws BadLocationException {
     final DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
@@ -173,12 +173,12 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void setSeparatorsSameCharacter() {
+  void setSeparatorsSameCharacter() {
     assertThrows(IllegalArgumentException.class, () -> new DoubleField().setSeparators('.', '.'));
   }
 
   @Test
-  public void maximumFractionDigits() throws BadLocationException {
+  void maximumFractionDigits() throws BadLocationException {
     final DoubleField doubleField = new DoubleField();
     assertEquals(-1, doubleField.getMaximumFractionDigits());
     doubleField.setSeparators(',', '.');
@@ -201,7 +201,7 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void decimalSeparators() {
+  void decimalSeparators() {
     final DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators('.', ',');
@@ -217,7 +217,7 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void trailingDecimalSeparator() throws BadLocationException {
+  void trailingDecimalSeparator() throws BadLocationException {
     final DoubleField doubleField = new DoubleField();
     doubleField.setSeparators('.', ',');
     final NumberDocument document = (NumberDocument) doubleField.getDocument();
@@ -232,7 +232,7 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void setSeparators() {
+  void setSeparators() {
     final DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators('.', ',');
@@ -243,7 +243,7 @@ public class DoubleFieldTest {
   }
 
   @Test
-  public void trailingDecimalZeros() throws BadLocationException {
+  void trailingDecimalZeros() throws BadLocationException {
     final DoubleField doubleField = new DoubleField();
     final NumberDocument document = (NumberDocument) doubleField.getDocument();
     doubleField.setSeparators('.', ',');

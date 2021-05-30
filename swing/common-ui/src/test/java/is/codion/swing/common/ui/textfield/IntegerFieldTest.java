@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class IntegerFieldTest {
 
   @Test
-  public void test() {
+  void test() {
     final IntegerField integerField = new IntegerField(5);
     integerField.setInteger(42);
     assertEquals("42", integerField.getText());
@@ -62,7 +62,7 @@ public class IntegerFieldTest {
   }
 
   @Test
-  public void skipGroupingSeparator() {
+  void skipGroupingSeparator() {
     final IntegerField integerField = new IntegerField();
     integerField.setSeparators(',', '.');
     integerField.setGroupingUsed(true);

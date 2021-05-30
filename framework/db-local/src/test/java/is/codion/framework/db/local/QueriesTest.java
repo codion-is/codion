@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class QueriesTest {
 
   @Test
-  public void getOrderByClause() {
+  void getOrderByClause() {
     final TestDomain domain = new TestDomain();
     final EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.Department.TYPE);
     OrderBy orderBy = OrderBy.orderBy().ascending(TestDomain.Department.LOC)

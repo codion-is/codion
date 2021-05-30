@@ -26,12 +26,12 @@ public final class ConditionsTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
-  public void selectConditionKeyNoKeys() {
+  void selectConditionKeyNoKeys() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(emptyList()));
   }
 
   @Test
-  public void selectCondition() {
+  void selectCondition() {
     SelectCondition condition = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
             .asSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
@@ -41,7 +41,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void customConditionTest() {
+  void customConditionTest() {
     final SelectCondition condition = Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID)
             .asSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
@@ -49,20 +49,20 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void selectConditionOrderBySameAttribute() {
+  void selectConditionOrderBySameAttribute() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).asSelectCondition()
             .orderBy(orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
   }
 
   @Test
-  public void updateConditionDuplicate() {
+  void updateConditionDuplicate() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).asUpdateCondition()
             .set(TestDomain.EMP_COMMISSION, 123d)
             .set(TestDomain.EMP_COMMISSION, 123d));
   }
 
   @Test
-  public void combinationEmpty() {
+  void combinationEmpty() {
     final Condition.Combination combination = Conditions.combination(Conjunction.AND,
             Conditions.condition(TestDomain.T_EMP),
             where(TestDomain.EMP_ID).equalTo(1));
@@ -70,7 +70,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void foreignKeyCondition() {
+  void foreignKeyCondition() {
     final Entity master = ENTITIES.entity(TestDomain.T_MASTER);
     master.put(TestDomain.MASTER_ID_1, 1);
     master.put(TestDomain.MASTER_ID_2, 2);
@@ -82,7 +82,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void combination() {
+  void combination() {
     final Condition.Combination combination1 = where(TestDomain.DETAIL_STRING).equalTo("value")
             .and(where(TestDomain.DETAIL_INT).equalTo(666));
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
@@ -95,14 +95,14 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void attributeConditionTest() {
+  void attributeConditionTest() {
     final Condition critOne = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York");
     assertEquals("loc = ?", critOne.getWhereClause(ENTITIES.getDefinition(TestDomain.T_DEPARTMENT)));
     assertNotNull(critOne);
   }
 
   @Test
-  public void foreignKeyConditionNull() {
+  void foreignKeyConditionNull() {
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.getWhereClause(definition));
@@ -112,7 +112,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void foreignKeyConditionEntity() {
+  void foreignKeyConditionEntity() {
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
@@ -129,7 +129,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void foreignKeyConditionEntityKey() {
+  void foreignKeyConditionEntityKey() {
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
@@ -138,7 +138,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void compositeForeignKey() {
+  void compositeForeignKey() {
     final Entity master1 = ENTITIES.entity(TestDomain.T_MASTER);
     master1.put(TestDomain.MASTER_ID_1, 1);
     master1.put(TestDomain.MASTER_ID_2, 2);
@@ -162,7 +162,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void selectConditionCompositeKey() {
+  void selectConditionCompositeKey() {
     final Entity master1 = ENTITIES.entity(TestDomain.T_MASTER);
     master1.put(TestDomain.MASTER_ID_1, 1);
     master1.put(TestDomain.MASTER_ID_2, 2);
@@ -180,7 +180,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void keyNullCondition() {
+  void keyNullCondition() {
     assertThrows(NullPointerException.class, () ->
             where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
@@ -232,7 +232,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void conditionTest() {
+  void conditionTest() {
     final Entity entity = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 10);
 
@@ -249,7 +249,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void selectConditionTest() {
+  void selectConditionTest() {
     final Entity entity = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 10);
 
@@ -266,7 +266,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void selectAllCondition() {
+  void selectAllCondition() {
     final Condition selectCondition = Conditions.condition(TestDomain.T_DEPARTMENT);
     assertTrue(selectCondition.getValues().isEmpty());
     assertTrue(selectCondition.getAttributes().isEmpty());
@@ -277,20 +277,20 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void selectConditionOrderByDuplicate() {
+  void selectConditionOrderByDuplicate() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).asSelectCondition()
             .orderBy(orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
   }
 
   @Test
-  public void attributeConditionWithNonColumnProperty() {
+  void attributeConditionWithNonColumnProperty() {
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () ->
             where(TestDomain.EMP_DEPARTMENT_LOCATION).isNull().getWhereClause(definition));
   }
 
   @Test
-  public void conditionNullOrEmptyValues() {
+  void conditionNullOrEmptyValues() {
     assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((String[]) null));
     assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((Collection) null));
 
@@ -299,7 +299,7 @@ public final class ConditionsTest {
   }
 
   @Test
-  public void whereClause() throws Exception {
+  void whereClause() throws Exception {
     final EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
     final ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
     Condition condition = where(TestDomain.DEPARTMENT_NAME).equalTo("upper%");

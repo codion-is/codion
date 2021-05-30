@@ -58,7 +58,7 @@ public class SwingTableSelectionModelTest {
   }
 
   @Test
-  public void vetoSelectionChange() {
+  void vetoSelectionChange() {
     testModel.setSelectedIndex(0);
     assertEquals("A", testModel.getSelectedItem());
     testModel.setSelectedIndex(1);
@@ -72,7 +72,7 @@ public class SwingTableSelectionModelTest {
   }
 
   @Test
-  public void selectionMode() {
+  void selectionMode() {
     assertFalse(testModel.getSingleSelectionModeState().get());
     testModel.setSelectionMode(SINGLE_SELECTION);
     assertTrue(testModel.getSingleSelectionModeState().get());
@@ -90,7 +90,7 @@ public class SwingTableSelectionModelTest {
   }
 
   @Test
-  public void events() {
+  void events() {
     final AtomicInteger emptyCounter = new AtomicInteger();
     testModel.getSelectionEmptyObserver().addListener(emptyCounter::incrementAndGet);
     testModel.setSelectedIndex(0);

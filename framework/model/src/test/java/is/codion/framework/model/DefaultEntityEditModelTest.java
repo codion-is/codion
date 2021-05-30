@@ -47,12 +47,12 @@ public final class DefaultEntityEditModelTest {
   private EntityEditModel employeeEditModel;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test
-  public void editEvents() throws DatabaseException, ValidationException {
+  void editEvents() throws DatabaseException, ValidationException {
     final AtomicInteger insertEvents = new AtomicInteger();
     final AtomicInteger updateEvents = new AtomicInteger();
     final AtomicInteger deleteEvents = new AtomicInteger();
@@ -91,13 +91,13 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void listeners() {
+  void listeners() {
     assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
     assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueEditListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
   }
 
   @Test
-  public void getForeignKeySearchModel() {
+  void getForeignKeySearchModel() {
     assertFalse(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
     final EntitySearchModel model = employeeEditModel.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
     assertTrue(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
@@ -106,14 +106,14 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void createForeignKeySearchModel() {
+  void createForeignKeySearchModel() {
     final EntitySearchModel model = employeeEditModel.createForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityType());
   }
 
   @Test
-  public void refreshEntity() throws DatabaseException {
+  void refreshEntity() throws DatabaseException {
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
     connection.beginTransaction();
     try {
@@ -131,7 +131,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void getEntityCopy() throws DatabaseException {
+  void getEntityCopy() throws DatabaseException {
     final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
@@ -141,17 +141,17 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void constructorNullEntityType() {
+  void constructorNullEntityType() {
     assertThrows(NullPointerException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
   }
 
   @Test
-  public void constructorNullConnectionProvider() {
+  void constructorNullConnectionProvider() {
     assertThrows(NullPointerException.class, () -> new TestEntityEditModel(TestDomain.T_EMP, null));
   }
 
   @Test
-  public void getDefaultForeignKeyValue() throws DatabaseException {
+  void getDefaultForeignKeyValue() throws DatabaseException {
     final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
@@ -170,7 +170,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void defaultValueSupplier() throws DatabaseException {
+  void defaultValueSupplier() throws DatabaseException {
     employeeEditModel.setDefaultValueSupplier(TestDomain.EMP_NAME, () -> "Scott");
     assertTrue(employeeEditModel.isNull(TestDomain.EMP_NAME));
     employeeEditModel.setDefaultValues();
@@ -182,7 +182,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final StateObserver primaryKeyNullState = employeeEditModel.getPrimaryKeyNullObserver();
     final StateObserver entityNewState = employeeEditModel.getEntityNewObserver();
 
@@ -318,25 +318,25 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void insertReadOnly() throws CancelException, ValidationException, DatabaseException {
+  void insertReadOnly() throws CancelException, ValidationException, DatabaseException {
     employeeEditModel.setReadOnly(true);
     assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
   }
 
   @Test
-  public void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
+  void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
     employeeEditModel.setReadOnly(true);
     assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
   }
 
   @Test
-  public void deleteReadOnly() throws CancelException, DatabaseException {
+  void deleteReadOnly() throws CancelException, DatabaseException {
     employeeEditModel.setReadOnly(true);
     assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
   }
 
   @Test
-  public void insert() throws Exception {
+  void insert() throws Exception {
     assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
     connection.beginTransaction();
@@ -385,7 +385,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void update() throws Exception {
+  void update() throws Exception {
     assertThrows(UpdateException.class, () -> employeeEditModel.update());
     assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
@@ -413,7 +413,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void delete() throws Exception {
+  void delete() throws Exception {
     assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
     connection.beginTransaction();
@@ -435,7 +435,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void setEntity() throws Exception {
+  void setEntity() throws Exception {
     final Entity martin = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
@@ -451,7 +451,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void setPersistValue() throws Exception {
+  void setPersistValue() throws Exception {
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
     assertNotNull(employeeEditModel.get(TestDomain.EMP_JOB));
@@ -467,7 +467,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void containsUnsavedData() throws DatabaseException {
+  void containsUnsavedData() throws DatabaseException {
     employeeEditModel.setWarnAboutUnsavedData(true);
     employeeEditModel.setPersistValue(TestDomain.EMP_DEPARTMENT_FK, false);
 
@@ -502,7 +502,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void replaceForeignKeyValues() throws DatabaseException {
+  void replaceForeignKeyValues() throws DatabaseException {
     final Entity james = employeeEditModel.getConnectionProvider().getConnection()
             .selectSingle(TestDomain.EMP_NAME, "JAMES");
     employeeEditModel.setEntity(james);
@@ -514,7 +514,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void value() {
+  void value() {
     final Value<Integer> value = employeeEditModel.value(TestDomain.EMP_MGR);
     assertSame(value, employeeEditModel.value(TestDomain.EMP_MGR));
     value.set(42);
@@ -524,7 +524,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void derivedProperties() {
+  void derivedProperties() {
     final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, employeeEditModel.getConnectionProvider()) {
       @Override
       public void addForeignKeyValues(final List<Entity> entities) {}
@@ -556,7 +556,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void foreignKeyProperties() throws DatabaseException {
+  void foreignKeyProperties() throws DatabaseException {
     final AtomicInteger deptNoChange = new AtomicInteger();
     employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT, valueChange -> deptNoChange.incrementAndGet());
     final AtomicInteger deptChange = new AtomicInteger();

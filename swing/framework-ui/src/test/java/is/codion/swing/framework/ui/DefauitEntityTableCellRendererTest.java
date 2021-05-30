@@ -24,7 +24,7 @@ public class DefauitEntityTableCellRendererTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() {
+  void test() {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getTableModel().refresh();
     final EntityTableCellRenderer renderer = EntityTableCellRenderer.entityTableCellRenderer(tablePanel.getTableModel(),
@@ -43,7 +43,7 @@ public class DefauitEntityTableCellRendererTest {
   }
 
   @Test
-  public void entityMismatch() {
+  void entityMismatch() {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getTableModel().refresh();
     assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.entityTableCellRenderer(tablePanel.getTableModel(),

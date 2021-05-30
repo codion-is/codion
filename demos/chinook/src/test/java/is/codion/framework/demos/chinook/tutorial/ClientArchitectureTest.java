@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public final class ClientArchitectureTest {
 
   @Test
-  public void test() {
+  void test() {
     ClientArchitecture.main(new String[0]);
   }
 }

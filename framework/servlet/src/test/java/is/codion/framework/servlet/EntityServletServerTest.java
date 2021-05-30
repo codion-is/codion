@@ -109,7 +109,7 @@ public class EntityServletServerTest {
   }
 
   @Test
-  public void isTransactionOpen() throws URISyntaxException, IOException, ClassNotFoundException {
+  void isTransactionOpen() throws URISyntaxException, IOException, ClassNotFoundException {
     final RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
@@ -141,7 +141,7 @@ public class EntityServletServerTest {
   }
 
   @Test
-  public void testJson() throws URISyntaxException, IOException {
+  void testJson() throws URISyntaxException, IOException {
     final RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
@@ -383,7 +383,7 @@ public class EntityServletServerTest {
   }
 
   @Test
-  public void test() throws URISyntaxException, IOException, InterruptedException, ClassNotFoundException {
+  void test() throws URISyntaxException, IOException, InterruptedException, ClassNotFoundException {
     final RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)

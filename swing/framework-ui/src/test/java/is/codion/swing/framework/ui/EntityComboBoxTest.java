@@ -31,7 +31,7 @@ public class EntityComboBoxTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void inputProvider() throws Exception {
+  void inputProvider() throws Exception {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     model.refresh();
     final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
@@ -50,7 +50,7 @@ public class EntityComboBoxTest {
   }
 
   @Test
-  public void integerValueSelector() {
+  void integerValueSelector() {
     final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     comboBoxModel.refresh();
     final Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 3);

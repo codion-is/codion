@@ -12,7 +12,7 @@ import static is.codion.plugin.imagepanel.NavigableImagePanel.readImage;
 public class NavigableImagePanelTest {
 
   @Test
-  public void test() throws IOException {
+  void test() throws IOException {
     final NavigableImagePanel panel = new NavigableImagePanel(readImage("../../documentation/src/docs/asciidoc/images/chinook-client.png"));
     panel.setZoom(2.0);
   }

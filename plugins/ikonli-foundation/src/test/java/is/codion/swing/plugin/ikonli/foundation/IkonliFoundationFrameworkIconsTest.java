@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public final class IkonliFoundationFrameworkIconsTest {
 
   @Test
-  public void test() {
+  void test() {
     final IkonliFoundationFrameworkIcons icons = new IkonliFoundationFrameworkIcons();
     assertNotNull(icons.filter());
     assertNotNull(icons.configure());

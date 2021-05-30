@@ -63,7 +63,7 @@ public final class SwingEntityModelTest
   }
 
   @Test
-  public void isModified() {
+  void isModified() {
     //here we're basically testing for the entity in the edit model being modified after
     //being set when selected in the table model, this usually happens when combo box models
     //are being filtered on property value change, see EmployeeEditModel.bindEvents()
@@ -123,7 +123,7 @@ public final class SwingEntityModelTest
   }
 
   @Test
-  public void getDetailModelNonExisting() {
+  void getDetailModelNonExisting() {
     assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(EmpModel.class));
   }
 
@@ -152,7 +152,7 @@ public final class SwingEntityModelTest
   }
 
   @Test
-  public void constructor() {
+  void constructor() {
     final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
     SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
 
@@ -168,12 +168,12 @@ public final class SwingEntityModelTest
   }
 
   @Test
-  public void constructorNullEntityType() {
+  void constructorNullEntityType() {
     assertThrows(NullPointerException.class, () -> new SwingEntityModel(null, getConnectionProvider()));
   }
 
   @Test
-  public void constructorNullConnectionProvider() {
+  void constructorNullConnectionProvider() {
     assertThrows(NullPointerException.class, () -> new SwingEntityModel(TestDomain.T_EMP, null));
   }
 

@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultPropertyStoreTest {
 
   @Test
-  public void test() throws IOException {
+  void test() throws IOException {
     final File configFile = File.createTempFile("PropertyStoreTest.test", "properties");
     configFile.deleteOnExit();
     final StringBuilder configBuilder = new StringBuilder()
@@ -121,7 +121,7 @@ public final class DefaultPropertyStoreTest {
   }
 
   @Test
-  public void testDefaultValues() throws IOException {
+  void testDefaultValues() throws IOException {
     final File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
     configFile.deleteOnExit();
     final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(configFile));
@@ -152,7 +152,7 @@ public final class DefaultPropertyStoreTest {
   }
 
   @Test
-  public void exceptions() throws IOException {
+  void exceptions() throws IOException {
     final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(new File("test.file")));
 
     store.propertyValue("test", "test");
@@ -166,7 +166,7 @@ public final class DefaultPropertyStoreTest {
   }
 
   @Test
-  public void initialValue() {
+  void initialValue() {
     final Properties properties = new Properties();
     properties.put("property", "properties");
 
@@ -188,7 +188,7 @@ public final class DefaultPropertyStoreTest {
   }
 
   @Test
-  public void getOrThrow() {
+  void getOrThrow() {
     final Properties properties = new Properties();
     properties.put("property", "");
     final DefaultPropertyStore store = new DefaultPropertyStore(properties);

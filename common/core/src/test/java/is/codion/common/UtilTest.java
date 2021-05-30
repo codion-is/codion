@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class UtilTest {
 
   @Test
-  public void roundDouble() {
+  void roundDouble() {
     final double d = 5.1234567;
     assertEquals(Double.valueOf(5.1), Double.valueOf(Util.roundDouble(d, 1)));
     assertEquals(Double.valueOf(5.12), Double.valueOf(Util.roundDouble(d, 2)));
@@ -27,7 +27,7 @@ public final class UtilTest {
   }
 
   @Test
-  public void notNull() throws Exception {
+  void notNull() throws Exception {
     assertTrue(Util.notNull(new Object(), new Object(), new Object()));
     assertTrue(Util.notNull(new Object()));
     assertFalse(Util.notNull(new Object(), null, new Object()));
@@ -37,13 +37,13 @@ public final class UtilTest {
   }
 
   @Test
-  public void onClasspath() {
+  void onClasspath() {
     assertTrue(Util.onClasspath(UtilTest.class.getName()));
     assertFalse(Util.onClasspath("no.class.Here"));
   }
 
   @Test
-  public void nullOrEmpty() {
+  void nullOrEmpty() {
     final Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");
 

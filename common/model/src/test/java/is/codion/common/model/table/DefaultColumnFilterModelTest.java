@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DefaultColumnFilterModelTest {
 
   @Test
-  public void include() {
+  void include() {
     final DefaultColumnFilterModel<String, String, Integer> conditionModel = new DefaultColumnFilterModel<>("test", Integer.class, "%");
     conditionModel.setEqualValue(10);
     conditionModel.setOperator(Operator.EQUAL);

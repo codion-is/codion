@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DefaultDialogExceptionHandlerTest {
 
   @Test
-  public void test() {
+  void test() {
     Exception rootException = new Exception();
     RuntimeException wrapper = new RuntimeException(rootException);
     final List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();

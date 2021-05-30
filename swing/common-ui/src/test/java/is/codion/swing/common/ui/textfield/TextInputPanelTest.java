@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TextInputPanelTest {
 
   @Test
-  public void test() {
+  void test() {
     final JTextField textField = new JTextField();
     final TextInputPanel panel = TextInputPanel.builder(textField).dialogTitle("title").build();
     assertEquals(textField, panel.getTextField());
@@ -26,12 +26,12 @@ public class TextInputPanelTest {
   }
 
   @Test
-  public void constructorNullTextComponent() {
+  void constructorNullTextComponent() {
     assertThrows(NullPointerException.class, () -> TextInputPanel.builder(null));
   }
 
   @Test
-  public void setTextExceedMaxLength() {
+  void setTextExceedMaxLength() {
     final JTextField textField = new JTextField();
     final TextInputPanel panel = TextInputPanel.builder(textField).dialogTitle("title").build();
     panel.setMaximumLength(5);

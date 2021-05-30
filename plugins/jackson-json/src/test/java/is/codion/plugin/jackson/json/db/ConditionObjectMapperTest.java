@@ -29,7 +29,7 @@ public final class ConditionObjectMapperTest {
   private final Entities entities = new TestDomain().getEntities();
 
   @Test
-  public void condition() throws JsonProcessingException {
+  void condition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final Entity dept1 = entities.entity(TestDomain.T_DEPARTMENT);
@@ -54,7 +54,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  public void nullCondition() throws JsonProcessingException {
+  void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
     final Condition entityCondition = Conditions.where(TestDomain.EMP_COMMISSION).isNotNull();
 
@@ -67,7 +67,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  public void customCondition() throws JsonProcessingException {
+  void customCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final CustomCondition condition = Conditions.customCondition(TestDomain.ENTITY_CONDITION_TYPE,
@@ -83,7 +83,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  public void selectCondition() throws JsonProcessingException {
+  void selectCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     SelectCondition selectCondition = Conditions.where(TestDomain.EMP_ID).equalTo(1)
@@ -127,7 +127,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  public void updateCondition() throws JsonProcessingException {
+  void updateCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final UpdateCondition condition = Conditions.where(TestDomain.DEPARTMENT_ID)
