@@ -1,5 +1,6 @@
 = Quickstart
 :docinfo: shared-head
+:toc: left
 :dir-source: ../../../../demos/manual/src/main/java
 :dir-source-sql: ../../../../demos/manual/src/main/sql
 

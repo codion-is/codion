@@ -1,6 +1,7 @@
 [#_empdept_tutorial]
 = EmpDept Tutorial
 :docinfo: shared-head
+:toc: left
 :imagesdir: ../images
 :basedir: ..
 :dir-source: ../../../../../demos/empdept/src/main/java

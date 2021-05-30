@@ -1,4 +1,5 @@
 = Codion Application Framework
+:!toc:
 :docinfo: shared-head
 :imagesdir: images
 
