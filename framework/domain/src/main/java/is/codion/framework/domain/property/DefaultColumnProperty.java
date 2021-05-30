@@ -369,101 +369,101 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final <C> ColumnProperty.Builder<T, B> columnClass(final Class<C> columnClass,
+    public final <C> B columnClass(final Class<C> columnClass,
                                                               final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final <C> ColumnProperty.Builder<T, B> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
+    public final <C> B columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
                                                               final ValueFetcher<C> valueFetcher) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> columnName(final String columnName) {
+    public final B columnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> columnHasDefaultValue() {
+    public final B columnHasDefaultValue() {
       columnProperty.columnHasDefaultValue = true;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public ColumnProperty.Builder<T, B> readOnly() {
+    public B readOnly() {
       return readOnly(true);
     }
 
     @Override
-    public ColumnProperty.Builder<T, B> readOnly(final boolean readOnly) {
+    public B readOnly(final boolean readOnly) {
       columnProperty.insertable = !readOnly;
       columnProperty.updatable = !readOnly;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public ColumnProperty.Builder<T, B> insertable(final boolean insertable) {
+    public B insertable(final boolean insertable) {
       columnProperty.insertable = insertable;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public ColumnProperty.Builder<T, B> updatable(final boolean updatable) {
+    public B updatable(final boolean updatable) {
       columnProperty.updatable = updatable;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> primaryKeyIndex(final int index) {
+    public final B primaryKeyIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0: " + property.getAttribute());
       }
       columnProperty.primaryKeyIndex = index;
       nullable(false);
       updatable(false);
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> groupingColumn() {
+    public final B groupingColumn() {
       if (columnProperty.aggregateColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + property.getAttribute());
       }
       columnProperty.groupingColumn = true;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> aggregateColumn() {
+    public final B aggregateColumn() {
       if (columnProperty.groupingColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + property.getAttribute());
       }
       columnProperty.aggregateColumn = true;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> nonSelectable() {
+    public final B nonSelectable() {
       columnProperty.selectable = false;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T, B> searchProperty() {
+    public final B searchProperty() {
       if (!columnProperty.getAttribute().isString()) {
         throw new IllegalStateException("Search properties must be String based: " + property.getAttribute());
       }
       columnProperty.searchProperty = true;
-      return this;
+      return (B) this;
     }
   }
 }

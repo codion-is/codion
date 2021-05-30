@@ -170,7 +170,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * @param valueConverter the converter to use when converting to and from column values
      * @return this instance
      */
-    <C> ColumnProperty.Builder<T, B> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
+    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
 
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.
@@ -180,7 +180,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * @param valueFetcher the value fetcher used to retrieve the value from a ResultSet
      * @return this instance
      */
-    <C> ColumnProperty.Builder<T, B> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
+    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
                                                  ValueFetcher<C> valueFetcher);
 
     /**
@@ -188,38 +188,38 @@ public interface ColumnProperty<T> extends Property<T> {
      * @param columnName the column name
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> columnName(String columnName);
+    B columnName(String columnName);
 
     /**
      * Specifies that this property should not be included during insert and update operations
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> readOnly();
+    B readOnly();
 
     /**
      * Specifies whether this property should be included during insert and update operations
      * @param readOnly true if this property should be read-only
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> readOnly(boolean readOnly);
+    B readOnly(boolean readOnly);
 
     /**
      * @param insertable specifies whether this property should be included during insert operations
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> insertable(boolean insertable);
+    B insertable(boolean insertable);
 
     /**
      * @param updatable specifies whether this property is updatable
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> updatable(boolean updatable);
+    B updatable(boolean updatable);
 
     /**
      * Specifies that the underlying table column has a default value
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> columnHasDefaultValue();
+    B columnHasDefaultValue();
 
     /**
      * Sets the zero based primary key index of this property.
@@ -231,27 +231,27 @@ public interface ColumnProperty<T> extends Property<T> {
      * @see #nullable(boolean)
      * @see #updatable(boolean)
      */
-    ColumnProperty.Builder<T, B> primaryKeyIndex(int index);
+    B primaryKeyIndex(int index);
 
     /**
      * Specifies that this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> groupingColumn();
+    B groupingColumn();
 
     /**
      * Specifies that this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> aggregateColumn();
+    B aggregateColumn();
 
     /**
      * Specifies that this property should not be included in select queries
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> nonSelectable();
+    B nonSelectable();
 
     /**
      * Specifies that this property is included when searching for an entity by a string value.
@@ -259,6 +259,6 @@ public interface ColumnProperty<T> extends Property<T> {
      * @throws IllegalStateException in case this property type is not String
      * @return this instance
      */
-    ColumnProperty.Builder<T, B> searchProperty();
+    B searchProperty();
   }
 }

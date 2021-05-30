@@ -412,7 +412,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final Builder<T, B> captionResourceKey(final String captionResourceKey) {
+    public final B captionResourceKey(final String captionResourceKey) {
       if (property.caption != null) {
         throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
       }
@@ -425,51 +425,51 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       }
       property.captionResourceKey = captionResourceKey;
       property.hidden = false;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> beanProperty(final String beanProperty) {
+    public final B beanProperty(final String beanProperty) {
       if (nullOrEmpty(beanProperty)) {
         throw new IllegalArgumentException("beanProperty must be a non-empty string: " + property.attribute);
       }
       property.beanProperty = beanProperty;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> hidden() {
+    public final B hidden() {
       return hidden(true);
     }
 
     @Override
-    public final Builder<T, B> hidden(final boolean hidden) {
+    public final B hidden(final boolean hidden) {
       property.hidden = hidden;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> defaultValue(final T defaultValue) {
+    public final B defaultValue(final T defaultValue) {
       return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
     }
 
     @Override
-    public final Builder<T, B> defaultValueSupplier(final ValueSupplier<T> supplier) {
+    public final B defaultValueSupplier(final ValueSupplier<T> supplier) {
       if (supplier != null) {
         property.attribute.validateType(supplier.get());
       }
       property.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> nullable(final boolean nullable) {
+    public final B nullable(final boolean nullable) {
       property.nullable = nullable;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> maximumLength(final int maximumLength) {
+    public final B maximumLength(final int maximumLength) {
       if (!property.attribute.isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string properties: " + property.attribute);
       }
@@ -477,11 +477,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalArgumentException("maximumLength must be a positive integer: " + property.attribute);
       }
       property.maximumLength = maximumLength;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> maximumValue(final double maximumValue) {
+    public final B maximumValue(final double maximumValue) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("maximumValue is only applicable to numerical properties: " + property.attribute);
       }
@@ -489,11 +489,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalArgumentException("maximumValue must be larger than minimum value: " + property.attribute);
       }
       property.maximumValue = maximumValue;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> minimumValue(final double minimumValue) {
+    public final B minimumValue(final double minimumValue) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("minimumValue is only applicable to numerical properties");
       }
@@ -501,38 +501,38 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalArgumentException("minimumValue must be smaller than maximum value: " + property.attribute);
       }
       property.minimumValue = minimumValue;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> numberFormatGrouping(final boolean numberFormatGrouping) {
+    public final B numberFormatGrouping(final boolean numberFormatGrouping) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + property.attribute);
       }
       ((NumberFormat) property.format).setGroupingUsed(numberFormatGrouping);
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> preferredColumnWidth(final int preferredColumnWidth) {
+    public final B preferredColumnWidth(final int preferredColumnWidth) {
       property.preferredColumnWidth = preferredColumnWidth;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Property.Builder<T, B> description(final String description) {
+    public final B description(final String description) {
       property.description = description;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> mnemonic(final Character mnemonic) {
+    public final B mnemonic(final Character mnemonic) {
       property.mnemonic = mnemonic;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> format(final Format format) {
+    public final B format(final Format format) {
       requireNonNull(format, "format");
       if (property.attribute.isNumerical() && !(format instanceof NumberFormat)) {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
@@ -541,11 +541,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal properties: " + property.attribute);
       }
       property.format = format;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> dateTimePattern(final String dateTimePattern) {
+    public final B dateTimePattern(final String dateTimePattern) {
       requireNonNull(dateTimePattern, "dateTimePattern");
       if (!property.attribute.isTemporal()) {
         throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + property.attribute);
@@ -555,11 +555,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       }
       property.dateTimePattern = dateTimePattern;
       property.dateTimeFormatter = ofPattern(property.dateTimePattern);
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> localeDateTimePattern(final LocaleDateTimePattern localeDateTimePattern) {
+    public final B localeDateTimePattern(final LocaleDateTimePattern localeDateTimePattern) {
       requireNonNull(localeDateTimePattern, "localeDateTimePattern");
       if (!property.attribute.isTemporal()) {
         throw new IllegalStateException("localeDateTimePattern is only applicable to temporal properties: " + property.attribute);
@@ -571,25 +571,25 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       property.dateTimePattern = localeDateTimePattern.getDateTimePattern();
       property.dateTimeFormatter = localeDateTimePattern.getFormatter();
 
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> maximumFractionDigits(final int maximumFractionDigits) {
+    public final B maximumFractionDigits(final int maximumFractionDigits) {
       if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + property.attribute);
       }
       ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);
-      return this;
+      return (B) this;
     }
 
     @Override
-    public final Builder<T, B> decimalRoundingMode(final RoundingMode decimalRoundingMode) {
+    public final B decimalRoundingMode(final RoundingMode decimalRoundingMode) {
       if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("decimalRoundingMode is only applicable to decimal properties: " + property.attribute);
       }
       property.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
-      return this;
+      return (B) this;
     }
   }
 }
