@@ -12,6 +12,7 @@ public final class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(final SwingEntityModel artistModel) {
     super(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
+    setDetailSplitPanelResizeWeight(0.25);
 
     final SwingEntityModel albumModel = artistModel.getDetailModel(Chinook.Album.TYPE);
     final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));

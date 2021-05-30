@@ -3,7 +3,8 @@ alter user scott admin true;
 
 create schema chinook;
 
-create table chinook.user (
+create table chinook.user
+(
   userid identity not null,
   username varchar(20) not null,
   passwordhash integer not null,
