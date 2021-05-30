@@ -7147,3 +7147,4 @@
   Test methods no longer public
   Asciidoc documentation improved, no toc on index page
   Condition.asSelectCondition() and asUpdateCondition() renamed toSelectCondition() and toUpdateCondition()
+  DefaultConditionCombination bug fixed, did not return empty string when empty, Conditions, removed unnecessary combination() overload

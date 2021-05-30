@@ -63,8 +63,10 @@ public final class ConditionsTest {
 
   @Test
   void combinationEmpty() {
-    final Condition.Combination combination = Conditions.combination(Conjunction.AND,
-            Conditions.condition(TestDomain.T_EMP),
+    final Condition.Combination combination = Conditions.combination(Conjunction.AND);
+    assertEquals("", combination.getWhereClause(ENTITIES.getDefinition(TestDomain.T_EMP)));
+
+    combination.add(Conditions.condition(TestDomain.T_EMP),
             where(TestDomain.EMP_ID).equalTo(1));
     assertEquals("(empno = ?)", combination.getWhereClause(ENTITIES.getDefinition(TestDomain.T_EMP)));
   }

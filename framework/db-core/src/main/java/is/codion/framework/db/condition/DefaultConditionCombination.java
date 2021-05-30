@@ -35,11 +35,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     add(condition);
   }
 
-  DefaultConditionCombination(final Conjunction conjunction, final Condition... conditions) {
-    this(conjunction);
-    add(conditions);
-  }
-
   @Override
   public EntityType<?> getEntityType() {
     if (entityType == null) {
@@ -125,6 +120,9 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public String getWhereClause(final EntityDefinition definition) {
+    if (conditions.isEmpty()) {
+      return "";
+    }
     if (conditions.size() == 1) {
       return conditions.get(0).getWhereClause(definition);
     }
