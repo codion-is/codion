@@ -31,12 +31,12 @@ public class EntityApplicationPanelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     Thread.setDefaultUncaughtExceptionHandler(null);
   }
 
   @Test
-  public void getDependencyTreeModel() {
+  void getDependencyTreeModel() {
     final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(CONNECTION_PROVIDER.getEntities());
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration<?> tree = root.preorderEnumeration();
@@ -49,7 +49,7 @@ public class EntityApplicationPanelTest {
   }
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(TestDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);

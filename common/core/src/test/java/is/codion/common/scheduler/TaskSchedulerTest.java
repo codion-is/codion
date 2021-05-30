@@ -15,37 +15,37 @@ public class TaskSchedulerTest {
   private final Runnable runnable = () -> {};
 
   @Test
-  public void constructorNegativeInterval() {
+  void constructorNegativeInterval() {
     assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(-1));
   }
 
   @Test
-  public void constructorNegativeInitialDelay() {
+  void constructorNegativeInitialDelay() {
     assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).initialDelay(-1));
   }
 
   @Test
-  public void constructorNullTask() {
+  void constructorNullTask() {
     assertThrows(NullPointerException.class, () -> TaskScheduler.builder(null));
   }
 
   @Test
-  public void constructorNullTimUnit() {
+  void constructorNullTimUnit() {
     assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).timeUnit(null));
   }
 
   @Test
-  public void constructorNullThreadFactory() {
+  void constructorNullThreadFactory() {
     assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).threadFactory(null));
   }
 
   @Test
-  public void setIntervalNegative() {
+  void setIntervalNegative() {
     assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1).timeUnit(TimeUnit.SECONDS).build().setInterval(-1));
   }
 
   @Test
-  public void startStop() throws InterruptedException {
+  void startStop() throws InterruptedException {
     final AtomicInteger counter = new AtomicInteger();
     final TaskScheduler scheduler = TaskScheduler.builder(counter::incrementAndGet).interval(1).timeUnit(TimeUnit.MILLISECONDS).build();
     assertFalse(scheduler.isRunning());

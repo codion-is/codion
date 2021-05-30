@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 public final class EntitiesTutorialTest {
 
   @Test
-  public void test() throws DatabaseException {
+  void test() throws DatabaseException {
     EntitiesTutorial.main(new String[0]);
   }
 }

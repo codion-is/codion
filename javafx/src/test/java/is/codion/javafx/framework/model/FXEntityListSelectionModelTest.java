@@ -33,7 +33,7 @@ public final class FXEntityListSelectionModelTest {
   }
 
   @Test
-  public void selectionMode() {
+  void selectionMode() {
     final FXEntityListModel list = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     new EntityTableView(list);
     final FXEntityListSelectionModel selectionModel = list.getSelectionModel();

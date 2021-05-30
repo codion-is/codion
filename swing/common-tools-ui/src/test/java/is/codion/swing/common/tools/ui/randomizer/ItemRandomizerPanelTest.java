@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ItemRandomizerPanelTest {
 
   @Test
-  public void test() {
+  void test() {
     final ItemRandomizer<String> model = new ItemRandomizerModel<>();
     model.addItem("one", 5);
     model.addItem("two", 5);
@@ -24,7 +24,7 @@ public class ItemRandomizerPanelTest {
   }
 
   @Test
-  public void constructorNullModel() {
+  void constructorNullModel() {
     assertThrows(NullPointerException.class, () -> new ItemRandomizerPanel<String>(null));
   }
 }

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class StringLengthValidatorTest {
 
   @Test
-  public void insert() {
+  void insert() {
     final JTextArea textArea = new JTextArea();
     ((AbstractDocument) textArea.getDocument()).setDocumentFilter(parsingDocumentFilter(stringLengthValidator(10)));
     final String text8 = "12345678";
@@ -30,7 +30,7 @@ public class StringLengthValidatorTest {
   }
 
   @Test
-  public void replace() {
+  void replace() {
     final JTextArea textArea = new JTextArea();
     ((AbstractDocument) textArea.getDocument()).setDocumentFilter(parsingDocumentFilter(stringLengthValidator(10)));
     final String text8 = "12345678";

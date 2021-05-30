@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RecordModifiedExceptionTest {
 
   @Test
-  public void test() {
+  void test() {
     final RecordModifiedException ex = new RecordModifiedException("row", "hello", "message");
     assertEquals("row", ex.getRow());
     assertEquals("hello", ex.getModifiedRow());

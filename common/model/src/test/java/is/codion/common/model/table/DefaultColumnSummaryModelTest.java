@@ -50,7 +50,7 @@ public class DefaultColumnSummaryModelTest {
   });
 
   @Test
-  public void test() {
+  void test() {
     testIntModel.setSummary(ColumnSummary.SUM);
     assertEquals(ColumnSummary.SUM, testIntModel.getSummary());
     assertTrue(testIntModel.getAvailableSummaries().size() > 0);
@@ -63,67 +63,67 @@ public class DefaultColumnSummaryModelTest {
   }
 
   @Test
-  public void intSum() {
+  void intSum() {
     testIntModel.setSummary(ColumnSummary.SUM);
     assertEquals("15", testIntModel.getSummaryText());
   }
 
   @Test
-  public void intAverage() {
+  void intAverage() {
     testIntModel.setSummary(ColumnSummary.AVERAGE);
     assertEquals(numberFormat.format(2.5), testIntModel.getSummaryText());
   }
 
   @Test
-  public void intMininum() {
+  void intMininum() {
     testIntModel.setSummary(ColumnSummary.MINIMUM);
     assertEquals("1", testIntModel.getSummaryText());
   }
 
   @Test
-  public void intMaximum() {
+  void intMaximum() {
     testIntModel.setSummary(ColumnSummary.MAXIMUM);
     assertEquals("5", testIntModel.getSummaryText());
   }
 
   @Test
-  public void intMininumMaximum() {
+  void intMininumMaximum() {
     testIntModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
     assertEquals("1/5", testIntModel.getSummaryText());
   }
 
   @Test
-  public void doubleSum() {
+  void doubleSum() {
     testDoubleModel.setSummary(ColumnSummary.SUM);
     assertEquals(numberFormat.format(16.5), testDoubleModel.getSummaryText());
   }
 
   @Test
-  public void doubleAverage() {
+  void doubleAverage() {
     testDoubleModel.setSummary(ColumnSummary.AVERAGE);
     assertEquals(numberFormat.format(2.75), testDoubleModel.getSummaryText());
   }
 
   @Test
-  public void doubleMininum() {
+  void doubleMininum() {
     testDoubleModel.setSummary(ColumnSummary.MINIMUM);
     assertEquals(numberFormat.format(1.1), testDoubleModel.getSummaryText());
   }
 
   @Test
-  public void doubleMaximum() {
+  void doubleMaximum() {
     testDoubleModel.setSummary(ColumnSummary.MAXIMUM);
     assertEquals(numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
   @Test
-  public void doubleMininumMaximum() {
+  void doubleMininumMaximum() {
     testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
     assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
   @Test
-  public void locked() {
+  void locked() {
     testDoubleModel.setLocked(true);
     assertThrows(IllegalStateException.class, () -> testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM));
   }

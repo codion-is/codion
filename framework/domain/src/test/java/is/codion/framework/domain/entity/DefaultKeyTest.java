@@ -19,7 +19,7 @@ public final class DefaultKeyTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
-  public void compositeKeyNull() {
+  void compositeKeyNull() {
     final Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
     assertTrue(master.getPrimaryKey().isNull());
     assertFalse(master.getPrimaryKey().isNotNull());
@@ -44,7 +44,7 @@ public final class DefaultKeyTest {
   }
 
   @Test
-  public void singleKeyNull() {
+  void singleKeyNull() {
     Key key = ENTITIES.primaryKey(Detail.TYPE);
     assertTrue(key.isNull());
     key = key.withValue(null);
@@ -54,7 +54,7 @@ public final class DefaultKeyTest {
   }
 
   @Test
-  public void keyEquality() {
+  void keyEquality() {
     final List<Key> keys = ENTITIES.primaryKeys(Employee.TYPE, 1, 2);
     final Key empKey1 = keys.get(0);
     Key empKey2 = keys.get(1);
@@ -125,7 +125,7 @@ public final class DefaultKeyTest {
   }
 
   @Test
-  public void nullKeyEquals() {
+  void nullKeyEquals() {
     final Key nullKey = ENTITIES.primaryKey(Employee.TYPE);
     final Key zeroKey = ENTITIES.primaryKey(Employee.TYPE, 0);
     assertNotEquals(nullKey, zeroKey);

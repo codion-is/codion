@@ -25,17 +25,17 @@ public class HttpServerTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     httpServer.startServer();
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     httpServer.stopServer();
   }
 
   @Test
-  public void testWebServer() throws Exception {
+  void testWebServer() throws Exception {
     try (final InputStream input = new URL("http://localhost:" + FILE_SERVER_PORT_NUMBER + "/build.gradle").openStream()) {
       assertTrue(input.read() > 0);
     }

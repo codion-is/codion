@@ -26,7 +26,7 @@ public final class EntityEditPanelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() throws DatabaseException {
+  void test() throws DatabaseException {
     final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final TestEditPanel editPanel = new TestEditPanel(editModel);
     editPanel.createHorizontalControlPanel();

@@ -21,7 +21,7 @@ public class StringFactoryTest {
   private final Entities entities = domain.getEntities();
 
   @Test
-  public void stringProvider() {
+  void stringProvider() {
     final Entity department = entities.entity(Department.TYPE);
     department.put(Department.NO, -10);
     department.put(Department.LOCATION, "Reykjavik");

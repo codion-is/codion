@@ -32,7 +32,7 @@ public final class EntityObjectMapperTest {
   private final Entities entities = new TestDomain().getEntities();
 
   @Test
-  public void entity() throws JsonProcessingException {
+  void entity() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
@@ -68,7 +68,7 @@ public final class EntityObjectMapperTest {
   }
 
   @Test
-  public void entityForeignKeys() throws JsonProcessingException {
+  void entityForeignKeys() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities).setIncludeForeignKeyValues(true);
 
     final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
@@ -93,7 +93,7 @@ public final class EntityObjectMapperTest {
   }
 
   @Test
-  public void key() throws JsonProcessingException {
+  void key() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final Key deptKey1 = entities.primaryKey(TestDomain.T_DEPARTMENT, 1);
@@ -118,7 +118,7 @@ public final class EntityObjectMapperTest {
   }
 
   @Test
-  public void keyOld() throws Exception {
+  void keyOld() throws Exception {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final Key key = entities.primaryKey(TestDomain.T_DEPARTMENT, 42);
@@ -132,7 +132,7 @@ public final class EntityObjectMapperTest {
   }
 
   @Test
-  public void entityOld() throws Exception {
+  void entityOld() throws Exception {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -272,7 +272,7 @@ public final class EntityObjectMapperTest {
   }
 
   @Test
-  public void dependencyMap() throws JsonProcessingException {
+  void dependencyMap() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);

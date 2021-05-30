@@ -43,7 +43,7 @@ public final class EntityComponentBuildersTest {
   private final EntityComponentBuilders inputComponents = new EntityComponentBuilders(editModel.getEntityDefinition());
 
   @Test
-  public void createCheckBox() {
+  void createCheckBox() {
     editModel.setDefaultValues();
     final ComponentValue<Boolean, JCheckBox> componentValue =
             inputComponents.checkBox(TestDomain.DETAIL_BOOLEAN)
@@ -64,7 +64,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createToggleButton() {
+  void createToggleButton() {
     editModel.setDefaultValues();
     final ComponentValue<Boolean, JToggleButton> componentValue =
             inputComponents.toggleButton(TestDomain.DETAIL_BOOLEAN)
@@ -85,7 +85,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createNullableCheckBox() {
+  void createNullableCheckBox() {
     editModel.setDefaultValues();
     final ComponentValue<Boolean, JCheckBox> componentValue =
             inputComponents.checkBox(TestDomain.DETAIL_BOOLEAN_NULLABLE)
@@ -107,7 +107,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createBooleanComboBox() {
+  void createBooleanComboBox() {
     editModel.setDefaultValues();
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
@@ -125,7 +125,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createItemComboBox() {
+  void createItemComboBox() {
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
             inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST)
                     .transferFocusOnEnter(true)
@@ -145,7 +145,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createComboBox() {
+  void createComboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
             inputComponents.comboBox(TestDomain.DETAIL_INT, boxModel)
@@ -167,7 +167,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createTextField() {
+  void createTextField() {
     final ComponentValue<String, JTextField> componentValue =
             inputComponents.textField(TestDomain.DETAIL_STRING)
                     .columns(10)
@@ -194,7 +194,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createTextArea() {
+  void createTextArea() {
     final ComponentValue<String, JTextArea> componentValue =
             inputComponents.textArea(TestDomain.DETAIL_STRING)
                     .transferFocusOnEnter(true)
@@ -210,7 +210,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createTextInputPanel() {
+  void createTextInputPanel() {
     final ComponentValue<String, TextInputPanel> componentValue =
             inputComponents.textInputPanel(TestDomain.DETAIL_STRING)
                     .transferFocusOnEnter(true)
@@ -225,7 +225,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createFormattedTextField() {
+  void createFormattedTextField() {
     final ComponentValue<String, JFormattedTextField> componentValue =
             inputComponents.formattedTextField(TestDomain.DETAIL_STRING)
                     .formatMask("##:##")
@@ -241,7 +241,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createForeignKeyField() {
+  void createForeignKeyField() {
     final ComponentValue<Entity, JTextField> componentValue =
             inputComponents.foreignKeyField(TestDomain.DETAIL_MASTER_FK)
                     .linkedValue(editModel.value(TestDomain.DETAIL_MASTER_FK))
@@ -253,7 +253,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createForeignKeySearchField() {
+  void createForeignKeySearchField() {
     inputComponents.foreignKeySearchField(TestDomain.DETAIL_MASTER_FK, editModel.getForeignKeySearchModel(TestDomain.DETAIL_MASTER_FK))
             .columns(20)
             .upperCase(true)
@@ -262,7 +262,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void createForeignKeyComboBox() {
+  void createForeignKeyComboBox() {
     inputComponents.foreignKeyComboBox(TestDomain.DETAIL_MASTER_FK, editModel.getForeignKeyComboBoxModel(TestDomain.DETAIL_MASTER_FK))
             .popupWidth(100)
             .linkedValue(editModel.value(TestDomain.DETAIL_MASTER_FK))
@@ -270,7 +270,7 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
-  public void itemComboBox() {
+  void itemComboBox() {
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
             inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST)

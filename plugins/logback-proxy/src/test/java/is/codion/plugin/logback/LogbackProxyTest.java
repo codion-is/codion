@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class LogbackProxyTest {
 
   @Test
-  public void test() {
+  void test() {
     final LogbackProxy proxy = new LogbackProxy();
     proxy.getLogLevel();
     proxy.setLogLevel(proxy.getLogLevels().get(2));

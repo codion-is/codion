@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class EntityConnectionProviderTest {
 
   @Test
-  public void test() {
+  void test() {
     assertNotNull(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName()).setClientTypeId("test"));
   }
 }

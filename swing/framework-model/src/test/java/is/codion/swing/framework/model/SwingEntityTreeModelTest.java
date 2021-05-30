@@ -21,7 +21,7 @@ public final class SwingEntityTreeModelTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void test() {
+  void test() {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 

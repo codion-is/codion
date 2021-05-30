@@ -21,7 +21,7 @@ public class EntityPanelBuilderTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void setPanelClass() {
+  void setPanelClass() {
     assertThrows(IllegalStateException.class, () -> EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .editPanelClass(EntityEditPanel.class).panelClass(EntityPanel.class));
     assertThrows(IllegalStateException.class, () -> EntityPanel.builder(TestDomain.T_DEPARTMENT)
@@ -34,7 +34,7 @@ public class EntityPanelBuilderTest {
   }
 
   @Test
-  public void testDetailPanelBuilder() {
+  void testDetailPanelBuilder() {
     final SwingEntityModel.Builder customerModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT);
     final SwingEntityModel.Builder invoiceModelBuilder = SwingEntityModel.builder(TestDomain.T_EMP);
 

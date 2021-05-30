@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public final class DefaultRowColumnTest {
 
   @Test
-  public void test() {
+  void test() {
     final RowColumn rowColumn1 = RowColumn.rowColumn(1, 2);
     assertEquals(1, rowColumn1.getRow());
     assertEquals(2, rowColumn1.getColumn());

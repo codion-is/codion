@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ColumnConditionPanelTest {
 
   @Test
-  public void test() {
+  void test() {
     final String key = "key";
     final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
     final ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
@@ -37,7 +37,7 @@ public class ColumnConditionPanelTest {
   }
 
   @Test
-  public void lockedModel() {
+  void lockedModel() {
     final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("key", String.class, "%");
     model.setLocked(true);
     new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);

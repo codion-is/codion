@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DatabaseTest {
 
   @Test
-  public void closeSilently() {
+  void closeSilently() {
     Database.closeSilently((Statement) null);
     Database.closeSilently((ResultSet) null);
     Database.closeSilently((Connection) null);
   }
 
   @Test
-  public void validateWithQuery() throws DatabaseException, SQLException {
+  void validateWithQuery() throws DatabaseException, SQLException {
     final Database testDatabase = new TestDatabase();
     final Connection connection = testDatabase.createConnection(User.parseUser("scott:tiger"));
     assertTrue(testDatabase.isConnectionValid(connection));

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SwingFilteredTableColumnModelTest {
 
   @Test
-  public void testModel() {
+  void testModel() {
     final SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<>();
     final Collection<Object> shown = new ArrayList<>();
@@ -46,23 +46,23 @@ public class SwingFilteredTableColumnModelTest {
   }
 
   @Test
-  public void getTableColumnNotFound() {
+  void getTableColumnNotFound() {
     final SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
     assertThrows(IllegalArgumentException.class, () -> testModel.getTableColumn(42));
   }
 
   @Test
-  public void constructorNullColumns() {
+  void constructorNullColumns() {
     assertThrows(NullPointerException.class, () -> new SwingFilteredTableColumnModel<>(null));
   }
 
   @Test
-  public void constructorNoColumns() {
+  void constructorNoColumns() {
     assertThrows(IllegalArgumentException.class, () -> new SwingFilteredTableColumnModel<>(new ArrayList<>()));
   }
 
   @Test
-  public void setColumns() {
+  void setColumns() {
     final TableColumn column0 = new TableColumn(0);
     column0.setIdentifier(0);
     final TableColumn column1 = new TableColumn(1);
@@ -112,7 +112,7 @@ public class SwingFilteredTableColumnModelTest {
   }
 
   @Test
-  public void lock() {
+  void lock() {
     final TableColumn column0 = new TableColumn(0);
     column0.setIdentifier(0);
     final TableColumn column1 = new TableColumn(1);

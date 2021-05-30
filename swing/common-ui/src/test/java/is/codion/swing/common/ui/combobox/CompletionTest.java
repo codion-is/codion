@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class CompletionTest {
 
   @Test
-  public void setTwice() {
+  void setTwice() {
     final JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
     assertThrows(IllegalStateException.class,() -> Completion.maximumMatch(comboBox));
   }

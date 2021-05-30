@@ -23,22 +23,22 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Test
-  public void country() throws DatabaseException {
+  void country() throws DatabaseException {
     test(Country.TYPE);
   }
 
   @Test
-  public void city() throws DatabaseException {
+  void city() throws DatabaseException {
     test(City.TYPE);
   }
 
   @Test
-  public void countryLanguage() throws DatabaseException {
+  void countryLanguage() throws DatabaseException {
     test(CountryLanguage.TYPE);
   }
 
   @Test
-  public void lookup() throws DatabaseException {
+  void lookup() throws DatabaseException {
     getConnection().selectSingle(Lookup.CITY_NAME, "Genova");
   }
 

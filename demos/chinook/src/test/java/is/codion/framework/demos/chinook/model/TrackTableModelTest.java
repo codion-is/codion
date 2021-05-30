@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class TrackTableModelTest {
 
   @Test
-  public void raisePriceOfSelected() throws DatabaseException {
+  void raisePriceOfSelected() throws DatabaseException {
     final EntityConnectionProvider connectionProvider = createConnectionProvider();
 
     final Entity masterOfPuppets = connectionProvider.getConnection()

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NullableCheckBoxTest {
 
   @Test
-  public void test() {
+  void test() {
     final NullableCheckBox box = new NullableCheckBox(new NullableToggleButtonModel(false), "Test");
     assertFalse(box.getState());
     final MouseListener mouseListener = box.getMouseListeners()[1];

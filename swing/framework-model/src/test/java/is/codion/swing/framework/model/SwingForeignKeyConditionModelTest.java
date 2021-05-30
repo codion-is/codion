@@ -32,14 +32,14 @@ public class SwingForeignKeyConditionModelTest {
           new SwingConditionModelFactory());
 
   @Test
-  public void refresh() {
+  void refresh() {
     conditionModel.refresh();
     assertTrue(((SwingForeignKeyConditionModel) conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK))
             .getEntityComboBoxModel().getSize() > 1);
   }
 
   @Test
-  public void getSearchEntitiesComboBoxModel() throws DatabaseException {
+  void getSearchEntitiesComboBoxModel() throws DatabaseException {
     final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, comboBoxModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");

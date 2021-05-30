@@ -27,7 +27,7 @@ public final class EntityTest {
   private final Entities entities = new TestDomain().getEntities();
 
   @Test
-  public void equal() {
+  void equal() {
     final Entity department1 = entities.entity(TestDomain.Department.TYPE);
     department1.put(TestDomain.Department.NO, 1);
     department1.put(TestDomain.Department.NAME, "name");
@@ -57,7 +57,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void isKeyModified() {
+  void isKeyModified() {
     assertFalse(Entity.isKeyModified(emptyList()));
 
     final Entity department = entities.entity(TestDomain.Department.TYPE);
@@ -77,7 +77,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getModifiedColumnAttributes() {
+  void getModifiedColumnAttributes() {
     final Entity entity = entities.entity(TestDomain.Department.TYPE);
     entity.put(TestDomain.Department.NO, 1);
     entity.put(TestDomain.Department.LOCATION, "Location");
@@ -129,7 +129,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getModifiedColumnAttributesWithBlob() {
+  void getModifiedColumnAttributesWithBlob() {
     final Random random = new Random();
     final byte[] bytes = new byte[1024];
     random.nextBytes(bytes);
@@ -175,7 +175,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void get() {
+  void get() {
     final List<Entity> entityList = new ArrayList<>();
     final List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
@@ -192,7 +192,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getDistinct() {
+  void getDistinct() {
     final List<Entity> entityList = new ArrayList<>();
     final List<Object> values = new ArrayList<>();
 
@@ -242,7 +242,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getStringValueList() {
+  void getStringValueList() {
     final Entity dept1 = entities.entity(TestDomain.Department.TYPE);
     dept1.put(TestDomain.Department.NO, 1);
     dept1.put(TestDomain.Department.NAME, "name1");
@@ -266,7 +266,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void testSetPropertyValue() {
+  void testSetPropertyValue() {
     final Collection<Entity> collection = new ArrayList<>();
     collection.add(entities.entity(TestDomain.Department.TYPE));
     collection.add(entities.entity(TestDomain.Department.TYPE));
@@ -285,7 +285,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void mapToPropertyValue() {
+  void mapToPropertyValue() {
     final List<Entity> entityList = new ArrayList<>();
 
     final Entity entityOne = entities.entity(TestDomain.Department.TYPE);
@@ -322,7 +322,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void mapToType() {
+  void mapToType() {
     final Entity one = entities.entity(TestDomain.Employee.TYPE);
     final Entity two = entities.entity(TestDomain.Department.TYPE);
     final Entity three = entities.entity(TestDomain.Detail.TYPE);
@@ -343,7 +343,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void putNull() {
+  void putNull() {
     final Entity dept = entities.entity(TestDomain.Department.TYPE);
     for (final Property<?> property : entities.getDefinition(TestDomain.Department.TYPE).getProperties()) {
       assertFalse(dept.contains(property.getAttribute()));
@@ -363,7 +363,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getByValue() {
+  void getByValue() {
     final Entity one = entities.entity(TestDomain.Detail.TYPE);
     one.put(TestDomain.Detail.ID, 1L);
     one.put(TestDomain.Detail.STRING, "b");
@@ -388,7 +388,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void getReferencedKeys() {
+  void getReferencedKeys() {
     final Entity dept1 = entities.entity(TestDomain.Department.TYPE);
     dept1.put(TestDomain.Department.NO, 1);
     final Entity dept2 = entities.entity(TestDomain.Department.TYPE);
@@ -413,7 +413,7 @@ public final class EntityTest {
   }
 
   @Test
-  public void noPkEntity() {
+  void noPkEntity() {
     final Entity noPk = entities.entity(TestDomain.T_NO_PK);
     noPk.put(TestDomain.NO_PK_COL1, 1);
     noPk.put(TestDomain.NO_PK_COL2, 2);

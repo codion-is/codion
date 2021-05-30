@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class ParsingDocumentFilterTest {
 
   @Test
-  public void test() throws BadLocationException {
+  void test() throws BadLocationException {
     final JTextField textField = new JTextField();
     final AbstractDocument document = (AbstractDocument) textField.getDocument();
     final Parser<String> parser = text -> parseResult(text, text);

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class LongFieldTest {
 
   @Test
-  public void test() {
+  void test() {
     final LongField longField = new LongField(5);
     longField.setLong(42L);
     assertEquals("42", longField.getText());

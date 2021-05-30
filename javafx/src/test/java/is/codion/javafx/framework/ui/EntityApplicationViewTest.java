@@ -30,7 +30,7 @@ public final class EntityApplicationViewTest {
   }
 
   @Test
-  public void constructor() {
+  void constructor() {
     final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
       @Override
       protected void initializeEntityViews() {

@@ -16,37 +16,37 @@ public class PetstoreTest extends EntityTestUnit {
   }
 
   @Test
-  public void address() throws Exception {
+  void address() throws Exception {
     test(Address.TYPE);
   }
 
   @Test
-  public void category() throws Exception {
+  void category() throws Exception {
     test(Category.TYPE);
   }
 
   @Test
-  public void item() throws Exception {
+  void item() throws Exception {
     test(Item.TYPE);
   }
 
   @Test
-  public void product() throws Exception {
+  void product() throws Exception {
     test(Product.TYPE);
   }
 
   @Test
-  public void sellerInfo() throws Exception {
+  void sellerInfo() throws Exception {
     test(SellerContactInfo.TYPE);
   }
 
   @Test
-  public void tag() throws Exception {
+  void tag() throws Exception {
     test(Tag.TYPE);
   }
 
   @Test
-  public void tagItem() throws Exception {
+  void tagItem() throws Exception {
     test(TagItem.TYPE);
   }
 }

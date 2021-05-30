@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SelectQueryTest {
 
   @Test
-  public void test() {
+  void test() {
     assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder()
             .fromClause("from dual")
             .build());

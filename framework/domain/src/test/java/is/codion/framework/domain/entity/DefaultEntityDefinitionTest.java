@@ -33,7 +33,7 @@ public class DefaultEntityDefinitionTest {
   static final DomainType DOMAIN_TYPE = domainType("domainType");
 
   @Test
-  public void test() {
+  void test() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("test");
     final Attribute<Integer> id = entityType.integerAttribute("id");
     final Attribute<String> name = entityType.stringAttribute("name");
@@ -68,7 +68,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void entityWithDefaultValues() {
+  void entityWithDefaultValues() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("entityWithDefaultValues");
     final Attribute<Integer> id = entityType.integerAttribute("id");
     final Attribute<String> name = entityType.stringAttribute("name");
@@ -92,7 +92,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void entityWithoutProperties() {
+  void entityWithoutProperties() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -104,7 +104,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void duplicateAttributes() {
+  void duplicateAttributes() {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -119,7 +119,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testDerivedProperty() {
+  void testDerivedProperty() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("derivedProperty");
     final Attribute<Integer> name = entityType.integerAttribute("name");
     final Attribute<String> info = entityType.stringAttribute("info");
@@ -147,7 +147,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testGroupingProperties() {
+  void testGroupingProperties() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testGroupingProperties");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -165,7 +165,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testSetGroupByClauseWithGroupingProperties() {
+  void testSetGroupByClauseWithGroupingProperties() {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -180,7 +180,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testSetHavingClause() {
+  void testSetHavingClause() {
     final String havingClause = "p1 > 1";
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testSetHavingClause");
     class TestDomain extends DefaultDomain {
@@ -197,7 +197,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testSetHavingClauseAlreadySet() {
+  void testSetHavingClauseAlreadySet() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testSetHavingClauseAlreadySet");
     final String havingClause = "p1 > 1";
     class TestDomain extends DefaultDomain {
@@ -212,14 +212,14 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testForeignKeyNullability() {
+  void testForeignKeyNullability() {
     final Domain domain = new TestDomain();
     assertFalse(domain.getEntities().getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).isNullable());
     assertTrue(domain.getEntities().getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.MASTER_FK).isNullable());
   }
 
   @Test
-  public void testForeignPrimaryKey() {
+  void testForeignPrimaryKey() {
     final EntityType<Entity> parent = DOMAIN_TYPE.entityType("parent");
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testForeignPrimaryKey");
     final Attribute<Integer> integerAttribute = entityType.integerAttribute("attribute");
@@ -238,7 +238,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testAttributeConflict() {
+  void testAttributeConflict() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testAttributeConflict");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -254,7 +254,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testLinkedProperties() {
+  void testLinkedProperties() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testLinkedProperties");
     final Attribute<Integer> pk = entityType.integerAttribute("pk");
     final Attribute<Integer> attribute1 = entityType.integerAttribute("1");
@@ -278,7 +278,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void getColor() {
+  void getColor() {
     final String colorBlue = "blue";
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("getColor");
     class TestDomain extends DefaultDomain {
@@ -315,7 +315,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void nullStringProvider() {
+  void nullStringProvider() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("nullStringProvider");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -328,7 +328,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void stringProvider() {
+  void stringProvider() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("stringProvider");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -344,7 +344,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void defaultKeyGenerator() {
+  void defaultKeyGenerator() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("defaultKeyGenerator");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -362,7 +362,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void nullKeyGenerator() {
+  void nullKeyGenerator() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("nullKeyGenerator");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -375,7 +375,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void keyGenerator() {
+  void keyGenerator() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("keyGenerator");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -394,19 +394,19 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void compositeKeySingleValueConstructor() {
+  void compositeKeySingleValueConstructor() {
     assertThrows(IllegalStateException.class, () -> new TestDomain().getEntities()
             .getDefinition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
   }
 
   @Test
-  public void singleValueConstructorWrongType() {
+  void singleValueConstructorWrongType() {
     assertThrows(IllegalArgumentException.class, () -> new TestDomain().getEntities()
             .getDefinition(TestDomain.Department.TYPE).primaryKey(1L));
   }
 
   @Test
-  public void keyGeneratorWithoutPrimaryKey() {
+  void keyGeneratorWithoutPrimaryKey() {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("keyGeneratorWithoutPrimaryKey");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -420,7 +420,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void i18n() throws IOException, ClassNotFoundException {
+  void i18n() throws IOException, ClassNotFoundException {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("i18n", DefaultEntityDefinitionTest.class.getName());
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -463,7 +463,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void serializationCompatibility() {
+  void serializationCompatibility() {
     final DefaultEntityDefinition definition = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
             Arrays.asList(
                     primaryKeyProperty(Person.ID),

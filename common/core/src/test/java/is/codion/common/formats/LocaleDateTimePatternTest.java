@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class LocaleDateTimePatternTest {
 
   @Test
-  public void getDateMask() {
+  void getDateMask() {
     assertEquals("##-##-####", LocaleDateTimePattern.getMask("dd-MM-yyyy"));
   }
 
   @Test
-  public void locale() {
+  void locale() {
     final LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutes()
             .build();

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ClientsTest {
 
   @Test
-  public void connectionRequest() {
+  void connectionRequest() {
     final User user = User.parseUser("scott:tiger");
     final UUID uuid = UUID.randomUUID();
     final ConnectionRequest request = ConnectionRequest.builder().user(user).clientId(uuid).clientTypeId("test").build();

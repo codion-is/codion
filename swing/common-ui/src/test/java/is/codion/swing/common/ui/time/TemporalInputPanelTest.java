@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TemporalInputPanelTest {
 
   @Test
-  public void constructor() {
+  void constructor() {
     final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     field.setTemporal(LocalDate.now());
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
@@ -27,7 +27,7 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  public void setText() {
+  void setText() {
     final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     panel.getInputField().setText("01.03.2010");
@@ -35,7 +35,7 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  public void setDate() {
+  void setDate() {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
@@ -46,7 +46,7 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  public void getDate() {
+  void getDate() {
     final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     assertNull(panel.getTemporal());
@@ -59,12 +59,12 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  public void constructorNullInputField() {
+  void constructorNullInputField() {
     assertThrows(NullPointerException.class, () -> new TemporalInputPanel<>(null));
   }
 
   @Test
-  public void enabledState() {
+  void enabledState() {
     final State enabledState = State.state();
     final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, enabledState.getObserver());

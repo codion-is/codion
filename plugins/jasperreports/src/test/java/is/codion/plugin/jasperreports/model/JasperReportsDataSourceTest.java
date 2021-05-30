@@ -22,7 +22,7 @@ public class JasperReportsDataSourceTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
-  public void iterator() throws Exception {
+  void iterator() throws Exception {
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     department.put(TestDomain.DEPARTMENT_NAME, "name");

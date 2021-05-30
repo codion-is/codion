@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class JulProxyTest {
 
   @Test
-  public void test() {
+  void test() {
     final JulProxy proxy = new JulProxy();
     proxy.getLogLevel();
     proxy.setLogLevel(proxy.getLogLevels().get(2));

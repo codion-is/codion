@@ -29,7 +29,7 @@ public class SearchValueLinkTest {
   private final EntityInputComponents inputComponents = new EntityInputComponents(model.getEntityDefinition());
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final ComponentValue<Entity, EntitySearchField> componentValue =
             inputComponents.getComponentBuilders().foreignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
             model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();

@@ -18,7 +18,7 @@ public class TomcatConnectionPoolFactoryTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     final TomcatConnectionPoolFactory provider = new TomcatConnectionPoolFactory();
     final ConnectionPoolWrapper pool = provider.createConnectionPoolWrapper(new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TomcatConnectionPoolProviderTest",
             Database.DATABASE_INIT_SCRIPTS.get()), UNIT_TEST_USER);

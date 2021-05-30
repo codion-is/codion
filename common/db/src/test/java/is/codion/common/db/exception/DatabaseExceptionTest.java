@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DatabaseExceptionTest {
 
   @Test
-  public void test() {
+  void test() {
     assertThrows(DatabaseException.class, () -> {
       throw new DatabaseException("hello");
     });

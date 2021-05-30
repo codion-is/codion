@@ -26,7 +26,7 @@ public final class AbstractDatabaseTest {
   };
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT, database.getSelectForUpdateSupport());
     assertTrue(database.supportsIsValid());
     assertEquals("name", database.getName());
@@ -35,7 +35,7 @@ public final class AbstractDatabaseTest {
   }
 
   @Test
-  public void connectionProvider() throws Exception {
+  void connectionProvider() throws Exception {
     final User sa = User.user("sa");
     final Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {

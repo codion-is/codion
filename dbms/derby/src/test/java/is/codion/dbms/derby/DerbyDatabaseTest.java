@@ -14,7 +14,7 @@ public class DerbyDatabaseTest {
   private static final String URL = "jdbc:derby://host:1234/sid";
 
   @Test
-  public void getName() {
+  void getName() {
     DerbyDatabase database = new DerbyDatabase("jdbc:derby:C:/data/sample;option=true;option2=false");
     assertEquals("C:/data/sample", database.getName());
     database = new DerbyDatabase("jdbc:derby://sample.db:1234;option=true;option2=false");
@@ -26,31 +26,31 @@ public class DerbyDatabaseTest {
   }
 
   @Test
-  public void getSequenceQuery() {
+  void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).getSequenceQuery("seq"));
   }
 
   @Test
-  public void supportsIsValid() {
+  void supportsIsValid() {
     final DerbyDatabase db = new DerbyDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
-  public void supportsNoWait() {
+  void supportsNoWait() {
     final DerbyDatabase db = new DerbyDatabase(URL);
     assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE, db.getSelectForUpdateSupport());
   }
 
   @Test
-  public void getAutoIncrementQuery() {
+  void getAutoIncrementQuery() {
     final DerbyDatabase db = new DerbyDatabase(URL);
     final String idSource = "id_source";
     assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementQuery(idSource));
   }
 
   @Test
-  public void constructorNullUrl() {
+  void constructorNullUrl() {
     assertThrows(NullPointerException.class, () -> new DerbyDatabase(null));
   }
 }

@@ -20,7 +20,7 @@ public final class EntityPopupMenuTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @Test
-  public void test() throws DatabaseException {
+  void test() throws DatabaseException {
     final Entity blake = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
     final Entity trevor = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.EMP_NAME, "TREVOR");
     blake.put(TestDomain.EMP_ID, -1);

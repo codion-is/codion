@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class KeyEventsTest {
 
   @Test
-  public void addRemoveKeyEvent() {
+  void addRemoveKeyEvent() {
     final JTextField textField = new JTextField();
     final String actionName = "testing";
     final Control control = Control.builder(() -> {}).caption(actionName).build();
@@ -29,7 +29,7 @@ public class KeyEventsTest {
   }
 
   @Test
-  public void addKeyEventWithoutName() {
+  void addKeyEventWithoutName() {
     final JTextField textField = new JTextField();
     final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyReleased";
     assertNull(textField.getActionMap().get(actionName));

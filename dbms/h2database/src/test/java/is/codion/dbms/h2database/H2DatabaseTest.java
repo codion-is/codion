@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class H2DatabaseTest {
 
   @Test
-  public void getDatabaseName() {
+  void getDatabaseName() {
     H2Database database = new H2Database("jdbc:h2:file:C:/data/sample;option=true;option2=false");
     assertEquals("C:/data/sample", database.getName());
     database = new H2Database("jdbc:h2:C:/data/sample;option=true;option2=false");
@@ -40,36 +40,36 @@ public class H2DatabaseTest {
   }
 
   @Test
-  public void getSequenceSQLNullSequence() {
+  void getSequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new H2Database("url").getSequenceQuery(null));
   }
 
   @Test
-  public void supportsIsValid() {
+  void supportsIsValid() {
     final H2Database db = new H2Database("url");
     assertTrue(db.supportsIsValid());
   }
 
   @Test
-  public void getAutoIncrementQuery() {
+  void getAutoIncrementQuery() {
     final H2Database db = new H2Database("url");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void getSequenceQuery() {
+  void getSequenceQuery() {
     final H2Database db = new H2Database("url");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
   @Test
-  public void constructorNullUrl() {
+  void constructorNullUrl() {
     assertThrows(NullPointerException.class, () -> new H2Database(null));
   }
 
   @Test
-  public void multipleDatabases() throws DatabaseException, SQLException, IOException {
+  void multipleDatabases() throws DatabaseException, SQLException, IOException {
     final File file1 = File.createTempFile("h2db_test_1", ".sql");
     final File file2 = File.createTempFile("h2db_test_2", ".sql");
     Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
@@ -92,7 +92,7 @@ public class H2DatabaseTest {
   }
 
   @Test
-  public void fileDatabase() throws DatabaseException, SQLException {
+  void fileDatabase() throws DatabaseException, SQLException {
     final File tempDir = new File(System.getProperty("java.io.tmpdir"));
     final String url = "jdbc:h2:file:" + tempDir.getAbsolutePath() + "/h2db/database";
     final File dbFile = new File(tempDir.getAbsolutePath() + "/h2db/database.mv.db");

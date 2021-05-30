@@ -35,7 +35,7 @@ public class DefaultEntityTableConditionModelTest {
           CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
 
   @Test
-  public void test() {
+  void test() {
     assertEquals(TestDomain.T_EMP, conditionModel.getEntityType());
     conditionModel.setConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, conditionModel.getConjunction());
@@ -53,7 +53,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void noSearchPropertiesDefined() {
+  void noSearchPropertiesDefined() {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
             CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
     //no search properties defined for master entity
@@ -62,22 +62,22 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void getPropertyFilterModel() {
+  void getPropertyFilterModel() {
     assertNotNull(conditionModel.getFilterModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
-  public void getPropertyConditionModel() {
+  void getPropertyConditionModel() {
     assertNotNull(conditionModel.getConditionModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
-  public void getPropertyConditionModelNonExisting() {
+  void getPropertyConditionModelNonExisting() {
     assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getConditionModel(TestDomain.DEPARTMENT_ID)));
   }
 
   @Test
-  public void setEqualFilterValue() {
+  void setEqualFilterValue() {
     conditionModel.setEqualFilterValue(TestDomain.EMP_COMMISSION, 1400d);
     final ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
@@ -87,7 +87,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void setEqualConditionValues() throws DatabaseException {
+  void setEqualConditionValues() throws DatabaseException {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -102,7 +102,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void clearPropertyConditionModels() throws DatabaseException {
+  void clearPropertyConditionModels() throws DatabaseException {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -113,7 +113,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void getCondition() throws DatabaseException {
+  void getCondition() throws DatabaseException {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -125,7 +125,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void conditionChangedListener() {
+  void conditionChangedListener() {
     final AtomicInteger counter = new AtomicInteger();
     final EventListener conditionChangedListener = counter::incrementAndGet;
     conditionModel.addConditionListener(conditionChangedListener);
@@ -141,7 +141,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void testSearchState() {
+  void testSearchState() {
     assertFalse(conditionModel.hasConditionChanged());
     conditionModel.getConditionModel(TestDomain.EMP_JOB).setEqualValue("job");
     assertTrue(conditionModel.hasConditionChanged());
@@ -154,7 +154,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void testSimpleSearchString() {
+  void testSimpleSearchString() {
     final String value = "test";
     final String wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.getSimpleConditionStringValue().set(value);

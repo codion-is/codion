@@ -29,7 +29,7 @@ public final class EntityViewTest {
   }
 
   @Test
-  public void constructor() {
+  void constructor() {
     final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final FXEntityModel model = new FXEntityModel(editModel, listModel);

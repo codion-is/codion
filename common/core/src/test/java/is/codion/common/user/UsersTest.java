@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UsersTest {
 
   @Test
-  public void test() {
+  void test() {
     final User user = User.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
@@ -33,7 +33,7 @@ public class UsersTest {
   }
 
   @Test
-  public void parseUser() {
+  void parseUser() {
     User user = User.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
@@ -52,14 +52,14 @@ public class UsersTest {
   }
 
   @Test
-  public void parseUserNoUsername() {
+  void parseUserNoUsername() {
     assertThrows(IllegalArgumentException.class, () -> User.parseUser(":tiger"));
     assertThrows(IllegalArgumentException.class, () -> User.parseUser("::"));
     assertThrows(IllegalArgumentException.class, () -> User.parseUser("::tiger:"));
   }
 
   @Test
-  public void parseUserNoUserInfo() {
+  void parseUserNoUserInfo() {
     assertThrows(IllegalArgumentException.class, () -> User.parseUser(""));
   }
 }

@@ -39,7 +39,7 @@ public final class DatabaseExplorerModelTest {
   private DatabaseExplorerModel model;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
     model.getSchemaModel().refresh();
     model.getSchemaModel().getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
@@ -50,26 +50,26 @@ public final class DatabaseExplorerModelTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     model.close();
   }
 
   @Test
-  public void address() {
+  void address() {
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(0);
     final String addressDef = model.getDomainSourceObserver().get().trim();
     assertEquals(ADDRESS_DEF, addressDef);
   }
 
   @Test
-  public void product() {
+  void product() {
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(3);
     final String productDef = model.getDomainSourceObserver().get().trim();
     assertEquals(PRODUCT_DEF, productDef);
   }
 
   @Test
-  public void tagItem() throws Exception {
+  void tagItem() throws Exception {
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(6);
     final String tagItemDef = model.getDomainSourceObserver().get().trim();
     assertEquals(TAG_ITEM_DEF, tagItemDef);

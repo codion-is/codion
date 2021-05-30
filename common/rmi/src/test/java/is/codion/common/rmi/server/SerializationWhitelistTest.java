@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class SerializationWhitelistTest {
 
   @Test
-  public void test() {
+  void test() {
     final List<String> whitelistItems = asList(
             "is.codion.common.value.Value",
             "is.codion.common.state.State*",
@@ -31,7 +31,7 @@ public final class SerializationWhitelistTest {
   }
 
   @Test
-  public void testNoWildcards() {
+  void testNoWildcards() {
     final List<String> whitelistItems = asList(
             "#comment",
             "is.codion.common.value.Value",

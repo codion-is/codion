@@ -30,12 +30,12 @@ public class SwingEntityEditModelTest {
   private SwingEntityEditModel employeeEditModel;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test
-  public void getComboBoxModel() {
+  void getComboBoxModel() {
     final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB);
     model.setNullString("null");
     assertNotNull(model);
@@ -50,7 +50,7 @@ public class SwingEntityEditModelTest {
   }
 
   @Test
-  public void getForeignKeyComboBoxModel() {
+  void getForeignKeyComboBoxModel() {
     assertFalse(employeeEditModel.containsComboBoxModel(TestDomain.EMP_DEPARTMENT_FK));
     final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
@@ -65,7 +65,7 @@ public class SwingEntityEditModelTest {
   }
 
   @Test
-  public void createForeignKeyComboBoxModel() {
+  void createForeignKeyComboBoxModel() {
     final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
@@ -75,7 +75,7 @@ public class SwingEntityEditModelTest {
   }
 
   @Test
-  public void replaceForeignKeyValues() throws DatabaseException {
+  void replaceForeignKeyValues() throws DatabaseException {
     final Entity blake = employeeEditModel.getConnectionProvider().getConnection()
             .selectSingle(TestDomain.EMP_NAME, "BLAKE");
     employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK);

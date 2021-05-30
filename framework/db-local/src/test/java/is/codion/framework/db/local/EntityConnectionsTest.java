@@ -58,7 +58,7 @@ public class EntityConnectionsTest {
   }
 
   @Test
-  public void copyEntities() throws SQLException, DatabaseException {
+  void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.Department.TYPE);
 
@@ -73,7 +73,7 @@ public class EntityConnectionsTest {
   }
 
   @Test
-  public void batchInsert() throws SQLException, DatabaseException {
+  void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
     final List<Entity> source = sourceConnection.select(condition(TestDomain.Department.TYPE));
@@ -88,7 +88,7 @@ public class EntityConnectionsTest {
   }
 
   @Test
-  public void batchInsertNegativeBatchSize() throws DatabaseException {
+  void batchInsertNegativeBatchSize() throws DatabaseException {
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.batchInsert(CONNECTION_PROVIDER.getConnection(),
             Collections.emptyIterator(), -6, null, null));
   }

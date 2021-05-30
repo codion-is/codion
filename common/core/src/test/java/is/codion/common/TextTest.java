@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TextTest {
 
   @Test
-  public void spaceAwareCollator() {
+  void spaceAwareCollator() {
     final String one = "björn";
     final String two = "bjö rn";
     final String three = "björ n";
@@ -52,12 +52,12 @@ public final class TextTest {
   }
 
   @Test
-  public void randomStringMinLengthExceedsMaxLength() {
+  void randomStringMinLengthExceedsMaxLength() {
     assertThrows(IllegalArgumentException.class, () -> Text.randomString(3, 2));
   }
 
   @Test
-  public void randomString() {
+  void randomString() {
     String randomString = Text.randomString(1, 1);
     assertEquals(1, randomString.length());
     randomString = Text.randomString(5, 5);
@@ -68,7 +68,7 @@ public final class TextTest {
   }
 
   @Test
-  public void padString() {
+  void padString() {
     final String string = "hello";
     assertEquals("hello", Text.padString(string, 4, '*', Text.Alignment.LEFT));
     assertEquals("hello", Text.padString(string, 5, '*', Text.Alignment.LEFT));
@@ -77,20 +77,20 @@ public final class TextTest {
   }
 
   @Test
-  public void getDelimitedString() {
+  void getDelimitedString() {
     final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
     assertEquals(result, Text.getDelimitedString(asList("test", "test2"),
             asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
   }
 
   @Test
-  public void getTextFileContents() throws IOException {
+  void getTextFileContents() throws IOException {
     final String contents = "here is" + Util.LINE_SEPARATOR + "some text";
     assertEquals(contents, Text.getTextFileContents("src/test/java/is/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
   }
 
   @Test
-  public void collate() {
+  void collate() {
     final String one = "Bláskuggi";
     final String two = "Blá skuggi";
     final String three = "Blár skuggi";
@@ -102,7 +102,7 @@ public final class TextTest {
   }
 
   @Test
-  public void collateSansSpaces() {
+  void collateSansSpaces() {
     final String b = "Björn Darri";
     final String bNoSpace = "BjörnDarri";
     final String d = "Davíð Arnar";
@@ -118,7 +118,7 @@ public final class TextTest {
   }
 
   @Test
-  public void underscoreToCamelCase() {
+  void underscoreToCamelCase() {
     assertEquals("", Text.underscoreToCamelCase(""));
     assertEquals("noOfSpeakers", Text.underscoreToCamelCase("noOfSpeakers"));
     assertEquals("noOfSpeakers", Text.underscoreToCamelCase("no_of_speakers"));

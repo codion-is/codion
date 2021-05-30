@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class AbstractConnectionPoolWrapperTest {
 
   @Test
-  public void test() throws DatabaseException, SQLException {
+  void test() throws DatabaseException, SQLException {
     final Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
 
     assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.connectionPoolFactory("is.codion.none.existing.Factory"));

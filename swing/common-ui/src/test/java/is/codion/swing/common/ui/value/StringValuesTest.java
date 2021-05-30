@@ -29,7 +29,7 @@ public class StringValuesTest {
   }
 
   @Test
-  public void valueLink() {
+  void valueLink() {
     final Value<String> textValue = Value.value("start");
     textValue.addValidator(text -> {
       if (text != null && text.equals("nono")) {
@@ -55,7 +55,7 @@ public class StringValuesTest {
   }
 
   @Test
-  public void nullInitialValue() throws Exception {
+  void nullInitialValue() throws Exception {
     stringValue = null;
     final JTextField textField = new JTextField();
     final Value<String> stringPropertyValue = Value.propertyValue(this, "stringValue",
@@ -78,7 +78,7 @@ public class StringValuesTest {
   }
 
   @Test
-  public void nonNullInitialValue() throws Exception {
+  void nonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
     ComponentValues.textComponent(textField)
@@ -94,7 +94,7 @@ public class StringValuesTest {
   }
 
   @Test
-  public void textValueField() {
+  void textValueField() {
     final String value = "hello";
 
     SizedDocument document = new SizedDocument();
@@ -127,7 +127,7 @@ public class StringValuesTest {
   }
 
   @Test
-  public void textValue() {
+  void textValue() {
     final JTextField textField = new JTextField();
 
     final ComponentValue<String, JTextField> value = ComponentValues.textComponent(textField);
@@ -143,7 +143,7 @@ public class StringValuesTest {
   }
 
   @Test
-  public void characterValue() {
+  void characterValue() {
     final ComponentValue<Character, JTextField> value = ComponentValues.characterTextField(new JTextField());
     assertNull(value.get());
     value.getComponent().setText("2");

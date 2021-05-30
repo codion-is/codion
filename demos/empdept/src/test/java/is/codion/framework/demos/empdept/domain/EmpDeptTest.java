@@ -17,12 +17,12 @@ public class EmpDeptTest extends EntityTestUnit {
   }
 
   @Test
-  public void department() throws Exception {
+  void department() throws Exception {
     test(Department.TYPE);
   }
 
   @Test
-  public void employee() throws Exception {
+  void employee() throws Exception {
     test(Employee.TYPE);
   }
 }

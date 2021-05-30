@@ -30,7 +30,7 @@ public class DefaultServerLocatorTest {
   }
 
   @Test
-  public void getServer() throws RemoteException, NotBoundException {
+  void getServer() throws RemoteException, NotBoundException {
     //flaky test, inline setup and teardown
     final DefaultServerLocator serverLocator = new DefaultServerLocator();
 

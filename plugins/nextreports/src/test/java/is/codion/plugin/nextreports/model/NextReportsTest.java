@@ -31,7 +31,7 @@ public class NextReportsTest {
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  public void fillReport() throws ReportException, IOException, DatabaseException {
+  void fillReport() throws ReportException, IOException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", Database.DATABASE_INIT_SCRIPTS.get()))
             .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);

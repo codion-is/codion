@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ItemRandomizerModelTest {
 
   @Test
-  public void test() {
+  void test() {
     final Object one = "one";
     final Object two = "two";
     final Object three = "three";

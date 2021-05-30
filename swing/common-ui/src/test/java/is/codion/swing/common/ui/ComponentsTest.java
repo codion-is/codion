@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ComponentsTest {
 
   @Test
-  public void linkToEnabledState() {
+  void linkToEnabledState() {
     final Action action = new AbstractAction("test") {
       @Override
       public void actionPerformed(final ActionEvent e) {}
@@ -55,7 +55,7 @@ public class ComponentsTest {
   }
 
   @Test
-  public void setPreferredWidth() {
+  void setPreferredWidth() {
     final JTextField textField = new JTextField();
     Components.setPreferredWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
@@ -67,14 +67,14 @@ public class ComponentsTest {
   }
 
   @Test
-  public void setPreferredHeight() {
+  void setPreferredHeight() {
     final JTextField textField = new JTextField();
     Components.setPreferredHeight(textField, 42);
     assertEquals(new Dimension(textField.getPreferredSize().width, 42), textField.getPreferredSize());
   }
 
   @Test
-  public void propertyChangeObserver() {
+  void propertyChangeObserver() {
     final JTextField textField = new JTextField();
     final AtomicInteger counter = new AtomicInteger();
     final EventObserver<Integer> alignmentObserver =

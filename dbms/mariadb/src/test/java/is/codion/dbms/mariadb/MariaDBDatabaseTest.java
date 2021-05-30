@@ -12,7 +12,7 @@ public class MariaDBDatabaseTest {
   private static final String URL = "jdbc:mariadb://host:1234/sid";
 
   @Test
-  public void getName() {
+  void getName() {
     MariaDBDatabase database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname");
     assertEquals("dbname", database.getName());
     database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
@@ -20,24 +20,24 @@ public class MariaDBDatabaseTest {
   }
 
   @Test
-  public void getSequenceQuery() {
+  void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MariaDBDatabase(URL).getSequenceQuery("seq"));
   }
 
   @Test
-  public void supportsIsValid() {
+  void supportsIsValid() {
     final MariaDBDatabase db = new MariaDBDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
-  public void getAutoIncrementQuery() {
+  void getAutoIncrementQuery() {
     final MariaDBDatabase db = new MariaDBDatabase(URL);
     assertEquals(MariaDBDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void constructorNullUrl() {
+  void constructorNullUrl() {
     assertThrows(NullPointerException.class, () -> new MariaDBDatabase(null));
   }
 }

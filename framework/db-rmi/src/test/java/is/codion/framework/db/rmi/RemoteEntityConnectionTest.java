@@ -20,7 +20,7 @@ public class RemoteEntityConnectionTest {
 
   /* A sanity check since {@link RemoteEntityConnection} can not extend {@link EntityConnection}. */
   @Test
-  public void entityConnectionCompatibility() throws Exception {
+  void entityConnectionCompatibility() throws Exception {
     final List<Method> remoteEntityConnectionMethods = Arrays.stream(RemoteEntityConnection.class.getDeclaredMethods())
             .filter(method -> !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
     final List<Method> entityConnectionMethods = Arrays.stream(EntityConnection.class.getDeclaredMethods())

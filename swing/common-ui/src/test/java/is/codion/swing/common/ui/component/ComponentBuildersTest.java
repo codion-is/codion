@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ComponentBuildersTest {
 
   @Test
-  public void integerField() {
+  void integerField() {
     final Value<Integer> value = Value.value(42);
     final ComponentValue<Integer, IntegerField> componentValue = ComponentBuilders.integerField()
             .range(0, 100)
@@ -64,7 +64,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void longField() {
+  void longField() {
     final Value<Long> value = Value.value(42L);
     final ComponentValue<Long, LongField> componentValue = ComponentBuilders.longField()
             .range(0, 100)
@@ -75,7 +75,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void doubleField() {
+  void doubleField() {
     final Value<Double> value = Value.value(42.2);
     final ComponentValue<Double, DoubleField> componentValue = ComponentBuilders.doubleField()
             .range(0, 100)
@@ -88,7 +88,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void bigDecimalField() {
+  void bigDecimalField() {
     final Value<BigDecimal> value = Value.value(BigDecimal.valueOf(42.2));
     final ComponentValue<BigDecimal, BigDecimalField> componentValue = ComponentBuilders.bigDecimalField()
             .maximumFractionDigits(2)
@@ -100,7 +100,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void localTimeField() {
+  void localTimeField() {
     final Value<LocalTime> value = Value.value(LocalTime.now());
     final ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
             ComponentBuilders.localTimeField("HH:mm")
@@ -111,7 +111,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void localDateField() {
+  void localDateField() {
     final Value<LocalDate> value = Value.value(LocalDate.now());
     final ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
             ComponentBuilders.localDateField("dd-MM-yyyy")
@@ -122,7 +122,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void localDateTimeField() {
+  void localDateTimeField() {
     final Value<LocalDateTime> value = Value.value(LocalDateTime.now());
     final ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
             ComponentBuilders.localDateTimeField("dd-MM-yyyy HH:mm")
@@ -133,7 +133,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void offsetDateTimeField() {
+  void offsetDateTimeField() {
     final Value<OffsetDateTime> value = Value.value(OffsetDateTime.now());
     final ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
             ComponentBuilders.offsetDateTimeField("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
@@ -144,7 +144,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void temporalInputPanel() {
+  void temporalInputPanel() {
     final Value<LocalDate> value = Value.value(LocalDate.now());
     final ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
             ComponentBuilders.temporalInputPanel(LocalDate.class)
@@ -158,7 +158,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void checkBox() {
+  void checkBox() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBox()
             .caption("caption")
@@ -181,7 +181,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void toggleButton() {
+  void toggleButton() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JToggleButton> componentValue = ComponentBuilders.toggleButton()
             .caption("caption")
@@ -203,7 +203,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void nullableCheckBox() {
+  void nullableCheckBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBox()
             .transferFocusOnEnter(true)
@@ -224,7 +224,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void booleanComboBox() {
+  void booleanComboBox() {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
             ComponentBuilders.booleanComboBox(ItemComboBoxModel.createBooleanModel())
@@ -242,7 +242,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void itemComboBox() {
+  void itemComboBox() {
     final List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
             item(2, "2"), item(3, "3"));
     final Value<Integer> value = Value.value();
@@ -270,7 +270,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void comboBox() {
+  void comboBox() {
     final DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
     final Value<String> value = Value.value();
     final ComponentValue<String, SteppedComboBox<String>> componentValue = ComponentBuilders.comboBox(String.class, boxModel)
@@ -292,7 +292,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void textField() {
+  void textField() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextField> componentValue = ComponentBuilders.textField()
             .columns(10)
@@ -309,7 +309,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void textArea() {
+  void textArea() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextArea> componentValue = ComponentBuilders.textArea()
             .transferFocusOnEnter(true)
@@ -325,7 +325,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void textInputPanel() {
+  void textInputPanel() {
     final Value<String> value = Value.value();
     final ComponentValue<String, TextInputPanel> componentValue = ComponentBuilders.textInputPanel()
             .transferFocusOnEnter(true)
@@ -346,7 +346,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void formattedTextField() {
+  void formattedTextField() {
     final Value<String> value = Value.value();
     final ComponentValue<String, JFormattedTextField> componentValue = ComponentBuilders.formattedTextField()
             .formatMask("##:##")
@@ -362,7 +362,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void integerSpinner() {
+  void integerSpinner() {
     final Value<Integer> value = Value.value(10);
     final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0, 0, 100, 10);
     final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.integerSpinner(spinnerNumberModel)
@@ -374,7 +374,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void doubleSpinner() {
+  void doubleSpinner() {
     final Value<Double> value = Value.value(10d);
     final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0d, 0d, 100d, 10d);
     final ComponentValue<Double, JSpinner> componentValue = ComponentBuilders.doubleSpinner(spinnerNumberModel)
@@ -387,7 +387,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void slider() {
+  void slider() {
     final Value<Integer> value = Value.value(10);
     final ComponentValue<Integer, JSlider> componentValue = ComponentBuilders.slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
             .snapToTicks(true)
@@ -405,7 +405,7 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  public void label() {
+  void label() {
     final Value<String> textValue = Value.value("label");
     final ComponentValue<String, JLabel> componentValue = ComponentBuilders.label(Icons.icons().filter())
             .displayedMnemonic('l')
