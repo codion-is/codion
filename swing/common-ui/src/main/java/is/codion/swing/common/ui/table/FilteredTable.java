@@ -496,7 +496,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     KeyEvents.builder()
             .keyEvent(KeyEvent.VK_UP)
             .onKeyPressed()
-            .modifiers(KeyEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .action(findAndSelectPrevious)
             .enable(field);
     KeyEvents.builder()

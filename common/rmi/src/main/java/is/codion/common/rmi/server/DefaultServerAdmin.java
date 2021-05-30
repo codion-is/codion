@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.management.Notification;
 import javax.management.NotificationEmitter;
-import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
 import java.io.Serializable;
@@ -177,7 +176,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   private void initializeGarbageCollectionListener() {
     for (final GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
-      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GcNotificationListener(), (NotificationFilter) notification ->
+      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GcNotificationListener(), notification ->
               notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION), null);
     }
   }
