@@ -103,15 +103,4 @@ public interface Condition {
      */
     Conjunction getConjunction();
   }
-
-  /**
-   * For providing dynamic Conditions
-   */
-  interface Provider {
-
-    /**
-     * @return the Condition
-     */
-    Condition getCondition();
-  }
 }

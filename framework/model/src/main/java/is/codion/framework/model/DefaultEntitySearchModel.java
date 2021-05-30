@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.db.condition.Conditions.combination;
@@ -77,7 +78,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<Boolean> multipleSelectionEnabledValue = Value.value(true, false);
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
-  private Condition.Provider additionalConditionProvider;
+  private Supplier<Condition> additionalConditionSupplier;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = Property.WILDCARD_CHARACTER.get();
   private String description;
@@ -189,8 +190,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setAdditionalConditionProvider(final Condition.Provider additionalConditionProvider) {
-    this.additionalConditionProvider = additionalConditionProvider;
+  public void setAdditionalConditionSupplier(final Supplier<Condition> additionalConditionSupplier) {
+    this.additionalConditionSupplier = additionalConditionSupplier;
   }
 
   @Override
@@ -289,8 +290,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
       }
     }
 
-    return (additionalConditionProvider == null ? conditionCombination :
-            additionalConditionProvider.getCondition().and(conditionCombination))
+    return (additionalConditionSupplier == null ? conditionCombination :
+            additionalConditionSupplier.get().and(conditionCombination))
             .toSelectCondition().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 

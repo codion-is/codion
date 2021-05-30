@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 /**
  * This interface defines filtering functionality, which refers to showing/hiding entities already available
@@ -58,15 +59,15 @@ public interface EntityTableConditionModel {
   Condition getCondition();
 
   /**
-   * @return any additional search condition, not based on any individual property condition
+   * @return supplies any additional search condition, not based on any individual property condition
    */
-  Condition.Provider getAdditionalConditionProvider();
+  Supplier<Condition> getAdditionalConditionSupplier();
 
   /**
-   * Sets the additional condition provider, one not based on any individual property condition
-   * @param conditionProvider the condition provider
+   * Sets the additional condition supplier, one not based on any individual property condition
+   * @param conditionSupplier the condition supplier
    */
-  void setAdditionalConditionProvider(Condition.Provider conditionProvider);
+  void setAdditionalConditionSupplier(Supplier<Condition> conditionSupplier);
 
   /**
    * @return true if any of the underlying PropertyConditionModels is enabled

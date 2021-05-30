@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -46,7 +47,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private final Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> filterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels = new HashMap<>();
   private final Value<String> simpleConditionStringValue = Value.value();
-  private Condition.Provider additionalConditionProvider;
+  private Supplier<Condition> additionalConditionSupplier;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedCondition = "";
 
@@ -190,21 +191,21 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
         }
       }
     }
-    if (additionalConditionProvider != null) {
-      conditionCombination.add(additionalConditionProvider.getCondition());
+    if (additionalConditionSupplier != null) {
+      conditionCombination.add(additionalConditionSupplier.get());
     }
 
     return conditionCombination.getConditions().isEmpty() ? Conditions.condition(entityType) : conditionCombination;
   }
 
   @Override
-  public Condition.Provider getAdditionalConditionProvider() {
-    return additionalConditionProvider;
+  public Supplier<Condition> getAdditionalConditionSupplier() {
+    return additionalConditionSupplier;
   }
 
   @Override
-  public void setAdditionalConditionProvider(final Condition.Provider conditionProvider) {
-    this.additionalConditionProvider = conditionProvider;
+  public void setAdditionalConditionSupplier(final Supplier<Condition> conditionSupplier) {
+    this.additionalConditionSupplier = conditionSupplier;
   }
 
   @Override
