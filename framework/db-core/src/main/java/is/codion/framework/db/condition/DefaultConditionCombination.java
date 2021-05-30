@@ -136,12 +136,12 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public SelectCondition asSelectCondition() {
+  public SelectCondition toSelectCondition() {
     return new DefaultSelectCondition(this);
   }
 
   @Override
-  public UpdateCondition asUpdateCondition() {
+  public UpdateCondition toUpdateCondition() {
     return new DefaultUpdateCondition(this);
   }
 

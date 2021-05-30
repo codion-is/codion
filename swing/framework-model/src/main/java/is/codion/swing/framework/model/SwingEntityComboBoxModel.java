@@ -312,7 +312,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         condition = selectConditionProvider.getCondition();
       }
 
-      return connectionProvider.getConnection().select(condition.asSelectCondition()
+      return connectionProvider.getConnection().select(condition.toSelectCondition()
               .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {

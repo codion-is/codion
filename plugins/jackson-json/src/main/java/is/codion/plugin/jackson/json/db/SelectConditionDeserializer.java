@@ -44,7 +44,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     final JsonNode conditionNode = jsonNode.get("condition");
     final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
-    final SelectCondition selectCondition = condition.asSelectCondition();
+    final SelectCondition selectCondition = condition.toSelectCondition();
     final JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectCondition.orderBy(deserializeOrderBy(definition, orderBy));

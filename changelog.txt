@@ -7146,3 +7146,4 @@
   AbstractConnectionPoolWrapperTest added
   Test methods no longer public
   Asciidoc documentation improved, no toc on index page
+  Condition.asSelectCondition() and asUpdateCondition() renamed toSelectCondition() and toUpdateCondition()

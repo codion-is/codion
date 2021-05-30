@@ -87,7 +87,7 @@ public final class ConditionObjectMapperTest {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     SelectCondition selectCondition = Conditions.where(TestDomain.EMP_ID).equalTo(1)
-            .asSelectCondition()
+            .toSelectCondition()
             .orderBy(OrderBy.orderBy().ascending(TestDomain.EMP_ID).descending(TestDomain.EMP_NAME))
             .limit(2)
             .offset(1)
@@ -112,7 +112,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(selectCondition.getSelectAttributes(), readCondition.getSelectAttributes());
     assertTrue(readCondition.isForUpdate());
 
-    selectCondition = Conditions.where(TestDomain.EMP_ID).equalTo(1).asSelectCondition();
+    selectCondition = Conditions.where(TestDomain.EMP_ID).equalTo(1).toSelectCondition();
 
     jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -131,7 +131,7 @@ public final class ConditionObjectMapperTest {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final UpdateCondition condition = Conditions.where(TestDomain.DEPARTMENT_ID)
-            .between(1, 2).asUpdateCondition()
+            .between(1, 2).toUpdateCondition()
             .set(TestDomain.DEPARTMENT_LOCATION, "loc")
             .set(TestDomain.DEPARTMENT_ID, 3);
 

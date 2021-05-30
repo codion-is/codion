@@ -291,7 +291,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
     return (additionalConditionProvider == null ? conditionCombination :
             additionalConditionProvider.getCondition().and(conditionCombination))
-            .asSelectCondition().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
+            .toSelectCondition().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 
   private String prepareSearchText(final String rawSearchText, final SearchSettings searchSettings) {
