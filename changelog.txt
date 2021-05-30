@@ -7145,3 +7145,4 @@
   Property.Builder recursive generics bug fixed, incorrect return type
   AbstractConnectionPoolWrapperTest added
   Test methods no longer public
+  Asciidoc documentation improved, no toc on index page

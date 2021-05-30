@@ -1,4 +1,5 @@
 = Tutorials
+:toc: left
 :docinfo: shared-head
 :basedir: ..
 
