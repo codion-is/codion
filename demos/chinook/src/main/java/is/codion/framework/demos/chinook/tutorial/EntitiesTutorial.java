@@ -140,7 +140,7 @@ public final class EntitiesTutorial {
     // for more complex queries we use a SelectCondition, provided by the Condition class.
     // we create a condition, where we specify the the attribute we're
     // searching by, the type of condition and the value.
-    SelectCondition artistsCondition = where(Artist.NAME).equalTo("An%").asSelectCondition();
+    SelectCondition artistsCondition = where(Artist.NAME).equalTo("An%").toSelectCondition();
 
     // and we set the order by clause
     artistsCondition.orderBy(orderBy().ascending(Artist.NAME));
@@ -150,7 +150,7 @@ public final class EntitiesTutorial {
     artistsStartingWithAn.forEach(System.out::println);
 
     // create a select condition
-    SelectCondition albumsCondition = where(Album.ARTIST_FK).equalTo(artistsStartingWithAn).asSelectCondition();
+    SelectCondition albumsCondition = where(Album.ARTIST_FK).equalTo(artistsStartingWithAn).toSelectCondition();
     albumsCondition.orderBy(orderBy().ascending(Album.ARTIST_ID).descending(Album.TITLE));
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);

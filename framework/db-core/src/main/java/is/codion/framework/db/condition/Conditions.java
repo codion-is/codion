@@ -129,16 +129,6 @@ public final class Conditions {
   }
 
   /**
-   * Initializes a new {@link Condition.Combination} instance
-   * @param conjunction the Conjunction to use
-   * @param conditions the Condition objects to be included in this set
-   * @return a new {@link Condition.Combination} instance
-   */
-  public static Condition.Combination combination(final Conjunction conjunction, final Condition... conditions) {
-    return new DefaultConditionCombination(conjunction, conditions);
-  }
-
-  /**
    * Creates a new {@link CustomCondition} based on the condition of the given type
    * @param conditionType the condition type
    * @return a new Condition instance

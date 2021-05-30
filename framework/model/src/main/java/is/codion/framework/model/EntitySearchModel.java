@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Responsible for performing entity searches based on a search text and set of condition attributes.
@@ -114,9 +115,9 @@ public interface EntitySearchModel {
    * Sets the additional search condition provider to use when performing the next search.
    * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @param additionalConditionProvider the additional search condition provider
+   * @param additionalConditionSupplier the additional search condition provider
    */
-  void setAdditionalConditionProvider(Condition.Provider additionalConditionProvider);
+  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
 
   /**
    * Override the default toString() for search elements when displayed

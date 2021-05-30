@@ -186,7 +186,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
     searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(true);
     searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(true);
-    searchModel.setAdditionalConditionProvider(() ->
+    searchModel.setAdditionalConditionSupplier(() ->
             Conditions.where(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
@@ -201,7 +201,7 @@ public final class DefaultEntitySearchModelTest {
     List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());
     searchModel.setSelectedEntities(result);
-    searchModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_1_TYPE));
+    searchModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_1_TYPE));
     assertEquals(1, searchModel.getSelectedEntities().size());
     result = searchModel.performQuery();
     assertTrue(result.isEmpty());

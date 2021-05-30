@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
@@ -69,9 +70,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private boolean forceRefresh = false;
 
   /**
-   * the Condition.Provider used when querying
+   * the Condition supplier used when querying
    */
-  private Condition.Provider selectConditionProvider;
+  private Supplier<Condition> selectConditionSupplier;
 
   /**
    * A map of entities used to filter the contents of this model by foreign key value.
@@ -190,13 +191,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void setSelectConditionProvider(final Condition.Provider selectConditionProvider) {
-    this.selectConditionProvider = selectConditionProvider;
+  public final void setSelectConditionSupplier(final Supplier<Condition> selectConditionSupplier) {
+    this.selectConditionSupplier = selectConditionSupplier;
   }
 
   @Override
-  public final Condition.Provider getSelectConditionProvider() {
-    return this.selectConditionProvider;
+  public final Supplier<Condition> getSelectConditionSupplier() {
+    return this.selectConditionSupplier;
   }
 
   @Override
@@ -298,21 +299,21 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the {@link #getSelectConditionProvider()} specified for this model
+   * the {@link #getSelectConditionSupplier()} specified for this model
    * @return the entities to present in this EntityComboBoxModel
-   * @see #getSelectConditionProvider()
+   * @see #getSelectConditionSupplier()
    */
   protected Collection<Entity> performQuery() {
     try {
       final Condition condition;
-      if (selectConditionProvider == null) {
+      if (selectConditionSupplier == null) {
         condition = condition(entityType);
       }
       else {
-        condition = selectConditionProvider.getCondition();
+        condition = selectConditionSupplier.get();
       }
 
-      return connectionProvider.getConnection().select(condition.asSelectCondition()
+      return connectionProvider.getConnection().select(condition.toSelectCondition()
               .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
@@ -398,7 +399,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private void linkCondition(final ForeignKey foreignKey, final EntityComboBoxModel foreignKeyModel) {
     final EventDataListener<Entity> listener = selected -> {
-      setSelectConditionProvider(() -> where(foreignKey).equalTo(selected));
+      setSelectConditionSupplier(() -> where(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);

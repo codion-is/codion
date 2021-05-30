@@ -240,13 +240,13 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setSelectConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_3_TYPE));
+    comboBoxModel.setSelectConditionSupplier(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_3_TYPE));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
     assertEquals(2, refreshed.get());
-    comboBoxModel.setSelectConditionProvider(null);
+    comboBoxModel.setSelectConditionSupplier(null);
     comboBoxModel.forceRefresh();
     assertEquals(16, comboBoxModel.getSize());
     assertEquals(3, refreshed.get());

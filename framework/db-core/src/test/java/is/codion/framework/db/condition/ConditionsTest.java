@@ -33,38 +33,40 @@ public final class ConditionsTest {
   @Test
   void selectCondition() {
     SelectCondition condition = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
-            .asSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .toSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
 
-    condition = Conditions.condition(TestDomain.T_DEPARTMENT).asSelectCondition().fetchCount(10);
+    condition = Conditions.condition(TestDomain.T_DEPARTMENT).toSelectCondition().fetchCount(10);
     assertEquals(10, condition.getFetchCount());
   }
 
   @Test
   void customConditionTest() {
     final SelectCondition condition = Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID)
-            .asSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .toSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getAttributes().isEmpty());
   }
 
   @Test
   void selectConditionOrderBySameAttribute() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).asSelectCondition()
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toSelectCondition()
             .orderBy(orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
   }
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).asUpdateCondition()
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toUpdateCondition()
             .set(TestDomain.EMP_COMMISSION, 123d)
             .set(TestDomain.EMP_COMMISSION, 123d));
   }
 
   @Test
   void combinationEmpty() {
-    final Condition.Combination combination = Conditions.combination(Conjunction.AND,
-            Conditions.condition(TestDomain.T_EMP),
+    final Condition.Combination combination = Conditions.combination(Conjunction.AND);
+    assertEquals("", combination.getWhereClause(ENTITIES.getDefinition(TestDomain.T_EMP)));
+
+    combination.add(Conditions.condition(TestDomain.T_EMP),
             where(TestDomain.EMP_ID).equalTo(1));
     assertEquals("(empno = ?)", combination.getWhereClause(ENTITIES.getDefinition(TestDomain.T_EMP)));
   }
@@ -278,7 +280,7 @@ public final class ConditionsTest {
 
   @Test
   void selectConditionOrderByDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).asSelectCondition()
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toSelectCondition()
             .orderBy(orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
   }
 

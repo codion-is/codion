@@ -16,6 +16,7 @@ import is.codion.framework.domain.entity.Key;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A ComboBoxModel based on {@link Entity} instances.
@@ -160,14 +161,14 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Sets the condition provider to use when querying data
-   * @param selectConditionProvider the condition provider
+   * @param selectConditionSupplier the condition supplier
    */
-  void setSelectConditionProvider(Condition.Provider selectConditionProvider);
+  void setSelectConditionSupplier(Supplier<Condition> selectConditionSupplier);
 
   /**
-   * @return the select condition provider, null if none is specified
+   * @return the select condition supplier, null if none is specified
    */
-  Condition.Provider getSelectConditionProvider();
+  Supplier<Condition> getSelectConditionSupplier();
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given attribute.

@@ -299,7 +299,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).asSelectCondition());
+          final List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).toSelectCondition());
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -481,7 +481,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<Entity> result = new ArrayList<>();
         for (final List<Key> entityTypeKeys : Entity.mapKeysToType(keys).values()) {
-          result.addAll(doSelect(condition(entityTypeKeys).asSelectCondition()));
+          result.addAll(doSelect(condition(entityTypeKeys).toSelectCondition()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -515,7 +515,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public List<Entity> select(final Condition condition) throws DatabaseException {
-    final SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).asSelectCondition();
+    final SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).toSelectCondition();
     synchronized (connection) {
       try {
         final List<Entity> result = doSelect(selectCondition);
@@ -859,7 +859,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(final Map<EntityType<?>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (final Map.Entry<EntityType<?>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       final List<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
-      final SelectCondition selectForUpdateCondition = condition(originalKeys).asSelectCondition()
+      final SelectCondition selectForUpdateCondition = condition(originalKeys).toSelectCondition()
               .attributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
               .forUpdate();
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
@@ -932,7 +932,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
           else {
             final SelectCondition referencedEntitiesCondition = condition(referencedKeys)
-                    .asSelectCondition().fetchDepth(conditionFetchDepthLimit);
+                    .toSelectCondition().fetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
             final Map<Key, Entity> referencedEntitiesMappedByKey = Entity.mapToPrimaryKey(referencedEntities);
@@ -965,7 +965,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private ResultIterator<Entity> entityIterator(final Condition condition) throws SQLException {
-    final SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).asSelectCondition();
+    final SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).toSelectCondition();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;
