@@ -137,6 +137,12 @@ public final class EntityEditPanels {
               createTextField(Demo.TEXT)
                       .build();
 
+      JFormattedTextField formattedField =
+              createFormattedTextField(Demo.FORMATTED_TEXT)
+                      .formatMask("###:###")
+                      .valueContainsLiterals(true)
+                      .build();
+
       JTextArea textArea =
               createTextArea(Demo.LONG_TEXT)
                       .rowsColumns(5, 20)
@@ -144,12 +150,6 @@ public final class EntityEditPanels {
 
       TextInputPanel inputPanel =
               createTextInputPanel(Demo.LONG_TEXT)
-                      .build();
-
-      JFormattedTextField formattedField =
-              createFormattedTextField(Demo.FORMATTED_TEXT)
-                      .formatMask("###:###")
-                      .valueContainsLiterals(true)
                       .build();
       // end::textValue[]
     }
