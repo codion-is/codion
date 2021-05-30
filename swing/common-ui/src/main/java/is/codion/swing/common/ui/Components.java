@@ -657,11 +657,7 @@ public final class Components {
     }
 
     synchronized (WAIT_CURSOR_REQUESTS) {
-      if (!WAIT_CURSOR_REQUESTS.containsKey(window)) {
-        WAIT_CURSOR_REQUESTS.put(window, 0);
-      }
-
-      int requests = WAIT_CURSOR_REQUESTS.get(window);
+      int requests = WAIT_CURSOR_REQUESTS.computeIfAbsent(window, win -> 0);
       if (on) {
         requests++;
       }

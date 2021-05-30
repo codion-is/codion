@@ -89,6 +89,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
+   * The mechanism for restricting a single active EntityEditPanel at a time
+   */
+  private static final State.Group ACTIVE_STATE_GROUP = State.group();
+
+  /**
    * The controls this edit panel should include
    */
   private final Set<ControlCode> controlCodes;
@@ -102,11 +107,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Indicates whether the panel is active and ready to receive input
    */
   private final State activeState = State.state(ALL_PANELS_ACTIVE.get());
-
-  /**
-   * The mechanism for restricting a single active EntityEditPanel at a time
-   */
-  private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
   /**
    * Indicates whether or not the UI should be cleared after insert has been performed

@@ -151,10 +151,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   public final JComponent getComponent(final Attribute<?> attribute) {
     if (componentBuilders.containsKey(attribute)) {
-      if (!components.containsKey(attribute)) {
-        components.put(attribute, componentBuilders.get(attribute).build());
-      }
-      componentBuilders.remove(attribute);
+      components.putIfAbsent(attribute, componentBuilders.remove(attribute).build());
     }
 
     return components.get(attribute);

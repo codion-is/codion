@@ -109,9 +109,6 @@ import static java.util.Objects.requireNonNull;
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
         extends JPanel implements DialogExceptionHandler, HierarchyPanel {
 
-  /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
-  private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
-
   private static final String CODION_CLIENT_VERSION = "codion.client.version";
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
@@ -159,6 +156,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
   private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
+
+  /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
+  private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
 
   private final String applicationDefaultUsernameProperty;
   private final String applicationLookAndFeelProperty;
