@@ -20,7 +20,7 @@ Some highlights.
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ($currentYear-2004) years, always with the aim of eventually open sourcing it.
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally since 2004, always with the aim of eventually open sourcing it.
 
 == License
 
@@ -48,9 +48,9 @@ Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features,
 
 Codion uses a very limited set of third-party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
-* *com.github.lgooddatepicker:LGoodDatePicker* for date/time input
-* *org.json:json* for persisting client preferences
-* *org.slf4j:slf4j-api* for your logging framework of choice
+* *https://github.com/LGoodDatePicker/LGoodDatePicker[com.github.lgooddatepicker:LGoodDatePicker]* for date/time input
+* *https://www.json.org[org.json:json]* for persisting client preferences
+* *https://github.com/qos-ch/slf4j[org.slf4j:slf4j-api]* for your logging framework of choice
 * *JDBC driver*
 * *Logging framework*
 
@@ -157,13 +157,12 @@ Store store = new Store();
 //a factory for Entity instances from this domain model
 Entities entities = store.getEntities();
 
-//instantiate a new empty customer instance
-Entity customer = entities.entity(Customer.TYPE);
-
-//populate with values
-customer.put(Customer.FIRST_NAME, "John");
-customer.put(Customer.LAST_NAME, "Doe");
-customer.put(Customer.IS_ACTIVE, true);
+//instantiate and populate a new customer instance
+Entity customer = entities.builder(Customer.TYPE)
+        .with(Customer.FIRST_NAME, "John")
+        .with(Customer.LAST_NAME, "Doe")
+        .with(Customer.IS_ACTIVE, true)
+        .build();
 
 //retrieve values
 String lastName = customer.get(Customer.LAST_NAME);
