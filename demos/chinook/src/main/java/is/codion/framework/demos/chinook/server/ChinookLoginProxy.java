@@ -24,7 +24,6 @@ import is.codion.framework.domain.entity.EntityType;
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 import static java.lang.String.valueOf;
@@ -124,12 +123,9 @@ public final class ChinookLoginProxy implements LoginProxy {
       super(DOMAIN);
       define(User.TYPE,
               primaryKeyProperty(User.ID),
-              columnProperty(User.USERNAME)
-                      .nullable(false)
-                      .maximumLength(20),
-              columnProperty(User.PASSWORD_HASH)
-                      .nullable(false))
-              .keyGenerator(identity());
+              columnProperty(User.USERNAME),
+              columnProperty(User.PASSWORD_HASH))
+              .readOnly();
     }
   }
 }

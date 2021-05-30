@@ -11,6 +11,7 @@ public final class PlaylistPanel extends EntityPanel {
 
   public PlaylistPanel(final SwingEntityModel playlistModel) {
     super(playlistModel, new PlaylistEditPanel(playlistModel.getEditModel()));
+    setDetailSplitPanelResizeWeight(0.25);
 
     final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
     final EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,

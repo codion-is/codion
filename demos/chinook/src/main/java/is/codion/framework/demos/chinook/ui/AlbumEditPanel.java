@@ -27,16 +27,13 @@ public class AlbumEditPanel extends EntityEditPanel {
     createForeignKeySearchField(Album.ARTIST_FK);
     createTextField(Album.TITLE);
 
-    final JPanel inputPanel = new JPanel(gridLayout(2, 1));
-    inputPanel.add(createInputPanel(Album.ARTIST_FK));
-    inputPanel.add(createInputPanel(Album.TITLE));
+    final JPanel northPanel = new JPanel(gridLayout(2, 1));
+    northPanel.add(createInputPanel(Album.ARTIST_FK));
+    northPanel.add(createInputPanel(Album.TITLE));
 
     setLayout(borderLayout());
 
-    final JPanel inputBasePanel = new JPanel(borderLayout());
-    inputBasePanel.add(inputPanel, BorderLayout.NORTH);
-
-    add(inputBasePanel, BorderLayout.WEST);
+    add(northPanel, BorderLayout.NORTH);
     add(new CoverArtPanel(getEditModel().value(Album.COVER)), BorderLayout.CENTER);
   }
 }

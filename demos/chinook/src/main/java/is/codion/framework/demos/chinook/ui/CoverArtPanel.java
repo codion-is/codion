@@ -87,7 +87,7 @@ final class CoverArtPanel extends JPanel {
     panel.setNavigationImageEnabled(false);
     panel.setMoveImageEnabled(false);
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    panel.setPreferredSize(new Dimension(200, 200));
+    panel.setPreferredSize(new Dimension(120, 120));
 
     return panel;
   }

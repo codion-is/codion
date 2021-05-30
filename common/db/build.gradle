@@ -1,7 +1,7 @@
 dependencies {
     api project(':codion-common-core')
 
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testImplementation project(':codion-dbms-h2database')
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
