@@ -20,7 +20,7 @@ Some highlights.
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ($currentYear-2004) years, always with the aim of eventually open sourcing it.
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally since 2004, always with the aim of eventually open sourcing it.
 
 == License
 
@@ -157,13 +157,12 @@ Store store = new Store();
 //a factory for Entity instances from this domain model
 Entities entities = store.getEntities();
 
-//instantiate a new empty customer instance
-Entity customer = entities.entity(Customer.TYPE);
-
-//populate with values
-customer.put(Customer.FIRST_NAME, "John");
-customer.put(Customer.LAST_NAME, "Doe");
-customer.put(Customer.IS_ACTIVE, true);
+//instantiate and populate a new customer instance
+Entity customer = entities.builder(Customer.TYPE)
+        .with(Customer.FIRST_NAME, "John")
+        .with(Customer.LAST_NAME, "Doe")
+        .with(Customer.IS_ACTIVE, true)
+        .build();
 
 //retrieve values
 String lastName = customer.get(Customer.LAST_NAME);
