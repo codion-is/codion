@@ -962,10 +962,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Returns the name of the default look and feel to use, this default implementation fetches
    * it from user preferences, if no preference is available the default system look and feel is used.
    * @return the look and feel name to use
-   * @see Components#getSystemLookAndFeelClassName()
+   * @see #getDefaultSystemLookAndFeelName()
    */
   protected String getDefaultLookAndFeelName() {
-    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, Components.getSystemLookAndFeelClassName());
+    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, getDefaultSystemLookAndFeelName());
+  }
+
+  /**
+   * @return the default look and feel to use for the system we're running on.
+   * @see Components#getSystemLookAndFeelClassName()
+   */
+  protected String getDefaultSystemLookAndFeelName() {
+    return Components.getSystemLookAndFeelClassName();
   }
 
   /**
