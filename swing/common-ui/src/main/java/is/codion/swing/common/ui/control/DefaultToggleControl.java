@@ -90,7 +90,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
   public JCheckBox createCheckBox() {
     final ButtonModel buttonModel = createButtonModel();
     if (buttonModel instanceof NullableToggleButtonModel) {
-      return new NullableCheckBox((NullableToggleButtonModel) buttonModel, getName());
+      return new NullableCheckBox((NullableToggleButtonModel) buttonModel, getCaption());
     }
 
     final JCheckBox checkBox = new JCheckBox(this);
@@ -104,7 +104,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
   public JToggleButton createToggleButton() {
     final JToggleButton toggleButton = new JToggleButton(this);
     toggleButton.setModel(createButtonModel());
-    toggleButton.setText(getName());
+    toggleButton.setText(getCaption());
     toggleButton.setMnemonic(getMnemonic());
 
     return toggleButton;

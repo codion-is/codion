@@ -1478,7 +1478,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static void addAdditionalControls(final Controls popupControls, final List<Controls> additionalPopupControls) {
     additionalPopupControls.forEach(controls -> {
-      if (nullOrEmpty(controls.getName())) {
+      if (nullOrEmpty(controls.getCaption())) {
         popupControls.addAll(controls);
       }
       else {

@@ -42,16 +42,16 @@ public class DefaultControlsTest {
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
-    assertFalse(nullOrEmpty(list.getName()));
+    assertFalse(nullOrEmpty(list.getCaption()));
     assertNull(list.getIcon());
-    assertEquals("list", list.getName());
+    assertEquals("list", list.getCaption());
     final Controls list1 = Controls.controls();
-    assertTrue(nullOrEmpty(list1.getName()));
-    assertNull(list1.getName());
+    assertTrue(nullOrEmpty(list1.getCaption()));
+    assertNull(list1.getCaption());
     final Controls list2 = Controls.builder().control(two).build();
-    list2.setName("list");
-    assertFalse(nullOrEmpty(list2.getName()));
-    assertEquals("list", list2.getName());
+    list2.setCaption("list");
+    assertFalse(nullOrEmpty(list2.getCaption()));
+    assertEquals("list", list2.getCaption());
     list2.addAt(0, one);
     list2.addSeparatorAt(1);
 
