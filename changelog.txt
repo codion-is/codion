@@ -7151,3 +7151,4 @@
   Condition.Provider removed, Supplier<Condition> used instead
   Conditions, Control.Builder, Controls.Builder, ToggleControl.Builder, deprecated methods removed
   Control.get/setName() renamed get/setCaption()
+  EntityApplicationPanel.getDefaultSystemLookAndFeelName() added, overridable
