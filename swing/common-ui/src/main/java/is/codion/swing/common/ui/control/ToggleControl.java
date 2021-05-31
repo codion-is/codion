@@ -96,14 +96,6 @@ public interface ToggleControl extends Control {
   interface Builder extends Control.Builder {
 
     /**
-     * @param name the name of the control
-     * @return this Builder instance
-     * @deprecated use {@link #caption(String)}
-     */
-    @Deprecated(since = "0.17.13", forRemoval = true)
-    Builder name(String name);
-
-    /**
      * @param caption the caption of the control
      * @return this Builder instance
      */

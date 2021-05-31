@@ -27,11 +27,6 @@ final class ControlsBuilder implements Controls.Builder {
   private KeyStroke keyStroke;
 
   @Override
-  public Controls.Builder name(final String name) {
-    return caption(name);
-  }
-
-  @Override
   public Controls.Builder caption(final String caption) {
     this.caption = caption;
     return this;

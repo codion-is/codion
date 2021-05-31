@@ -81,32 +81,9 @@ public final class Conditions {
    * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
    * @param foreignKey the foreign key to base the condition on
    * @return a {@link ForeignKeyConditionBuilder} instance
-   * @deprecated use {@link #where(ForeignKey)}
-   */
-  @Deprecated(since = "0.17.13", forRemoval = true)
-  public static ForeignKeyConditionBuilder condition(final ForeignKey foreignKey) {
-    return where(foreignKey);
-  }
-
-  /**
-   * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
-   * @param foreignKey the foreign key to base the condition on
-   * @return a {@link ForeignKeyConditionBuilder} instance
    */
   public static ForeignKeyConditionBuilder where(final ForeignKey foreignKey) {
     return new DefaultForeignKeyConditionBuilder(foreignKey);
-  }
-
-  /**
-   * Creates a {@link AttributeCondition.Builder} instance based on the given attribute.
-   * @param attribute the attribute to base the condition on
-   * @param <T> the attribute type
-   * @return a {@link AttributeCondition.Builder} instance
-   * @deprecated use {@link #where(Attribute)}
-   */
-  @Deprecated(since = "0.17.13", forRemoval = true)
-  public static <T> AttributeCondition.Builder<T> condition(final Attribute<T> attribute) {
-    return where(attribute);
   }
 
   /**
