@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class AbstractConnectionPoolWrapperTest {
 
   @Test
-  void test() throws DatabaseException, SQLException {
+  void test() throws DatabaseException, SQLException, InterruptedException {
     final Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
 
     assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.connectionPoolFactory("is.codion.none.existing.Factory"));
@@ -35,6 +35,8 @@ public final class AbstractConnectionPoolWrapperTest {
     for (int i = 0; i < 100; i++) {
       poolWrapper.getConnection(user).close();
     }
+    //just wait a bit for statistics to be collected
+    Thread.sleep(100);
     final ConnectionPoolStatistics statistics = poolWrapper.getStatistics(startTime);
     statistics.getAvailable();
     statistics.getInUse();
