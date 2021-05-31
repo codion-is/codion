@@ -31,15 +31,15 @@ public interface Control extends Action {
   String getDescription();
 
   /**
-   * @return the name
+   * @return the caption
    */
-  String getName();
+  String getCaption();
 
   /**
-   * @param name the name of this Control instance
+   * @param caption the caption for this Control instance
    * @return this Control instance
    */
-  Control setName(String name);
+  Control setCaption(String caption);
 
   /**
    * @return the state which controls whether this Control instance is enabled

@@ -113,7 +113,7 @@ public class DefaultToggleControlTest {
     enabledState.set(true);
     assertTrue(control.isEnabled());
     assertTrue(buttonModel.isEnabled());
-    assertEquals(control.getName(), "stateToggleControl");
+    assertEquals(control.getCaption(), "stateToggleControl");
     assertFalse(control.getValue().get());
     state.set(true);
     assertTrue(control.getValue().get());

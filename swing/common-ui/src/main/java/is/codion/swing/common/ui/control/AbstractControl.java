@@ -43,7 +43,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final String toString() {
-    return getName();
+    return getCaption();
   }
 
   @Override
@@ -63,13 +63,13 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final String getName() {
+  public final String getCaption() {
     return (String) super.getValue(NAME);
   }
 
   @Override
-  public final Control setName(final String name) {
-    super.putValue(NAME, name);
+  public final Control setCaption(final String caption) {
+    super.putValue(NAME, caption);
     return this;
   }
 

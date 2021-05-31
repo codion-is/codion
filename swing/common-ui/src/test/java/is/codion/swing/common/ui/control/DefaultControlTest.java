@@ -58,9 +58,9 @@ public final class DefaultControlTest {
   @Test
   void basics() throws Exception {
     final Control test = Control.control(this::doNothing);
-    test.setName("test");
+    test.setCaption("test");
     assertEquals("test", test.toString());
-    assertEquals("test", test.getName());
+    assertEquals("test", test.getCaption());
     assertEquals(0, test.getMnemonic());
     test.setMnemonic(10);
     assertEquals(10, test.getMnemonic());
@@ -87,7 +87,7 @@ public final class DefaultControlTest {
   void setEnabled() {
     final State enabledState = State.state();
     final Control control = Control.builder(this::doNothing).caption("control").enabledState(enabledState.getObserver()).build();
-    assertEquals("control", control.getName());
+    assertEquals("control", control.getCaption());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());
     assertFalse(control.isEnabled());
     enabledState.set(true);
