@@ -27,11 +27,6 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   }
 
   @Override
-  public ToggleControl.Builder name(final String name) {
-    return caption(name);
-  }
-
-  @Override
   public ToggleControl.Builder caption(final String caption) {
     this.caption = requireNonNull(caption);
     return this;

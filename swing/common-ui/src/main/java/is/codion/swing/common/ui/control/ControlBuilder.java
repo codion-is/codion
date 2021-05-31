@@ -33,11 +33,6 @@ final class ControlBuilder implements Control.Builder {
   }
 
   @Override
-  public Control.Builder name(final String name) {
-    return caption(name);
-  }
-
-  @Override
   public Control.Builder caption(final String caption) {
     this.caption = caption;
     return this;
