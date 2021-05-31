@@ -53,7 +53,7 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public boolean is(final Boolean value) {
+  public boolean equalTo(final Boolean value) {
     return Objects.equals(stateObserver.get(), value);
   }
 

@@ -7152,3 +7152,4 @@
   Conditions, Control.Builder, Controls.Builder, ToggleControl.Builder, deprecated methods removed
   Control.get/setName() renamed get/setCaption()
   EntityApplicationPanel.getDefaultSystemLookAndFeelName() added, overridable
+  ValueObserver.is() renamed equalTo()

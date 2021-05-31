@@ -357,7 +357,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   private String addWildcard(final String value) {
     //only use wildcard for EQUAL and NOT_EQUAL
-    if (operatorValue.is(Operator.EQUAL) || operatorValue.is(Operator.NOT_EQUAL)) {
+    if (operatorValue.equalTo(Operator.EQUAL) || operatorValue.equalTo(Operator.NOT_EQUAL)) {
       switch (automaticWildcard) {
         case PREFIX_AND_POSTFIX:
           return wildcard + value + wildcard;

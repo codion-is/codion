@@ -147,7 +147,7 @@ public final class ClientInstanceMonitor {
   public void nextSearchPosition() {
     if (!searchTextPositions.isEmpty()) {
       clearCurrentSearchHighlight();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.is(searchTextPositions.size() - 1)) {
+      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.equalTo(searchTextPositions.size() - 1)) {
         currentSearchTextPositionIndex.set(0);
       }
       else {
@@ -160,7 +160,7 @@ public final class ClientInstanceMonitor {
   public void previousSearchPosition() {
     if (!searchTextPositions.isEmpty()) {
       clearCurrentSearchHighlight();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.is(0)) {
+      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.equalTo(0)) {
         currentSearchTextPositionIndex.set(searchTextPositions.size() - 1);
       }
       else {

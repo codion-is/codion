@@ -103,7 +103,7 @@ class DefaultState implements State {
   }
 
   @Override
-  public final boolean is(final Boolean value) {
+  public final boolean equalTo(final Boolean value) {
     return Objects.equals(get(), value);
   }
 
