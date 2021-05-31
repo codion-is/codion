@@ -197,22 +197,22 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
     addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), () -> {
-      FlatLightLaf.install();
+      FlatLightLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
       UIManager.put("Table.alternateRowColor", background.darker());
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatIntelliJLaf.class.getName(), () -> {
-      FlatIntelliJLaf.install();
+      FlatIntelliJLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
       UIManager.put("Table.alternateRowColor", background.darker());
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), () -> {
-      FlatDarkLaf.install();
+      FlatDarkLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
       UIManager.put("Table.alternateRowColor", background.brighter());
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarculaLaf.class.getName(), () -> {
-      FlatDarculaLaf.install();
+      FlatDarculaLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
       UIManager.put("Table.alternateRowColor", background.brighter());
     }));
