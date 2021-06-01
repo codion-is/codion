@@ -7158,3 +7158,4 @@
   SpinnerBuilder.minimum, maximum, stepSize and editable added
   TextFieldBuilder.horizontalAlignment added
   TextAreaBuilder.autoscrolls added
+  EntityServerMonitor UI refactoring
