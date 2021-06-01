@@ -7157,3 +7157,4 @@
   ComponentBuilders.component() added for configuring any component
   SpinnerBuilder.minimum, maximum, stepSize and editable added
   TextFieldBuilder.horizontalAlignment added
+  TextAreaBuilder.autoscrolls added

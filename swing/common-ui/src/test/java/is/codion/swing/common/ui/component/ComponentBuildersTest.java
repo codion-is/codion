@@ -35,7 +35,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.math.BigDecimal;
@@ -301,6 +300,7 @@ public final class ComponentBuildersTest {
             .action(Control.control(() -> {}))
             .lookupDialog(Collections::emptyList)
             .format(null)
+            .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(value)
             .buildComponentValue();
     final JTextField field = componentValue.getComponent();
@@ -313,6 +313,7 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, JTextArea> componentValue = ComponentBuilders.textArea()
             .transferFocusOnEnter(true)
+            .autoscrolls(true)
             .rowsColumns(4, 2)
             .updateOn(UpdateOn.KEYSTROKE)
             .lineWrap(true)
@@ -364,8 +365,10 @@ public final class ComponentBuildersTest {
   @Test
   void integerSpinner() {
     final Value<Integer> value = Value.value(10);
-    final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0, 0, 100, 10);
-    final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.integerSpinner(spinnerNumberModel)
+    final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.integerSpinner()
+            .minimum(0)
+            .maximum(100)
+            .stepSize(10)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10, componentValue.get());
@@ -376,8 +379,10 @@ public final class ComponentBuildersTest {
   @Test
   void doubleSpinner() {
     final Value<Double> value = Value.value(10d);
-    final SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(0d, 0d, 100d, 10d);
-    final ComponentValue<Double, JSpinner> componentValue = ComponentBuilders.doubleSpinner(spinnerNumberModel)
+    final ComponentValue<Double, JSpinner> componentValue = ComponentBuilders.doubleSpinner()
+            .minimum(0d)
+            .maximum(100d)
+            .stepSize(10d)
             .columns(5)
             .linkedValue(value)
             .buildComponentValue();
