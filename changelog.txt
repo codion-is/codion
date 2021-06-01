@@ -7153,3 +7153,6 @@
   Control.get/setName() renamed get/setCaption()
   EntityApplicationPanel.getDefaultSystemLookAndFeelName() added, overridable
   ValueObserver.is() renamed equalTo()
+  ComponentBuilders.integerSpinner() and doubleSpinner() overloaded without model parameter
+  ComponentBuilders.component() added for configuring any component
+  SpinnerBuilder.minimum, maximum, stepSize and editable added

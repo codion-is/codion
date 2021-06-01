@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
+import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -15,9 +16,13 @@ import static java.util.Objects.requireNonNull;
 final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBuilder<T, JSpinner, SpinnerBuilder<T>> implements SpinnerBuilder<T> {
 
   private final SpinnerNumberModel spinnerNumberModel;
-
   private final Class<T> valueClass;
+
   private int columns = 0;
+  private boolean editable = true;
+  private T minimum;
+  private T maximum;
+  private T stepSize;
 
   DefaultSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
     this.spinnerNumberModel = requireNonNull(spinnerNumberModel);
@@ -34,10 +39,50 @@ final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBui
   }
 
   @Override
+  public SpinnerBuilder<T> editable(final boolean editable) {
+    this.editable = editable;
+    return this;
+  }
+
+  @Override
+  public SpinnerBuilder<T> minimum(final T minimum) {
+    this.minimum = minimum;
+    return this;
+  }
+
+  @Override
+  public SpinnerBuilder<T> maximum(final T maximum) {
+    this.maximum = maximum;
+    return this;
+  }
+
+  @Override
+  public SpinnerBuilder<T> stepSize(final T stepSize) {
+    this.stepSize = stepSize;
+    return this;
+  }
+
+  @Override
   protected JSpinner buildComponent() {
+    if (minimum != null) {
+      spinnerNumberModel.setMinimum((Comparable<T>) minimum);
+    }
+    if (maximum != null) {
+      spinnerNumberModel.setMaximum((Comparable<T>) maximum);
+    }
+    if (stepSize != null) {
+      spinnerNumberModel.setStepSize(stepSize);
+    }
     final JSpinner spinner = new JSpinner(spinnerNumberModel);
-    if (columns > 0) {
-      ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(columns);
+    final JComponent editor = spinner.getEditor();
+    if (editor instanceof JSpinner.DefaultEditor) {
+      final JSpinner.DefaultEditor defaultEditor = (JSpinner.DefaultEditor) editor;
+      if (columns > 0) {
+        defaultEditor.getTextField().setColumns(columns);
+      }
+      if (!editable) {
+        defaultEditor.getTextField().setEditable(false);
+      }
     }
 
     return spinner;
