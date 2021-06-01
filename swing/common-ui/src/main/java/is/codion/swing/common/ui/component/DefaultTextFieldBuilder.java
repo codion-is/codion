@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import java.text.Format;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -26,6 +27,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private boolean selectAllOnFocusGained;
   private Supplier<Collection<T>> valueSupplier;
   private Format format;
+  private int horizontalAlignment = SwingConstants.LEADING;
 
   DefaultTextFieldBuilder(final Class<T> valueClass) {
     this.valueClass = requireNonNull(valueClass);
@@ -58,10 +60,17 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
+  public final B horizontalAlignment(final int horizontalAlignment) {
+    this.horizontalAlignment = horizontalAlignment;
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     final C textField = createTextField();
     textField.setEditable(editable);
     textField.setColumns(columns);
+    textField.setHorizontalAlignment(horizontalAlignment);
     if (action != null) {
       textField.setAction(action);
     }

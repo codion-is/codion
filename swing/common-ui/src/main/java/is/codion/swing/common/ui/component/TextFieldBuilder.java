@@ -55,4 +55,10 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @return this builder instance
    */
   B format(Format format);
+
+  /**
+   * @param horizontalAlignment the horizontal text alignment
+   * @return this builder instance
+   */
+  B horizontalAlignment(int horizontalAlignment);
 }
