@@ -84,7 +84,7 @@ net.sf.jasperreports.engine.type.StretchTypeEnum
 net.sf.jasperreports.engine.type.TextAdjustEnum
 net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 is.codion.common.Conjunction
-is.codion.common.db.Operator
+is.codion.common.Operator
 is.codion.common.db.operation.DefaultFunctionType
 is.codion.common.db.operation.DefaultProcedureType
 is.codion.common.db.report.AbstractReport
