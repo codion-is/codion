@@ -173,6 +173,9 @@ public interface MethodLogger {
       if (object instanceof Collection) {
         return toString((Collection<?>) object);
       }
+      if (object instanceof byte[]) {
+        return "byte[" + ((byte[]) object).length + "]";
+      }
       if (object.getClass().isArray()) {
         return toString((Object[]) object);
       }
