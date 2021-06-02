@@ -229,17 +229,16 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public boolean delete(final Key entityKey) throws DatabaseException {
-    return delete(singletonList(entityKey)) == 1;
+  public void delete(final Key entityKey) throws DatabaseException {
+    delete(singletonList(entityKey));
   }
 
   @Override
-  public int delete(final List<Key> keys) throws DatabaseException {
+  public void delete(final List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      return onJsonResponse(execute(createHttpPost("deleteByKey",
-              stringEntity(entityObjectMapper.writeValueAsString(keys)))),
-              entityObjectMapper, Integer.class);
+      onJsonResponse(execute(createHttpPost("deleteByKey",
+              stringEntity(entityObjectMapper.writeValueAsString(keys)))));
     }
     catch (final DatabaseException e) {
       throw e;

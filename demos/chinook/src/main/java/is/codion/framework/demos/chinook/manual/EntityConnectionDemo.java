@@ -269,7 +269,7 @@ public final class EntityConnectionDemo {
     toDelete.addAll(Entity.getPrimaryKeys(albums));
     toDelete.add(audioslave.getPrimaryKey());
 
-    int deletedCount = connection.delete(toDelete);
+    connection.delete(toDelete);
     // end::deleteKey[]
   }
 

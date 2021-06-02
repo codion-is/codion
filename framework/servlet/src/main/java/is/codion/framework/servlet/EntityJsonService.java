@@ -478,8 +478,9 @@ public final class EntityJsonService extends AbstractEntityService {
 
       final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
       final List<Key> deleteKeys = mapper.deserializeKeys(request.getInputStream());
+      connection.delete(deleteKeys);
 
-      return Response.ok(mapper.writeValueAsString(connection.delete(deleteKeys))).type(MediaType.APPLICATION_JSON_TYPE).build();
+      return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (final Exception e) {
       return logAndGetExceptionResponse(e);

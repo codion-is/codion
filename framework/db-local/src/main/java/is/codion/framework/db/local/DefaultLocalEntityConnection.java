@@ -6,6 +6,7 @@ package is.codion.framework.db.local;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.DeleteException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordModifiedException;
 import is.codion.common.db.exception.RecordNotFoundException;
@@ -402,14 +403,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public boolean delete(final Key key) throws DatabaseException {
-    return delete(singletonList(requireNonNull(key, "key"))) == 1;
+  public void delete(final Key key) throws DatabaseException {
+    delete(singletonList(requireNonNull(key, "key")));
   }
 
   @Override
-  public int delete(final List<Key> keys) throws DatabaseException {
+  public void delete(final List<Key> keys) throws DatabaseException {
     if (requireNonNull(keys, "keys").isEmpty()) {
-      return 0;
+      return;
     }
     final Map<EntityType<?>, List<Key>> keysByEntityType = Entity.mapKeysToType(keys);
     checkIfReadOnly(keysByEntityType.keySet());
@@ -429,9 +430,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                   entityDefinition.getColumnProperties(condition.getAttributes()), condition.getValues());
           statement.close();
         }
+        if (keys.size() != deleteCount) {
+          throw new DeleteException(keys.size() + " deleted rows expected, deleted " + deleteCount);
+        }
         commitIfTransactionIsNotOpen();
-
-        return deleteCount;
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();

@@ -186,19 +186,19 @@ public interface EntityConnection extends AutoCloseable {
    * Deletes the entity with the given primary key.
    * Performs a commit unless a transaction is open.
    * @param entityKey the primary key of the entity to delete
-   * @return true if a record was deleted, false otherwise
    * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.DeleteException in case no row or multiple rows were deleted
    */
-  boolean delete(Key entityKey) throws DatabaseException;
+  void delete(Key entityKey) throws DatabaseException;
 
   /**
    * Deletes the entities with the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
-   * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
    */
-  int delete(List<Key> entityKeys) throws DatabaseException;
+  void delete(List<Key> entityKeys) throws DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition.

@@ -411,8 +411,7 @@ public class EntityTestUnit {
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    assertEquals(1, connection.delete(Entity.getPrimaryKeys(singletonList(testEntity))));
-
+    connection.delete(Entity.getPrimaryKeys(singletonList(testEntity)));
     boolean caught = false;
     try {
       connection.selectSingle(testEntity.getPrimaryKey());
