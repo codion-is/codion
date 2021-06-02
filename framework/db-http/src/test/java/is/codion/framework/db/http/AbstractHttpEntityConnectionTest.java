@@ -157,7 +157,7 @@ abstract class AbstractHttpEntityConnectionTest {
     final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
     connection.beginTransaction();
     try {
-      assertTrue(connection.delete(employee.getPrimaryKey()));
+      connection.delete(employee.getPrimaryKey());
       final List<Entity> selected = connection.select(singletonList(employee.getPrimaryKey()));
       assertTrue(selected.isEmpty());
     }
@@ -173,7 +173,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
-      assertEquals(2, connection.delete(asList(deptKey, empKey)));
+      connection.delete(asList(deptKey, empKey));
       final List<Entity> selected = connection.select(asList(deptKey, empKey));
       assertTrue(selected.isEmpty());
     }

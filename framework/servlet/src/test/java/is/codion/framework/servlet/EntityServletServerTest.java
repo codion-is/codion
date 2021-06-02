@@ -286,7 +286,6 @@ public class EntityServletServerTest {
 
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    assertEquals(1, entityObjectMapper.readValue(response.getEntity().getContent(), Integer.class));
     response.close();
 
     //select values

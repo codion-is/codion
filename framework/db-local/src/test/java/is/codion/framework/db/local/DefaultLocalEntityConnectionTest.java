@@ -6,6 +6,7 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.DeleteException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordModifiedException;
 import is.codion.common.db.exception.RecordNotFoundException;
@@ -75,8 +76,8 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       final Key key = ENTITIES.primaryKey(Department.TYPE, 40);
-      assertEquals(0, connection.delete(new ArrayList<>()));
-      assertTrue(connection.delete(key));
+      connection.delete(new ArrayList<>());
+      connection.delete(key);
       try {
         connection.selectSingle(key);
         fail();
@@ -108,6 +109,14 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       connection.rollbackTransaction();
     }
+  }
+
+  @Test
+  void deleteRowNumberMismatch() {
+    final Key key400 = ENTITIES.primaryKey(Department.TYPE, 400);
+    assertThrows(DeleteException.class, () -> connection.delete(key400));
+    final Key key40 = ENTITIES.primaryKey(Department.TYPE, 40);
+    assertThrows(DeleteException.class, () -> connection.delete(asList(key40, key400)));
   }
 
   @Test

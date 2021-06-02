@@ -7162,3 +7162,5 @@
   EntityApplicationPanel no longer saves default username if silentLoginUser is specified
   Database.getSelectForUpdateSupport() removed, getSelectForUpdateClause() added instead
   Database.SELECT_FOR_UPDATE_NOWAIT configuration value added
+  EntityConnection.delete() by key now throws DeleteException if the number of deleted rows does not match the number of keys
+  EntityConnection.delete() by key no longer returns the number of deleted rows, due to the above
