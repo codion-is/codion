@@ -282,15 +282,15 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public boolean delete(final Key entityKey) throws DatabaseException {
-    return delete(singletonList(entityKey)) == 1;
+  public void delete(final Key entityKey) throws DatabaseException {
+    delete(singletonList(entityKey));
   }
 
   @Override
-  public int delete(final List<Key> keys) throws DatabaseException {
+  public void delete(final List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      return handleResponse(execute(createRequest("deleteByKey", keys)));
+      handleResponse(execute(createRequest("deleteByKey", keys)));
     }
     catch (final DatabaseException e) {
       throw e;
