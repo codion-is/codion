@@ -23,8 +23,15 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   static final String CHECK_QUERY = "select 1";
 
+  private final boolean nowait;
+
   PostgreSQLDatabase(final String jdbcUrl) {
+    this(jdbcUrl, false);
+  }
+
+  PostgreSQLDatabase(final String jdbcUrl, final boolean nowait) {
     super(jdbcUrl);
+    this.nowait = nowait;
   }
 
   @Override
@@ -39,7 +46,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public String getSelectForUpdateClause() {
-    return "for update nowait";
+    if (nowait) {
+      return FOR_UPDATE_NOWAIT;
+    }
+
+    return FOR_UPDATE;
   }
 
   @Override

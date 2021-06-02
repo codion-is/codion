@@ -55,8 +55,15 @@ final class OracleDatabase extends AbstractDatabase {
     ERROR_CODE_MAP.put(VIEW_HAS_ERRORS_ERROR, MESSAGES.getString("view_has_errors_error"));
   }
 
+  private final boolean nowait;
+
   OracleDatabase(final String jdbcUrl) {
+    this(jdbcUrl, true);
+  }
+
+  OracleDatabase(final String jdbcUrl, final boolean nowait) {
     super(jdbcUrl);
+    this.nowait = nowait;
   }
 
   @Override
@@ -81,7 +88,11 @@ final class OracleDatabase extends AbstractDatabase {
 
   @Override
   public String getSelectForUpdateClause() {
-    return "for update nowait";
+    if (nowait) {
+      return FOR_UPDATE_NOWAIT;
+    }
+
+    return FOR_UPDATE;
   }
 
   /**

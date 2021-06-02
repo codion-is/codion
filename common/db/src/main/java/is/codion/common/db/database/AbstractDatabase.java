@@ -30,6 +30,9 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractDatabase implements Database {
 
+  protected static final String FOR_UPDATE = "for update";
+  protected static final String FOR_UPDATE_NOWAIT = "for update nowait";
+
   static Database instance;
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();

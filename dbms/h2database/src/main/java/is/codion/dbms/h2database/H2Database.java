@@ -46,21 +46,19 @@ final class H2Database extends AbstractDatabase {
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
 
-  /**
-   * Instantiates a new embedded H2Database.
-   * @param jdbcUrl the jdbc url
-   */
+  private final boolean nowait;
+
   H2Database(final String jdbcUrl) {
     this(jdbcUrl, emptyList());
   }
 
-  /**
-   * Instantiates a new embedded H2Database.
-   * @param jdbcUrl the jdbc url
-   * @param scriptPaths paths to the scripts to run to initialize the database
-   */
   H2Database(final String jdbcUrl, final List<String> scriptPaths) {
+    this(jdbcUrl, scriptPaths, true);
+  }
+
+  H2Database(final String jdbcUrl, final List<String> scriptPaths, final boolean nowait) {
     super(jdbcUrl);
+    this.nowait = nowait;
     synchronized (INITIALIZED_DATABASES) {
       if (!nullOrEmpty(scriptPaths) && !INITIALIZED_DATABASES.contains(jdbcUrl.toLowerCase())) {
         initializeEmbeddedDatabase(scriptPaths);
@@ -78,7 +76,11 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public String getSelectForUpdateClause() {
-    return "for update nowait";
+    if (nowait) {
+      return FOR_UPDATE_NOWAIT;
+    }
+
+    return FOR_UPDATE;
   }
 
   @Override
