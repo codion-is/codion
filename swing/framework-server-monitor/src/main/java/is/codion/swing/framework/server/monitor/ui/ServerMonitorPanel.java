@@ -4,10 +4,9 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -21,18 +20,14 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
@@ -118,10 +113,10 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
-    final JSpinner connectionLimitSpinner = new JSpinner();
-    ComponentValues.integerSpinner(connectionLimitSpinner).link(model.getConnectionLimitValue());
-    ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-    serverPanel.add(connectionLimitSpinner);
+    serverPanel.add(ComponentBuilders.integerSpinner()
+            .columns(SPINNER_COLUMNS)
+            .linkedValue(model.getConnectionLimitValue())
+            .build());
     serverPanel.add(new JLabel("Mem. usage", SwingConstants.RIGHT));
     serverPanel.add(initializeMemoryField());
     serverPanel.add(new JLabel("Logging", SwingConstants.RIGHT));
@@ -151,18 +146,16 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
-    final JSpinner updateIntervalSpinner = new JSpinner();
-    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
-    ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-
-    final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
-
     final JPanel intervalPanel = new JPanel(Layouts.borderLayout());
     intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
-    intervalPanel.add(updateIntervalSpinner, BorderLayout.CENTER);
+    intervalPanel.add(ComponentBuilders.integerSpinner()
+            .minimum(1)
+            .columns(SPINNER_COLUMNS)
+            .editable(false)
+            .linkedValue(model.getUpdateIntervalValue())
+            .build(), BorderLayout.CENTER);
 
+    final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
     chartsPanel.add(Control.builder(model::clearStatistics)
             .caption("Clear")
@@ -171,9 +164,10 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanel.add(chartsPanel);
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
-    final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
-    ComponentValues.toggleButton(synchronizedZoomCheckBox).link(synchronizedZoomState);
-    zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
+    zoomPanel.add(ComponentBuilders.checkBox()
+            .caption("Synchronize zoom")
+            .linkedValue(synchronizedZoomState)
+            .build(), BorderLayout.CENTER);
     zoomPanel.add(Control.builder(this::resetZoom)
             .caption("Reset zoom")
             .build().createButton(), BorderLayout.EAST);
@@ -230,42 +224,39 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JScrollPane initializeEnvironmentInfoPanel() throws RemoteException {
-    final JTextArea infoArea = new JTextArea();
-    infoArea.setAutoscrolls(false);
-    infoArea.setEditable(false);
-    infoArea.setLineWrap(true);
-    infoArea.setWrapStyleWord(true);
-    infoArea.setText(model.getEnvironmentInfo());
-    infoArea.setCaretPosition(0);
-
-    return new JScrollPane(infoArea);
+    return new JScrollPane(ComponentBuilders.textArea()
+            .autoscrolls(false)
+            .editable(false)
+            .lineWrap(true)
+            .wrapStyleWord(true)
+            .initialValue(model.getEnvironmentInfo())
+            .build());
   }
 
   private JTextField initializeConnectionCountField() {
-    final IntegerField connectionCountField = new IntegerField(4);
-    connectionCountField.setEditable(false);
-    connectionCountField.setHorizontalAlignment(SwingConstants.CENTER);
-    ComponentValues.integerField(connectionCountField, false).link(model.getConnectionCountObserver());
-
-    return connectionCountField;
+    return ComponentBuilders.integerField()
+            .columns(4)
+            .editable(false)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .linkedValueObserver(model.getConnectionCountObserver())
+            .build();
   }
 
   private JTextField initializeMemoryField() {
-    final JTextField memoryField = new JTextField(8);
-    memoryField.setEditable(false);
-    memoryField.setHorizontalAlignment(SwingConstants.CENTER);
-    ComponentValues.textComponent(memoryField).link(model.getMemoryUsageObserver());
-
-    return memoryField;
+    return ComponentBuilders.textField()
+            .columns(8)
+            .editable(false)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .linkedValueObserver(model.getMemoryUsageObserver())
+            .build();
   }
 
   private JComboBox<Object> initializeLogLevelField() {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
-    final JComboBox<Object> box = new JComboBox<>(comboModel);
-    ComponentValues.comboBox(box).link(model.getLogLevelValue());
-
-    return box;
+    return ComponentBuilders.comboBox(Object.class, comboModel)
+            .linkedValue(model.getLogLevelValue())
+            .build();
   }
 
   private void setColors(final JFreeChart chart) {

@@ -9,6 +9,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
@@ -231,11 +232,25 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @return a builder for a component
+   */
+  public static SpinnerBuilder<Double> doubleSpinner() {
+    return doubleSpinner(new SpinnerNumberModel());
+  }
+
+  /**
    * @param spinnerNumberModel the spinner model
    * @return a builder for a component
    */
   public static SpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
     return new DefaultSpinnerBuilder<>(spinnerNumberModel, Double.class);
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static SpinnerBuilder<Integer> integerSpinner() {
+    return integerSpinner(new SpinnerNumberModel());
   }
 
   /**
@@ -276,4 +291,17 @@ public final class ComponentBuilders {
   public static LabelBuilder label(final String text) {
     return new DefaultLabelBuilder(text);
   }
+
+  /**
+   * Returns a generic component builder, for configuring components. Configures and returns the given component on build.
+   * @param component the component to configure
+   * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @return a generic builder, returning the given component on build
+   */
+  public static <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(final C component) {
+    return new DefaultComponentBuilder<>(requireNonNull(component, "component"));
+  }
+
 }

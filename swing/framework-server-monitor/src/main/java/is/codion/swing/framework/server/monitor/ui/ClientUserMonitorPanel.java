@@ -3,11 +3,11 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -19,7 +19,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
@@ -95,10 +94,10 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    final JSpinner connectionTimeoutSpinner = new JSpinner();
-    ComponentValues.integerSpinner(connectionTimeoutSpinner).link(model.getConnectionTimeoutValue());
-    ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
-    actionBase.add(connectionTimeoutSpinner);
+    actionBase.add(ComponentBuilders.integerSpinner(new SpinnerNumberModel())
+            .columns(7)
+            .linkedValue(model.getConnectionTimeoutValue())
+            .build());
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
     actionBase.add(Control.builder(model::disconnectTimedOut)
@@ -129,15 +128,13 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    final JSpinner updateIntervalSpinner = new JSpinner(new SpinnerNumberModel());
-    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
-    ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
-
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-
     configPanel.add(new JLabel("Update interval (s)"));
-    configPanel.add(updateIntervalSpinner);
+    configPanel.add(ComponentBuilders.integerSpinner()
+            .minimum(1)
+            .columns(SPINNER_COLUMNS)
+            .editable(false)
+            .linkedValue(model.getUpdateIntervalValue())
+            .build());
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);

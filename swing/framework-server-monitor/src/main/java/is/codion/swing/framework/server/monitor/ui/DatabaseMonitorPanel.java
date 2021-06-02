@@ -3,9 +3,9 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -16,9 +16,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
@@ -59,15 +57,13 @@ public final class DatabaseMonitorPanel extends JPanel {
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
-    final JSpinner updateIntervalSpinner = new JSpinner();
-    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
-    ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
-
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(updateIntervalSpinner);
+    chartConfig.add(ComponentBuilders.integerSpinner()
+            .minimum(1)
+            .columns(SPINNER_COLUMNS)
+            .editable(false)
+            .linkedValue(model.getUpdateIntervalValue())
+            .build());
     chartConfig.add(Control.builder(model::clearStatistics)
             .caption("Clear")
             .build().createButton());

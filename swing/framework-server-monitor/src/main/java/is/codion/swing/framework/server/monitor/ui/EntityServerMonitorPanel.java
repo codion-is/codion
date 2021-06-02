@@ -12,6 +12,7 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -19,8 +20,6 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
@@ -211,18 +210,20 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    final IntegerField field = new IntegerField();
-    field.setInteger(5);
-    field.setColumns(6);
-    field.setHorizontalAlignment(SwingConstants.CENTER);
-    field.selectAll();
-    final ComponentValue<Integer, IntegerField> componentValue = ComponentValues.integerField(field);
+    final IntegerField field = ComponentBuilders.integerField()
+            .initialValue(5)
+            .columns(6)
+            .minimumValue(1d)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .selectAllOnFocusGained(true)
+            .build();
+
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
     Dialogs.okCancelDialogBuilder(panel)
             .owner(this)
             .title("Update interval (s)")
-            .onOk(() -> getModel().setUpdateInterval(componentValue.get()))
+            .onOk(() -> getModel().setUpdateInterval(field.getInteger()))
             .show();
   }
 

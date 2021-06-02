@@ -34,4 +34,10 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
    * @return this builder instance
    */
   TextAreaBuilder wrapStyleWord(boolean wrapStyleWord);
+
+  /**
+   * @param autoscrolls true if autoscrolling should be enabled
+   * @return this builder instance
+   */
+  TextAreaBuilder autoscrolls(boolean autoscrolls);
 }

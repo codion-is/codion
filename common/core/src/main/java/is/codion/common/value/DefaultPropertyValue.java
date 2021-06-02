@@ -141,7 +141,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public boolean is(final V value) {
+  public boolean equalTo(final V value) {
     return Objects.equals(get(), value);
   }
 

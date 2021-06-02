@@ -64,7 +64,7 @@ public class ValuesTest {
     final Value<Integer> intValue = Value.value(42, -1);
     assertFalse(intValue.isNullable());
     assertTrue(intValue.toOptional().isPresent());
-    assertTrue(intValue.is(42));
+    assertTrue(intValue.equalTo(42));
     final ValueObserver<Integer> valueObserver = intValue.getObserver();
     intValue.addListener(eventCounter::incrementAndGet);
     intValue.addDataListener(data -> {
@@ -76,9 +76,9 @@ public class ValuesTest {
     assertEquals(0, eventCounter.get());
     intValue.set(20);
     assertEquals(1, eventCounter.get());
-    assertTrue(intValue.is(20));
+    assertTrue(intValue.equalTo(20));
     intValue.set(null);
-    assertTrue(intValue.is(-1));
+    assertTrue(intValue.equalTo(-1));
     assertFalse(intValue.isNull());
     assertTrue(intValue.isNotNull());
     assertTrue(intValue.toOptional().isPresent());
@@ -140,7 +140,7 @@ public class ValuesTest {
     assertNull(modelValue.get());
     assertTrue(modelValue.isNull());
     assertFalse(modelValue.isNotNull());
-    assertTrue(modelValue.is(null));
+    assertTrue(modelValue.equalTo(null));
     assertNull(uiValue.get());
     assertTrue(uiValue.isNull());
     assertEquals(3, modelValueEventCounter.get());
@@ -244,7 +244,7 @@ public class ValuesTest {
     assertFalse(valueSet.isEmpty());
     assertTrue(valueSet.isNotEmpty());
     assertEquals(initialValues, valueSet.get());
-    assertTrue(valueSet.is(initialValues));
+    assertTrue(valueSet.equalTo(initialValues));
 
     assertFalse(valueSet.add(1));
     assertFalse(valueSet.add(2));

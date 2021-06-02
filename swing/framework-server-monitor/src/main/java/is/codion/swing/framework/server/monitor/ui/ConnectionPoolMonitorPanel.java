@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -20,12 +19,9 @@ import org.jfree.chart.renderer.xy.DeviationRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -144,38 +140,33 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
-
-    final JSpinner timeoutSpinner = new JSpinner();
-    ComponentValues.integerSpinner(timeoutSpinner).link(model.getPooledConnectionTimeoutValue());
-    final JSpinner cleanupIntervalSpinner = new JSpinner();
-    ComponentValues.integerSpinner(cleanupIntervalSpinner).link(model.getPoolCleanupIntervalValue());
-    final JSpinner maximumSizeSpinner = new JSpinner();
-    ComponentValues.integerSpinner(maximumSizeSpinner).link(model.getMaximumPoolSizeValue());
-    final JSpinner minimumSizeSpinner = new JSpinner();
-    ComponentValues.integerSpinner(minimumSizeSpinner).link(model.getMinimumPoolSizeValue());
-    final SpinnerNumberModel maximumCheckOutTimeModel = new SpinnerNumberModel();
-    maximumCheckOutTimeModel.setStepSize(100);
-    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(maximumCheckOutTimeModel);
-    ComponentValues.integerSpinner(maximumCheckOutTimeSpinner).link(model.getMaximumCheckOutTimeValue());
-
-    ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) cleanupIntervalSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) cleanupIntervalSpinner.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setColumns(3);
-    ((JSpinner.DefaultEditor) maximumCheckOutTimeSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) maximumCheckOutTimeSpinner.getEditor()).getTextField().setColumns(6);
-
-    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), minimumSizeSpinner));
-    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), maximumSizeSpinner));
-    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), maximumCheckOutTimeSpinner));
-    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
-    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
-
     configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
+    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), ComponentBuilders.integerSpinner()
+            .columns(3)
+            .editable(false)
+            .linkedValue(model.getMinimumPoolSizeValue())
+            .build()));
+    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), ComponentBuilders.integerSpinner()
+            .columns(3)
+            .editable(false)
+            .linkedValue(model.getMaximumPoolSizeValue())
+            .build()));
+    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), ComponentBuilders.integerSpinner()
+            .stepSize(100)
+            .columns(6)
+            .editable(false)
+            .linkedValue(model.getMaximumCheckOutTimeValue())
+            .build()));
+    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (s)"), ComponentBuilders.integerSpinner()
+            .columns(3)
+            .editable(false)
+            .linkedValue(model.getPooledConnectionTimeoutValue())
+            .build()));
+    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), ComponentBuilders.integerSpinner()
+            .columns(3)
+            .editable(false)
+            .linkedValue(model.getPoolCleanupIntervalValue())
+            .build()));
 
     final JPanel configPanel = new JPanel(Layouts.flowLayout(RIGHT));
     configPanel.add(configBase);
@@ -197,15 +188,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getSouthPanel() {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
-    final JSpinner updateIntervalSpinner = new JSpinner();
-    ComponentValues.integerSpinner(updateIntervalSpinner).link(model.getUpdateIntervalValue());
-    ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
-
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(updateIntervalSpinner);
+    chartConfig.add(ComponentBuilders.integerSpinner()
+            .minimum(1)
+            .columns(SPINNER_COLUMNS)
+            .editable(false)
+            .linkedValue(model.getUpdateIntervalValue())
+            .build());
 
     chartConfig.add(ComponentBuilders.checkBox()
             .caption("Snapshot")
@@ -213,11 +202,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .linkedValue(model.getCollectSnapshotStatisticsState())
             .build());
 
-    final JButton clearButton = Control.builder(model::clearInPoolStatistics)
+    chartConfig.add(ComponentBuilders.component(Control.builder(model::clearInPoolStatistics)
             .caption("Clear")
-            .build().createButton();
-    clearButton.setMaximumSize(TextFields.getPreferredTextFieldSize());
-    chartConfig.add(clearButton);
+            .build().createButton())
+            .maximumSize(TextFields.getPreferredTextFieldSize())
+            .build());
 
     final JPanel southPanel = new JPanel(Layouts.borderLayout());
     southPanel.add(chartConfig, BorderLayout.WEST);

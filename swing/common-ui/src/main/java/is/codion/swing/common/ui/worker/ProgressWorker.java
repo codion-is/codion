@@ -401,10 +401,10 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
 
       return new ProgressWorker<>(progressTask, progressDialog,
               onSuccess == null ? result -> {} : onSuccess,
-              this::createExceptionHandler);
+              this::handleException);
     }
 
-    private void createExceptionHandler(final Throwable exception) {
+    private void handleException(final Throwable exception) {
       if (!(exception instanceof CancelException)) {
         if (onException != null) {
           onException.accept(exception);

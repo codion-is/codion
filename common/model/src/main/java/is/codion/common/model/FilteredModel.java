@@ -25,7 +25,7 @@ public interface FilteredModel<T> {
   void removeFilterListener(EventListener listener);
 
   /**
-   * Filters the table according to the condition returned by {@link #getIncludeCondition()}.
+   * Filters this model according to the condition returned by {@link #getIncludeCondition()}.
    * If no include condition is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getIncludeCondition()
@@ -35,19 +35,19 @@ public interface FilteredModel<T> {
   void filterContents();
 
   /**
-   * Returns the include condition defined by this model, null if no include condition has been set.
+   * Returns the include condition used by this model, null if no include condition has been set.
    * @return the include condition
    */
   Predicate<T> getIncludeCondition();
 
   /**
    * Sets the include condition and filters the model
-   * @param includeCondition the Predicate to use, null if no filtering should be performed
+   * @param includeCondition the Predicate to use when filtering, null if no filtering should be performed
    */
   void setIncludeCondition(Predicate<T> includeCondition);
 
   /**
-   * @return an unmodifiable view of all visible and filtered items in this table model, in no particular order
+   * @return an unmodifiable view of all visible and filtered items in this model, in no particular order
    * @see #getVisibleItems()
    * @see #getFilteredItems()
    */

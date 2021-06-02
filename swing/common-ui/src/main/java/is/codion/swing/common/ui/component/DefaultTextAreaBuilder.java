@@ -19,6 +19,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private int rows;
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
+  private boolean autoscrolls = true;
 
   @Override
   public TextAreaBuilder rows(final int rows) {
@@ -45,8 +46,15 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   }
 
   @Override
+  public TextAreaBuilder autoscrolls(final boolean autoscrolls) {
+    this.autoscrolls = autoscrolls;
+    return this;
+  }
+
+  @Override
   protected JTextArea buildComponent() {
     final JTextArea textArea = new JTextArea(rows, columns);
+    textArea.setAutoscrolls(autoscrolls);
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
     textArea.setEditable(editable);
@@ -72,5 +80,6 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   @Override
   protected void setInitialValue(final JTextArea component, final String initialValue) {
     component.setText(initialValue);
+    component.setCaretPosition(0);
   }
 }

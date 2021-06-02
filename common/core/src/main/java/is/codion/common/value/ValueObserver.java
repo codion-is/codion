@@ -44,5 +44,5 @@ public interface ValueObserver<V> extends EventObserver<V> {
    * @param value the value
    * @return true if the underlying value is equal to the given one
    */
-  boolean is(V value);
+  boolean equalTo(V value);
 }

@@ -94,7 +94,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final boolean is(final V value) {
+  public final boolean equalTo(final V value) {
     return Objects.equals(get(), value);
   }
 
