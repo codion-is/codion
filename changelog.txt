@@ -7159,3 +7159,4 @@
   TextFieldBuilder.horizontalAlignment added
   TextAreaBuilder.autoscrolls added
   EntityServerMonitor UI refactoring
+  EntityApplicationPanel no longer saves default username if silentLoginUser is specified

@@ -1181,7 +1181,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
 
-    if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
+    if (silentLoginUser == null && EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
       saveDefaultUsername(connectionProvider.getUser().getUsername());
     }
 
