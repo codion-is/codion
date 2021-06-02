@@ -40,8 +40,8 @@ final class MySQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public SelectForUpdateSupport getSelectForUpdateSupport() {
-    return SelectForUpdateSupport.FOR_UPDATE;
+  public String getSelectForUpdateClause() {
+    return "for update";
   }
 
   @Override

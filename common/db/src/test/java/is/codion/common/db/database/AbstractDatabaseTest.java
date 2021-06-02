@@ -23,11 +23,15 @@ public final class AbstractDatabaseTest {
     public String getAutoIncrementQuery(final String idSource) {
       return null;
     }
+    @Override
+    public String getSelectForUpdateClause() {
+      return "for update nowait";
+    }
   };
 
   @Test
   void test() throws Exception {
-    assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT, database.getSelectForUpdateSupport());
+    assertEquals("for update nowait", database.getSelectForUpdateClause());
     assertTrue(database.supportsIsValid());
     assertEquals("name", database.getName());
     database.shutdownEmbedded();

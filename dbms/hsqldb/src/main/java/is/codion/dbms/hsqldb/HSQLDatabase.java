@@ -20,8 +20,15 @@ final class HSQLDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
 
+  private final boolean nowait;
+
   HSQLDatabase(final String jdbcUrl) {
+    this(jdbcUrl, true);
+  }
+
+  HSQLDatabase(final String jdbcUrl, final boolean nowait) {
     super(jdbcUrl);
+    this.nowait = nowait;
   }
 
   @Override
@@ -30,6 +37,15 @@ final class HSQLDatabase extends AbstractDatabase {
             JDBC_URL_PREFIX_RES, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;
+  }
+
+  @Override
+  public String getSelectForUpdateClause() {
+    if (nowait) {
+      return FOR_UPDATE_NOWAIT;
+    }
+
+    return FOR_UPDATE;
   }
 
   @Override

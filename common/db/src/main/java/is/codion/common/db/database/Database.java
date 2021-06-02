@@ -69,6 +69,14 @@ public interface Database extends ConnectionFactory {
   PropertyValue<Boolean> QUERY_COUNTER_ENABLED = Configuration.booleanValue("codion.db.queryCounterEnabled", true);
 
   /**
+   * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>
+   * A database implementation may disregard this.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = Configuration.booleanValue("codion.db.selectForUpdateNowait", true);
+
+  /**
    * Specifies the default login timeout (in seconds).
    * Value type: Integer<br>
    * Default value: 2
@@ -114,10 +122,10 @@ public interface Database extends ConnectionFactory {
   void shutdownEmbedded();
 
   /**
-   * Returns the select for update support of the underlying database.
-   * @return the select for update support.
+   * Returns a select for update clause, an empty string if not supported.
+   * @return a select for update clause
    */
-  SelectForUpdateSupport getSelectForUpdateSupport();
+  String getSelectForUpdateClause();
 
   /**
    * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.

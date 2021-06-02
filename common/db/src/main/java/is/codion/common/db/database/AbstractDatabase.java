@@ -30,6 +30,9 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractDatabase implements Database {
 
+  protected static final String FOR_UPDATE = "for update";
+  protected static final String FOR_UPDATE_NOWAIT = "for update nowait";
+
   static Database instance;
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
@@ -133,11 +136,6 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public final void setConnectionProvider(final ConnectionProvider connectionProvider) {
     this.connectionProvider = connectionProvider == null ? new ConnectionProvider() {} : connectionProvider;
-  }
-
-  @Override
-  public SelectForUpdateSupport getSelectForUpdateSupport() {
-    return SelectForUpdateSupport.FOR_UPDATE_NOWAIT;
   }
 
   @Override

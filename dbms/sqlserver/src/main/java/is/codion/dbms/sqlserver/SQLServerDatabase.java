@@ -39,8 +39,8 @@ final class SQLServerDatabase extends AbstractDatabase {
   }
 
   @Override
-  public SelectForUpdateSupport getSelectForUpdateSupport() {
-    return SelectForUpdateSupport.NONE;
+  public String getSelectForUpdateClause() {
+    return "";
   }
 
   /**

@@ -22,6 +22,6 @@ public final class OracleDatabaseFactory implements DatabaseFactory {
 
   @Override
   public Database createDatabase(final String jdbcUrl) {
-    return new OracleDatabase(jdbcUrl);
+    return new OracleDatabase(jdbcUrl, Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 }

@@ -125,7 +125,10 @@ final class Queries {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
     if (isForUpdate) {
-      addForUpdate(queryBuilder, database);
+      final String forUpdateClause = database.getSelectForUpdateClause();
+      if (!nullOrEmpty(forUpdateClause)) {
+        queryBuilder.append(" ").append(forUpdateClause);
+      }
     }
     else {
       addGroupHavingOrderByAndLimitClauses(queryBuilder, condition, entityDefinition);
@@ -182,16 +185,6 @@ final class Queries {
 
   private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
     return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnName() + (orderByAttribute.isAscending() ? "" : " desc");
-  }
-
-  private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {
-    final Database.SelectForUpdateSupport selectForUpdateSupport = database.getSelectForUpdateSupport();
-    if (!selectForUpdateSupport.equals(Database.SelectForUpdateSupport.NONE)) {
-      queryBuilder.append(" for update");
-      if (selectForUpdateSupport.equals(Database.SelectForUpdateSupport.FOR_UPDATE_NOWAIT)) {
-        queryBuilder.append(" nowait");
-      }
-    }
   }
 
   private static void addGroupHavingOrderByAndLimitClauses(final StringBuilder queryBuilder, final Condition condition,

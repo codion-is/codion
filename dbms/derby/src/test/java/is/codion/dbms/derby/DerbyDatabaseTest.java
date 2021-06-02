@@ -3,8 +3,6 @@
  */
 package is.codion.dbms.derby;
 
-import is.codion.common.db.database.Database;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +37,7 @@ public class DerbyDatabaseTest {
   @Test
   void supportsNoWait() {
     final DerbyDatabase db = new DerbyDatabase(URL);
-    assertEquals(Database.SelectForUpdateSupport.FOR_UPDATE, db.getSelectForUpdateSupport());
+    assertEquals("for update", db.getSelectForUpdateClause());
   }
 
   @Test
