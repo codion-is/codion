@@ -79,6 +79,11 @@ final class OracleDatabase extends AbstractDatabase {
     return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
   }
 
+  @Override
+  public String getSelectForUpdateClause() {
+    return "for update nowait";
+  }
+
   /**
    * @return false
    */

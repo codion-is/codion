@@ -114,10 +114,10 @@ public interface Database extends ConnectionFactory {
   void shutdownEmbedded();
 
   /**
-   * Returns the select for update support of the underlying database.
-   * @return the select for update support.
+   * Returns a select for update clause, an empty string if not supported.
+   * @return a select for update clause
    */
-  SelectForUpdateSupport getSelectForUpdateSupport();
+  String getSelectForUpdateClause();
 
   /**
    * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.

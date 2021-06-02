@@ -38,6 +38,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
+  public String getSelectForUpdateClause() {
+    return "for update nowait";
+  }
+
+  @Override
   public String getAutoIncrementQuery(final String idSource) {
     return "select currval('" + requireNonNull(idSource, "idSource") + "')";
   }

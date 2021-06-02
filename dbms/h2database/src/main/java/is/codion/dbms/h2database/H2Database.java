@@ -77,6 +77,11 @@ final class H2Database extends AbstractDatabase {
   }
 
   @Override
+  public String getSelectForUpdateClause() {
+    return "for update nowait";
+  }
+
+  @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }

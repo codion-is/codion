@@ -7160,3 +7160,4 @@
   TextAreaBuilder.autoscrolls added
   EntityServerMonitor UI refactoring
   EntityApplicationPanel no longer saves default username if silentLoginUser is specified
+  Database.getSelectForUpdateSupport() removed, getSelectForUpdateClause() added instead

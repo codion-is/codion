@@ -136,11 +136,6 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public SelectForUpdateSupport getSelectForUpdateSupport() {
-    return SelectForUpdateSupport.FOR_UPDATE_NOWAIT;
-  }
-
-  @Override
   public boolean supportsIsValid() {
     return true;
   }
