@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.SwingUtilities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -64,16 +63,15 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  void enabledState() {
+  void enabledState() throws InterruptedException {
     final State enabledState = State.state();
     final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     final TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, enabledState.getObserver());
     assertFalse(field.isEnabled());
     assertFalse(inputPanel.getCalendarButton().isEnabled());
-    SwingUtilities.invokeLater(() -> {
-      enabledState.set(true);
-      assertTrue(field.isEnabled());
-      assertTrue(inputPanel.getCalendarButton().isEnabled());
-    });
+    enabledState.set(true);
+    Thread.sleep(100);
+    assertTrue(field.isEnabled());
+    assertTrue(inputPanel.getCalendarButton().isEnabled());
   }
 }

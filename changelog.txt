@@ -7164,3 +7164,4 @@
   Database.SELECT_FOR_UPDATE_NOWAIT configuration value added
   EntityConnection.delete() by key now throws DeleteException if the number of deleted rows does not match the number of keys
   EntityConnection.delete() by key no longer returns the number of deleted rows, due to the above
+  AbstractFilteredTableModel.merge(), minor optimization, no longer searches list for item index, test added
