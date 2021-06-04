@@ -175,7 +175,7 @@ public final class InputControls {
 
     ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
             ComponentBuilders.booleanComboBox()
-                    .description("Select a value")
+                    .toolTipText("Select a value")
                     .linkedValue(booleanValue)
                     .buildComponentValue();
 

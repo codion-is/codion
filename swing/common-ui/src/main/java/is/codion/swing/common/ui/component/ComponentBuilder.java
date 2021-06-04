@@ -88,10 +88,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B transferFocusOnEnter(boolean transferFocusOnEnter);
 
   /**
-   * @param description the description
+   * @param toolTipText the tool tip text
    * @return this builder instance
    */
-  B description(String description);
+  B toolTipText(String toolTipText);
 
   /**
    * @param enabledState the state controlling the component enabled status
