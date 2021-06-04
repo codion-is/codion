@@ -36,7 +36,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Dimension minimumSize;
   private Border border;
   private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
-  private String description;
+  private String toolTipText;
   private Font font;
   private Color foreground;
   private Color background;
@@ -114,8 +114,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B description(final String description) {
-    this.description = description;
+  public final B toolTipText(final String toolTipText) {
+    this.toolTipText = toolTipText;
     return (B) this;
   }
 
@@ -191,8 +191,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (popupMenuControls != null) {
       component.setComponentPopupMenu(popupMenuControls.createPopupMenu());
     }
-    if (description != null) {
-      component.setToolTipText(description);
+    if (toolTipText != null) {
+      component.setToolTipText(toolTipText);
     }
     if (font != null) {
       component.setFont(font);
