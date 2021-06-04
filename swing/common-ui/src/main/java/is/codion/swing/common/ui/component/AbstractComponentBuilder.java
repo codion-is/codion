@@ -260,13 +260,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     Components.transferFocusOnEnter(component);
   }
 
-  /**
-   * @return the enabled state
-   */
-  protected final StateObserver getEnabledState() {
-    return enabledState;
-  }
-
   private void setSizes(final C component) {
     if (minimumSize != null) {
       component.setMinimumSize(minimumSize);

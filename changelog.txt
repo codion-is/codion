@@ -7169,3 +7169,4 @@
   ComponentBuilder.font(), foreground() and background() added
   TextComponentBuilder.margin() added
   TextAreaBuilder.buildScrollPane() added
+  Components, transferFocusOnEnter special handling for JTextArea, adds modifier CTRL for forward and CTRL + SHIFT for backward

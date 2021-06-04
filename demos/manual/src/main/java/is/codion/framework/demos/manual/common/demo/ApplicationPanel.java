@@ -62,6 +62,16 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getLongStringValue())
             .build(inputPanel::add);
 
+    label("Text")
+            .build(inputPanel::add);
+    textArea()
+            .rowsColumns(4, 20)
+            .lineWrap(true)
+            .wrapStyleWord(true)
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getTextValue())
+            .buildScrollPane(inputPanel::add);
+
     label("Formatted String")
             .build(inputPanel::add);
     formattedTextField()

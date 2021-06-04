@@ -30,8 +30,8 @@ import java.util.function.Consumer;
 public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> {
 
   /**
-   * Specifies whether focus should be transferred from components on enter.
-   * Note that this does not apply to text areas<br>
+   * Specifies whether focus should be transferred from components on enter.<br>
+   * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards<br>
    * Value type: Boolean<br>
    * Default value: false
    */
@@ -81,6 +81,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B border(Border border);
 
   /**
+   * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards
    * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)
    * @return this builder instance
    */
