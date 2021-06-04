@@ -58,6 +58,9 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
     textArea.setEditable(editable);
+    if (margin != null) {
+      textArea.setMargin(margin);
+    }
     if (upperCase) {
       TextFields.upperCase(textArea);
     }

@@ -7166,3 +7166,5 @@
   EntityConnection.delete() by key no longer returns the number of deleted rows, due to the above
   AbstractFilteredTableModel.merge(), minor optimization, no longer searches list for item index, test added
   ComponentBuilder.TRANSFER_FOCUS_ON_ENTER no longer true by default, interfered with actions on input components, ColumnConditionPanel f.ex.
+  ComponentBuilder.font(), foreground() and background() added
+  TextComponentBuilder.margin() added

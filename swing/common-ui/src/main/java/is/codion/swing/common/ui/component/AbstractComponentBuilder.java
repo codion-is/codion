@@ -14,7 +14,9 @@ import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.border.Border;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.Components.*;
@@ -35,6 +37,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Border border;
   private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
   private String description;
+  private Font font;
+  private Color foreground;
+  private Color background;
   private StateObserver enabledState;
   private Controls popupMenuControls;
   private Value<T> linkedValue;
@@ -115,6 +120,24 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B font(final Font font) {
+    this.font = font;
+    return (B) this;
+  }
+
+  @Override
+  public final B foreground(final Color foreground) {
+    this.foreground = foreground;
+    return (B) this;
+  }
+
+  @Override
+  public final B background(final Color background) {
+    this.background = background;
+    return (B) this;
+  }
+
+  @Override
   public final B linkedValue(final Value<T> value) {
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
@@ -170,6 +193,15 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (description != null) {
       component.setToolTipText(description);
+    }
+    if (font != null) {
+      component.setFont(font);
+    }
+    if (foreground != null) {
+      component.setForeground(foreground);
+    }
+    if (background != null) {
+      component.setBackground(background);
     }
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);

@@ -36,7 +36,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +59,9 @@ public final class ComponentBuildersTest {
     final Value<Integer> value = Value.value(42);
     final ComponentValue<Integer, IntegerField> componentValue = ComponentBuilders.integerField()
             .range(0, 100)
+            .font(Font.getFont("arial"))
+            .foreground(Color.WHITE)
+            .background(Color.BLACK)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(componentValue.getComponent().getText(), "42");

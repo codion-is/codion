@@ -71,6 +71,9 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     textField.setEditable(editable);
     textField.setColumns(columns);
     textField.setHorizontalAlignment(horizontalAlignment);
+    if (margin != null) {
+      textField.setMargin(margin);
+    }
     if (action != null) {
       textField.setAction(action);
     }

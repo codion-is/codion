@@ -14,7 +14,9 @@ import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.border.Border;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.function.Consumer;
 
 /**
@@ -107,6 +109,24 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B popupMenuControls(Controls popupMenuControls);
+
+  /**
+   * @param font the component font
+   * @return this builder instance
+   */
+  B font(Font font);
+
+  /**
+   * @param foreground the foreground color
+   * @return this builder instance
+   */
+  B foreground(Color foreground);
+
+  /**
+   * @param background the background color
+   * @return this builder instance
+   */
+  B background(Color background);
 
   /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.
