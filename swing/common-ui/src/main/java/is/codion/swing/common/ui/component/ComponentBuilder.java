@@ -31,10 +31,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * Specifies whether focus should be transferred from components on enter.
    * Note that this does not apply to text areas<br>
    * Value type: Boolean<br>
-   * Default value: true
+   * Default value: false
    */
   PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "is.codion.swing.common.ui.ComponentBuilder.transferFocusOnEnter", true);
+          "is.codion.swing.common.ui.ComponentBuilder.transferFocusOnEnter", false);
 
   /**
    * @param focusable false if the component should not be focusable

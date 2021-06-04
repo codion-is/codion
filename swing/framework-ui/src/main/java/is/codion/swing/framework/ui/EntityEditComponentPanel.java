@@ -114,7 +114,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Specifies whether components created by this edit component panel should transfer focus on enter.
    */
-  private boolean transferFocusOnEnter = ComponentBuilder.TRANSFER_FOCUS_ON_ENTER.get();
+  private boolean transferFocusOnEnter = true;
 
   /**
    * The default number of text field columns
