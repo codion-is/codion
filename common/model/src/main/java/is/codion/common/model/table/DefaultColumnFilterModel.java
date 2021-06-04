@@ -93,7 +93,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable == null;
     }
 
-    if (comparable instanceof String) {//for String values
+    if (comparable instanceof String && ((String) equalValue).contains(getWildcard())) {
       return includeExactWildcard((String) comparable);
     }
 
@@ -109,7 +109,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable != null;
     }
 
-    if (comparable instanceof String && ((String) comparable).contains(getWildcard())) {
+    if (comparable instanceof String && ((String) equalValue).contains(getWildcard())) {
       return !includeExactWildcard((String) comparable);
     }
 
@@ -123,9 +123,6 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
     }
     if (equalsValue.equals(getWildcard())) {
       return true;
-    }
-    if (value == null) {
-      return false;
     }
 
     String realValue = value;
