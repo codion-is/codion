@@ -21,7 +21,7 @@ public class KeyEventsTest {
     final String actionName = "testing";
     final Control control = Control.builder(() -> {}).caption(actionName).build();
     assertNull(textField.getActionMap().get(actionName));
-    final KeyEvents.KeyEventBuilder builder = KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER).action(control);
+    final KeyEvents.KeyEventBuilder builder = KeyEvents.builder(KeyEvent.VK_ENTER).action(control);
     builder.enable(textField);
     assertNotNull(textField.getActionMap().get(actionName));
     builder.disable(textField);
@@ -33,7 +33,7 @@ public class KeyEventsTest {
     final JTextField textField = new JTextField();
     final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyReleased";
     assertNull(textField.getActionMap().get(actionName));
-    final KeyEvents.KeyEventBuilder builder = KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER).action(Control.control(() -> {}));
+    final KeyEvents.KeyEventBuilder builder = KeyEvents.builder(KeyEvent.VK_ENTER).action(Control.control(() -> {}));
     builder.enable(textField);
     assertNotNull(textField.getActionMap().get(actionName));
     builder.disable(textField);

@@ -1270,8 +1270,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired()).build();
 
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_F5)
+    KeyEvents.builder(KeyEvent.VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(refresh)
             .enable(this);
@@ -1337,14 +1336,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_DELETE)
+      KeyEvents.builder(KeyEvent.VK_DELETE)
               .action(createDeleteSelectedControl())
               .enable(table);
     }
     if (INCLUDE_ENTITY_MENU.get()) {
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_V)
+      KeyEvents.builder(KeyEvent.VK_V)
               .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .action(control(this::showEntityMenu))
               .enable(table);
@@ -1363,8 +1360,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     }
     if (conditionPanel != null) {
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_ENTER)
+      KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(Control.builder(tableModel::refresh)
                       .enabledState(tableModel.getTableConditionModel().getConditionObserver())
@@ -1427,8 +1423,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_G)
+    KeyEvents.builder(KeyEvent.VK_G)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(control(() -> {
               final Point location = getPopupLocation(table);

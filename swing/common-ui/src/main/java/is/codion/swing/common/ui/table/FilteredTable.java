@@ -466,41 +466,34 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final Control findPrevious = Control.control(() -> findPrevious(field.getText()));
     final Control findAndSelectPrevious = Control.control(() -> findAndSelectPrevious(field.getText()));
     final Control cancel = Control.control(this::requestFocusInWindow);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    KeyEvents.builder(KeyEvent.VK_ENTER)
             .onKeyPressed()
             .action(findNext)
             .enable(field);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    KeyEvents.builder(KeyEvent.VK_ENTER)
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .action(findAndSelectNext)
             .enable(field);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_DOWN)
+    KeyEvents.builder(KeyEvent.VK_DOWN)
             .onKeyPressed()
             .action(findNext)
             .enable(field);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_DOWN)
+    KeyEvents.builder(KeyEvent.VK_DOWN)
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .action(findAndSelectNext)
             .enable(field);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_UP)
+    KeyEvents.builder(KeyEvent.VK_UP)
             .onKeyPressed()
             .action(findPrevious)
             .enable(field);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_UP)
+    KeyEvents.builder(KeyEvent.VK_UP)
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .action(findAndSelectPrevious)
             .enable(field);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ESCAPE)
+    KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .onKeyPressed()
             .action(cancel)
             .enable(field);

@@ -20,6 +20,7 @@ public final class ApplicationModel {
 
   private final Value<String> shortStringValue = value();
   private final Value<String> longStringValue = value();
+  private final Value<String> textValue = value();
   private final Value<LocalDate> localDateValue = value();
   private final Value<LocalDateTime> localDateTimeValue = value();
   private final Value<String> formattedStringValue = value();
@@ -44,6 +45,10 @@ public final class ApplicationModel {
 
   public Value<String> getLongStringValue() {
     return longStringValue;
+  }
+
+  public Value<String> getTextValue() {
+    return textValue;
   }
 
   public Value<LocalDate> getLocalDateValue() {
@@ -97,6 +102,7 @@ public final class ApplicationModel {
   private void bindEvents() {
     shortStringValue.addDataListener(this::setMessage);
     longStringValue.addDataListener(this::setMessage);
+    textValue.addDataListener(this::setMessage);
     formattedStringValue.addDataListener(this::setMessage);
     localDateValue.addDataListener(this::setMessage);
     localDateTimeValue.addDataListener(this::setMessage);

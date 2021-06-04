@@ -207,14 +207,12 @@ final class ExceptionDialog extends JDialog {
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
             .build();
 
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ESCAPE)
+    KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
             .action(closeControl)
             .enable(getRootPane());
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
             .action(closeControl)

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.text.JTextComponent;
+import java.awt.Insets;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,6 +19,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   protected boolean upperCase;
   protected boolean lowerCase;
   protected int maximumLength;
+  protected Insets margin;
 
   @Override
   public final B editable(final boolean editable) {
@@ -58,6 +60,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   @Override
   public final B maximumLength(final int maximumLength) {
     this.maximumLength = maximumLength;
+    return (B) this;
+  }
+
+  @Override
+  public final B margin(final Insets margin) {
+    this.margin = margin;
     return (B) this;
   }
 }

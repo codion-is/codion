@@ -88,13 +88,11 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     final Action theCancelAction = cancelAction == null ? Control.control(dialog::dispose) : cancelAction;
 
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ESCAPE)
+    KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .action(theCancelAction)
             .enable(dialog.getRootPane());
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER).condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    KeyEvents.builder(KeyEvent.VK_ENTER).condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
             .action(okAction)
             .enable(dialog.getRootPane());

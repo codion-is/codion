@@ -157,13 +157,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private JTextField createSearchField() {
     final JTextField searchField = new JTextField(12);
     ComponentValues.textComponent(searchField).link(model.getSearchStringValue());
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_DOWN)
+    KeyEvents.builder(KeyEvent.VK_DOWN)
             .onKeyPressed()
             .action(control(this::scrollToNextSearchPosition))
             .enable(searchField);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_UP)
+    KeyEvents.builder(KeyEvent.VK_UP)
             .onKeyPressed()
             .action(control(this::scrollToPreviousSearchPosition))
             .enable(searchField);

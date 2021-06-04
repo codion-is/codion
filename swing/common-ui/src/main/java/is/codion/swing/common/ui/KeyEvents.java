@@ -14,15 +14,14 @@ import static java.util.Objects.requireNonNull;
  * <pre>
  * JTextField textField = new JTextField();
 
- * KeyEvents.builder()
- *          .keyEvent(VK_UP)
+ * KeyEvents.builder(VK_UP)
  *          .onKeyPressed()
  *          .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
  *          .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
  *          .action(new NavigateUpAction())
  *          .enable(textField);
  * </pre>
- * @see #builder()
+ * @see #builder(int)
  */
 public final class KeyEvents {
 
@@ -30,24 +29,19 @@ public final class KeyEvents {
 
   /**
    * Instantiates a new {@link KeyEventBuilder} instance.
+   * @param keyEvent the key event
    * @return a {@link KeyEventBuilder} instance.
    */
-  public static KeyEventBuilder builder() {
-    return new DefaultKeyEventBuilder();
+  public static KeyEventBuilder builder(final int keyEvent) {
+    return new DefaultKeyEventBuilder(keyEvent);
   }
 
   /**
    * A Builder for adding a key event to a component, with a default onKeyRelease trigger
    * and condition {@link JComponent#WHEN_FOCUSED}.
-   * @see KeyEvents#builder()
+   * @see KeyEvents#builder(int)
    */
   public interface KeyEventBuilder {
-
-    /**
-     * @param keyEvent the key event
-     * @return this builder instance
-     */
-    KeyEventBuilder keyEvent(int keyEvent);
 
     /**
      * @param modifiers the modifiers
@@ -98,16 +92,15 @@ public final class KeyEvents {
 
   private static final class DefaultKeyEventBuilder implements KeyEventBuilder {
 
-    private int keyEvent;
+    private final int keyEvent;
+
     private int modifiers;
     private int condition = JComponent.WHEN_FOCUSED;
     private boolean onKeyRelease = true;
     private Action action;
 
-    @Override
-    public KeyEventBuilder keyEvent(final int keyEvent) {
+    private DefaultKeyEventBuilder(final int keyEvent) {
       this.keyEvent = keyEvent;
-      return this;
     }
 
     @Override

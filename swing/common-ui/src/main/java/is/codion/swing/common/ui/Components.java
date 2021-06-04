@@ -24,6 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
@@ -434,11 +435,11 @@ public final class Components {
             .sorted(Comparator.comparing(LookAndFeelProvider::getName))
             .map(provider -> Item.item(provider, provider.getName()))
             .forEach(item -> {
-      items.add(item);
-      if (currentLookAndFeelClassName.equals(item.getValue().getClassName())) {
-        currentLookAndFeel.set(item);
-      }
-    });
+              items.add(item);
+              if (currentLookAndFeelClassName.equals(item.getValue().getClassName())) {
+                currentLookAndFeel.set(item);
+              }
+            });
     final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
     currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
 
@@ -605,7 +606,7 @@ public final class Components {
      doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+   Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
@@ -678,15 +679,16 @@ public final class Components {
   }
 
   private static <T extends JComponent> KeyEvents.KeyEventBuilder transferFocusBackwardsBuilder(final T component) {
-    return KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER)
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
+    return KeyEvents.builder(KeyEvent.VK_ENTER)
+            .modifiers(component instanceof JTextArea ? InputEvent.SHIFT_DOWN_MASK + InputEvent.CTRL_DOWN_MASK : InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(transferFocusBackwardAction(component));
   }
 
   private static <T extends JComponent> KeyEvents.KeyEventBuilder transferFocusForwardBuilder(final T component) {
-    return KeyEvents.builder().keyEvent(KeyEvent.VK_ENTER)
+    return KeyEvents.builder(KeyEvent.VK_ENTER)
+            .modifiers(component instanceof JTextArea ? InputEvent.CTRL_DOWN_MASK : 0)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(transferFocusForwardAction(component));

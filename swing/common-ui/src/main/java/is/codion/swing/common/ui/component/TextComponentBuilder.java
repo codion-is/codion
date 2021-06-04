@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.text.JTextComponent;
+import java.awt.Insets;
 
 /**
  * A builder for text components.
@@ -48,4 +49,10 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B maximumLength(int maximumLength);
+
+  /**
+   * @param margin the margin
+   * @return this builder instance
+   */
+  B margin(Insets margin);
 }

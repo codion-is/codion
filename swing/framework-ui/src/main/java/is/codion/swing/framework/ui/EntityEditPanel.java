@@ -791,8 +791,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   private void bindEventsInternal() {
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_V)
+    KeyEvents.builder(KeyEvent.VK_V)
             .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(this::showEntityMenu))

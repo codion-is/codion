@@ -14,7 +14,9 @@ import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.border.Border;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.function.Consumer;
 
 /**
@@ -28,8 +30,8 @@ import java.util.function.Consumer;
 public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> {
 
   /**
-   * Specifies whether focus should be transferred from components on enter.
-   * Note that this does not apply to text areas<br>
+   * Specifies whether focus should be transferred from components on enter.<br>
+   * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards<br>
    * Value type: Boolean<br>
    * Default value: false
    */
@@ -79,6 +81,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B border(Border border);
 
   /**
+   * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards
    * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)
    * @return this builder instance
    */
@@ -107,6 +110,24 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B popupMenuControls(Controls popupMenuControls);
+
+  /**
+   * @param font the component font
+   * @return this builder instance
+   */
+  B font(Font font);
+
+  /**
+   * @param foreground the foreground color
+   * @return this builder instance
+   */
+  B foreground(Color foreground);
+
+  /**
+   * @param background the background color
+   * @return this builder instance
+   */
+  B background(Color background);
 
   /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.
