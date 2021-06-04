@@ -1096,42 +1096,36 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       final Control selectTablePanelControl = Control.control(getTablePanel().getTable()::requestFocus);
       final Control selectSearchFieldControl = Control.control(getTablePanel().getTable().getSearchField()::requestFocus);
       final Control selectConditionPanelAction = Control.control(getTablePanel()::selectConditionPanel);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_T)
+      KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectTablePanelControl)
               .enable(this);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_F)
+      KeyEvents.builder(KeyEvent.VK_F)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectSearchFieldControl)
               .enable(this);
       if (tablePanel.getConditionPanel() != null) {
-        KeyEvents.builder()
-                .keyEvent(KeyEvent.VK_S)
+        KeyEvents.builder(KeyEvent.VK_S)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 .action(selectConditionPanelAction)
                 .enable(this);
       }
       if (containsEditPanel()) {
-        KeyEvents.builder()
-                .keyEvent(KeyEvent.VK_T)
+        KeyEvents.builder(KeyEvent.VK_T)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 .action(selectTablePanelControl)
                 .enable(editControlPanel);
-        KeyEvents.builder()
-                .keyEvent(KeyEvent.VK_F)
+        KeyEvents.builder(KeyEvent.VK_F)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 .action(selectSearchFieldControl)
                 .enable(editControlPanel);
         if (tablePanel.getConditionPanel() != null) {
-          KeyEvents.builder()
-                  .keyEvent(KeyEvent.VK_S)
+          KeyEvents.builder(KeyEvent.VK_S)
                   .modifiers(CTRL_DOWN_MASK)
                   .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                   .action(selectConditionPanelAction)
@@ -1142,20 +1136,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsEditPanel()) {
       final Control selectEditPanelControl = Control.control(this::selectEditPanel);
       final Control selectInputComponentControl = Control.control(this::selectInputComponent);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_E)
+      KeyEvents.builder(KeyEvent.VK_E)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectEditPanelControl)
               .enable(this);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_I)
+      KeyEvents.builder(KeyEvent.VK_I)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectInputComponentControl)
               .enable(this);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_I)
+      KeyEvents.builder(KeyEvent.VK_I)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectInputComponentControl)
@@ -1164,53 +1155,45 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   protected final void initializeResizing() {
-    KeyEvents.builder()
-            .keyEvent(VK_UP)
+    KeyEvents.builder(VK_UP)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeVerticallyAction(this, UP))
             .enable(this);
-    KeyEvents.builder()
-            .keyEvent(VK_DOWN)
+    KeyEvents.builder(VK_DOWN)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new ResizeVerticallyAction(this, DOWN))
             .enable(this);
-    KeyEvents.builder()
-            .keyEvent(VK_RIGHT)
+    KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .onKeyPressed()
             .action(new ResizeHorizontallyAction(this, RIGHT))
             .enable(this);
-    KeyEvents.builder()
-            .keyEvent(VK_LEFT)
+    KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .onKeyPressed()
             .action(new ResizeHorizontallyAction(this, LEFT))
             .enable(this);
     if (containsEditPanel()) {
-      KeyEvents.builder()
-              .keyEvent(VK_UP)
+      KeyEvents.builder(VK_UP)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new ResizeVerticallyAction(this, UP))
               .enable(editControlPanel);
-      KeyEvents.builder()
-              .keyEvent(VK_DOWN)
+      KeyEvents.builder(VK_DOWN)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new ResizeVerticallyAction(this, DOWN))
               .enable(editControlPanel);
-      KeyEvents.builder()
-              .keyEvent(VK_RIGHT)
+      KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new ResizeHorizontallyAction(this, RIGHT))
               .enable(editControlPanel);
-      KeyEvents.builder()
-              .keyEvent(VK_LEFT)
+      KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new ResizeHorizontallyAction(this, LEFT))
@@ -1219,51 +1202,43 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   protected final void initializeNavigation() {
-    KeyEvents.builder()
-            .keyEvent(VK_UP)
+    KeyEvents.builder(VK_UP)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new NavigateAction(this, UP))
             .enable(this);
-    KeyEvents.builder()
-            .keyEvent(VK_DOWN)
+    KeyEvents.builder(VK_DOWN)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new NavigateAction(this, DOWN))
             .enable(this);
-    KeyEvents.builder()
-            .keyEvent(VK_RIGHT)
+    KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new NavigateAction(this, RIGHT))
             .enable(this);
-    KeyEvents.builder()
-            .keyEvent(VK_LEFT)
+    KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(new NavigateAction(this, LEFT))
             .enable(this);
     if (containsEditPanel()) {
-      KeyEvents.builder()
-              .keyEvent(VK_UP)
+      KeyEvents.builder(VK_UP)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new NavigateAction(this, UP))
               .enable(editControlPanel);
-      KeyEvents.builder()
-              .keyEvent(VK_DOWN)
+      KeyEvents.builder(VK_DOWN)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new NavigateAction(this, DOWN))
               .enable(editControlPanel);
-      KeyEvents.builder()
-              .keyEvent(VK_RIGHT)
+      KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new NavigateAction(this, RIGHT))
               .enable(editControlPanel);
-      KeyEvents.builder()
-              .keyEvent(VK_LEFT)
+      KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(new NavigateAction(this, LEFT))

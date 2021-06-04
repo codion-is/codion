@@ -907,8 +907,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_ESCAPE)
+      KeyEvents.builder(KeyEvent.VK_ESCAPE)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(Control.control(dialog::dispose))
               .enable(dialog.getRootPane());

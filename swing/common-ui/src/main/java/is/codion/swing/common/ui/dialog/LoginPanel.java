@@ -115,8 +115,7 @@ final class LoginPanel extends JPanel {
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_BACK_SPACE)
+    KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);

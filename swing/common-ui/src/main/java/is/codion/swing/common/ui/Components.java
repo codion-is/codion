@@ -679,8 +679,7 @@ public final class Components {
   }
 
   private static <T extends JComponent> KeyEvents.KeyEventBuilder transferFocusBackwardsBuilder(final T component) {
-    return KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    return KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(component instanceof JTextArea ? InputEvent.SHIFT_DOWN_MASK + InputEvent.CTRL_DOWN_MASK : InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
@@ -688,8 +687,7 @@ public final class Components {
   }
 
   private static <T extends JComponent> KeyEvents.KeyEventBuilder transferFocusForwardBuilder(final T component) {
-    return KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    return KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(component instanceof JTextArea ? InputEvent.CTRL_DOWN_MASK : 0)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()

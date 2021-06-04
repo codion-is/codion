@@ -91,8 +91,7 @@ public final class Dialogs {
   public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
     requireNonNull(textField);
     requireNonNull(valueProvider);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_SPACE)
+    KeyEvents.builder(KeyEvent.VK_SPACE)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(new LookupAction<>(textField, valueProvider))
             .enable(textField);

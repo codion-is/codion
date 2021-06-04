@@ -107,8 +107,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     dialog.setResizable(resizable);
 
     if (enterAction != null) {
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_ENTER)
+      KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .onKeyPressed()
               .action(enterAction)
@@ -125,8 +124,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
-        KeyEvents.builder()
-                .keyEvent(KeyEvent.VK_ESCAPE)
+        KeyEvents.builder(KeyEvent.VK_ESCAPE)
                 .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .onKeyPressed()
                 .action(new DisposeDialogOnEscapeAction(dialog, confirmCloseListener))

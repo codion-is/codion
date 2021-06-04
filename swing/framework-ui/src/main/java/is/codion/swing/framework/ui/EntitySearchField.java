@@ -250,16 +250,14 @@ public final class EntitySearchField extends JTextField {
   }
 
   private KeyEvents.KeyEventBuilder createForwardEvent() {
-    return KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    return KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(transferFocusAction);
   }
 
   private KeyEvents.KeyEventBuilder createBackwardEvent() {
-    return KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    return KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_FOCUSED)
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .onKeyPressed()
@@ -355,13 +353,11 @@ public final class EntitySearchField extends JTextField {
     final JButton okButton = Control.builder(closeEvent::onEvent)
             .caption(Messages.get(Messages.OK))
             .build().createButton();
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ENTER)
+    KeyEvents.builder(KeyEvent.VK_ENTER)
             .onKeyPressed()
             .action(Control.control(okButton::doClick))
             .enable(okButton);
-    KeyEvents.builder()
-            .keyEvent(KeyEvent.VK_ESCAPE)
+    KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .onKeyPressed()
             .action(Control.control(closeEvent::onEvent))
             .enable(okButton);

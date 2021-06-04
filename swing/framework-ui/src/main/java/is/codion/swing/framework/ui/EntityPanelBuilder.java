@@ -461,17 +461,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (component instanceof JComboBox && ((JComboBox<?>) component).isEditable()) {
         keyComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
       }
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_INSERT)
+      KeyEvents.builder(KeyEvent.VK_INSERT)
               .action(this)
               .enable(keyComponent);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_ADD)
+      KeyEvents.builder(KeyEvent.VK_ADD)
               .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(this)
               .enable(keyComponent);
-      KeyEvents.builder()
-              .keyEvent(KeyEvent.VK_PLUS)
+      KeyEvents.builder(KeyEvent.VK_PLUS)
               .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(this)
               .enable(keyComponent);
