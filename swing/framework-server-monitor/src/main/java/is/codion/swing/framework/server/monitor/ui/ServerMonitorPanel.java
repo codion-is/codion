@@ -224,13 +224,13 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JScrollPane initializeEnvironmentInfoPanel() throws RemoteException {
-    return new JScrollPane(ComponentBuilders.textArea()
+    return ComponentBuilders.textArea()
             .autoscrolls(false)
             .editable(false)
             .lineWrap(true)
             .wrapStyleWord(true)
             .initialValue(model.getEnvironmentInfo())
-            .build());
+            .buildScrollPane();
   }
 
   private JTextField initializeConnectionCountField() {

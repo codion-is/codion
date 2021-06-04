@@ -7,8 +7,10 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
 import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
@@ -20,6 +22,8 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
   private boolean autoscrolls = true;
+
+  private JScrollPane scrollPane;
 
   @Override
   public TextAreaBuilder rows(final int rows) {
@@ -49,6 +53,23 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   public TextAreaBuilder autoscrolls(final boolean autoscrolls) {
     this.autoscrolls = autoscrolls;
     return this;
+  }
+
+  @Override
+  public JScrollPane buildScrollPane() {
+    return buildScrollPane(null);
+  }
+
+  @Override
+  public JScrollPane buildScrollPane(final Consumer<JScrollPane> onBuild) {
+    if (scrollPane == null) {
+      scrollPane = new JScrollPane(build());
+      if (onBuild != null) {
+        onBuild.accept(scrollPane);
+      }
+    }
+
+    return scrollPane;
   }
 
   @Override

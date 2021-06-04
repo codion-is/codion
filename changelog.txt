@@ -7168,3 +7168,4 @@
   ComponentBuilder.TRANSFER_FOCUS_ON_ENTER no longer true by default, interfered with actions on input components, ColumnConditionPanel f.ex.
   ComponentBuilder.font(), foreground() and background() added
   TextComponentBuilder.margin() added
+  TextAreaBuilder.buildScrollPane() added
