@@ -618,15 +618,25 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         removeItem(item);
       }
     });
+    final Map<R, Integer> currentItemIndexes = getCurrentItemIndexes();
     items.forEach(item -> {
-      final int index = indexOf(item);
-      if (index == -1) {
+      final Integer index = currentItemIndexes.get(item);
+      if (index == null) {
         addItemSorted(item);
       }
       else {
         setItemAt(index, item);
       }
     });
+  }
+
+  private Map<R, Integer> getCurrentItemIndexes() {
+    final Map<R, Integer> currentItemIndexes = new HashMap<>();
+    for (int i = 0; i < visibleItems.size(); i++) {
+      currentItemIndexes.put(visibleItems.get(i), i);
+    }
+
+    return currentItemIndexes;
   }
 
   /**

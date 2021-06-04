@@ -27,8 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -46,15 +45,33 @@ public final class AbstractFilteredTableModelTest {
   private static final List<String> F = singletonList("f");
   private static final List<String> G = singletonList("g");
   private static final List<String> NULL = singletonList(null);
-  private static final List<List<String>> ITEMS = asList(A, B, C, D, E);
+  private static final List<List<String>> ITEMS = unmodifiableList(asList(A, B, C, D, E));
 
   private TestAbstractFilteredTableModel tableModel;
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(final List<TableColumn> columns, final AbstractTableSortModel<List<String>, Integer> sortModel,
-                                           final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(new SwingFilteredTableColumnModel<>(columns), sortModel, columnFilterModels);
+    private TestAbstractFilteredTableModel(final Comparator<String> customComparator) {
+      super(new SwingFilteredTableColumnModel<>(createColumns()), new AbstractTableSortModel<List<String>, Integer>() {
+        @Override
+        public Class<?> getColumnClass(final Integer columnIdentifier) {
+          return String.class;
+        }
+
+        @Override
+        protected Comparable<String> getComparable(final List<String> row, final Integer columnIdentifier) {
+          return row.get(columnIdentifier);
+        }
+
+        @Override
+        protected Comparator<String> initializeColumnComparator(final Integer columnIdentifier) {
+          if (customComparator != null) {
+            return customComparator;
+          }
+
+          return (Comparator<String>) super.initializeColumnComparator(columnIdentifier);
+        }
+      }, createFilterModels());
     }
 
     @Override
@@ -72,40 +89,25 @@ public final class AbstractFilteredTableModelTest {
     }
   }
 
-  private static TestAbstractFilteredTableModel createTestModel() {
-    return createTestModel(null);
-  }
-
-  private static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
+  private static List<TableColumn> createColumns() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnFilterModel<List<String>, Integer, String> filterModel = new DefaultColumnFilterModel<>(0, String.class, "%");
+
+    return singletonList(column);
+  }
+
+  private static List<ColumnFilterModel<List<String>, Integer, String>> createFilterModels() {
+    final ColumnFilterModel<List<String>, Integer, String> filterModel =
+            new DefaultColumnFilterModel<>(0, String.class, "%");
+
     filterModel.setComparableFunction(row -> row.get(0));
-    return new TestAbstractFilteredTableModel(singletonList(column), new AbstractTableSortModel<List<String>, Integer>() {
-      @Override
-      public Class<?> getColumnClass(final Integer columnIdentifier) {
-        return String.class;
-      }
 
-      @Override
-      protected Comparable<String> getComparable(final List<String> row, final Integer columnIdentifier) {
-        return row.get(columnIdentifier);
-      }
-
-      @Override
-      protected Comparator<String> initializeColumnComparator(final Integer columnIdentifier) {
-        if (customComparator != null) {
-          return customComparator;
-        }
-
-        return (Comparator<String>) super.initializeColumnComparator(columnIdentifier);
-      }
-    }, singletonList(filterModel));
+    return singletonList(filterModel);
   }
 
   @BeforeEach
   void setUp() {
-    tableModel = createTestModel();
+    tableModel = new TestAbstractFilteredTableModel(null);
   }
 
   @Test
@@ -151,16 +153,16 @@ public final class AbstractFilteredTableModelTest {
   void noColumns() {
     assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
             new AbstractTableSortModel<String, Integer>() {
-      @Override
-      protected Comparable<?> getComparable(final String row, final Integer columnIdentifier) {
-        return null;
-      }
+              @Override
+              protected Comparable<?> getComparable(final String row, final Integer columnIdentifier) {
+                return null;
+              }
 
-      @Override
-      public Class<?> getColumnClass(final Integer columnIdentifier) {
-        return null;
-      }
-    }) {
+              @Override
+              public Class<?> getColumnClass(final Integer columnIdentifier) {
+                return null;
+              }
+            }) {
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -198,6 +200,52 @@ public final class AbstractFilteredTableModelTest {
     tableModel.removeRefreshStartedListener(startListener);
     tableModel.removeRefreshDoneListener(doneListener);
     tableModel.removeTableModelClearedListener(clearedListener);
+  }
+
+  @Test
+  void mergeOnRefresh() {
+    final AtomicInteger selectionEvents = new AtomicInteger();
+    final List<List<String>> items = new ArrayList<>(ITEMS);
+    final TestAbstractFilteredTableModel testModel = new TestAbstractFilteredTableModel(null) {
+      @Override
+      protected Collection<List<String>> refreshItems() {
+        return items;
+      }
+    };
+    testModel.getSelectionModel().addSelectionChangedListener(selectionEvents::incrementAndGet);
+    testModel.setMergeOnRefresh(true);
+    testModel.refresh();
+    testModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
+    testModel.getSelectionModel().setSelectedIndex(1);//b
+
+    assertEquals(1, selectionEvents.get());
+    assertSame(B, testModel.getSelectionModel().getSelectedItem());
+
+    items.remove(C);
+    testModel.refresh();
+    assertEquals(1, selectionEvents.get());
+
+    items.remove(B);
+    testModel.refresh();
+    assertTrue(testModel.getSelectionModel().isSelectionEmpty());
+    assertEquals(2, selectionEvents.get());
+
+    testModel.getSelectionModel().setSelectedItem(E);
+    assertEquals(3, selectionEvents.get());
+
+    testModel.setIncludeCondition(item -> !item.equals(E));
+    assertEquals(4, selectionEvents.get());
+
+    items.add(B);
+
+    testModel.refresh();
+    //merge does not sort new items
+    testModel.sort();
+
+    testModel.getSelectionModel().setSelectedIndex(1);//b
+
+    assertEquals(5, selectionEvents.get());
+    assertSame(B, testModel.getSelectionModel().getSelectedItem());
   }
 
   @Test
@@ -400,7 +448,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   void customSorting() {
-    final AbstractFilteredTableModel<List<String>, Integer> tableModel = createTestModel(Comparator.reverseOrder());
+    final AbstractFilteredTableModel<List<String>, Integer> tableModel = new TestAbstractFilteredTableModel(Comparator.reverseOrder());
     tableModel.refresh();
     final TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
