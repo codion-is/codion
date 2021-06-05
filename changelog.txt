@@ -7179,3 +7179,4 @@
   AbstractTextComponentValue now adds a special validator to the underlying document, which uses the value valiators
   ComponentBuilder.validator() added
   SizedDocument refactored, CaseDocumentFilter moved up to package level, related refactoring
+  Components, transferFocusOnEnter special handling for JTextArea removed for backwards, CTRL not needed

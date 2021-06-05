@@ -201,9 +201,9 @@ public final class ApplicationPanel extends JPanel {
     @Override
     public void validate(final String value) throws IllegalArgumentException {
       if (value != null) {
-        final String lowerCase = value.toLowerCase();
+        final String lowerCaseValue = value.toLowerCase();
         swearWords.forEach(swearWord -> {
-          if (lowerCase.contains(swearWord)) {
+          if (lowerCaseValue.contains(swearWord)) {
             throw new IllegalArgumentException("No swearing please");
           }
         });
