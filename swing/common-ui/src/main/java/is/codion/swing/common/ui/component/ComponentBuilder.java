@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Validator;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -128,6 +129,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B background(Color background);
+
+  /**
+   * @param validator the validator to use
+   * @return this builder instance
+   */
+  B validator(Validator<T> validator);
 
   /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.

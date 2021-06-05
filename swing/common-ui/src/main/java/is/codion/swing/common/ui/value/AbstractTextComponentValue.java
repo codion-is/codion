@@ -41,7 +41,8 @@ public abstract class AbstractTextComponentValue<V, C extends JTextComponent> ex
     super(component, nullValue);
     final DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
     if (documentFilter instanceof AbstractParsingDocumentFilter) {
-      getValidators().forEach(((AbstractParsingDocumentFilter<V>) documentFilter)::addValidator);
+      ((AbstractParsingDocumentFilter<V>) documentFilter).addValidator(value ->
+              getValidators().forEach(validator -> validator.validate(value)));
     }
     if (updateOn == UpdateOn.KEYSTROKE) {
       component.getDocument().addDocumentListener(new NotifyOnContentsChanged());

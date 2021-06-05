@@ -11,6 +11,7 @@ import is.codion.common.value.ValueObserver;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 class DefaultState implements State {
 
@@ -70,6 +71,11 @@ class DefaultState implements State {
   @Override
   public final void link(final ValueObserver<Boolean> originalValueObserver) {
     this.value.link(originalValueObserver);
+  }
+
+  @Override
+  public final Set<Value<Boolean>> getLinkedValues() {
+    return this.value.getLinkedValues();
   }
 
   @Override

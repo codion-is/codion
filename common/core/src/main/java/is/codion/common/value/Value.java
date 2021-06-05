@@ -45,6 +45,11 @@ public interface Value<V> extends ValueObserver<V> {
   void link(ValueObserver<V> originalValueObserver);
 
   /**
+   * @return an unmodifiable set containing the values that have been linked to this value
+   */
+  Set<Value<V>> getLinkedValues();
+
+  /**
    * Adds a validator to this {@link Value}.
    * Adding the same validator again has no effect.
    * @param validator the validator

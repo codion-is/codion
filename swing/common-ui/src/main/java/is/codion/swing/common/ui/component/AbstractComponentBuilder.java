@@ -44,6 +44,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Controls popupMenuControls;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
+  private Value.Validator<T> validator;
   private T initialValue;
 
   @Override
@@ -138,6 +139,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B validator(final Value.Validator<T> validator) {
+    this.validator = validator;
+    return (B) this;
+  }
+
+  @Override
   public final B linkedValue(final Value<T> value) {
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
@@ -208,6 +215,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (initialValue != null) {
       setInitialValue(component, initialValue);
+    }
+    if (validator != null) {
+      buildComponentValue().addValidator(validator);
     }
     if (linkedValue != null) {
       buildComponentValue().link(linkedValue);

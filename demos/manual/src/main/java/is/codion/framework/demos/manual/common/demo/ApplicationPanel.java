@@ -2,6 +2,7 @@ package is.codion.framework.demos.manual.common.demo;
 
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -19,10 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+import static java.util.Arrays.asList;
 
 /*
 // tag::demoPanelImport[]
@@ -48,6 +50,7 @@ public final class ApplicationPanel extends JPanel {
             .maximumLength(20)
             .selectAllOnFocusGained(true)
             .transferFocusOnEnter(true)
+            .validator(new PGValidator())
             .linkedValue(model.getShortStringValue())
             .build(inputPanel::add);
 
@@ -191,6 +194,23 @@ public final class ApplicationPanel extends JPanel {
     Components.setPreferredWidth(this, 380);
   }
 
+  private static class PGValidator implements Value.Validator<String> {
+
+    private final List<String> swearWords = asList("fuck", "shit");
+
+    @Override
+    public void validate(final String value) throws IllegalArgumentException {
+      if (value != null) {
+        final String lowerCase = value.toLowerCase();
+        swearWords.forEach(swearWord -> {
+          if (lowerCase.contains(swearWord)) {
+            throw new IllegalArgumentException("No swearing please");
+          }
+        });
+      }
+    }
+  }
+
   private static SpinnerNumberModel createSpinnerModel() {
     return new SpinnerNumberModel(0, 0, 100, 10);
   }
@@ -204,7 +224,7 @@ public final class ApplicationPanel extends JPanel {
   }
 
   private static ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
-    return ItemComboBoxModel.createModel(Arrays.asList(
+    return ItemComboBoxModel.createModel(asList(
             Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
             Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
