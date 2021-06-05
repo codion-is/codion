@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.value.Value;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -14,21 +12,13 @@ import static is.codion.swing.common.ui.textfield.Parser.parseResult;
 /**
  * A DocumentFilter which parses a value from the document text and allowes for validation of the parsed value.
  * @param <T> the value type
- * @see #parsingDocumentFilter()
- * @see #parsingDocumentFilter(Parser)
- * @see #parsingDocumentFilter(Value.Validator)
- * @see #parsingDocumentFilter(Parser, Value.Validator)
  */
 public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
 
   public static final Parser<String> STRING_PARSER = text -> parseResult(text, text);
 
-  protected ParsingDocumentFilter(final Parser<T> parser) {
+  public ParsingDocumentFilter(final Parser<T> parser) {
     super(parser);
-  }
-
-  protected ParsingDocumentFilter(final Parser<T> parser, final Value.Validator<T> validator) {
-    super(parser, validator);
   }
 
   @Override
@@ -86,44 +76,5 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
    */
   protected String transform(final String string) {
     return string;
-  }
-
-  /**
-   * Instantiates a String based new {@link ParsingDocumentFilter} without a validator
-   * and using the default string parser.
-   * @return a new document filter
-   */
-  public static ParsingDocumentFilter<String> parsingDocumentFilter() {
-    return new ParsingDocumentFilter<>(STRING_PARSER);
-  }
-
-  /**
-   * Instantiates a new {@link ParsingDocumentFilter} without a validator.
-   * @param parser the parser
-   * @param <T> the value type
-   * @return a new document filter
-   */
-  public static <T> ParsingDocumentFilter<T> parsingDocumentFilter(final Parser<T> parser) {
-    return new ParsingDocumentFilter<>(parser);
-  }
-
-  /**
-   * Instantiates a new String based {@link ParsingDocumentFilter} with the given validator.
-   * @param validator the validator
-   * @return a new document filter
-   */
-  public static ParsingDocumentFilter<String> parsingDocumentFilter(final Value.Validator<String> validator) {
-    return new ParsingDocumentFilter<>(STRING_PARSER, validator);
-  }
-
-  /**
-   * Instantiates a new {@link ParsingDocumentFilter} with the given validator.
-   * @param parser the parser
-   * @param validator the validator
-   * @param <T> the value type
-   * @return a new document filter
-   */
-  public static <T> ParsingDocumentFilter<T> parsingDocumentFilter(final Parser<T> parser, final Value.Validator<T> validator) {
-    return new ParsingDocumentFilter<>(parser, validator);
   }
 }

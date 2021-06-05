@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.textfield;
 import is.codion.common.value.Value;
 
 import javax.swing.text.DocumentFilter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -17,24 +17,14 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractParsingDocumentFilter<T> extends DocumentFilter {
 
-  private final List<Value.Validator<T>> validators = new ArrayList<>(0);
-
   private final Parser<T> parser;
+  private final Set<Value.Validator<T>> validators = new LinkedHashSet<>();
 
   /**
    * @param parser the value parser
    */
   protected AbstractParsingDocumentFilter(final Parser<T> parser) {
     this.parser = requireNonNull(parser, "parser");
-  }
-
-  /**
-   * @param parser the value parser
-   * @param validator the validator
-   */
-  protected AbstractParsingDocumentFilter(final Parser<T> parser, final Value.Validator<T> validator) {
-    this.parser = requireNonNull(parser, "parser");
-    addValidator(validator);
   }
 
   /**

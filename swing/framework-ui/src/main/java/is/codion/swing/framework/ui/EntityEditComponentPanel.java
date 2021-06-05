@@ -59,6 +59,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
+import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -455,7 +456,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextAreaBuilder createTextArea(final Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.textArea(attribute)
-            .onBuild(textArea -> EntityComponentValidators.addValidator(attribute, textArea, getEditModel())));
+            .onBuild(textArea -> addValidator(attribute, textArea, getEditModel())));
   }
 
   /**
@@ -500,7 +501,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a local time field builder
    */
-  protected LocalTimeFieldBuilder createLocalTimeField(final Attribute<LocalTime> attribute) {
+  protected final LocalTimeFieldBuilder createLocalTimeField(final Attribute<LocalTime> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.localTimeField(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns));
@@ -511,7 +512,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a local date field builder
    */
-  protected LocalDateFieldBuilder createLocalDateField(final Attribute<LocalDate> attribute) {
+  protected final LocalDateFieldBuilder createLocalDateField(final Attribute<LocalDate> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.localDateField(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns));
@@ -522,7 +523,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a local date time field builder
    */
-  protected LocalDateTimeFieldBuilder createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
+  protected final LocalDateTimeFieldBuilder createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.localDateTimeField(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns));
@@ -533,7 +534,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a offset date time field builder
    */
-  protected OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
+  protected final OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.offsetDateTimeField(attribute)
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns));

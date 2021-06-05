@@ -26,6 +26,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   private final Object valueOwner;
   private final Method getMethod;
   private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
+  private final Set<Value<V>> linkedValues = new LinkedHashSet<>();
 
   private ValueObserver<V> observer;
   private Method setMethod;
@@ -167,13 +168,22 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
 
   @Override
   public void link(final Value<V> originalValue) {
+    if (linkedValues.contains(requireNonNull(originalValue, "originalValue"))) {
+      throw new IllegalArgumentException("Values are already linked");
+    }
     new ValueLink<>(this, originalValue);
+    linkedValues.add(originalValue);
   }
 
   @Override
   public void link(final ValueObserver<V> originalValueObserver) {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
     originalValueObserver.addDataListener(this::set);
+  }
+
+  @Override
+  public Set<Value<V>> getLinkedValues() {
+    return unmodifiableSet(linkedValues);
   }
 
   @Override

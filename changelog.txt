@@ -7204,3 +7204,9 @@
   KeyEvents.builder() now takes keyEvent as parameter
   ComponentBuilder.description() renamed toolTipText()
   DefaultColumnFilterModel bug fixed, wildcards in equals value ignored, tests improved
+  ValueLink validator now adds a special validator which uses the underlying validators when validating instead of just adding the validators to the linked value, that did not allow for dynamically adding validators
+  Value.getLinkedValues() added
+  ValueLink uses the above to prevent cyclical value linking
+  AbstractTextComponentValue now adds a special validator to the underlying document, which uses the value valiators
+  ComponentBuilder.validator() added
+  SizedDocument refactored, CaseDocumentFilter moved up to package level, related refactoring
