@@ -16,19 +16,22 @@ public final class StringLengthValidator implements Value.Validator<String> {
 
   private int maximumLength;
 
-  private StringLengthValidator(final int maximumLength) {
-    setMaximumLength(maximumLength);
+  /**
+   * @param maximumLength the maximum length, -1 for no limit
+   */
+  public StringLengthValidator(final int maximumLength) {
+    this.maximumLength = maximumLength;
   }
 
   /**
-   * @return the max length used by this validator
+   * @return the maximum length
    */
   public int getMaximumLength() {
     return maximumLength;
   }
 
   /**
-   * @param maximumLength the maximum length of the string to allow, -1 if unlimited
+   * @param maximumLength the maximum length, -1 for no limit
    */
   public void setMaximumLength(final int maximumLength) {
     this.maximumLength = maximumLength < 0 ? -1 : maximumLength;
@@ -39,20 +42,5 @@ public final class StringLengthValidator implements Value.Validator<String> {
     if (maximumLength >= 0 && text.length() > maximumLength) {
       throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + " " + maximumLength);
     }
-  }
-
-  /**
-   * @return a new StringLengthValidator instance
-   */
-  public static StringLengthValidator stringLengthValidator() {
-    return new StringLengthValidator(-1);
-  }
-
-  /**
-   * @param maximumLength the maximum string length
-   * @return a new StringLengthValidator instance
-   */
-  public static StringLengthValidator stringLengthValidator(final int maximumLength) {
-    return new StringLengthValidator(maximumLength);
   }
 }

@@ -19,7 +19,8 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
   }
 
   NumberParsingDocumentFilter(final NumberParser<T> parser, final NumberRangeValidator<T> rangeValidator) {
-    super(parser, rangeValidator);
+    super(parser);
+    addValidator(rangeValidator);
     this.rangeValidator = rangeValidator;
   }
 

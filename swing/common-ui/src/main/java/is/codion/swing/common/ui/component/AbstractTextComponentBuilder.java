@@ -18,7 +18,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   protected int columns;
   protected boolean upperCase;
   protected boolean lowerCase;
-  protected int maximumLength;
+  protected int maximumLength = -1;
   protected Insets margin;
 
   @Override

@@ -3,7 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.textfield.CaseDocumentFilter;
+import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
+import is.codion.swing.common.ui.textfield.StringLengthValidator;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -11,9 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
 import java.util.function.Consumer;
-
-import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
-import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
 
 final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, JTextArea, TextAreaBuilder>
         implements TextAreaBuilder {
@@ -75,6 +74,10 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   @Override
   protected JTextArea buildComponent() {
     final JTextArea textArea = new JTextArea(rows, columns);
+    final AbstractDocument document = (AbstractDocument) textArea.getDocument();
+    final CaseDocumentFilter caseDocumentFilter = new CaseDocumentFilter();
+    caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
+    document.setDocumentFilter(caseDocumentFilter);
     textArea.setAutoscrolls(autoscrolls);
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
@@ -83,14 +86,10 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
       textArea.setMargin(margin);
     }
     if (upperCase) {
-      TextFields.upperCase(textArea);
+      caseDocumentFilter.setDocumentCase(DocumentCase.UPPERCASE);
     }
     if (lowerCase) {
-      TextFields.lowerCase(textArea);
-    }
-    if (maximumLength > 0) {
-      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(
-              parsingDocumentFilter(stringLengthValidator(maximumLength)));
+      caseDocumentFilter.setDocumentCase(DocumentCase.LOWERCASE);
     }
 
     return textArea;

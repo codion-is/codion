@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
+
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
@@ -30,19 +32,19 @@ public class SizedDocumentTest {
     assertThrows(IllegalArgumentException.class, () -> textField.setText("hellohellohello"));//invalid
     assertEquals("hellohello", textField.getText());
 
-    document.setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
-    assertEquals(SizedDocument.DocumentCase.UPPERCASE, document.getDocumentCase());
+    document.getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
+    assertEquals(DocumentCase.UPPERCASE, document.getDocumentFilter().getDocumentCase());
 
     textField.setText("hello");
     assertEquals("HELLO", textField.getText());
 
-    document.setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
-    assertEquals(SizedDocument.DocumentCase.LOWERCASE, document.getDocumentCase());
+    document.getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
+    assertEquals(DocumentCase.LOWERCASE, document.getDocumentFilter().getDocumentCase());
 
     textField.setText("HELLO");
     assertEquals("hello", textField.getText());
 
-    document.setDocumentCase(SizedDocument.DocumentCase.NONE);
+    document.getDocumentFilter().setDocumentCase(DocumentCase.NONE);
 
     document.insertString(2, "HOLA", null);
     assertEquals("heHOLAllo", textField.getText());

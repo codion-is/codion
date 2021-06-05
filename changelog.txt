@@ -7178,3 +7178,4 @@
   ValueLink uses the above to prevent cyclical value linking
   AbstractTextComponentValue now adds a special validator to the underlying document, which uses the value valiators
   ComponentBuilder.validator() added
+  SizedDocument refactored, CaseDocumentFilter moved up to package level, related refactoring

@@ -3,10 +3,9 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
+
 import javax.swing.JTextField;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
@@ -15,7 +14,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.ParseException;
-import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,10 +46,10 @@ public final class TextFields {
   public static <T extends JTextComponent> T upperCase(final T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
     if (textComponent.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
+      ((SizedDocument) textComponent.getDocument()).getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
     }
     else {
-      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.UPPERCASE));
+      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(new CaseDocumentFilter(DocumentCase.UPPERCASE));
     }
 
     return textComponent;
@@ -66,10 +64,10 @@ public final class TextFields {
   public static <T extends JTextComponent> T lowerCase(final T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
     if (textComponent.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
+      ((SizedDocument) textComponent.getDocument()).getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
     }
     else {
-      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.LOWERCASE));
+      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(new CaseDocumentFilter(DocumentCase.LOWERCASE));
     }
 
     return textComponent;
@@ -207,38 +205,6 @@ public final class TextFields {
      * but sometimes it may be necessary to update manually.
      */
     void updateHint();
-  }
-
-  private static final class CaseDocumentFilter extends DocumentFilter {
-
-    private final SizedDocument.DocumentCase documentCase;
-
-    private CaseDocumentFilter(final SizedDocument.DocumentCase documentCase) {
-      this.documentCase = documentCase;
-    }
-
-    @Override
-    public void insertString(final FilterBypass bypass, final int offset, final String string,
-                             final AttributeSet attributeSet) throws BadLocationException {
-      super.insertString(bypass, offset, fixCase(string), attributeSet);
-    }
-
-    @Override
-    public void replace(final FilterBypass bypass, final int offset, final int length, final String string,
-                        final AttributeSet attributeSet) throws BadLocationException {
-      super.replace(bypass, offset, length, fixCase(string), attributeSet);
-    }
-
-    private String fixCase(final String string) {
-      if (string == null) {
-        return string;
-      }
-      switch (documentCase) {
-        case UPPERCASE: return string.toUpperCase(Locale.getDefault());
-        case LOWERCASE: return string.toLowerCase(Locale.getDefault());
-        default: return string;
-      }
-    }
   }
 
   private static final class SelectAllListener extends FocusAdapter {
