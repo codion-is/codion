@@ -7183,3 +7183,4 @@
   ParsingDocumentFilter and related classes refactored, ValidationDocumentFilter added
   ForeignKeyComboBoxBuilder.refreshOnSetVisible() added
   EntityEditComponentPanel.createForeignKeySearchField() bug fixed, did not set transferFocusOnEnter
+  EntitySearchField.lookupEntity() now returns Optional

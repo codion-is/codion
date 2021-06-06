@@ -61,6 +61,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -203,14 +204,13 @@ public final class EntitySearchField extends JTextField {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entity
    * @throws is.codion.common.model.CancelException in case the user cancelled
-   * @see EntitySearchField
    * @see EntityDefinition#getSearchAttributes()
    */
-  public static Entity lookupEntity(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                    final JComponent dialogParent, final String dialogTitle) {
+  public static Optional<Entity> lookupEntity(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+                                              final JComponent dialogParent, final String dialogTitle) {
     final List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, dialogTitle);
 
-    return entities.isEmpty() ? null : entities.get(0);
+    return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
   }
 
   /**
@@ -222,7 +222,6 @@ public final class EntitySearchField extends JTextField {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entities
    * @throws is.codion.common.model.CancelException in case the user cancelled
-   * @see EntitySearchField
    * @see EntityDefinition#getSearchAttributes()
    */
   public static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
@@ -553,9 +552,11 @@ public final class EntitySearchField extends JTextField {
         Windows.getParentDialog(table).dispose();
       }).caption(Messages.get(Messages.OK)).build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-      final String enterActionKey = "EntitySearchField.enter";
-      table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
-      table.getActionMap().put(enterActionKey, selectControl);
+      KeyEvents.builder(KeyEvent.VK_ENTER)
+              .onKeyPressed()
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(selectControl)
+              .enable(table);
       final Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
       tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.getSortModel().setSortingDirective(searchAttributes.iterator().next(), SortingDirective.ASCENDING);
