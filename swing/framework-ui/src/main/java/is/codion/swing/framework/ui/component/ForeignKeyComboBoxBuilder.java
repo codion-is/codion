@@ -17,4 +17,10 @@ public interface ForeignKeyComboBoxBuilder extends ComponentBuilder<Entity, Enti
    * @return this builder instance
    */
   ForeignKeyComboBoxBuilder popupWidth(int popupWidth);
+
+  /**
+   * @param refreshOnSetVisible specifies whether the combo box should be refreshed the first time it's made visible
+   * @return this builder instance
+   */
+  ForeignKeyComboBoxBuilder refreshOnSetVisible(boolean refreshOnSetVisible);
 }
