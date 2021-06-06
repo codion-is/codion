@@ -13,19 +13,11 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link DocumentFilter} extension providing validation and parsing.
- * @param <T> the type being parsed
+ * @param <T> the value type
  */
-public abstract class AbstractParsingDocumentFilter<T> extends DocumentFilter {
+public class ValidationDocumentFilter<T> extends DocumentFilter {
 
-  private final Parser<T> parser;
   private final Set<Value.Validator<T>> validators = new LinkedHashSet<>();
-
-  /**
-   * @param parser the value parser
-   */
-  protected AbstractParsingDocumentFilter(final Parser<T> parser) {
-    this.parser = requireNonNull(parser, "parser");
-  }
 
   /**
    * Adds a validator to this validation document
@@ -42,12 +34,5 @@ public abstract class AbstractParsingDocumentFilter<T> extends DocumentFilter {
    */
   protected final void validate(final T value) {
     validators.forEach(validator -> validator.validate(value));
-  }
-
-  /**
-   * @return the underlying {@link Parser}
-   */
-  protected final Parser<T> getParser() {
-    return parser;
   }
 }

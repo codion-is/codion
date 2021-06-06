@@ -45,16 +45,16 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
 
   @Override
   protected final C createTextField() {
-    final C field = createNumberField(getFormat() == null ? null : cloneFormat((NumberFormat) getFormat()));
+    final C numberField = createNumberField(cloneFormat((NumberFormat) getFormat()));
     if (minimumValue != null && maximumValue != null) {
-      field.setRange(Math.min(minimumValue, 0), maximumValue);
+      numberField.setRange(Math.min(minimumValue, 0), maximumValue);
     }
     if (groupingSeparator != 0) {
-      field.setGroupingSeparator(groupingSeparator);
+      numberField.setGroupingSeparator(groupingSeparator);
     }
-    field.setGroupingUsed(groupingUsed);
+    numberField.setGroupingUsed(groupingUsed);
 
-    return field;
+    return numberField;
   }
 
   protected abstract C createNumberField(final NumberFormat format);
@@ -65,6 +65,9 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   }
 
   private static NumberFormat cloneFormat(final NumberFormat format) {
+    if (format == null) {
+      return null;
+    }
     final NumberFormat cloned = (NumberFormat) format.clone();
     cloned.setGroupingUsed(format.isGroupingUsed());
     cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());

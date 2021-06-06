@@ -4,6 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -38,7 +39,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
-            .onBuild(InvoiceEditPanel::configureCustomerSearch);
+            .selectionProviderFactory(CustomerSelectionProvider::new);
     createTemporalInputPanel(Invoice.DATE);
     createTextField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained(true);
@@ -70,13 +71,14 @@ public class InvoiceEditPanel extends EntityEditPanel {
     add(invoiceLinePanel, BorderLayout.EAST);
   }
 
-  private static void configureCustomerSearch(final EntitySearchField customerField) {
-    final EntitySearchField.TableSelectionProvider customerSelectionProvider =
-            new EntitySearchField.TableSelectionProvider(customerField.getModel());
-    final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
-    tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
-    tableModel.getSortModel().setSortingDirective(Customer.LASTNAME, ASCENDING);
-    customerSelectionProvider.setPreferredSize(new Dimension(500, 300));
-    customerField.setSelectionProvider(customerSelectionProvider);
+  private static final class CustomerSelectionProvider extends EntitySearchField.TableSelectionProvider {
+
+    private CustomerSelectionProvider(final EntitySearchModel searchModel) {
+      super(searchModel);
+      final SwingEntityTableModel tableModel = getTable().getModel();
+      tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
+      tableModel.getSortModel().setSortingDirective(Customer.LASTNAME, ASCENDING);
+      setPreferredSize(new Dimension(500, 300));
+    }
   }
 }

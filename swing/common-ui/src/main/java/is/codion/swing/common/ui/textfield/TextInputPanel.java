@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
@@ -168,6 +169,7 @@ public final class TextInputPanel extends JPanel {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setEditable(textField.isEditable());
+    Components.transferFocusOnEnter(textArea);
     Dialogs.okCancelDialogBuilder(new JScrollPane(textArea))
             .owner(textField)
             .title(dialogTitle)

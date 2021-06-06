@@ -78,7 +78,8 @@ public class EntityComponentValues {
       comboBoxModel.setSelectedItem(initialValue);
 
       return (ComponentValue<Entity, T>) inputComponents.getComponentBuilders().foreignKeyComboBox(foreignKey, comboBoxModel)
-              .onBuild(EntityComboBox::refreshOnSetVisible).buildComponentValue();
+              .refreshOnSetVisible(true)
+              .buildComponentValue();
     }
 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);

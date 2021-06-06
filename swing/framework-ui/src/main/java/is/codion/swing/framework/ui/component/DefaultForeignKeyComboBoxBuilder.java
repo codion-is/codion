@@ -21,6 +21,7 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
 
   private final SwingEntityComboBoxModel comboBoxModel;
   private int popupWidth;
+  private boolean refreshOnSetVisible;
 
   DefaultForeignKeyComboBoxBuilder(final SwingEntityComboBoxModel comboBoxModel) {
     this.comboBoxModel = comboBoxModel;
@@ -34,10 +35,19 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
   }
 
   @Override
+  public ForeignKeyComboBoxBuilder refreshOnSetVisible(final boolean refreshOnSetVisible) {
+    this.refreshOnSetVisible = refreshOnSetVisible;
+    return this;
+  }
+
+  @Override
   protected EntityComboBox buildComponent() {
     final EntityComboBox comboBox = Completion.enable(new EntityComboBox(comboBoxModel));
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
+    }
+    if (refreshOnSetVisible) {
+      comboBox.refreshOnSetVisible();
     }
 
     return comboBox;
