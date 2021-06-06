@@ -671,6 +671,7 @@ public class EntityEditComponentPanel extends JPanel {
     return setComponentBuilder(foreignKey, entityComponentBuilders.foreignKeySearchField(foreignKey,
             getEditModel().getForeignKeySearchModel(foreignKey))
             .linkedValue(getEditModel().value(foreignKey))
+            .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns));
   }
 
