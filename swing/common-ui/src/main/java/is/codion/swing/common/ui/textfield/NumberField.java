@@ -76,21 +76,21 @@ public class NumberField<T extends Number> extends JTextField {
    * @param max the maximum value
    */
   public final void setRange(final double min, final double max) {
-    getTypedDocument().getDocumentFilter().getNumberRangeValidator().setRange(min, max);
+    getTypedDocument().getDocumentFilter().setRange(min, max);
   }
 
   /**
    * @return the minimum value this field should accept
    */
   public final double getMinimumValue() {
-    return getTypedDocument().getDocumentFilter().getNumberRangeValidator().getMinimumValue();
+    return getTypedDocument().getDocumentFilter().getMinimumValue();
   }
 
   /**
    * @return the maximum value this field should accept
    */
   public final double getMaximumValue() {
-    return getTypedDocument().getDocumentFilter().getNumberRangeValidator().getMaximumValue();
+    return getTypedDocument().getDocumentFilter().getMaximumValue();
   }
 
   /**

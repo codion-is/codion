@@ -51,6 +51,8 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
   B lookupDialog(Supplier<Collection<T>> valueSupplier);
 
   /**
+   * Associates the given format with the text field. Note that the format instance is
+   * cloned on build, so format instances can be reused when calling this method.
    * @param format the format
    * @return this builder instance
    */

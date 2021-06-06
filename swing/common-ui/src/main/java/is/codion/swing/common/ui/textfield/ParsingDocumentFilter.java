@@ -8,17 +8,20 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import static is.codion.swing.common.ui.textfield.Parser.parseResult;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A DocumentFilter which parses a value from the document text and allowes for validation of the parsed value.
  * @param <T> the value type
  */
-public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
+public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 
   public static final Parser<String> STRING_PARSER = text -> parseResult(text, text);
 
+  private final Parser<T> parser;
+
   public ParsingDocumentFilter(final Parser<T> parser) {
-    super(parser);
+    this.parser = requireNonNull(parser, "parser");
   }
 
   @Override
@@ -28,7 +31,7 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
     final Document document = filterBypass.getDocument();
     final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.insert(offset, transformedString);
-    final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
+    final Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());
@@ -42,7 +45,7 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
     final Document document = filterBypass.getDocument();
     final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, "");
-    final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
+    final Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());
@@ -52,18 +55,18 @@ public class ParsingDocumentFilter<T> extends AbstractParsingDocumentFilter<T> {
   }
 
   @Override
-  public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String text,
+  public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
                             final AttributeSet attributeSet) throws BadLocationException {
-    final String transformedText = transform(text);
+    final String transformedString = transform(string);
     final Document document = filterBypass.getDocument();
     final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
-    builder.replace(offset, offset + length, transformedText);
-    final Parser.ParseResult<T> parseResult = getParser().parse(builder.toString());
+    builder.replace(offset, offset + length, transformedString);
+    final Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());
       }
-      super.replace(filterBypass, offset, length, transformedText, attributeSet);
+      super.replace(filterBypass, offset, length, transformedString, attributeSet);
     }
   }
 

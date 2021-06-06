@@ -7180,3 +7180,4 @@
   ComponentBuilder.validator() added
   SizedDocument refactored, CaseDocumentFilter moved up to package level, related refactoring
   Components, transferFocusOnEnter special handling for JTextArea removed for backwards, CTRL not needed
+  ParsingDocumentFilter and related classes refactored, ValidationDocumentFilter added

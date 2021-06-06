@@ -3,25 +3,29 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.common.value.Value;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.Document;
+import java.util.ResourceBundle;
 
-final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsingDocumentFilter<T> {
+import static java.util.Objects.requireNonNull;
+
+final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocumentFilter<T> {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NumberParsingDocumentFilter.class.getName());
 
   private final NumberRangeValidator<T> rangeValidator;
+  private final NumberParser<T> parser;
 
   private Caret caret;
 
   NumberParsingDocumentFilter(final NumberParser<T> parser) {
-    this(parser, new NumberRangeValidator<>());
-  }
-
-  NumberParsingDocumentFilter(final NumberParser<T> parser, final NumberRangeValidator<T> rangeValidator) {
-    super(parser);
+    this.parser = requireNonNull(parser, "parser");
+    this.rangeValidator = new NumberRangeValidator<>();
     addValidator(rangeValidator);
-    this.rangeValidator = rangeValidator;
   }
 
   @Override
@@ -41,7 +45,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
     final Document document = filterBypass.getDocument();
     final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, text);
-    final NumberParser.NumberParseResult<T> parseResult = ((NumberParser<T>) getParser()).parse(builder.toString());
+    final NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());
@@ -60,11 +64,21 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
     }
   }
 
-  /**
-   * @return the NumberRangeValidator used by this document filter
-   */
-  protected NumberRangeValidator<T> getNumberRangeValidator() {
-    return rangeValidator;
+  Parser<T> getParser() {
+    return parser;
+  }
+
+  void setRange(final double min, final double max) {
+    rangeValidator.minimumValue = min;
+    rangeValidator.maximumValue = max;
+  }
+
+  double getMaximumValue() {
+    return rangeValidator.maximumValue;
+  }
+
+  double getMinimumValue() {
+    return rangeValidator.minimumValue;
   }
 
   /**
@@ -73,5 +87,26 @@ final class NumberParsingDocumentFilter<T extends Number> extends AbstractParsin
    */
   protected void setCaret(final Caret caret) {
     this.caret = caret;
+  }
+
+  private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
+
+    private double minimumValue = Double.NEGATIVE_INFINITY;
+    private double maximumValue = Double.POSITIVE_INFINITY;
+
+    @Override
+    public void validate(final T value) {
+      if (!isWithinRange(value.doubleValue())) {
+        throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
+      }
+    }
+
+    /**
+     * @param value the value to check
+     * @return true if this value falls within the allowed range for this document
+     */
+    boolean isWithinRange(final double value) {
+      return value >= minimumValue && value <= maximumValue;
+    }
   }
 }
