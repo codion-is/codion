@@ -71,25 +71,24 @@ public final class EntitySelectionDialog extends JDialog {
     if (tableModel.hasEditModel()) {
       tableModel.getEditModel().setReadOnly(true);
     }
-    this.entityTablePanel = initializeTablePanel(tableModel, preferredSize);
+    this.entityTablePanel = initializeTablePanel(tableModel, preferredSize, singleSelection);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(getRootPane());
-    setLayout(new BorderLayout());
     final JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
     final JButton okButton = okControl.createButton();
     buttonPanel.add(okButton);
     buttonPanel.add(cancelControl.createButton());
     buttonPanel.add(searchControl.createButton());
     getRootPane().setDefaultButton(okButton);
+    setLayout(new BorderLayout());
     add(entityTablePanel, BorderLayout.CENTER);
     add(buttonPanel, BorderLayout.SOUTH);
     pack();
     setLocationRelativeTo(owner);
     setModal(true);
     setResizable(true);
-    entityTablePanel.getTable().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
   }
 
   /**
@@ -125,7 +124,8 @@ public final class EntitySelectionDialog extends JDialog {
     Optional<Entity> selectSingle();
   }
 
-  private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel, final Dimension preferredSize) {
+  private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel, final Dimension preferredSize,
+                                                final boolean singleSelection) {
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
     tablePanel.getTable().addDoubleClickListener(mouseEvent -> {
@@ -136,6 +136,7 @@ public final class EntitySelectionDialog extends JDialog {
     tablePanel.setConditionPanelVisible(true);
     tablePanel.getTable().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    tablePanel.getTable().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
     if (preferredSize != null) {
       tablePanel.setPreferredSize(preferredSize);
     }
