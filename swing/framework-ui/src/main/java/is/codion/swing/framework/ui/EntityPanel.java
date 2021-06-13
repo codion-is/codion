@@ -508,6 +508,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * Returns all detail panels.
+   * @return the detail panels
+   */
+  public final Collection<EntityPanel> getDetailPanels() {
+    return Collections.unmodifiableCollection(detailEntityPanels);
+  }
+
+  /**
    * Returns true if this panel contains a detail panel for the given {@code entityType}
    * @param entityType the entityType
    * @return true if a detail panel for the given entityType is found
