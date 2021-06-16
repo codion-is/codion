@@ -20,12 +20,13 @@ public class DefaultServerLocatorTest {
 
   private static final String SERVER_NAME = "DefaultServerLocatorTestServer";
 
-  private final ServerConfiguration configuration = ServerConfiguration.configuration(12345);
+  private final ServerConfiguration configuration = ServerConfiguration.builder(12345)
+          .serverName(SERVER_NAME)
+          .sslEnabled(false)
+          .build();
   private final AbstractServer<Remote, ServerAdmin> server;
 
   public DefaultServerLocatorTest() throws RemoteException {
-    configuration.setServerName(SERVER_NAME);
-    configuration.setSslEnabled(false);
     this.server = new TestServer();
   }
 

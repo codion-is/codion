@@ -315,7 +315,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of an exception
    */
   private EntityServerAdmin initializeServerAdmin(final EntityServerConfiguration configuration) throws RemoteException {
-    if (configuration.getServerAdminPort() != null) {
+    if (configuration.getServerAdminPort() != 0) {
       return new DefaultEntityServerAdmin(this, configuration);
     }
 

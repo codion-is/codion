@@ -88,13 +88,13 @@ public class RemoteEntityConnectionProviderTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.KEYSTORE.set("../server/src/main/security/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
-    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
-    configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(User.parseUser("scott:tiger"));
-    configuration.setDatabase(DatabaseFactory.getDatabase());
-    configuration.setDomainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"));
-    configuration.setSslEnabled(true);
 
-    return configuration;
+    return EntityServerConfiguration.builder(3223, 3221)
+            .adminPort(3223)
+            .adminUser(User.parseUser("scott:tiger"))
+            .database(DatabaseFactory.getDatabase())
+            .domainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
+            .sslEnabled(true)
+            .build();
   }
 }

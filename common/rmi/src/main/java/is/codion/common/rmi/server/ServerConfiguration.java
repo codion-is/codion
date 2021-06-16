@@ -13,8 +13,6 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Configuration values for a {@link Server}.
  */
@@ -140,7 +138,7 @@ public interface ServerConfiguration {
 
   /**
    * @return the server name
-   * @see #setServerNameProvider(Supplier)
+   * @see Builder#serverNameProvider(Supplier)
    */
   String getServerName();
 
@@ -157,7 +155,7 @@ public interface ServerConfiguration {
   /**
    * @return the port on which to make the server admin interface accessible
    */
-  Integer getServerAdminPort();
+  int getServerAdminPort();
 
   /**
    * @return the class names of auxiliary server factories, providing the servers to run alongside this server
@@ -167,7 +165,7 @@ public interface ServerConfiguration {
   /**
    * @return true if ssl is enabled
    */
-  Boolean getSslEnabled();
+  boolean isSslEnabled();
 
   /**
    * @return the rmi client socket factory to use, null for default
@@ -187,101 +185,119 @@ public interface ServerConfiguration {
   /**
    * @return true if a serialization filter dry run should be active
    */
-  Boolean getSerializationFilterDryRun();
+  boolean isSerializationFilterDryRun();
 
   /**
    * @return the interval between server connection maintenance runs, in milliseconds.
    */
-  Integer getConnectionMaintenanceInterval();
+  int getConnectionMaintenanceInterval();
 
   /**
-   * @param adminPort the port on which to make the server admin interface accessible
+   * A Builder for ServerConfiguration
+   * @param <B> the builder type
    */
-  void setServerAdminPort(Integer adminPort);
+  interface Builder<B extends Builder<B>> {
 
-  /**
-   * @param serverNameProvider the server name provider
-   */
-  void setServerNameProvider(Supplier<String> serverNameProvider);
+    /**
+     * @param adminPort the port on which to make the server admin interface accessible
+     * @return this builder instance
+     */
+    B adminPort(int adminPort);
 
-  /**
-   * @param serverName the server name
-   */
-  void setServerName(String serverName);
+    /**
+     * @param serverNameProvider the server name provider
+     * @return this builder instance
+     */
+    B serverNameProvider(Supplier<String> serverNameProvider);
 
-  /**
-   * @param auxiliaryServerFactoryClassNames the class names of auxiliary server factories,
-   * providing the servers to run alongside this server
-   */
-  void setAuxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames);
+    /**
+     * @param serverName the server name
+     * @return this builder instance
+     */
+    B serverName(String serverName);
 
-  /**
-   * When set to true this also sets the rmi client/server socket factories.
-   * @param sslEnabled if true then ssl is enabled
-   * @see #setRmiClientSocketFactory(RMIClientSocketFactory)
-   * @see #setRmiServerSocketFactory(RMIServerSocketFactory)
-   */
-  void setSslEnabled(Boolean sslEnabled);
+    /**
+     * @param auxiliaryServerFactoryClassNames the class names of auxiliary server factories,
+     * providing the servers to run alongside this server
+     * @return this builder instance
+     */
+    B auxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames);
 
-  /**
-   * @param rmiClientSocketFactory the rmi client socket factory to use
-   */
-  void setRmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory);
+    /**
+     * When set to true this also sets the rmi client/server socket factories.
+     * @param sslEnabled if true then ssl is enabled
+     * @return this builder instance
+     * @see #rmiClientSocketFactory(RMIClientSocketFactory)
+     * @see #rmiServerSocketFactory(RMIServerSocketFactory)
+     */
+    B sslEnabled(boolean sslEnabled);
 
-  /**
-   * @param rmiServerSocketFactory the rmi server socket factory to use
-   */
-  void setRmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
+    /**
+     * @param rmiClientSocketFactory the rmi client socket factory to use
+     * @return this builder instance
+     */
+    B rmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory);
 
-  /**
-   * @param serializationFilterWhitelist the serialization whitelist
-   */
-  void setSerializationFilterWhitelist(String serializationFilterWhitelist);
+    /**
+     * @param rmiServerSocketFactory the rmi server socket factory to use
+     * @return this builder instance
+     */
+    B rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory);
 
-  /**
-   * @param serializationFilterDryRun true if serialization filter dry run is active
-   */
-  void setSerializationFilterDryRun(Boolean serializationFilterDryRun);
+    /**
+     * @param serializationFilterWhitelist the serialization whitelist
+     * @return this builder instance
+     */
+    B serializationFilterWhitelist(String serializationFilterWhitelist);
 
-  /**
-   * @param connectionMaintenanceIntervalMs the interval between server connection maintenance runs, in milliseconds.
-   */
-  void setConnectionMaintenanceIntervalMs(Integer connectionMaintenanceIntervalMs);
+    /**
+     * @param serializationFilterDryRun true if serialization filter dry run is active
+     * @return this builder instance
+     */
+    B serializationFilterDryRun(boolean serializationFilterDryRun);
+
+    /**
+     * @param connectionMaintenanceIntervalMs the interval between server connection maintenance runs, in milliseconds.
+     * @return this builder instance
+     */
+    B connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs);
+
+    /**
+     * @return a new ServerConfiguration instance based on this builder
+     */
+    ServerConfiguration build();
+  }
 
   /**
    * @param serverPort the server port
+   * @param <B> the builder type
    * @return a default server configuration
    */
-  static ServerConfiguration configuration(final int serverPort) {
-    return new DefaultServerConfiguration(serverPort);
+  static <B extends Builder<B>> Builder<B> builder(final int serverPort) {
+    return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, Registry.REGISTRY_PORT);
   }
 
   /**
    * @param serverPort the server port
    * @param registryPort the registry port
+   * @param <B> the builder type
    * @return a default server configuration
    */
-  static ServerConfiguration configuration(final int serverPort, final int registryPort) {
-    return new DefaultServerConfiguration(serverPort, registryPort);
+  static <B extends Builder<B>> Builder<B> builder(final int serverPort, final int registryPort) {
+    return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, registryPort);
   }
 
   /**
    * @return a configuration according to system properties.
    */
   static ServerConfiguration fromSystemProperties() {
-    final DefaultServerConfiguration configuration =
-            new DefaultServerConfiguration(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow());
-    configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
-    configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
-    configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
-    configuration.setConnectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get());
-    if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
-      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
-    }
-    if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
-      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
-    }
-
-    return configuration;
+    return builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
+            .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+            .adminPort(SERVER_ADMIN_PORT.getOrThrow())
+            .sslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get())
+            .connectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get())
+            .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
+            .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get())
+            .build();
   }
 }

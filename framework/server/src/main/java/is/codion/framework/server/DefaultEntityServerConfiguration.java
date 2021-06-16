@@ -27,28 +27,16 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
   private Database database;
   private User adminUser;
-  private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
-  private Boolean clientLoggingEnabled = false;
-  private Integer connectionTimeout = ServerConfiguration.DEFAULT_SERVER_CONNECTION_TIMEOUT;
+  private int connectionLimit;
+  private boolean clientLoggingEnabled;
+  private int connectionTimeout;
   private String connectionPoolProvider;
   private final Collection<String> domainModelClassNames = new HashSet<>();
   private final Collection<User> startupPoolUsers = new HashSet<>();
   private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
-  /**
-   * @param serverPort the server port
-   * @param registryPort the registry port
-   */
-  DefaultEntityServerConfiguration(final int serverPort, final int registryPort) {
-    this.serverConfiguration = ServerConfiguration.configuration(serverPort, registryPort);
-    this.serverConfiguration.setServerNameProvider(() -> {
-      if (database == null) {
-        throw new IllegalStateException("Database must be set before initializing server name");
-      }
-
-      return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
-              Version.getVersionString() + "@" + database.getName().toUpperCase();
-    });
+  DefaultEntityServerConfiguration(final ServerConfiguration serverConfiguration) {
+    this.serverConfiguration = requireNonNull(serverConfiguration);
   }
 
   @Override
@@ -67,8 +55,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Boolean getSslEnabled() {
-    return serverConfiguration.getSslEnabled();
+  public boolean isSslEnabled() {
+    return serverConfiguration.isSslEnabled();
   }
 
   @Override
@@ -87,12 +75,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Boolean getSerializationFilterDryRun() {
-    return serverConfiguration.getSerializationFilterDryRun();
+  public boolean isSerializationFilterDryRun() {
+    return serverConfiguration.isSerializationFilterDryRun();
   }
 
   @Override
-  public Integer getConnectionMaintenanceInterval() {
+  public int getConnectionMaintenanceInterval() {
     return serverConfiguration.getConnectionMaintenanceInterval();
   }
 
@@ -102,7 +90,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Integer getServerAdminPort() {
+  public int getServerAdminPort() {
     return serverConfiguration.getServerAdminPort();
   }
 
@@ -117,17 +105,17 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Integer getConnectionLimit() {
+  public int getConnectionLimit() {
     return connectionLimit;
   }
 
   @Override
-  public Boolean getClientLoggingEnabled() {
+  public boolean getClientLoggingEnabled() {
     return clientLoggingEnabled;
   }
 
   @Override
-  public Integer getConnectionTimeout() {
+  public int getConnectionTimeout() {
     return connectionTimeout;
   }
 
@@ -151,98 +139,160 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     return clientSpecificConnectionTimeouts;
   }
 
-  @Override
-  public void setServerNameProvider(final Supplier<String> serverNameProvider) {
-    serverConfiguration.setServerNameProvider(serverNameProvider);
-  }
+  static final class DefaultBuilder implements Builder {
 
-  @Override
-  public void setServerName(final String serverName) {
-    serverConfiguration.setServerName(serverName);
-  }
+    private final ServerConfiguration.Builder<?> serverConfiguration;
 
-  @Override
-  public void setAuxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
-    serverConfiguration.setAuxiliaryServerFactoryClassNames(auxiliaryServerFactoryClassNames);
-  }
+    private Database database;
+    private User adminUser;
+    private int connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
+    private boolean clientLoggingEnabled = false;
+    private int connectionTimeout = ServerConfiguration.DEFAULT_SERVER_CONNECTION_TIMEOUT;
+    private String connectionPoolProvider;
+    private final Collection<String> domainModelClassNames = new HashSet<>();
+    private final Collection<User> startupPoolUsers = new HashSet<>();
+    private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
-  @Override
-  public void setSslEnabled(final Boolean sslEnabled) {
-    serverConfiguration.setSslEnabled(sslEnabled);
-  }
+    DefaultBuilder(final int serverPort, final int registryPort) {
+      this.serverConfiguration = ServerConfiguration.builder(serverPort, registryPort);
+    }
 
-  @Override
-  public void setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
-    serverConfiguration.setRmiClientSocketFactory(rmiClientSocketFactory);
-  }
+    @Override
+    public Builder serverNameProvider(final Supplier<String> serverNameProvider) {
+      serverConfiguration.serverNameProvider(serverNameProvider);
+      return this;
+    }
 
-  @Override
-  public void setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
-    serverConfiguration.setRmiServerSocketFactory(rmiServerSocketFactory);
-  }
+    @Override
+    public Builder serverName(final String serverName) {
+      serverConfiguration.serverName(serverName);
+      return this;
+    }
 
-  @Override
-  public void setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
-    serverConfiguration.setSerializationFilterWhitelist(serializationFilterWhitelist);
-  }
+    @Override
+    public Builder auxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
+      serverConfiguration.auxiliaryServerFactoryClassNames(auxiliaryServerFactoryClassNames);
+      return this;
+    }
 
-  @Override
-  public void setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
-    serverConfiguration.setSerializationFilterDryRun(serializationFilterDryRun);
-  }
+    @Override
+    public Builder sslEnabled(final boolean sslEnabled) {
+      serverConfiguration.sslEnabled(sslEnabled);
+      return this;
+    }
 
-  @Override
-  public void setConnectionMaintenanceIntervalMs(final Integer connectionMaintenanceIntervalMs) {
-    serverConfiguration.setConnectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
-  }
+    @Override
+    public Builder rmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+      serverConfiguration.rmiClientSocketFactory(rmiClientSocketFactory);
+      return this;
+    }
 
-  @Override
-  public void setServerAdminPort(final Integer adminPort) {
-    serverConfiguration.setServerAdminPort(adminPort);
-  }
+    @Override
+    public Builder rmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+      serverConfiguration.rmiServerSocketFactory(rmiServerSocketFactory);
+      return this;
+    }
 
-  @Override
-  public void setDatabase(final Database database) {
-    this.database = requireNonNull(database);
-  }
+    @Override
+    public Builder serializationFilterWhitelist(final String serializationFilterWhitelist) {
+      serverConfiguration.serializationFilterWhitelist(serializationFilterWhitelist);
+      return this;
+    }
 
-  @Override
-  public void setAdminUser(final User adminUser) {
-    this.adminUser = requireNonNull(adminUser);
-  }
+    @Override
+    public Builder serializationFilterDryRun(final boolean serializationFilterDryRun) {
+      serverConfiguration.serializationFilterDryRun(serializationFilterDryRun);
+      return this;
+    }
 
-  @Override
-  public void setConnectionLimit(final Integer connectionLimit) {
-    this.connectionLimit = requireNonNull(connectionLimit);
-  }
+    @Override
+    public Builder connectionMaintenanceIntervalMs(final int connectionMaintenanceIntervalMs) {
+      serverConfiguration.connectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
+      return this;
+    }
 
-  @Override
-  public void setClientLoggingEnabled(final Boolean clientLoggingEnabled) {
-    this.clientLoggingEnabled = requireNonNull(clientLoggingEnabled);
-  }
+    @Override
+    public Builder adminPort(final int adminPort) {
+      serverConfiguration.adminPort(adminPort);
+      return this;
+    }
 
-  @Override
-  public void setConnectionTimeout(final Integer connectionTimeout) {
-    this.connectionTimeout = requireNonNull(connectionTimeout);
-  }
+    @Override
+    public Builder database(final Database database) {
+      this.database = requireNonNull(database);
+      return this;
+    }
 
-  @Override
-  public void setConnectionPoolProvider(final String connectionPoolProvider) {
-    this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
-  }
+    @Override
+    public Builder adminUser(final User adminUser) {
+      this.adminUser = requireNonNull(adminUser);
+      return this;
+    }
 
-  @Override
-  public void setDomainModelClassNames(final Collection<String> domainModelClassNames) {
-    this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
-  }
+    @Override
+    public Builder connectionLimit(final int connectionLimit) {
+      this.connectionLimit = connectionLimit;
+      return this;
+    }
 
-  @Override
-  public void setStartupPoolUsers(final Collection<User> startupPoolUsers) {
-    this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
-  }
+    @Override
+    public Builder clientLoggingEnabled(final boolean clientLoggingEnabled) {
+      this.clientLoggingEnabled = clientLoggingEnabled;
+      return this;
+    }
 
-  @Override
-  public void setClientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
-    this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
+    @Override
+    public Builder connectionTimeout(final int connectionTimeout) {
+      this.connectionTimeout = connectionTimeout;
+      return this;
+    }
+
+    @Override
+    public Builder connectionPoolProvider(final String connectionPoolProvider) {
+      this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
+      return this;
+    }
+
+    @Override
+    public Builder domainModelClassNames(final Collection<String> domainModelClassNames) {
+      this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
+      return this;
+    }
+
+    @Override
+    public Builder startupPoolUsers(final Collection<User> startupPoolUsers) {
+      this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
+      return this;
+    }
+
+    @Override
+    public Builder clientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
+      this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
+      return this;
+    }
+
+    @Override
+    public EntityServerConfiguration build() {
+      serverNameProvider(() -> {
+        if (database == null) {
+          throw new IllegalStateException("Database must be set before initializing server name");
+        }
+
+        return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
+                Version.getVersionString() + "@" + database.getName().toUpperCase();
+      });
+      final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(serverConfiguration.build());
+      configuration.database = database;
+      configuration.adminUser = adminUser;
+      configuration.connectionLimit = connectionLimit;
+      configuration.clientLoggingEnabled = clientLoggingEnabled;
+      configuration.connectionTimeout = connectionTimeout;
+      configuration.connectionPoolProvider = connectionPoolProvider;
+      configuration.domainModelClassNames.addAll(domainModelClassNames);
+      configuration.startupPoolUsers.addAll(startupPoolUsers);
+      configuration.clientSpecificConnectionTimeouts.putAll(clientSpecificConnectionTimeouts);
+      
+      return configuration;
+    }
   }
 }

@@ -313,25 +313,25 @@ public class EntityServerTest {
     admin.getServerStatistics(System.currentTimeMillis());
   }
 
-  private static DefaultEntityServerConfiguration configure() {
+  private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
     Clients.TRUSTSTORE.set("src/main/security/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.KEYSTORE.set("src/main/security/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
-    final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(3223, 3221);
-    configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(User.parseUser("scott:tiger"));
-    configuration.setDatabase(DatabaseFactory.getDatabase());
-    configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
-    configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
-    configuration.setDomainModelClassNames(singletonList("is.codion.framework.server.TestDomain"));
-    configuration.setClientLoggingEnabled(true);
-    configuration.setSslEnabled(true);
-    configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 
-    return configuration;
+    return EntityServerConfiguration.builder(3223, 3221)
+            .adminPort(3223)
+            .adminUser(User.parseUser("scott:tiger"))
+            .database(DatabaseFactory.getDatabase())
+            .startupPoolUsers(singletonList(UNIT_TEST_USER))
+            .clientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000))
+            .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))
+            .clientLoggingEnabled(true)
+            .sslEnabled(true)
+            .serializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt")
+            .build();
   }
 
   public static class EmptyDomain extends DefaultDomain {

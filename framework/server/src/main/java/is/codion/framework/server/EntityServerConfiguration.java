@@ -89,17 +89,17 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return the maximum number of concurrent connections, -1 for no limit
    */
-  Integer getConnectionLimit();
+  int getConnectionLimit();
 
   /**
    * @return true if client logging should be enabled on startup
    */
-  Boolean getClientLoggingEnabled();
+  boolean getClientLoggingEnabled();
 
   /**
    * @return the idle connection timeout
    */
-  Integer getConnectionTimeout();
+  int getConnectionTimeout();
 
   /**
    * @return the connection pool provider classname
@@ -122,57 +122,77 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   Map<String, Integer> getClientSpecificConnectionTimeouts();
 
   /**
-   * @param database the Database implementation
+   * A Builder for EntityServerConfiguration
    */
-  void setDatabase(Database database);
+  interface Builder extends ServerConfiguration.Builder<EntityServerConfiguration.Builder> {
 
-  /**
-   * @param adminUser the admin user
-   */
-  void setAdminUser(User adminUser);
+    /**
+     * @param database the Database implementation
+     * @return this builder instance
+     */
+    Builder database(Database database);
 
-  /**
-   * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
-   */
-  void setConnectionLimit(Integer connectionLimit);
+    /**
+     * @param adminUser the admin user
+     * @return this builder instance
+     */
+    Builder adminUser(User adminUser);
 
-  /**
-   * @param clientLoggingEnabled if true then client logging is enabled on startup
-   */
-  void setClientLoggingEnabled(Boolean clientLoggingEnabled);
+    /**
+     * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
+     * @return this builder instance
+     */
+    Builder connectionLimit(int connectionLimit);
 
-  /**
-   * @param connectionTimeout the idle connection timeout
-   */
-  void setConnectionTimeout(Integer connectionTimeout);
+    /**
+     * @param clientLoggingEnabled if true then client logging is enabled on startup
+     * @return this builder instance
+     */
+    Builder clientLoggingEnabled(boolean clientLoggingEnabled);
 
-  /**
-   * @param connectionPoolProvider the connection pool provider classname
-   */
-  void setConnectionPoolProvider(String connectionPoolProvider);
+    /**
+     * @param connectionTimeout the idle connection timeout
+     * @return this builder instance
+     */
+    Builder connectionTimeout(int connectionTimeout);
 
-  /**
-   * @param domainModelClassNames the domain model classes to load on startup
-   */
-  void setDomainModelClassNames(Collection<String> domainModelClassNames);
+    /**
+     * @param connectionPoolProvider the connection pool provider classname
+     * @return this builder instance
+     */
+    Builder connectionPoolProvider(String connectionPoolProvider);
 
-  /**
-   * @param startupPoolUsers the users for which to initialize connection pools on startup
-   */
-  void setStartupPoolUsers(Collection<User> startupPoolUsers);
+    /**
+     * @param domainModelClassNames the domain model classes to load on startup
+     * @return this builder instance
+     */
+    Builder domainModelClassNames(Collection<String> domainModelClassNames);
 
-  /**
-   * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
-   */
-  void setClientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
+    /**
+     * @param startupPoolUsers the users for which to initialize connection pools on startup
+     * @return this builder instance
+     */
+    Builder startupPoolUsers(Collection<User> startupPoolUsers);
+
+    /**
+     * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
+     * @return this builder instance
+     */
+    Builder clientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
+    
+    /**
+     * @return a new EntityServerConfiguration instance based on this builder
+     */
+    EntityServerConfiguration build();
+  }
 
   /**
    * @param serverPort the server port
    * @param registryPort the registry port
-   * @return a default entity connection server configuration
+   * @return a default entity connection server configuration builder
    */
-  static EntityServerConfiguration configuration(final int serverPort, final int registryPort) {
-    return new DefaultEntityServerConfiguration(serverPort, registryPort);
+  static EntityServerConfiguration.Builder builder(final int serverPort, final int registryPort) {
+    return new DefaultEntityServerConfiguration.DefaultBuilder(serverPort, registryPort);
   }
 
   /**
@@ -180,25 +200,19 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * @return the server configuration according to system properties
    */
   static EntityServerConfiguration fromSystemProperties() {
-    final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(
-            requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()),
-            requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
-    configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
-    configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
-    if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
-      configuration.setSerializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
-      if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
-        configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
-      }
-    }
-    configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
-    configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
-    configuration.setDatabase(DatabaseFactory.getDatabase());
-    configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));
-    configuration.setStartupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
-            .stream().map(User::parseUser).collect(toList()));
-    configuration.setClientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get());
-    configuration.setConnectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
+    final Builder builder =  builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
+            .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+            .sslEnabled(SERVER_CONNECTION_SSL_ENABLED.get())
+            .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
+            .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get())
+            .adminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()))
+            .connectionLimit(SERVER_CONNECTION_LIMIT.get())
+            .database(DatabaseFactory.getDatabase())
+            .domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
+            .startupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
+                    .stream().map(User::parseUser).collect(toList()))
+            .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
+            .connectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
     final Map<String, Integer> timeoutMap = new HashMap<>();
     for (final String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
       final String[] split = clientTimeout.split(":");
@@ -207,7 +221,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
       }
       timeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
-    configuration.setClientSpecificConnectionTimeouts(timeoutMap);
+    builder.clientSpecificConnectionTimeouts(timeoutMap);
     final String adminUserString = SERVER_ADMIN_USER.get();
     final User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
     if (adminUser == null) {
@@ -215,9 +229,9 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     }
     else {
       EntityServerConfiguration.LOG.info("Admin user: " + adminUser);
-      configuration.setAdminUser(adminUser);
+      builder.adminUser(adminUser);
     }
 
-    return configuration;
+    return builder.build();
   }
 }
