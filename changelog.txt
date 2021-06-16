@@ -7186,3 +7186,4 @@
   EntitySearchField.lookupEntity() now returns Optional
   EntitySelectionDialog, minor refactoring
   EntityPanel.getDetailPanels() added
+  ServerConfiguration.Builder and EntityServerConfiguration.Builder added

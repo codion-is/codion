@@ -38,10 +38,11 @@ public final class ClientServer {
             .createDatabase("jdbc:h2:mem:testdb",
                     "src/main/sql/create_schema.sql");
 
-    EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
-    configuration.setDomainModelClassNames(singletonList(Store.class.getName()));
-    configuration.setDatabase(database);
-    configuration.setSslEnabled(false);
+    EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+            .domainModelClassNames(singletonList(Store.class.getName()))
+            .database(database)
+            .sslEnabled(false)
+            .build();
 
     EntityServer server = EntityServer.startServer(configuration);
 
@@ -68,14 +69,15 @@ public final class ClientServer {
             .createDatabase("jdbc:h2:mem:testdb",
                     "src/main/sql/create_schema.sql");
 
-    EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
-    configuration.setDomainModelClassNames(singletonList(Store.class.getName()));
-    configuration.setDatabase(database);
-    configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()));
-
     HttpServerConfiguration.HTTP_SERVER_PORT.set(HTTP_PORT);
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);
+
+    EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+            .domainModelClassNames(singletonList(Store.class.getName()))
+            .database(database)
+            .sslEnabled(false)
+            .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
+            .build();
 
     EntityServer server = EntityServer.startServer(configuration);
 

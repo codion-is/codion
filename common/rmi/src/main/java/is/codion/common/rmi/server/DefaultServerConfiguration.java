@@ -22,15 +22,15 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final int serverPort;
   private final int registryPort;
   private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
-  private Integer serverAdminPort;
-  private boolean sslEnabled = true;
+  private int serverAdminPort;
+  private boolean sslEnabled;
   private String serverName;
   private Supplier<String> serverNameProvider = () -> serverName;
-  private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
-  private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
+  private RMIClientSocketFactory rmiClientSocketFactory;
+  private RMIServerSocketFactory rmiServerSocketFactory;
   private String serializationFilterWhitelist;
-  private Boolean serializationFilterDryRun = false;
-  private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
+  private boolean serializationFilterDryRun;
+  private int connectionMaintenanceIntervalMs;
 
   DefaultServerConfiguration(final int serverPort) {
     this(serverPort, Registry.REGISTRY_PORT);
@@ -61,7 +61,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public Integer getServerAdminPort() {
+  public int getServerAdminPort() {
     return serverAdminPort;
   }
 
@@ -71,7 +71,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public Boolean getSslEnabled() {
+  public boolean isSslEnabled() {
     return sslEnabled;
   }
 
@@ -91,70 +91,118 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public Boolean getSerializationFilterDryRun() {
+  public boolean isSerializationFilterDryRun() {
     return serializationFilterDryRun;
   }
 
   @Override
-  public Integer getConnectionMaintenanceInterval() {
+  public int getConnectionMaintenanceInterval() {
     return connectionMaintenanceIntervalMs;
   }
 
-  @Override
-  public void setServerAdminPort(final Integer adminPort) {
-    this.serverAdminPort = requireNonNull(adminPort);
-  }
+  static final class DefaultBuilder implements Builder<DefaultBuilder> {
 
-  @Override
-  public void setServerNameProvider(final Supplier<String> serverNameProvider) {
-    this.serverNameProvider = requireNonNull(serverNameProvider);
-  }
+    private final int serverPort;
+    private final int registryPort;
+    private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
+    private int serverAdminPort;
+    private boolean sslEnabled = true;
+    private String serverName;
+    private Supplier<String> serverNameProvider;
+    private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
+    private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
+    private String serializationFilterWhitelist;
+    private Boolean serializationFilterDryRun = false;
+    private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 
-  @Override
-  public void setServerName(final String serverName) {
-    this.serverName = requireNonNull(serverName);
-  }
-
-  @Override
-  public void setAuxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
-    this.auxiliaryServerFactoryClassNames.addAll(requireNonNull(auxiliaryServerFactoryClassNames));
-  }
-
-  @Override
-  public void setSslEnabled(final Boolean sslEnabled) {
-    this.sslEnabled = requireNonNull(sslEnabled);
-    if (sslEnabled) {
-      setRmiClientSocketFactory(new SslRMIClientSocketFactory());
-      setRmiServerSocketFactory(new SslRMIServerSocketFactory());
+    DefaultBuilder(final int serverPort, final int registryPort) {
+      this.serverPort = serverPort;
+      this.registryPort = registryPort;
     }
-    else {
-      setRmiClientSocketFactory(null);
-      setRmiServerSocketFactory(null);
+
+    @Override
+    public DefaultBuilder adminPort(final int adminPort) {
+      this.serverAdminPort = adminPort;
+      return this;
     }
-  }
 
-  @Override
-  public void setRmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
-    this.rmiClientSocketFactory = rmiClientSocketFactory;
-  }
+    @Override
+    public DefaultBuilder serverNameProvider(final Supplier<String> serverNameProvider) {
+      this.serverNameProvider = requireNonNull(serverNameProvider);
+      return this;
+    }
 
-  @Override
-  public void setRmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
-    this.rmiServerSocketFactory = rmiServerSocketFactory;
-  }
+    @Override
+    public DefaultBuilder serverName(final String serverName) {
+      this.serverName = requireNonNull(serverName);
+      return this;
+    }
 
-  @Override
-  public void setSerializationFilterWhitelist(final String serializationFilterWhitelist) {
-    this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
-  }
+    @Override
+    public DefaultBuilder auxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
+      this.auxiliaryServerFactoryClassNames.addAll(requireNonNull(auxiliaryServerFactoryClassNames));
+      return this;
+    }
 
-  @Override
-  public void setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
-    this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
-  }
+    @Override
+    public DefaultBuilder sslEnabled(final boolean sslEnabled) {
+      this.sslEnabled = sslEnabled;
+      if (sslEnabled) {
+        rmiClientSocketFactory(new SslRMIClientSocketFactory());
+        rmiServerSocketFactory(new SslRMIServerSocketFactory());
+      }
+      else {
+        rmiClientSocketFactory(null);
+        rmiServerSocketFactory(null);
+      }
+      return this;
+    }
 
-  @Override
-  public void setConnectionMaintenanceIntervalMs(final Integer connectionMaintenanceIntervalMs) {
-    this.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
+    @Override
+    public DefaultBuilder rmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+      this.rmiClientSocketFactory = rmiClientSocketFactory;
+      return this;
+    }
+
+    @Override
+    public DefaultBuilder rmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+      this.rmiServerSocketFactory = rmiServerSocketFactory;
+      return this;
+    }
+
+    @Override
+    public DefaultBuilder serializationFilterWhitelist(final String serializationFilterWhitelist) {
+      this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
+      return this;
+    }
+
+    @Override
+    public DefaultBuilder serializationFilterDryRun(final boolean serializationFilterDryRun) {
+      this.serializationFilterDryRun = serializationFilterDryRun;
+      return this;
+    }
+
+    @Override
+    public DefaultBuilder connectionMaintenanceIntervalMs(final int connectionMaintenanceIntervalMs) {
+      this.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
+      return this;
+    }
+
+    @Override
+    public ServerConfiguration build() {
+      final DefaultServerConfiguration configuration = new DefaultServerConfiguration(serverPort, registryPort);
+      configuration.auxiliaryServerFactoryClassNames.addAll(this.auxiliaryServerFactoryClassNames);
+      configuration.serverAdminPort = this.serverAdminPort;
+      configuration.sslEnabled = this.sslEnabled;
+      configuration.serverName = this.serverName;
+      configuration.serverNameProvider = this.serverNameProvider;
+      configuration.rmiClientSocketFactory = this.rmiClientSocketFactory;
+      configuration.rmiServerSocketFactory = this.rmiServerSocketFactory;
+      configuration.serializationFilterWhitelist = this.serializationFilterWhitelist;
+      configuration.serializationFilterDryRun = this.serializationFilterDryRun;
+      configuration.connectionMaintenanceIntervalMs = this.connectionMaintenanceIntervalMs;
+
+      return configuration;
+    }
   }
 }

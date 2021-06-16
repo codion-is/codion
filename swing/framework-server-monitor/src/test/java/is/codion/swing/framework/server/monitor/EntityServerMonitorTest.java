@@ -89,14 +89,14 @@ public class EntityServerMonitorTest {
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
-    configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(User.parseUser("scott:tiger"));
-    configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
-    configuration.setDomainModelClassNames(Collections.singletonList(TestDomain.class.getName()));
-    configuration.setDatabase(DatabaseFactory.getDatabase());
-    configuration.setSslEnabled(false);
 
-    return configuration;
+    return EntityServerConfiguration.builder(3223, 3221)
+            .adminPort(3223)
+            .adminUser(User.parseUser("scott:tiger"))
+            .startupPoolUsers(Collections.singletonList(UNIT_TEST_USER))
+            .domainModelClassNames(Collections.singletonList(TestDomain.class.getName()))
+            .database(DatabaseFactory.getDatabase())
+            .sslEnabled(false)
+            .build();
   }
 }

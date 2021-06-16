@@ -654,15 +654,15 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
-    configuration.setServerAdminPort(3223);
-    configuration.setAdminUser(User.parseUser("scott:tiger"));
-    configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
-    configuration.setDatabase(DatabaseFactory.getDatabase());
-    configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()));
 
-    return configuration;
+    return EntityServerConfiguration.builder(3223, 3221)
+            .adminPort(3223)
+            .adminUser(User.parseUser("scott:tiger"))
+            .domainModelClassNames(singletonList(TestDomain.class.getName()))
+            .database(DatabaseFactory.getDatabase())
+            .sslEnabled(false)
+            .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
+            .build();
   }
 
   private static void deconfigure() {
