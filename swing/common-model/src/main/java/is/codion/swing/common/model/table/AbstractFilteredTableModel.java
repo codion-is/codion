@@ -229,7 +229,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Refreshes the data in this table model, respecting the selection, filtering as well as sorting states.
+   * {@inheritDoc}
    * @see #refreshItems()
    */
   @Override

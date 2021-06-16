@@ -246,7 +246,10 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   TableSortModel<R, C> getSortModel();
 
   /**
-   * Refreshes the items in this table model
+   * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
+   * Note that a empty selection event will be triggered during a normal refresh, since the model is cleared
+   * before it is repopulated, during which the selection is cleared as well. Using merge on insert
+   * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
    */
   void refresh();
 
