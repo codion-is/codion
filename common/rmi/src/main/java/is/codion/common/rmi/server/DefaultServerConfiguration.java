@@ -5,7 +5,6 @@ package is.codion.common.rmi.server;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
@@ -31,10 +30,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private String serializationFilterWhitelist;
   private boolean serializationFilterDryRun;
   private int connectionMaintenanceIntervalMs;
-
-  DefaultServerConfiguration(final int serverPort) {
-    this(serverPort, Registry.REGISTRY_PORT);
-  }
 
   DefaultServerConfiguration(final int serverPort, final int registryPort) {
     this.serverPort = serverPort;
@@ -191,16 +186,16 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     @Override
     public ServerConfiguration build() {
       final DefaultServerConfiguration configuration = new DefaultServerConfiguration(serverPort, registryPort);
-      configuration.auxiliaryServerFactoryClassNames.addAll(this.auxiliaryServerFactoryClassNames);
-      configuration.serverAdminPort = this.serverAdminPort;
-      configuration.sslEnabled = this.sslEnabled;
-      configuration.serverName = this.serverName;
-      configuration.serverNameProvider = this.serverNameProvider;
-      configuration.rmiClientSocketFactory = this.rmiClientSocketFactory;
-      configuration.rmiServerSocketFactory = this.rmiServerSocketFactory;
-      configuration.serializationFilterWhitelist = this.serializationFilterWhitelist;
-      configuration.serializationFilterDryRun = this.serializationFilterDryRun;
-      configuration.connectionMaintenanceIntervalMs = this.connectionMaintenanceIntervalMs;
+      configuration.auxiliaryServerFactoryClassNames.addAll(auxiliaryServerFactoryClassNames);
+      configuration.serverAdminPort = serverAdminPort;
+      configuration.sslEnabled = sslEnabled;
+      configuration.serverName = serverName;
+      configuration.serverNameProvider = serverNameProvider;
+      configuration.rmiClientSocketFactory = rmiClientSocketFactory;
+      configuration.rmiServerSocketFactory = rmiServerSocketFactory;
+      configuration.serializationFilterWhitelist = serializationFilterWhitelist;
+      configuration.serializationFilterDryRun = serializationFilterDryRun;
+      configuration.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
 
       return configuration;
     }

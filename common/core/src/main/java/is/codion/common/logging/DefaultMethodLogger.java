@@ -191,7 +191,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
     @Override
     public void append(final StringBuilder builder) {
-      builder.append(toString()).append("\n");
+      builder.append(this).append("\n");
       appendLogEntries(builder, getChildEntries(), 1);
     }
 

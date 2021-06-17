@@ -104,7 +104,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
   public String toString() {
     final StringBuilder builder = new StringBuilder(connectionRequest.getUser().toString());
     if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
-      builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
+      builder.append(" (databaseUser: ").append(databaseUser).append(")");
     }
     builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.getClientTypeId())
             .append(connectionRequest.getClientVersion() != null ? "-" + connectionRequest.getClientVersion() : "")

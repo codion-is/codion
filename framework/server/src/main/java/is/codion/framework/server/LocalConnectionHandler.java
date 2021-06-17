@@ -39,9 +39,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import static is.codion.common.logging.MethodLogger.methodLogger;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 
-final class EntityConnectionHandler implements InvocationHandler {
+final class LocalConnectionHandler implements InvocationHandler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(LocalConnectionHandler.class);
 
   private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
   private static final String GET_CONNECTION = "getConnection";
@@ -114,7 +114,7 @@ final class EntityConnectionHandler implements InvocationHandler {
    */
   private boolean closed = false;
 
-  EntityConnectionHandler(final Domain domain, final RemoteClient remoteClient, final Database database) throws DatabaseException {
+  LocalConnectionHandler(final Domain domain, final RemoteClient remoteClient, final Database database) throws DatabaseException {
     this.domain = domain;
     this.remoteClient = remoteClient;
     this.connectionPool = database.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
@@ -410,7 +410,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     }
 
     private static String entityKeyToString(final Key key) {
-      return key.getEntityType() + " {" + key.toString() + "}";
+      return key.getEntityType() + " {" + key + "}";
     }
   }
 }

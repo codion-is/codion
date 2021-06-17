@@ -525,7 +525,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    LOG.debug("{} - update {}", this, entities.toString());
+    LOG.debug("{} - update {}", this, entities);
 
     final List<Entity> modifiedEntities = getModifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
@@ -563,7 +563,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    LOG.debug("{} - delete {}", this, entities.toString());
+    LOG.debug("{} - delete {}", this, entities);
 
     notifyBeforeDelete(unmodifiableList(entities));
 
