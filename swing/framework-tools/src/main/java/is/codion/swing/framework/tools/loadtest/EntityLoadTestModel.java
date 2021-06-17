@@ -13,6 +13,7 @@ import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ import java.util.List;
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
  * @param <M> the application model type used by this load test model
  */
-public abstract class EntityLoadTestModel<M extends EntityApplicationModel> extends LoadTestModel<M> {
+public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel> extends LoadTestModel<M> {
 
   private static final int DEFAULT_LOAD_TEST_THINKTIME = 2000;
   private static final int DEFAULT_LOAD_TEST_BATCH_SIZE = 10;
