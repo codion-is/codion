@@ -141,7 +141,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
   static final class DefaultBuilder implements Builder {
 
-    private final ServerConfiguration.Builder<?> serverConfiguration;
+    private final ServerConfiguration.Builder<?> serverConfigurationBuilder;
 
     private Database database;
     private User adminUser;
@@ -154,66 +154,74 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
     DefaultBuilder(final int serverPort, final int registryPort) {
-      this.serverConfiguration = ServerConfiguration.builder(serverPort, registryPort);
+      serverConfigurationBuilder = ServerConfiguration.builder(serverPort, registryPort);
+      serverConfigurationBuilder.serverNameProvider(() -> {
+        if (database == null) {
+          throw new IllegalStateException("Database must be set before initializing server name");
+        }
+
+        return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
+                Version.getVersionString() + "@" + database.getName().toUpperCase();
+      });
     }
 
     @Override
     public Builder serverNameProvider(final Supplier<String> serverNameProvider) {
-      serverConfiguration.serverNameProvider(serverNameProvider);
+      serverConfigurationBuilder.serverNameProvider(serverNameProvider);
       return this;
     }
 
     @Override
     public Builder serverName(final String serverName) {
-      serverConfiguration.serverName(serverName);
+      serverConfigurationBuilder.serverName(serverName);
       return this;
     }
 
     @Override
     public Builder auxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
-      serverConfiguration.auxiliaryServerFactoryClassNames(auxiliaryServerFactoryClassNames);
+      serverConfigurationBuilder.auxiliaryServerFactoryClassNames(auxiliaryServerFactoryClassNames);
       return this;
     }
 
     @Override
     public Builder sslEnabled(final boolean sslEnabled) {
-      serverConfiguration.sslEnabled(sslEnabled);
+      serverConfigurationBuilder.sslEnabled(sslEnabled);
       return this;
     }
 
     @Override
     public Builder rmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
-      serverConfiguration.rmiClientSocketFactory(rmiClientSocketFactory);
+      serverConfigurationBuilder.rmiClientSocketFactory(rmiClientSocketFactory);
       return this;
     }
 
     @Override
     public Builder rmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
-      serverConfiguration.rmiServerSocketFactory(rmiServerSocketFactory);
+      serverConfigurationBuilder.rmiServerSocketFactory(rmiServerSocketFactory);
       return this;
     }
 
     @Override
     public Builder serializationFilterWhitelist(final String serializationFilterWhitelist) {
-      serverConfiguration.serializationFilterWhitelist(serializationFilterWhitelist);
+      serverConfigurationBuilder.serializationFilterWhitelist(serializationFilterWhitelist);
       return this;
     }
 
     @Override
     public Builder serializationFilterDryRun(final boolean serializationFilterDryRun) {
-      serverConfiguration.serializationFilterDryRun(serializationFilterDryRun);
+      serverConfigurationBuilder.serializationFilterDryRun(serializationFilterDryRun);
       return this;
     }
 
     @Override
     public Builder connectionMaintenanceIntervalMs(final int connectionMaintenanceIntervalMs) {
-      serverConfiguration.connectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
+      serverConfigurationBuilder.connectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
       return this;
     }
 
     @Override
     public Builder adminPort(final int adminPort) {
-      serverConfiguration.adminPort(adminPort);
+      serverConfigurationBuilder.adminPort(adminPort);
       return this;
     }
 
@@ -273,15 +281,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
     @Override
     public EntityServerConfiguration build() {
-      serverNameProvider(() -> {
-        if (database == null) {
-          throw new IllegalStateException("Database must be set before initializing server name");
-        }
-
-        return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
-                Version.getVersionString() + "@" + database.getName().toUpperCase();
-      });
-      final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(serverConfiguration.build());
+      final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(serverConfigurationBuilder.build());
       configuration.database = database;
       configuration.adminUser = adminUser;
       configuration.connectionLimit = connectionLimit;

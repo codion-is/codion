@@ -9,11 +9,11 @@ import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.DefaultEntityApplicationModel;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +40,7 @@ public class EntityLoadTestModelTest {
   public static synchronized void setUp() throws Exception {
     final EntityServerConfiguration configuration = configure();
     EntityServer.startServer(configuration);
-    server = (Server) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
+    server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
             configuration.getRegistryPort()).lookup(configuration.getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
@@ -53,21 +53,21 @@ public class EntityLoadTestModelTest {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(CONNECTION_TYPE_BEFORE_TEST);
   }
 
-  private static final class TestLoadTestModel extends EntityLoadTestModel<DefaultEntityApplicationModel> {
+  private static final class TestLoadTestModel extends EntityLoadTestModel<SwingEntityApplicationModel> {
 
     public TestLoadTestModel() {
-      super(UNIT_TEST_USER, asList(new AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
+      super(UNIT_TEST_USER, asList(new AbstractEntityUsageScenario<SwingEntityApplicationModel>("1") {
         @Override
-        protected void perform(final DefaultEntityApplicationModel application) throws ScenarioException {}
-      }, new AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {
+        protected void perform(final SwingEntityApplicationModel application) throws ScenarioException {}
+      }, new AbstractEntityUsageScenario<SwingEntityApplicationModel>("2") {
         @Override
-        protected void perform(final DefaultEntityApplicationModel application) throws ScenarioException {}
+        protected void perform(final SwingEntityApplicationModel application) throws ScenarioException {}
       }));
     }
 
     @Override
-    protected DefaultEntityApplicationModel initializeApplication() {
-      return new DefaultEntityApplicationModel(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName())
+    protected SwingEntityApplicationModel initializeApplication() {
+      return new SwingEntityApplicationModel(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName())
               .setClientTypeId(EntityLoadTestModelTest.class.getSimpleName()).setUser(getUser()));
     }
   }

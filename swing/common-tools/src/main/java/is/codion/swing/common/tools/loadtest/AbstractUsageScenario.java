@@ -56,7 +56,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public int getMaximumTime() {
+  public final int getMaximumTime() {
     return maximumTime;
   }
 

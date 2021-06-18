@@ -41,7 +41,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * The proxy connection handler
    */
-  private final transient EntityConnectionHandler connectionHandler;
+  private final transient LocalConnectionHandler connectionHandler;
 
   /**
    * An event notified when this connection is disconnected
@@ -66,7 +66,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
                                            final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new EntityConnectionHandler(domain, remoteClient, database);
+    this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
     this.connectionProxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
             new Class[] {EntityConnection.class}, connectionHandler);
   }
@@ -148,6 +148,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   }
 
   static int getRequestsPerSecond() {
-    return EntityConnectionHandler.REQUEST_COUNTER.getRequestsPerSecond();
+    return LocalConnectionHandler.REQUEST_COUNTER.getRequestsPerSecond();
   }
 }
