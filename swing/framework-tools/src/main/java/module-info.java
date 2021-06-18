@@ -1,8 +1,7 @@
 module is.codion.swing.framework.tools {
   requires org.slf4j;
-  requires transitive is.codion.framework.model;
   requires transitive is.codion.swing.common.tools;
-  requires transitive is.codion.swing.common.model;
+  requires transitive is.codion.swing.framework.model;
 
   exports is.codion.swing.framework.tools.explorer;
   exports is.codion.swing.framework.tools.loadtest;
