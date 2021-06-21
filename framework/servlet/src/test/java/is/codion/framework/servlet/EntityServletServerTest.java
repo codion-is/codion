@@ -641,7 +641,6 @@ public class EntityServletServerTest {
     catch (final NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
-
   }
 
   private static EntityServerConfiguration configure() {

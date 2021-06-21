@@ -126,8 +126,12 @@ configure(project.frameworkModules) {
         onlyIf {!file(keystore).exists()}
 
         doLast {
-            ant.genkey(alias: 'Alias', keyalg: 'RSA', keystore: keystore,
-                    storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU', storetype: 'pkcs12')
+            exec {
+                executable = keyToolExecutable
+                args = ['-genkeypair', '-keyalg', 'RSA', '-keystore', keystore, '-storepass', 'crappypass', '-keypass', 'crappypass',
+                        '-dname', 'CN=Dummy, OU=dummy, O=dummy.org, C=DU',
+                        '-alias', 'Alias', '-storetype', 'pkcs12', '-ext', 'SAN=dns:localhost']
+            }
             exec {
                 executable = keyToolExecutable
                 args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass',
