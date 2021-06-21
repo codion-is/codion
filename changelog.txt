@@ -7219,3 +7219,6 @@
   EntityPanel.getDetailPanels() added
   ServerConfiguration.Builder and EntityServerConfiguration.Builder added
   EntityLoadTestModel and AbstractEntityUsageScenario now SwingEntityApplicationModel based, framework.tools now depends on framework.model
+  Jersey upgraded to 2.34, createServerKeystore now sets SAN to localhost, HttpServerTest now uses https
+  DefaultToggleControl.BooleanButtonModelValue bug fixed, did not handle null correctly in case of non-nullable model
+  AbstractComponentBuilder, couple of non-final methods finalized

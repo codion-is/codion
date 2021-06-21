@@ -16,11 +16,18 @@ public class HttpServerTest {
 
   private static final int FILE_SERVER_PORT_NUMBER = 8089;
 
-  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, ServerHttps.FALSE);
+  static {
+    System.setProperty("javax.net.ssl.trustStore", "../../framework/server/src/main/security/truststore.jks");
+	  System.setProperty("javax.net.ssl.trustStorePassword", "crappypass");
+  }
+
+  private final HttpServerConfiguration configuration;
   private final HttpServer httpServer;
 
   public HttpServerTest() {
+    configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, ServerHttps.TRUE);
     configuration.setDocumentRoot(System.getProperty("user.dir"));
+    configuration.setKeystore("../../framework/server/src/main/security/keystore.jks", "crappypass");
     httpServer = new HttpServer(configuration);
   }
 
@@ -36,7 +43,7 @@ public class HttpServerTest {
 
   @Test
   void testWebServer() throws Exception {
-    try (final InputStream input = new URL("http://localhost:" + FILE_SERVER_PORT_NUMBER + "/build.gradle").openStream()) {
+    try (final InputStream input = new URL("https://localhost:" + FILE_SERVER_PORT_NUMBER + "/build.gradle").openStream()) {
       assertTrue(input.read() > 0);
     }
   }

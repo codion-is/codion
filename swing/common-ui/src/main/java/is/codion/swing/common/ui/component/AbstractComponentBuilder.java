@@ -104,12 +104,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public B popupMenuControl(final Control popupMenuControl) {
+  public final B popupMenuControl(final Control popupMenuControl) {
     return popupMenuControls(Controls.controls(popupMenuControl));
   }
 
   @Override
-  public B popupMenuControls(final Controls popupMenuControls) {
+  public final B popupMenuControls(final Controls popupMenuControls) {
     this.popupMenuControls = popupMenuControls;
     return (B) this;
   }

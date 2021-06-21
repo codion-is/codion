@@ -166,7 +166,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
         ((NullableToggleButtonModel) buttonModel).setState(value);
       }
       else {
-        buttonModel.setSelected(value);
+        buttonModel.setSelected(value != null && value);
       }
     }
   }
