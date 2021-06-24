@@ -42,11 +42,11 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
     requireNonNull(server, "server");
     AbstractEntityService.setServer(server);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    servletHandler.setContextPath("/");
-    final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/entities/ser/*");
+    servletHandler.setContextPath("/entities");
+    final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/ser/*");
     holder.setInitOrder(0);
     holder.setInitParameter("jersey.config.server.provider.classnames", EntityService.class.getCanonicalName());
-    final ServletHolder jsonHolder = servletHandler.addServlet(ServletContainer.class, "/entities/json/*");
+    final ServletHolder jsonHolder = servletHandler.addServlet(ServletContainer.class, "/json/*");
     jsonHolder.setInitOrder(0);
     jsonHolder.setInitParameter("jersey.config.server.provider.classnames", EntityJsonService.class.getCanonicalName());
     addHandler(servletHandler);
