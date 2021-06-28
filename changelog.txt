@@ -7191,3 +7191,4 @@
   Jersey upgraded to 2.34, createServerKeystore now sets SAN to localhost, HttpServerTest now uses https
   DefaultToggleControl.BooleanButtonModelValue bug fixed, did not handle null correctly in case of non-nullable model
   AbstractComponentBuilder, couple of non-final methods finalized
+  ComponentBuilders.component() renamed builder()

@@ -202,7 +202,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .linkedValue(model.getCollectSnapshotStatisticsState())
             .build());
 
-    chartConfig.add(ComponentBuilders.component(Control.builder(model::clearInPoolStatistics)
+    chartConfig.add(ComponentBuilders.builder(Control.builder(model::clearInPoolStatistics)
             .caption("Clear")
             .build().createButton())
             .maximumSize(TextFields.getPreferredTextFieldSize())

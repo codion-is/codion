@@ -300,8 +300,7 @@ public final class ComponentBuilders {
    * @param <B> the builder type
    * @return a generic builder, returning the given component on build
    */
-  public static <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(final C component) {
+  public static <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> builder(final C component) {
     return new DefaultComponentBuilder<>(requireNonNull(component, "component"));
   }
-
 }
