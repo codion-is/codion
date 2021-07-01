@@ -7192,3 +7192,4 @@
   DefaultToggleControl.BooleanButtonModelValue bug fixed, did not handle null correctly in case of non-nullable model
   AbstractComponentBuilder, couple of non-final methods finalized
   ComponentBuilders.component() renamed builder()
+  SwingEntityModel.Builder.modelBuilder(), editModelBuilder and tableModelBuilder() added
