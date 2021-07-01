@@ -4,6 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -49,6 +50,69 @@ public final class SwingEntityModelBuilderTest {
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
+  }
+
+  @Test
+  void builders() {
+    SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+            .editModelBuilder(DepartmentEditModel::new)
+            .tableModelBuilder(DepartmentTableModel::new);
+    SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
+    assertTrue(model.getEditModel() instanceof DepartmentEditModel);
+    assertTrue(model.getTableModel() instanceof DepartmentTableModel);
+
+    builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+            .modelBuilder(DepartmentModel::new);
+
+    model = builder.buildModel(CONNECTION_PROVIDER);
+    assertTrue(model instanceof DepartmentModel);
+    assertTrue(model.getEditModel() instanceof DepartmentEditModel);
+    assertTrue(model.getTableModel() instanceof DepartmentTableModel);
+  }
+
+  @Test
+  void modelClasses() {
+    SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+            .editModelClass(DepartmentEditModel.class)
+            .tableModelClass(DepartmentTableModel.class);
+    SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
+    assertTrue(model.getEditModel() instanceof DepartmentEditModel);
+    assertTrue(model.getTableModel() instanceof DepartmentTableModel);
+
+    builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+            .modelClass(DepartmentModel.class);
+
+    model = builder.buildModel(CONNECTION_PROVIDER);
+    assertTrue(model instanceof DepartmentModel);
+    assertTrue(model.getEditModel() instanceof DepartmentEditModel);
+    assertTrue(model.getTableModel() instanceof DepartmentTableModel);
+  }
+
+  @Test
+  void initializers() {
+    final State modelInitialized = State.state();
+    final State editModelInitialized = State.state();
+    final State tableModelInitialized = State.state();
+
+    final SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+            .editModelClass(DepartmentEditModel.class)
+            .tableModelClass(DepartmentTableModel.class)
+            .modelInitializer(swingEntityModel -> modelInitialized.set(true))
+            .editModelInitializer(swingEntityEditModel -> editModelInitialized.set(true))
+            .tableModelInitializer(swingEntityTableModel -> tableModelInitialized.set(true));
+
+    builder.buildModel(CONNECTION_PROVIDER);
+
+    assertTrue(modelInitialized.get());
+    assertTrue(editModelInitialized.get());
+    assertTrue(tableModelInitialized.get());
+  }
+
+  static final class DepartmentModel extends SwingEntityModel {
+
+    public DepartmentModel(final EntityConnectionProvider connectionProvider) {
+      super(new DepartmentEditModel(connectionProvider), new DepartmentTableModel(connectionProvider));
+    }
   }
 
   static final class DepartmentEditModel extends SwingEntityEditModel {

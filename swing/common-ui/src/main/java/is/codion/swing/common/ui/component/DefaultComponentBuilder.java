@@ -26,5 +26,5 @@ final class DefaultComponentBuilder<T, C extends JComponent, B extends Component
   }
 
   @Override
-  protected void setInitialValue(final C component, final T initialValue) {}
+  protected void setInitialValue(final C component, final T initialValue) {/*Not implemented*/}
 }
