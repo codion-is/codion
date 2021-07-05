@@ -227,6 +227,12 @@ public interface Entity extends Comparable<Entity> {
   Entity copy();
 
   /**
+   * Returns a new {@link Builder} instance initialized with the values from this entity.
+   * @return a {@link Builder} instance.
+   */
+  Builder copyBuilder();
+
+  /**
    * Copies this entity, with new copied instances of all foreign key value entities.
    * @return a deep copy of this entity
    */
