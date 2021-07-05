@@ -297,6 +297,14 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
+  public Builder copyBuilder() {
+    final Builder builder = new DefaultEntityBuilder(definition);
+    values.forEach((attribute, value) -> builder.with((Attribute<Object>) attribute, value));
+
+    return builder;
+  }
+
+  @Override
   public Entity deepCopy() {
     final Entity copy = copy();
     for (final ForeignKey foreignKey : definition.getForeignKeys()) {

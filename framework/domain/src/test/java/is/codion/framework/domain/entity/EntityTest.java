@@ -144,8 +144,9 @@ public final class EntityTest {
     emp1.put(TestDomain.Employee.SALARY, 1300d);
     emp1.put(TestDomain.Employee.DATA, bytes);
 
-    final Entity emp2 = emp1.copy();
-    emp2.put(TestDomain.Employee.DATA, modifiedBytes);
+    final Entity emp2 = emp1.copyBuilder()
+            .with(TestDomain.Employee.DATA, modifiedBytes)
+            .build();
 
     List<Attribute<?>> modifiedAttributes = Entity.getModifiedColumnAttributes(definition, emp1, emp2);
     assertTrue(modifiedAttributes.contains(TestDomain.Employee.DATA));
@@ -157,8 +158,9 @@ public final class EntityTest {
     dept1.put(TestDomain.Department.ACTIVE, true);
     dept1.put(TestDomain.Department.DATA, bytes);
 
-    final Entity dept2 = dept1.copy();
-    dept2.put(TestDomain.Department.DATA, modifiedBytes);
+    final Entity dept2 = dept1.copyBuilder()
+            .with(TestDomain.Department.DATA, modifiedBytes)
+            .build();
 
     final EntityDefinition departmentDefinition = entities.getDefinition(TestDomain.Department.TYPE);
 

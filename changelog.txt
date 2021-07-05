@@ -7193,3 +7193,4 @@
   AbstractComponentBuilder, couple of non-final methods finalized
   ComponentBuilders.component() renamed builder()
   SwingEntityModel.Builder.modelBuilder(), editModelBuilder and tableModelBuilder() added
+  Entity.copyBuilder() added

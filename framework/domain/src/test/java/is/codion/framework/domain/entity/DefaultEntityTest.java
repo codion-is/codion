@@ -369,6 +369,18 @@ public class DefaultEntityTest {
   }
 
   @Test
+  void copyBuilder() {
+    final Entity dept = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .with(Department.NAME, "Name")
+            .with(Department.LOCATION, "Location")
+            .with(Department.ACTIVE, true)
+            .build();
+    assertTrue(dept.columnValuesEqual(dept.copyBuilder().build()));
+    assertFalse(dept.columnValuesEqual(dept.copyBuilder().with(Department.NAME, "new name").build()));
+  }
+
+  @Test
   void getReferencedKeyIncorrectFk() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
