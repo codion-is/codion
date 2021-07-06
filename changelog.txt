@@ -7225,3 +7225,4 @@
   ComponentBuilders.component() renamed builder()
   SwingEntityModel.Builder.modelBuilder(), editModelBuilder and tableModelBuilder() added
   Entity.copyBuilder() added
+  TemporalField.Builder.dateTimeFormatter() added
