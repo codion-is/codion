@@ -38,12 +38,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
 
-  private TemporalField(final Class<T> temporalClass, final String dateTimePattern,
+  private TemporalField(final Class<T> temporalClass, final String dateTimePattern, final DateTimeFormatter dateTimeFormatter,
                         final DateTimeParser<T> dateTimeParser, final int focusLostBehaviour) {
     super(initializeFormatter(dateTimePattern));
     this.temporalClass = temporalClass;
     this.dateTimePattern = dateTimePattern;
-    this.formatter = DateTimeFormatter.ofPattern(dateTimePattern);
+    this.formatter = requireNonNull(dateTimeFormatter, "dateTimeFormatter");
     this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
     setFocusLostBehavior(focusLostBehaviour);
     getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
@@ -159,10 +159,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   public interface Builder<T extends Temporal> {
 
     /**
+     * Note that setting the date/time pattern replaces any {@link #dateTimeFormatter(DateTimeFormatter)} that has been previously set.
      * @param dateTimePattern the date/time pattern
      * @return this builder instance
      */
     Builder<T> dateTimePattern(String dateTimePattern);
+
+    /**
+     * Use this to set the actual {@link DateTimeFormatter} to use, by default an instance based on the dateTimePattern is created.
+     * Note that you must also set the dateTimePatter and the dateTimeFormatter is assumed to be able to parse that pattern.
+     * @param dateTimeFormatter the date/time formatter
+     * @return this builder instance
+     */
+    Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
 
     /**
      * @param dateTimeParser the date/time parser
@@ -197,6 +206,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private final Class<T> temporalClass;
 
     private String dateTimePattern;
+    private DateTimeFormatter dateTimeFormatter;
     private DateTimeParser<T> dateTimeParser;
     private T initialValue;
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
@@ -209,6 +219,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     @Override
     public Builder<T> dateTimePattern(final String dateTimePattern) {
       this.dateTimePattern = requireNonNull(dateTimePattern);
+      this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
+      return this;
+    }
+
+    @Override
+    public Builder<T> dateTimeFormatter(final DateTimeFormatter dateTimeFormatter) {
+      this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
       return this;
     }
 
@@ -239,7 +256,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
         throw new IllegalStateException("dateTimeParser must be specified");
       }
 
-      final TemporalField<T> temporalField = new TemporalField<>(temporalClass, dateTimePattern, dateTimeParser, focusLostBehaviour);
+      final TemporalField<T> temporalField = new TemporalField<>(temporalClass, dateTimePattern,
+              dateTimeFormatter, dateTimeParser, focusLostBehaviour);
       temporalField.setTemporal(initialValue);
 
       return temporalField;
