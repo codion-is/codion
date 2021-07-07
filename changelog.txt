@@ -7195,3 +7195,4 @@
   SwingEntityModel.Builder.modelBuilder(), editModelBuilder and tableModelBuilder() added
   Entity.copyBuilder() added
   TemporalField.Builder.dateTimeFormatter() added
+  ServerConfiguration, EntityServerConfiguration.builderFromSystemProperties() added
