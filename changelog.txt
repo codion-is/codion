@@ -7196,3 +7196,4 @@
   Entity.copyBuilder() added
   TemporalField.Builder.dateTimeFormatter() added
   ServerConfiguration, EntityServerConfiguration.builderFromSystemProperties() added
+  DefaultServerConfiguration.serializationFilterWhitelist() now accepts null
