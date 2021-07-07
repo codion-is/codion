@@ -288,16 +288,24 @@ public interface ServerConfiguration {
   }
 
   /**
-   * @return a configuration according to system properties.
+   * Returns a Builder initialized with values from system properties.
+   * @param <B> the builder type
+   * @return a server configuration builder initialized with values from system properties.
    */
-  static ServerConfiguration fromSystemProperties() {
-    return builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
+  static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
+    return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
             .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
             .adminPort(SERVER_ADMIN_PORT.getOrThrow())
             .sslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get())
             .connectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get())
             .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
-            .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get())
-            .build();
+            .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+  }
+
+  /**
+   * @return a configuration according to system properties.
+   */
+  static ServerConfiguration fromSystemProperties() {
+    return builderFromSystemProperties().build();
   }
 }

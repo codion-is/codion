@@ -196,10 +196,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   }
 
   /**
-   * Parses configuration from system properties.
-   * @return the server configuration according to system properties
+   * Returns a Builder initialized with values from system properties.
+   * @return a entity server configuration builder initialized with values from system properties.
    */
-  static EntityServerConfiguration fromSystemProperties() {
+  static EntityServerConfiguration.Builder builderFromSystemProperties() {
     final Builder builder =  builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
             .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
             .sslEnabled(SERVER_CONNECTION_SSL_ENABLED.get())
@@ -232,6 +232,14 @@ public interface EntityServerConfiguration extends ServerConfiguration {
       builder.adminUser(adminUser);
     }
 
-    return builder.build();
+    return builder;
+  }
+
+  /**
+   * Parses configuration from system properties.
+   * @return the server configuration according to system properties
+   */
+  static EntityServerConfiguration fromSystemProperties() {
+    return builderFromSystemProperties().build();
   }
 }
