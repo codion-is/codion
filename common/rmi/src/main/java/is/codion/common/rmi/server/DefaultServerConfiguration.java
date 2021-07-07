@@ -167,7 +167,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
     @Override
     public DefaultBuilder serializationFilterWhitelist(final String serializationFilterWhitelist) {
-      this.serializationFilterWhitelist = requireNonNull(serializationFilterWhitelist);
+      this.serializationFilterWhitelist = serializationFilterWhitelist;
       return this;
     }
 
