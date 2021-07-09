@@ -332,11 +332,11 @@ List<Entity> doesAddresses =
 List<Entity> customersWithoutEmail =
             connection.select(where(Customer.EMAIL).isNull());
 
-    List<String> activeCustomerEmailAddresses =
+List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
                     where(Customer.IS_ACTIVE).equalTo(true));
 
-    List<Entity> activeCustomersWithEmailAddresses =
+List<Entity> activeCustomersWithEmailAddresses =
             connection.select(where(Customer.IS_ACTIVE).equalTo(true)
                     .and(where(Customer.EMAIL).isNotNull()));
 
