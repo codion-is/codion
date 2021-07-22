@@ -319,11 +319,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @return a control for performing an insert on the active entity
    */
   public final Control createInsertControl() {
-    final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.ADD_MNEMONIC);
     return Control.builder(this::insert)
-            .caption(FrameworkMessages.get(FrameworkMessages.INSERT))
+            .caption(FrameworkMessages.get(FrameworkMessages.ADD))
             .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")")
+            .description(FrameworkMessages.get(FrameworkMessages.ADD_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .icon(frameworkIcons().add())
             .build();
@@ -470,10 +470,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       insert();
     }
     else {//possibly update
-      final int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT),
-              FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+      final int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD),
+              FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD_TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD),
-                      FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
+                      FrameworkMessages.get(FrameworkMessages.ADD_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
       if (choiceIdx == 0) {//update
         updateWithoutConfirmation();
@@ -670,7 +670,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                 FrameworkMessages.get(FrameworkMessages.DELETE)};
       case INSERT:
         return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
-                FrameworkMessages.get(FrameworkMessages.INSERT)};
+                FrameworkMessages.get(FrameworkMessages.ADD)};
       case UPDATE:
         return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
                 FrameworkMessages.get(FrameworkMessages.UPDATE)};

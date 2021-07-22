@@ -44,7 +44,7 @@ import java.util.Optional;
  */
 public abstract class EntityEditView extends BorderPane {
 
-  private static final KeyCode INSERT_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC));
+  private static final KeyCode INSERT_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.ADD_MNEMONIC));
   private static final KeyCode UPDATE_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC));
   private static final KeyCode DELETE_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC));
   private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC));
@@ -335,11 +335,11 @@ public abstract class EntityEditView extends BorderPane {
     }
     else {//possibly update
       final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE));
-      alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT));
+      alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD_TITLE));
+      alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD));
 
       final ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
-      final ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.INSERT_NEW));
+      final ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.ADD_NEW));
       final ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
       alert.getButtonTypes().setAll(update, insert, cancel);
       ((Button) alert.getDialogPane().lookupButton(update)).setDefaultButton(true);
