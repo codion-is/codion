@@ -208,44 +208,61 @@ public class DomainTest {
             Properties.primaryKeyProperty(attribute2).primaryKeyIndex(1),
             Properties.primaryKeyProperty(attribute3).primaryKeyIndex(2).nullable(true));
 
-    Key key = entities.primaryKey(entityType);
+    Key key = entities.keyBuilder(entityType).build();
     assertEquals(0, key.hashCode());
-    assertEquals(3, key.getAttributes().size());
+    assertTrue(key.getAttributes().isEmpty());
     assertTrue(key.isNull());
 
-    assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType).withValue(1));
+    assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType, 1));
     assertThrows(IllegalStateException.class, key::get);
     assertThrows(IllegalStateException.class, key::getOptional);
     assertThrows(IllegalStateException.class, key::getAttribute);
 
-    key = key.withValue(attribute1, 1).withValue(attribute2, 2).withValue(attribute3, 3);
+    key = key.copyBuilder()
+            .with(attribute1, 1)
+            .with(attribute2, 2)
+            .with(attribute3, 3)
+            .build();
     assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
     assertTrue(key.getOptional(attribute1).isPresent());
 
-    key = key.withValue(attribute2, 3);
+    key = key.copyBuilder()
+            .with(attribute2, 3)
+            .build();
     assertEquals(7, key.hashCode());
 
-    key = key.withValue(attribute3, null);
+    key = key.copyBuilder()
+            .with(attribute3, null)
+            .build();
     assertTrue(key.isNotNull());
     assertEquals(4, key.hashCode());
-    key = key.withValue(attribute2, null);
+    key = key.copyBuilder()
+            .with(attribute2, null)
+            .build();
     assertTrue(key.isNull());
     assertFalse(key.getOptional(attribute2).isPresent());
     assertEquals(0, key.hashCode());
-    key = key.withValue(attribute2, 4);
+    key = key.copyBuilder()
+            .with(attribute2, 4)
+            .build();
     assertTrue(key.getOptional(attribute2).isPresent());
     assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 
-    key = key.withValue(attribute2, 42);
+    key = key.copyBuilder()
+            .with(attribute2, 42)
+            .build();
     assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
-    assertThrows(NullPointerException.class, () -> entities.primaryKey(null));
+    assertThrows(NullPointerException.class, () -> entities.keyBuilder(null));
 
-    final Key noPk = entities.primaryKey(TestDomain.T_NO_PK);
-    assertThrows(IllegalArgumentException.class, () -> noPk.withValue(TestDomain.NO_PK_COL1, 1));
+    assertFalse(entities.keyBuilder(TestDomain.T_NO_PK)
+            .with(TestDomain.NO_PK_COL1, 1)
+            .build()
+            .isPrimaryKey());
+    final Key noPk = entities.keyBuilder(TestDomain.T_NO_PK).build();
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
   }
 

@@ -76,13 +76,6 @@ public interface Entities {
   Entity.Builder builder(Key key);
 
   /**
-   * Creates a new {@link Key} instance with the given entityType
-   * @param entityType the entityType
-   * @return a new {@link Key} instance
-   */
-  Key primaryKey(EntityType<?> entityType);
-
-  /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
    * @param entityType the entityType
    * @param value the key value, assumes a single integer key
@@ -121,4 +114,11 @@ public interface Entities {
    * @throws NullPointerException in case entityType or values is null
    */
   List<Key> primaryKeys(EntityType<?> entityType, Long... values);
+
+  /**
+   * Creates a new {@link Key.Builder} instance for the given entity type.
+   * @param entityType the entity type
+   * @return a new builder
+   */
+  Key.Builder keyBuilder(EntityType<?> entityType);
 }

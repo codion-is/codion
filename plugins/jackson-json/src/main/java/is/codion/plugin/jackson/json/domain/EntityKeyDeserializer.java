@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,19 +42,14 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
     final JsonNode node = codec.readTree(parser);
     final EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entities::getDefinition);
     final JsonNode values = node.get("values");
-    final Map<Attribute<?>, Object> valueMap = new HashMap<>();
+    final Key.Builder builder = entities.keyBuilder(definition.getEntityType());
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
       final ColumnProperty<Object> property = definition.getColumnProperty(definition.getAttribute(field.getKey()));
-      valueMap.put(property.getAttribute(), parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
+      builder.with((Attribute<Object>) property.getAttribute(), parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
     }
 
-    Key key = entities.primaryKey(definition.getEntityType());
-    for (final Map.Entry<Attribute<?>, Object> entry : valueMap.entrySet()) {
-      key = key.withValue((Attribute<Object>) entry.getKey(), entry.getValue());
-    }
-
-    return key;
+    return builder.build();
   }
 }

@@ -92,11 +92,6 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Key primaryKey(final EntityType<?> entityType) {
-    return getDefinition(entityType).primaryKey();
-  }
-
-  @Override
   public final Key primaryKey(final EntityType<?> entityType, final Integer value) {
     return getDefinition(entityType).primaryKey(value);
   }
@@ -116,6 +111,11 @@ public abstract class DefaultEntities implements Entities, Serializable {
   public final List<Key> primaryKeys(final EntityType<?> entityType, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
+  }
+
+  @Override
+  public final Key.Builder keyBuilder(final EntityType<?> entityType) {
+    return new DefaultKeyBuilder(getDefinition(entityType));
   }
 
   /**
@@ -200,5 +200,4 @@ public abstract class DefaultEntities implements Entities, Serializable {
     stream.defaultReadObject();
     REGISTERED_ENTITIES.put(domainType, this);
   }
-
 }

@@ -106,9 +106,10 @@ public final class EntityObjectMapperTest {
     assertEquals(Integer.valueOf(1), keys.get(0).get());
     assertEquals(Integer.valueOf(2), keys.get(1).get());
 
-    final Key entityKey = entities.primaryKey(TestDomain.T_ENTITY)
-            .withValue(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L))
-            .withValue(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
+    final Key entityKey = entities.keyBuilder(TestDomain.T_ENTITY)
+            .with(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L))
+            .with(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now())
+            .build();
 
     jsonString = mapper.writeValueAsString(entityKey);
 

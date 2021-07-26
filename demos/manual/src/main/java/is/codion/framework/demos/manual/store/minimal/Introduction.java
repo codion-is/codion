@@ -80,7 +80,9 @@ class Introduction {
             .with(City.NAME, "Reykjavík")
             .build();
 
-    Key customerKey = entities.primaryKey(Customer.TYPE).withValue(42);
+    Key customerKey = entities.keyBuilder(Customer.TYPE)
+            .with(Customer.ID, 42)
+            .build();
 
     Entity customer = entities.builder(customerKey)
             .with(Customer.NAME, "John")
