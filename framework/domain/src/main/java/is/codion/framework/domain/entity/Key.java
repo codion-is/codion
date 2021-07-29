@@ -55,25 +55,15 @@ public interface Key {
    * Returns this keys attribute. Note that this method throws an exception if this key is a composite key.
    * @param <T> the attribute type
    * @return the key attribute, useful for single attribute keys
-   * @throws IllegalStateException in case this is a composite key
+   * @throws IllegalStateException in case this is a composite key or if it contains no attributes
    */
   <T> Attribute<T> getAttribute();
-
-  /**
-   * Returns a new key instance based on this key, but with the given value.
-   * Note that this method throws an exception if this key is a composite key.
-   * @param value the value to associate with the attribute
-   * @param <T> the value type
-   * @return a Key based on this instance, but with the given value
-   * @throws IllegalStateException in case this is a composite key
-   */
-  <T> Key withValue(T value);
 
   /**
    * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
    * @param <T> the value type
    * @return the first value contained in this key, useful for single attribute keys
-   * @throws IllegalStateException in case this is a composite key
+   * @throws IllegalStateException in case this is a composite key or if it contains no values
    */
   <T> T get();
 
@@ -84,15 +74,6 @@ public interface Key {
    * @throws IllegalStateException in case this is a composite key
    */
   <T> Optional<T> getOptional();
-
-  /**
-   * Returns a new key instance based on this key, but with the given value.
-   * @param attribute the attribute
-   * @param value the value to associate with the attribute
-   * @param <T> the value type
-   * @return a Key based on this instance, but with the given value
-   */
-  <T> Key withValue(Attribute<T> attribute, T value);
 
   /**
    * @param attribute the attribute
@@ -107,4 +88,33 @@ public interface Key {
    * @return the value associated with the given attribute, wrapped in an {@link Optional}
    */
   <T> Optional<T> getOptional(Attribute<T> attribute);
+
+  /**
+   * Creates a new {@link Key.Builder} instance, initialized with the values in this key.
+   * @return a new builder based on this key
+   */
+  Builder copyBuilder();
+
+  /**
+   * A builder for {@link Key} instances.
+   * Note that the resulting key is assumed to be a primary key
+   * if any of the values is associated with a primary key attribute.
+   */
+  interface Builder {
+
+    /**
+     * Adds the given attribute value to this builder
+     * @param attribute the attribute
+     * @param value the value
+     * @param <T> the value type
+     * @return this builder instance
+     */
+    <T> Builder with(Attribute<T> attribute, T value);
+
+    /**
+     * Builds the key instance
+     * @return a new Key instance
+     */
+    Key build();
+  }
 }

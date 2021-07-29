@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Collections.*;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A class representing a unique key for entities.
@@ -25,8 +24,6 @@ import static java.util.Objects.requireNonNull;
 class DefaultKey implements Key, Serializable {
 
   private static final long serialVersionUID = 1;
-
-  private static final String COMPOSITE_KEY_MESSAGE = "Key is a composite key";
 
   /**
    * The attributes comprising this key
@@ -118,27 +115,14 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> Attribute<T> getAttribute() {
-    if (attributes.size() > 1) {
-      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
-    }
+    checkValueCount();
 
     return (Attribute<T>) attributes.get(0);
   }
 
   @Override
-  public <T> Key withValue(final T value) {
-    if (attributes.size() > 1) {
-      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
-    }
-
-    return withValue((Attribute<T>) attributes.get(0), value);
-  }
-
-  @Override
   public <T> T get() {
-    if (attributes.size() > 1) {
-      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
-    }
+    checkValueCount();
 
     return (T) values.get(attributes.get(0));
   }
@@ -146,17 +130,6 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> Optional<T> getOptional() {
     return Optional.ofNullable(get());
-  }
-
-  @Override
-  public <T> Key withValue(final Attribute<T> attribute, final T value) {
-    if (!values.containsKey(requireNonNull(attribute))) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
-    }
-    final Map<Attribute<?>, Object> newKeyValues = new HashMap<>(values);
-    newKeyValues.put(attribute, value);
-
-    return new DefaultKey(definition, newKeyValues, primaryKey);
   }
 
   @Override
@@ -171,6 +144,11 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> Optional<T> getOptional(final Attribute<T> attribute) {
     return Optional.ofNullable(get(attribute));
+  }
+
+  @Override
+  public Builder copyBuilder() {
+    return new DefaultKeyBuilder(this, definition);
   }
 
   @Override
@@ -295,6 +273,15 @@ class DefaultKey implements Key, Serializable {
     }
 
     return value.hashCode();
+  }
+
+  private void checkValueCount() {
+    if (attributes.isEmpty()) {
+      throw new IllegalStateException("Key contains no values");
+    }
+    if (attributes.size() > 1) {
+      throw new IllegalStateException("Key is a composite key");
+    }
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

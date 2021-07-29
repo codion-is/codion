@@ -108,7 +108,7 @@ public final class SwingEntityModelTest
       departmentModel.getEditModel().update();
       assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.getPrimaryKey()).get(TestDomain.DEPARTMENT_NAME));
 
-      departmentModel.getTableModel().setSelectedByKey(Collections.singletonList(primaryKey.withValue(20)));
+      departmentModel.getTableModel().setSelectedByKey(Collections.singletonList(primaryKey.copyBuilder().with(TestDomain.DEPARTMENT_ID, 20).build()));
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "NewName");
       departmentModel.getEditModel().update();
 

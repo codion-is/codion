@@ -591,12 +591,7 @@ public class DefaultEntityTest {
 
   @Test
   void keyInvalidPropertyGet() {
-    assertThrows(IllegalArgumentException.class, () -> ENTITIES.primaryKey(Employee.TYPE).get(Employee.NAME));
-  }
-
-  @Test
-  void keyInvalidPropertyPut() {
-    assertThrows(IllegalArgumentException.class, () -> ENTITIES.primaryKey(Employee.TYPE).withValue("test"));
+    assertThrows(IllegalArgumentException.class, () -> ENTITIES.keyBuilder(Employee.TYPE).build().get(Employee.NAME));
   }
 
   @Test
