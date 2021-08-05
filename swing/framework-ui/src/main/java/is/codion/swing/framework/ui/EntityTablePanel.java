@@ -620,7 +620,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .caption(refreshCaption)
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP))
             .mnemonic(refreshCaption.charAt(0))
-            .icon(frameworkIcons().refresh()).build();
+            .icon(frameworkIcons().refresh())
+            .build();
   }
 
   /**
@@ -780,7 +781,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     return Control.builder(this::toggleConditionPanel)
             .icon(frameworkIcons().filter())
-            .description(MESSAGES.getString("show_condition_panel")).build();
+            .description(MESSAGES.getString("show_condition_panel"))
+            .build();
   }
 
   /**
@@ -801,7 +803,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return Control.builder(tableModel.getSelectionModel()::clearSelection)
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
             .icon(frameworkIcons().clearSelection())
-            .description(MESSAGES.getString("clear_selection_tip")).build();
+            .description(MESSAGES.getString("clear_selection_tip"))
+            .build();
   }
 
   /**
@@ -810,7 +813,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control createMoveSelectionDownControl() {
     return Control.builder(tableModel.getSelectionModel()::moveSelectionDown)
             .icon(frameworkIcons().down())
-            .description(MESSAGES.getString("selection_down_tip")).build();
+            .description(MESSAGES.getString("selection_down_tip"))
+            .build();
   }
 
   /**
@@ -819,7 +823,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final Control createMoveSelectionUpControl() {
     return Control.builder(tableModel.getSelectionModel()::moveSelectionUp)
             .icon(frameworkIcons().up())
-            .description(MESSAGES.getString("selection_up_tip")).build();
+            .description(MESSAGES.getString("selection_up_tip"))
+            .build();
   }
 
   /**
@@ -1120,13 +1125,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return Controls.builder()
             .caption(Messages.get(Messages.COPY))
             .icon(frameworkIcons().copy())
-            .controls(createCopyCellControl(), createCopyTableWithHeaderControl()).build();
+            .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
+            .build();
   }
 
   protected final Control createCopyCellControl() {
     return Control.builder(this::copySelectedCell)
             .caption(FrameworkMessages.get(FrameworkMessages.COPY_CELL))
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver()).build();
+            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .build();
   }
 
   protected final Control createCopyTableWithHeaderControl() {
@@ -1286,7 +1293,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Control refresh = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionObserver())
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
-            .icon(frameworkIcons().refreshRequired()).build();
+            .icon(frameworkIcons().refreshRequired())
+            .build();
 
     KeyEvents.builder(KeyEvent.VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1459,7 +1467,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void addConditionControls(final Controls popupControls) {
     final Controls conditionControls = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
-            .icon(frameworkIcons().filter()).build();
+            .icon(frameworkIcons().filter())
+            .build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
@@ -1470,7 +1479,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     conditionControls.add(ToggleControl.builder(tableModel.getQueryConditionRequiredState())
             .caption(MESSAGES.getString("require_query_condition"))
-            .description(MESSAGES.getString("require_query_condition_description")).build());
+            .description(MESSAGES.getString("require_query_condition_description"))
+            .build());
     if (!conditionControls.isEmpty()) {
       popupControls.add(conditionControls);
     }

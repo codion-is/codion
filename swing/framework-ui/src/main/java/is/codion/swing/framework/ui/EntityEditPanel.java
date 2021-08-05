@@ -315,7 +315,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                     getEditModel().getModifiedObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().update()).build();
+            .icon(frameworkIcons().update())
+            .build();
   }
 
   /**

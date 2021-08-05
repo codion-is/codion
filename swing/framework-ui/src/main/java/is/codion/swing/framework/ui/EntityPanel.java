@@ -631,7 +631,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final Control getToggleEditPanelControl() {
     return Control.builder(this::toggleEditPanelState)
             .icon(frameworkIcons().editPanel())
-            .description(MESSAGES.getString("toggle_edit")).build();
+            .description(MESSAGES.getString("toggle_edit"))
+            .build();
   }
 
   /**
@@ -640,7 +641,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final Control getToggleDetailPanelControl() {
     return Control.builder(this::toggleDetailPanelState)
             .icon(frameworkIcons().detail())
-            .description(MESSAGES.getString("toggle_detail")).build();
+            .description(MESSAGES.getString("toggle_detail"))
+            .build();
   }
 
   /**
@@ -1364,7 +1366,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     final Controls controls = Controls.builder()
             .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
-            .icon(frameworkIcons().detail()).build();
+            .icon(frameworkIcons().detail())
+            .build();
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controls.add(Control.builder(() -> {
         setDetailPanelState(status);
