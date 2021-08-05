@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import static is.codion.swing.common.ui.Components.hideWaitCursor;
@@ -54,6 +55,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class EntityEditPanel extends EntityEditComponentPanel implements DialogExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
+
+  private static final ResourceBundle TABLE_PANEL_MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
@@ -347,15 +350,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES}, the dependencies of the given entity are displayed
-   * to the user, otherwise {@link #onException(Exception)} is called.
+   * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
+   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Exception)} is called.
    * @param exception the exception
    * @param entity the entity causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   public void onReferentialIntegrityException(final ReferentialIntegrityException exception, final Entity entity) {
+    requireNonNull(exception);
+    requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-      EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().getConnectionProvider(), this);
+      EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().getConnectionProvider(),
+              this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
       onException(exception);

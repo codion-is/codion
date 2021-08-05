@@ -678,14 +678,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       final Map<EntityType<?>, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
-      if (!dependencies.isEmpty()) {
-        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
-                MESSAGES.getString("dependent_records_found"));
-      }
-      else {
-        JOptionPane.showMessageDialog(this, MESSAGES.getString("none_found"),
-                MESSAGES.getString("no_dependent_records"), JOptionPane.INFORMATION_MESSAGE);
-      }
+      showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
+              MESSAGES.getString("no_dependent_records"));
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -738,13 +732,25 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(final ReferentialIntegrityException exception,
-                                              final List<Entity> entities) {
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-      showDependenciesDialog(entities, tableModel.getConnectionProvider(), this);
+  public void onReferentialIntegrityException(final ReferentialIntegrityException exception, final List<Entity> entities) {
+    try {
+      showWaitCursor(this);
+      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+        final Map<EntityType<?>, Collection<Entity>> dependencies =
+                tableModel.getConnectionProvider().getConnection().selectDependencies(entities);
+        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
+                MESSAGES.getString("unknown_dependent_records"));
+      }
+      else {
+        onException(exception);
+      }
     }
-    else {
-      onException(exception);
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      onException(e);
+    }
+    finally {
+      hideWaitCursor(this);
     }
   }
 
@@ -817,19 +823,31 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Displays a dialog with the entities depending on the given entities.
+   * Shows a dialog containing the entities depending on the given entities.
    * @param entities the entities for which to display dependencies
    * @param connectionProvider the connection provider
    * @param dialogParent the dialog parent
    */
   public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent) {
+    showDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependent_records"));
+  }
+
+  /**
+   * Shows a dialog containing the entities depending on the given entities.
+   * @param entities the entities for which to display dependencies
+   * @param connectionProvider the connection provider
+   * @param dialogParent the dialog parent
+   * @param noDependenciesMessage the message to show in case of no dependencies
+   */
+  public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
+                                            final JComponent dialogParent, final String noDependenciesMessage) {
     requireNonNull(entities);
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
     try {
       final Map<EntityType<?>, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
-      showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
+      showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (final DatabaseException e) {
       DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent));
@@ -1485,19 +1503,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static void showDependenciesDialog(final Map<EntityType<?>, Collection<Entity>> dependencies,
                                              final EntityConnectionProvider connectionProvider,
-                                             final JComponent dialogParent, final String title) {
-    JPanel dependenciesPanel;
-    try {
-      showWaitCursor(dialogParent);
-      dependenciesPanel = createDependenciesPanel(dependencies, connectionProvider);
+                                             final JComponent dialogParent, final String noDependenciesMessage) {
+    if (dependencies.isEmpty()) {
+      JOptionPane.showMessageDialog(dialogParent, noDependenciesMessage,
+              MESSAGES.getString("none_found"), JOptionPane.INFORMATION_MESSAGE);
     }
-    finally {
-      hideWaitCursor(dialogParent);
+    else {
+      Dialogs.componentDialogBuilder(createDependenciesPanel(dependencies, connectionProvider))
+              .owner(dialogParent)
+              .title(MESSAGES.getString("dependent_records_found"))
+              .show();
     }
-    Dialogs.componentDialogBuilder(dependenciesPanel)
-            .owner(dialogParent)
-            .title(title)
-            .show();
   }
 
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Attribute<?>> tableModel) {
@@ -1532,10 +1548,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
     for (final Map.Entry<EntityType<?>, Collection<Entity>> entry : dependencies.entrySet()) {
-      final Collection<Entity> dependantEntities = entry.getValue();
-      if (!dependantEntities.isEmpty()) {
+      final Collection<Entity> dependentEntities = entry.getValue();
+      if (!dependentEntities.isEmpty()) {
         tabPane.addTab(connectionProvider.getEntities().getDefinition(entry.getKey()).getCaption(),
-                createEntityTablePanel(dependantEntities, connectionProvider));
+                createEntityTablePanel(dependentEntities, connectionProvider));
       }
     }
     panel.add(tabPane, BorderLayout.CENTER);
