@@ -14,19 +14,19 @@ import java.util.List;
 
 public final class CountryOverviewTableModel extends CountryTableModel {
 
-  private final DefaultPieDataset citiesDataset = new DefaultPieDataset();
-  private final DefaultPieDataset languagesDataset = new DefaultPieDataset();
+  private final DefaultPieDataset<String> citiesDataset = new DefaultPieDataset<>();
+  private final DefaultPieDataset<String> languagesDataset = new DefaultPieDataset<>();
 
   public CountryOverviewTableModel(final EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     bindEvents();
   }
 
-  public PieDataset getCitiesDataset() {
+  public PieDataset<String> getCitiesDataset() {
     return citiesDataset;
   }
 
-  public PieDataset getLanguagesDataset() {
+  public PieDataset<String> getLanguagesDataset() {
     return languagesDataset;
   }
 

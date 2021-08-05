@@ -97,10 +97,10 @@ public class StringValuesTest {
   void textValueField() {
     final String value = "hello";
 
-    SizedDocument document = new SizedDocument();
+    final SizedDocument document = new SizedDocument();
     document.setMaximumLength(5);
 
-    TextInputPanel inputPanel = TextInputPanel.builder(new JTextField(document, value, 0))
+    final TextInputPanel inputPanel = TextInputPanel.builder(new JTextField(document, value, 0))
             .dialogTitle("none").build();
 
     ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textInputPanel(inputPanel);

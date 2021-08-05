@@ -22,7 +22,7 @@ public final class ChinookFXAppModel extends FXEntityApplicationModel {
     setupEntityModels();
   }
 
-  protected void setupEntityModels() {
+  private void setupEntityModels() {
     //artists
     final FXEntityModel artists = new FXEntityModel(Artist.TYPE, getConnectionProvider());
     final FXEntityModel albums = new FXEntityModel(Album.TYPE, getConnectionProvider());

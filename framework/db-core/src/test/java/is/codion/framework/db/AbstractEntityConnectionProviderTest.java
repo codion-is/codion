@@ -70,7 +70,8 @@ public final class AbstractEntityConnectionProviderTest {
               return ENTITIES;
             case "isConnected":
               return connected;
-            case "close": connected = false;
+            case "close":
+              connected = false;
               break;
           }
 
