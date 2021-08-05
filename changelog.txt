@@ -7230,3 +7230,4 @@
   DefaultServerConfiguration.serializationFilterWhitelist() now accepts null
   FrameworkMessages, constants cleanup
   Key.Builder added along with Entities.keyBuilder() and Key.copyBuilder()
+  EntityTablePanel.showDependenciesDialog() now displays an unknown dependencies message if dependencies without entity definitions were found
