@@ -45,7 +45,7 @@ public final class TestDomainExtended extends DefaultDomain {
     function();
   }
 
-  final void extended() {
+  void extended() {
     define(T_EXTENDED,
             columnProperty(EXTENDED_ID).primaryKeyIndex(0),
             columnProperty(EXTENDED_NAME),
@@ -53,15 +53,15 @@ public final class TestDomainExtended extends DefaultDomain {
             foreignKeyProperty(EXTENDED_DEPT_FK));
   }
 
-  final void procedure() {
+  void procedure() {
     defineProcedure(PROC_TYPE, (connection, arguments) -> {});
   }
 
-  final void function() {
+  void function() {
     defineFunction(FUNC_TYPE, (connection, arguments) -> null);
   }
 
-  final void report() {
+  void report() {
     defineReport(REP_TYPE, new Report<Object, Object, Object>() {
       @Override
       public Object fillReport(final Connection connection, final Object parameters) throws ReportException {
@@ -89,7 +89,7 @@ public final class TestDomainExtended extends DefaultDomain {
       extendedSecond();
     }
 
-    final void extendedSecond() {
+    void extendedSecond() {
       define(T_SECOND_EXTENDED,
               columnProperty(EXTENDED_ID).primaryKeyIndex(0),
               columnProperty(EXTENDED_NAME));
@@ -110,7 +110,7 @@ public final class TestDomainExtended extends DefaultDomain {
       extendedThird();
     }
 
-    final void extendedThird() {
+    void extendedThird() {
       define(T_THIRD_EXTENDED,
               columnProperty(EXTENDED_ID).primaryKeyIndex(0),
               columnProperty(EXTENDED_NAME));

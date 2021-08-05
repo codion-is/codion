@@ -170,12 +170,12 @@ class NumberParser<T extends Number> implements Parser<T> {
 
     private final int charetOffset;
 
-    protected DefaultNumberParseResult(final String text, final T value) {
+    private DefaultNumberParseResult(final String text, final T value) {
       this(text, value, 0, true);
     }
 
-    protected DefaultNumberParseResult(final String text, final T value, final int charetOffset,
-                                       final boolean successful) {
+    DefaultNumberParseResult(final String text, final T value, final int charetOffset,
+                             final boolean successful) {
       super(text, value, successful);
       this.charetOffset = charetOffset;
     }

@@ -12,9 +12,9 @@ import org.jfree.data.general.PieDataset;
 
 public final class ContinentModel extends SwingEntityModel {
 
-  private final DefaultPieDataset surfaceAreaDataset = new DefaultPieDataset();
-  private final DefaultPieDataset populationDataset = new DefaultPieDataset();
-  private final DefaultPieDataset gnpDataset = new DefaultPieDataset();
+  private final DefaultPieDataset<String> surfaceAreaDataset = new DefaultPieDataset<>();
+  private final DefaultPieDataset<String> populationDataset = new DefaultPieDataset<>();
+  private final DefaultPieDataset<String> gnpDataset = new DefaultPieDataset<>();
   private final DefaultCategoryDataset lifeExpectancyDataset = new DefaultCategoryDataset();
 
   public ContinentModel(EntityConnectionProvider connectionProvider) {
@@ -22,15 +22,15 @@ public final class ContinentModel extends SwingEntityModel {
     getTableModel().addRefreshListener(this::refreshChartDatasets);
   }
 
-  public PieDataset getPopulationDataset() {
+  public PieDataset<String> getPopulationDataset() {
     return populationDataset;
   }
 
-  public PieDataset getSurfaceAreaDataset() {
+  public PieDataset<String> getSurfaceAreaDataset() {
     return surfaceAreaDataset;
   }
 
-  public PieDataset getGnpDataset() {
+  public PieDataset<String> getGnpDataset() {
     return gnpDataset;
   }
 

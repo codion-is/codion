@@ -247,8 +247,8 @@ public abstract class DefaultDomain implements Domain {
       super(domainType);
     }
 
-    protected EntityDefinition.Builder defineInternal(final EntityType<?> entityType, final String tableName,
-                                                      final Property.Builder<?, ?>... propertyBuilders) {
+    private EntityDefinition.Builder defineInternal(final EntityType<?> entityType, final String tableName,
+                                                    final Property.Builder<?, ?>... propertyBuilders) {
       return super.define(entityType, tableName, propertyBuilders);
     }
 

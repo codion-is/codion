@@ -87,7 +87,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .build().getFormatter()
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
-    final double prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
+    final double prc = statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
     failedField.setText(format.format(statistics.getFailedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
       inPoolSnapshotChart.getXYPlot().setDataset(model.getSnapshotDataset());

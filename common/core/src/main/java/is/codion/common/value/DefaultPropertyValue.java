@@ -69,7 +69,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public final ValueObserver<V> getObserver() {
+  public ValueObserver<V> getObserver() {
     synchronized (changeEvent) {
       if (observer == null) {
         observer = new DefaultValueObserver<>(this);
@@ -80,7 +80,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public final Optional<V> toOptional() {
+  public Optional<V> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }

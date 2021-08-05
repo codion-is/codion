@@ -85,7 +85,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
    * Sets the caret, necessary for keeping the correct caret position when editing
    * @param caret the text field caret
    */
-  protected void setCaret(final Caret caret) {
+  void setCaret(final Caret caret) {
     this.caret = caret;
   }
 

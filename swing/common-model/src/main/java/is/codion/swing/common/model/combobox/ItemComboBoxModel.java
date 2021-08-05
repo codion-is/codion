@@ -40,7 +40,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param value the value
    * @return the index of the given value
    */
-  public final int indexOf(final T value) {
+  public int indexOf(final T value) {
     for (int i = 0; i < getSize(); i++) {
       if (Objects.equals(getElementAt(i).getValue(), value)) {
         return i;
@@ -135,7 +135,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
   }
 
   @Override
-  protected final Item<T> translateSelectionItem(final Object item) {
+  protected Item<T> translateSelectionItem(final Object item) {
     if (item instanceof Item) {
       return (Item<T>) item;
     }

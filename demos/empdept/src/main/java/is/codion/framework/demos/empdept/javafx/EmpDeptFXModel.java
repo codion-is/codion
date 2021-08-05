@@ -18,7 +18,7 @@ public final class EmpDeptFXModel extends FXEntityApplicationModel {
     setupEntityModels();
   }
 
-  protected void setupEntityModels() {
+  private void setupEntityModels() {
     final FXEntityModel departmentModel = new FXEntityModel(
             new FXEntityEditModel(Department.TYPE, getConnectionProvider()),
             new FXEntityListModel(Department.TYPE, getConnectionProvider()));
