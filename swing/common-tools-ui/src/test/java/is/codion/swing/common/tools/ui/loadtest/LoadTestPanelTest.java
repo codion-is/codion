@@ -17,18 +17,18 @@ public class LoadTestPanelTest {
 
   @Test
   void test() {
-    final LoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    final LoadTestPanel panel = new LoadTestPanel(model);
+    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    final LoadTestPanel<Object> panel = new LoadTestPanel<Object>(model);
     assertEquals(model, panel.getModel());
     model.shutdown();
   }
 
   @Test
   void constructorNullModel() {
-    assertThrows(NullPointerException.class, () -> new LoadTestPanel(null));
+    assertThrows(NullPointerException.class, () -> new LoadTestPanel<TestLoadTestModel>(null));
   }
 
-  private static final class TestLoadTestModel extends LoadTestModel {
+  private static final class TestLoadTestModel extends LoadTestModel<Object> {
 
     public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
                              final int applicationBatchSize) {

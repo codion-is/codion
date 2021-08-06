@@ -148,9 +148,9 @@ configure(project.frameworkModules) {
 
     jacocoTestReport {
         reports {
-            xml.enabled = true
-            html.enabled = false
-            csv.enabled = false
+            xml.getRequired().set(true)
+            html.getRequired().set(true)
+            csv.getRequired().set(true)
         }
         dependsOn test
     }

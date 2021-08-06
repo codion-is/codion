@@ -343,7 +343,7 @@ public final class AbstractFilteredTableModelTest {
     final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(new SwingFilteredTableColumnModel<>(asList(columnId, columnValue)),
             new AbstractTableSortModel<Row, Integer>() {
               @Override
-              public Class getColumnClass(final Integer columnIdentifier) {
+              public Class<? extends Object> getColumnClass(final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return Integer.class;
                 }
@@ -352,7 +352,7 @@ public final class AbstractFilteredTableModelTest {
               }
 
               @Override
-              protected Comparable getComparable(final Row row, final Integer columnIdentifier) {
+              protected Comparable<? extends Object> getComparable(final Row row, final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return row.id;
                 }

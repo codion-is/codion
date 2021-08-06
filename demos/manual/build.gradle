@@ -26,15 +26,15 @@ dependencies {
 ext.execMainClass = 'is.codion.framework.demos.manual.store.ui.StoreAppPanel'
 
 startScripts {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientRMIScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 runClientLocal {

@@ -27,15 +27,15 @@ test {
 }
 
 startScripts {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientRMIScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 runClientLocal {

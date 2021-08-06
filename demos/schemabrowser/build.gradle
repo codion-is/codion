@@ -29,7 +29,7 @@ test {
 }
 
 startScripts {
-    mainClassName = execMainClass
+    mainClass = execMainClass
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=local',
@@ -39,11 +39,11 @@ startScripts {
 }
 
 clientRMIScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 runClientLocal {

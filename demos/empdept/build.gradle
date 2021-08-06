@@ -65,23 +65,23 @@ task buildReports(dependsOn: 'compileJava') {
 classes.finalizedBy buildReports
 
 startScripts {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientRMIScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 loadTestRMIScript {
-    mainClassName = execLoadTestMainClass
+    mainClass = execLoadTestMainClass
 }
 
 loadTestHttpScript {
-    mainClassName = execLoadTestMainClass
+    mainClass = execLoadTestMainClass
 }
 
 runClientLocal {
