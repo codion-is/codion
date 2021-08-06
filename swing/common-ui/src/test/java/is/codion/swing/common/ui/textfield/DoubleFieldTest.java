@@ -220,7 +220,7 @@ public class DoubleFieldTest {
   void trailingDecimalSeparator() throws BadLocationException {
     final DoubleField doubleField = new DoubleField();
     doubleField.setSeparators('.', ',');
-    final NumberDocument document = (NumberDocument) doubleField.getDocument();
+    final NumberDocument<Double> document = doubleField.getTypedDocument();
     document.insertString(0, "1", null);
     assertEquals(Double.valueOf(1), doubleField.getDouble());
     document.insertString(1, ".", null);
@@ -245,7 +245,7 @@ public class DoubleFieldTest {
   @Test
   void trailingDecimalZeros() throws BadLocationException {
     final DoubleField doubleField = new DoubleField();
-    final NumberDocument document = (NumberDocument) doubleField.getDocument();
+    final NumberDocument<Double> document = doubleField.getTypedDocument();
     doubleField.setSeparators('.', ',');
 
     document.insertString(0, "1", null);

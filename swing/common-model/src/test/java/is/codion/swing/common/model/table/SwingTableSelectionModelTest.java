@@ -25,12 +25,12 @@ public class SwingTableSelectionModelTest {
     column.setIdentifier(0);
     final AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>() {
       @Override
-      public Class getColumnClass(final Integer columnIdentifier) {
+      public Class<String> getColumnClass(final Integer columnIdentifier) {
         return String.class;
       }
 
       @Override
-      protected Comparable getComparable(final String row, final Integer columnIdentifier) {
+      protected Comparable<String> getComparable(final String row, final Integer columnIdentifier) {
         return row;
       }
     };

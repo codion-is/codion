@@ -28,11 +28,11 @@ dependencies {
 ext.execMainClass = "$moduleName/is.codion.framework.demos.manual.store.ui.StoreAppPanel"
 
 application {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 startScripts {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 task runClientLocal(type: ModularJavaExec) {

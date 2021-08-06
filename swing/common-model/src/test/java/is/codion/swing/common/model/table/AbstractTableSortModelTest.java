@@ -120,7 +120,7 @@ public class AbstractTableSortModelTest {
   private static final class TestTableSortModel extends AbstractTableSortModel<Row, Integer> {
 
     @Override
-    public Class getColumnClass(final Integer columnIdentifier) {
+    public Class<? extends Object> getColumnClass(final Integer columnIdentifier) {
       if (columnIdentifier.equals(1)) {
         return String.class;
       }
@@ -129,7 +129,7 @@ public class AbstractTableSortModelTest {
     }
 
     @Override
-    protected Comparable getComparable(final Row row, final Integer columnIdentifier) {
+    protected Comparable<? extends Object> getComparable(final Row row, final Integer columnIdentifier) {
       switch (columnIdentifier) {
         case 0:
           return row.firstValue;

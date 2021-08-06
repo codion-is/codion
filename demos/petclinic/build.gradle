@@ -51,7 +51,7 @@ test {
 }
 
 application {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 task runClientLocal(type: ModularJavaExec) {

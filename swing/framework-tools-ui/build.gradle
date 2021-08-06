@@ -68,7 +68,7 @@ applicationDistribution.into('config') {
 
 task runDatabaseExplorerH2(type: ModularJavaExec) {
     group 'application'
-    main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.db.url'        : 'jdbc:h2:mem:h2db',
@@ -83,7 +83,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 
 //task runDatabaseExplorerOracle(type: ModularJavaExec) {
 //    group 'application'
-//    main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+//    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
 //            'codion.db.url': 'jdbc:oracle:thin:@localhost:1521:sid'
@@ -92,7 +92,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 
 //task runDatabaseExplorerPostgres(type: ModularJavaExec) {
 //    group 'application'
-//    main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+//    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
 //            'codion.db.url': 'jdbc:postgresql://localhost:5432/postgres'

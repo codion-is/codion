@@ -186,11 +186,11 @@ public final class ConditionsTest {
     assertThrows(NullPointerException.class, () ->
             where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Collection) null));
+            where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Collection<Entity>) null));
     assertThrows(NullPointerException.class, () ->
             where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Collection) null));
+            where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Collection<Entity>) null));
 
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
@@ -294,10 +294,10 @@ public final class ConditionsTest {
   @Test
   void conditionNullOrEmptyValues() {
     assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((String[]) null));
-    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((Collection) null));
+    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((Collection<String>) null));
 
     assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).notEqualTo((String[]) null));
-    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).notEqualTo((Collection) null));
+    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).notEqualTo((Collection<String>) null));
   }
 
   @Test

@@ -223,7 +223,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final List<Entity> getItems() {
-    return unmodifiableList(this);
+    return FXCollections.unmodifiableObservableList(this);
   }
 
   @Override
@@ -240,7 +240,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final List<Entity> getVisibleItems() {
-    return unmodifiableList(this);
+    return FXCollections.unmodifiableObservableList(this);
   }
 
   @Override

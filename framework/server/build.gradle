@@ -124,7 +124,7 @@ def applicationGenerateSecurityPolicyJvmArgs = [
 task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group 'application'
     classpath = configurations.serverRuntime
-    main = mainClassName
+    mainClass = mainClassName
     maxHeapSize = '256m'
     jvmArgs = [
             //using the automatic module name, since domain jars do not contain module-info

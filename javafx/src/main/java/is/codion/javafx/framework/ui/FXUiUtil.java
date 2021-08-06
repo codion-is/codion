@@ -71,7 +71,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -242,7 +241,7 @@ public final class FXUiUtil {
         return (Value<T>) entityValue;
       }
       else if (control instanceof EntitySearchField) {
-        final Value<Collection<Entity>> entityValue = PropertyValues.searchValue(((EntitySearchField) control).getModel());
+        final Value<List<Entity>> entityValue = PropertyValues.multipleSearchValue(((EntitySearchField) control).getModel());
         entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
 
         return (Value<T>) entityValue;
@@ -688,7 +687,7 @@ public final class FXUiUtil {
   public static EntitySearchField createSearchField(final ForeignKey foreignKey, final FXEntityEditModel editModel) {
     final EntitySearchModel searchModel = requireNonNull(editModel).getForeignKeySearchModel(requireNonNull(foreignKey));
     final EntitySearchField searchField = new EntitySearchField(searchModel);
-    PropertyValues.searchValue(searchModel).link(editModel.value(foreignKey));
+    PropertyValues.singleSearchValue(searchModel).link(editModel.value(foreignKey));
 
     return searchField;
   }

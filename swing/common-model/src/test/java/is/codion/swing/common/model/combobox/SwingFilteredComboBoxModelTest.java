@@ -261,7 +261,7 @@ public class SwingFilteredComboBoxModelTest {
     }
     List<Data> contents = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
-    final SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel();
+    final SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel<>();
     model.setContents(contents);
     model.setSelectedItem(contents.get(1));
     assertEquals("2", model.getSelectedValue().data);

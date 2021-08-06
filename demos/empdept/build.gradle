@@ -114,7 +114,6 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientLocalFX(type: ModularJavaExec) {
     group 'application'
-    mainClass = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
     mainClass = fxMainClass
     systemProperties = [
             'codion.client.connectionType': 'local',

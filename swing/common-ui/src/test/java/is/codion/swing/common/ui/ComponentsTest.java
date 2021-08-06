@@ -59,7 +59,7 @@ public class ComponentsTest {
     final JTextField textField = new JTextField();
     Components.setPreferredWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
-    final JComboBox box = new JComboBox();
+    final JComboBox<String> box = new JComboBox<>();
     box.setPreferredSize(new Dimension(10, 10));
     Components.setPreferredWidth(box, 42);
     assertEquals(10, box.getPreferredSize().height);

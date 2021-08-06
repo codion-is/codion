@@ -48,7 +48,7 @@ public class JasperReportsDataSourceTest {
     @Override
     public void setDescription(final String s) {}
     @Override
-    public Class getValueClass() {return null;}
+    public Class<String> getValueClass() {return null;}
     @Override
     public String getValueClassName() {return null;}
     @Override

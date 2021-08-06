@@ -48,7 +48,7 @@ applicationDefaultJvmArgs = [
 task runServerMonitor(type: ModularJavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
-    main = mainClassName
+    mainClass = mainClassName
     systemProperties = [
             'codion.server.hostname'          : "${serverHostName}",
             'codion.server.admin.user'        : 'scott:tiger',
