@@ -44,6 +44,9 @@ public final class WorldImpl extends DefaultDomain {
     //disable strict foreign keys.
     setStrictForeignKeys(false);
 
+    //Required for running with HTTP connection, since we use GeoPosition for locations.
+    World.addCustomSerializers();
+
     city();
     country();
     countryLanguage();
