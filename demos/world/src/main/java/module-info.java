@@ -1,5 +1,6 @@
 module is.codion.framework.demos.world {
   requires is.codion.swing.framework.ui;
+  requires is.codion.plugin.jackson.json;
   requires is.codion.swing.plugin.ikonli.foundation;
   requires org.kordamp.ikonli.foundation;
   requires org.kordamp.ikonli.swing;
@@ -18,5 +19,4 @@ module is.codion.framework.demos.world {
 
   provides is.codion.framework.domain.Domain
           with is.codion.framework.demos.world.domain.WorldImpl;
-
 }
