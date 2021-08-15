@@ -12,6 +12,7 @@ import is.codion.framework.domain.property.Property;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
@@ -34,6 +35,8 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   private final Entities entities;
   private final EntityObjectMapper entityObjectMapper;
   private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
+
+  private static final Map<Class<?>, JavaType> MAPPER_TYPES = new ConcurrentHashMap<>();
 
   EntityDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
     super(Entity.class);
@@ -89,6 +92,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     }
     else if (attribute.isEntity()) {
       return mapper.readValue(jsonNode.toString(), Entity.class);
+    }
+    else if (mapper.canDeserialize(MAPPER_TYPES.computeIfAbsent(attribute.getTypeClass(), mapper::constructType))) {
+      return mapper.readValue(jsonNode.toString(), attribute.getTypeClass());
     }
 
     return jsonNode.asText();

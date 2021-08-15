@@ -10,7 +10,9 @@ import is.codion.framework.domain.entity.Key;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +20,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,6 +35,9 @@ public final class EntityObjectMapper extends ObjectMapper {
 
   public static final TypeReference<List<Key>> KEY_LIST_REFERENCE = new TypeReference<List<Key>>() {};
   public static final TypeReference<List<Entity>> ENTITY_LIST_REFERENCE = new TypeReference<List<Entity>>() {};
+
+  private static final Map<Class<?>, StdSerializer<?>> CUSTOM_SERIALIZERS = new HashMap<>();
+  private static final Map<Class<?>, StdDeserializer<?>> CUSTOM_DESERIALIZERS = new HashMap<>();
 
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
@@ -53,6 +60,8 @@ public final class EntityObjectMapper extends ObjectMapper {
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
     module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
+    CUSTOM_SERIALIZERS.forEach((clazz, serializer) -> module.addSerializer(clazz, (StdSerializer<Object>) serializer));
+    CUSTOM_DESERIALIZERS.forEach((clazz, deserializer) -> module.addDeserializer((Class<Object>) clazz, deserializer));
     registerModule(module);
   }
 
@@ -139,5 +148,27 @@ public final class EntityObjectMapper extends ObjectMapper {
    */
   public List<Key> deserializeKeys(final InputStream inputStream) throws IOException {
     return readValue(inputStream, KEY_LIST_REFERENCE);
+  }
+
+  /**
+   * Adds a custom serializer to EntityObjectMapper instances. Subsequent calls for the same class have no effect.
+   * Any EntityObject instance instantiated after this method is called will contain the serializer.
+   * @param clazz the class
+   * @param serializer the serializer
+   * @param <T> the type
+   */
+  public static <T> void addCustomSerializer(final Class<T> clazz, final StdSerializer<T> serializer) {
+    CUSTOM_SERIALIZERS.putIfAbsent(requireNonNull(clazz), requireNonNull(serializer));
+  }
+
+  /**
+   * Adds a custom deserializer to EntityObjectMapper instances. Subsequent calls for the same class have no effect.
+   * Any EntityObject instance instantiated after this method is called will contain the deserializer.
+   * @param clazz the class
+   * @param deserializer the deserializer
+   * @param <T> the type
+   */
+  public static <T> void addCustomDeserializer(final Class<T> clazz, final StdDeserializer<T> deserializer) {
+    CUSTOM_DESERIALIZERS.putIfAbsent(requireNonNull(clazz), requireNonNull(deserializer));
   }
 }

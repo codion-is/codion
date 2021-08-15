@@ -7201,3 +7201,4 @@
   Key.Builder added along with Entities.keyBuilder() and Key.copyBuilder()
   EntityTablePanel.showDependenciesDialog() now displays an unknown dependencies message if dependencies without entity definitions were found
   PropertyValues.searchValue() split into singleSearchValue() and multipleSearchValue()
+  EntityObjectMapper, allow for custom serializers, useful when using non-standard types in entities, e.g. GeoPosition in World demo
