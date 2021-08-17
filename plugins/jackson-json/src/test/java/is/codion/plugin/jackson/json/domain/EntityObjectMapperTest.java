@@ -303,16 +303,15 @@ public final class EntityObjectMapperTest {
 
   @Test
   void customSerializer() throws JsonProcessingException {
-    EntityObjectMapper.addCustomSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
+    final StdSerializer<Custom> customStdSerializer = new StdSerializer<Custom>(Custom.class) {
       @Override
       public void serialize(final Custom value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("value", value.value);
         gen.writeEndObject();
       }
-    });
-
-    EntityObjectMapper.addCustomDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
+    };
+    final StdDeserializer<Custom> customStdDeserializer = new StdDeserializer<Custom>(Custom.class) {
       @Override
       public Custom deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException,
               JsonProcessingException {
@@ -320,16 +319,24 @@ public final class EntityObjectMapperTest {
 
         return new Custom(node.get("value").asText());
       }
-    });
+    };
 
-    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
+    EntityObjectMapper mapper = new EntityObjectMapper(entities);
+    mapper.addSerializer(Custom.class, customStdSerializer);
+    mapper.addDeserializer(Custom.class, customStdDeserializer);
 
     final Custom custom = new Custom("a value");
+    String valueAsString = mapper.writeValueAsString(custom);
+    Custom fromString = mapper.readValue(valueAsString, Custom.class);
+    assertEquals(custom.value, fromString.value);
 
-    final String valueAsString = mapper.writeValueAsString(custom);
+    EntityObjectMapper.addCustomSerializer(Custom.class, customStdSerializer);
+    EntityObjectMapper.addCustomDeserializer(Custom.class, customStdDeserializer);
 
-    final Custom fromString = mapper.readValue(valueAsString, Custom.class);
+    mapper = new EntityObjectMapper(entities);
 
+    valueAsString = mapper.writeValueAsString(custom);
+    fromString = mapper.readValue(valueAsString, Custom.class);
     assertEquals(custom.value, fromString.value);
   }
 

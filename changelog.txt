@@ -7203,3 +7203,4 @@
   PropertyValues.searchValue() split into singleSearchValue() and multipleSearchValue()
   EntityObjectMapper, allow for custom serializers, useful when using non-standard types in entities, e.g. GeoPosition in World demo
   EntityObjectMapper bug fixed, OffsetDateTimeSerializer added
+  EntityObjectMapper.addSerializer() and addDeserializer() instance methods added
