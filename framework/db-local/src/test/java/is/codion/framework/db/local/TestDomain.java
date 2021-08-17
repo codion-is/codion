@@ -247,8 +247,8 @@ public final class TestDomain extends DefaultDomain {
     define(JOINED_QUERY_ENTITY_TYPE,
             columnProperty(JOINED_DEPTNO),
             primaryKeyProperty(JOINED_EMPNO))
-            .selectQuery(SelectQuery.builder().
-                    fromClause("scott.emp e, scott.dept d")
+            .selectQuery(SelectQuery.builder()
+                    .fromClause("scott.emp e, scott.dept d")
                     .whereClause("e.deptno = d.deptno")
                     .build())
             .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
@@ -36,6 +37,7 @@ public final class TestDomain extends DefaultDomain {
   public static final EntityType<Entity> T_ENTITY = DOMAIN.entityType("test.entity");
   public static final Attribute<BigDecimal> ENTITY_DECIMAL = T_ENTITY.bigDecimalAttribute("id");
   public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = T_ENTITY.localDateTimeAttribute("date_time");
+  public static final Attribute<OffsetDateTime> ENTITY_OFFSET_DATE_TIME = T_ENTITY.offsetDateTimeAttribute("offset_date_time");
   public static final Attribute<byte[]> ENTITY_BLOB = T_ENTITY.byteArrayAttribute("blob");
   public static final Attribute<String> ENTITY_READ_ONLY = T_ENTITY.stringAttribute("read_only");
   public static final Attribute<Boolean> ENTITY_BOOLEAN = T_ENTITY.booleanAttribute("boolean");
@@ -46,6 +48,7 @@ public final class TestDomain extends DefaultDomain {
     define(T_ENTITY,
             columnProperty(ENTITY_DECIMAL).primaryKeyIndex(0),
             columnProperty(ENTITY_DATE_TIME).primaryKeyIndex(1),
+            columnProperty(ENTITY_OFFSET_DATE_TIME),
             columnProperty(ENTITY_BLOB),
             columnProperty(ENTITY_READ_ONLY)
                     .readOnly(),

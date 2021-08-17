@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.plugin.jackson.json.domain;
 
 import com.fasterxml.jackson.core.JsonGenerator;

@@ -34,8 +34,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
   }
 
   @Override
-  public void serialize(final Entity entity, final JsonGenerator generator, final SerializerProvider provider)
-          throws IOException {
+  public void serialize(final Entity entity, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
     generator.writeStringField("entityType", entity.getEntityType().getName());

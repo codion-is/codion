@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,19 +40,19 @@ public final class EntityObjectMapper extends ObjectMapper {
   private static final Map<Class<?>, StdSerializer<?>> CUSTOM_SERIALIZERS = new HashMap<>();
   private static final Map<Class<?>, StdDeserializer<?>> CUSTOM_DESERIALIZERS = new HashMap<>();
 
+  private final SimpleModule module = new SimpleModule();
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
   private final Entities entities;
 
   /**
-   * Instantiates a new EntityObjectMapper for the given domain
+   * Instantiates a new EntityObjectMapper for the given domain entities.
    * @param entities the domain model entities
    */
   public EntityObjectMapper(final Entities entities) {
     this.entities = requireNonNull(entities, "entities");
     this.entitySerializer = new EntitySerializer(this);
     this.entityDeserializer = new EntityDeserializer(entities, this);
-    final SimpleModule module = new SimpleModule();
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Key.class, new EntityKeySerializer(this));
@@ -59,6 +60,7 @@ public final class EntityObjectMapper extends ObjectMapper {
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+    module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
     module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
     CUSTOM_SERIALIZERS.forEach((clazz, serializer) -> module.addSerializer(clazz, (StdSerializer<Object>) serializer));
     CUSTOM_DESERIALIZERS.forEach((clazz, deserializer) -> module.addDeserializer((Class<Object>) clazz, deserializer));
@@ -151,8 +153,28 @@ public final class EntityObjectMapper extends ObjectMapper {
   }
 
   /**
+   * Adds a serializer to this EntityObjectMapper instance.
+   * @param clazz the class
+   * @param serializer the serializer
+   * @param <T> the type
+   */
+  public <T> void addSerializer(final Class<? extends T> clazz, final StdSerializer<T> serializer) {
+    module.addSerializer(requireNonNull(clazz), requireNonNull(serializer));
+  }
+
+  /**
+   * Adds a deserializer to this EntityObjectMapper instance.
+   * @param clazz the class
+   * @param deserializer the deserializer
+   * @param <T> the type
+   */
+  public <T> void addDeserializer(final Class<T> clazz, final StdDeserializer<? extends T> deserializer) {
+    module.addDeserializer(requireNonNull(clazz), requireNonNull(deserializer));
+  }
+
+  /**
    * Adds a custom serializer to EntityObjectMapper instances. Subsequent calls for the same class have no effect.
-   * Any EntityObject instance instantiated after this method is called will contain the serializer.
+   * Any EntityObjectMapper instance instantiated after this method is called will contain the serializer.
    * @param clazz the class
    * @param serializer the serializer
    * @param <T> the type
@@ -163,7 +185,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 
   /**
    * Adds a custom deserializer to EntityObjectMapper instances. Subsequent calls for the same class have no effect.
-   * Any EntityObject instance instantiated after this method is called will contain the deserializer.
+   * Any EntityObjectMapper instance instantiated after this method is called will contain the deserializer.
    * @param clazz the class
    * @param deserializer the deserializer
    * @param <T> the type

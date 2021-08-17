@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ public final class EntityObjectMapperTest {
     final Entity entity = entities.entity(TestDomain.T_ENTITY);
     entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
     entity.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
+    entity.put(TestDomain.ENTITY_OFFSET_DATE_TIME, OffsetDateTime.now());
     entity.put(TestDomain.ENTITY_BLOB, logoBytes);
     entity.put(TestDomain.ENTITY_READ_ONLY, "readOnly");
     entity.put(TestDomain.ENTITY_BOOLEAN, true);
@@ -301,16 +303,15 @@ public final class EntityObjectMapperTest {
 
   @Test
   void customSerializer() throws JsonProcessingException {
-    EntityObjectMapper.addCustomSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
+    final StdSerializer<Custom> customStdSerializer = new StdSerializer<Custom>(Custom.class) {
       @Override
       public void serialize(final Custom value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("value", value.value);
         gen.writeEndObject();
       }
-    });
-
-    EntityObjectMapper.addCustomDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
+    };
+    final StdDeserializer<Custom> customStdDeserializer = new StdDeserializer<Custom>(Custom.class) {
       @Override
       public Custom deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException,
               JsonProcessingException {
@@ -318,16 +319,24 @@ public final class EntityObjectMapperTest {
 
         return new Custom(node.get("value").asText());
       }
-    });
+    };
 
-    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
+    EntityObjectMapper mapper = new EntityObjectMapper(entities);
+    mapper.addSerializer(Custom.class, customStdSerializer);
+    mapper.addDeserializer(Custom.class, customStdDeserializer);
 
     final Custom custom = new Custom("a value");
+    String valueAsString = mapper.writeValueAsString(custom);
+    Custom fromString = mapper.readValue(valueAsString, Custom.class);
+    assertEquals(custom.value, fromString.value);
 
-    final String valueAsString = mapper.writeValueAsString(custom);
+    EntityObjectMapper.addCustomSerializer(Custom.class, customStdSerializer);
+    EntityObjectMapper.addCustomDeserializer(Custom.class, customStdDeserializer);
 
-    final Custom fromString = mapper.readValue(valueAsString, Custom.class);
+    mapper = new EntityObjectMapper(entities);
 
+    valueAsString = mapper.writeValueAsString(custom);
+    fromString = mapper.readValue(valueAsString, Custom.class);
     assertEquals(custom.value, fromString.value);
   }
 
