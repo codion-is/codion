@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ public final class EntityObjectMapperTest {
     final Entity entity = entities.entity(TestDomain.T_ENTITY);
     entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
     entity.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
+    entity.put(TestDomain.ENTITY_OFFSET_DATE_TIME, OffsetDateTime.now());
     entity.put(TestDomain.ENTITY_BLOB, logoBytes);
     entity.put(TestDomain.ENTITY_READ_ONLY, "readOnly");
     entity.put(TestDomain.ENTITY_BOOLEAN, true);

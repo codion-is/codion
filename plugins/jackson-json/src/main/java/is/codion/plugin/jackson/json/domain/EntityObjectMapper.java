@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,7 @@ public final class EntityObjectMapper extends ObjectMapper {
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+    module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
     module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
     CUSTOM_SERIALIZERS.forEach((clazz, serializer) -> module.addSerializer(clazz, (StdSerializer<Object>) serializer));
     CUSTOM_DESERIALIZERS.forEach((clazz, deserializer) -> module.addDeserializer((Class<Object>) clazz, deserializer));
