@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.calendar;
 
+import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
@@ -50,6 +51,9 @@ public final class CalendarPanel extends JPanel {
 
   private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
 
+  private final Value<LocalDate> localDateValue;
+  private final Value<LocalDateTime> localDateTimeValue;
+
   private final Value<Integer> yearValue;
   private final Value<Integer> monthValue;
   private final Value<Integer> dayValue;
@@ -79,6 +83,8 @@ public final class CalendarPanel extends JPanel {
     dayValue = Value.value(dateTime.getDayOfMonth(), dateTime.getDayOfMonth());
     hourValue = Value.value(dateTime.getHour(), dateTime.getHour());
     minuteValue = Value.value(dateTime.getMinute(), dateTime.getMinute());
+    localDateValue = Value.value(createLocalDateTime().toLocalDate());
+    localDateTimeValue = Value.value(createLocalDateTime());
     dayStates = createDayStates();
     dayButtons = createDayButtons();
     dayGridPanel = new JPanel(gridLayout(6, 7));
@@ -120,7 +126,35 @@ public final class CalendarPanel extends JPanel {
    * @return the date/time currently displayed in this calendar
    */
   public LocalDateTime getDateTime() {
-    return LocalDateTime.of(yearValue.get(), monthValue.get(), dayValue.get(), hourValue.get(), minuteValue.get());
+    return localDateTimeValue.get();
+  }
+
+  /**
+   * @param listener a listener notified each time the date changes
+   */
+  public void addDateListener(final EventDataListener<LocalDate> listener) {
+    localDateValue.addDataListener(listener);
+  }
+
+  /**
+   * @param listener a listener notified each time the date or time changes
+   */
+  public void addDateTimeListener(final EventDataListener<LocalDateTime> listener) {
+    localDateTimeValue.addDataListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeDateListener(final EventDataListener<LocalDate> listener) {
+    localDateValue.removeDataListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeDateTimeListener(final EventDataListener<LocalDateTime> listener) {
+    localDateTimeValue.removeDataListener(listener);
   }
 
   private Map<Integer, State> createDayStates() {
@@ -280,14 +314,6 @@ public final class CalendarPanel extends JPanel {
     yearValue.set(yearValue.get() + 1);
   }
 
-  private void bindEvents() {
-    yearValue.addListener(this::updateDate);
-    monthValue.addListener(this::updateDate);
-    dayValue.addListener(this::updateDate);
-    yearValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
-    monthValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
-  }
-
   private void layoutDayPanel() {
     final boolean requestFocusAfterLayout = dayGridPanel.isAncestorOf(FocusManager.getCurrentManager().getFocusOwner());
     dayGridPanel.removeAll();
@@ -312,11 +338,28 @@ public final class CalendarPanel extends JPanel {
     }
   }
 
-  private void updateDate() {
+  private LocalDateTime createLocalDateTime() {
+    return LocalDateTime.of(yearValue.get(), monthValue.get(), dayValue.get(), hourValue.get(), minuteValue.get());
+  }
+
+  private void updateDateTime() {
     //prevent illegal day values
     final YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
     dayStates.get(dayValue.get() > yearMonth.lengthOfMonth() ? yearMonth.lengthOfMonth() : dayValue.get()).set(true);
+    final LocalDateTime localDateTime = createLocalDateTime();
+    localDateValue.set(localDateTime.toLocalDate());
+    localDateTimeValue.set(localDateTime);
     SwingUtilities.invokeLater(() -> formattedDateLabel.setText(dateFormatter.format(getDateTime())));
+  }
+
+  private void bindEvents() {
+    yearValue.addListener(this::updateDateTime);
+    monthValue.addListener(this::updateDateTime);
+    dayValue.addListener(this::updateDateTime);
+    hourValue.addListener(this::updateDateTime);
+    minuteValue.addListener(this::updateDateTime);
+    yearValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
+    monthValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
   }
 
   private static JPanel createDayHeaderPanel() {

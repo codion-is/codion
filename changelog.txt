@@ -7205,3 +7205,4 @@
   EntityObjectMapper bug fixed, OffsetDateTimeSerializer added
   EntityObjectMapper.addSerializer() and addDeserializer() instance methods added
   LGoodDatePicker date picker library replaced with homemade CalendarPanel, keyboard navigation functionality was lacking
+  CalendarPanel.addDateListener() and addDateTimeListener() added
