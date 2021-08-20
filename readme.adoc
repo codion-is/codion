@@ -48,7 +48,6 @@ Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features,
 
 Codion uses a very limited set of third-party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
-* *https://github.com/LGoodDatePicker/LGoodDatePicker[com.github.lgooddatepicker:LGoodDatePicker]* for date/time input
 * *https://www.json.org[org.json:json]* for persisting client preferences
 * *https://github.com/qos-ch/slf4j[org.slf4j:slf4j-api]* for your logging framework of choice
 * *JDBC driver*
