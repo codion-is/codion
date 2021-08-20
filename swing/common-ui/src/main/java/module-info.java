@@ -3,6 +3,7 @@ module is.codion.swing.common.ui {
   requires transitive is.codion.swing.common.model;
 
   exports is.codion.swing.common.ui;
+  exports is.codion.swing.common.ui.calendar;
   exports is.codion.swing.common.ui.checkbox;
   exports is.codion.swing.common.ui.combobox;
   exports is.codion.swing.common.ui.component;
