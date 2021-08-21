@@ -174,7 +174,7 @@ public final class TextFields {
    * the field gains focus, in case the content length has not changed
    * http://stackoverflow.com/a/2202073/317760
    * @param mask the format mask
-   * @param valueContainsLiterals true if the the value should contain literals
+   * @param valueContainsLiterals true if the value should contain literals
    * @return a new MaskFormatter
    * @throws ParseException in case of an exception while parsing the mask
    */
