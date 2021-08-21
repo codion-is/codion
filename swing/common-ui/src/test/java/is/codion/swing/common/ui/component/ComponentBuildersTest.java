@@ -35,6 +35,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -394,6 +396,31 @@ public final class ComponentBuildersTest {
     assertEquals(10d, componentValue.get());
     value.set(50d);
     assertEquals(50d, componentValue.get());
+  }
+
+  @Test
+  void listSpinner() {
+    final Value<String> value = Value.value();
+    final ComponentValue<String, JSpinner> componentValue = ComponentBuilders.<String>listSpinner(new SpinnerListModel(Arrays.asList("One", "Two")))
+            .columns(5)
+            .linkedValue(value)
+            .buildComponentValue();
+    assertEquals("One", componentValue.get());
+    value.set("Two");
+    assertEquals("Two", componentValue.get());
+  }
+
+  @Test
+  void itemSpinner() {
+    final Value<Integer> value = Value.value();
+    final SpinnerListModel spinnerModel = new SpinnerListModel(asList(item(1, "One"), item(2, "Two")));
+    final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.<Integer>itemSpinner(spinnerModel)
+            .columns(5)
+            .linkedValue(value)
+            .buildComponentValue();
+    assertEquals(1, componentValue.get());
+    value.set(2);
+    assertEquals(2, componentValue.get());
   }
 
   @Test

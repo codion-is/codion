@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
@@ -17,13 +16,14 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import javax.swing.BorderFactory;
 import javax.swing.FocusManager;
 import javax.swing.InputMap;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
+import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -42,6 +42,7 @@ import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,12 +55,15 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel presenting a calendar for date/time selection.<br><br>
- * Select previous/next year with SHIFT + left/right arrow.<br>
- * Select previous/next month with CTRL + left/right arrow.<br>
- * Select previous/next week with ALT + up/down arrow.<br>
- * Select previous/next day with ALT + left/right arrow.<br>
- * Select previous/next hour with CTRL-ALT + left/right arrow.<br>
- * Select previous/next minute with SHIFT-ALT + left/right arrow.
+ * For a {@link CalendarPanel} without time fields use the {@link #dateCalendarPanel()} factory method.<br>
+ * For a {@link CalendarPanel} with time fields use the {@link #dateTimeCalendarPanel()} factory method.<br><br>
+ * Keyboard navigation:<br><br>
+ * Previous/next year: CTRL + left/right arrow.<br>
+ * Previous/next month: SHIFT + left/right arrow.<br>
+ * Previous/next week: ALT + up/down arrow.<br>
+ * Previous/next day: ALT + left/right arrow.<br>
+ * Previous/next hour: SHIFT-ALT + left/right arrow.<br>
+ * Previous/next minute: CTRL-ALT + left/right arrow.
  */
 public final class CalendarPanel extends JPanel {
 
@@ -89,18 +93,7 @@ public final class CalendarPanel extends JPanel {
   private final JLabel formattedDateLabel;
   private final boolean includeTime;
 
-  /**
-   * Instantiates a new {@link CalendarPanel} without time fields.
-   */
-  public CalendarPanel() {
-    this(false);
-  }
-
-  /**
-   * Instantiates a new {@link CalendarPanel}.
-   * @param includeTime true if time fields (hours/minutes) should be included
-   */
-  public CalendarPanel(final boolean includeTime) {
+  CalendarPanel(final boolean includeTime) {
     this.includeTime = includeTime;
     final LocalDateTime dateTime = LocalDateTime.now();
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
@@ -191,6 +184,20 @@ public final class CalendarPanel extends JPanel {
    */
   public void removeDateTimeListener(final EventDataListener<LocalDateTime> listener) {
     localDateTimeValue.removeDataListener(listener);
+  }
+
+  /**
+   * @return  a new {@link CalendarPanel} without time fields.
+   */
+  public static CalendarPanel dateCalendarPanel() {
+    return new CalendarPanel(false);
+  }
+
+  /**
+   * @return  a new {@link CalendarPanel} with time fields.
+   */
+  public static CalendarPanel dateTimeCalendarPanel() {
+    return new CalendarPanel(true);
   }
 
   void previousMonth() {
@@ -335,28 +342,18 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JPanel createYearMonthHourMinutePanel() {
-    final JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(hourValue.get().intValue(), -9999, 9999, 1));
-    yearSpinner.setEditor(createYearSpinnerEditor(yearSpinner));
-
-    final JComboBox<Item<Month>> monthComboBox = new JComboBox<>(ItemComboBoxModel.createModel(createMonthItems()));
-    final InputMap monthComboBoxInputMap = monthComboBox.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    //so it doesn't interfere with keyboard navigation when it has focus, these two showed the popup
-    monthComboBoxInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.ALT_DOWN_MASK,false), "none");
-    monthComboBoxInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.ALT_DOWN_MASK,false), "none");
-
-    final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(hourValue.get().intValue(), 0, 23, 1));
-    hourSpinner.setEditor(createTimeSpinnerEditor(hourSpinner));
-
-    final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(minuteValue.get().intValue(), 0, 59, 1));
-    minuteSpinner.setEditor(createTimeSpinnerEditor(minuteSpinner));
+    final JSpinner yearSpinner = createYearSpinner();
+    final JSpinner monthSpinner = createMonthSpinner(yearSpinner);
+    final JSpinner hourSpinner = createHourSpinner();
+    final JSpinner minuteSpinner = createMinuteSpinner();
 
     ComponentValues.integerSpinner(yearSpinner).link(yearValue);
-    ComponentValues.itemComboBox(monthComboBox).link(monthValue);
+    ComponentValues.<Month>itemSpinner(monthSpinner).link(monthValue);
     ComponentValues.integerSpinner(hourSpinner).link(hourValue);
     ComponentValues.integerSpinner(minuteSpinner).link(minuteValue);
 
     final JPanel yearMonthHourMinutePanel = new JPanel(flexibleGridLayout(1, 0));
-    yearMonthHourMinutePanel.add(monthComboBox);
+    yearMonthHourMinutePanel.add(monthSpinner);
     yearMonthHourMinutePanel.add(yearSpinner);
     if (includeTime) {
       yearMonthHourMinutePanel.add(new JLabel(" "));
@@ -444,25 +441,25 @@ public final class CalendarPanel extends JPanel {
     KeyEvents.builder(KeyEvent.VK_LEFT)
             .action(Control.control(this::previousYear))
             .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
             .action(Control.control(this::nextYear))
             .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_LEFT)
             .action(Control.control(this::previousMonth))
             .onKeyPressed()
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
             .action(Control.control(this::nextMonth))
             .onKeyPressed()
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_UP)
@@ -493,25 +490,25 @@ public final class CalendarPanel extends JPanel {
       KeyEvents.builder(KeyEvent.VK_LEFT)
               .action(Control.control(this::previousHour))
               .onKeyPressed()
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_RIGHT)
               .action(Control.control(this::nextHour))
               .onKeyPressed()
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_LEFT)
               .action(Control.control(this::previousMinute))
               .onKeyPressed()
-              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_RIGHT)
               .action(Control.control(this::nextMinute))
               .onKeyPressed()
-              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
     }
@@ -527,10 +524,47 @@ public final class CalendarPanel extends JPanel {
     monthValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
   }
 
+  private static JSpinner createYearSpinner() {
+    final JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(0, -9999, 9999, 1));
+    yearSpinner.setEditor(createYearSpinnerEditor(yearSpinner));
+
+    return removeCtrlLeftRightArrowKeyEvents(yearSpinner);
+  }
+
+  private static JSpinner createMonthSpinner(final JSpinner yearSpinner) {
+    final List<Item<Month>> monthItems = createMonthItems();
+    final JSpinner monthSpinner = new JSpinner(new SpinnerListModel(monthItems));
+    final JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
+    monthTextField.setFont(((JSpinner.DefaultEditor) yearSpinner.getEditor()).getTextField().getFont());
+    monthTextField.setEditable(false);
+    monthTextField.setHorizontalAlignment(SwingConstants.CENTER);
+    monthItems.stream()
+            .mapToInt(item -> item.getCaption().length())
+            .max()
+            .ifPresent(monthTextField::setColumns);
+
+    return removeCtrlLeftRightArrowKeyEvents(monthSpinner);
+  }
+
+  private static JSpinner createHourSpinner() {
+    final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+    hourSpinner.setEditor(createTimeSpinnerEditor(hourSpinner));
+
+    return removeCtrlLeftRightArrowKeyEvents(hourSpinner);
+  }
+
+  private static JSpinner createMinuteSpinner() {
+    final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+    minuteSpinner.setEditor(createTimeSpinnerEditor(minuteSpinner));
+
+    return removeCtrlLeftRightArrowKeyEvents(minuteSpinner);
+  }
+
   private static JSpinner.NumberEditor createYearSpinnerEditor(final JSpinner spinner) {
     final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner);
     editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
     editor.getTextField().setColumns(YEAR_COLUMNS);
+    editor.getTextField().setEditable(false);
     editor.getFormat().setGroupingUsed(false);
 
     return editor;
@@ -540,8 +574,20 @@ public final class CalendarPanel extends JPanel {
     final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "00");
     editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
     editor.getTextField().setColumns(TIME_COLUMNS);
+    editor.getTextField().setEditable(false);
 
     return editor;
+  }
+
+  private static JSpinner removeCtrlLeftRightArrowKeyEvents(final JSpinner spinner) {
+    final InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(JComponent.WHEN_FOCUSED);
+    //so it doesn't interfere with keyboard navigation when it has focus
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.SHIFT_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.SHIFT_DOWN_MASK,false), "none");
+
+    return spinner;
   }
 
   private static JPanel createDayHeaderPanel() {
@@ -568,6 +614,7 @@ public final class CalendarPanel extends JPanel {
     final List<Item<Month>> months = new ArrayList<>(MONTHS_IN_YEAR);
     Arrays.stream(Month.values()).forEach(month ->
             months.add(Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault()))));
+    Collections.reverse(months);
 
     return months;
   }

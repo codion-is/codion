@@ -11,6 +11,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -232,33 +233,49 @@ public final class ComponentBuilders {
   }
 
   /**
-   * @return a builder for a component
+   * @return a builder for a Double based JSpinner
    */
-  public static SpinnerBuilder<Double> doubleSpinner() {
+  public static NumberSpinnerBuilder<Double> doubleSpinner() {
     return doubleSpinner(new SpinnerNumberModel());
   }
 
   /**
    * @param spinnerNumberModel the spinner model
-   * @return a builder for a component
+   * @return a builder for a Double based JSpinner
    */
-  public static SpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultSpinnerBuilder<>(spinnerNumberModel, Double.class);
+  public static NumberSpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
+    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class);
   }
 
   /**
-   * @return a builder for a component
+   * @return a builder for a Integer based JSpinner
    */
-  public static SpinnerBuilder<Integer> integerSpinner() {
+  public static NumberSpinnerBuilder<Integer> integerSpinner() {
     return integerSpinner(new SpinnerNumberModel());
   }
 
   /**
    * @param spinnerNumberModel the spinner model
-   * @return a builder for a component
+   * @return a builder for a Integer based JSpinner
    */
-  public static SpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultSpinnerBuilder<>(spinnerNumberModel, Integer.class);
+  public static NumberSpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel) {
+    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class);
+  }
+
+  /**
+   * @param spinnerModel the spinner model
+   * @return a builder for a JSpinner
+   */
+  public static <T> ListSpinnerBuilder<T> listSpinner(final SpinnerListModel spinnerModel) {
+    return new DefaultListSpinnerBuilder<>(spinnerModel);
+  }
+
+  /**
+   * @param spinnerModel the spinner model
+   * @return a builder for a JSpinner
+   */
+  public static <T> ItemSpinnerBuilder<T> itemSpinner(final SpinnerListModel spinnerModel) {
+    return new DefaultItemSpinnerBuilder<>(spinnerModel);
   }
 
   /**

@@ -151,7 +151,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
   public static Optional<LocalDate> getLocalDateWithCalendar(final LocalDate startDate, final String message, final JComponent parent) {
-    final CalendarPanel calendarPanel = new CalendarPanel(false);
+    final CalendarPanel calendarPanel = CalendarPanel.dateCalendarPanel();
     if (startDate != null) {
       calendarPanel.setDate(startDate);
     }
@@ -174,7 +174,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public static Optional<LocalDateTime> getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String dialogTitle,
                                                                      final JComponent parent) {
-    final CalendarPanel calendarPanel = new CalendarPanel(true);
+    final CalendarPanel calendarPanel = CalendarPanel.dateTimeCalendarPanel();
     if (startDateTime != null) {
       calendarPanel.setDateTime(startDateTime);
     }

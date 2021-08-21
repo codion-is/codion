@@ -22,7 +22,7 @@ public final class CalendarPanelTest {
     final AtomicInteger dateChangedCounter = new AtomicInteger();
     final AtomicInteger dateTimeChangedCounter = new AtomicInteger();
     final LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
-    final CalendarPanel panel = new CalendarPanel(true);
+    final CalendarPanel panel = CalendarPanel.dateTimeCalendarPanel();
     panel.setDateTime(startDate);
 
     final EventDataListener<LocalDate> dataListener = date -> dateChangedCounter.incrementAndGet();
@@ -56,7 +56,7 @@ public final class CalendarPanelTest {
   @Test
   void navigation() {
     final LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
-    final CalendarPanel panel = new CalendarPanel(true);
+    final CalendarPanel panel = CalendarPanel.dateTimeCalendarPanel();
     panel.setDateTime(startDate);
 
     panel.previousYear();
@@ -107,7 +107,7 @@ public final class CalendarPanelTest {
   void dateOnly() {
     final LocalDateTime startDate = LocalDateTime.of(2021, 8, 21, 16, 30);
 
-    final CalendarPanel panel = new CalendarPanel();
+    final CalendarPanel panel = CalendarPanel.dateCalendarPanel();
     panel.setDateTime(startDate);
 
     assertEquals(startDate.withHour(0).withMinute(0), panel.getDateTime());

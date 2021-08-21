@@ -7239,3 +7239,7 @@
   CalendarPanel.addDateListener() and addDateTimeListener() added
   CalendarPanel, keyboard navigation finished, refactoring + minor improvements, test improved
   Dialogs.okCancelDialogBuilder() dialog can now be closed via X, invokes cancelAction
+  CalendarPanel.dateCalendarPanel() and dateTimeCalendarPanel() factory methods added, constructor package private
+  SpinnerBuilder renamed NumberSpinnerBuilder
+  ComponentBuilders.listSpinner() and itemSpinner() and ComponentValues.listSpinner() and itemSpinner() added
+  CalendarPanel, month combo box replaced with spinner

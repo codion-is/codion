@@ -251,6 +251,14 @@ public final class ComponentValues {
   }
 
   /**
+   * @param spinner the spinner
+   * @return a Value bound to the given spinner
+   */
+  public static ComponentValue<Integer, JSpinner> integerSpinner(final JSpinner spinner) {
+    return new SpinnerNumberValue<>(spinner);
+  }
+
+  /**
    * @param integerField the component
    * @return a Value bound to the given component
    */
@@ -307,9 +315,19 @@ public final class ComponentValues {
   /**
    * @param spinner the spinner
    * @return a Value bound to the given spinner
+   * @throws IllegalArgumentException in case the spinner model is not a SpinnerListModel
    */
-  public static ComponentValue<Integer, JSpinner> integerSpinner(final JSpinner spinner) {
-    return new SpinnerNumberValue<>(spinner);
+  public static <T> ComponentValue<T, JSpinner> listSpinner(final JSpinner spinner) {
+    return new SpinnerListValue<>(spinner);
+  }
+
+  /**
+   * @param spinner the spinner
+   * @return a Value bound to the given spinner
+   * @throws IllegalArgumentException in case the spinner model is not a SpinnerListModel
+   */
+  public static <T> ComponentValue<T, JSpinner> itemSpinner(final JSpinner spinner) {
+    return new SpinnerItemValue<>(spinner);
   }
 
   /**
