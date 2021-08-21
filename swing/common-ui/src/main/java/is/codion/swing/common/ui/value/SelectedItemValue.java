@@ -8,18 +8,8 @@ import is.codion.common.item.Item;
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 
-/**
- * A ComponentValue implementation based on a list of Items
- * @param <V> the type represented by the items available via this input provider
- * @see Item
- */
 final class SelectedItemValue<V, C extends JComboBox<Item<V>>> extends AbstractComponentValue<V, C> {
 
-  /**
-   * Instantiates a Item based ComponentValue.
-   * @param initialValue the initial value
-   * @param values the available values
-   */
   SelectedItemValue(final C comboBox) {
     super(comboBox);
     getComponent().addItemListener(e -> {
