@@ -18,6 +18,8 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -88,6 +90,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     final Action theCancelAction = cancelAction == null ? Control.control(dialog::dispose) : cancelAction;
 
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    dialog.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        theCancelAction.actionPerformed(null);
+      }
+    });
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .action(theCancelAction)
