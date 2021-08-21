@@ -376,6 +376,9 @@ public final class CalendarPanel extends JPanel {
 
   private void layoutDayPanel() {
     final boolean dayPanelHasFocus = dayPanelHasFocus();
+    if (dayPanelHasFocus) {//otherwise, the focus jumps to the first field (month)
+      dayGridPanel.requestFocusInWindow();
+    }
     dayGridPanel.removeAll();
     final int firstDayOfMonth = LocalDate.of(yearValue.get(), monthValue.get(), 1).getDayOfWeek().getValue();
     int fieldCount = 0;

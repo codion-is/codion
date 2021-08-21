@@ -7243,3 +7243,4 @@
   SpinnerBuilder renamed NumberSpinnerBuilder
   ComponentBuilders.listSpinner() and itemSpinner() and ComponentValues.listSpinner() and itemSpinner() added
   CalendarPanel, month combo box replaced with spinner
+  CalenarPanel bug fixed, focus no longer jumps to first field when days panel is layed out

@@ -313,6 +313,7 @@ public final class ComponentValues {
   }
 
   /**
+   * @param <T> the value type
    * @param spinner the spinner
    * @return a Value bound to the given spinner
    * @throws IllegalArgumentException in case the spinner model is not a SpinnerListModel
@@ -322,6 +323,7 @@ public final class ComponentValues {
   }
 
   /**
+   * @param <T> the value type
    * @param spinner the spinner
    * @return a Value bound to the given spinner
    * @throws IllegalArgumentException in case the spinner model is not a SpinnerListModel
