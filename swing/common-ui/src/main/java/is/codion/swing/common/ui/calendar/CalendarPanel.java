@@ -4,8 +4,10 @@
 package is.codion.swing.common.ui.calendar;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
@@ -14,12 +16,14 @@ import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.BorderFactory;
 import javax.swing.FocusManager;
-import javax.swing.JButton;
+import javax.swing.InputMap;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -30,32 +34,50 @@ import java.awt.event.KeyEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A panel presenting a calendar for date/time selection.<br><br>
+ * Select previous/next year with SHIFT + left/right arrow.<br>
  * Select previous/next month with CTRL + left/right arrow.<br>
- * Select previous/next year with ALT + left/right arrow.
+ * Select previous/next week with ALT + up/down arrow.<br>
+ * Select previous/next day with ALT + left/right arrow.<br>
+ * Select previous/next hour with CTRL-ALT + left/right arrow.<br>
+ * Select previous/next minute with SHIFT-ALT + left/right arrow.
  */
 public final class CalendarPanel extends JPanel {
 
+  private static final int YEAR_COLUMNS = 4;
+  private static final int TIME_COLUMNS = 2;
+  private static final int DAYS_IN_WEEK = 7;
+  private static final int MONTHS_IN_YEAR = 12;
+  private static final int MAX_DAYS_IN_MONTH = 31;
+  private static final int MAX_DAY_FILLERS = 14;
+
   private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+  private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
   private final Value<LocalDate> localDateValue;
   private final Value<LocalDateTime> localDateTimeValue;
 
   private final Value<Integer> yearValue;
-  private final Value<Integer> monthValue;
+  private final Value<Month> monthValue;
   private final Value<Integer> dayValue;
   private final Value<Integer> hourValue;
   private final Value<Integer> minuteValue;
@@ -63,7 +85,9 @@ public final class CalendarPanel extends JPanel {
   private final Map<Integer, JToggleButton> dayButtons;
   private final Map<Integer, State> dayStates;
   private final JPanel dayGridPanel;
+  private final List<JLabel> dayFillLabels;
   private final JLabel formattedDateLabel;
+  private final boolean includeTime;
 
   /**
    * Instantiates a new {@link CalendarPanel} without time fields.
@@ -77,19 +101,29 @@ public final class CalendarPanel extends JPanel {
    * @param includeTime true if time fields (hours/minutes) should be included
    */
   public CalendarPanel(final boolean includeTime) {
+    this.includeTime = includeTime;
     final LocalDateTime dateTime = LocalDateTime.now();
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
-    monthValue = Value.value(dateTime.getMonthValue(), dateTime.getMonthValue());
+    monthValue = Value.value(dateTime.getMonth(), dateTime.getMonth());
     dayValue = Value.value(dateTime.getDayOfMonth(), dateTime.getDayOfMonth());
-    hourValue = Value.value(dateTime.getHour(), dateTime.getHour());
-    minuteValue = Value.value(dateTime.getMinute(), dateTime.getMinute());
+    if (includeTime) {
+      hourValue = Value.value(dateTime.getHour(), dateTime.getHour());
+      minuteValue = Value.value(dateTime.getMinute(), dateTime.getMinute());
+    }
+    else {
+      hourValue = Value.value(0, 0);
+      minuteValue = Value.value(0, 0);
+    }
     localDateValue = Value.value(createLocalDateTime().toLocalDate());
     localDateTimeValue = Value.value(createLocalDateTime());
     dayStates = createDayStates();
     dayButtons = createDayButtons();
-    dayGridPanel = new JPanel(gridLayout(6, 7));
-    formattedDateLabel = new JLabel(dateFormatter.format(getDateTime()), SwingConstants.CENTER);
-    initializeUI(includeTime);
+    dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
+    dayGridPanel = new JPanel(gridLayout(6, DAYS_IN_WEEK));
+    formattedDateLabel = new JLabel("", SwingConstants.CENTER);
+    formattedDateLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    initializeUI();
+    updateFormattedDate();
     bindEvents();
     Components.addInitialFocusHack(this, Control.control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
   }
@@ -110,16 +144,18 @@ public final class CalendarPanel extends JPanel {
   }
 
   /**
-   * Sets the date/time to present in this calendar
+   * Sets the date/time to present in this calendar.
    * @param dateTime the date/time to set
    */
   public void setDateTime(final LocalDateTime dateTime) {
     requireNonNull(dateTime);
     yearValue.set(dateTime.getYear());
-    monthValue.set(dateTime.getMonthValue());
+    monthValue.set(dateTime.getMonth());
     dayValue.set(dateTime.getDayOfMonth());
-    hourValue.set(dateTime.getHour());
-    minuteValue.set(dateTime.getMinute());
+    if (includeTime) {
+      hourValue.set(dateTime.getHour());
+      minuteValue.set(dateTime.getMinute());
+    }
   }
 
   /**
@@ -157,10 +193,94 @@ public final class CalendarPanel extends JPanel {
     localDateTimeValue.removeDataListener(listener);
   }
 
+  void previousMonth() {
+    final LocalDate previousMonth = getDate().minus(1, ChronoUnit.MONTHS);
+    monthValue.set(previousMonth.getMonth());
+    yearValue.set(previousMonth.getYear());
+  }
+
+  void nextMonth() {
+    final LocalDate nextMonth = getDate().plus(1, ChronoUnit.MONTHS);
+    monthValue.set(nextMonth.getMonth());
+    yearValue.set(nextMonth.getYear());
+  }
+
+  void previousYear() {
+    yearValue.set(yearValue.get() - 1);
+  }
+
+  void nextYear() {
+    yearValue.set(yearValue.get() + 1);
+  }
+
+  void previousWeek() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDay(getDate().minus(1, ChronoUnit.WEEKS));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void nextWeek() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDay(getDate().plus(1, ChronoUnit.WEEKS));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void previousDay() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDay(getDate().minus(1, ChronoUnit.DAYS));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void nextDay() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDay(getDate().plus(1, ChronoUnit.DAYS));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void previousHour() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDayHourMinute(getDateTime().minus(1, ChronoUnit.HOURS));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void nextHour() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDayHourMinute(getDateTime().plus(1, ChronoUnit.HOURS));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void previousMinute() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDayHourMinute(getDateTime().minus(1, ChronoUnit.MINUTES));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
+  void nextMinute() {
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
+    setYearMonthDayHourMinute(getDateTime().plus(1, ChronoUnit.MINUTES));
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
+    }
+  }
+
   private Map<Integer, State> createDayStates() {
     final Map<Integer, State> states = new HashMap<>();
     final State.Group stateGroup = State.group();
-    for (int dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
+    for (int dayOfMonth = 1; dayOfMonth <= MAX_DAYS_IN_MONTH; dayOfMonth++) {
       final State state = createDayState(dayOfMonth);
       stateGroup.addState(state);
       states.put(dayOfMonth, state);
@@ -189,138 +309,82 @@ public final class CalendarPanel extends JPanel {
     return buttons;
   }
 
-  private void initializeUI(final boolean includeTime) {
+  private void initializeUI() {
     setLayout(borderLayout());
     setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     add(createNorthPanel(), BorderLayout.NORTH);
     add(createDayPanel(), BorderLayout.CENTER);
-    if (includeTime) {
-      add(createTimePanel(), BorderLayout.SOUTH);
-    }
+    addKeyEvents();
     layoutDayPanel();
   }
 
   private JPanel createNorthPanel() {
-    final JPanel previousYearMonthPanel = new JPanel(gridLayout(1, 2));
-    previousYearMonthPanel.add(createPreviousYearButton());
-    previousYearMonthPanel.add(createPreviousMonthButton());
+    final JPanel northCenterPanel = new JPanel(flowLayout(FlowLayout.CENTER));
+    northCenterPanel.add(createYearMonthHourMinutePanel());
+    northCenterPanel.setBorder(BorderFactory.createTitledBorder(""));
 
-    final JPanel nextYearMonthPanel = new JPanel(gridLayout(1, 2));
-    nextYearMonthPanel.add(createNextMonthButton());
-    nextYearMonthPanel.add(createNextYearButton());
+    final JPanel northNorthPanel = new JPanel(borderLayout());
+    northNorthPanel.add(formattedDateLabel, BorderLayout.CENTER);
+    northNorthPanel.setBorder(BorderFactory.createTitledBorder(""));
 
     final JPanel northPanel = new JPanel(borderLayout());
-    northPanel.add(formattedDateLabel, BorderLayout.NORTH);
-    northPanel.add(previousYearMonthPanel, BorderLayout.WEST);
-    northPanel.add(nextYearMonthPanel, BorderLayout.EAST);
+    northPanel.add(northNorthPanel, BorderLayout.NORTH);
+    northPanel.add(northCenterPanel, BorderLayout.CENTER);
 
     return northPanel;
   }
 
-  private JButton createPreviousYearButton() {
-    final Control previousYearControl = Control.builder(this::previousYear)
-            .caption("<<")
-            .build();
-    KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(previousYearControl)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .enable(this);
+  private JPanel createYearMonthHourMinutePanel() {
+    final JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(hourValue.get().intValue(), -9999, 9999, 1));
+    yearSpinner.setEditor(createYearSpinnerEditor(yearSpinner));
 
-    return previousYearControl.createButton();
-  }
+    final JComboBox<Item<Month>> monthComboBox = new JComboBox<>(ItemComboBoxModel.createModel(createMonthItems()));
+    final InputMap monthComboBoxInputMap = monthComboBox.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    //so it doesn't interfere with keyboard navigation when it has focus, these two showed the popup
+    monthComboBoxInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.ALT_DOWN_MASK,false), "none");
+    monthComboBoxInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.ALT_DOWN_MASK,false), "none");
 
-  private JButton createPreviousMonthButton() {
-    final Control previousMonthControl = Control.builder(this::previousMonth)
-            .caption("<")
-            .build();
-    KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(previousMonthControl)
-            .modifiers(InputEvent.ALT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .enable(this);
+    final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(hourValue.get().intValue(), 0, 23, 1));
+    hourSpinner.setEditor(createTimeSpinnerEditor(hourSpinner));
 
-    return previousMonthControl.createButton();
-  }
+    final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(minuteValue.get().intValue(), 0, 59, 1));
+    minuteSpinner.setEditor(createTimeSpinnerEditor(minuteSpinner));
 
-  private JButton createNextMonthButton() {
-    final Control nextMonthControl = Control.builder(this::nextMonth)
-            .caption(">")
-            .build();
-    KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(nextMonthControl)
-            .modifiers(InputEvent.ALT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .enable(this);
+    ComponentValues.integerSpinner(yearSpinner).link(yearValue);
+    ComponentValues.itemComboBox(monthComboBox).link(monthValue);
+    ComponentValues.integerSpinner(hourSpinner).link(hourValue);
+    ComponentValues.integerSpinner(minuteSpinner).link(minuteValue);
 
-    return nextMonthControl.createButton();
-  }
+    final JPanel yearMonthHourMinutePanel = new JPanel(flexibleGridLayout(1, 0));
+    yearMonthHourMinutePanel.add(monthComboBox);
+    yearMonthHourMinutePanel.add(yearSpinner);
+    if (includeTime) {
+      yearMonthHourMinutePanel.add(new JLabel(" "));
+      yearMonthHourMinutePanel.add(hourSpinner);
+      yearMonthHourMinutePanel.add(new JLabel(":", SwingConstants.CENTER));
+      yearMonthHourMinutePanel.add(minuteSpinner);
+    }
 
-  private JButton createNextYearButton() {
-    final Control nextYearControl = Control.builder(this::nextYear)
-            .caption(">>")
-            .build();
-    KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(nextYearControl)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .enable(this);
-
-    return nextYearControl.createButton();
+    return yearMonthHourMinutePanel;
   }
 
   private JPanel createDayPanel() {
     final JPanel dayPanel = new JPanel(borderLayout());
     dayPanel.add(createDayHeaderPanel(), BorderLayout.NORTH);
     dayPanel.add(dayGridPanel, BorderLayout.CENTER);
+    dayPanel.setBorder(BorderFactory.createTitledBorder(""));
 
     return dayPanel;
   }
 
-  private JPanel createTimePanel() {
-    final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(hourValue.get().intValue(), 0, 23, 1));
-    final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(minuteValue.get().intValue(), 0, 59, 1));
-
-    ComponentValues.integerSpinner(hourSpinner).link(hourValue);
-    ComponentValues.integerSpinner(minuteSpinner).link(minuteValue);
-
-    final JPanel hourMinutePanel = new JPanel(gridLayout(1, 2));
-    hourMinutePanel.add(hourSpinner);
-    hourMinutePanel.add(minuteSpinner);
-
-    final JPanel panel = new JPanel(flowLayout(FlowLayout.CENTER));
-    panel.add(hourMinutePanel);
-
-    return panel;
-  }
-
-  private void previousMonth() {
-    final LocalDate previousMonth = getDate().minus(1, ChronoUnit.MONTHS);
-    monthValue.set(previousMonth.getMonthValue());
-    yearValue.set(previousMonth.getYear());
-  }
-
-  private void nextMonth() {
-    final LocalDate nextMonth = getDate().plus(1, ChronoUnit.MONTHS);
-    monthValue.set(nextMonth.getMonthValue());
-    yearValue.set(nextMonth.getYear());
-  }
-
-  private void previousYear() {
-    yearValue.set(yearValue.get() - 1);
-  }
-
-  private void nextYear() {
-    yearValue.set(yearValue.get() + 1);
-  }
-
   private void layoutDayPanel() {
-    final boolean requestFocusAfterLayout = dayGridPanel.isAncestorOf(FocusManager.getCurrentManager().getFocusOwner());
+    final boolean dayPanelHasFocus = dayPanelHasFocus();
     dayGridPanel.removeAll();
     final int firstDayOfMonth = LocalDate.of(yearValue.get(), monthValue.get(), 1).getDayOfWeek().getValue();
     int fieldCount = 0;
+    int fillerCount = 0;
     for (int i = 1; i < firstDayOfMonth; i++) {
-      dayGridPanel.add(new JLabel());
+      dayGridPanel.add(dayFillLabels.get(fillerCount++));
       fieldCount++;
     }
     final YearMonth yearMonth = YearMonth.of(yearValue.get(), monthValue.get());
@@ -329,13 +393,33 @@ public final class CalendarPanel extends JPanel {
       fieldCount++;
     }
     while (fieldCount++ < 42) {
-      dayGridPanel.add(new JLabel());
+      dayGridPanel.add(dayFillLabels.get(fillerCount++));
     }
-    revalidate();
+    validate();
     repaint();
-    if (requestFocusAfterLayout) {
-      dayButtons.get(dayValue.get()).requestFocusInWindow();
+    if (dayPanelHasFocus) {
+      requestCurrentDayButtonFocus();
     }
+  }
+
+  private boolean dayPanelHasFocus() {
+    return dayGridPanel.isAncestorOf(FocusManager.getCurrentManager().getFocusOwner());
+  }
+
+  private void requestCurrentDayButtonFocus() {
+    dayButtons.get(dayValue.get()).requestFocusInWindow();
+  }
+
+  private void setYearMonthDay(final LocalDate localDate) {
+    yearValue.set(localDate.getYear());
+    monthValue.set(localDate.getMonth());
+    dayValue.set(localDate.getDayOfMonth());
+  }
+
+  private void setYearMonthDayHourMinute(final LocalDateTime localDateTime) {
+    setYearMonthDay(localDateTime.toLocalDate());
+    hourValue.set(localDateTime.getHour());
+    minuteValue.set(localDateTime.getMinute());
   }
 
   private LocalDateTime createLocalDateTime() {
@@ -349,7 +433,88 @@ public final class CalendarPanel extends JPanel {
     final LocalDateTime localDateTime = createLocalDateTime();
     localDateValue.set(localDateTime.toLocalDate());
     localDateTimeValue.set(localDateTime);
-    SwingUtilities.invokeLater(() -> formattedDateLabel.setText(dateFormatter.format(getDateTime())));
+    SwingUtilities.invokeLater(this::updateFormattedDate);
+  }
+
+  private void updateFormattedDate() {
+    formattedDateLabel.setText(dateFormatter.format(getDateTime()) + (includeTime ? " " + timeFormatter.format(getDateTime()) : ""));
+  }
+
+  private void addKeyEvents() {
+    KeyEvents.builder(KeyEvent.VK_LEFT)
+            .action(Control.control(this::previousYear))
+            .onKeyPressed()
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_RIGHT)
+            .action(Control.control(this::nextYear))
+            .onKeyPressed()
+            .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_LEFT)
+            .action(Control.control(this::previousMonth))
+            .onKeyPressed()
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_RIGHT)
+            .action(Control.control(this::nextMonth))
+            .onKeyPressed()
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_UP)
+            .action(Control.control(this::previousWeek))
+            .onKeyPressed()
+            .modifiers(InputEvent.ALT_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_DOWN)
+            .action(Control.control(this::nextWeek))
+            .onKeyPressed()
+            .modifiers(InputEvent.ALT_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_LEFT)
+            .action(Control.control(this::previousDay))
+            .onKeyPressed()
+            .modifiers(InputEvent.ALT_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_RIGHT)
+            .action(Control.control(this::nextDay))
+            .onKeyPressed()
+            .modifiers(InputEvent.ALT_DOWN_MASK)
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .enable(this);
+    if (includeTime) {
+      KeyEvents.builder(KeyEvent.VK_LEFT)
+              .action(Control.control(this::previousHour))
+              .onKeyPressed()
+              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .enable(this);
+      KeyEvents.builder(KeyEvent.VK_RIGHT)
+              .action(Control.control(this::nextHour))
+              .onKeyPressed()
+              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .enable(this);
+      KeyEvents.builder(KeyEvent.VK_LEFT)
+              .action(Control.control(this::previousMinute))
+              .onKeyPressed()
+              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .enable(this);
+      KeyEvents.builder(KeyEvent.VK_RIGHT)
+              .action(Control.control(this::nextMinute))
+              .onKeyPressed()
+              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .enable(this);
+    }
   }
 
   private void bindEvents() {
@@ -362,8 +527,25 @@ public final class CalendarPanel extends JPanel {
     monthValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
   }
 
+  private static JSpinner.NumberEditor createYearSpinnerEditor(final JSpinner spinner) {
+    final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner);
+    editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+    editor.getTextField().setColumns(YEAR_COLUMNS);
+    editor.getFormat().setGroupingUsed(false);
+
+    return editor;
+  }
+
+  private static JSpinner.NumberEditor createTimeSpinnerEditor(final JSpinner spinner) {
+    final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "00");
+    editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+    editor.getTextField().setColumns(TIME_COLUMNS);
+
+    return editor;
+  }
+
   private static JPanel createDayHeaderPanel() {
-    final JPanel headerPanel = new JPanel(gridLayout(1, 7));
+    final JPanel headerPanel = new JPanel(gridLayout(1, DAYS_IN_WEEK));
     headerPanel.add(createDayLabel(DayOfWeek.MONDAY));
     headerPanel.add(createDayLabel(DayOfWeek.TUESDAY));
     headerPanel.add(createDayLabel(DayOfWeek.WEDNESDAY));
@@ -376,6 +558,17 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JLabel createDayLabel(final DayOfWeek dayOfWeek) {
-    return new JLabel(dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()), SwingConstants.CENTER);
+    final JLabel label = new JLabel(dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()), SwingConstants.CENTER);
+    label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+    return label;
+  }
+
+  private static List<Item<Month>> createMonthItems() {
+    final List<Item<Month>> months = new ArrayList<>(MONTHS_IN_YEAR);
+    Arrays.stream(Month.values()).forEach(month ->
+            months.add(Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault()))));
+
+    return months;
   }
 }

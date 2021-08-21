@@ -7237,3 +7237,4 @@
   EntityObjectMapper.addSerializer() and addDeserializer() instance methods added
   LGoodDatePicker date picker library replaced with homemade CalendarPanel, keyboard navigation functionality was lacking
   CalendarPanel.addDateListener() and addDateTimeListener() added
+  CalendarPanel, keyboard navigation finished, refactoring + minor improvements, test improved
