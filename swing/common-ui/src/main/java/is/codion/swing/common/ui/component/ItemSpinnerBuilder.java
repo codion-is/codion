@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.component;
 import javax.swing.JSpinner;
 
 /**
- * A builder for JSpinner based on a list of {@link Item}s.
+ * A builder for JSpinner based on a list of {@link is.codion.common.item.Item}s.
  * @param <T> the value type
  */
 public interface ItemSpinnerBuilder<T> extends ComponentBuilder<T, JSpinner, ItemSpinnerBuilder<T>> {
