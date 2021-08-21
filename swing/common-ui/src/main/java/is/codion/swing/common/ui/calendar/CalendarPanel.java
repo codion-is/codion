@@ -54,12 +54,15 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel presenting a calendar for date/time selection.<br><br>
- * Select previous/next year with SHIFT + left/right arrow.<br>
- * Select previous/next month with CTRL + left/right arrow.<br>
- * Select previous/next week with ALT + up/down arrow.<br>
- * Select previous/next day with ALT + left/right arrow.<br>
- * Select previous/next hour with CTRL-ALT + left/right arrow.<br>
- * Select previous/next minute with SHIFT-ALT + left/right arrow.
+ * For a {@link CalendarPanel} without time fields use the {@link #dateCalendarPanel()} factory method.<br>
+ * For a {@link CalendarPanel} with time fields use the {@link #dateTimeCalendarPanel()} factory method.<br><br>
+ * Keyboard navigation:<br><br>
+ * Previous/next year: SHIFT + left/right arrow.<br>
+ * Previous/next month: CTRL + left/right arrow.<br>
+ * Previous/next week: ALT + up/down arrow.<br>
+ * Previous/next day: ALT + left/right arrow.<br>
+ * Previous/next hour: CTRL-ALT + left/right arrow.<br>
+ * Previous/next minute: SHIFT-ALT + left/right arrow.
  */
 public final class CalendarPanel extends JPanel {
 
@@ -89,18 +92,7 @@ public final class CalendarPanel extends JPanel {
   private final JLabel formattedDateLabel;
   private final boolean includeTime;
 
-  /**
-   * Instantiates a new {@link CalendarPanel} without time fields.
-   */
-  public CalendarPanel() {
-    this(false);
-  }
-
-  /**
-   * Instantiates a new {@link CalendarPanel}.
-   * @param includeTime true if time fields (hours/minutes) should be included
-   */
-  public CalendarPanel(final boolean includeTime) {
+  CalendarPanel(final boolean includeTime) {
     this.includeTime = includeTime;
     final LocalDateTime dateTime = LocalDateTime.now();
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
@@ -191,6 +183,20 @@ public final class CalendarPanel extends JPanel {
    */
   public void removeDateTimeListener(final EventDataListener<LocalDateTime> listener) {
     localDateTimeValue.removeDataListener(listener);
+  }
+
+  /**
+   * @return  a new {@link CalendarPanel} without time fields.
+   */
+  public static CalendarPanel dateCalendarPanel() {
+    return new CalendarPanel(false);
+  }
+
+  /**
+   * @return  a new {@link CalendarPanel} with time fields.
+   */
+  public static CalendarPanel dateTimeCalendarPanel() {
+    return new CalendarPanel(true);
   }
 
   void previousMonth() {

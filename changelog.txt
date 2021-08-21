@@ -7208,3 +7208,4 @@
   CalendarPanel.addDateListener() and addDateTimeListener() added
   CalendarPanel, keyboard navigation finished, refactoring + minor improvements, test improved
   Dialogs.okCancelDialogBuilder() dialog can now be closed via X, invokes cancelAction
+  CalendarPanel.dateCalendarPanel() and dateTimeCalendarPanel() factory methods added, constructor package private
