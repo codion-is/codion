@@ -50,6 +50,7 @@ public final class KeyEvents {
     KeyEventBuilder modifiers(int modifiers);
 
     /**
+     * Sets the key event condition, {@link JComponent#WHEN_FOCUSED} by default.
      * @param condition the condition
      * @return this builder instance
      */
