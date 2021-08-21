@@ -7211,3 +7211,4 @@
   CalendarPanel.dateCalendarPanel() and dateTimeCalendarPanel() factory methods added, constructor package private
   SpinnerBuilder renamed NumberSpinnerBuilder
   ComponentBuilders.listSpinner() and itemSpinner() and ComponentValues.listSpinner() and itemSpinner() added
+  CalendarPanel, month combo box replaced with spinner
