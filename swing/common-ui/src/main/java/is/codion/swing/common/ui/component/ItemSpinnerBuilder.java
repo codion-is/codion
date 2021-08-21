@@ -7,6 +7,7 @@ import javax.swing.JSpinner;
 
 /**
  * A builder for JSpinner based on a list of {@link Item}s.
+ * @param <T> the value type
  */
 public interface ItemSpinnerBuilder<T> extends ComponentBuilder<T, JSpinner, ItemSpinnerBuilder<T>> {
 

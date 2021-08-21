@@ -263,6 +263,7 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @param <T> the value type
    * @param spinnerModel the spinner model
    * @return a builder for a JSpinner
    */
@@ -271,6 +272,7 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @param <T> the value type
    * @param spinnerModel the spinner model
    * @return a builder for a JSpinner
    */
