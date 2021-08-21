@@ -232,33 +232,33 @@ public final class ComponentBuilders {
   }
 
   /**
-   * @return a builder for a component
+   * @return a builder for a Double based JSpinner
    */
-  public static SpinnerBuilder<Double> doubleSpinner() {
+  public static NumberSpinnerBuilder<Double> doubleSpinner() {
     return doubleSpinner(new SpinnerNumberModel());
   }
 
   /**
    * @param spinnerNumberModel the spinner model
-   * @return a builder for a component
+   * @return a builder for a Double based JSpinner
    */
-  public static SpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultSpinnerBuilder<>(spinnerNumberModel, Double.class);
+  public static NumberSpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
+    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class);
   }
 
   /**
-   * @return a builder for a component
+   * @return a builder for a Integer based JSpinner
    */
-  public static SpinnerBuilder<Integer> integerSpinner() {
+  public static NumberSpinnerBuilder<Integer> integerSpinner() {
     return integerSpinner(new SpinnerNumberModel());
   }
 
   /**
    * @param spinnerNumberModel the spinner model
-   * @return a builder for a component
+   * @return a builder for a Integer based JSpinner
    */
-  public static SpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultSpinnerBuilder<>(spinnerNumberModel, Integer.class);
+  public static NumberSpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel) {
+    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class);
   }
 
   /**

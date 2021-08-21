@@ -13,7 +13,7 @@ import javax.swing.SpinnerNumberModel;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBuilder<T, JSpinner, SpinnerBuilder<T>> implements SpinnerBuilder<T> {
+final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractComponentBuilder<T, JSpinner, NumberSpinnerBuilder<T>> implements NumberSpinnerBuilder<T> {
 
   private final SpinnerNumberModel spinnerNumberModel;
   private final Class<T> valueClass;
@@ -24,40 +24,40 @@ final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBui
   private T maximum;
   private T stepSize;
 
-  DefaultSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
+  DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
     this.spinnerNumberModel = requireNonNull(spinnerNumberModel);
     this.valueClass = requireNonNull(valueClass);
     if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
-      throw new IllegalStateException("SpinnerBuilder not implemented for type: " + valueClass);
+      throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
     }
   }
 
   @Override
-  public SpinnerBuilder<T> columns(final int columns) {
+  public NumberSpinnerBuilder<T> columns(final int columns) {
     this.columns = columns;
     return this;
   }
 
   @Override
-  public SpinnerBuilder<T> editable(final boolean editable) {
+  public NumberSpinnerBuilder<T> editable(final boolean editable) {
     this.editable = editable;
     return this;
   }
 
   @Override
-  public SpinnerBuilder<T> minimum(final T minimum) {
+  public NumberSpinnerBuilder<T> minimum(final T minimum) {
     this.minimum = minimum;
     return this;
   }
 
   @Override
-  public SpinnerBuilder<T> maximum(final T maximum) {
+  public NumberSpinnerBuilder<T> maximum(final T maximum) {
     this.maximum = maximum;
     return this;
   }
 
   @Override
-  public SpinnerBuilder<T> stepSize(final T stepSize) {
+  public NumberSpinnerBuilder<T> stepSize(final T stepSize) {
     this.stepSize = stepSize;
     return this;
   }
@@ -97,7 +97,7 @@ final class DefaultSpinnerBuilder<T extends Number> extends AbstractComponentBui
       return (ComponentValue<T, JSpinner>) ComponentValues.doubleSpinner(component);
     }
 
-    throw new IllegalStateException("SpinnerBuilder not implemented for type: " + valueClass);
+    throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
   }
 
   @Override
