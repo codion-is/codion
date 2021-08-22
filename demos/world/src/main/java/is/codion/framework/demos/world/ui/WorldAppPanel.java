@@ -3,7 +3,6 @@ package is.codion.framework.demos.world.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.api.World;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
@@ -33,7 +32,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
   public WorldAppPanel() {
     super("World");
-    World.addCustomSerializers();
   }
 
   // tag::initializeEntityPanels[]

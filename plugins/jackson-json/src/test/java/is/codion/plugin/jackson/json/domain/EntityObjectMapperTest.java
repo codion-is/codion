@@ -303,41 +303,42 @@ public final class EntityObjectMapperTest {
 
   @Test
   void customSerializer() throws JsonProcessingException {
-    final StdSerializer<Custom> customStdSerializer = new StdSerializer<Custom>(Custom.class) {
-      @Override
-      public void serialize(final Custom value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
-        gen.writeStartObject();
-        gen.writeStringField("value", value.value);
-        gen.writeEndObject();
-      }
-    };
-    final StdDeserializer<Custom> customStdDeserializer = new StdDeserializer<Custom>(Custom.class) {
-      @Override
-      public Custom deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException,
-              JsonProcessingException {
-        final JsonNode node = p.getCodec().readTree(p);
-
-        return new Custom(node.get("value").asText());
-      }
-    };
-
-    EntityObjectMapper mapper = new EntityObjectMapper(entities);
-    mapper.addSerializer(Custom.class, customStdSerializer);
-    mapper.addDeserializer(Custom.class, customStdDeserializer);
+    final CustomEntityObjectMapperFactory mapperFactory = (CustomEntityObjectMapperFactory) EntityObjectMapperFactory.entityObjectMapperFactory(TestDomain.DOMAIN);
+    final EntityObjectMapper mapper = mapperFactory.createEntityObjectMapper(entities);
 
     final Custom custom = new Custom("a value");
-    String valueAsString = mapper.writeValueAsString(custom);
-    Custom fromString = mapper.readValue(valueAsString, Custom.class);
-    assertEquals(custom.value, fromString.value);
+    assertEquals(custom.value, mapper.readValue(mapper.writeValueAsString(custom), Custom.class).value);
+  }
 
-    EntityObjectMapper.addCustomSerializer(Custom.class, customStdSerializer);
-    EntityObjectMapper.addCustomDeserializer(Custom.class, customStdDeserializer);
+  public static final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMapperFactory {
 
-    mapper = new EntityObjectMapper(entities);
+    public CustomEntityObjectMapperFactory() {
+      super(TestDomain.DOMAIN);
+    }
 
-    valueAsString = mapper.writeValueAsString(custom);
-    fromString = mapper.readValue(valueAsString, Custom.class);
-    assertEquals(custom.value, fromString.value);
+    @Override
+    public EntityObjectMapper createEntityObjectMapper(final Entities entities) {
+      final EntityObjectMapper mapper = EntityObjectMapper.createEntityObjectMapper(entities);
+      mapper.addSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
+        @Override
+        public void serialize(final Custom value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
+          gen.writeStartObject();
+          gen.writeStringField("value", value.value);
+          gen.writeEndObject();
+        }
+      });
+      mapper.addDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
+        @Override
+        public Custom deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException,
+                JsonProcessingException {
+          final JsonNode node = p.getCodec().readTree(p);
+
+          return new Custom(node.get("value").asText());
+        }
+      });
+
+      return mapper;
+    }
   }
 
   private static final class Custom {

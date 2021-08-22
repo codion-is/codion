@@ -7213,3 +7213,5 @@
   ComponentBuilders.listSpinner() and itemSpinner() and ComponentValues.listSpinner() and itemSpinner() added
   CalendarPanel, month combo box replaced with spinner
   CalenarPanel bug fixed, focus no longer jumps to first field when days panel is layed out
+  EntityObjectMapper constructor now package private, factory method added
+  EntityObjectMapperFactory added, now service based

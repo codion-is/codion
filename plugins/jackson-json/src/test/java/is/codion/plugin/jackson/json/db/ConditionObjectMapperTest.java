@@ -30,7 +30,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void condition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
     final Entity dept1 = entities.entity(TestDomain.T_DEPARTMENT);
     dept1.put(TestDomain.DEPARTMENT_ID, 1);
@@ -55,7 +55,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void nullCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
     final Condition entityCondition = Conditions.where(TestDomain.EMP_COMMISSION).isNotNull();
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
@@ -68,7 +68,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void customCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
     final CustomCondition condition = Conditions.customCondition(TestDomain.ENTITY_CONDITION_TYPE,
             asList(TestDomain.ENTITY_DECIMAL, TestDomain.ENTITY_DATE_TIME),
@@ -84,7 +84,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void selectCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
     SelectCondition selectCondition = Conditions.where(TestDomain.EMP_ID).equalTo(1)
             .toSelectCondition()
@@ -128,7 +128,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void updateCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
     final UpdateCondition condition = Conditions.where(TestDomain.DEPARTMENT_ID)
             .between(1, 2).toUpdateCondition()

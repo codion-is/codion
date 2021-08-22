@@ -4,6 +4,7 @@
 :toc: left
 :imagesdir: ../images
 :dir-source: ../../../../../demos/world/src/main/java
+:dir-resources: ../../../../../demos/world/src/main/resources
 :dir-test-source: ../../../../../demos/world/src/test/java
 
 == Screenshots
@@ -46,6 +47,15 @@ image::tutorials/world/lookup.png[]
 [source,java]
 ----
 include::{dir-source}/is/codion/framework/demos/world/domain/api/World.java[tag=**]
+----
+
+Exposing the WorldObjectMapperFactory for the ServiceLoader.
+
+_src/main/resources/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory_
+
+[source]
+----
+include::{dir-resources}/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory[]
 ----
 
 === Implementation

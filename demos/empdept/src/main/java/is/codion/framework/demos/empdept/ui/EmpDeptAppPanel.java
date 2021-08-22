@@ -61,7 +61,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             .selectFile();
 
     final EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
-            new EntityObjectMapper(getModel().getEntities()).deserializeEntities(
+            EntityObjectMapper.createEntityObjectMapper(getModel().getEntities()).deserializeEntities(
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider());
 
     Dialogs.componentDialogBuilder(tablePanel)

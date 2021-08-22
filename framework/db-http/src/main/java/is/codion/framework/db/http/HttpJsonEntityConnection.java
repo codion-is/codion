@@ -49,6 +49,7 @@ import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory.entityObjectMapperFactory;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -79,7 +80,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
                            final HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/json", "/entities/json", connectionManager);
-    this.entityObjectMapper = new EntityObjectMapper(getEntities());
+    this.entityObjectMapper = entityObjectMapperFactory(getEntities().getDomainType()).createEntityObjectMapper(getEntities());
     this.conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
   }
 

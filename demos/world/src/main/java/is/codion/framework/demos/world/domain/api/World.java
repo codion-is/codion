@@ -2,9 +2,11 @@ package is.codion.framework.demos.world.domain.api;
 
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.plugin.jackson.json.domain.DefaultEntityObjectMapperFactory;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -141,24 +143,35 @@ public interface World {
   }
 
   // tag::customSerializer[]
-  static void addCustomSerializers() {
-    EntityObjectMapper.addCustomSerializer(GeoPosition.class, new StdSerializer<GeoPosition>(GeoPosition.class) {
-      @Override
-      public void serialize(final GeoPosition value, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
-        generator.writeStartObject();
-        generator.writeNumberField("lat", value.getLatitude());
-        generator.writeNumberField("lon", value.getLongitude());
-        generator.writeEndObject();
-      }
-    });
-    EntityObjectMapper.addCustomDeserializer(GeoPosition.class, new StdDeserializer<GeoPosition>(GeoPosition.class) {
-      @Override
-      public GeoPosition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        final JsonNode node = parser.getCodec().readTree(parser);
+  class WorldObjectMapperFactory extends DefaultEntityObjectMapperFactory {
 
-        return new GeoPosition(node.get("lat").asDouble(), node.get("lon").asDouble());
-      }
-    });
+    public WorldObjectMapperFactory() {
+      super(World.DOMAIN);
+    }
+
+    @Override
+    public EntityObjectMapper createEntityObjectMapper(final Entities entities) {
+      EntityObjectMapper objectMapper = EntityObjectMapper.createEntityObjectMapper(entities);
+      objectMapper.addSerializer(GeoPosition.class, new StdSerializer<GeoPosition>(GeoPosition.class) {
+        @Override
+        public void serialize(final GeoPosition value, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+          generator.writeStartObject();
+          generator.writeNumberField("lat", value.getLatitude());
+          generator.writeNumberField("lon", value.getLongitude());
+          generator.writeEndObject();
+        }
+      });
+      objectMapper.addDeserializer(GeoPosition.class, new StdDeserializer<GeoPosition>(GeoPosition.class) {
+        @Override
+        public GeoPosition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
+          final JsonNode node = parser.getCodec().readTree(parser);
+
+          return new GeoPosition(node.get("lat").asDouble(), node.get("lon").asDouble());
+        }
+      });
+
+      return objectMapper;
+    }
   }
   // end::customSerializer[]
 }

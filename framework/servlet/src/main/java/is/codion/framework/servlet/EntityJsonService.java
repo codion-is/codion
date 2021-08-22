@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory.entityObjectMapperFactory;
 import static java.util.Collections.emptyList;
 
 /**
@@ -532,11 +533,13 @@ public final class EntityJsonService extends AbstractEntityService {
   }
 
   private EntityObjectMapper getEntityObjectMapper(final Entities entities) {
-    return entityObjectMappers.computeIfAbsent(entities.getDomainType(), domainType -> new EntityObjectMapper(entities));
+    return entityObjectMappers.computeIfAbsent(entities.getDomainType(), domainType ->
+            entityObjectMapperFactory(domainType).createEntityObjectMapper(entities));
   }
 
   private ConditionObjectMapper getConditionObjectMapper(final Entities entities) {
-    return conditionObjectMappers.computeIfAbsent(entities.getDomainType(), domainType -> new ConditionObjectMapper(getEntityObjectMapper(entities)));
+    return conditionObjectMappers.computeIfAbsent(entities.getDomainType(), domainType ->
+            new ConditionObjectMapper(getEntityObjectMapper(entities)));
   }
 
   private static <T> T deserialize(final HttpServletRequest request) throws IOException, ClassNotFoundException {
