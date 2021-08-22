@@ -19,4 +19,6 @@ module is.codion.framework.demos.world {
 
   provides is.codion.framework.domain.Domain
           with is.codion.framework.demos.world.domain.WorldImpl;
+  provides is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory
+          with is.codion.framework.demos.world.domain.api.WorldObjectMapperFactory;
 }
