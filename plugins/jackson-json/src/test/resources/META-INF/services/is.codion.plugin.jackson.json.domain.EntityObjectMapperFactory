@@ -1,1 +1,1 @@
-is.codion.plugin.jackson.json.domain.EntityObjectMapperTest$CustomEntityObjectMapperFactory
+is.codion.plugin.jackson.json.domain.CustomEntityObjectMapperFactory

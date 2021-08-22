@@ -49,6 +49,11 @@ image::tutorials/world/lookup.png[]
 include::{dir-source}/is/codion/framework/demos/world/domain/api/World.java[tag=**]
 ----
 
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/domain/api/WorldObjectMapperFactory.java[tag=customSerializer]
+----
+
 Exposing the WorldObjectMapperFactory for the ServiceLoader.
 
 _src/main/resources/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory_
