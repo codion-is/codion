@@ -3,6 +3,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :dir-petstore-source: ../../../../../demos/petstore/src/main/java
 :dir-world-source: ../../../../../demos/world/src/main/java
+:dir-world-resources: ../../../../../demos/world/src/main/resources
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
@@ -397,10 +398,10 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 * <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>>
 * <<{dir-tutorials}/petstore.adoc#_domain, Petstore domain model>>
 
-== Conversion
+== Custom data types
 
-Custom conversion of values is performed by setting the *columnClass* of a ColumnProperty and
-implementing a {url-javadoc}/is/codion/framework/domain/property/ColumnProperty.ValueConverter.html[ValueConverter].
+When using a custom data type you must specify the *columnClass* of a ColumnProperty and
+provide a {url-javadoc}/is/codion/framework/domain/property/ColumnProperty.ValueConverter.html[ValueConverter] implementation.
 
 [source,java,indent=0]
 ----
@@ -417,7 +418,25 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=converter]
 ----
 
-* <<{dir-tutorials}/world.adoc#_domain, World domain model>>
+This custom type must be serializable for use in an application using the RMI connection.
+
+When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}/is/codion/plugin/jackson/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}/is/codion/plugin/jackson/json/domain/EntityObjectMapper.html[EntityObjectMapper] containing a serializer/deserializer for the custom types.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=customSerializer]
+----
+
+This *EntityObjectMapperFactory* must be exposed to the ServiceLoader.
+
+_src/main/resources/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory_
+
+[source]
+----
+include::{dir-world-resources}/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory[]
+----
+
+See <<{dir-tutorials}/world.adoc#_domain, World domain model>>
 
 == Entities in action
 

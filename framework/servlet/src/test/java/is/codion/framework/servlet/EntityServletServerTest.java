@@ -163,7 +163,7 @@ public class EntityServletServerTest {
             })
             .build();
 
-    final EntityObjectMapper entityObjectMapper = new EntityObjectMapper(ENTITIES);
+    final EntityObjectMapper entityObjectMapper = EntityObjectMapper.createEntityObjectMapper(ENTITIES);
     final ConditionObjectMapper conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
     final URIBuilder uriBuilder = createJsonURIBuilder();
 
