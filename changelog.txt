@@ -7246,3 +7246,4 @@
   CalenarPanel bug fixed, focus no longer jumps to first field when days panel is layed out
   EntityObjectMapper constructor now package private, factory method added
   EntityObjectMapperFactory added, now service based
+  EntityObjectMapperFactory implementations moved up to package level, may not be inner classes when exposed in module-info.java

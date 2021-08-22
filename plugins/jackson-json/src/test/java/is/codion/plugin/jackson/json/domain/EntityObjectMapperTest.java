@@ -8,18 +8,10 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.TestDomain;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -308,44 +300,5 @@ public final class EntityObjectMapperTest {
 
     final Custom custom = new Custom("a value");
     assertEquals(custom.value, mapper.readValue(mapper.writeValueAsString(custom), Custom.class).value);
-  }
-
-  public static final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMapperFactory {
-
-    public CustomEntityObjectMapperFactory() {
-      super(TestDomain.DOMAIN);
-    }
-
-    @Override
-    public EntityObjectMapper createEntityObjectMapper(final Entities entities) {
-      final EntityObjectMapper mapper = EntityObjectMapper.createEntityObjectMapper(entities);
-      mapper.addSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
-        @Override
-        public void serialize(final Custom value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
-          gen.writeStartObject();
-          gen.writeStringField("value", value.value);
-          gen.writeEndObject();
-        }
-      });
-      mapper.addDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
-        @Override
-        public Custom deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException,
-                JsonProcessingException {
-          final JsonNode node = p.getCodec().readTree(p);
-
-          return new Custom(node.get("value").asText());
-        }
-      });
-
-      return mapper;
-    }
-  }
-
-  private static final class Custom {
-    private final String value;
-
-    private Custom(final String value) {
-      this.value = value;
-    }
   }
 }
