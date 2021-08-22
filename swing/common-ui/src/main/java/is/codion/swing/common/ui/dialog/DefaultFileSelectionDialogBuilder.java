@@ -87,7 +87,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   }
 
   /**
-   * Specifies how a file selection dialog restricts it's selection.
+   * Specifies how a file selection dialog restricts its selection.
    */
   private enum FilesOrDirectories {
     /**

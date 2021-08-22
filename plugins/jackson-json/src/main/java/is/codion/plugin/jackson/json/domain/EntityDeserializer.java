@@ -32,11 +32,11 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private static final long serialVersionUID = 1;
 
+  private static final Map<Class<?>, JavaType> MAPPER_TYPES = new ConcurrentHashMap<>();
+
   private final Entities entities;
   private final EntityObjectMapper entityObjectMapper;
   private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
-
-  private static final Map<Class<?>, JavaType> MAPPER_TYPES = new ConcurrentHashMap<>();
 
   EntityDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
     super(Entity.class);

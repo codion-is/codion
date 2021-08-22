@@ -234,7 +234,7 @@ public final class ApplicationPanel extends JPanel {
   private static Control createSelectRandomItemControl(final ItemComboBoxModel<Integer> integerItemComboBoxModel) {
     Random random = new Random();
     return Control.builder(() ->
-            integerItemComboBoxModel.setSelectedItem(random.nextInt(9) + 1))
+            integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize()) + 1))
             .caption("Select Random Item")
             .build();
   }

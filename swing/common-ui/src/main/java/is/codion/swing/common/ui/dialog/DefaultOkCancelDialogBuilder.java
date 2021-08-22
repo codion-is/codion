@@ -33,29 +33,29 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
     this.okAction = Control.builder(() -> Windows.getParentDialog(component).dispose())
-            .caption(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build();
+            .caption(Messages.get(Messages.OK))
+            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+            .build();
     this.cancelAction = Control.builder(() -> Windows.getParentDialog(component).dispose())
-            .caption(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build();
+            .caption(Messages.get(Messages.CANCEL))
+            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
+            .build();
   }
 
   @Override
   public OkCancelDialogBuilder onOk(final Control.Command command) {
-    requireNonNull(command);
-
-    return okAction(Control.builder(() -> {
-      command.perform();
-      Windows.getParentDialog(component).dispose();
-    }).caption(Messages.get(Messages.OK)).mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0)).build());
+    return okAction(performAndCloseControl(requireNonNull(command))
+            .caption(Messages.get(Messages.OK))
+            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+            .build());
   }
 
   @Override
   public OkCancelDialogBuilder onCancel(final Control.Command command) {
-    requireNonNull(command);
-
-    return cancelAction(Control.builder(() -> {
-      command.perform();
-      Windows.getParentDialog(component).dispose();
-    }).caption(Messages.get(Messages.CANCEL)).mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0)).build());
+    return cancelAction(performAndCloseControl(requireNonNull(command))
+            .caption(Messages.get(Messages.CANCEL))
+            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
+            .build());
   }
 
   @Override
@@ -117,5 +117,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     dialog.setResizable(true);
 
     return dialog;
+  }
+
+  private Control.Builder performAndCloseControl(final Control.Command command) {
+    return Control.builder(() -> {
+      command.perform();
+      Windows.getParentDialog(component).dispose();
+    });
   }
 }
