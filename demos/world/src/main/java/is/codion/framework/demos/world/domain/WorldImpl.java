@@ -44,8 +44,10 @@ public final class WorldImpl extends DefaultDomain {
     //disable strict foreign keys.
     setStrictForeignKeys(false);
 
+    // tag::addCustomSerializer[]
     //Required for running with HTTP connection, since we use GeoPosition for locations.
     World.addCustomSerializers();
+    // end::addCustomSerializer[]
 
     city();
     country();
@@ -285,7 +287,7 @@ public final class WorldImpl extends DefaultDomain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Integer get(final DerivedProperty.SourceValues sourceValues) {
+    public Integer get(DerivedProperty.SourceValues sourceValues) {
       Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
       Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(Country.POPULATION)) {

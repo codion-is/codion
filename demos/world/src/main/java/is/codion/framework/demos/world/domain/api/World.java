@@ -140,6 +140,7 @@ public interface World {
     Attribute<Integer> CITY_POPULATION = TYPE.integerAttribute("city.population");
   }
 
+  // tag::customSerializer[]
   static void addCustomSerializers() {
     EntityObjectMapper.addCustomSerializer(GeoPosition.class, new StdSerializer<GeoPosition>(GeoPosition.class) {
       @Override
@@ -159,4 +160,5 @@ public interface World {
       }
     });
   }
+  // end::customSerializer[]
 }

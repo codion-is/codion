@@ -12,12 +12,12 @@ import java.util.List;
 
 public final class CityTablePanel extends EntityTablePanel {
 
-  public CityTablePanel(final SwingEntityTableModel tableModel) {
+  public CityTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
   }
 
   @Override
-  protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
+  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
     return super.getPopupControls(additionalPopupControls)
             .addAt(0, createUpdateLocationControl())
             .addSeparatorAt(1);
@@ -47,7 +47,7 @@ public final class CityTablePanel extends EntityTablePanel {
             .execute();
   }
 
-  private void displayUpdateException(final Throwable exception) {
+  private void displayUpdateException(Throwable exception) {
     Dialogs.exceptionDialogBuilder()
             .owner(this)
             .title("Unable to update locations")

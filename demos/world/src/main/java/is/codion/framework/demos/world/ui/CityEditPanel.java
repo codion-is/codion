@@ -79,7 +79,7 @@ public final class CityEditPanel extends EntityEditPanel {
     }
 
     @Override
-    public void onEvent(final ValueChange<GeoPosition> locationChange) {
+    public void onEvent(ValueChange<GeoPosition> locationChange) {
       final WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
       if (locationChange.getValue() != null) {
         final GeoPosition position = locationChange.getValue();

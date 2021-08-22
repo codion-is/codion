@@ -36,7 +36,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private final State locationUpdateCancelledState = State.state();
 
-  public CityTableModel(final EntityConnectionProvider connectionProvider) {
+  public CityTableModel(EntityConnectionProvider connectionProvider) {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
   }
 

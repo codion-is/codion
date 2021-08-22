@@ -38,7 +38,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
   // tag::initializeEntityPanels[]
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final WorldAppModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(WorldAppModel applicationModel) {
     SwingEntityModel countryModel = applicationModel.getEntityModel(CountryModel.class);
     SwingEntityModel countryOverviewModel = applicationModel.getEntityModel(CountryOverviewModel.class);
     SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
