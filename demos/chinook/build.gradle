@@ -78,7 +78,7 @@ test {
 }
 
 application {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 task buildReports(dependsOn: 'compileJava') {

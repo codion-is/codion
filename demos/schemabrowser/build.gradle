@@ -44,7 +44,7 @@ compileTestJava {
 }
 
 application {
-    mainClassName = execMainClass
+    mainClass = execMainClass
 }
 
 test {
