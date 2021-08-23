@@ -8,7 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.TestDomain;
 import is.codion.javafx.framework.ui.EntityTableView;
 
 import javafx.scene.control.MultipleSelectionModel;

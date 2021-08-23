@@ -7248,3 +7248,4 @@
   EntityObjectMapperFactory added, now service based
   EntityObjectMapperFactory implementations moved up to package level, may not be inner classes when exposed in module-info.java
   EntityObjectMapperTest.customSerializer() longer service based, does not play well with modules
+  framework.model.tests package rename test, for consistency

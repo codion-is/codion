@@ -4,8 +4,8 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.tests.AbstractEntityApplicationModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
+import is.codion.framework.model.test.TestDomain;
 
 public final class SwingEntityApplicationModelTest
         extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {

@@ -16,7 +16,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityEditEvents;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

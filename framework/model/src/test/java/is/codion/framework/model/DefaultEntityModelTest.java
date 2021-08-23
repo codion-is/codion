@@ -8,8 +8,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.model.tests.AbstractEntityModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityModelTest;
+import is.codion.framework.model.test.TestDomain;
 
 import java.util.List;
 

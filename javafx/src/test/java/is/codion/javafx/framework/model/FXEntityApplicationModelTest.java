@@ -4,8 +4,8 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.tests.AbstractEntityApplicationModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
+import is.codion.framework.model.test.TestDomain;
 import is.codion.javafx.framework.ui.EntityTableView;
 
 import org.junit.jupiter.api.BeforeAll;

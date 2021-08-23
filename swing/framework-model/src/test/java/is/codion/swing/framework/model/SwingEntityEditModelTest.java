@@ -12,7 +12,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.TestDomain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,8 +3,8 @@
  */
 package is.codion.framework.model;
 
-import is.codion.framework.model.tests.AbstractEntityApplicationModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
+import is.codion.framework.model.test.TestDomain;
 
 public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<DefaultEntityModelTest.TestEntityModel,
         DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {

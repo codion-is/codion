@@ -11,7 +11,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.TestDomain;
 
 import javafx.scene.control.ListView;
 import org.junit.jupiter.api.BeforeAll;
