@@ -64,6 +64,8 @@ task buildReports(dependsOn: 'compileJava') {
 }
 classes.finalizedBy buildReports
 
+compileTestJava.dependsOn buildReports
+
 startScripts {
     mainClass = execMainClass
 }
