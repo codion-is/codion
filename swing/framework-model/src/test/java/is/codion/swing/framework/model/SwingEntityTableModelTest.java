@@ -14,8 +14,8 @@ import is.codion.framework.model.DefaultConditionModelFactory;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.framework.model.tests.AbstractEntityTableModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityTableModelTest;
+import is.codion.framework.model.test.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.model.tests;
+package is.codion.framework.model.test;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;

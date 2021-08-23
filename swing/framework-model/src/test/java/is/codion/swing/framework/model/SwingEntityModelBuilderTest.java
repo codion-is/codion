@@ -8,7 +8,7 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

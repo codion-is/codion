@@ -10,8 +10,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.framework.model.tests.AbstractEntityModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityModelTest;
+import is.codion.framework.model.test.TestDomain;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import org.junit.jupiter.api.Test;

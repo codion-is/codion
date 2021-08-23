@@ -4,8 +4,8 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.tests.AbstractEntityTableModelTest;
-import is.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.test.AbstractEntityTableModelTest;
+import is.codion.framework.model.test.TestDomain;
 import is.codion.javafx.framework.ui.EntityTableView;
 
 import javafx.scene.control.ListView;
