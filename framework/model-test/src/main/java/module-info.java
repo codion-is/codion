@@ -6,5 +6,5 @@ module is.codion.framework.model.tests {
   requires transitive is.codion.framework.db.core;
   requires transitive is.codion.framework.model;
 
-  exports is.codion.framework.model.tests;
+  exports is.codion.framework.model.test;
 }
