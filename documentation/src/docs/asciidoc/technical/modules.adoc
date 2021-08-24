@@ -9,9 +9,9 @@ Common classes used throughout the framework.
 [discrete]
 === codion-common-core
 
-{url-javadoc}/is/codion/common/event/package-summary.html[is.codion.common.event]
-{url-javadoc}/is/codion/common/state/package-summary.html[is.codion.common.state]
-{url-javadoc}/is/codion/common/value/package-summary.html[is.codion.common.value]
+* {url-javadoc}/is/codion/common/event/package-summary.html[is.codion.common.event]
+* {url-javadoc}/is/codion/common/state/package-summary.html[is.codion.common.state]
+* {url-javadoc}/is/codion/common/value/package-summary.html[is.codion.common.value]
 
 .Dependency graph
 [%collapsible]
@@ -22,6 +22,11 @@ image::modules/common/core/build/reports/dependency-graph/dependency-graph.svg[o
 [discrete]
 === codion-common-db
 
+JDBC related classes.
+
+* {url-javadoc}/is/codion/common/db/connection/package-summary.html[is.codion.common.db.connection]
+* {url-javadoc}/is/codion/common/db/database/package-summary.html[is.codion.common.db.database]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -30,6 +35,11 @@ image::modules/common/db/build/reports/dependency-graph/dependency-graph.svg[opt
 
 [discrete]
 === codion-common-model
+
+General model classes shared between Swing and JavaFX UI components.
+
+* {url-javadoc}/is/codion/common/model/combobox/package-summary.html[is.codion.common.model.combobox]
+* {url-javadoc}/is/codion/common/model/table/package-summary.html[is.codion.common.model.table]
 
 .Dependency graph
 [%collapsible]
@@ -40,6 +50,11 @@ image::modules/common/model/build/reports/dependency-graph/dependency-graph.svg[
 [discrete]
 === codion-common-rmi
 
+RMI related classes.
+
+* {url-javadoc}/is/codion/common/rmi/client/package-summary.html[is.codion.common.rmi.client]
+* {url-javadoc}/is/codion/common/rmi/server/package-summary.html[is.codion.common.rmi.server]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -48,6 +63,10 @@ image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[op
 
 [discrete]
 === codion-common-http
+
+HTTP related classes.
+
+* {url-javadoc}/is/codion/common/http/server/package-summary.html[is.codion.common.http.server]
 
 .Dependency graph
 [%collapsible]
@@ -147,6 +166,12 @@ The framework itself.
 [discrete]
 === codion-framework-domain
 
+Domain model related classes.
+
+* {url-javadoc}/is/codion/framework/domain/package-summary.html[is.codion.framework.domain]
+* {url-javadoc}/is/codion/framework/domain/entity/package-summary.html[is.codion.framework.domain.entity]
+* {url-javadoc}/is/codion/framework/domain/property/package-summary.html[is.codion.framework.domain.property]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -155,6 +180,10 @@ image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.
 
 [discrete]
 === codion-framework-domain-test
+
+Domain model unit test related classes.
+
+* {url-javadoc}/is/codion/framework/domain/entity/test/package-summary.html[is.codion.framework.domain.entity.test]
 
 .Dependency graph
 [%collapsible]
@@ -165,6 +194,11 @@ image::modules/framework/domain-test/build/reports/dependency-graph/dependency-g
 [discrete]
 === codion-framework-db-core
 
+Core database connection related classes.
+
+* {url-javadoc}/is/codion/framework/db/package-summary.html[is.codion.framework.db]
+* {url-javadoc}/is/codion/framework/db/condition/package-summary.html[is.codion.framework.db.condition]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -173,6 +207,10 @@ image::modules/framework/db-core/build/reports/dependency-graph/dependency-graph
 
 [discrete]
 === codion-framework-db-local
+
+Local JDBC connection related classes.
+
+* {url-javadoc}/is/codion/framework/db/local/package-summary.html[is.codion.framework.db.local]
 
 .Dependency graph
 [%collapsible]
@@ -183,6 +221,10 @@ image::modules/framework/db-local/build/reports/dependency-graph/dependency-grap
 [discrete]
 === codion-framework-db-rmi
 
+RMI connection related classes.
+
+* {url-javadoc}/is/codion/framework/db/rmi/package-summary.html[is.codion.framework.db.rmi]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -191,6 +233,10 @@ image::modules/framework/db-rmi/build/reports/dependency-graph/dependency-graph.
 
 [discrete]
 === codion-framework-db-http
+
+HTTP connection related classes.
+
+* {url-javadoc}/is/codion/framework/db/http/package-summary.html[is.codion.framework.db.http]
 
 .Dependency graph
 [%collapsible]
@@ -201,6 +247,10 @@ image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph
 [discrete]
 === codion-framework-model
 
+General application model classes shared between Swing and JavaFX UI components.
+
+* {url-javadoc}/is/codion/framework/model/package-summary.html[is.codion.framework.model]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -209,6 +259,10 @@ image::modules/framework/model/build/reports/dependency-graph/dependency-graph.s
 
 [discrete]
 === codion-framework-model-test
+
+General application model unit test related classes.
+
+* {url-javadoc}/is/codion/framework/model/test/package-summary.html[is.codion.framework.model.test]
 
 .Dependency graph
 [%collapsible]
@@ -219,6 +273,10 @@ image::modules/framework/model-test/build/reports/dependency-graph/dependency-gr
 [discrete]
 === codion-framework-server
 
+Framework server classes.
+
+* {url-javadoc}/is/codion/framework/server/package-summary.html[is.codion.framework.server]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -227,6 +285,10 @@ image::modules/framework/server/build/reports/dependency-graph/dependency-graph.
 
 [discrete]
 === codion-framework-servlet
+
+HTTP servlet server classes.
+
+* {url-javadoc}/is/codion/framework/servlet/package-summary.html[is.codion.framework.servlet]
 
 .Dependency graph
 [%collapsible]
@@ -241,6 +303,13 @@ Swing client implementation.
 [discrete]
 === codion-swing-common-model
 
+Common Swing model classes.
+
+* {url-javadoc}/is/codion/swing/common/model/checkbox/package-summary.html[is.codion.swing.common.model.checkbox]
+* {url-javadoc}/is/codion/swing/common/model/combobox/package-summary.html[is.codion.swing.common.model.combobox]
+* {url-javadoc}/is/codion/swing/common/model/table/package-summary.html[is.codion.swing.common.model.table]
+* {url-javadoc}/is/codion/swing/common/model/textfield/package-summary.html[is.codion.swing.common.model.textfield]
+
 .Dependency graph
 [%collapsible]
 ====
@@ -249,6 +318,22 @@ image::modules/swing/common-model/build/reports/dependency-graph/dependency-grap
 
 [discrete]
 === codion-swing-common-ui
+
+Common Swing UI classes.
+
+* {url-javadoc}/is/codion/swing/common/ui/package-summary.html[is.codion.swing.common.ui]
+* {url-javadoc}/is/codion/swing/common/ui/calendar/package-summary.html[is.codion.swing.common.ui.calendar]
+* {url-javadoc}/is/codion/swing/common/ui/checkbox/package-summary.html[is.codion.swing.common.ui.checkbox]
+* {url-javadoc}/is/codion/swing/common/ui/combobox/package-summary.html[is.codion.swing.common.ui.combobox]
+* {url-javadoc}/is/codion/swing/common/ui/component/package-summary.html[is.codion.swing.common.ui.component]
+* {url-javadoc}/is/codion/swing/common/ui/control/package-summary.html[is.codion.swing.common.ui.control]
+* {url-javadoc}/is/codion/swing/common/ui/dialog/package-summary.html[is.codion.swing.common.ui.dialog]
+* {url-javadoc}/is/codion/swing/common/ui/icons/package-summary.html[is.codion.swing.common.ui.icons]
+* {url-javadoc}/is/codion/swing/common/ui/layout/package-summary.html[is.codion.swing.common.ui.layout]
+* {url-javadoc}/is/codion/swing/common/ui/table/package-summary.html[is.codion.swing.common.ui.table]
+* {url-javadoc}/is/codion/swing/common/ui/textfield/package-summary.html[is.codion.swing.common.ui.textfield]
+* {url-javadoc}/is/codion/swing/common/ui/value/package-summary.html[is.codion.swing.common.ui.value]
+* {url-javadoc}/is/codion/swing/common/ui/worker/package-summary.html[is.codion.swing.common.ui.worker]
 
 .Dependency graph
 [%collapsible]
