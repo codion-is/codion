@@ -7217,4 +7217,6 @@
   EntityObjectMapperFactory added, now service based
   EntityObjectMapperFactory implementations moved up to package level, may not be inner classes when exposed in module-info.java
   EntityObjectMapperTest.customSerializer() longer service based, does not play well with modules
-  framework.model.tests package rename test, for consistency
+  framework.model.tests package renamed test, for consistency
+  EntityEditComponentPanel bug fixed, did not set transferFocusOnEnter for text areas
+  EntityEditComponentPanel.createForeignKeySearchField() superfluous call to .linkedValue() removed
