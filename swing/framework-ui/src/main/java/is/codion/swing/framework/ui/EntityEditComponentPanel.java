@@ -456,6 +456,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextAreaBuilder createTextArea(final Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.textArea(attribute)
+            .transferFocusOnEnter(transferFocusOnEnter)
             .onBuild(textArea -> addValidator(attribute, textArea, getEditModel())));
   }
 
@@ -670,7 +671,6 @@ public class EntityEditComponentPanel extends JPanel {
   protected final ForeignKeySearchFieldBuilder createForeignKeySearchField(final ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponentBuilders.foreignKeySearchField(foreignKey,
             getEditModel().getForeignKeySearchModel(foreignKey))
-            .linkedValue(getEditModel().value(foreignKey))
             .transferFocusOnEnter(transferFocusOnEnter)
             .columns(defaultTextFieldColumns));
   }
