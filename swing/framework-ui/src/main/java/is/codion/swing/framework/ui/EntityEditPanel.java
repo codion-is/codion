@@ -563,6 +563,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       finally {
         hideWaitCursor(this);
       }
+      requestInitialFocus();
 
       return true;
     }
