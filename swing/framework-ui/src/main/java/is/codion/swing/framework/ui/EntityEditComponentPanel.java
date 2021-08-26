@@ -216,10 +216,10 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Sets the initial focus, if a initial focus component or component attribute
+   * Sets the initial focus, if an initial focus component or component attribute
    * has been set that component receives the focus, if not, or if that component
    * is not focusable, this panel receives the focus.
-   * Note that if this panel is not visible nothing happens.
+   * Note that if this panel is not visible then calling this method has no effect.
    * @see #isVisible()
    * @see #setInitialFocusAttribute
    * @see #setInitialFocusComponent(javax.swing.JComponent)
@@ -231,7 +231,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Request focus for the component associated with the given attribute
+   * Request focus for the component associated with the given attribute.
+   * If no component is associated with the attribute calling this method has no effect.
    * @param attribute the attribute of the component to select
    */
   public final void requestComponentFocus(final Attribute<?> attribute) {
@@ -242,7 +243,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Displays a dialog allowing the user the select a input component which should receive the keyboard focus,
+   * Displays a dialog allowing the user the select an input component which should receive the keyboard focus,
    * if only one input component is available then that component is selected automatically.
    * @see #excludeComponentFromSelection(Attribute)
    * @see #requestComponentFocus(Attribute)
@@ -259,9 +260,9 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return a list of attributes to use when selecting a input component in this panel,
+   * @return a list of attributes to use when selecting an input component in this panel,
    * this returns all attributes that have an associated component in this panel
-   * that are enabled, displayable, visible and focusable.
+   * that is enabled, displayable, visible and focusable.
    * @see #excludeComponentFromSelection(Attribute)
    * @see #setComponent(Attribute, JComponent)
    */
@@ -666,7 +667,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JLabel with a caption from {@code attribute}, if a input component exists
+   * Creates a JLabel using the caption and mnemonic associated with {@code attribute}. If an input component exists
    * for the given attribute this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param attribute the attribute from which to retrieve the caption
    * @param <T> the attribute type

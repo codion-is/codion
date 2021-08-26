@@ -68,7 +68,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
           "is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
 
   /**
-   * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just a INSERT button<br>
+   * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -112,12 +112,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private final State activeState = State.state(ALL_PANELS_ACTIVE.get());
 
   /**
-   * Indicates whether or not the UI should be cleared after insert has been performed
+   * Indicates whether the UI should be cleared after insert has been performed
    */
   private boolean clearAfterInsert = true;
 
   /**
-   * Indicates whether or not the UI should request focus after insert has been performed
+   * Indicates whether the UI should request focus after insert has been performed
    * @see #requestInitialFocus()
    */
   private boolean requestFocusAfterInsert = true;
@@ -460,7 +460,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * @return true if the method initializePanel() has been called on this EntityEditPanel instance
+   * @return true if the method {@link #initializePanel()} has been called on this EntityEditPanel instance
    * @see #initializePanel()
    */
   public final boolean isPanelInitialized() {
@@ -468,12 +468,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Saves the active entity, that is, if no entity is selected it performs a insert otherwise the user
+   * Saves the active entity, that is, if no entity is selected it performs insert otherwise the user
    * is asked whether to update the selected entity or insert a new one
    */
   public final void save() {
-    if (getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateEnabled()) {
-      //no entity selected, selected entity is unmodified or update is not enabled, can only insert
+    if (shouldInsertOnSave()) {
       insert();
     }
     else {//possibly update
@@ -492,19 +491,21 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs a insert on the active entity after asking for confirmation
+   * Performs insert on the active entity after asking for confirmation via {@link #confirmInsert()}.
+   * Note that {@link #confirmInsert()} returns true by default, so it needs to be overridden to ask for confirmation.
    * @return true in case of successful insert, false otherwise
+   * @see #confirmInsert()
    */
   public final boolean insert() {
-    if (!confirmInsert()) {
-      return false;
+    if (confirmInsert()) {
+      return insertWithoutConfirmation();
     }
 
-    return insertWithoutConfirmation();
+    return false;
   }
 
   /**
-   * Performs a insert on the active entity without asking for confirmation
+   * Performs insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
    */
   public final boolean insertWithoutConfirmation() {
@@ -538,19 +539,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs a delete on the active entity after asking for confirmation
+   * Performs delete on the active entity after asking for confirmation via {@link #confirmDelete()}.
    * @return true if the delete operation was successful
    */
   public final boolean delete() {
-    if (!confirmDelete()) {
-      return false;
+    if (confirmDelete()) {
+      return deleteWithoutConfirmation();
     }
 
-    return deleteWithoutConfirmation();
+    return false;
   }
 
   /**
-   * Performs a delete on the active entity without asking for confirmation
+   * Performs delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
    */
   public final boolean deleteWithoutConfirmation() {
@@ -578,19 +579,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Performs an update on the active entity after asking for confirmation
+   * Performs update on the active entity after asking for confirmation via {@link #confirmUpdate()}.
    * @return true if the update operation was successful
    */
   public final boolean update() {
-    if (!confirmUpdate()) {
-      return false;
+    if (confirmUpdate()) {
+      return updateWithoutConfirmation();
     }
 
-    return updateWithoutConfirmation();
+    return false;
   }
 
   /**
-   * Performs an update on the active entity without asking for confirmation
+   * Performs update on the active entity without asking for confirmation.
    * @return true if the update operation was successful or if no update was required
    */
   public final boolean updateWithoutConfirmation() {
@@ -626,8 +627,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   protected void validateData() throws ValidationException {}
 
   /**
-   * Called before a insert is performed, the default implementation simply returns true
-   * @return true if a insert should be performed, false if it should be vetoed
+   * Called before insert is performed, the default implementation simply returns true
+   * @return true if insert should be performed, false if it should be vetoed
    */
   protected boolean confirmInsert() {
     return true;
@@ -815,5 +816,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   private void showEntityMenu() {
     new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider()).show(this, 0, 0);
+  }
+
+  private boolean shouldInsertOnSave() {
+    //no entity selected, selected entity is unmodified or update is not enabled, can only insert
+    return getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateEnabled();
   }
 }
