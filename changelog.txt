@@ -7220,3 +7220,4 @@
   framework.model.tests package renamed test, for consistency
   EntityEditComponentPanel bug fixed, did not set transferFocusOnEnter for text areas
   EntityEditComponentPanel.createForeignKeySearchField() superfluous call to .linkedValue() removed
+  EntityEditComponentPanel, call to ComponentBuilder.transferFocusOnEnter(transferFocusOnEnter) moved from individual create... methods to setComponentBuilder()
