@@ -7251,3 +7251,7 @@
   framework.model.tests package renamed test, for consistency
   EntityEditComponentPanel bug fixed, did not set transferFocusOnEnter for text areas
   EntityEditComponentPanel.createForeignKeySearchField() superfluous call to .linkedValue() removed
+  EntityEditComponentPanel, call to ComponentBuilder.transferFocusOnEnter(transferFocusOnEnter) moved from individual create... methods to setComponentBuilder()
+  EntityEditComponentPanel, some javadoc fixes
+  EntityEditPanel, some minor refactoring and javadoc improvements
+  EntityEditPanel now requests initial focus after delete, since the delete button becomes disabled after delete and the focus goes to the first available component in the panel
