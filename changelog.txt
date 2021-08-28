@@ -7224,3 +7224,4 @@
   EntityEditComponentPanel, some javadoc fixes
   EntityEditPanel, some minor refactoring and javadoc improvements
   EntityEditPanel now requests initial focus after delete, since the delete button becomes disabled after delete and the focus goes to the first available component in the panel
+  DefaultPropertyBuilder.property no longer protected

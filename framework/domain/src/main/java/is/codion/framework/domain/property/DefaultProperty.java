@@ -400,7 +400,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   abstract static class DefaultPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
 
-    protected final DefaultProperty<T> property;
+    private final DefaultProperty<T> property;
 
     DefaultPropertyBuilder(final DefaultProperty<T> property) {
       this.property = property;
@@ -590,6 +590,10 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       }
       property.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
       return (B) this;
+    }
+
+    protected final Attribute<T> getAttribute() {
+      return property.getAttribute();
     }
   }
 }

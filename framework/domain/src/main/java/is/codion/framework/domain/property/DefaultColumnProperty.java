@@ -369,8 +369,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final <C> B columnClass(final Class<C> columnClass,
-                                                              final ValueConverter<T, C> valueConverter) {
+    public final <C> B columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
@@ -379,7 +378,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
     @Override
     public final <C> B columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
-                                                              final ValueFetcher<C> valueFetcher) {
+                                   final ValueFetcher<C> valueFetcher) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
@@ -425,7 +424,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B primaryKeyIndex(final int index) {
       if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0: " + property.getAttribute());
+        throw new IllegalArgumentException("Primary key index must be at least 0: " + getAttribute());
       }
       columnProperty.primaryKeyIndex = index;
       nullable(false);
@@ -436,7 +435,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B groupingColumn() {
       if (columnProperty.aggregateColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + property.getAttribute());
+        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + getAttribute());
       }
       columnProperty.groupingColumn = true;
       return (B) this;
@@ -445,7 +444,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B aggregateColumn() {
       if (columnProperty.groupingColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + property.getAttribute());
+        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + getAttribute());
       }
       columnProperty.aggregateColumn = true;
       return (B) this;
@@ -460,7 +459,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B searchProperty() {
       if (!columnProperty.getAttribute().isString()) {
-        throw new IllegalStateException("Search properties must be String based: " + property.getAttribute());
+        throw new IllegalStateException("Search properties must be String based: " + getAttribute());
       }
       columnProperty.searchProperty = true;
       return (B) this;
