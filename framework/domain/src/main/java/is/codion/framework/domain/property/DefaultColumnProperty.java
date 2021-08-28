@@ -246,13 +246,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private static <T> T getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final long value = resultSet.getLong(columnIndex);
 
-    return (T) (value == 0 && resultSet.wasNull() ? null : value);
+    return (T) (value == 0L && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final double value = resultSet.getDouble(columnIndex);
 
-    return (T) (Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value);
+    return (T) (Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getBigDecimal(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -280,12 +280,12 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final String val = getString(resultSet, columnIndex);
-    if (!nullOrEmpty(val)) {
-      return (T) Character.valueOf(val.charAt(0));
+    final String string = getString(resultSet, columnIndex);
+    if (nullOrEmpty(string)) {
+      return null;
     }
 
-    return null;
+    return (T) Character.valueOf(string.charAt(0));
   }
 
   private static <T> T getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -298,12 +298,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private <T> T getObject(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final T object = (T) resultSet.getObject(columnIndex, getAttribute().getTypeClass());
-    if (object == null) {
-      return null;
-    }
-
-    return object;
+    return (T) resultSet.getObject(columnIndex, getAttribute().getTypeClass());
   }
 
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
