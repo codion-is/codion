@@ -292,8 +292,8 @@ public final class Properties {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B>booleanProperty(final Attribute<Boolean> attribute, final String caption,
-                                                                                                                    final Class<C> columnClass, final C trueValue, final C falseValue) {
+  public static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(final Attribute<Boolean> attribute, final String caption,
+                                                                                                                     final Class<C> columnClass, final C trueValue, final C falseValue) {
     return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnProperty<>(attribute, caption).builder()
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }
