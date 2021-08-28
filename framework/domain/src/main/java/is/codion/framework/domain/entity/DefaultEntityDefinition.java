@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -898,23 +898,28 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return foreignKeyMap;
     }
 
-    private void initializeForeignKeyColumnProperties(final List<ForeignKeyProperty.Builder> builders) {
-      final Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnPropertyMap = new HashMap<>();
-      foreignKeyProperties.forEach(foreignKeyProperty ->
-              foreignKeyColumnPropertyMap.put(foreignKeyProperty.getAttribute(),
-              foreignKeyProperty.getReferences().stream().map(reference -> {
-                final ColumnProperty<?> columnProperty = (ColumnProperty<?>) propertyMap.get(reference.getAttribute());
-                if (columnProperty == null) {
-                  throw new IllegalArgumentException("Property based on attribute: " + reference.getAttribute()
-                          + " not found when initializing foreign key");
-                }
+    private void initializeForeignKeyColumnProperties(final List<ForeignKeyProperty.Builder> foreignKeyBuilders) {
+      final Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties = foreignKeyProperties
+              .stream()
+              .map(ForeignKeyProperty::getAttribute)
+              .collect(toMap(foreignKey -> foreignKey, this::getForeignKeyColumnProperties));
+      foreignKeyColumnAttributes.addAll(foreignKeyColumnProperties.values()
+              .stream()
+              .flatMap(columnProperties -> columnProperties.stream().map(Property::getAttribute))
+              .collect(toSet()));
+      foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnProperties));
+    }
 
-                return columnProperty;
-              }).collect(toList())));
-      foreignKeyColumnPropertyMap.values().forEach(fkColumnProperties -> fkColumnProperties.forEach(columnProperty ->
-              foreignKeyColumnAttributes.add(columnProperty.getAttribute())));
-      builders.forEach(builder -> builder.nullable(foreignKeyColumnPropertyMap.get(builder.get().getAttribute())
-              .stream().anyMatch(Property::isNullable)));
+    private List<ColumnProperty<?>> getForeignKeyColumnProperties(final ForeignKey foreignKey) {
+      return foreignKey.getReferences().stream().map(reference -> {
+        final ColumnProperty<?> columnProperty = (ColumnProperty<?>) propertyMap.get(reference.getAttribute());
+        if (columnProperty == null) {
+          throw new IllegalArgumentException("ColumnProperty based on attribute: " + reference.getAttribute()
+                  + " not found when initializing foreign key");
+        }
+
+        return columnProperty;
+      }).collect(toList());
     }
 
     private Map<Attribute<?>, ColumnProperty<?>> initializePrimaryKeyPropertyMap() {
@@ -971,7 +976,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private List<ColumnProperty<?>> getPrimaryKeyProperties() {
       return properties.stream().filter(property -> property instanceof ColumnProperty
-              && ((ColumnProperty<?>) property).isPrimaryKeyColumn()).map(property -> (ColumnProperty<?>) property)
+                      && ((ColumnProperty<?>) property).isPrimaryKeyColumn()).map(property -> (ColumnProperty<?>) property)
               .sorted((pk1, pk2) -> {
                 final Integer index1 = pk1.getPrimaryKeyIndex();
                 final Integer index2 = pk2.getPrimaryKeyIndex();
@@ -995,6 +1000,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .map(Property::getAttribute)
               .map(attribute -> attribute.getName() + attribute.getTypeClass().getName())
               .collect(Collectors.joining()).hashCode();
+    }
+
+    private static void setForeignKeyNullable(final ForeignKeyProperty.Builder foreignKeyBuilder,
+                                              final Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties) {
+      //make foreign key properties nullable if and only if any of their constituent column properties are nullable
+      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.get().getAttribute())
+              .stream()
+              .anyMatch(Property::isNullable));
     }
   }
 
