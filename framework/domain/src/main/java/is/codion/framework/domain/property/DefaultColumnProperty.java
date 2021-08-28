@@ -28,27 +28,22 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
 
   private int columnType;
-  private int primaryKeyIndex = -1;
-  private boolean columnHasDefaultValue = false;
-  private boolean insertable = true;
-  private boolean updatable = true;
-  private boolean searchProperty = false;
+  private int primaryKeyIndex;
+  private boolean columnHasDefaultValue;
+  private boolean insertable;
+  private boolean updatable;
+  private boolean searchProperty;
 
-  private final transient ResultPacker<T> resultPacker;
-  private transient ValueFetcher<Object> valueFetcher;
+  private final transient ResultPacker<T> resultPacker = new PropertyResultPacker();
   private transient String columnName;
+  private transient ValueFetcher<T> valueFetcher;
   private transient ValueConverter<T, Object> valueConverter;
-  private transient boolean groupingColumn = false;
-  private transient boolean aggregateColumn = false;
-  private transient boolean selectable = true;
+  private transient boolean groupingColumn;
+  private transient boolean aggregateColumn;
+  private transient boolean selectable;
 
   DefaultColumnProperty(final Attribute<T> attribute, final String caption) {
     super(attribute, caption);
-    this.columnType = getSqlType(attribute.getTypeClass());
-    this.columnName = attribute.getName();
-    this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
-    this.valueFetcher = initializeValueFetcher();
-    this.resultPacker = new PropertyResultPacker();
   }
 
   @Override
@@ -131,11 +126,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return (ResultPacker<T>) resultPacker;
   }
 
-  protected final void readOnly() {
-    insertable = false;
-    updatable = false;
-  }
-
   /**
    * @param <T> the value type
    * @param <B> the builder type
@@ -143,40 +133,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
    */
   <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
     return new DefaultColumnPropertyBuilder<>(this);
-  }
-
-  private <T> ValueFetcher<T> initializeValueFetcher() {
-    switch (columnType) {
-      case Types.INTEGER:
-        return DefaultColumnProperty::getInteger;
-      case Types.BIGINT:
-        return DefaultColumnProperty::getLong;
-      case Types.DOUBLE:
-        return DefaultColumnProperty::getDouble;
-      case Types.DECIMAL:
-        return DefaultColumnProperty::getBigDecimal;
-      case Types.DATE:
-        return DefaultColumnProperty::getDate;
-      case Types.TIMESTAMP:
-        return DefaultColumnProperty::getTimestamp;
-      case Types.TIMESTAMP_WITH_TIMEZONE:
-        return DefaultColumnProperty::getTimestampWithTimezone;
-      case Types.TIME:
-        return DefaultColumnProperty::getTime;
-      case Types.VARCHAR:
-        return DefaultColumnProperty::getString;
-      case Types.BOOLEAN:
-        return DefaultColumnProperty::getBoolean;
-      case Types.CHAR:
-        return DefaultColumnProperty::getCharacter;
-      case Types.BLOB:
-        return DefaultColumnProperty::getBlob;
-      case Types.OTHER:
-        return this::getObject;
-      default:
-        throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
-                ", attribute type class: " + getAttribute().getTypeClass().getName());
-    }
   }
 
   /**
@@ -246,13 +202,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private static <T> T getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final long value = resultSet.getLong(columnIndex);
 
-    return (T) (value == 0 && resultSet.wasNull() ? null : value);
+    return (T) (value == 0L && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final double value = resultSet.getDouble(columnIndex);
 
-    return (T) (Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value);
+    return (T) (Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getBigDecimal(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -280,12 +236,12 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final String val = getString(resultSet, columnIndex);
-    if (!nullOrEmpty(val)) {
-      return (T) Character.valueOf(val.charAt(0));
+    final String string = getString(resultSet, columnIndex);
+    if (nullOrEmpty(string)) {
+      return null;
     }
 
-    return null;
+    return (T) Character.valueOf(string.charAt(0));
   }
 
   private static <T> T getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -297,13 +253,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return (T) blob.getBytes(1, (int) blob.length());
   }
 
-  private <T> T getObject(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final T object = (T) resultSet.getObject(columnIndex, getAttribute().getTypeClass());
-    if (object == null) {
-      return null;
-    }
-
-    return object;
+  private static <T> T getObject(final ResultSet resultSet, final int columnIndex, final Class<T> typeClass) throws SQLException {
+    return resultSet.getObject(columnIndex, typeClass);
   }
 
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
@@ -361,6 +312,18 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     DefaultColumnPropertyBuilder(final DefaultColumnProperty<T> columnProperty) {
       super(columnProperty);
       this.columnProperty = columnProperty;
+      columnProperty.primaryKeyIndex = -1;
+      columnProperty.columnType = getSqlType(columnProperty.getAttribute().getTypeClass());
+      columnProperty.columnHasDefaultValue = false;
+      columnProperty.insertable = true;
+      columnProperty.updatable = true;
+      columnProperty.searchProperty = false;
+      columnProperty.columnName = columnProperty.getAttribute().getName();
+      columnProperty.valueFetcher = initializeValueFetcher(columnProperty.columnType, columnProperty.getAttribute().getTypeClass());
+      columnProperty.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
+      columnProperty.groupingColumn = false;
+      columnProperty.aggregateColumn = false;
+      columnProperty.selectable = true;
     }
 
     @Override
@@ -369,20 +332,19 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final <C> B columnClass(final Class<C> columnClass,
-                                                              final ValueConverter<T, C> valueConverter) {
+    public final <C> B columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
+      columnProperty.valueFetcher = initializeValueFetcher(columnProperty.columnType, columnProperty.getAttribute().getTypeClass());
       return (B) this;
     }
 
     @Override
     public final <C> B columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter,
-                                                              final ValueFetcher<C> valueFetcher) {
+                                   final ValueFetcher<C> valueFetcher) {
       columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
+      columnProperty.valueFetcher = (ValueFetcher<T>) requireNonNull(valueFetcher, "valueFetcher");
       return (B) this;
     }
 
@@ -425,7 +387,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B primaryKeyIndex(final int index) {
       if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0: " + property.getAttribute());
+        throw new IllegalArgumentException("Primary key index must be at least 0: " + getAttribute());
       }
       columnProperty.primaryKeyIndex = index;
       nullable(false);
@@ -436,7 +398,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B groupingColumn() {
       if (columnProperty.aggregateColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + property.getAttribute());
+        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + getAttribute());
       }
       columnProperty.groupingColumn = true;
       return (B) this;
@@ -445,7 +407,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B aggregateColumn() {
       if (columnProperty.groupingColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + property.getAttribute());
+        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + getAttribute());
       }
       columnProperty.aggregateColumn = true;
       return (B) this;
@@ -460,10 +422,44 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B searchProperty() {
       if (!columnProperty.getAttribute().isString()) {
-        throw new IllegalStateException("Search properties must be String based: " + property.getAttribute());
+        throw new IllegalStateException("Search properties must be String based: " + getAttribute());
       }
       columnProperty.searchProperty = true;
       return (B) this;
+    }
+
+    private static <T> ValueFetcher<T> initializeValueFetcher(final int columnType, final Class<T> typeClass) {
+      switch (columnType) {
+        case Types.INTEGER:
+          return DefaultColumnProperty::getInteger;
+        case Types.BIGINT:
+          return DefaultColumnProperty::getLong;
+        case Types.DOUBLE:
+          return DefaultColumnProperty::getDouble;
+        case Types.DECIMAL:
+          return DefaultColumnProperty::getBigDecimal;
+        case Types.DATE:
+          return DefaultColumnProperty::getDate;
+        case Types.TIMESTAMP:
+          return DefaultColumnProperty::getTimestamp;
+        case Types.TIMESTAMP_WITH_TIMEZONE:
+          return DefaultColumnProperty::getTimestampWithTimezone;
+        case Types.TIME:
+          return DefaultColumnProperty::getTime;
+        case Types.VARCHAR:
+          return DefaultColumnProperty::getString;
+        case Types.BOOLEAN:
+          return DefaultColumnProperty::getBoolean;
+        case Types.CHAR:
+          return DefaultColumnProperty::getCharacter;
+        case Types.BLOB:
+          return DefaultColumnProperty::getBlob;
+        case Types.OTHER:
+          return (resultSet, index) -> (T) DefaultColumnProperty.getObject(resultSet, index, typeClass);
+        default:
+          throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
+                  ", attribute type class: " + typeClass.getName());
+      }
     }
   }
 }

@@ -13,12 +13,15 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
 
   DefaultAuditProperty(final Attribute<T> attribute, final AuditAction auditAction, final String caption) {
     super(attribute, caption);
-    super.readOnly();
     this.auditAction = auditAction;
   }
 
   @Override
   public final AuditAction getAuditAction() {
     return auditAction;
+  }
+
+  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
+    return (ColumnProperty.Builder<T, B>) new DefaultColumnPropertyBuilder<>(this).readOnly();
   }
 }

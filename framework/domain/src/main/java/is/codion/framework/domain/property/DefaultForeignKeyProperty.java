@@ -18,8 +18,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
   private final EntityType<?> referencedEntityType;
-  private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
-  private boolean softReference = false;
+  private int fetchDepth;
+  private boolean softReference;
 
   /**
    * @param foreignKey the foreign key
@@ -75,6 +75,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty foreignKeyProperty) {
       super(foreignKeyProperty);
       this.foreignKeyProperty = foreignKeyProperty;
+      foreignKeyProperty.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
+      foreignKeyProperty.softReference = false;
     }
 
     @Override
@@ -97,7 +99,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     @Override
     public <T> ForeignKeyProperty.Builder readOnly(final Attribute<T> referenceAttribute) {
       if (foreignKeyProperty.getAttribute().getReference(referenceAttribute) == null) {
-        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + property.getAttribute());
+        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + getAttribute());
       }
       foreignKeyProperty.readOnlyAttributes.add(referenceAttribute);
       return this;
