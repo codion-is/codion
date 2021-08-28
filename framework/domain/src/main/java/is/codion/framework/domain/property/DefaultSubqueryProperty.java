@@ -19,7 +19,6 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
    */
   DefaultSubqueryProperty(final Attribute<T> attribute, final String caption, final String subquery) {
     super(attribute, caption);
-    super.readOnly();
     this.subquery = subquery;
   }
 
@@ -41,6 +40,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     private DefaultSubqueryPropertyBuilder(final DefaultSubqueryProperty<T> subqueryProperty) {
       super(subqueryProperty);
       this.subqueryProperty = subqueryProperty;
+      super.readOnly(true);
     }
 
     @Override

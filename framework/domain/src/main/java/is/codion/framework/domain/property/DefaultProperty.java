@@ -54,7 +54,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * The default value supplier for this property
    */
-  private ValueSupplier<T> defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
+  private ValueSupplier<T> defaultValueSupplier;
 
   /**
    * The resource bundle key specifying the caption
@@ -69,12 +69,12 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * True if the value of this property is allowed to be null
    */
-  private boolean nullable = true;
+  private boolean nullable;
 
   /**
    * The preferred column width when this property is presented in a table
    */
-  private int preferredColumnWidth = -1;
+  private int preferredColumnWidth;
 
   /**
    * True if this property should be hidden in table views
@@ -85,7 +85,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
    * The maximum length of the data.
    * Only applicable to string based properties.
    */
-  private int maximumLength = -1;
+  private int maximumLength;
 
   /**
    * The maximum value for this property.
@@ -122,7 +122,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * The rounding mode to use when working with decimal numbers
    */
-  private RoundingMode decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
+  private RoundingMode decimalRoundingMode;
 
   /**
    * The date/time format pattern
@@ -144,10 +144,6 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     requireNonNull(attribute, "attribute");
     this.attribute = attribute;
     this.caption = caption;
-    this.format = initializeDefaultFormat();
-    this.beanProperty = Text.underscoreToCamelCase(attribute.getName());
-    this.captionResourceKey = attribute.getName();
-    this.hidden = caption == null && resourceNotFound(attribute.getEntityType().getResourceBundleName(), captionResourceKey);
   }
 
   @Override
@@ -177,12 +173,12 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final boolean hasDefaultValue() {
-    return !(this.defaultValueSupplier instanceof NullDefaultValueSupplier);
+    return !(defaultValueSupplier instanceof NullDefaultValueSupplier);
   }
 
   @Override
   public final T getDefaultValue() {
-    return this.defaultValueSupplier.get();
+    return defaultValueSupplier.get();
   }
 
   @Override
@@ -325,23 +321,6 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     return value.toString();
   }
 
-  private Format initializeDefaultFormat() {
-    if (attribute.isNumerical()) {
-      final NumberFormat numberFormat = attribute.isInteger() || attribute.isLong() ?
-              Formats.getNonGroupingIntegerFormat() : Formats.getNonGroupingNumberFormat();
-      if (attribute.isBigDecimal()) {
-        ((DecimalFormat) numberFormat).setParseBigDecimal(true);
-      }
-      if (attribute.isDecimal()) {
-        numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
-      }
-
-      return numberFormat;
-    }
-
-    return Formats.NULL_FORMAT;
-  }
-
   private String getDefaultDateTimePattern() {
     if (attribute.isLocalDate()) {
       return DATE_FORMAT.get();
@@ -404,6 +383,15 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     DefaultPropertyBuilder(final DefaultProperty<T> property) {
       this.property = property;
+      property.format = initializeDefaultFormat(property.getAttribute());
+      property.beanProperty = Text.underscoreToCamelCase(property.attribute.getName());
+      property.captionResourceKey = property.attribute.getName();
+      property.hidden = property.caption == null && resourceNotFound(property.attribute.getEntityType().getResourceBundleName(), property.captionResourceKey);
+      property.nullable = true;
+      property.preferredColumnWidth = -1;
+      property.maximumLength = -1;
+      property.defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
+      property.decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
     }
 
     @Override
@@ -593,7 +581,24 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     protected final Attribute<T> getAttribute() {
-      return property.getAttribute();
+      return property.attribute;
+    }
+
+    private static Format initializeDefaultFormat(final Attribute<?> attribute) {
+      if (attribute.isNumerical()) {
+        final NumberFormat numberFormat = attribute.isInteger() || attribute.isLong() ?
+                Formats.getNonGroupingIntegerFormat() : Formats.getNonGroupingNumberFormat();
+        if (attribute.isBigDecimal()) {
+          ((DecimalFormat) numberFormat).setParseBigDecimal(true);
+        }
+        if (attribute.isDecimal()) {
+          numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
+        }
+
+        return numberFormat;
+      }
+
+      return Formats.NULL_FORMAT;
     }
   }
 }

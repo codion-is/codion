@@ -18,8 +18,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
   private final EntityType<?> referencedEntityType;
-  private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
-  private boolean softReference = false;
+  private int fetchDepth;
+  private boolean softReference;
 
   /**
    * @param foreignKey the foreign key
@@ -75,6 +75,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty foreignKeyProperty) {
       super(foreignKeyProperty);
       this.foreignKeyProperty = foreignKeyProperty;
+      foreignKeyProperty.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
+      foreignKeyProperty.softReference = false;
     }
 
     @Override
