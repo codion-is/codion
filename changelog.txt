@@ -7228,3 +7228,4 @@
   DefaultColumnProperty, minor refactoring
   DefaultProperty and subclass refactoring, all default field values now initialized in Builder constructor
   DefaultEntityDefinition.initializeForeignKeyColumnProperties() refactored
+  DefaultEntityDefinition code cleanup, stream usage improved
