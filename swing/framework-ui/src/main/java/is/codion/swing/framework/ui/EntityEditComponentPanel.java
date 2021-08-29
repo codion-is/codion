@@ -162,7 +162,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param component the component
    * @param <T> the attribute type
    * @return the attribute the given component is associated with, null if the component has not been
-   * associated with a attribute
+   * associated with an attribute
    */
   public final <T> Attribute<T> getAttribute(final JComponent component) {
     return (Attribute<T>) components.entrySet().stream().filter(entry -> entry.getValue() == component)
@@ -193,7 +193,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Sets the component that should receive the focus after an insert has been performed..
+   * Sets the component that should receive the focus after an insert has been performed.
    * Overrides the value set via {@link #setAfterInsertFocusAttribute(Attribute)}
    * @param afterInsertFocusComponent the component
    * @return the component
@@ -527,7 +527,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for temporal fields.
    * @param attribute the attribute for which to build a temporal field
-   * @return a offset date time field builder
+   * @return an offset date time field builder
    */
   protected final OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.offsetDateTimeField(attribute)
@@ -587,8 +587,8 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for check boxes. If {@link CheckBoxBuilder#nullable(boolean)} is set to true,
    * a {@link is.codion.swing.common.ui.checkbox.NullableCheckBox} is built.
-   * @param attribute the attribute for which to build a check box
-   * @return a check box builder
+   * @param attribute the attribute for which to build a check-box
+   * @return a check-box builder
    */
   protected final CheckBoxBuilder createCheckBox(final Attribute<Boolean> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.checkBox(attribute));

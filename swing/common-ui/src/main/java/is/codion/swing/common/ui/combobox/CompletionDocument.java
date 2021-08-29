@@ -14,7 +14,7 @@ import java.text.Normalizer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A base class for auto completion and maximum match
+ * A base class for auto-completion and maximum match
  * @author Thomas Bierhance
  */
 class CompletionDocument extends PlainDocument {

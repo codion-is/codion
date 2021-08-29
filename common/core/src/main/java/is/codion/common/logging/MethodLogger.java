@@ -24,7 +24,7 @@ public interface MethodLogger {
 
   /**
    * @param method the method being accessed
-   * @param argument the method argument, can be a Object, a collection or an array
+   * @param argument the method argument, can be an Object, a collection or an array
    */
   void logAccess(String method, Object argument);
 

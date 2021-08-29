@@ -39,7 +39,7 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * Selects a single integer value using the given query.
    * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
-   * @return the first record in the result as a integer
+   * @return the first record in the result as an integer
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
   int selectInteger(String sql) throws SQLException;

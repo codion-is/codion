@@ -34,7 +34,7 @@ public final class EntityEditEvents {
   private EntityEditEvents() {}
 
   /**
-   * Adds a insert listener, notified each time entities of the given type are inserted.
+   * Adds an insert listener, notified each time entities of the given type are inserted.
    * Note that you have to keep a live reference to the listener instance,
    * otherwise it will be garbage collected, due to a weak reference.
    * @param entityType the type of entity to listen for
@@ -45,7 +45,7 @@ public final class EntityEditEvents {
   }
 
   /**
-   * Adds a update listener, notified each time entities of the given type are updated.
+   * Adds an update listener, notified each time entities of the given type are updated.
    * Note that you have to keep a live reference to the listener instance,
    * otherwise it will be garbage collected, due to a weak reference.
    * @param entityType the type of entity to listen for

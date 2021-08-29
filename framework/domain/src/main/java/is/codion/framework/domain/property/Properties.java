@@ -91,7 +91,7 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a entity attribute.
+   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from an entity attribute.
    * @param <T> the attribute value type
    * @param <B> the builder type
    * @param attribute the attribute
@@ -106,7 +106,7 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a entity attribute.
+   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from an entity attribute.
    * @param <T> the attribute value type
    * @param <B> the builder type
    * @param attribute the attribute
@@ -161,7 +161,7 @@ public final class Properties {
   }
 
   /**
-   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from a entity attribute.
+   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from an entity attribute.
    * @param attribute the attribute to base this property on
    * @param entityAttribute the entity attribute owning the attribute which value to mirror
    * @param denormalizedAttribute the attribute from which this attribute should get its value
@@ -176,7 +176,7 @@ public final class Properties {
   }
 
   /**
-   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from a entity attribute.
+   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from an entity attribute.
    * @param attribute the attribute to base this property on
    * @param caption the property caption
    * @param entityAttribute the entity attribute owning the attribute which value to mirror

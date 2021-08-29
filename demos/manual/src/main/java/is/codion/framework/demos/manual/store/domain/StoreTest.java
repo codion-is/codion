@@ -58,7 +58,7 @@ public class StoreTest extends EntityTestUnit {
   protected Entity initializeTestEntity(EntityType<?> entityType,
                                         Map<EntityType<?>, Entity> foreignKeyEntities) {
     if (entityType.equals(Address.TYPE)) {
-      //Initialize a entity representing the table STORE.ADDRESS,
+      //Initialize an entity representing the table STORE.ADDRESS,
       //which can be used for the testing
       return getEntities().builder(Address.TYPE)
               .with(Address.ID, 42)
@@ -67,7 +67,7 @@ public class StoreTest extends EntityTestUnit {
               .build();
     }
     else if (entityType.equals(Customer.TYPE)) {
-      //Initialize a entity representing the table STORE.CUSTOMER,
+      //Initialize an entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
       return getEntities().builder(Customer.TYPE)
               .with(Customer.ID, UUID.randomUUID().toString())
@@ -93,7 +93,7 @@ public class StoreTest extends EntityTestUnit {
       testEntity.put(Address.CITY, "New City");
     }
     else if (testEntity.getEntityType().equals(Customer.TYPE)) {
-      //It is sufficient to change the value of a single property, but the more the merrier
+      //It is sufficient to change the value of a single property, but the more, the merrier
       testEntity.put(Customer.FIRST_NAME, "Jesse");
       testEntity.put(Customer.LAST_NAME, "James");
       testEntity.put(Customer.IS_ACTIVE, false);

@@ -63,7 +63,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
+ * A panel representing an Entity via a EntityModel, which facilitates browsing and editing of records.
  * <pre>
  *   EntityType entityType = ...;
  *   EntityConnectionProvider connectionProvider = ...;
@@ -111,7 +111,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           "is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
 
   /**
-   * Specifies whether or not a control for toggling the edit panel is available to the user<br>
+   * Specifies whether a control for toggling the edit panel is available to the user<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -119,7 +119,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           "is.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
 
   /**
-   * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
+   * Specifies whether actions to hide detail panels or show them in a dialog are available to the user<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -183,7 +183,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final EntityTablePanel tablePanel;
 
   /**
-   * The base edit panel which contains the controls required for editing a entity
+   * The base edit panel which contains the controls required for editing an entity
    */
   private final JPanel editControlPanel = new JPanel(Layouts.borderLayout());
 
@@ -1055,7 +1055,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Creates the control panel or component to place next to the edit panel, containing controls for managing
    * records, such as insert, update and delete.
    * Only called if {@link #isIncludeControlPanel()} returns true.
-   * By default the control panel provided by the edit panel is returned.
+   * By default, the control panel provided by the edit panel is returned.
    * @return the control panel for managing records
    * @see EntityEditPanel#createHorizontalControlPanel()
    * @see EntityEditPanel#createVerticalControlPanel()
@@ -1096,7 +1096,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Initializes the keyboard navigation actions.
-   * By default CTRL-T transfers focus to the table in case one is available,
+   * By default, CTRL-T transfers focus to the table in case one is available,
    * CTR-E transfers focus to the edit panel in case one is available,
    * CTR-S transfers focus to the condition panel, CTR-C opens a select control dialog
    * and CTR-F selects the table search field
@@ -1339,7 +1339,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Initialize the Control to trigger when a double click is performed on the table, if a table is present.
    * The default implementation shows the edit panel in a dialog if one is available and hidden, if that is
    * not the case and the detail panels are hidden those are shown in a dialog.
-   * @return the Control to trigger when the a double click is performed on the table
+   * @return the Control to trigger when a double click is performed on the table
    */
   private Control initializeTableDoubleClickAction() {
     return Control.control(() -> {
@@ -1466,7 +1466,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @return the detail panel selected in the detail tab pane.
-   * @throws IllegalStateException in case no detail panels are define
+   * @throws IllegalStateException in case no detail panels are defined
    */
   private EntityPanel getTabbedDetailPanel() {
     if (detailPanelTabbedPane == null) {
@@ -1623,7 +1623,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     SwingEntityModel.Builder getModelBuilder();
 
     /**
-     * @return true if this panel builder contains a instantiated model
+     * @return true if this panel builder contains an instantiated model
      */
     boolean containsModel();
 

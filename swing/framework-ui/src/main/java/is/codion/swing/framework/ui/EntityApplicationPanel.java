@@ -947,7 +947,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * By default this method returns the panels defined by the available {@link EntityPanel.Builder}s.
+   * By default, this method returns the panels defined by the available {@link EntityPanel.Builder}s.
    * @param applicationModel the application model responsible for providing EntityModels for the panels
    * @return a List containing the {@link EntityPanel}s to include in this application panel
    */
@@ -1016,7 +1016,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return a frame title based on the application name, version and the logged in user
+   * @return a frame title based on the application name, version and the logged-in user
    */
   protected String getFrameTitle() {
     final StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);

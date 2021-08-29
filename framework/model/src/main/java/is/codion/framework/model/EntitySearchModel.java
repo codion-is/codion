@@ -137,7 +137,7 @@ public interface EntitySearchModel {
   void addSelectedEntitiesListener(EventDataListener<List<Entity>> listener);
 
   /**
-   * @return a StateObserver indicating whether or not the search string represents the selected entities
+   * @return a StateObserver indicating whether the search string represents the selected entities
    */
   StateObserver getSearchStringRepresentsSelectedObserver();
 
@@ -167,17 +167,17 @@ public interface EntitySearchModel {
   interface SearchSettings {
 
     /**
-     * @return a Value representing whether or not a wildcard is automatically prepended to the search string
+     * @return a Value representing whether a wildcard is automatically prepended to the search string
      */
     Value<Boolean> getWildcardPrefixValue();
 
     /**
-     * @return a Value representing whether or not a wildcard is automatically appended to the search string
+     * @return a Value representing whether a wildcard is automatically appended to the search string
      */
     Value<Boolean> getWildcardPostfixValue();
 
     /**
-     * @return a Value representing whether or not the search is case sensitive
+     * @return a Value representing whether the search is case-sensitive
      */
     Value<Boolean> getCaseSensitiveValue();
   }

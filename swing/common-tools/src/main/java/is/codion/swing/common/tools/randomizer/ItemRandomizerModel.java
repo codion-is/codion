@@ -123,7 +123,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   /**
-   * A class encapsulating an Object item and a integer weight value.
+   * A class encapsulating an Object item and an integer weight value.
    */
   private static final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 

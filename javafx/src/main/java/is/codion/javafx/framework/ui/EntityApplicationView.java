@@ -56,7 +56,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   /**
    * Instantiates a new {@link EntityApplicationView} instance.
    * @param applicationTitle the title to display in the view header
-   * @param iconFileName the name of a icon file on the classpath to display
+   * @param iconFileName the name of an icon file on the classpath to display
    */
   public EntityApplicationView(final String applicationTitle, final String iconFileName) {
     this.applicationTitle = applicationTitle;

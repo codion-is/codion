@@ -114,7 +114,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   }
 
   /**
-   * @return a ClientLog instance containing information about this connections recent activity
+   * @return a ClientLog instance containing information about this connection's recent activity
    */
   final ClientLog getClientLog() {
     return connectionHandler.getClientLog();

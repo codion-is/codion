@@ -95,8 +95,8 @@ public interface EntityEditModel {
 
   /**
    * Returns true if the active entity is new or false if it represents a row already persisted.
-   * By default an entity is new if either its primary key or the original primary key are null.
-   * It is not recommended to base the result of this function on a database query since it is called frequently,
+   * By default, an entity is new if either its primary key or the original primary key are null.
+   * Basing the result of this function on a database query is not recommended since it is called very frequently,
    * as in, every time a property value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
    * @see #getPrimaryKeyNullObserver
@@ -182,7 +182,7 @@ public interface EntityEditModel {
   EntityDefinition getEntityDefinition();
 
   /**
-   * @return true if this model is read only, that is if insert, update and delete are not enabled
+   * @return true if this model is read only, that is if the insert, update and delete operations are not enabled
    * @see #isInsertEnabled()
    * @see #isUpdateEnabled()
    * @see #isDeleteEnabled()
@@ -320,7 +320,7 @@ public interface EntityEditModel {
   void setPersistValue(Attribute<?> attribute, boolean persistValue);
 
   /**
-   * Performs a insert on the active entity, sets the primary key values of the active entity
+   * Performs an insert on the active entity, sets the primary key values of the active entity
    * according to the primary key of the inserted entity
    * @return the inserted entity
    * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
@@ -342,7 +342,7 @@ public interface EntityEditModel {
   List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
-   * Performs a update on the active entity
+   * Performs an update on the active entity
    * @return the updated entity
    * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
@@ -494,7 +494,7 @@ public interface EntityEditModel {
   StateObserver getModifiedObserver();
 
   /**
-   * @return an observer indicating whether or not the active entity is new
+   * @return an observer indicating whether the active entity is new
    * @see #isEntityNew()
    */
   StateObserver getEntityNewObserver();
@@ -507,7 +507,7 @@ public interface EntityEditModel {
   StateObserver getDeleteEnabledObserver();
 
   /**
-   * @return a {@link StateObserver} indicating whether or not the primary key of the active entity is null
+   * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
    */
   StateObserver getPrimaryKeyNullObserver();
 
@@ -595,7 +595,7 @@ public interface EntityEditModel {
   void removeBeforeInsertListener(EventDataListener<List<Entity>> listener);
 
   /**
-   * @param listener a listener to be notified each time a insert has been performed
+   * @param listener a listener to be notified each time insert has been performed
    */
   void addAfterInsertListener(EventDataListener<List<Entity>> listener);
 
@@ -641,7 +641,7 @@ public interface EntityEditModel {
   void removeBeforeDeleteListener(EventDataListener<List<Entity>> listener);
 
   /**
-   * @param listener a listener to be notified each time a delete has been performed
+   * @param listener a listener to be notified each time delete has been performed
    */
   void addAfterDeleteListener(EventDataListener<List<Entity>> listener);
 
@@ -674,7 +674,7 @@ public interface EntityEditModel {
   void removeAfterRefreshListener(EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time a entity is modified via this model,
+   * @param listener a listener to be notified each time an entity is edited via this model,
    * updated, inserted or deleted
    */
   void addEntitiesEditedListener(EventListener listener);

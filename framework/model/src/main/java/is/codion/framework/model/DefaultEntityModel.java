@@ -397,7 +397,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   /**
-   * By default this method sets the foreign key value in the edit model if the entity is new, using the first item in {@code foreignKeyValues}.
+   * By default, this method sets the foreign key value in the edit model if the entity is new, using the first item in {@code foreignKeyValues}.
    * @param foreignKey the foreign key attribute referring to the master model doing the initialization
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */

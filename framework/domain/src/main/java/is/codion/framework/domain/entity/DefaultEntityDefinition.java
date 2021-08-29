@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
 /**
- * A class encapsulating a entity definition, such as table name, order by clause and properties.
+ * A class encapsulating an entity definition, such as table name, order by clause and properties.
  */
 final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
@@ -650,7 +650,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   /**
-   * Returns true if a entity definition has been associated with the given foreign key.
+   * Returns true if an entity definition has been associated with the given foreign key.
    * @param foreignKey the foreign key
    * @return true if the referenced entity definition has been set for the given foreign key
    */

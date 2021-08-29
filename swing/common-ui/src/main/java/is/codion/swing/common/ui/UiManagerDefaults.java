@@ -20,7 +20,7 @@ public final class UiManagerDefaults {
     UIManager.put("OptionPane.okButtonText", Messages.get(Messages.OK));
     UIManager.put("OptionPane.inputDialogTitle", SwingMessages.get("OptionPane.inputDialogTitle"));
     UIManager.put("OptionPane.messageDialogTitle", SwingMessages.get("OptionPane.messageDialogTitle"));
-    //otherwise a hierarchy of tabbed panes looks crappy
+    //otherwise, a hierarchy of tabbed panes looks crappy
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(2, 0, 0, 0));
   }
 

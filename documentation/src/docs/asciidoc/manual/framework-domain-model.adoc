@@ -208,7 +208,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 === DenormalizedViewProperty
 
-An entity can include a property value from a entity referenced via foreign key, by defining a denormalized view property.
+An entity can include a property value from an entity referenced via foreign key, by defining a denormalized view property.
 
 [source,java,indent=0]
 ----
@@ -385,7 +385,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 Custom validation of Entities is performed by implementing a {url-javadoc}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
 
-The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access for example belongs in the application model or ui.
+The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often, so it should not perform expensive operations. Validation requiring database access for example belongs in the application model or ui.
 
 [source,java,indent=0]
 ----
@@ -460,7 +460,7 @@ The unit tests are run within a single transaction which is rolled back after th
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
 * {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeReferenceEntity-is.codion.framework.domain.entity.EntityType-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-is.codion.framework.domain.entity.EntityType-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-is.codion.framework.domain.entity.EntityType-java.util.Map-[initializeTestEntity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
 * {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity-is.codion.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityType or create a *entityName* method for each domain entity, as we do in the example below.

@@ -360,11 +360,11 @@ public interface EntityConnection extends AutoCloseable {
    */
   enum IncludePrimaryKeys {
     /**
-     * Primary key values should be include during a copy operation.
+     * Primary key values should be included during a copy operation.
      */
     YES,
     /**
-     * Primary key values should not be include during a copy operation.
+     * Primary key values should not be included during a copy operation.
      */
     NO
   }

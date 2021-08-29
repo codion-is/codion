@@ -899,7 +899,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Notifies that a insert is about to be performed
+   * Notifies that insert is about to be performed
    * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
@@ -908,7 +908,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Notifies that a insert has been performed
+   * Notifies that insert has been performed
    * @param insertedEntities the inserted entities
    * @see #addAfterInsertListener(EventDataListener)
    */
@@ -920,7 +920,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Notifies that an update is about to be performed
+   * Notifies that update is about to be performed
    * @param entitiesToUpdate the entities about to be updated
    * @see #addBeforeUpdateListener(EventDataListener)
    */
@@ -929,7 +929,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Notifies that an update has been performed
+   * Notifies that update has been performed
    * @param updatedEntities the updated entities
    * @see #addAfterUpdateListener(EventDataListener)
    */
@@ -941,7 +941,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Notifies that a delete is about to be performed
+   * Notifies that delete is about to be performed
    * @param entitiesToDelete the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
@@ -950,7 +950,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Notifies that a delete has been performed
+   * Notifies that delete has been performed
    * @param deletedEntities the deleted entities
    * @see #addAfterDeleteListener(EventDataListener)
    */
@@ -1019,7 +1019,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * and {@link TransientProperty} (excluding its descendants).
    * If a {@link ColumnProperty}s underlying column has a default value the property is
    * skipped unless the property itself has a default value, which then overrides the columns default value.
-   * @return a entity instance populated with default values
+   * @return an entity instance populated with default values
    * @see ColumnProperty.Builder#columnHasDefaultValue()
    * @see ColumnProperty.Builder#defaultValue(Object)
    */

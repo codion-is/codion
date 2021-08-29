@@ -116,7 +116,7 @@ public interface Database extends ConnectionFactory {
   String getSequenceQuery(String sequenceName);
 
   /**
-   * This should shutdown the database in case it is an embedded one
+   * This should shut down the database in case it is an embedded one
    * and if that is applicable, such as for Derby.
    */
   void shutdownEmbedded();
@@ -154,7 +154,7 @@ public interface Database extends ConnectionFactory {
   int getValidityCheckTimeout();
 
   /**
-   * Returns a user friendly error message for the given exception,
+   * Returns a user-friendly error message for the given exception,
    * otherwise simply return the message from {@code exception}
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception

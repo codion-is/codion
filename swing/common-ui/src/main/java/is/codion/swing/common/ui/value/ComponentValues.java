@@ -135,7 +135,7 @@ public final class ComponentValues {
   }
 
   /**
-   * Instantiates a Item based ComponentValue.
+   * Instantiates an Item based ComponentValue.
    * @param <V> the value type
    * @param <C> the combo box type
    * @param comboBox the combo box

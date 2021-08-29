@@ -73,7 +73,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   /**
    * Perform any required transformation of the string, the resulting string
    * must be of the same length as the original string.
-   * By default returns the string unchanged.
+   * Returns the string unchanged by default.
    * @param string the string to transform
    * @return the transformed string
    */

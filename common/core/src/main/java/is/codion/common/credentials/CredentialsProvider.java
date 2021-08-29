@@ -19,7 +19,7 @@ public interface CredentialsProvider {
   String AUTHENTICATION_TOKEN_DELIMITER = ":";
 
   /**
-   * Finds and returns a authentication token in the given String array
+   * Finds and returns an authentication token in the given String array
    * @param args the array
    * @return the authentication token or null if none is found
    * @see #AUTHENTICATION_TOKEN_PREFIX
@@ -34,7 +34,7 @@ public interface CredentialsProvider {
   }
 
   /**
-   * Performs a authentication lookup, using the default registry port (1099).
+   * Performs an authentication lookup, using the default registry port (1099).
    * @param authenticationToken the authentication token
    * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
    * was null, the user credentials were not found or have expired

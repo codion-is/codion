@@ -34,7 +34,7 @@ public interface ColumnConditionModel<C, T> {
           AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
 
   /**
-   * Specifies whether string based conditions are case sensitive or not by default<br>
+   * Specifies whether string based conditions are case-sensitive or not by default<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -69,12 +69,12 @@ public interface ColumnConditionModel<C, T> {
   C getColumnIdentifier();
 
   /**
-   * @return true if this filter is be case sensitive
+   * @return true if this filter is be case-sensitive
    */
   boolean isCaseSensitive();
 
   /**
-   * @param caseSensitive true if this condition model should be case sensitive when working with strings
+   * @param caseSensitive true if this condition model should be case-sensitive when working with strings
    */
   void setCaseSensitive(boolean caseSensitive);
 
@@ -210,7 +210,7 @@ public interface ColumnConditionModel<C, T> {
   Value<T> getLowerBoundValue();
 
   /**
-   * @return an observer for this models locked state
+   * @return an observer for this model's locked state
    */
   StateObserver getLockedObserver();
 

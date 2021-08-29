@@ -47,7 +47,7 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
           //use the format for the correct type
           return new DefaultNumberParseResult<>("0" + decimalSeparator, (T) getFormat().parse("0"), 1, true);
         }
-        catch (final ParseException e) {/*Wont happen*/}
+        catch (final ParseException e) {/*Won't happen*/}
       }
 
       return super.parse(string);

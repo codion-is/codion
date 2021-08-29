@@ -43,7 +43,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
   B selectAllOnFocusGained(final boolean selectAllOnFocusGained);
 
   /**
-   * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
+   * Adds a CTRL-SPACE action the given text field for displaying a lookup dialog showing the values provided
    * by the given value provider
    * @param valueSupplier provides the values for the lookup dialog
    * @return this builder instance

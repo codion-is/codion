@@ -53,7 +53,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   /**
    * Used to cache the return value of the frequently called toString(),
-   * invalidated each time a attribute value changes
+   * invalidated each time an attribute value changes
    */
   private String toString;
 

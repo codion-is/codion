@@ -81,7 +81,7 @@ public interface Property<T> {
 
   /**
    * The {@link Attribute} this property is based on, should be unique within an Entity.
-   * By default the {@link Attribute#getName()} serves as column name for database properties.
+   * By default, the {@link Attribute#getName()} serves as column name for database properties.
    * @return the attribute this property is based on
    */
   Attribute<T> getAttribute();
@@ -309,7 +309,7 @@ public interface Property<T> {
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.
      * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
-     * By default grouping is not used.
+     * By default, grouping is not used.
      * Only applicable to numerical properties.
      * This setting is overridden during subsequent calls to {@link #format(Format)}
      * @param numberFormatGrouping if true then number grouping is used

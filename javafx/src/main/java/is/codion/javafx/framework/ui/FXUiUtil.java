@@ -337,7 +337,7 @@ public final class FXUiUtil {
 
   /**
    * Instantiates a {@link CheckBox} based on the given {@link State} instance
-   * @param state the state on which to base the check box
+   * @param state the state on which to base the check-box
    * @return a {@link CheckBox} based on the given state
    */
   public static CheckBox createCheckBox(final State state) {
@@ -391,7 +391,7 @@ public final class FXUiUtil {
    * Instantiates a {@link CheckBox} based on the given property, linked to the given edit model
    * @param property the property
    * @param editModel the edit model
-   * @param enabledState the {@link State} instance controlling the enabled state of the check box
+   * @param enabledState the {@link State} instance controlling the enabled state of the check-box
    * @return a {@link CheckBox} based on the given property and edit model
    */
   public static CheckBox createCheckBox(final Property<Boolean> property, final FXEntityEditModel editModel,
@@ -404,8 +404,8 @@ public final class FXUiUtil {
 
   /**
    * Instantiates a {@link Value} instance based on the value of the given {@link CheckBox}
-   * @param checkBox the check box on which to base the value
-   * @return a {@link Value} based on the given check box
+   * @param checkBox the check-box on which to base the value
+   * @return a {@link Value} based on the given check-box
    */
   public static Value<Boolean> createBooleanValue(final CheckBox checkBox) {
     return PropertyValues.booleanPropertyValue(checkBox.selectedProperty());
@@ -724,7 +724,7 @@ public final class FXUiUtil {
 
   /**
    * Instantiates a new {@link CheckBox} instance
-   * @return the check box
+   * @return the check-box
    */
   public static CheckBox createCheckBox() {
     return createCheckBox(null);
@@ -732,8 +732,8 @@ public final class FXUiUtil {
 
   /**
    * Instantiates a new {@link CheckBox} instance
-   * @param enabledState the {@link State} instance controlling the enabled state of the check box
-   * @return the check box
+   * @param enabledState the {@link State} instance controlling the enabled state of the check-box
+   * @return the check-box
    */
   public static CheckBox createCheckBox(final StateObserver enabledState) {
     final CheckBox checkBox = new CheckBox();

@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A combo box model based on a the values of a single attribute.
+ * A combo box model based on all the values of a single attribute.
  * @param <T> the type of values in this combo box model
  */
 public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {

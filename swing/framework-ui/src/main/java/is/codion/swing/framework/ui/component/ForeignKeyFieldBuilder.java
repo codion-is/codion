@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 import javax.swing.JTextField;
 
 /**
- * Builds a read-only JTextField displaying a Entity instance.
+ * Builds a read-only JTextField displaying an Entity instance.
  */
 public interface ForeignKeyFieldBuilder extends ComponentBuilder<Entity, JTextField, ForeignKeyFieldBuilder> {
 

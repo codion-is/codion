@@ -148,7 +148,7 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * Sets the servers connection maintenance interval
+   * Sets the server's connection maintenance interval
    * @param interval the maintenance interval in seconds
    * @throws RemoteException in case of an exception
    */
@@ -157,7 +157,7 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * @return the servers connection maintenance interval in seconds
+   * @return the server's connection maintenance interval in seconds
    * @throws RemoteException in case of an exception
    */
   public int getMaintenanceInterval() throws RemoteException {

@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import java.awt.Window;
 
 /**
- * Handles an exception by displaying a error dialog.
+ * Handles an exception by displaying an error dialog.
  */
 public interface DialogExceptionHandler {
 

@@ -53,7 +53,7 @@ public interface EntityValidator {
   <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException;
 
   /**
-   * Validates the given entities, assumes they are all of the same type.
+   * Validates the given entities, assumes they are all the same type.
    * @param entities the entities to validate
    * @param definition the definition of the entity to validate
    * @throws ValidationException in case the validation fails

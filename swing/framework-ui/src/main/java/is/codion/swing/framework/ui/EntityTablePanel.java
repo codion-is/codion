@@ -134,7 +134,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   /**
-   * Specifies whether or not columns can be rearranged in tables<br>
+   * Specifies whether columns can be rearranged in tables<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -910,10 +910,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Creates a entity table panel based on the given table model.
+   * Creates an entity table panel based on the given table model.
    * If the table model is not read only, a popup menu for updating or deleting the selected entities is provided.
    * @param tableModel the table model
-   * @return a entity table panel based on the given model
+   * @return an entity table panel based on the given model
    */
   public static EntityTablePanel createEntityTablePanel(final SwingEntityTableModel tableModel) {
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
@@ -1143,7 +1143,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
+   * Called before delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {

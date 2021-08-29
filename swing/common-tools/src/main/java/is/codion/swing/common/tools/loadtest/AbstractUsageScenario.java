@@ -156,7 +156,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   protected void prepare(final T application) {/*Provided for subclasses*/}
 
   /**
-   * Called after this scenario has been run, override to cleanup the application after each run
+   * Called after this scenario has been run, override to clean up the application after each run
    * @param application the application
    */
   protected void cleanup(final T application) {/*Provided for subclasses*/}

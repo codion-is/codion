@@ -13,7 +13,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
+ * Defines an Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  * A factory for {@link EntityType} instances.
  * @param <T> the entity type
  */

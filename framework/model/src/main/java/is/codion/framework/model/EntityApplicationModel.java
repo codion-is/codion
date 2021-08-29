@@ -37,7 +37,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired", true);
 
   /**
-   * Specifies whether or not the client saves the last successful login username,<br>
+   * Specifies whether the client saves the last successful login username,<br>
    * which is then displayed as the default username the next time the application is started<br>
    * Value type: Boolean<br>
    * Default value: true

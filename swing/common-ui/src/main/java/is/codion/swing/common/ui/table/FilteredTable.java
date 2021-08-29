@@ -100,7 +100,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
      */
     BOTH,
     /**
-     * Centers neither the selected column or row.
+     * Centers neither the selected column nor row.
      */
     NEITHER
   }
@@ -135,12 +135,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private final JTextField searchField;
 
   /**
-   * Fired each time the table is double clicked
+   * Fired each time the table is double-clicked
    */
   private final Event<MouseEvent> doubleClickedEvent = Event.event();
 
   /**
-   * the action performed when the table is double clicked
+   * the action performed when the table is double-clicked
    */
   private Action doubleClickAction;
 
@@ -432,7 +432,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
-   * @param listener a listener notified each time the table is double clicked
+   * @param listener a listener notified each time the table is double-clicked
    */
   public void addDoubleClickListener(final EventDataListener<MouseEvent> listener) {
     doubleClickedEvent.addDataListener(listener);
@@ -659,7 +659,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   /**
    * Initialize the MouseListener for the table component handling double click.
-   * Double clicking invokes the action returned by {@link #getDoubleClickAction()}
+   * Double-clicking invokes the action returned by {@link #getDoubleClickAction()}
    * with this table as the ActionEvent source
    * @return the MouseListener for the table
    * @see #getDoubleClickAction()

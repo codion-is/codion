@@ -26,7 +26,7 @@ public interface ToggleControl extends Control {
   Value<Boolean> getValue();
 
   /**
-   * @return a check box menu item based on this control
+   * @return a check-box menu item based on this control
    * @throws IllegalArgumentException in case this toggle control value is nullable
    */
   JCheckBoxMenuItem createCheckBoxMenuItem();
@@ -46,7 +46,7 @@ public interface ToggleControl extends Control {
 
   /**
    * Creates a JCheckBox based on this toggle control
-   * @return a check box
+   * @return a check-box
    */
   JCheckBox createCheckBox();
 

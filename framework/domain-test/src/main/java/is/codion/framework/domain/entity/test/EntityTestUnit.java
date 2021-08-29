@@ -156,7 +156,7 @@ public class EntityTestUnit {
    * @param entities the domain model entities
    * @param entityType the entityType
    * @param referenceEntities entities referenced by the given entityType
-   * @return a Entity instance containing randomized values, based on the property definitions
+   * @return an Entity instance containing randomized values, based on the property definitions
    */
   public static Entity createRandomEntity(final Entities entities, final EntityType<?> entityType,
                                           final Map<EntityType<?>, Entity> referenceEntities) {
@@ -285,10 +285,10 @@ public class EntityTestUnit {
   }
 
   /**
-   * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
+   * Initializes a new Entity of the given type, by default this method creates an Entity filled with random values.
    * @param entityType the entityType
    * @param foreignKeyEntities the entities referenced via foreign keys
-   * @return a entity of the given type
+   * @return an entity of the given type
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeReferenceEntity(final EntityType<?> entityType, final Map<EntityType<?>, Entity> foreignKeyEntities)

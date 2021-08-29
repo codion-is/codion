@@ -130,7 +130,7 @@ public interface Entity extends Comparable<Entity> {
   boolean isNull(Attribute<?> attribute);
 
   /**
-   * Returns true if a this Entity contains a non-null value mapped to the given attribute
+   * Returns true if this Entity contains a non-null value mapped to the given attribute
    * In case of foreign key attributes the value of the underlying reference attribute is checked.
    * @param attribute the attribute
    * @return true if a non-null value is mapped to the given attribute
@@ -314,7 +314,7 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns all of the given entities which have been modified
+   * Returns the entities which have been modified
    * @param entities the entities
    * @param <T> the entity type
    * @return a List of entities that have been modified
@@ -561,10 +561,10 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Creates a two dimensional list containing the values of the given attributes for the given entities in string format.
+   * Creates a two-dimensional list containing the values of the given attributes for the given entities in string format.
    * @param attributes the attributes
    * @param entities the entities
-   * @return the values of the given attributes from the given entities in a two dimensional list
+   * @return the values of the given attributes from the given entities in a two-dimensional list
    */
   static List<List<String>> getStringValueList(final List<Attribute<?>> attributes, final List<Entity> entities) {
     requireNonNull(attributes);

@@ -141,7 +141,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   /**
    * Inserts the given entities, returning a list containing the primary keys
    * in the same order as they were received.
-   * If the primary key value of a entity is specified the id generation is disregarded.
+   * If the primary key value of an entity is specified the id generation is disregarded.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities

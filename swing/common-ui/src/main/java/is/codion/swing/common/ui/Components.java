@@ -865,7 +865,7 @@ public final class Components {
     }
 
     /**
-     * Transfers focus according the the value of {@code backward}
+     * Transfers focus according the value of {@code backward}
      * @param e the action event
      */
     @Override

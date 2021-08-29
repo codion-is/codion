@@ -42,8 +42,7 @@ final class EntityPopupMenu extends JPopupMenu {
   private static final int MAXIMUM_VALUE_LENGTH = 1000;
 
   /**
-   * Note that this has a side-effect, as it populates the full foreign key graph of the given entity,
-   * so use a copy.
+   * Note that this has a side effect, as it populates the full foreign key graph of the given entity, so use a copy.
    * @param entity the entity
    * @param connectionProvider the connection provider
    */

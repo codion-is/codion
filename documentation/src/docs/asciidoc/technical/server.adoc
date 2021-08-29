@@ -16,7 +16,7 @@
 
 === Authentication
 
-The Codion server does not perform any user authentication by default, it leaves that up the the underlying database. An authentication layer can be added by implementing a {url-javadoc}/is/codion/common/rmi/server/LoginProxy.html[LoginProxy] and setting the following system property.
+The Codion server does not perform any user authentication by default, it leaves that up the underlying database. An authentication layer can be added by implementing a {url-javadoc}/is/codion/common/rmi/server/LoginProxy.html[LoginProxy] and setting the following system property.
 
 [source]
 ----
