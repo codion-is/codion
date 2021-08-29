@@ -7231,3 +7231,4 @@
   DefaultEntityDefinition code cleanup, stream usage improved
   Domain classes javadoc improvements
   ItemProperty.getValues() renamed getItems()
+  DefaultPropertyValue, DefaultPropertyStore.DefaultPropertyValue, getOrThrow() error message improved
