@@ -338,20 +338,6 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     return null;
   }
 
-  private static boolean resourceNotFound(final String resourceBundleName, final String captionResourceKey) {
-    if (resourceBundleName == null) {
-      return true;
-    }
-    try {
-      ResourceBundle.getBundle(resourceBundleName).getString(captionResourceKey);
-
-      return false;
-    }
-    catch (final MissingResourceException e) {
-      return true;
-    }
-  }
-
   static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
@@ -583,8 +569,18 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return (B) this;
     }
 
-    protected final Attribute<T> getAttribute() {
-      return property.attribute;
+    private static boolean resourceNotFound(final String resourceBundleName, final String captionResourceKey) {
+      if (resourceBundleName == null) {
+        return true;
+      }
+      try {
+        ResourceBundle.getBundle(resourceBundleName).getString(captionResourceKey);
+
+        return false;
+      }
+      catch (final MissingResourceException e) {
+        return true;
+      }
     }
 
     private static Format initializeDefaultFormat(final Attribute<?> attribute) {

@@ -940,7 +940,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private List<ForeignKeyProperty> getForeignKeyProperties() {
       return properties.stream()
               .filter(ForeignKeyProperty.class::isInstance)
-              .map(property -> (ForeignKeyProperty) property)
+              .map(ForeignKeyProperty.class::cast)
               .collect(toList());
     }
 
@@ -1009,7 +1009,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private List<ColumnProperty<?>> getSelectableProperties() {
       return columnProperties.stream()
-              .filter(property -> !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable)
+              .filter(property -> !lazyLoadedBlobProperties.contains(property))
+              .filter(ColumnProperty::isSelectable)
               .collect(toList());
     }
 

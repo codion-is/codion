@@ -135,50 +135,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return new DefaultColumnPropertyBuilder<>(this);
   }
 
-  /**
-   * Returns the default sql type for the given class.
-   * @param clazz the class
-   * @return the corresponding sql type
-   */
-  private static int getSqlType(final Class<?> clazz) {
-    requireNonNull(clazz, "clazz");
-    if (clazz.equals(Long.class)) {
-      return Types.BIGINT;
-    }
-    if (clazz.equals(Integer.class)) {
-      return Types.INTEGER;
-    }
-    if (clazz.equals(Double.class)) {
-      return Types.DOUBLE;
-    }
-    if (clazz.equals(BigDecimal.class)) {
-      return Types.DECIMAL;
-    }
-    if (clazz.equals(LocalDate.class)) {
-      return Types.DATE;
-    }
-    if (clazz.equals(LocalTime.class)) {
-      return Types.TIME;
-    }
-    if (clazz.equals(LocalDateTime.class)) {
-      return Types.TIMESTAMP;
-    }
-    if (clazz.equals(OffsetDateTime.class)) {
-      return Types.TIMESTAMP_WITH_TIMEZONE;
-    }
-    if (clazz.equals(String.class)) {
-      return Types.VARCHAR;
-    }
-    if (clazz.equals(Boolean.class)) {
-      return Types.BOOLEAN;
-    }
-    if (clazz.equals(byte[].class)) {
-      return Types.BLOB;
-    }
-
-    return Types.OTHER;
-  }
-
   private class PropertyResultPacker implements ResultPacker<T> {
 
     @Override
@@ -387,7 +343,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B primaryKeyIndex(final int index) {
       if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0: " + getAttribute());
+        throw new IllegalArgumentException("Primary key index must be at least 0: " + columnProperty.getAttribute());
       }
       columnProperty.primaryKeyIndex = index;
       nullable(false);
@@ -398,7 +354,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B groupingColumn() {
       if (columnProperty.aggregateColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + getAttribute());
+        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + columnProperty.getAttribute());
       }
       columnProperty.groupingColumn = true;
       return (B) this;
@@ -407,7 +363,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B aggregateColumn() {
       if (columnProperty.groupingColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + getAttribute());
+        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + columnProperty.getAttribute());
       }
       columnProperty.aggregateColumn = true;
       return (B) this;
@@ -422,10 +378,54 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B searchProperty() {
       if (!columnProperty.getAttribute().isString()) {
-        throw new IllegalStateException("Search properties must be String based: " + getAttribute());
+        throw new IllegalStateException("Search properties must be String based: " + columnProperty.getAttribute());
       }
       columnProperty.searchProperty = true;
       return (B) this;
+    }
+
+    /**
+     * Returns the default sql type for the given class.
+     * @param clazz the class
+     * @return the corresponding sql type
+     */
+    private static int getSqlType(final Class<?> clazz) {
+      requireNonNull(clazz, "clazz");
+      if (clazz.equals(Long.class)) {
+        return Types.BIGINT;
+      }
+      if (clazz.equals(Integer.class)) {
+        return Types.INTEGER;
+      }
+      if (clazz.equals(Double.class)) {
+        return Types.DOUBLE;
+      }
+      if (clazz.equals(BigDecimal.class)) {
+        return Types.DECIMAL;
+      }
+      if (clazz.equals(LocalDate.class)) {
+        return Types.DATE;
+      }
+      if (clazz.equals(LocalTime.class)) {
+        return Types.TIME;
+      }
+      if (clazz.equals(LocalDateTime.class)) {
+        return Types.TIMESTAMP;
+      }
+      if (clazz.equals(OffsetDateTime.class)) {
+        return Types.TIMESTAMP_WITH_TIMEZONE;
+      }
+      if (clazz.equals(String.class)) {
+        return Types.VARCHAR;
+      }
+      if (clazz.equals(Boolean.class)) {
+        return Types.BOOLEAN;
+      }
+      if (clazz.equals(byte[].class)) {
+        return Types.BLOB;
+      }
+
+      return Types.OTHER;
     }
 
     private static <T> ValueFetcher<T> initializeValueFetcher(final int columnType, final Class<T> typeClass) {
@@ -455,7 +455,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
         case Types.BLOB:
           return DefaultColumnProperty::getBlob;
         case Types.OTHER:
-          return (resultSet, index) -> (T) DefaultColumnProperty.getObject(resultSet, index, typeClass);
+          return (resultSet, index) -> DefaultColumnProperty.getObject(resultSet, index, typeClass);
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
                   ", attribute type class: " + typeClass.getName());
