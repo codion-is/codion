@@ -631,15 +631,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Key primaryKey() {
-    if (hasPrimaryKey()) {
-      return new DefaultKey(this, getPrimaryKeyAttributes(), true);
-    }
-
-    return new DefaultKey(this, emptyList(), true);
-  }
-
-  @Override
   public Key primaryKey(final Integer value) {
     return createPrimaryKey(value);
   }
