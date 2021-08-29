@@ -167,18 +167,18 @@ public interface Property<T> {
   RoundingMode getDecimalRoundingMode();
 
   /**
-   * @return the preferred column width of this property in pixels when presented in a table, 0 if none has been specified
+   * @return the preferred column width of this property in pixels when presented in a table, -1 if none has been specified
    */
   int getPreferredColumnWidth();
 
   /**
-   * @return true if values associated with this property can be set null
+   * @return true if null is a valid value for this property
    */
   boolean isNullable();
 
   /**
-   * @return the maximum length of this property value, -1 is returned if the max length is undefined,
-   * this applies to String (varchar) based properties
+   * @return the maximum length of this property value, -1 is returned if the maximum length is undefined,
+   * this only applies to String (varchar) based properties
    */
   int getMaximumLength();
 
@@ -232,6 +232,8 @@ public interface Property<T> {
      * @param captionResourceKey the caption resource bundle key
      * @return this instance
      * @throws IllegalStateException in case the caption has already been set
+     * @throws IllegalStateException in case no resource bundle is specified for the entity
+     * @throws IllegalStateException in case the caption resource is not found in the entity resource bundle
      * @see EntityType#getResourceBundleName()
      */
     B captionResourceKey(String captionResourceKey);
@@ -319,13 +321,14 @@ public interface Property<T> {
      * Specifies the preferred column width when displaying this property in a table.
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
      * @return this instance
+     * @throws IllegalArgumentException in case the value is less than 1
      */
     B preferredColumnWidth(int preferredColumnWidth);
 
     /**
-     * Specifies whether or not this property is nullable. Note that this will not prevent
+     * Specifies whether this property is nullable. Note that this will not prevent
      * the value from being set to null, only prevent successful validation of the entity.
-     * @param nullable specifies whether or not this property accepts a null value
+     * @param nullable specifies whether null is a valid value for this property
      * @return this instance
      */
     B nullable(boolean nullable);

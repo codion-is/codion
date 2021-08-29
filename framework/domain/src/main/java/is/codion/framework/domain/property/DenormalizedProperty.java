@@ -13,12 +13,12 @@ import is.codion.framework.domain.entity.Entity;
 public interface DenormalizedProperty<T> extends ColumnProperty<T> {
 
   /**
-   * @return the id of the foreign key property from which this property should retrieve its value
+   * @return the attribute referencing the entity from which this property should retrieve its value
    */
   Attribute<Entity> getEntityAttribute();
 
   /**
-   * @return the property in the referenced entity from which this property gets its value
+   * @return the attribute in the referenced entity from which this property gets its value
    */
   Attribute<T> getDenormalizedAttribute();
 }

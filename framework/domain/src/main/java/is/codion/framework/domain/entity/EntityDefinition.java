@@ -229,7 +229,7 @@ public interface EntityDefinition {
   boolean hasDenormalizedProperties();
 
   /**
-   * @param entityAttribute the id of the entity attribute
+   * @param entityAttribute the entity attribute
    * @return true if this entity type has any denormalized properties associated with the give entity attribute
    */
   boolean hasDenormalizedProperties(Attribute<Entity> entityAttribute);

@@ -67,7 +67,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public boolean isInsertable() {
+  public final boolean isInsertable() {
     return insertable;
   }
 

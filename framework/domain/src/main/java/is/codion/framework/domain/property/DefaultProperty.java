@@ -36,7 +36,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   /**
    * The attribute this property is based on, should be unique within an Entity.
-   * By default the name of this attribute serves as column name for column properties.
+   * The name of this attribute serves as column name for column properties by default.
    * @see #getAttribute()
    */
   private final Attribute<T> attribute;
@@ -503,6 +503,9 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     @Override
     public final B preferredColumnWidth(final int preferredColumnWidth) {
+      if (preferredColumnWidth <= 0) {
+        throw new IllegalArgumentException("preferredColumnWidth must be larger than 0");
+      }
       property.preferredColumnWidth = preferredColumnWidth;
       return (B) this;
     }

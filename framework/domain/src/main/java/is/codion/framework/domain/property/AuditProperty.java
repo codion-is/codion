@@ -24,13 +24,13 @@ public interface AuditProperty<T> extends ColumnProperty<T> {
   AuditAction getAuditAction();
 
   /**
-   * Specifies a audit property with a timestamp value
+   * Specifies an audit property with a timestamp value
    * @param <T> the Temporal type to base this property on
    */
   interface AuditTimeProperty<T extends Temporal> extends AuditProperty<T> {}
 
   /**
-   * Specifies a audit property with a username value
+   * Specifies an audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty<String> {}
 }

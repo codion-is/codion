@@ -217,6 +217,7 @@ public interface Entity extends Comparable<Entity> {
    * A null argument to this method clears this entity instance of all values and original values.
    * @param entity the entity to copy or null for clearing all values in this instance
    * @return the affected attributes and their previous values, that is, attributes which values changed
+   * @throws IllegalArgumentException in case the entity is not of the same type
    */
   Map<Attribute<?>, Object> setAs(Entity entity);
 
