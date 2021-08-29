@@ -751,7 +751,7 @@ public final class FXUiUtil {
    * @return a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    */
   public static <T> ObservableList<Item<T>> createItemComboBoxModel(final ItemProperty<T> property) {
-    return new SortedList<>(FXCollections.observableArrayList(property.getValues()),
+    return new SortedList<>(FXCollections.observableArrayList(property.getItems()),
             Comparator.comparing(Item::toString));
   }
 

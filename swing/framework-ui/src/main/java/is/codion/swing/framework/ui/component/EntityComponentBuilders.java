@@ -155,7 +155,7 @@ public class EntityComponentBuilders {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ItemProperty");
     }
 
-    return ComponentBuilders.itemComboBox(((ItemProperty<T>) property).getValues())
+    return ComponentBuilders.itemComboBox(((ItemProperty<T>) property).getItems())
             .toolTipText(property.getDescription())
             .nullable(property.isNullable());
   }

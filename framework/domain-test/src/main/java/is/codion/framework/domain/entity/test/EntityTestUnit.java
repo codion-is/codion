@@ -492,7 +492,7 @@ public class EntityTestUnit {
   }
 
   private static <T> T getRandomItem(final ItemProperty<T> property) {
-    final List<Item<T>> items = property.getValues();
+    final List<Item<T>> items = property.getItems();
     final Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
     return item.getValue();

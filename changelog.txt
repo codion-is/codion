@@ -7230,3 +7230,4 @@
   DefaultEntityDefinition.initializeForeignKeyColumnProperties() refactored
   DefaultEntityDefinition code cleanup, stream usage improved
   Domain classes javadoc improvements
+  ItemProperty.getValues() renamed getItems()
