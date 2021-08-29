@@ -411,12 +411,6 @@ public interface EntityDefinition {
   Entity entityWithDefaultValues();
 
   /**
-   * Creates a new {@link Key} instance based on this definition
-   * @return a new {@link Key} instance
-   */
-  Key primaryKey();
-
-  /**
    * Creates a new {@link Key} instance based on this definition, initialised with the given value
    * @param value the key value, assumes a single integer key
    * @return a new {@link Key} instance

@@ -631,15 +631,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Key primaryKey() {
-    if (hasPrimaryKey()) {
-      return new DefaultKey(this, getPrimaryKeyAttributes(), true);
-    }
-
-    return new DefaultKey(this, emptyList(), true);
-  }
-
-  @Override
   public Key primaryKey(final Integer value) {
     return createPrimaryKey(value);
   }
@@ -941,7 +932,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private List<ForeignKeyProperty> getForeignKeyProperties() {
       return properties.stream()
               .filter(ForeignKeyProperty.class::isInstance)
-              .map(property -> (ForeignKeyProperty) property)
+              .map(ForeignKeyProperty.class::cast)
               .collect(toList());
     }
 
@@ -1010,7 +1001,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private List<ColumnProperty<?>> getSelectableProperties() {
       return columnProperties.stream()
-              .filter(property -> !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable)
+              .filter(property -> !lazyLoadedBlobProperties.contains(property))
+              .filter(ColumnProperty::isSelectable)
               .collect(toList());
     }
 
