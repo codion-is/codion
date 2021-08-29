@@ -35,7 +35,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
           "is.codion.framework.model.EntityModel.searchOnMasterInsert", false);
 
   /**
-   * Specifies whether or not the client should save and apply user preferences<br>
+   * Specifies whether the client should save and apply user preferences<br>
    * Value type: Boolean<br>
    * Default value: true if required JSON library is found on classpath, false otherwise
    */
@@ -124,7 +124,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
-   * given detail models via {@link #setMasterModel(EntityModel)}, a side-effect if the detail model contains
+   * given detail models via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
    * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
    * @param detailModels the detail models to add
@@ -133,7 +133,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
-   * given detail model via {@link #setMasterModel(EntityModel)}, a side-effect if the detail model contains
+   * given detail model via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
    * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
    * @param detailModel the detail model

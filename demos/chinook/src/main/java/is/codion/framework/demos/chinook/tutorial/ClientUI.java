@@ -39,7 +39,7 @@ public final class ClientUI {
     // create a EditModel based on the artist entity
     SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-    // create a field for entering a artist name
+    // create a field for entering an artist name
     JTextField nameField = new JTextField(10);
 
     // create a String Value based on the artist name in the edit model
@@ -51,8 +51,8 @@ public final class ClientUI {
     // link the two values
     textFieldNameValue.link(editModelNameValue);
 
-    // add a insert action to the name field
-    // so we can insert by pressing Enter
+    // add an insert action to the name field
+    // so that we can insert by pressing Enter
     nameField.addActionListener(Control.control(() -> {
       try {
         // insert the entity
@@ -98,16 +98,16 @@ public final class ClientUI {
     // populate the combo box model
     artistComboBoxModel.refresh();
 
-    // create a Entity Value based on the album artist in the edit model
+    // create an Entity Value based on the album artist in the edit model
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
 
-    // create a Entity Value based on the combobox
+    // create an Entity Value based on the combobox
     Value<Entity> comboBoxArtistValue = ComponentValues.comboBox(artistComboBox);
 
     // link the two values
     comboBoxArtistValue.link(editModelArtistValue);
 
-    // create a field for entering a album title
+    // create a field for entering an album title
     JTextField titleField = new JTextField(10);
 
     // create a String Value based on the album title in the edit model
@@ -119,8 +119,8 @@ public final class ClientUI {
     // link the two values
     textFieldTitleValue.link(editModelTitleValue);
 
-    // add a insert action to the title field
-    // so we can insert by pressing Enter
+    // add an insert action to the title field
+    // so that we can insert by pressing Enter
     titleField.addActionListener(Control.control(() -> {
       try {
         editModel.insert();

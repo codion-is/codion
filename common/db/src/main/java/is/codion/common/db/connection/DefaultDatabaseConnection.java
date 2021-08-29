@@ -57,7 +57,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @param database the database
    * @param connection the Connection object to base this DefaultDatabaseConnection on
    * @throws IllegalArgumentException in case the given connection is invalid
-   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
    */
   DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
     this.database = requireNonNull(database, "database");
@@ -312,10 +312,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   /**
-   * Returns a User with the username from the meta data retrieved from the given connection
+   * Returns a User with the username from the meta-data retrieved from the given connection
    * @param connection the connection
    * @return a user based on the information gleamed from the given connection
-   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
    * @see java.sql.DatabaseMetaData#getUserName()
    */
   private static User getUser(final Connection connection) throws DatabaseException {

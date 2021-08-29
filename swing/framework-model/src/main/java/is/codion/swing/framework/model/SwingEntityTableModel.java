@@ -631,7 +631,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderBy()}
-   * @return entities selected from the database according the the query condition.
+   * @return entities selected from the database according the query condition.
    * @see #getQueryConditionRequiredState()
    * @see EntityTableConditionModel#getCondition()
    */

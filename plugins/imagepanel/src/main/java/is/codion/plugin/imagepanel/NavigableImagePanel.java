@@ -284,7 +284,7 @@ public class NavigableImagePanel extends JPanel {
 
   /**
    * <p>Sets a new zoom device.</p>
-   * @param newZoomDevice specifies the type of a new zoom device.
+   * @param newZoomDevice specifies the type of the new zoom device.
    */
   public final void setZoomDevice(final ZoomDevice newZoomDevice) {
     if (newZoomDevice == ZoomDevice.NONE) {
@@ -350,7 +350,7 @@ public class NavigableImagePanel extends JPanel {
   }
 
   /**
-   * If the given point on this panel is within the image the image
+   * If the given point on this panel is within the image
    * is centered on that point.
    * @param point the point on which to center the image
    */
@@ -523,7 +523,7 @@ public class NavigableImagePanel extends JPanel {
   }
 
   /**
-   * High quality rendering kicks in when when a scaled image is larger
+   * High quality rendering kicks in when a scaled image is larger
    * than the original image. In other words,
    * when image decimation stops and interpolation starts.
    * @return true if high quality rendering is enabled

@@ -9,7 +9,7 @@ The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in th
 
 == Condition
 
-{url-javadoc}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause for a entity type.
+{url-javadoc}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause for an entity type.
 
 == Condition.Combination
 
@@ -17,7 +17,7 @@ The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in th
 
 == SelectCondition
 
-{url-javadoc}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition] represents a where clause for a entity type specifically for selecting.
+{url-javadoc}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition] represents a where clause for an entity type specifically for selecting.
 
 == UpdateCondition
 

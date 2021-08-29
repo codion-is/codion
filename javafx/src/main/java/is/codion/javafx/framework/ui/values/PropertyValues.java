@@ -97,7 +97,7 @@ public final class PropertyValues {
   /**
    * @param property the string property
    * @param numberFormat the format to use
-   * @return a Integer {@link StringValue} based on the given string property
+   * @return an Integer {@link StringValue} based on the given string property
    */
   public static StringValue<Integer> integerPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new IntegerConverter(numberFormat));

@@ -22,7 +22,7 @@ public interface ItemProperty<T> extends ColumnProperty<T> {
   /**
    * @return an unmodifiable view of the available items
    */
-  List<Item<T>> getValues();
+  List<Item<T>> getItems();
 
   /**
    * @param value the value

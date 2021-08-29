@@ -37,7 +37,7 @@ public final class WorldImpl extends DefaultDomain {
 
   public WorldImpl() {
     super(World.DOMAIN);
-    //By default you can't define a foreign key referencing an entity which
+    //By default, you can't define a foreign key referencing an entity which
     //has not been defined, to prevent mistakes. But sometimes we have to
     //deal with cyclical dependencies, such as here, where city references
     //country and country references city. In these cases we can simply

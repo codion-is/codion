@@ -38,7 +38,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
 
   /**
    * @param value the value
-   * @return the index of the given value
+   * @return the index of the given value, -1 if not found
    */
   public int indexOf(final T value) {
     for (int i = 0; i < getSize(); i++) {

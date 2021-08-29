@@ -79,13 +79,13 @@ public interface ServerAdmin extends Remote {
   int getConnectionCount() throws RemoteException;
 
   /**
-   * @return the maximum number of concurrent connections this servers accepts
+   * @return the maximum number of concurrent connections this server accepts
    * @throws RemoteException in case of a communication error
    */
   int getConnectionLimit() throws RemoteException;
 
   /**
-   * @param value the maximum number of concurrent connections this servers accepts
+   * @param value the maximum number of concurrent connections this server accepts
    * @throws RemoteException in case of a communication error
    */
   void setConnectionLimit(int value) throws RemoteException;

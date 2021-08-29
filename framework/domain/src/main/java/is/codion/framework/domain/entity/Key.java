@@ -22,7 +22,7 @@ public interface Key {
   List<Attribute<?>> getAttributes();
 
   /**
-   * @return true if this key represents a primary key for a entity, note that this is true
+   * @return true if this key represents a primary key for an entity, note that this is true
    * for empty keys representing entities without a defined primary key
    */
   boolean isPrimaryKey();

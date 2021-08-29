@@ -118,7 +118,7 @@ public final class EntitySelectionDialog extends JDialog {
     List<Entity> select();
 
     /**
-     * Displays a entity table in a dialog for selecting a single entity
+     * Displays an entity table in a dialog for selecting a single entity
      * @return the selected entity or {@link Optional#empty()} if none was selected
      */
     Optional<Entity> selectSingle();

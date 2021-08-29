@@ -63,13 +63,13 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean isSelectable();
 
   /**
-   * Specifies whether or not this property is insertable
+   * Specifies whether this property is insertable
    * @return true if this property is insertable
    */
   boolean isInsertable();
 
   /**
-   * Indicates whether or not this column is updatable
+   * Indicates whether this column is updatable
    * @return true if this column is updatable
    */
   boolean isUpdatable();
@@ -80,7 +80,7 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean isReadOnly();
 
   /**
-   * @return true if this column is a denormalized column, one should which receives a value
+   * @return true if this column is a denormalized column, one which should receives a value
    * from a column in a table referenced via a foreign key
    */
   boolean isDenormalized();
@@ -112,7 +112,7 @@ public interface ColumnProperty<T> extends Property<T> {
 
   /**
    * Fetches a single value from a result set.
-   * @param <C> the type of the value being fetched
+   * @param <C> the type of the column value being fetched
    */
   interface ValueFetcher<C> {
 
@@ -180,8 +180,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * @param valueFetcher the value fetcher used to retrieve the value from a ResultSet
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
-                                                 ValueFetcher<C> valueFetcher);
+    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter, ValueFetcher<C> valueFetcher);
 
     /**
      * Sets the actual string used as column when querying

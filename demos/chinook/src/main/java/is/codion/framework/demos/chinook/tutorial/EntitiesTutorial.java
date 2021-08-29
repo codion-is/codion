@@ -138,7 +138,7 @@ public final class EntitiesTutorial {
     albums.forEach(System.out::println);
 
     // for more complex queries we use a SelectCondition, provided by the Condition class.
-    // we create a condition, where we specify the the attribute we're
+    // we create a condition, where we specify the attribute we're
     // searching by, the type of condition and the value.
     SelectCondition artistsCondition = where(Artist.NAME).equalTo("An%").toSelectCondition();
 
@@ -178,7 +178,7 @@ public final class EntitiesTutorial {
     connection.beginTransaction();
 
     // we insert the Entity, the insert() method returns the primary key
-    // of the inserted record, but we don't need it right now so we ignore it.
+    // of the inserted record, but we don't need it right now, so we ignore it.
     // Note that because we're running with a local connection in a single VM
     // the primary key of the entity instance is populated during insert,
     // with a remote connection the insert happens in another VM, so you have
@@ -201,7 +201,7 @@ public final class EntitiesTutorial {
     // and finally we commit
     connection.commitTransaction();
 
-    // lets rename our album and our band as well
+    // let's rename our album and our band as well
     myBand.put(Artist.NAME, "A proper name");
     album.put(Album.TITLE, "A proper title");
 
@@ -211,7 +211,7 @@ public final class EntitiesTutorial {
     // a single transaction
     connection.update(asList(myBand, album));
 
-    // finally we clean up after ourselves by deleting our imaginary band and album,
+    // finally, we clean up after ourselves by deleting our imaginary band and album,
     // note that the order of the entities matters, since we can't delete
     // the artist before the album, this method deletes records in the
     // same order as the are received

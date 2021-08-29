@@ -158,7 +158,7 @@ final class Queries {
   }
 
   /**
-   * Returns a order by clause based on the given {@link OrderBy}.
+   * Returns an order by clause based on the given {@link OrderBy}.
    * @param entityDefinition the entity definition
    * @return a order by string
    */

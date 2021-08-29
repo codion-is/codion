@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 /**
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
- * @param <C> type type used to identify columns in this table model, Integer for indexed identification for example
+ * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @param <T> the type representing table columns
  */
 public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
@@ -211,7 +211,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   boolean isRegularExpressionSearch();
 
   /**
-   * Specifies whether or not to use regular expressions when searching this table model
+   * Specifies whether to use regular expressions when searching this table model
    * @param regularExpressionSearch true if regular expression search should be enabled
    */
   void setRegularExpressionSearch(boolean regularExpressionSearch);
@@ -247,7 +247,7 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
-   * Note that a empty selection event will be triggered during a normal refresh, since the model is cleared
+   * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
    * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
    */

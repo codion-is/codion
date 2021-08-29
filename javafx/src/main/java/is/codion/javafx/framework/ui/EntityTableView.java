@@ -118,7 +118,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   /**
-   * Specifies whether or not a property should be included in the update selected menu
+   * Specifies whether a property should be included in the update selected menu
    * @param property the property
    * @param <T> the value type
    * @return true if the user should be able to update the property value for multiple entities at a time

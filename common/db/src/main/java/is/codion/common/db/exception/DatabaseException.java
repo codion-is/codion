@@ -12,12 +12,12 @@ public class DatabaseException extends Exception {
 
   /**
    * The sql statement being run when this exception occurred, if any, transient
-   * so it's not available client side if running in a server/client environment
+   * so that it's not available client side if running in a server/client environment
    */
   private final transient String statement;
 
   /**
-   * The underlying error code, if any, transient so it's not
+   * The underlying error code, if any, transient so that it's not
    * available client side if running in a server/client environment
    */
   private final transient int errorCode;

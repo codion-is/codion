@@ -49,7 +49,7 @@ public class NumberField<T extends Number> extends JTextField {
   }
 
   /**
-   * Set whether or not grouping will be used in this field.
+   * Set whether grouping will be used in this field.
    * @param groupingUsed true if grouping should be used false otherwise
    */
   public final void setGroupingUsed(final boolean groupingUsed) {

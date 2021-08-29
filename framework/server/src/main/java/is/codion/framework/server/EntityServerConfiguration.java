@@ -197,7 +197,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 
   /**
    * Returns a Builder initialized with values from system properties.
-   * @return a entity server configuration builder initialized with values from system properties.
+   * @return an entity server configuration builder initialized with values from system properties.
    */
   static EntityServerConfiguration.Builder builderFromSystemProperties() {
     final Builder builder =  builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())

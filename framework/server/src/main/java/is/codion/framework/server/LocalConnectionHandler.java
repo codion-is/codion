@@ -80,7 +80,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private final String logIdentifier;
 
   /**
-   * Describes the logged in user, for logging purposes
+   * Describes the logged-in user, for logging purposes
    */
   private final String userDescription;
 
@@ -110,7 +110,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private long lastAccessTime = creationDate;
 
   /**
-   * Indicates whether or not this remote connection has been disconnected
+   * Indicates whether this remote connection has been disconnected
    */
   private boolean closed = false;
 

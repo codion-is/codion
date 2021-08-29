@@ -636,7 +636,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Called before a delete is performed, if true is returned the delete action is performed otherwise it is cancelled
+   * Called before delete is performed, if true is returned the delete action is performed otherwise it is cancelled
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
@@ -654,7 +654,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   }
 
   /**
-   * Presents a OK/Cancel confirm dialog with the given message and title,
+   * Presents an OK/Cancel confirm dialog with the given message and title,
    * returns true if OK was selected.
    * @param message the message
    * @param title the dialog title
@@ -748,7 +748,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   /**
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
-   * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc)
+   * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc.)
    * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
    * @see is.codion.swing.common.ui.control.Control
    * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)

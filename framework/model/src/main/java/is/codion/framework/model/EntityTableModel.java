@@ -372,7 +372,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   SelectionModel<Entity> getSelectionModel();
 
   /**
-   * @param listener listener notified when a edit model has been set.
+   * @param listener listener notified when an edit model has been set.
    */
   void addEditModelSetListener(EventDataListener<E> listener);
 

@@ -7260,3 +7260,6 @@
   DefaultProperty and subclass refactoring, all default field values now initialized in Builder constructor
   DefaultEntityDefinition.initializeForeignKeyColumnProperties() refactored
   DefaultEntityDefinition code cleanup, stream usage improved
+  Domain classes javadoc improvements
+  ItemProperty.getValues() renamed getItems()
+  DefaultPropertyValue, DefaultPropertyStore.DefaultPropertyValue, getOrThrow() error message improved

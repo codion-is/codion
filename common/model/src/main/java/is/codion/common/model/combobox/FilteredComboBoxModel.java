@@ -126,21 +126,21 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   String getNullString();
 
   /**
-   * Specifies whether or not filtering can change the selected item, if true then
+   * Specifies whether filtering can change the selected item, if true then
    * the selected item is set to null when the currently selected item is filtered
    * from the model, otherwise the selected item can potentially represent a value
    * which is not currently visible in the model.
-   * By default this is true.
+   * This is true by default.
    * @param filterSelectedItem if true then the selected item is changed when it is filtered out,
    */
   void setFilterSelectedItem(boolean filterSelectedItem);
 
   /**
-   * Specifies whether or not filtering can change the selected item, if true then
+   * Specifies whether filtering can change the selected item, if true then
    * the selected item is set to null when the currently selected item is filtered
    * from the model, otherwise the selected item can potentially represent a value
    * which is not currently visible in the model.
-   * By default this is true.
+   * This is true by default.
    * @return true if the selected item is changed when it is filtered out
    */
   boolean isFilterSelectedItem();

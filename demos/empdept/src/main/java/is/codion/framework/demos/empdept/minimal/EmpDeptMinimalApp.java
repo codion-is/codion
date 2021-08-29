@@ -276,7 +276,7 @@ public final class EmpDeptMinimalApp {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDept.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     Clients.SERVER_HOST_NAME.set("codion.no-ip.org");
-    //we're using Secure Sockets Layer so we need to specify a truststore
+    //we're using Secure Sockets Layer so that we need to specify a truststore
     Clients.TRUSTSTORE.set("resources/security/truststore.jks");
     System.setProperty("java.security.policy", "resources/security/codion_demos.policy");
 

@@ -32,7 +32,7 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
   LoginDialogBuilder southComponent(JComponent southComponent);
 
   /**
-   * @return the logged in user
+   * @return the logged-in user
    * @throws CancelException in case the login is cancelled
    */
   User show();

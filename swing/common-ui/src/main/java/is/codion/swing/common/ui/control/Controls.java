@@ -200,7 +200,7 @@ public interface Controls extends Control {
     Builder keyStroke(KeyStroke keyStroke);
 
     /**
-     * @param enabledState the state observer dictating the enable state of this controls instance
+     * @param enabledState the state observer dictating the enabled state of this controls instance
      * @return this Builder instance
      */
     Builder enabledState(StateObserver enabledState);

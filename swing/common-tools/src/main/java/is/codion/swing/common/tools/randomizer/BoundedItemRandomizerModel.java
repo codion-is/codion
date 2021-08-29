@@ -10,8 +10,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A ItemRandomizer with the added constraint that the total item weights can not exceed a defined maximum.
- * When the weight of one item is incremented the weight of another is decremented in a round robin kind of fashion
- * and when a item weight is decremented the weight of another is incremented.<br>
+ * When the weight of one item is incremented the weight of another is decremented in a round-robin kind of fashion
+ * and when an item weight is decremented the weight of another is incremented.<br>
  * User: Björn Darri<br>
  * Date: 6.4.2010<br>
  * Time: 21:26:00<br>

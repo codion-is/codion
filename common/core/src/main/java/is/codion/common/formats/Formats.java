@@ -32,7 +32,7 @@ public final class Formats {
   }
 
   /**
-   * @return a Integer NumberFormat instance with grouping disabled
+   * @return an Integer NumberFormat instance with grouping disabled
    */
   public static NumberFormat getNonGroupingIntegerFormat() {
     final NumberFormat format = NumberFormat.getIntegerInstance();

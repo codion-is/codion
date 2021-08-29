@@ -124,7 +124,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     }
     this.conditionModel = conditionModel;
     final boolean modelLocked = conditionModel.isLocked();
-    conditionModel.setLocked(false);//otherwise the validator checking the locked state kicks in during value linking
+    conditionModel.setLocked(false);//otherwise, the validator checking the locked state kicks in during value linking
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
@@ -319,14 +319,14 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   /**
-   * @param listener listener notified when a this condition panels input fields receive focus
+   * @param listener listener notified when this condition panels input fields receive focus
    */
   public final void addFocusGainedListener(final EventDataListener<C> listener) {
     focusGainedEvent.addDataListener(listener);
   }
 
   /**
-   * Provides a equal, upper and lower bound input fields for a ColumnConditionPanel
+   * Provides an equal, upper and lower bound input fields for a ColumnConditionPanel
    */
   public interface BoundFieldFactory {
 
@@ -336,7 +336,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     JComponent createEqualField();
 
     /**
-     * @return a upper bound input field
+     * @return an upper bound input field
      */
     JComponent createUpperBoundField();
 

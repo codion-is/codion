@@ -37,7 +37,7 @@ public final class Completion {
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
    * {@link Completion.Mode#MAXIMUM_MATCH} for maximum match
-   * and {@link Completion.Mode#AUTOCOMPLETE} for auto completion.<br>
+   * and {@link Completion.Mode#AUTOCOMPLETE} for auto-completion.<br>
    * Value type:String<br>
    * Default value: {@link Completion.Mode#MAXIMUM_MATCH}
    */
@@ -71,7 +71,7 @@ public final class Completion {
   }
 
   /**
-   * Enables auto completion on the given combobox
+   * Enables auto-completion on the given combobox
    * @param comboBox the combobox on which to enable autocompletion
    * @param <C> the combobox type
    * @param <T> the type
@@ -82,7 +82,7 @@ public final class Completion {
   }
 
   /**
-   * Enables auto completion on the given combobox
+   * Enables auto-completion on the given combobox
    * @param comboBox the combobox on which to enable autocompletion
    * @param normalize if YES then accented characters are normalized before matching
    * @param <C> the combobox type

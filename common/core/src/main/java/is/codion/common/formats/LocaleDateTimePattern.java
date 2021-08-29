@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * Note that the time part is 24 hour based and is not locale sensitive.
  *
  * Orders the year and month parts according to locale,
- * with two digit month and day parts and two or four digit year.
+ * with two-digit month and day parts and two or four digit year.
  *
  * <pre>
  *

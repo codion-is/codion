@@ -75,8 +75,7 @@ public final class Text {
   }
 
   /**
-   * Sorts the string representations of this lists contents, using
-   * the space aware collator
+   * Sorts the string representations of the list contents, using the space aware collator
    * @see Text#getSpaceAwareCollator()
    * @param values the list to sort (collate)
    */

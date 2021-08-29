@@ -27,7 +27,7 @@ public final class Configuration {
   public static final String CONFIGURATION_FILE = "codion.configurationFile";
 
   /**
-   * Specifies whether or not the application requires a configuration file to run.<br>
+   * Specifies whether the application requires a configuration file to run.<br>
    * If this is set to true and the file referenced by {@link #CONFIGURATION_FILE}<br>
    * is not found a FileNotFoundException is thrown when this class is loaded.<br>
    * Value type: Boolean<br>

@@ -82,7 +82,7 @@ public final class Dialogs {
   }
 
   /**
-   * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
+   * Adds a CTRL-SPACE action the given text field for displaying a lookup dialog showing the values provided
    * by the given value provider
    * @param textField the text field
    * @param valueProvider provides the values for the lookup dialog
@@ -98,7 +98,7 @@ public final class Dialogs {
   }
 
   /**
-   * Creates a Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
+   * Creates an Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
    * @param filenameField the text field for displaying the file path
    * @return the Action
    */

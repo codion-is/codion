@@ -81,7 +81,7 @@ public interface KeyGenerator {
    * generator does nothing, that is, it does not overwrite a manually set primary key value.
    * @param tableName the table name
    * @param columnName the primary key column name
-   * @return a incrementing primary key generator
+   * @return an incrementing primary key generator
    */
   static KeyGenerator increment(final String tableName, final String columnName) {
     return new IncrementKeyGenerator(tableName, columnName);
@@ -118,7 +118,7 @@ public interface KeyGenerator {
   /**
    * Instantiates a primary key generator which fetches automatically incremented primary key values after insert.
    * @param valueSource the value source, whether a sequence or a table name
-   * @return a auto-increment based primary key generator
+   * @return an auto-increment based primary key generator
    */
   static KeyGenerator automatic(final String valueSource) {
     return new AutomaticKeyGenerator(valueSource);

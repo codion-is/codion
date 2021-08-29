@@ -46,7 +46,7 @@ import static java.util.stream.Collectors.toList;
  * Date: 18.4.2010<br>
  * Time: 09:48:07<br>
  * @param <R> the type representing the rows in this table model
- * @param <C> type type used to identify columns in this table model, Integer for indexed identification for example
+ * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
@@ -498,7 +498,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Returns the items this table model should contain.
-   * By default this simply returns the items already in the model.
+   * By default, this simply returns the items already in the model.
    * Override to fetch data from a datasource of some kind.
    * @return the items this table model should contain.
    */

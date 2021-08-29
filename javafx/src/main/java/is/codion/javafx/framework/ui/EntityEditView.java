@@ -115,7 +115,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   /**
-   * Displays a dialog for choosing a input component to receive focus
+   * Displays a dialog for choosing an input component to receive focus
    */
   public void selectInputControl() {
     final List<Property<?>> properties = Properties.sort(getEditModel()

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Specifies a entity definition.
+ * Specifies an entity definition.
  */
 public interface EntityDefinition {
 
@@ -133,7 +133,7 @@ public interface EntityDefinition {
   Comparator<Entity> getComparator();
 
   /**
-   * @return a unmodifiable list view of the properties
+   * @return an unmodifiable list view of the properties
    */
   List<Property<?>> getProperties();
 
@@ -229,7 +229,7 @@ public interface EntityDefinition {
   boolean hasDenormalizedProperties();
 
   /**
-   * @param entityAttribute the id of the entity attribute
+   * @param entityAttribute the entity attribute
    * @return true if this entity type has any denormalized properties associated with the give entity attribute
    */
   boolean hasDenormalizedProperties(Attribute<Entity> entityAttribute);
@@ -314,15 +314,15 @@ public interface EntityDefinition {
   List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
 
   /**
-   * @return true if the primary key of the given type of entity is comprised of a single integer value
+   * @return true if the primary key of the given type of entity consists of a single integer value
    */
   boolean hasSingleIntegerPrimaryKey();
 
   /**
-   * Retrieves the writable (non read-only) column properties comprising this entity type
+   * Retrieves the writable (non-read-only) column properties comprising this entity type
    * @param includePrimaryKeyProperties if true primary key properties are included, non-updatable primary key properties
    * are only included if {@code includeNonUpdatable} is true
-   * @param includeNonUpdatable if true then non updatable properties are included
+   * @param includeNonUpdatable if true then non-updatable properties are included
    * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity of type {@code entityType}
    */

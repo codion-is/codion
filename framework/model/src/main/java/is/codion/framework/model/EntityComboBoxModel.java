@@ -131,7 +131,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   void forceRefresh();
 
   /**
-   * Specifies whether or not this models data should be considered static, that is, only fetched once.
+   * Specifies whether this models data should be considered static, that is, only fetched once.
    * Note that {@link #forceRefresh()} disregards this directive.
    * @param staticData the value
    */
@@ -145,7 +145,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Set to true if this combo box model should respond to entity edit events, by adding inserted items,
-   * updating updated items and removing deleted ones.
+   * updating any updated items and removing deleted ones.
    * @param listenToEditEvents if true then this model listens to entity edit events
    * @see EntityEditEvents
    */
@@ -153,7 +153,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * True if this combo box model responds to entity edit events, by adding inserted items,
-   * updating updated items and removing deleted ones.
+   * updating any updated items and removing deleted ones.
    * @return true if this combo box model listens edit events
    * @see EntityEditEvents
    */

@@ -30,7 +30,7 @@ public interface OrderBy {
   List<OrderByAttribute> getOrderByAttributes();
 
   /**
-   * Specifies a order by property and whether it's ascending or descending
+   * Specifies an order by attribute and whether it's ascending or descending
    */
   interface OrderByAttribute {
 

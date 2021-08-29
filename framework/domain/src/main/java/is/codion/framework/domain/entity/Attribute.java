@@ -37,7 +37,7 @@ public interface Attribute<T> {
 
   /**
    * @param typeClass the type class to check
-   * @return true if the this attributes type class is the same as the one given
+   * @return true if this attributes type class is the same as the one given
    */
   boolean isType(Class<?> typeClass);
 
@@ -67,7 +67,7 @@ public interface Attribute<T> {
   boolean isLocalTime();
 
   /**
-   * @return true if this is a offset date time attribute
+   * @return true if this is an offset date time attribute
    */
   boolean isOffsetDateTime();
 
@@ -87,7 +87,7 @@ public interface Attribute<T> {
   boolean isLong();
 
   /**
-   * @return true if this is a integer attribute
+   * @return true if this is an integer attribute
    */
   boolean isInteger();
 
@@ -117,7 +117,7 @@ public interface Attribute<T> {
   boolean isByteArray();
 
   /**
-   * @return true if this is a Entity attribute
+   * @return true if this is an Entity attribute
    */
   boolean isEntity();
 
