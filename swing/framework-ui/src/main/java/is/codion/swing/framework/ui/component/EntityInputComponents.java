@@ -99,42 +99,27 @@ public final class EntityInputComponents {
     if (attribute.isBoolean()) {
       return (ComponentValue<T, C>) builders.checkBox((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
-              .nullable(property.isNullable())
               .buildComponentValue();
     }
     if (attribute.isInteger()) {
       return (ComponentValue<T, C>) builders.integerField((Attribute<Integer>) attribute)
               .enabledState(enabledState)
-              .minimumValue(property.getMinimumValue())
-              .maximumValue(property.getMaximumValue())
-              .maximumLength(property.getMaximumLength())
               .buildComponentValue();
     }
     if (attribute.isLong()) {
       return (ComponentValue<T, C>) builders.longField((Attribute<Long>) attribute)
               .enabledState(enabledState)
-              .minimumValue(property.getMinimumValue())
-              .maximumValue(property.getMaximumValue())
-              .maximumLength(property.getMaximumLength())
               .buildComponentValue();
 
     }
     if (attribute.isDouble()) {
       return (ComponentValue<T, C>) builders.doubleField((Attribute<Double>) attribute)
               .enabledState(enabledState)
-              .minimumValue(property.getMinimumValue())
-              .maximumValue(property.getMaximumValue())
-              .maximumFractionDigits(property.getMaximumFractionDigits())
-              .maximumLength(property.getMaximumLength())
               .buildComponentValue();
     }
     if (attribute.isBigDecimal()) {
       return (ComponentValue<T, C>) builders.bigDecimalField((Attribute<BigDecimal>) attribute)
               .enabledState(enabledState)
-              .minimumValue(property.getMinimumValue())
-              .maximumValue(property.getMaximumValue())
-              .maximumFractionDigits(property.getMaximumFractionDigits())
-              .maximumLength(property.getMaximumLength())
               .buildComponentValue();
     }
 

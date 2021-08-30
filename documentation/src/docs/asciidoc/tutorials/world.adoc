@@ -15,16 +15,16 @@
 image::tutorials/world/country.png[]
 ====
 
-.Custom Country Tables
+.Country Overview - Tables
 [%collapsible]
 ====
-image::tutorials/world/custom_country_tables.png[]
+image::tutorials/world/country_overview_tables.png[]
 ====
 
-.Custom Country Charts
+.Country Overview - Charts
 [%collapsible]
 ====
-image::tutorials/world/custom_country_charts.png[]
+image::tutorials/world/country_overview_charts.png[]
 ====
 
 .Continent

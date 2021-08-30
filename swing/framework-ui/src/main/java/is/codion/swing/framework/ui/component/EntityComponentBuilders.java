@@ -314,7 +314,6 @@ public class EntityComponentBuilders {
 
     return ComponentBuilders.integerField()
             .format(property.getFormat())
-            .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
             .toolTipText(property.getDescription());
@@ -330,7 +329,6 @@ public class EntityComponentBuilders {
 
     return ComponentBuilders.longField()
             .format(property.getFormat())
-            .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
             .toolTipText(property.getDescription());
@@ -346,7 +344,6 @@ public class EntityComponentBuilders {
 
     return ComponentBuilders.doubleField()
             .format(property.getFormat())
-            .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
             .maximumFractionDigits(property.getMaximumFractionDigits())
@@ -363,7 +360,6 @@ public class EntityComponentBuilders {
 
     return ComponentBuilders.bigDecimalField()
             .format(property.getFormat())
-            .maximumLength(property.getMaximumLength())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
             .maximumFractionDigits(property.getMaximumFractionDigits())

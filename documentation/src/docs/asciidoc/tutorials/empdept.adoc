@@ -6,6 +6,7 @@
 :basedir: ..
 :dir-source: ../../../../../demos/empdept/src/main/java
 :dir-test-source: ../../../../../demos/empdept/src/test/java
+:dir-source-sql: ../../../../../demos/empdept/src/main/sql
 :url-javadoc: link:../api
 
 == Screenshots
@@ -14,6 +15,17 @@
 [%collapsible]
 ====
 image::tutorials/empdept/departments.png[]
+====
+
+== Database
+
+.Create Schema SQL
+[%collapsible]
+====
+[source,sql]
+----
+include::{dir-source-sql}/create_schema.sql[]
+----
 ====
 
 == Domain
