@@ -7234,3 +7234,5 @@
   DefaultPropertyValue, DefaultPropertyStore.DefaultPropertyValue, getOrThrow() error message improved
   Code cleanup
   EntityDefinition.primaryKey() removed
+  EntityComponentBuilders, redundant call to maximumLength() removed from numerical field initialization
+  EntityInputComponents, repeated calls to setters already called in EntityComponentBuilders removed
