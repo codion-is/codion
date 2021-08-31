@@ -25,10 +25,10 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -47,7 +47,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -60,12 +59,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -278,34 +276,21 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void selectColumns() {
     final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
-    final List<TableColumn> allColumns = new ArrayList<>(columnModel.getAllColumns());
-    allColumns.sort(new Comparator<TableColumn>() {
-      private final Collator collator = Collator.getInstance();
-
-      @Override
-      public int compare(final TableColumn o1, final TableColumn o2) {
-        return Text.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
-      }
-    });
-    final List<JCheckBox> checkBoxes = new ArrayList<>();
-    final int result = JOptionPane.showOptionDialog(this, initializeSelectColumnsPanel(allColumns, checkBoxes),
-            MESSAGES.getString(SELECT_COLUMNS), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-            new String[] {MESSAGES.getString("show_all_columns"), Messages.get(Messages.CANCEL),
-                    Messages.get(Messages.OK)}, Messages.get(Messages.OK));
-    if (result != 1) {
-      if (result == 0) {
-        setSelected(checkBoxes, true);
-      }
-      checkBoxes.forEach(checkBox -> SwingUtilities.invokeLater(() -> {
-        final TableColumn column = allColumns.get(checkBoxes.indexOf(checkBox));
-        if (checkBox.isSelected()) {
-          columnModel.showColumn((C) column.getIdentifier());
-        }
-        else {
-          columnModel.hideColumn((C) column.getIdentifier());
-        }
-      }));
-    }
+    final Map<TableColumn, JCheckBox> columnCheckBoxes =
+            columnModel.getAllColumns().stream().collect(Collectors.toMap(column -> column, column ->
+            new JCheckBox(column.getHeaderValue().toString(),
+                    tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()))));
+    Dialogs.okCancelDialogBuilder(initializeSelectColumnsPanel(columnCheckBoxes))
+            .owner(this)
+            .onOk(() -> SwingUtilities.invokeLater(() -> columnCheckBoxes.forEach((column, checkBox) -> {
+              if (checkBox.isSelected()) {
+                columnModel.showColumn((C) column.getIdentifier());
+              }
+              else {
+                columnModel.hideColumn((C) column.getIdentifier());
+              }
+            })))
+            .show();
   }
 
   /**
@@ -541,35 +526,34 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
     popupMenu.add(Control.builder(() -> Dialogs.componentDialogBuilder(panel)
-            .owner(FilteredTable.this)
-            .title(settingsMessage)
-            .onClosedAction(control)
-            .show())
+                    .owner(FilteredTable.this)
+                    .title(settingsMessage)
+                    .onClosedAction(control)
+                    .show())
             .caption(settingsMessage)
             .build());
 
     return popupMenu;
   }
 
-  private JPanel initializeSelectColumnsPanel(final List<TableColumn> allColumns, final List<JCheckBox> checkBoxes) {
-    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
-    allColumns.forEach(column -> {
-      final JCheckBox columnCheckBox = new JCheckBox(column.getHeaderValue().toString(),
-              tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
-      checkBoxes.add(columnCheckBox);
-      togglePanel.add(columnCheckBox);
-    });
-    final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    southPanel.add(Control.builder(() -> setSelected(checkBoxes, true))
+  private static JPanel initializeSelectColumnsPanel(final Map<TableColumn, JCheckBox> columnCheckBoxes) {
+    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnCheckBoxes.size()), 0));
+    final Collator columnCollator = Collator.getInstance();
+    columnCheckBoxes.keySet().stream().sorted((column1, column2) ->
+            Text.collateSansSpaces(columnCollator, column1.getIdentifier().toString(), column2.getIdentifier().toString()))
+            .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
+    final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
+    northPanel.add(Control.builder(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true)))
             .caption(MESSAGES.getString("select_all"))
             .build().createButton());
-    southPanel.add(Control.builder(() -> setSelected(checkBoxes, false))
+    northPanel.add(Control.builder(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(false)))
             .caption(MESSAGES.getString("select_none"))
             .build().createButton());
 
     final JPanel base = new JPanel(Layouts.borderLayout());
+    base.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    base.add(northPanel, BorderLayout.NORTH);
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
-    base.add(southPanel, BorderLayout.SOUTH);
 
     return base;
   }
@@ -676,10 +660,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         }
       }
     };
-  }
-
-  private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
-    checkBoxes.forEach(box -> SwingUtilities.invokeLater(() -> box.setSelected(selected)));
   }
 
   private static final class DefaultConditionPanelFactory<C> implements ConditionPanelFactory {
