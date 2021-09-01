@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
@@ -34,35 +33,23 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   public static final String OPENSTREETMAP_ORG_SEARCH = "https://nominatim.openstreetmap.org/search/";
 
-  private final State locationUpdateCancelledState = State.state();
-
   public CityTableModel(EntityConnectionProvider connectionProvider) {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
   }
 
-  public List<Entity> updateLocationForSelected(ProgressReporter progressReporter)
+  public void updateLocationForSelected(ProgressReporter progressReporter,
+                                        StateObserver cancelLocationUpdateObserver)
           throws IOException, DatabaseException, ValidationException {
     List<Entity> updatedCities = new ArrayList<>();
-    locationUpdateCancelledState.set(false);
     List<Entity> selectedCities = getSelectionModel().getSelectedItems();
     for (Entity city : selectedCities) {
-      if (!locationUpdateCancelledState.get()) {
+      if (!cancelLocationUpdateObserver.get()) {
         progressReporter.setMessage(city.toString());
         updateLocation(city);
         updatedCities.add(city);
         progressReporter.setProgress(100 * updatedCities.size() / selectedCities.size());
       }
     }
-
-    return updatedCities;
-  }
-
-  public void cancelLocationUpdate() {
-    locationUpdateCancelledState.set(true);
-  }
-
-  public StateObserver getLocationUpdateCancelledObserver() {
-    return locationUpdateCancelledState.getObserver();
   }
 
   private void updateLocation(Entity city) throws IOException, DatabaseException, ValidationException {
@@ -77,7 +64,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private void updateLocation(Entity city, JSONObject cityInformation) throws DatabaseException, ValidationException {
     city.put(City.LOCATION, new GeoPosition(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
-    getEditModel().update(singletonList(city)).get(0);
+    getEditModel().update(singletonList(city));
   }
 
   private static JSONArray toJSONArray(URL url) throws IOException {

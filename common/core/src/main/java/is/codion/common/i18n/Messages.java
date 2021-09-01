@@ -14,7 +14,6 @@ public final class Messages {
 
   public static final String CANCEL = "cancel";
   public static final String CANCEL_MNEMONIC = "cancel_mnemonic";
-  public static final String CLOSE = "close";
   public static final String PRINT = "print";
   public static final String EXCEPTION = "exception";
   public static final String YES = "yes";

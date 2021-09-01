@@ -188,7 +188,7 @@ final class ExceptionDialog extends JDialog {
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build();
     final Control closeControl = Control.builder(this::dispose)
-            .caption(Messages.get(Messages.CLOSE))
+            .caption(MESSAGES.getString("close"))
             .description(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
