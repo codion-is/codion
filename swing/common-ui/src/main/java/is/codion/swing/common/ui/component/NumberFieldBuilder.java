@@ -32,6 +32,7 @@ public interface NumberFieldBuilder<T extends Number, C extends NumberField<T>, 
   B groupingSeparator(char groupingSeparator);
 
   /**
+   * Note that this is overridden by {@link #format(java.text.Format)}.
    * @param groupingUsed true if grouping should be used
    * @return this builder instance
    */

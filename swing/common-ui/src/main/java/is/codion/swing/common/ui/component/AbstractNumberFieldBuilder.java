@@ -45,14 +45,17 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
 
   @Override
   protected final C createTextField() {
-    final C numberField = createNumberField(cloneFormat((NumberFormat) getFormat()));
+    final NumberFormat format = cloneFormat((NumberFormat) getFormat());
+    final C numberField = createNumberField(format);
     if (minimumValue != null && maximumValue != null) {
       numberField.setRange(Math.min(minimumValue, 0), maximumValue);
     }
     if (groupingSeparator != 0) {
       numberField.setGroupingSeparator(groupingSeparator);
     }
-    numberField.setGroupingUsed(groupingUsed);
+    if (format == null) {
+      numberField.setGroupingUsed(groupingUsed);
+    }
 
     return numberField;
   }
