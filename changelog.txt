@@ -7237,3 +7237,4 @@
   EntityComponentBuilders, redundant call to maximumLength() removed from numerical field initialization
   EntityInputComponents, repeated calls to setters already called in EntityComponentBuilders removed
   FilteredTable.selectColumns() refactored, now uses Dialogs.okCancelDialogBuilder()
+  EntityApplicationPanel, about dialog improved a bit

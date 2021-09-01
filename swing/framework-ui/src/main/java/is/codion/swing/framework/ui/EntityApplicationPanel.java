@@ -49,6 +49,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -65,7 +66,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -117,6 +117,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String HELP = "help";
   private static final String ABOUT = "about";
   private static final String ALWAYS_ON_TOP = "always_on_top";
+  private static final String CLIENT_VERSION = "client_version";
+  private static final String CODION_VERSION = "codion_version";
+  private static final String MEMORY_USAGE = "memory_usage";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -474,16 +477,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getHelpPanel()
    */
   public final void displayHelp() {
-    final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
-    final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            resourceBundle.getString(HELP));
-    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    Windows.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
-    dialog.setLocationRelativeTo(this);
-    dialog.setResizable(true);
-    dialog.setModal(false);
-    dialog.setVisible(true);
+    Dialogs.componentDialogBuilder(getHelpPanel())
+            .owner(this)
+            .modal(false)
+            .title(resourceBundle.getString(HELP))
+            .show();
   }
 
   /**
@@ -491,15 +489,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getAboutPanel()
    */
   public final void displayAbout() {
-    final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
-    final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            resourceBundle.getString(ABOUT));
-    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    dialog.pack();
-    dialog.setLocationRelativeTo(this);
-    dialog.setModal(true);
-    dialog.setVisible(true);
+    Dialogs.componentDialogBuilder(getAboutPanel())
+            .owner(this)
+            .title(resourceBundle.getString(ABOUT))
+            .show();
   }
 
   /**
@@ -765,7 +758,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       final JPanel panel = new JPanel(new BorderLayout());
       final String contents = getHelpText();
-      final JTextArea text = new JTextArea(contents);
+      final JTextArea text = new JTextArea(contents, 20, 60);
       final JScrollPane scrollPane = new JScrollPane(text);
       text.setEditable(false);
       text.setFocusable(false);
@@ -795,10 +788,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JPanel panel = new JPanel(Layouts.borderLayout());
     final String versionString = Version.getVersionAndMetadataString();
     panel.add(new JLabel(icons().logoTransparent()), BorderLayout.WEST);
-    final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsage() + ")");
-    versionMemoryField.setEditable(false);
-    versionMemoryField.setFocusable(false);
-    panel.add(versionMemoryField, BorderLayout.CENTER);
+    final Version version = getClientVersion();
+    final JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
+    versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    if (version != null) {
+      versionMemoryPanel.add(new JLabel(resourceBundle.getString(CLIENT_VERSION) + ":"));
+      versionMemoryPanel.add(new JLabel(version.toString()));
+    }
+    versionMemoryPanel.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"));
+    versionMemoryPanel.add(new JLabel(versionString));
+    versionMemoryPanel.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"));
+    versionMemoryPanel.add(new JLabel(Memory.getMemoryUsage()));
+    panel.add(versionMemoryPanel, BorderLayout.CENTER);
+
+    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
     return panel;
   }
