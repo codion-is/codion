@@ -62,6 +62,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     ComponentValue<Double, DoubleField> averageCityPopulationFieldValue =
             ComponentBuilders.doubleField()
                     .maximumFractionDigits(2)
+                    .groupingUsed(true)
                     .focusable(false)
                     .editable(false)
                     .linkedValueObserver(((CountryEditModel) getEditModel()).getAvarageCityPopulationValue())

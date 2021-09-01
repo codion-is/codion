@@ -77,7 +77,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private void updateLocation(Entity city, JSONObject cityInformation) throws DatabaseException, ValidationException {
     city.put(City.LOCATION, new GeoPosition(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
-    getEditModel().update(singletonList(city)).get(0);
+    getEditModel().update(singletonList(city));
   }
 
   private static JSONArray toJSONArray(URL url) throws IOException {
