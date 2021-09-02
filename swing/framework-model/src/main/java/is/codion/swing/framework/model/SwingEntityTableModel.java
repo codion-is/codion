@@ -348,8 +348,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   /**
    * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code> is editable.
-   * @param rowIndex the row whose value to be queried
-   * @param modelColumnIndex the column whose value to be queried
+   * @param rowIndex the row to edit
+   * @param modelColumnIndex the model index of the column to edit
    * @return true if the cell is editable
    * @see #setValueAt(Object, int, int)
    */
