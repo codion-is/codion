@@ -105,6 +105,10 @@ public final class EntityEditPanels {
               (TemporalField<LocalDateTime>) createTextField(Demo.LOCAL_DATE)
                       .build();
 
+      TemporalField<LocalDate> localDateField =
+              createLocalDateField(Demo.LOCAL_DATE)
+                      .build();
+
       TemporalInputPanel<LocalDate> inputPanel =
               createTemporalInputPanel(Demo.LOCAL_DATE)
                       .build();
@@ -117,16 +121,32 @@ public final class EntityEditPanels {
               (IntegerField) createTextField(Demo.INTEGER)
                       .build();
 
+      integerField =
+              createIntegerField(Demo.INTEGER)
+                      .build();
+
       LongField longField =
               (LongField) createTextField(Demo.LONG)
+                      .build();
+
+      longField =
+              createLongField(Demo.LONG)
                       .build();
 
       DoubleField doubleField =
               (DoubleField) createTextField(Demo.DOUBLE)
                       .build();
 
+      doubleField =
+              createDoubleField(Demo.DOUBLE)
+                      .build();
+
       BigDecimalField bigDecimalField =
               (BigDecimalField) createTextField(Demo.BIG_DECIMAL)
+                      .build();
+
+      bigDecimalField =
+              createBigDecimalField(Demo.BIG_DECIMAL)
                       .build();
       // end::numericalValue[]
     }
