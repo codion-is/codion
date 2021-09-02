@@ -110,9 +110,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     buttonBasePanel.add(Components.createOkCancelButtonPanel(okAction, theCancelAction));
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
-    if (dialog.getOwner() != null) {
-      dialog.setLocationRelativeTo(dialog.getOwner());
-    }
+    dialog.setLocationRelativeTo(owner);
     dialog.setModal(true);
     dialog.setResizable(true);
 

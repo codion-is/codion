@@ -301,7 +301,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param componentValues the component value provider for this table panel
+   * @param componentValues the component value provider for this table panel, provides the components used to
+   * update property values via this table panel.
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues) {
     this(tableModel, componentValues, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel()));
@@ -310,7 +311,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param componentValues the component value provider for this table panel
+   * @param componentValues the component value provider for this table panel, provides the components used to
+   * update property values via this table panel.
    * @param conditionPanel the condition panel, if any
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues,
@@ -1031,7 +1033,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Constructs Controls containing the controls to include in the table popup menu.
+   * Constructs a Controls instance containing the controls to include in the table popup menu.
    * Returns null or an empty Controls instance to indicate that no popup menu should be included.
    * @param additionalPopupControls any additional controls to include in the popup menu
    * @return Controls on which to base the table popup menu, null or an empty Controls instance
