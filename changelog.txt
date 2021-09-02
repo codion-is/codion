@@ -7239,3 +7239,4 @@
   FilteredTable.selectColumns() refactored, now uses Dialogs.okCancelDialogBuilder()
   EntityApplicationPanel, about dialog improved a bit
   AbstractNumberFieldBuilder bug fixed, did not respect the number format grouping if the format was already specified
+  DefaultOkCancelDialogBuilder bug fixed, did not center dialog in window when no owner was specified
