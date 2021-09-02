@@ -53,6 +53,8 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 {url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-is.codion.framework.domain.entity.Attribute-[createTemporalInputPanel(attribute)]
 
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLocalDateField-is.codion.framework.domain.entity.Attribute-[createLocalDateField(attribute)]
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=temporalValue]
