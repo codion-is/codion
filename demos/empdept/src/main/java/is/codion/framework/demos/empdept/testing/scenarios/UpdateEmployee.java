@@ -14,7 +14,7 @@ import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.Random;
 
-import static is.codion.framework.domain.entity.test.EntityTestUnit.randomize;
+import static is.codion.framework.domain.entity.test.EntityTestUtil.randomize;
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]

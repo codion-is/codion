@@ -15,7 +15,7 @@ import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 import java.util.HashMap;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.test.EntityTestUnit.createRandomEntity;
+import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandomEntity;
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]
