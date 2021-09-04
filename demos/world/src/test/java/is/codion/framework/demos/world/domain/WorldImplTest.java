@@ -71,10 +71,11 @@ public final class WorldImplTest extends EntityTestUnit {
   @Override
   protected Entity initializeReferenceEntity(EntityType<?> entityType,
                                              Map<EntityType<?>, Entity> foreignKeyEntities)
-          throws DatabaseException{
+          throws DatabaseException {
     if (entityType.equals(Country.TYPE)) {
       return getEntities().builder(Country.TYPE)
-              .with(Country.CODE, "ISL").build();
+              .with(Country.CODE, "ISL")
+              .build();
     }
     if (entityType.equals(City.TYPE)) {
       return getEntities().builder(City.TYPE)

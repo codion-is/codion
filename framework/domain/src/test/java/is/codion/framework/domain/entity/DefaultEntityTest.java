@@ -759,19 +759,18 @@ public class DefaultEntityTest {
     assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
   }
 
-  private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
-                                 final String stringValue, final LocalDate dateValue, final LocalDateTime timestampValue,
-                                 final Boolean booleanValue, final Entity entityValue) {
-    final Entity entity = ENTITIES.entity(Detail.TYPE);
-    entity.put(Detail.ID, id);
-    entity.put(Detail.INT, intValue);
-    entity.put(Detail.DOUBLE, doubleValue);
-    entity.put(Detail.STRING, stringValue);
-    entity.put(Detail.DATE, dateValue);
-    entity.put(Detail.TIMESTAMP, timestampValue);
-    entity.put(Detail.BOOLEAN, booleanValue);
-    entity.put(Detail.MASTER_FK, entityValue);
-
-    return entity;
+  private static Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
+                                        final String stringValue, final LocalDate dateValue, final LocalDateTime timestampValue,
+                                        final Boolean booleanValue, final Entity entityValue) {
+    return ENTITIES.builder(Detail.TYPE)
+            .with(Detail.ID, id)
+            .with(Detail.INT, intValue)
+            .with(Detail.DOUBLE, doubleValue)
+            .with(Detail.STRING, stringValue)
+            .with(Detail.DATE, dateValue)
+            .with(Detail.TIMESTAMP, timestampValue)
+            .with(Detail.BOOLEAN, booleanValue)
+            .with(Detail.MASTER_FK, entityValue)
+            .build();
   }
 }

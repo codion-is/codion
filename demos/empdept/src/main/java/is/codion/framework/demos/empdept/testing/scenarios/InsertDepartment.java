@@ -9,7 +9,7 @@ import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
-import static is.codion.framework.domain.entity.test.EntityTestUnit.createRandomEntity;
+import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandomEntity;
 
 // tag::loadTest[]
 public final class InsertDepartment extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
