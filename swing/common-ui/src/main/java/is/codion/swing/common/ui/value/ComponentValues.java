@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 
 import javax.swing.JComboBox;
+import javax.swing.JList;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -310,6 +311,15 @@ public final class ComponentValues {
    */
   public static ComponentValue<Long, LongField> longField(final LongField longField, final boolean nullable, final UpdateOn updateOn) {
     return new LongFieldValue(longField, nullable, updateOn);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param list the component
+   * @return a Value bound to the given component
+   */
+  public static <T> ComponentValue<T, JList<T>> listSingleSelection(final JList<T> list) {
+    return new SingleSelectionListValue<>(list);
   }
 
   /**

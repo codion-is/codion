@@ -32,6 +32,7 @@ public final class ApplicationModel {
   private final Value<String> stringSelectionValue = value();
   private final Value<Integer> integerSlideValue = value();
   private final Value<Integer> integerSpinValue = value();
+  private final Value<String> stringListValue = value();
   private final Value<String> messageValue = value();
 
   public ApplicationModel() {
@@ -95,6 +96,10 @@ public final class ApplicationModel {
     return stringSelectionValue;
   }
 
+  public Value<String> getStringListValue() {
+    return stringListValue;
+  }
+
   public ValueObserver<String> getMessageObserver() {
     return messageValue.getObserver();
   }
@@ -115,6 +120,7 @@ public final class ApplicationModel {
     stringSelectionValue.addDataListener(this::setMessage);
     integerSlideValue.addDataListener(this::setMessage);
     integerSpinValue.addDataListener(this::setMessage);
+    stringListValue.addDataListener(this::setMessage);
   }
 
   private void exceptionHandler(Thread thread, Throwable exception) {

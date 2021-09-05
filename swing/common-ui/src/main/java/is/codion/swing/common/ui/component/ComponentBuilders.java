@@ -11,6 +11,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import java.math.BigDecimal;
@@ -286,6 +287,15 @@ public final class ComponentBuilders {
    */
   public static SliderBuilder slider(final BoundedRangeModel boundedRangeModel) {
     return new DefaultSliderBuilder(boundedRangeModel);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param listModel the list model
+   * @return a builder for a JList
+   */
+  public static <T> SingleSelectionListBuilder<T> listSingleSelection(final ListModel<T> listModel) {
+    return new DefaultSingleSelectionListBuilder<>(listModel);
   }
 
   /**
