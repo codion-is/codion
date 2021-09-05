@@ -7272,3 +7272,5 @@
   AbstractNumberFieldBuilder bug fixed, did not respect the number format grouping if the format was already specified
   DefaultOkCancelDialogBuilder bug fixed, did not center dialog in window when no owner was specified
   EntityTestUtil split from EntityTestUnit, EntityTestUnit refactored
+  ComponentBuilders.listSingleSelection() and ComponentValues.listSingleSelection() added
+  ComponentBuilders.listSingleSelection() and ComponentValues.listSingleSelection() renamed list(), multiple selection option shelved for now

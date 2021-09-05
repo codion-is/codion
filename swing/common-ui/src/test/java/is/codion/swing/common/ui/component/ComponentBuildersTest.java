@@ -25,11 +25,13 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -318,18 +320,20 @@ public final class ComponentBuildersTest {
   @Test
   void textArea() {
     final Value<String> value = Value.value();
-    final ComponentValue<String, JTextArea> componentValue = ComponentBuilders.textArea()
+    final TextAreaBuilder builder = ComponentBuilders.textArea()
             .transferFocusOnEnter(true)
             .autoscrolls(true)
             .rowsColumns(4, 2)
             .updateOn(UpdateOn.KEYSTROKE)
             .lineWrap(true)
             .wrapStyleWord(true)
-            .linkedValue(value)
+            .linkedValue(value);
+    final ComponentValue<String, JTextArea> componentValue = builder
             .buildComponentValue();
     final JTextArea textArea = componentValue.getComponent();
     textArea.setText("hello");
     assertEquals("hello", value.get());
+    builder.buildScrollPane();
   }
 
   @Test
@@ -452,5 +456,27 @@ public final class ComponentBuildersTest {
     assertEquals("label", componentValue.getComponent().getText());
     textValue.set("hello");
     assertEquals("hello", componentValue.getComponent().getText());
+  }
+
+  @Test
+  void list() {
+    final DefaultListModel<String> listModel = new DefaultListModel<>();
+    listModel.addElement("one");
+    listModel.addElement("two");
+    listModel.addElement("three");
+
+    final Value<String> textValue = Value.value("two");
+    final ListBuilder<String> listBuilder = ComponentBuilders.list(listModel)
+            .visibleRowCount(4)
+            .layoutOrientation(JList.VERTICAL)
+            .fixedCellHeight(10)
+            .fixedCellWidth(10)
+            .linkedValue(textValue);
+    final ComponentValue<String, JList<String>> componentValue = listBuilder
+            .buildComponentValue();
+    assertEquals("two", componentValue.get());
+    textValue.set("three");
+    assertEquals("three", componentValue.get());
+    listBuilder.buildScrollPane();
   }
 }

@@ -6,6 +6,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
@@ -15,8 +16,11 @@ import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JFormattedTextField;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -181,6 +185,15 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getBooleanSelectionValue())
             .build(inputPanel::add);
 
+    label("Text List Selection")
+            .build(inputPanel::add);
+    ComponentBuilders.list(createStringListModel())
+            .visibleRowCount(4)
+            .layoutOrientation(JList.HORIZONTAL_WRAP)
+            .transferFocusOnEnter(true)
+            .linkedValue(model.getStringListValue())
+            .buildScrollPane(inputPanel::add);
+
     add(inputPanel, BorderLayout.CENTER);
 
     textField()
@@ -223,6 +236,20 @@ public final class ApplicationPanel extends JPanel {
     return new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
   }
 
+  private static ListModel<String> createStringListModel() {
+    final DefaultListModel<String> listModel = new DefaultListModel<>();
+    listModel.addElement("Here");
+    listModel.addElement("Are");
+    listModel.addElement("A");
+    listModel.addElement("Few");
+    listModel.addElement("Elements");
+    listModel.addElement("To");
+    listModel.addElement("Select");
+    listModel.addElement("From");
+
+    return listModel;
+  }
+
   private static ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
     return ItemComboBoxModel.createModel(asList(
             Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
@@ -234,7 +261,7 @@ public final class ApplicationPanel extends JPanel {
   private static Control createSelectRandomItemControl(final ItemComboBoxModel<Integer> integerItemComboBoxModel) {
     Random random = new Random();
     return Control.builder(() ->
-            integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize()) + 1))
+                    integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize()) + 1))
             .caption("Select Random Item")
             .build();
   }
