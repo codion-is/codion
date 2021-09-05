@@ -314,12 +314,13 @@ public final class ComponentValues {
   }
 
   /**
+   * A single selection JList component value.
    * @param <T> the value type
    * @param list the component
    * @return a Value bound to the given component
    */
-  public static <T> ComponentValue<T, JList<T>> listSingleSelection(final JList<T> list) {
-    return new SingleSelectionListValue<>(list);
+  public static <T> ComponentValue<T, JList<T>> list(final JList<T> list) {
+    return new ListValue<>(list);
   }
 
   /**

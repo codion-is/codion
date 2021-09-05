@@ -6,6 +6,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
@@ -186,7 +187,7 @@ public final class ApplicationPanel extends JPanel {
 
     label("Text List Selection")
             .build(inputPanel::add);
-    listSingleSelection(createStringListModel())
+    ComponentBuilders.list(createStringListModel())
             .visibleRowCount(4)
             .layoutOrientation(JList.HORIZONTAL_WRAP)
             .transferFocusOnEnter(true)

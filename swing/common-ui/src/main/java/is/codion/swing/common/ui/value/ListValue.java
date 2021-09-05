@@ -5,9 +5,9 @@ package is.codion.swing.common.ui.value;
 
 import javax.swing.JList;
 
-final class SingleSelectionListValue<V> extends AbstractComponentValue<V, JList<V>> {
+final class ListValue<V> extends AbstractComponentValue<V, JList<V>> {
 
-  SingleSelectionListValue(final JList<V> list) {
+  ListValue(final JList<V> list) {
     super(list);
     list.addListSelectionListener(e -> notifyValueChange());
   }

@@ -459,14 +459,14 @@ public final class ComponentBuildersTest {
   }
 
   @Test
-  void listSingle() {
+  void list() {
     final DefaultListModel<String> listModel = new DefaultListModel<>();
     listModel.addElement("one");
     listModel.addElement("two");
     listModel.addElement("three");
 
     final Value<String> textValue = Value.value("two");
-    final SingleSelectionListBuilder<String> listBuilder = ComponentBuilders.listSingleSelection(listModel)
+    final ListBuilder<String> listBuilder = ComponentBuilders.list(listModel)
             .visibleRowCount(4)
             .layoutOrientation(JList.VERTICAL)
             .fixedCellHeight(10)

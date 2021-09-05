@@ -290,12 +290,13 @@ public final class ComponentBuilders {
   }
 
   /**
+   * A single selection JList builder.
    * @param <T> the value type
    * @param listModel the list model
    * @return a builder for a JList
    */
-  public static <T> SingleSelectionListBuilder<T> listSingleSelection(final ListModel<T> listModel) {
-    return new DefaultSingleSelectionListBuilder<>(listModel);
+  public static <T> ListBuilder<T> list(final ListModel<T> listModel) {
+    return new DefaultListBuilder<>(listModel);
   }
 
   /**

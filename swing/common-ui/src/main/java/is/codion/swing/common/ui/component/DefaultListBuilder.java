@@ -14,8 +14,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSingleSelectionListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, SingleSelectionListBuilder<T>>
-        implements SingleSelectionListBuilder<T> {
+final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, ListBuilder<T>> implements ListBuilder<T> {
 
   private final ListModel<T> listModel;
 
@@ -26,30 +25,30 @@ final class DefaultSingleSelectionListBuilder<T> extends AbstractComponentBuilde
 
   private JScrollPane scrollPane;
 
-  DefaultSingleSelectionListBuilder(final ListModel<T> listModel) {
+  DefaultListBuilder(final ListModel<T> listModel) {
     this.listModel = requireNonNull(listModel);
   }
 
   @Override
-  public SingleSelectionListBuilder<T> visibleRowCount(final int visibleRowCount) {
+  public ListBuilder<T> visibleRowCount(final int visibleRowCount) {
     this.visibleRowCount = visibleRowCount;
     return this;
   }
 
   @Override
-  public SingleSelectionListBuilder<T> layoutOrientation(final int layoutOrientation) {
+  public ListBuilder<T> layoutOrientation(final int layoutOrientation) {
     this.layoutOrientation = layoutOrientation;
     return this;
   }
 
   @Override
-  public SingleSelectionListBuilder<T> fixedCellHeight(final int fixedCellHeight) {
+  public ListBuilder<T> fixedCellHeight(final int fixedCellHeight) {
     this.fixedCellHeight = fixedCellHeight;
     return this;
   }
 
   @Override
-  public SingleSelectionListBuilder<T> fixedCellWidth(final int fixedCellWidth) {
+  public ListBuilder<T> fixedCellWidth(final int fixedCellWidth) {
     this.fixedCellWidth = fixedCellWidth;
     return this;
   }
@@ -85,7 +84,7 @@ final class DefaultSingleSelectionListBuilder<T> extends AbstractComponentBuilde
 
   @Override
   protected ComponentValue<T, JList<T>> buildComponentValue(final JList<T> component) {
-    return ComponentValues.listSingleSelection(component);
+    return ComponentValues.list(component);
   }
 
   @Override
