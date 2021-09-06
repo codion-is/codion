@@ -7243,7 +7243,7 @@
   SpinnerBuilder renamed NumberSpinnerBuilder
   ComponentBuilders.listSpinner() and itemSpinner() and ComponentValues.listSpinner() and itemSpinner() added
   CalendarPanel, month combo box replaced with spinner
-  CalenarPanel bug fixed, focus no longer jumps to first field when days panel is layed out
+  CalendarPanel bug fixed, focus no longer jumps to first field when days panel is layed out
   EntityObjectMapper constructor now package private, factory method added
   EntityObjectMapperFactory added, now service based
   EntityObjectMapperFactory implementations moved up to package level, may not be inner classes when exposed in module-info.java
@@ -7274,3 +7274,4 @@
   EntityTestUtil split from EntityTestUnit, EntityTestUnit refactored
   ComponentBuilders.listSingleSelection() and ComponentValues.listSingleSelection() added
   ComponentBuilders.listSingleSelection() and ComponentValues.listSingleSelection() renamed list(), multiple selection option shelved for now
+  AbstractFilteredTableModel.merge() bug fixed, previous minor optimization messed things up since item indexes change when items are added, duh
