@@ -629,15 +629,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     });
   }
 
-  private Map<R, Integer> getCurrentItemIndexes() {
-    final Map<R, Integer> currentItemIndexes = new HashMap<>();
-    for (int i = 0; i < visibleItems.size(); i++) {
-      currentItemIndexes.put(visibleItems.get(i), i);
-    }
-
-    return currentItemIndexes;
-  }
-
   /**
    * @param searchText the search text
    * @return a Predicate based on the given search text
