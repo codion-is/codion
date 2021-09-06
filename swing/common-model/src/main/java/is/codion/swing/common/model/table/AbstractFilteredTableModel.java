@@ -618,10 +618,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         removeItem(item);
       }
     });
-    final Map<R, Integer> currentItemIndexes = getCurrentItemIndexes();
     items.forEach(item -> {
-      final Integer index = currentItemIndexes.get(item);
-      if (index == null) {
+      final int index = indexOf(item);
+      if (index == -1) {
         addItemSorted(item);
       }
       else {
