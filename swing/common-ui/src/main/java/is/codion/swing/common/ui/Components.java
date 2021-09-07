@@ -606,7 +606,7 @@ public final class Components {
      doSomething();
    }
    finally {
-   Components.hideWaitCursor(component);
+     Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
