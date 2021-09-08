@@ -7275,3 +7275,4 @@
   ComponentBuilders.listSingleSelection() and ComponentValues.listSingleSelection() added
   ComponentBuilders.listSingleSelection() and ComponentValues.listSingleSelection() renamed list(), multiple selection option shelved for now
   AbstractFilteredTableModel.merge() bug fixed, previous minor optimization messed things up since item indexes change when items are added, duh
+  EntityEditComponentPanel.createLabel() overload with horizontalAlignment parameter removed, now returns a LabelBuilder, for consistency

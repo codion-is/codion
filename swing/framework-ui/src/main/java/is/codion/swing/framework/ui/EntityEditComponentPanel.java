@@ -413,7 +413,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
                                           final String labelBorderLayoutConstraints, final int labelAlignment) {
-    return createInputPanel(createLabel(attribute, labelAlignment), inputComponent, labelBorderLayoutConstraints);
+    return createInputPanel(createLabel(attribute).horizontalAlignment(labelAlignment).build(), inputComponent, labelBorderLayoutConstraints);
   }
 
   /**
@@ -667,31 +667,17 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a JLabel using the caption and mnemonic associated with {@code attribute}. If an input component exists
-   * for the given attribute this label is associated with it via {@link JLabel#setLabelFor(Component)}.
+   * Creates a builder for a label using the caption and mnemonic associated with {@code attribute}. If an input component exists
+   * for the given attribute the label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param attribute the attribute from which to retrieve the caption
    * @param <T> the attribute type
-   * @return a JLabel for the given attribute
+   * @return a label builder for the given attribute
    */
-  protected final <T> JLabel createLabel(final Attribute<T> attribute) {
-    return createLabel(attribute, LabelBuilder.LABEL_TEXT_ALIGNMENT.get());
-  }
-
-  /**
-   * Creates a JLabel with a caption from {@code attribute}, if an input component exists
-   * for the given attribute this label is associated with it via {@link JLabel#setLabelFor(Component)}.
-   * @param attribute the attribute from which to retrieve the caption
-   * @param horizontalAlignment the horizontal text alignment
-   * @param <T> the attribute type
-   * @return a JLabel for the given attribute
-   */
-  protected final <T> JLabel createLabel(final Attribute<T> attribute, final int horizontalAlignment) {
-    final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
+  protected final <T> LabelBuilder createLabel(final Attribute<T> attribute) {
+    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     return ComponentBuilders.label(property.getCaption())
-            .horizontalAlignment(horizontalAlignment)
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
-            .labelFor(getComponent(attribute))
-            .build();
+            .labelFor(getComponent(attribute));
   }
 
   /**
