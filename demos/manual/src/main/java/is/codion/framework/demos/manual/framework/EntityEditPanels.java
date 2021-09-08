@@ -196,7 +196,8 @@ public final class EntityEditPanels {
 
     private void panelLabel() {
       // tag::panelLabel[]
-      JLabel label = createLabel(Demo.TEXT);
+      JLabel label = createLabel(Demo.TEXT)
+              .build();
 
       JPanel inputPanel = createInputPanel(Demo.TEXT);
       // end::panelLabel[]
