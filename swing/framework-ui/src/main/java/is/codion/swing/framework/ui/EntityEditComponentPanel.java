@@ -500,8 +500,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a local time field builder
    */
   protected final LocalTimeFieldBuilder createLocalTimeField(final Attribute<LocalTime> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.localTimeField(attribute)
-            .columns(defaultTextFieldColumns));
+    return setComponentBuilder(attribute, entityComponentBuilders.localTimeField(attribute));
   }
 
   /**
@@ -510,8 +509,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a local date field builder
    */
   protected final LocalDateFieldBuilder createLocalDateField(final Attribute<LocalDate> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.localDateField(attribute)
-            .columns(defaultTextFieldColumns));
+    return setComponentBuilder(attribute, entityComponentBuilders.localDateField(attribute));
   }
 
   /**
@@ -520,8 +518,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a local date time field builder
    */
   protected final LocalDateTimeFieldBuilder createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.localDateTimeField(attribute)
-            .columns(defaultTextFieldColumns));
+    return setComponentBuilder(attribute, entityComponentBuilders.localDateTimeField(attribute));
   }
 
   /**
@@ -530,8 +527,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return an offset date time field builder
    */
   protected final OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.offsetDateTimeField(attribute)
-            .columns(defaultTextFieldColumns));
+    return setComponentBuilder(attribute, entityComponentBuilders.offsetDateTimeField(attribute));
   }
 
   /**
