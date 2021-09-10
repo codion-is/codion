@@ -50,9 +50,10 @@ public final class SwingEntityComboBoxModelTest {
   void editEvents() {
     comboBoxModel.refresh();
 
-    final Entity temp = ENTITIES.entity(TestDomain.T_EMP);
-    temp.put(TestDomain.EMP_ID, -42);
-    temp.put(TestDomain.EMP_NAME, "Noname");
+    final Entity temp = ENTITIES.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_ID, -42)
+            .with(TestDomain.EMP_NAME, "Noname")
+            .build();
 
     EntityEditEvents.notifyInserted(singletonList(temp));
     assertTrue(comboBoxModel.isVisible(temp));

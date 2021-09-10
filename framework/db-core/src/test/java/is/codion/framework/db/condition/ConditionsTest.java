@@ -73,10 +73,11 @@ public final class ConditionsTest {
 
   @Test
   void foreignKeyCondition() {
-    final Entity master = ENTITIES.entity(TestDomain.T_MASTER);
-    master.put(TestDomain.MASTER_ID_1, 1);
-    master.put(TestDomain.MASTER_ID_2, 2);
-    master.put(TestDomain.MASTER_CODE, 3);
+    final Entity master = ENTITIES.builder(TestDomain.T_MASTER)
+            .with(TestDomain.MASTER_ID_1, 1)
+            .with(TestDomain.MASTER_ID_2, 2)
+            .with(TestDomain.MASTER_CODE, 3)
+            .build();
     final Condition condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master);
     assertEquals("(master_id = ? and master_id_2 = ?)", condition.getWhereClause(ENTITIES.getDefinition(TestDomain.T_DETAIL)));
     final Condition condition2 = where(TestDomain.DETAIL_MASTER_VIA_CODE_FK).equalTo(master);
@@ -115,14 +116,16 @@ public final class ConditionsTest {
 
   @Test
   void foreignKeyConditionEntity() {
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 10)
+            .build();
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department);
     assertEquals("deptno = ?", condition.getWhereClause(empDefinition));
 
-    final Entity department2 = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department2.put(TestDomain.DEPARTMENT_ID, 11);
+    final Entity department2 = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 11)
+            .build();
     condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(asList(department, department2));
     assertEquals("deptno in (?, ?)", condition.getWhereClause(empDefinition));
 
@@ -132,8 +135,9 @@ public final class ConditionsTest {
 
   @Test
   void foreignKeyConditionEntityKey() {
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 10)
+            .build();
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
     final Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department);
     assertEquals("deptno = ?", condition.getWhereClause(empDefinition));
@@ -141,13 +145,15 @@ public final class ConditionsTest {
 
   @Test
   void compositeForeignKey() {
-    final Entity master1 = ENTITIES.entity(TestDomain.T_MASTER);
-    master1.put(TestDomain.MASTER_ID_1, 1);
-    master1.put(TestDomain.MASTER_ID_2, 2);
+    final Entity master1 = ENTITIES.builder(TestDomain.T_MASTER)
+            .with(TestDomain.MASTER_ID_1, 1)
+            .with(TestDomain.MASTER_ID_2, 2)
+            .build();
 
-    final Entity master2 = ENTITIES.entity(TestDomain.T_MASTER);
-    master2.put(TestDomain.MASTER_ID_1, 3);
-    master2.put(TestDomain.MASTER_ID_2, 4);
+    final Entity master2 = ENTITIES.builder(TestDomain.T_MASTER)
+            .with(TestDomain.MASTER_ID_1, 3)
+            .with(TestDomain.MASTER_ID_2, 4)
+            .build();
 
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     Condition condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
@@ -165,13 +171,15 @@ public final class ConditionsTest {
 
   @Test
   void selectConditionCompositeKey() {
-    final Entity master1 = ENTITIES.entity(TestDomain.T_MASTER);
-    master1.put(TestDomain.MASTER_ID_1, 1);
-    master1.put(TestDomain.MASTER_ID_2, 2);
+    final Entity master1 = ENTITIES.builder(TestDomain.T_MASTER)
+            .with(TestDomain.MASTER_ID_1, 1)
+            .with(TestDomain.MASTER_ID_2, 2)
+            .build();
 
-    final Entity master2 = ENTITIES.entity(TestDomain.T_MASTER);
-    master2.put(TestDomain.MASTER_ID_1, 3);
-    master2.put(TestDomain.MASTER_ID_2, 4);
+    final Entity master2 = ENTITIES.builder(TestDomain.T_MASTER)
+            .with(TestDomain.MASTER_ID_1, 3)
+            .with(TestDomain.MASTER_ID_2, 4)
+            .build();
 
     final EntityDefinition masterDefinition = ENTITIES.getDefinition(TestDomain.T_MASTER);
     Condition condition = Conditions.condition(master1.getPrimaryKey());
@@ -214,9 +222,10 @@ public final class ConditionsTest {
     condition = where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo(emptyList());
     assertEquals("deptno is not null", condition.getWhereClause(empDefinition));
 
-    final Entity master1 = ENTITIES.entity(TestDomain.T_MASTER);
-    master1.put(TestDomain.MASTER_ID_1, null);
-    master1.put(TestDomain.MASTER_ID_2, null);
+    final Entity master1 = ENTITIES.builder(TestDomain.T_MASTER)
+            .with(TestDomain.MASTER_ID_1, null)
+            .with(TestDomain.MASTER_ID_2, null)
+            .build();
 
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
@@ -226,8 +235,9 @@ public final class ConditionsTest {
     condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
     assertEquals("(master_id is null and master_id_2 = ?)", condition.getWhereClause(detailDefinition));
 
-    final Entity dept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, 42);
+    final Entity dept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 42)
+            .build();
 
     condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(dept);
     assertEquals("deptno = ?", condition.getWhereClause(empDefinition));
@@ -235,8 +245,9 @@ public final class ConditionsTest {
 
   @Test
   void conditionTest() {
-    final Entity entity = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    entity.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity entity = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 10)
+            .build();
 
     final EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
 
@@ -252,8 +263,9 @@ public final class ConditionsTest {
 
   @Test
   void selectConditionTest() {
-    final Entity entity = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    entity.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity entity = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 10)
+            .build();
 
     final EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
 

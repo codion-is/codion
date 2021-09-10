@@ -22,16 +22,18 @@ public class StringFactoryTest {
 
   @Test
   void stringProvider() {
-    final Entity department = entities.entity(Department.TYPE);
-    department.put(Department.NO, -10);
-    department.put(Department.LOCATION, "Reykjavik");
-    department.put(Department.NAME, "Sales");
+    final Entity department = entities.builder(Department.TYPE)
+            .with(Department.NO, -10)
+            .with(Department.LOCATION, "Reykjavik")
+            .with(Department.NAME, "Sales")
+            .build();
 
-    final Entity employee = entities.entity(Employee.TYPE);
     final LocalDateTime hiredate = LocalDateTime.now();
-    employee.put(Employee.DEPARTMENT_FK, department);
-    employee.put(Employee.NAME, "Darri");
-    employee.put(Employee.HIREDATE, hiredate);
+    final Entity employee = entities.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, department)
+            .with(Employee.NAME, "Darri")
+            .with(Employee.HIREDATE, hiredate)
+            .build();
 
     final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 

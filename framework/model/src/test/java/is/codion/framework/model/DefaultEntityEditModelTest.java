@@ -347,10 +347,11 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.put(TestDomain.EMP_NAME, "Björn");
       employeeEditModel.put(TestDomain.EMP_SALARY, 1000d);
 
-      final Entity tmpDept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-      tmpDept.put(TestDomain.DEPARTMENT_ID, 99);
-      tmpDept.put(TestDomain.DEPARTMENT_LOCATION, "Limbo");
-      tmpDept.put(TestDomain.DEPARTMENT_NAME, "Judgment");
+      final Entity tmpDept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+              .with(TestDomain.DEPARTMENT_ID, 99)
+              .with(TestDomain.DEPARTMENT_LOCATION, "Limbo")
+              .with(TestDomain.DEPARTMENT_NAME, "Judgment")
+              .build();
 
       final Entity department = connection
               .selectSingle(connection.insert(tmpDept));
@@ -548,8 +549,9 @@ public final class DefaultEntityEditModelTest {
     assertEquals(2, derivedCounter.get());
     assertEquals(2, derivedEditCounter.get());
 
-    final Entity detail = ENTITIES.entity(TestDomain.T_DETAIL);
-    detail.put(TestDomain.DETAIL_INT, 3);
+    final Entity detail = ENTITIES.builder(TestDomain.T_DETAIL)
+            .with(TestDomain.DETAIL_INT, 3)
+            .build();
     editModel.setEntity(detail);
     assertEquals(3, derivedCounter.get());
     assertEquals(2, derivedEditCounter.get());

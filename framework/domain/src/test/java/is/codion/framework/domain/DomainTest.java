@@ -13,6 +13,7 @@ import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.Master;
+import is.codion.framework.domain.TestDomain.NoPk;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
@@ -258,23 +259,23 @@ public class DomainTest {
 
     assertThrows(NullPointerException.class, () -> entities.keyBuilder(null));
 
-    assertFalse(entities.keyBuilder(TestDomain.T_NO_PK)
-            .with(TestDomain.NO_PK_COL1, 1)
+    assertFalse(entities.keyBuilder(NoPk.TYPE)
+            .with(NoPk.COL1, 1)
             .build()
             .isPrimaryKey());
-    final Key noPk = entities.keyBuilder(TestDomain.T_NO_PK).build();
-    assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
+    final Key noPk = entities.keyBuilder(NoPk.TYPE).build();
+    assertThrows(IllegalArgumentException.class, () -> noPk.get(NoPk.COL1));
   }
 
-   @Test
-   void keys() {
+  @Test
+  void keys() {
     final List<Key> intKeys = entities.primaryKeys(Employee.TYPE, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
     assertEquals(Integer.valueOf(3), intKeys.get(2).get());
     final List<Key> longKeys = entities.primaryKeys(Detail.TYPE, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
     assertEquals(Long.valueOf(3), longKeys.get(2).get());
-   }
+  }
 
   @Test
   void keyWithSameIndex() {
@@ -415,10 +416,11 @@ public class DomainTest {
   @Test
   void nullValidation() {
     final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
-    final Entity emp = entities.entity(Employee.TYPE);
-    emp.put(Employee.NAME, "Name");
-    emp.put(Employee.HIREDATE, LocalDateTime.now());
-    emp.put(Employee.SALARY, 1200.0);
+    final Entity emp = entities.builder(Employee.TYPE)
+            .with(Employee.NAME, "Name")
+            .with(Employee.HIREDATE, LocalDateTime.now())
+            .with(Employee.SALARY, 1200.0)
+            .build();
 
     final DefaultEntityValidator validator = new DefaultEntityValidator();
     try {
@@ -450,11 +452,12 @@ public class DomainTest {
   @Test
   void maxLengthValidation() {
     final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
-    final Entity emp = entities.entity(Employee.TYPE);
-    emp.put(Employee.DEPARTMENT, 1);
-    emp.put(Employee.NAME, "Name");
-    emp.put(Employee.HIREDATE, LocalDateTime.now());
-    emp.put(Employee.SALARY, 1200.0);
+    final Entity emp = entities.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT, 1)
+            .with(Employee.NAME, "Name")
+            .with(Employee.HIREDATE, LocalDateTime.now())
+            .with(Employee.SALARY, 1200.0)
+            .build();
     final DefaultEntityValidator validator = new DefaultEntityValidator();
     assertDoesNotThrow(() -> validator.validate(singletonList(emp), definition));
     emp.put(Employee.NAME, "LooooongName");
@@ -464,12 +467,13 @@ public class DomainTest {
   @Test
   void rangeValidation() {
     final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
-    final Entity emp = entities.entity(Employee.TYPE);
-    emp.put(Employee.DEPARTMENT, 1);
-    emp.put(Employee.NAME, "Name");
-    emp.put(Employee.HIREDATE, LocalDateTime.now());
-    emp.put(Employee.SALARY, 1200d);
-    emp.put(Employee.COMMISSION, 300d);
+    final Entity emp = entities.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT, 1)
+            .with(Employee.NAME, "Name")
+            .with(Employee.HIREDATE, LocalDateTime.now())
+            .with(Employee.SALARY, 1200d)
+            .with(Employee.COMMISSION, 300d)
+            .build();
     final DefaultEntityValidator validator = new DefaultEntityValidator();
     assertDoesNotThrow(() -> validator.validate(singletonList(emp), definition));
     emp.put(Employee.COMMISSION, 10d);
@@ -611,25 +615,27 @@ public class DomainTest {
     final EntityType<Entity> nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
     assertThrows(NullPointerException.class, () -> domain.define(nullConditionProvider2,
             Properties.primaryKeyProperty(nullConditionProvider2.integerAttribute("id"))).conditionProvider(
-                    nullConditionProvider2.conditionType("id"), null));
+            nullConditionProvider2.conditionType("id"), null));
     final EntityType<Entity> nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
     final ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
     assertThrows(IllegalStateException.class, () -> domain.define(nullConditionProvider3,
-            Properties.primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
+                    Properties.primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
             .conditionProvider(nullConditionType, (attributes, values) -> null)
             .conditionProvider(nullConditionType, (attributes, values) -> null));
   }
 
   @Test
   void copyEntities() {
-    final Entity dept1 = entities.entity(Department.TYPE);
-    dept1.put(Department.NO, 1);
-    dept1.put(Department.LOCATION, "location");
-    dept1.put(Department.NAME, "name");
-    final Entity dept2 = entities.entity(Department.TYPE);
-    dept2.put(Department.NO, 2);
-    dept2.put(Department.LOCATION, "location2");
-    dept2.put(Department.NAME, "name2");
+    final Entity dept1 = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .with(Department.LOCATION, "location")
+            .with(Department.NAME, "name")
+            .build();
+    final Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.NO, 2)
+            .with(Department.LOCATION, "location2")
+            .with(Department.NAME, "name2")
+            .build();
 
     final List<Entity> copies = Entity.deepCopy(asList(dept1, dept2));
     assertNotSame(copies.get(0), dept1);
@@ -637,10 +643,11 @@ public class DomainTest {
     assertNotSame(copies.get(1), dept2);
     assertTrue(copies.get(1).columnValuesEqual(dept2));
 
-    final Entity emp1 = entities.entity(Employee.TYPE);
-    emp1.put(Employee.DEPARTMENT_FK, dept1);
-    emp1.put(Employee.NAME, "name");
-    emp1.put(Employee.COMMISSION, 130.5);
+    final Entity emp1 = entities.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, dept1)
+            .with(Employee.NAME, "name")
+            .with(Employee.COMMISSION, 130.5)
+            .build();
 
     Entity copy = emp1.copy();
     assertTrue(emp1.columnValuesEqual(copy));
@@ -661,11 +668,12 @@ public class DomainTest {
     final String deptLocation = "Location";
     final Boolean deptActive = true;
 
-    final Entity department = entities.entity(Department.TYPE);
-    department.put(Department.NO, deptNo);
-    department.put(Department.NAME, deptName);
-    department.put(Department.LOCATION, deptLocation);
-    department.put(Department.ACTIVE, deptActive);
+    final Entity department = entities.builder(Department.TYPE)
+            .with(Department.NO, deptNo)
+            .with(Department.NAME, deptName)
+            .with(Department.LOCATION, deptLocation)
+            .with(Department.ACTIVE, deptActive)
+            .build();
 
     final List<Department> deptBeans = Entity.castTo(Department.TYPE, singletonList(department));
     final Department departmentBean = deptBeans.get(0);
@@ -678,8 +686,9 @@ public class DomainTest {
 
     assertFalse(department.get(Department.ACTIVE));
 
-    final Entity manager = entities.entity(Employee.TYPE);
-    manager.put(Employee.ID, 12);
+    final Entity manager = entities.builder(Employee.TYPE)
+            .with(Employee.ID, 12)
+            .build();
 
     final Integer id = 42;
     final Double commission = 42.2;
@@ -689,15 +698,16 @@ public class DomainTest {
     final String name = "John Doe";
     final Double salary = 1234.5;
 
-    final Entity employee = entities.entity(Employee.TYPE);
-    employee.put(Employee.ID, id);
-    employee.put(Employee.COMMISSION, commission);
-    employee.put(Employee.DEPARTMENT_FK, department);
-    employee.put(Employee.HIREDATE, hiredate);
-    employee.put(Employee.JOB, job);
-    employee.put(Employee.MANAGER_FK, manager);
-    employee.put(Employee.NAME, name);
-    employee.put(Employee.SALARY, salary);
+    final Entity employee = entities.builder(Employee.TYPE)
+            .with(Employee.ID, id)
+            .with(Employee.COMMISSION, commission)
+            .with(Employee.DEPARTMENT_FK, department)
+            .with(Employee.HIREDATE, hiredate)
+            .with(Employee.JOB, job)
+            .with(Employee.MANAGER_FK, manager)
+            .with(Employee.NAME, name)
+            .with(Employee.SALARY, salary)
+            .build();
 
     final List<Employee> empBeans = Entity.castTo(Employee.TYPE, singletonList(employee));
     final Employee employeeBean = empBeans.get(0);
@@ -717,19 +727,21 @@ public class DomainTest {
 
   @Test
   void toEntityType() {
-    final Entity master = entities.entity(Master.TYPE);
-    master.put(Master.ID, 1L);
-    master.put(Master.CODE, 1);
-    master.put(Master.NAME, "name");
+    final Entity master = entities.builder(Master.TYPE)
+            .with(Master.ID, 1L)
+            .with(Master.CODE, 1)
+            .with(Master.NAME, "name")
+            .build();
 
     final Master master1 = master.castTo(Master.TYPE);
 
     assertSame(master1, master1.castTo(Master.TYPE));
 
-    final Entity master2 = entities.entity(Master.TYPE);
-    master2.put(Master.ID, 2L);
-    master2.put(Master.CODE, 2);
-    master2.put(Master.NAME, "name2");
+    final Entity master2 = entities.builder(Master.TYPE)
+            .with(Master.ID, 2L)
+            .with(Master.CODE, 2)
+            .with(Master.NAME, "name2")
+            .build();
 
     final List<Entity> masters = asList(master, master1, master2);
 
@@ -744,10 +756,11 @@ public class DomainTest {
     assertEquals(1L, mastersTyped.get(0).getId());
     assertEquals("name", mastersTyped.get(0).getName());
 
-    final Entity detail = entities.entity(Detail.TYPE);
-    detail.put(Detail.ID, 1L);
-    detail.put(Detail.DOUBLE, 1.2);
-    detail.put(Detail.MASTER_FK, master);
+    final Entity detail = entities.builder(Detail.TYPE)
+            .with(Detail.ID, 1L)
+            .with(Detail.DOUBLE, 1.2)
+            .with(Detail.MASTER_FK, master)
+            .build();
 
     final Detail detailTyped = detail.castTo(Detail.TYPE);
     assertEquals(detailTyped.getId().get(), 1L);
@@ -768,9 +781,10 @@ public class DomainTest {
     assertEquals(detailTyped.getDouble().get(), 3.2);
     assertSame(detailTyped.getMaster().get(), mastersTyped.get(2));
 
-    final Entity compositeMaster = entities.entity(TestDomain.T_COMPOSITE_MASTER);
-    compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID, 1);
-    compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    final Entity compositeMaster = entities.builder(TestDomain.T_COMPOSITE_MASTER)
+            .with(TestDomain.COMPOSITE_MASTER_ID, 1)
+            .with(TestDomain.COMPOSITE_MASTER_ID_2, 2)
+            .build();
 
     assertSame(compositeMaster, compositeMaster.castTo(TestDomain.T_COMPOSITE_MASTER));
   }
@@ -779,11 +793,11 @@ public class DomainTest {
   void serialize() throws IOException, ClassNotFoundException {
     final List<Entity> entitiesToSer = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
-      final Entity entity = entities.entity(Master.TYPE);
-      entity.put(Master.ID, (long) i);
-      entity.put(Master.NAME, Integer.toString(i));
-      entity.put(Master.CODE, 1);
-      entitiesToSer.add(entity);
+      entitiesToSer.add(entities.builder(Master.TYPE)
+              .with(Master.ID, (long) i)
+              .with(Master.NAME, Integer.toString(i))
+              .with(Master.CODE, 1)
+              .build());
     }
 
     Serializer.deserialize(Serializer.serialize(Entity.castTo(Master.TYPE, entitiesToSer)));

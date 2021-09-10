@@ -300,16 +300,19 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void getEntitiesByKey() {
     testModel.refresh();
     final Entities entities = testModel.getEntities();
-    Entity tmpEnt = entities.entity(TestDomain.T_DETAIL);
-    tmpEnt.put(TestDomain.DETAIL_ID, 3L);
+    Entity tmpEnt = entities.builder(TestDomain.T_DETAIL)
+            .with(TestDomain.DETAIL_ID, 3L)
+            .build();
     assertEquals("c", testModel.getEntityByKey(tmpEnt.getPrimaryKey()).get(TestDomain.DETAIL_STRING));
     final List<Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = entities.entity(TestDomain.T_DETAIL);
-    tmpEnt.put(TestDomain.DETAIL_ID, 2L);
+    tmpEnt = entities.builder(TestDomain.T_DETAIL)
+            .with(TestDomain.DETAIL_ID, 2L)
+            .build();
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = entities.entity(TestDomain.T_DETAIL);
-    tmpEnt.put(TestDomain.DETAIL_ID, 1L);
+    tmpEnt = entities.builder(TestDomain.T_DETAIL)
+            .with(TestDomain.DETAIL_ID, 1L)
+            .build();
     keys.add(tmpEnt.getPrimaryKey());
 
     final Collection<Entity> entitiesByKey = testModel.getEntitiesByKey(keys);

@@ -7277,3 +7277,4 @@
   AbstractFilteredTableModel.merge() bug fixed, previous minor optimization messed things up since item indexes change when items are added, duh
   EntityEditComponentPanel.createLabel() overload with horizontalAlignment parameter removed, now returns a LabelBuilder, for consistency
   EntityEditComponentPanel, temporal field columns no longer initialized as defaultTextFieldColumns
+  DefaultEntity.copyBuilder() now initializes the entity with original as well as current values, some related (and unrelated) tests refactored to use the entity builder

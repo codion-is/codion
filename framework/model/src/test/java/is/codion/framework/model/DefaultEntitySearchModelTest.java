@@ -90,9 +90,10 @@ public final class DefaultEntitySearchModelTest {
   void setToStringProvider() {
     final Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
     searchModel.setToStringProvider(entity -> entity.getAsString(job.getAttribute()));
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    employee.put(TestDomain.EMP_NAME, "Darri");
-    employee.put(TestDomain.EMP_JOB, "CLERK");
+    final Entity employee = ENTITIES.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_NAME, "Darri")
+            .with(TestDomain.EMP_JOB, "CLERK")
+            .build();
     searchModel.setSelectedEntities(singletonList(employee));
     assertEquals(searchModel.getSearchString(), "CLERK");
     searchModel.setToStringProvider(null);
@@ -232,42 +233,47 @@ public final class DefaultEntitySearchModelTest {
   }
 
   private static void setupData() throws Exception {
-    final Entity dept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, 88);
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "TestLoc");
-    dept.put(TestDomain.DEPARTMENT_NAME, "TestDept");
+    final Entity dept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 88)
+            .with(TestDomain.DEPARTMENT_LOCATION, "TestLoc")
+            .with(TestDomain.DEPARTMENT_NAME, "TestDept")
+            .build();
 
-    final Entity emp = ENTITIES.entity(TestDomain.T_EMP);
-    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp.put(TestDomain.EMP_HIREDATE, LocalDate.now());
-    emp.put(TestDomain.EMP_JOB, "CLERK");
-    emp.put(TestDomain.EMP_NAME, "John");
-    emp.put(TestDomain.EMP_SALARY, 1000d);
+    final Entity emp = ENTITIES.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
+            .with(TestDomain.EMP_COMMISSION, 1000d)
+            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
+            .with(TestDomain.EMP_JOB, "CLERK")
+            .with(TestDomain.EMP_NAME, "John")
+            .with(TestDomain.EMP_SALARY, 1000d)
+            .build();
 
-    final Entity emp2 = ENTITIES.entity(TestDomain.T_EMP);
-    emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp2.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp2.put(TestDomain.EMP_HIREDATE, LocalDate.now());
-    emp2.put(TestDomain.EMP_JOB, "MANAGER");
-    emp2.put(TestDomain.EMP_NAME, "johnson");
-    emp2.put(TestDomain.EMP_SALARY, 1000d);
+    final Entity emp2 = ENTITIES.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
+            .with(TestDomain.EMP_COMMISSION, 1000d)
+            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
+            .with(TestDomain.EMP_JOB, "MANAGER")
+            .with(TestDomain.EMP_NAME, "johnson")
+            .with(TestDomain.EMP_SALARY, 1000d)
+            .build();
 
-    final Entity emp3 = ENTITIES.entity(TestDomain.T_EMP);
-    emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp3.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp3.put(TestDomain.EMP_HIREDATE, LocalDate.now());
-    emp3.put(TestDomain.EMP_JOB, "CLERK");
-    emp3.put(TestDomain.EMP_NAME, "Andy");
-    emp3.put(TestDomain.EMP_SALARY, 1000d);
+    final Entity emp3 = ENTITIES.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
+            .with(TestDomain.EMP_COMMISSION, 1000d)
+            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
+            .with(TestDomain.EMP_JOB, "CLERK")
+            .with(TestDomain.EMP_NAME, "Andy")
+            .with(TestDomain.EMP_SALARY, 1000d)
+            .build();
 
-    final Entity emp4 = ENTITIES.entity(TestDomain.T_EMP);
-    emp4.put(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp4.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp4.put(TestDomain.EMP_HIREDATE, LocalDate.now());
-    emp4.put(TestDomain.EMP_JOB, "MANAGER");
-    emp4.put(TestDomain.EMP_NAME, "Andrew");
-    emp4.put(TestDomain.EMP_SALARY, 1000d);
+    final Entity emp4 = ENTITIES.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
+            .with(TestDomain.EMP_COMMISSION, 1000d)
+            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
+            .with(TestDomain.EMP_JOB, "MANAGER")
+            .with(TestDomain.EMP_NAME, "Andrew")
+            .with(TestDomain.EMP_SALARY, 1000d)
+            .build();
 
     CONNECTION_PROVIDER.getConnection().insert(asList(dept, emp, emp2, emp3, emp4));
   }

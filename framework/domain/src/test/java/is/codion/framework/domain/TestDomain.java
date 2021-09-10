@@ -325,16 +325,18 @@ public class TestDomain extends DefaultDomain {
     }
   }
 
-  public static final EntityType<Entity> T_NO_PK = DOMAIN.entityType("no_pk");
-  public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
-  public static final Attribute<Integer> NO_PK_COL2 = T_NO_PK.integerAttribute("col2");
-  public static final Attribute<Integer> NO_PK_COL3 = T_NO_PK.integerAttribute("col3");
+  public interface NoPk {
+    EntityType<Entity> TYPE = DOMAIN.entityType("no_pk");
+    Attribute<Integer> COL1 = TYPE.integerAttribute("col1");
+    Attribute<Integer> COL2 = TYPE.integerAttribute("col2");
+    Attribute<Integer> COL3 = TYPE.integerAttribute("col3");
+  }
 
   final void noPKEntity() {
-    define(T_NO_PK,
-            columnProperty(NO_PK_COL1),
-            columnProperty(NO_PK_COL2),
-            columnProperty(NO_PK_COL3));
+    define(NoPk.TYPE,
+            columnProperty(NoPk.COL1),
+            columnProperty(NoPk.COL2),
+            columnProperty(NoPk.COL3));
   }
 
   public static final EntityType<Entity> T_TRANS = DOMAIN.entityType("trans");
