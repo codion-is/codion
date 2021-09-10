@@ -228,7 +228,7 @@ public interface Entity extends Comparable<Entity> {
   Entity copy();
 
   /**
-   * Returns a new {@link Builder} instance initialized with the values from this entity.
+   * Returns a new {@link Builder} instance initialized with the values and original values from this entity.
    * @return a {@link Builder} instance.
    */
   Builder copyBuilder();

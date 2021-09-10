@@ -127,9 +127,10 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void insertUniqueConstraint() {
-    final Entity department = ENTITIES.entity(Department.TYPE);
-    department.put(Department.DEPTNO, 1000);
-    department.put(Department.DNAME, "SALES");
+    final Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.DEPTNO, 1000)
+            .with(Department.DNAME, "SALES")
+            .build();
     assertThrows(UniqueConstraintException.class, () -> connection.insert(department));
   }
 
@@ -142,21 +143,23 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void insertNoParentKey() {
-    final Entity emp = ENTITIES.entity(T_EMP);
-    emp.put(EMP_ID, -100);
-    emp.put(EMP_NAME, "Testing");
-    emp.put(EMP_DEPARTMENT, -1010);//not available
-    emp.put(EMP_SALARY, 2000d);
+    final Entity emp = ENTITIES.builder(T_EMP)
+            .with(EMP_ID, -100)
+            .with(EMP_NAME, "Testing")
+            .with(EMP_DEPARTMENT, -1010)//not available
+            .with(EMP_SALARY, 2000d)
+            .build();
     assertThrows(ReferentialIntegrityException.class, () -> connection.insert(emp));
   }
 
   @Test
   void insertNoPk() throws DatabaseException {
-    final Entity noPk = ENTITIES.entity(T_NO_PK);
-    noPk.put(NO_PK_COL1, 10);
-    noPk.put(NO_PK_COL2, "10");
-    noPk.put(NO_PK_COL3, "10");
-    noPk.put(NO_PK_COL4, 10);
+    final Entity noPk = ENTITIES.builder(T_NO_PK)
+            .with(NO_PK_COL1, 10)
+            .with(NO_PK_COL2, "10")
+            .with(NO_PK_COL3, "10")
+            .with(NO_PK_COL4, 10)
+            .build();
 
     final Key key = connection.insert(noPk);
     assertTrue(key.isNull());
@@ -424,10 +427,11 @@ public class DefaultLocalEntityConnectionTest {
     final Entity sales = connection.selectSingle(Department.DNAME, "SALES");
     final double salary = 1500;
 
-    Entity emp = ENTITIES.entity(T_EMP);
-    emp.put(EMP_DEPARTMENT_FK, sales);
-    emp.put(EMP_NAME, "Nobody");
-    emp.put(EMP_SALARY, salary);
+    Entity emp = ENTITIES.builder(T_EMP)
+            .with(EMP_DEPARTMENT_FK, sales)
+            .with(EMP_NAME, "Nobody")
+            .with(EMP_SALARY, salary)
+            .build();
     final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     emp.put(EMP_HIREDATE, hiredate);
     final OffsetDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
@@ -449,10 +453,11 @@ public class DefaultLocalEntityConnectionTest {
     final double salary = 1500;
     final double defaultCommission = 200;
 
-    Entity emp = ENTITIES.entity(T_EMP);
-    emp.put(EMP_DEPARTMENT_FK, sales);
-    emp.put(EMP_NAME, name);
-    emp.put(EMP_SALARY, salary);
+    Entity emp = ENTITIES.builder(T_EMP)
+            .with(EMP_DEPARTMENT_FK, sales)
+            .with(EMP_NAME, name)
+            .with(EMP_SALARY, salary)
+            .build();
 
     emp = connection.selectSingle(connection.insert(emp));
     assertEquals(sales, emp.get(EMP_DEPARTMENT_FK));
@@ -851,8 +856,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void testUUIDPrimaryKeyColumnWithDefaultValue() throws DatabaseException {
-    final Entity entity = ENTITIES.entity(T_UUID_TEST_DEFAULT);
-    entity.put(UUID_TEST_DEFAULT_DATA, "test");
+    final Entity entity = ENTITIES.builder(T_UUID_TEST_DEFAULT)
+            .with(UUID_TEST_DEFAULT_DATA, "test")
+            .build();
     connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_DEFAULT_ID));
     assertEquals("test", entity.get(UUID_TEST_DEFAULT_DATA));
@@ -860,8 +866,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void testUUIDPrimaryKeyColumnWithoutDefaultValue() throws DatabaseException {
-    final Entity entity = ENTITIES.entity(T_UUID_TEST_NO_DEFAULT);
-    entity.put(UUID_TEST_NO_DEFAULT_DATA, "test");
+    final Entity entity = ENTITIES.builder(T_UUID_TEST_NO_DEFAULT)
+            .with(UUID_TEST_NO_DEFAULT_DATA, "test")
+            .build();
     connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_NO_DEFAULT_ID));
     assertEquals("test", entity.get(UUID_TEST_NO_DEFAULT_DATA));

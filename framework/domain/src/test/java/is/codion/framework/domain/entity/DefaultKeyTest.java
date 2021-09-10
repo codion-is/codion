@@ -115,10 +115,12 @@ public final class DefaultKeyTest {
             .build();
     assertEquals(detailKey2, detailKey);
 
-    final Entity department1 = ENTITIES.entity(Department.TYPE);
-    department1.put(Department.NO, 1);
-    final Entity department2 = ENTITIES.entity(Department.TYPE);
-    department2.put(Department.NO, 1);
+    final Entity department1 = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
+    final Entity department2 = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
 
     assertEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
 

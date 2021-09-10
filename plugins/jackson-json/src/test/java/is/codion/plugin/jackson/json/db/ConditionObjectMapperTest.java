@@ -32,10 +32,12 @@ public final class ConditionObjectMapperTest {
   void condition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
-    final Entity dept1 = entities.entity(TestDomain.T_DEPARTMENT);
-    dept1.put(TestDomain.DEPARTMENT_ID, 1);
-    final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
-    dept2.put(TestDomain.DEPARTMENT_ID, 2);
+    final Entity dept1 = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 1)
+            .build();
+    final Entity dept2 = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 2)
+            .build();
 
     final Condition entityCondition = Conditions.where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo(dept1, dept2)
                     .and(Conditions.where(TestDomain.EMP_NAME).equalTo("Loc"),

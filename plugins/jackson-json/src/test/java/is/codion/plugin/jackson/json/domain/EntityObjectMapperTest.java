@@ -36,10 +36,11 @@ public final class EntityObjectMapperTest {
   void entity() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, 1);
-    dept.put(TestDomain.DEPARTMENT_NAME, "Name");
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
+    final Entity dept = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 1)
+            .with(TestDomain.DEPARTMENT_NAME, "Name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "Location")
+            .build();
     dept.put(TestDomain.DEPARTMENT_LOCATION, "New Location");
     final byte[] logoBytes = new byte[20];
     new Random().nextBytes(logoBytes);
@@ -49,14 +50,15 @@ public final class EntityObjectMapperTest {
     final Entity readDept = mapper.readValue(jsonString, Entity.class);
     assertTrue(dept.columnValuesEqual(readDept));
 
-    final Entity entity = entities.entity(TestDomain.T_ENTITY);
-    entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
-    entity.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
-    entity.put(TestDomain.ENTITY_OFFSET_DATE_TIME, OffsetDateTime.now());
-    entity.put(TestDomain.ENTITY_BLOB, logoBytes);
-    entity.put(TestDomain.ENTITY_READ_ONLY, "readOnly");
-    entity.put(TestDomain.ENTITY_BOOLEAN, true);
-    entity.put(TestDomain.ENTITY_TIME, LocalTime.now());
+    final Entity entity = entities.builder(TestDomain.T_ENTITY)
+            .with(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L))
+            .with(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now())
+            .with(TestDomain.ENTITY_OFFSET_DATE_TIME, OffsetDateTime.now())
+            .with(TestDomain.ENTITY_BLOB, logoBytes)
+            .with(TestDomain.ENTITY_READ_ONLY, "readOnly")
+            .with(TestDomain.ENTITY_BOOLEAN, true)
+            .with(TestDomain.ENTITY_TIME, LocalTime.now())
+            .build();
 
     jsonString = mapper.writeValueAsString(entity);
 
@@ -73,18 +75,20 @@ public final class EntityObjectMapperTest {
   void entityForeignKeys() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities).setIncludeForeignKeyValues(true);
 
-    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, 1);
-    dept.put(TestDomain.DEPARTMENT_NAME, "Name");
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "New Location");
+    final Entity dept = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 1)
+            .with(TestDomain.DEPARTMENT_NAME, "Name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "Location")
+            .with(TestDomain.DEPARTMENT_LOCATION, "New Location")
+            .build();
 
-    final Entity emp = entities.entity(TestDomain.T_EMP);
-    emp.put(TestDomain.EMP_ID, 2);
-    emp.put(TestDomain.EMP_NAME, "Emp");
-    emp.put(TestDomain.EMP_COMMISSION, 134.34);
-    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp.put(TestDomain.EMP_HIREDATE, LocalDate.now());
+    final Entity emp = entities.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_ID, 2)
+            .with(TestDomain.EMP_NAME, "Emp")
+            .with(TestDomain.EMP_COMMISSION, 134.34)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
+            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
+            .build();
 
     final String jsonString = mapper.writeValueAsString(emp);
     final Entity readEmp = mapper.readValue(jsonString, Entity.class);
@@ -141,18 +145,20 @@ public final class EntityObjectMapperTest {
     final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     final LocalDate hiredate = LocalDate.parse("2001-12-20", format);
 
-    final Entity dept10 = entities.entity(TestDomain.T_DEPARTMENT);
-    dept10.put(TestDomain.DEPARTMENT_ID, -10);
-    dept10.put(TestDomain.DEPARTMENT_NAME, "DEPTNAME");
-    dept10.put(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
+    final Entity dept10 = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -10)
+            .with(TestDomain.DEPARTMENT_NAME, "DEPTNAME")
+            .with(TestDomain.DEPARTMENT_LOCATION, "LOCATION")
+            .build();
 
     String jsonString = mapper.writeValueAsString(singletonList(dept10));
     assertTrue(dept10.columnValuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
-    final Entity dept20 = entities.entity(TestDomain.T_DEPARTMENT);
-    dept20.put(TestDomain.DEPARTMENT_ID, -20);
-    dept20.put(TestDomain.DEPARTMENT_NAME, null);
-    dept20.put(TestDomain.DEPARTMENT_LOCATION, "ALOC");
+    final Entity dept20 = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -20)
+            .with(TestDomain.DEPARTMENT_NAME, null)
+            .with(TestDomain.DEPARTMENT_LOCATION, "ALOC")
+            .build();
 
     jsonString = mapper.writeValueAsString(singletonList(dept20));
     assertTrue(dept20.columnValuesEqual(mapper.deserializeEntities(jsonString).get(0)));
@@ -160,33 +166,36 @@ public final class EntityObjectMapperTest {
     final String twoDepts = mapper.serializeEntities(asList(dept10, dept20));
     mapper.deserializeEntities(twoDepts);
 
-    final Entity mgr30 = entities.entity(TestDomain.T_EMP);
-    mgr30.put(TestDomain.EMP_COMMISSION, 500.5);
-    mgr30.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
-    mgr30.put(TestDomain.EMP_HIREDATE, hiredate);
-    mgr30.put(TestDomain.EMP_ID, -30);
-    mgr30.put(TestDomain.EMP_JOB, "MANAGER");
-    mgr30.put(TestDomain.EMP_NAME, "MGR NAME");
-    mgr30.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5));
+    final Entity mgr30 = entities.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_COMMISSION, 500.5)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept20)
+            .with(TestDomain.EMP_HIREDATE, hiredate)
+            .with(TestDomain.EMP_ID, -30)
+            .with(TestDomain.EMP_JOB, "MANAGER")
+            .with(TestDomain.EMP_NAME, "MGR NAME")
+            .with(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5))
+            .build();
 
-    final Entity mgr50 = entities.entity(TestDomain.T_EMP);
-    mgr50.put(TestDomain.EMP_COMMISSION, 500.5);
-    mgr50.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
-    mgr50.put(TestDomain.EMP_HIREDATE, hiredate);
-    mgr50.put(TestDomain.EMP_ID, -50);
-    mgr50.put(TestDomain.EMP_JOB, "MANAGER");
-    mgr50.put(TestDomain.EMP_NAME, "MGR2 NAME");
-    mgr50.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5));
+    final Entity mgr50 = entities.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_COMMISSION, 500.5)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept20)
+            .with(TestDomain.EMP_HIREDATE, hiredate)
+            .with(TestDomain.EMP_ID, -50)
+            .with(TestDomain.EMP_JOB, "MANAGER")
+            .with(TestDomain.EMP_NAME, "MGR2 NAME")
+            .with(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5))
+            .build();
 
-    final Entity emp1 = entities.entity(TestDomain.T_EMP);
-    emp1.put(TestDomain.EMP_COMMISSION, 500.5);
-    emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
-    emp1.put(TestDomain.EMP_HIREDATE, hiredate);
-    emp1.put(TestDomain.EMP_ID, -500);
-    emp1.put(TestDomain.EMP_JOB, "CLERK");
-    emp1.put(TestDomain.EMP_MGR_FK, mgr30);
-    emp1.put(TestDomain.EMP_NAME, "A NAME");
-    emp1.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.55));
+    final Entity emp1 = entities.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_COMMISSION, 500.5)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept10)
+            .with(TestDomain.EMP_HIREDATE, hiredate)
+            .with(TestDomain.EMP_ID, -500)
+            .with(TestDomain.EMP_JOB, "CLERK")
+            .with(TestDomain.EMP_MGR_FK, mgr30)
+            .with(TestDomain.EMP_NAME, "A NAME")
+            .with(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.55))
+            .build();
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
     assertTrue(emp1.columnValuesEqual(mapper.deserializeEntities(jsonString).get(0)));
@@ -223,15 +232,16 @@ public final class EntityObjectMapperTest {
     assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK).columnValuesEqual(dept10));
     assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK).columnValuesEqual(mgr30));
 
-    final Entity emp2 = entities.entity(TestDomain.T_EMP);
-    emp2.put(TestDomain.EMP_COMMISSION, 300.5);
-    emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
-    emp2.put(TestDomain.EMP_HIREDATE, hiredate);
-    emp2.put(TestDomain.EMP_ID, -200);
-    emp2.put(TestDomain.EMP_JOB, "CLERK");
-    emp2.put(TestDomain.EMP_MGR_FK, mgr50);
-    emp2.put(TestDomain.EMP_NAME, "NAME");
-    emp2.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(3500.5));
+    final Entity emp2 = entities.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_COMMISSION, 300.5)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept10)
+            .with(TestDomain.EMP_HIREDATE, hiredate)
+            .with(TestDomain.EMP_ID, -200)
+            .with(TestDomain.EMP_JOB, "CLERK")
+            .with(TestDomain.EMP_MGR_FK, mgr50)
+            .with(TestDomain.EMP_NAME, "NAME")
+            .with(TestDomain.EMP_SALARY, BigDecimal.valueOf(3500.5))
+            .build();
 
     mapper.setIncludeForeignKeyValues(true);
 
@@ -256,15 +266,16 @@ public final class EntityObjectMapperTest {
     assertTrue(parsedEntity.isModified(TestDomain.EMP_SALARY));
     assertTrue(parsedEntity.isModified(TestDomain.EMP_HIREDATE));
 
-    final Entity emp3 = entities.entity(TestDomain.T_EMP);
-    emp3.put(TestDomain.EMP_COMMISSION, 300.5);
-    emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
-    emp3.put(TestDomain.EMP_HIREDATE, null);
-    emp3.put(TestDomain.EMP_ID, -200);
-    emp3.put(TestDomain.EMP_JOB, "CLERK");
-    emp3.put(TestDomain.EMP_MGR_FK, mgr50);
-    emp3.put(TestDomain.EMP_NAME, "NAME");
-    emp3.put(TestDomain.EMP_SALARY, null);
+    final Entity emp3 = entities.builder(TestDomain.T_EMP)
+            .with(TestDomain.EMP_COMMISSION, 300.5)
+            .with(TestDomain.EMP_DEPARTMENT_FK, dept10)
+            .with(TestDomain.EMP_HIREDATE, null)
+            .with(TestDomain.EMP_ID, -200)
+            .with(TestDomain.EMP_JOB, "CLERK")
+            .with(TestDomain.EMP_MGR_FK, mgr50)
+            .with(TestDomain.EMP_NAME, "NAME")
+            .with(TestDomain.EMP_SALARY, null)
+            .build();
 
     mapper.setIncludeForeignKeyValues(false);
     mapper.setIncludeNullValues(false);
@@ -278,11 +289,12 @@ public final class EntityObjectMapperTest {
   void dependencyMap() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
-    dept.put(TestDomain.DEPARTMENT_ID, 1);
-    dept.put(TestDomain.DEPARTMENT_NAME, "Name");
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "New Location");
+    final Entity dept = entities.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 1)
+            .with(TestDomain.DEPARTMENT_NAME, "Name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "Location")
+            .with(TestDomain.DEPARTMENT_LOCATION, "New Location")
+            .build();
 
     final Map<String, Collection<Entity>> map = new HashMap<>();
 

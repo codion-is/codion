@@ -9,6 +9,7 @@ import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.Master;
+import is.codion.framework.domain.TestDomain.NoPk;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Maturity;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Otolith;
 import is.codion.framework.domain.entity.ForeignKeyDomain.OtolithCategory;
@@ -77,10 +78,11 @@ public class DefaultEntityTest {
 
   @Test
   void serialization() throws Exception {
-    final Entity referencedEntityValue = ENTITIES.entity(Master.TYPE);
-    referencedEntityValue.put(Master.ID, 1L);
-    referencedEntityValue.put(Master.NAME, "name");
-    referencedEntityValue.put(Master.CODE, 10);
+    final Entity referencedEntityValue = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID, 1L)
+            .with(Master.NAME, "name")
+            .with(Master.CODE, 10)
+            .build();
     final String originalStringValue = "string value";
     final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, LocalDate.now(),
             LocalDateTime.now(), true, referencedEntityValue);
@@ -100,9 +102,10 @@ public class DefaultEntityTest {
     assertEquals(1, keyFromFile.size());
     assertEquals(key, keyFromFile.get(0));
 
-    final Entity master = ENTITIES.entity(Master.TYPE);
-    master.put(Master.ID, 1L);
-    master.put(Master.CODE, 11);
+    final Entity master = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID, 1L)
+            .with(Master.CODE, 11)
+            .build();
 
     final Entity masterDeserialized = Serializer.deserialize(Serializer.serialize(master));
     assertEquals(master.get(Master.ID), masterDeserialized.get(Master.ID));
@@ -112,10 +115,11 @@ public class DefaultEntityTest {
 
   @Test
   void setAs() {
-    final Entity referencedEntityValue = ENTITIES.entity(Master.TYPE);
-    referencedEntityValue.put(Master.ID, 2L);
-    referencedEntityValue.put(Master.NAME, masterName);
-    referencedEntityValue.put(Master.CODE, 7);
+    final Entity referencedEntityValue = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID, 2L)
+            .with(Master.NAME, masterName)
+            .with(Master.CODE, 7)
+            .build();
 
     final Entity test = ENTITIES.entity(Detail.TYPE);
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
@@ -135,11 +139,13 @@ public class DefaultEntityTest {
 
   @Test
   void setAsAffectedAttributes() {
-    final Entity original = ENTITIES.entity(Detail.TYPE);
-    original.put(Detail.ID, 1L);
+    final Entity original = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.ID, 1L)
+            .build();
 
-    final Entity entity = ENTITIES.entity(Detail.TYPE);
-    entity.put(Detail.ID, 1L);
+    final Entity entity = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.ID, 1L)
+            .build();
 
     assertEquals(0, original.setAs(entity).size());
     assertTrue(Entity.valuesEqual(original, entity));
@@ -173,8 +179,9 @@ public class DefaultEntityTest {
 
   @Test
   void getDerivedOriginal() {
-    final Entity entity = ENTITIES.entity(Detail.TYPE);
-    entity.put(Detail.INT, 1);
+    final Entity entity = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.INT, 1)
+            .build();
     assertEquals(10, entity.get(Detail.INT_DERIVED));
     assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
 
@@ -189,18 +196,19 @@ public class DefaultEntityTest {
 
   @Test
   void saveRevertValue() {
-    final Entity entity = ENTITIES.entity(Master.TYPE);
-    final String newName = "aname";
-
-    entity.put(Master.ID, 2L);
-    entity.put(Master.NAME, masterName);
-    entity.put(Master.CODE, 7);
+    final Entity entity = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID, 2L)
+            .with(Master.NAME, masterName)
+            .with(Master.CODE, 7)
+            .build();
 
     entity.put(Master.ID, -55L);
     //the id is not updatable as it is part of the primary key, which is not updatable by default
     assertFalse(entity.isModified());
     entity.save(Master.ID);
     assertFalse(entity.isModified());
+
+    final String newName = "aname";
 
     entity.put(Master.NAME, newName);
     assertTrue(entity.isModified());
@@ -216,8 +224,9 @@ public class DefaultEntityTest {
     assertFalse(entity.isModified());
     assertFalse(entity.isModified(Master.NAME));
 
-    final Entity entity2 = ENTITIES.entity(Master.TYPE);
-    entity2.put(Master.NAME, "name");
+    final Entity entity2 = ENTITIES.builder(Master.TYPE)
+            .with(Master.NAME, "name")
+            .build();
     entity2.put(Master.NAME, "newname");
     assertTrue(entity2.isModified());
     assertEquals("name", entity2.getOriginal(Master.NAME));
@@ -228,20 +237,23 @@ public class DefaultEntityTest {
 
   @Test
   void getReferencedKeyCache() {
-    final Entity compositeDetail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
-    compositeDetail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
-    compositeDetail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2);
+    final Entity compositeDetail = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
+            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1)
+            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2)
+            .build();
 
     final Key referencedKey = compositeDetail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     final Key cachedKey = compositeDetail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
 
     assertSame(cachedKey, referencedKey);
 
-    final Entity master = ENTITIES.entity(Master.TYPE);
-    master.put(Master.CODE, 3);
+    final Entity master = ENTITIES.builder(Master.TYPE)
+            .with(Master.CODE, 3)
+            .build();
 
-    final Entity detail = ENTITIES.entity(Detail.TYPE);
-    detail.put(Detail.MASTER_VIA_CODE_FK, master);
+    final Entity detail = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.MASTER_VIA_CODE_FK, master)
+            .build();
 
     final Key codeKey = detail.getReferencedKey(Detail.MASTER_VIA_CODE_FK);
     assertEquals(Integer.valueOf(3), codeKey.get());
@@ -253,13 +265,15 @@ public class DefaultEntityTest {
 
   @Test
   void compositeReferenceKey() {
-    final Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
-    master.put(TestDomain.COMPOSITE_MASTER_ID, null);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    final Entity master = ENTITIES.builder(TestDomain.T_COMPOSITE_MASTER)
+            .with(TestDomain.COMPOSITE_MASTER_ID, null)
+            .with(TestDomain.COMPOSITE_MASTER_ID_2, 2)
+            .with(TestDomain.COMPOSITE_MASTER_ID_3, 3)
+            .build();
 
-    final Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
-    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 1);
+    final Entity detail = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
+            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 1)
+            .build();
     //can not update read only attribute reference, with a different value
     assertThrows(IllegalArgumentException.class, () -> detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master));
 
@@ -278,9 +292,10 @@ public class DefaultEntityTest {
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 3);
     master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
 
-    final Entity detail2 = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
-    detail2.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 3);
-    detail2.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
+    final Entity detail2 = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
+            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 3)
+            .with(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master)
+            .build();
 
     assertEquals(3, detail2.get(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2));
 
@@ -291,10 +306,11 @@ public class DefaultEntityTest {
 
   @Test
   void noPrimaryKey() {
-    final Entity noPk = ENTITIES.entity(TestDomain.T_NO_PK);
-    noPk.put(TestDomain.NO_PK_COL1, 1);
-    noPk.put(TestDomain.NO_PK_COL2, 2);
-    noPk.put(TestDomain.NO_PK_COL3, 3);
+    final Entity noPk = ENTITIES.builder(NoPk.TYPE)
+            .with(NoPk.COL1, 1)
+            .with(NoPk.COL2, 2)
+            .with(NoPk.COL3, 3)
+            .build();
     final Key key = noPk.getPrimaryKey();
     assertTrue(key.isNull());
     final Key originalKey = noPk.getOriginalPrimaryKey();
@@ -303,13 +319,14 @@ public class DefaultEntityTest {
 
   @Test
   void entity() throws Exception {
-    final Entity referencedEntityValue = ENTITIES.entity(Master.TYPE);
+    final Entity referencedEntityValue = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID, 2L)
+            .with(Master.NAME, masterName)
+            .with(Master.CODE, 7)
+            .build();
     //assert not modified
     assertFalse(referencedEntityValue.isModified());
 
-    referencedEntityValue.put(Master.ID, 2L);
-    referencedEntityValue.put(Master.NAME, masterName);
-    referencedEntityValue.put(Master.CODE, 7);
 
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
@@ -378,6 +395,10 @@ public class DefaultEntityTest {
             .build();
     assertTrue(dept.columnValuesEqual(dept.copyBuilder().build()));
     assertFalse(dept.columnValuesEqual(dept.copyBuilder().with(Department.NAME, "new name").build()));
+
+    dept.put(Department.NAME, "New name");
+    assertTrue(dept.copyBuilder().build().isModified());
+    assertFalse(dept.copyBuilder().with(Department.NAME, "Name").build().isModified());
   }
 
   @Test
@@ -457,12 +478,13 @@ public class DefaultEntityTest {
 
   @Test
   void putValue() {
-    final Entity department = ENTITIES.entity(Department.TYPE);
-    department.put(Department.NO, -10);
+    final Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, -10)
+            .build();
 
-    final Entity employee = ENTITIES.entity(Employee.TYPE);
-
-    employee.put(Employee.COMMISSION, 1200d);
+    final Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.COMMISSION, 1200d)
+            .build();
     assertEquals(employee.get(Employee.COMMISSION), 1200d);
 
     employee.put(Employee.DEPARTMENT_FK, department);
@@ -515,8 +537,9 @@ public class DefaultEntityTest {
 
   @Test
   void getDoubleValue() {
-    final Entity employee = ENTITIES.entity(Employee.TYPE);
-    employee.put(Employee.ID, -10);
+    final Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, -10)
+            .build();
 
     assertNull(employee.get(Employee.SALARY));
 
@@ -527,10 +550,12 @@ public class DefaultEntityTest {
 
   @Test
   void getForeignKeyValue() {
-    final Entity department = ENTITIES.entity(Department.TYPE);
-    department.put(Department.NO, -10);
-    final Entity employee = ENTITIES.entity(Employee.TYPE);
-    employee.put(Employee.ID, -10);
+    final Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, -10)
+            .build();
+    final Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, -10)
+            .build();
     assertTrue(employee.isForeignKeyNull(Employee.DEPARTMENT_FK));
     assertNull(employee.get(Employee.DEPARTMENT_FK));
     assertNull(employee.get(Employee.DEPARTMENT));
@@ -543,25 +568,30 @@ public class DefaultEntityTest {
 
   @Test
   void getDerivedValue() {
-    final Entity department = ENTITIES.entity(Department.TYPE);
-    department.put(Department.NAME, "dname");
-    final Entity employee = ENTITIES.entity(Employee.TYPE);
-    employee.put(Employee.NAME, "ename");
-    employee.put(Employee.DEPARTMENT_FK, department);
+    final Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.NAME, "dname")
+            .build();
+    final Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.NAME, "ename")
+            .with(Employee.DEPARTMENT_FK, department)
+            .build();
     assertEquals("ename - dname", employee.get(Employee.DEPARTMENT_NAME));
 
-    final Entity detail = ENTITIES.entity(Detail.TYPE);
-    detail.put(Detail.INT, 42);
+    final Entity detail = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.INT, 42)
+            .build();
     assertEquals("420", detail.getAsString(Detail.INT_DERIVED));
   }
 
   @Test
   void removeValue() {
-    final Entity department = ENTITIES.entity(Department.TYPE);
-    department.put(Department.NO, -10);
-    final Entity employee = ENTITIES.entity(Employee.TYPE);
-    employee.put(Employee.ID, -10);
-    employee.put(Employee.DEPARTMENT_FK, department);
+    final Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, -10)
+            .build();
+    final Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, -10)
+            .with(Employee.DEPARTMENT_FK, department)
+            .build();
     assertNotNull(employee.getForeignKey(Employee.DEPARTMENT_FK));
     assertEquals(Integer.valueOf(-10), employee.get(Employee.DEPARTMENT));
 
@@ -578,14 +608,16 @@ public class DefaultEntityTest {
 
   @Test
   void maximumFractionDigits() {
-    final Entity employee = ENTITIES.entity(Employee.TYPE);
-    employee.put(Employee.COMMISSION, 1.1234);
+    final Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.COMMISSION, 1.1234)
+            .build();
     assertEquals(1.12, employee.get(Employee.COMMISSION));
     employee.put(Employee.COMMISSION, 1.1255);
     assertEquals(1.13, employee.get(Employee.COMMISSION));
 
-    final Entity detail = ENTITIES.entity(Detail.TYPE);
-    detail.put(Detail.DOUBLE, 1.123456789567);
+    final Entity detail = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.DOUBLE, 1.123456789567)
+            .build();
     assertEquals(1.1234567896, detail.get(Detail.DOUBLE));//default 10 fraction digits
   }
 
@@ -596,12 +628,10 @@ public class DefaultEntityTest {
 
   @Test
   void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final Entities entities = new TestDomain().getEntities();
-
-    final Entity entity = entities.entity(TestDomain.T_TRANS);
-    entity.put(TestDomain.TRANS_ID, 42);
-    entity.put(TestDomain.TRANS_TRANS, null);
-    entity.saveAll();
+    final Entity entity = ENTITIES.builder(TestDomain.T_TRANS)
+            .with(TestDomain.TRANS_ID, 42)
+            .with(TestDomain.TRANS_TRANS, null)
+            .build();
 
     entity.put(TestDomain.TRANS_TRANS, 1);
     assertTrue(entity.isModified());
@@ -615,11 +645,13 @@ public class DefaultEntityTest {
 
   @Test
   void foreignKeyModification() {
-    final Entity emp = ENTITIES.entity(Employee.TYPE);
-    final Entity dept = ENTITIES.entity(Department.TYPE);
-    dept.put(Department.NO, 1);
-    dept.put(Department.NAME, "Name1");
-    emp.put(Employee.DEPARTMENT_FK, dept);
+    final Entity dept = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .with(Department.NAME, "Name1")
+            .build();
+    final Entity emp = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, dept)
+            .build();
     assertEquals(1, emp.get(Employee.DEPARTMENT));
     emp.put(Employee.DEPARTMENT, 2);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
@@ -627,9 +659,10 @@ public class DefaultEntityTest {
     final Entity empDept = emp.getForeignKey(Employee.DEPARTMENT_FK);
     assertEquals(Integer.valueOf(2), empDept.getPrimaryKey().get());
 
-    final Entity dept2 = ENTITIES.entity(Department.TYPE);
-    dept2.put(Department.NO, 3);
-    dept2.put(Department.NAME, "Name2");
+    final Entity dept2 = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 3)
+            .with(Department.NAME, "Name2")
+            .build();
     emp.put(Employee.DEPARTMENT_FK, dept2);
     emp.put(Employee.DEPARTMENT, 3);
     assertNotNull(emp.get(Employee.DEPARTMENT_FK));
@@ -640,9 +673,10 @@ public class DefaultEntityTest {
     emp.put(Employee.DEPARTMENT, null);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
 
-    final Entity manager = ENTITIES.entity(Employee.TYPE);
-    manager.put(Employee.ID, 10);
-    manager.put(Employee.DEPARTMENT_FK, dept);
+    final Entity manager = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 10)
+            .with(Employee.DEPARTMENT_FK, dept)
+            .build();
     emp.put(Employee.MANAGER_FK, manager);
     emp.put(Employee.DEPARTMENT_FK, dept2);
 
@@ -662,44 +696,55 @@ public class DefaultEntityTest {
     final ForeignKeyDomain domain = new ForeignKeyDomain();
     final Entities entities = domain.getEntities();
 
-    final Entity cod = entities.entity(Species.TYPE);
-    cod.put(Species.NO, 1);
-    cod.put(Species.NAME, "Cod");
+    final Entity cod = entities.builder(Species.TYPE)
+            .with(Species.NO, 1)
+            .with(Species.NAME, "Cod")
+            .build();
 
-    final Entity codMaturity10 = entities.entity(Maturity.TYPE);
-    codMaturity10.put(Maturity.SPECIES_FK, cod);
-    codMaturity10.put(Maturity.NO, 10);
-    final Entity codMaturity20 = entities.entity(Maturity.TYPE);
-    codMaturity20.put(Maturity.SPECIES_FK, cod);
-    codMaturity20.put(Maturity.NO, 20);
+    final Entity codMaturity10 = entities.builder(Maturity.TYPE)
+            .with(Maturity.SPECIES_FK, cod)
+            .with(Maturity.NO, 10)
+            .build();
+    final Entity codMaturity20 = entities.builder(Maturity.TYPE)
+            .with(Maturity.SPECIES_FK, cod)
+            .with(Maturity.NO, 20)
+            .build();
 
-    final Entity haddock = entities.entity(Species.TYPE);
-    haddock.put(Species.NO, 2);
-    haddock.put(Species.NAME, "Haddock");
+    final Entity haddock = entities.builder(Species.TYPE)
+            .with(Species.NO, 2)
+            .with(Species.NAME, "Haddock")
+            .build();
 
-    final Entity haddockMaturity10 = entities.entity(Maturity.TYPE);
-    haddockMaturity10.put(Maturity.SPECIES_FK, haddock);
-    haddockMaturity10.put(Maturity.NO, 10);
-    final Entity haddockMaturity20 = entities.entity(Maturity.TYPE);
-    haddockMaturity20.put(Maturity.SPECIES_FK, haddock);
-    haddockMaturity20.put(Maturity.NO, 20);
+    final Entity haddockMaturity10 = entities.builder(Maturity.TYPE)
+            .with(Maturity.SPECIES_FK, haddock)
+            .with(Maturity.NO, 10)
+            .build();
+    final Entity haddockMaturity20 = entities.builder(Maturity.TYPE)
+            .with(Maturity.SPECIES_FK, haddock)
+            .with(Maturity.NO, 20)
+            .build();
 
-    final Entity otolithCategoryCod100 = entities.entity(OtolithCategory.TYPE);
-    otolithCategoryCod100.put(OtolithCategory.SPECIES_FK, cod);
-    otolithCategoryCod100.put(OtolithCategory.NO, 100);
-    final Entity otolithCategoryCod200 = entities.entity(OtolithCategory.TYPE);
-    otolithCategoryCod200.put(OtolithCategory.SPECIES_FK, cod);
-    otolithCategoryCod200.put(OtolithCategory.NO, 200);
+    final Entity otolithCategoryCod100 = entities.builder(OtolithCategory.TYPE)
+            .with(OtolithCategory.SPECIES_FK, cod)
+            .with(OtolithCategory.NO, 100)
+            .build();
+    final Entity otolithCategoryCod200 = entities.builder(OtolithCategory.TYPE)
+            .with(OtolithCategory.SPECIES_FK, cod)
+            .with(OtolithCategory.NO, 200)
+            .build();
 
-    final Entity otolithCategoryHaddock100 = entities.entity(OtolithCategory.TYPE);
-    otolithCategoryHaddock100.put(OtolithCategory.SPECIES_FK, haddock);
-    otolithCategoryHaddock100.put(OtolithCategory.NO, 100);
-    final Entity otolithCategoryHaddock200 = entities.entity(OtolithCategory.TYPE);
-    otolithCategoryHaddock200.put(OtolithCategory.SPECIES_FK, haddock);
-    otolithCategoryHaddock200.put(OtolithCategory.NO, 200);
+    final Entity otolithCategoryHaddock100 = entities.builder(OtolithCategory.TYPE)
+            .with(OtolithCategory.SPECIES_FK, haddock)
+            .with(OtolithCategory.NO, 100)
+            .build();
+    final Entity otolithCategoryHaddock200 = entities.builder(OtolithCategory.TYPE)
+            .with(OtolithCategory.SPECIES_FK, haddock)
+            .with(OtolithCategory.NO, 200)
+            .build();
 
-    final Entity otolith = entities.entity(Otolith.TYPE);
-    otolith.put(Otolith.SPECIES_FK, cod);
+    final Entity otolith = entities.builder(Otolith.TYPE)
+            .with(Otolith.SPECIES_FK, cod)
+            .build();
     //try to set a haddock maturity
     assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.MATURITY_FK, haddockMaturity10));
     assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));

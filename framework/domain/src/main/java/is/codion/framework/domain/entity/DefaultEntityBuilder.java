@@ -9,21 +9,30 @@ import java.util.Map;
 final class DefaultEntityBuilder implements Entity.Builder {
 
   private final EntityDefinition definition;
-  private final Map<Attribute<?>, Object> attributeValues = new HashMap<>();
-  private final Map<ForeignKey, Entity> foreignKeyValues = new HashMap<>();
+  private final Map<Attribute<?>, Object> values;
+  private final Map<Attribute<?>, Object> originalValues;
+  private final Map<Attribute<?>, Object> builderValues = new HashMap<>();
+  private final Map<ForeignKey, Entity> builderForeignKeyValues = new HashMap<>();
 
   DefaultEntityBuilder(final EntityDefinition definition) {
+    this(definition, null, null);
+  }
+
+  DefaultEntityBuilder(final EntityDefinition definition, final Map<Attribute<?>, Object> values,
+                       final Map<Attribute<?>, Object> originalValues) {
     this.definition = definition;
+    this.values = values;
+    this.originalValues = originalValues;
   }
 
   @Override
   public <T> Entity.Builder with(final Attribute<T> attribute, final T value) {
     definition.getProperty(attribute);
     if (attribute instanceof ForeignKey) {
-      foreignKeyValues.put((ForeignKey) attribute, (Entity) value);
+      builderForeignKeyValues.put((ForeignKey) attribute, (Entity) value);
     }
     else {
-      attributeValues.put(attribute, value);
+      builderValues.put(attribute, value);
     }
 
     return this;
@@ -31,8 +40,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public Entity build() {
-    final Entity entity = definition.entity(attributeValues, null);
-    foreignKeyValues.forEach(entity::put);
+    final Entity entity = definition.entity(values, originalValues);
+    builderValues.forEach((attribute, value) -> entity.put((Attribute<Object>) attribute, value));
+    builderForeignKeyValues.forEach(entity::put);
 
     return entity;
   }

@@ -86,10 +86,11 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void insert() throws IOException, DatabaseException {
-    final Entity entity = connection.getEntities().entity(TestDomain.T_DEPARTMENT);
-    entity.put(TestDomain.DEPARTMENT_ID, 33);
-    entity.put(TestDomain.DEPARTMENT_NAME, "name");
-    entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
+    final Entity entity = connection.getEntities().builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 33)
+            .with(TestDomain.DEPARTMENT_NAME, "name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "loc")
+            .build();
     final Key key = connection.insert(entity);
     assertEquals(Integer.valueOf(33), key.get());
     connection.delete(key);

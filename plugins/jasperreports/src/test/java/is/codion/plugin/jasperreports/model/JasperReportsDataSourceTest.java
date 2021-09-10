@@ -23,10 +23,11 @@ public class JasperReportsDataSourceTest {
 
   @Test
   void iterator() throws Exception {
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, 10);
-    department.put(TestDomain.DEPARTMENT_NAME, "name");
-    department.put(TestDomain.DEPARTMENT_LOCATION, "none");
+    final Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, 10)
+            .with(TestDomain.DEPARTMENT_NAME, "name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "none")
+            .build();
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
     final List<Entity> entities = singletonList(department);
     final JasperReportsDataSource<Entity> source =

@@ -210,16 +210,16 @@ public class EntityServletServerTest {
 
     //insert
     final List<Entity> entities = new ArrayList<>();
-    Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, -10);
-    department.put(TestDomain.DEPARTMENT_NAME, "A name");
-    department.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    entities.add(department);
-    department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, -20);
-    department.put(TestDomain.DEPARTMENT_NAME, "Another name");
-    department.put(TestDomain.DEPARTMENT_LOCATION, "locat");
-    entities.add(department);
+    entities.add(ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -10)
+            .with(TestDomain.DEPARTMENT_NAME, "A name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "loc")
+            .build());
+    entities.add(ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, -20)
+            .with(TestDomain.DEPARTMENT_NAME, "Another name")
+            .with(TestDomain.DEPARTMENT_LOCATION, "locat")
+            .build());
 
     uriBuilder.setPath("insert");
     httpPost = new HttpPost(uriBuilder.build());
@@ -464,11 +464,12 @@ public class EntityServletServerTest {
     assertEquals(4, queryEntities.size());
     response.close();
 
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, null);
-    department.put(TestDomain.DEPARTMENT_ID, -42);
-    department.put(TestDomain.DEPARTMENT_NAME, "Test");
-    department.put(TestDomain.DEPARTMENT_LOCATION, "Location");
+    final Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+            .with(TestDomain.DEPARTMENT_ID, null)
+            .with(TestDomain.DEPARTMENT_ID, -42)
+            .with(TestDomain.DEPARTMENT_NAME, "Test")
+            .with(TestDomain.DEPARTMENT_LOCATION, "Location")
+            .build();
 
     //insert
     uriBuilder = createURIBuilder();
@@ -635,7 +636,7 @@ public class EntityServletServerTest {
       final SSLContext sslContext = SSLContext.getDefault();
 
       return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register(HTTPS,
-              new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
               .build());
     }
     catch (final NoSuchAlgorithmException e) {
