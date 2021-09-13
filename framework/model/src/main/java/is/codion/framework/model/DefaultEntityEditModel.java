@@ -157,6 +157,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private boolean postEditEvents = POST_EDIT_EVENTS.get();
 
   /**
+   * Specifies whether this edit model sets the foreign key to null when initialized with a null value.
+   * @see #initialize(ForeignKey, Entity)
+   */
+  private boolean initializeForeignKeyToNull = INITIALIZE_FOREIGN_KEY_TO_NULL.get();
+
+  /**
    * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityType}.
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
@@ -368,6 +374,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
         put(foreignKey, entityTypeEntities.getValue().iterator().next());
       }
+    }
+  }
+
+  @Override
+  public final void initialize(final ForeignKey foreignKey, final Entity foreignKeyValue) {
+    requireNonNull(foreignKey);
+    if (isEntityNew() && (foreignKeyValue != null || initializeForeignKeyToNull)) {
+      put(foreignKey, foreignKeyValue);
     }
   }
 
@@ -671,6 +685,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void setPostEditEvents(final boolean postEditEvents) {
     this.postEditEvents = postEditEvents;
+  }
+
+  @Override
+  public final boolean isInitializeForeignKeyToNull() {
+    return initializeForeignKeyToNull;
+  }
+
+  @Override
+  public final void setInitializeForeignKeyToNull(final boolean initializeForeignKeyToNull) {
+    this.initializeForeignKeyToNull = initializeForeignKeyToNull;
   }
 
   @Override

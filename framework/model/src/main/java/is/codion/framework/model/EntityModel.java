@@ -98,7 +98,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * It sets the value for the first available foreign key property representing the given entityType
    * in the {@link EntityEditModel} and sets the search values in the {@link EntityTableModel}.
    * @param foreignKeyEntityType the id of the master entity
-   * @param foreignKeyValues the master entities
+   * @param foreignKeyValues the master entities, empty list for none
    */
   void initialize(EntityType<?> foreignKeyEntityType, List<Entity> foreignKeyValues);
 
@@ -106,7 +106,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Initializes this {@link EntityModel} according to the given foreign key entities,
    * sets the appropriate attribute value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
    * @param foreignKey the foreign key
-   * @param foreignKeyValues the foreign key values
+   * @param foreignKeyValues the foreign key values, empty list for none
    */
   void initialize(ForeignKey foreignKey, List<Entity> foreignKeyValues);
 

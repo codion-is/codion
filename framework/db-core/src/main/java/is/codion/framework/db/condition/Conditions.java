@@ -91,8 +91,14 @@ public final class Conditions {
    * @param attribute the attribute to base the condition on
    * @param <T> the attribute type
    * @return a {@link AttributeCondition.Builder} instance
+   * @throws IllegalArgumentException in case {@code attribute} is a {@link ForeignKey}.
+   * @see #where(ForeignKey)
    */
   public static <T> AttributeCondition.Builder<T> where(final Attribute<T> attribute) {
+    if (attribute instanceof ForeignKey) {
+      throw new IllegalArgumentException("Use Conditions.where(ForeignKey foreignKey) to create a foreign key based where condition");
+    }
+
     return new DefaultAttributeConditionBuilder<>(attribute);
   }
 
