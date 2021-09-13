@@ -7248,3 +7248,5 @@
   EntityEditComponentPanel, temporal field columns no longer initialized as defaultTextFieldColumns
   DefaultEntity.copyBuilder() now initializes the entity with original as well as current values, some related (and unrelated) tests refactored to use the entity builder
   Conditions.where(Attribute) now throws IllegalArgumentException in case the attribute is a ForeignKey, since the path taken for Attributes assumes it represents a ColumnProperty
+  EntityEditModel.initialize(ForeignKey, Entity) and setInitializeForeignKeyToNull() added along with INITIALIZE_FOREIGN_KEY_TO_NULL configuration value, default false
+  DefaultEntityModel.onInitialization() now uses the above

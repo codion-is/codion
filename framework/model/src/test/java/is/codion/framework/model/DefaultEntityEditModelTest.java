@@ -595,6 +595,27 @@ public final class DefaultEntityEditModelTest {
     assertEquals(5, deptEdit.get());
   }
 
+  @Test
+  void initializeForeignKeyToNull() throws DatabaseException {
+    final Entity dept = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
+
+    employeeEditModel.initialize(TestDomain.EMP_DEPARTMENT_FK, dept);
+    assertEquals(dept, employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
+
+    employeeEditModel.initialize(TestDomain.EMP_DEPARTMENT_FK, null);
+    assertEquals(dept, employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
+
+    employeeEditModel.setInitializeForeignKeyToNull(true);
+
+    employeeEditModel.initialize(TestDomain.EMP_DEPARTMENT_FK, null);
+    assertTrue(employeeEditModel.isNull(TestDomain.EMP_DEPARTMENT_FK));
+
+    employeeEditModel.setInitializeForeignKeyToNull(false);
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    employeeEditModel.initialize(TestDomain.EMP_DEPARTMENT_FK, null);
+    assertEquals(dept, employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
+  }
+
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
     public TestEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {

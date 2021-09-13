@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -323,6 +322,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void initialize(final EntityType<?> foreignKeyEntityType, final List<Entity> foreignKeyValues) {
+    requireNonNull(foreignKeyEntityType);
+    requireNonNull(foreignKeyValues);
     final List<ForeignKey> foreignKeys = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
     if (!foreignKeys.isEmpty()) {
       initialize(foreignKeys.get(0), foreignKeyValues);
@@ -332,6 +333,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final void initialize(final ForeignKey foreignKey, final List<Entity> foreignKeyValues) {
     requireNonNull(foreignKey);
+    requireNonNull(foreignKeyValues);
     if (containsTableModel()) {
       tableModel.setForeignKeyConditionValues(foreignKey, foreignKeyValues);
     }
@@ -397,14 +399,13 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   /**
-   * By default, this method sets the foreign key value in the edit model if the entity is new, using the first item in {@code foreignKeyValues}.
+   * By default, this method initializes the edit model according to the given foreign key values, using the first item in {@code foreignKeyValues}.
    * @param foreignKey the foreign key attribute referring to the master model doing the initialization
-   * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
+   * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model, empty list for none
+   * @see EntityEditModel#initialize(ForeignKey, Entity)
    */
   protected void onInitialization(final ForeignKey foreignKey, final List<Entity> foreignKeyValues) {
-    if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
-      editModel.put(foreignKey, foreignKeyValues.get(0));
-    }
+    editModel.initialize(foreignKey, foreignKeyValues.isEmpty() ? null : foreignKeyValues.get(0));
   }
 
   /**
