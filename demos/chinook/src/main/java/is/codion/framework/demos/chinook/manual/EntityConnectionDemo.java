@@ -58,13 +58,13 @@ public final class EntityConnectionDemo {
 
     Entity track = tracks.get(0);
 
-    Entity genre = track.getForeignKey(Track.GENRE_FK);
-    Entity mediaType = track.getForeignKey(Track.MEDIATYPE_FK);
-    Entity album = track.getForeignKey(Track.ALBUM_FK);
+    Entity genre = track.get(Track.GENRE_FK);
+    Entity mediaType = track.get(Track.MEDIATYPE_FK);
+    Entity album = track.get(Track.ALBUM_FK);
 
-    // fetch depth for TRACK_ALBUM_FK is 2, which means two levels of
+    // fetch depth for Track.ALBUM_FK is 2, which means two levels of
     // references are fetched, so we have the artist here as well
-    Entity artist = album.getForeignKey(Album.ARTIST_FK);
+    Entity artist = album.get(Album.ARTIST_FK);
     // end::fetchDepthEntity[]
   }
 
@@ -77,9 +77,13 @@ public final class EntityConnectionDemo {
 
     Entity track = tracks.get(0);
 
-    // this 'genre' instance contains only the primary key, since the
-    // condition fetch depth limit prevented it from being selected
-    Entity genre = track.getForeignKey(Track.GENRE_FK);
+    // fetch depth is 0, so this 'genre' instance is null
+    Entity genre = track.get(Track.GENRE_FK);
+
+    // using track.getForeignKey(Track.GENRE_FK) you get a 'genre'
+    // instance containing only the primary key, since the condition
+    // fetch depth limit prevented it from being selected
+    genre = track.getForeignKey(Track.GENRE_FK);
     // end::fetchDepthCondition[]
   }
 
@@ -92,12 +96,17 @@ public final class EntityConnectionDemo {
 
     Entity track = tracks.get(0);
 
-    Entity genre = track.getForeignKey(Track.GENRE_FK);
-    Entity mediaType = track.getForeignKey(Track.MEDIATYPE_FK);
+    Entity genre = track.get(Track.GENRE_FK);
+    Entity mediaType = track.get(Track.MEDIATYPE_FK);
 
-    // this 'album' instance contains only the primary key, since the
-    // condition fetch depth limit prevented it from being selected
-    Entity album = track.getForeignKey(Track.ALBUM_FK);
+    // this 'album' instance is null, since the condition
+    // fetch depth limit prevented it from being selected
+    Entity album = track.get(Track.ALBUM_FK);
+
+    // using track.getForeignKey(Track.ALBUM_FK) you get a 'album'
+    // instance containing only the primary key, since the condition
+    // fetch depth limit prevented it from being selected
+    album = track.getForeignKey(Track.ALBUM_FK);
     // end::fetchDepthConditionForeignKey[]
   }
 
@@ -342,7 +351,7 @@ public final class EntityConnectionDemo {
     // end::transaction[]
   }
 
-  static void main(String[] args) throws DatabaseException, ReportException {
+  public static void main(String[] args) throws DatabaseException, ReportException {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 

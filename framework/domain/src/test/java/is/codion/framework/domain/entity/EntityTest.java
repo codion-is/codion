@@ -300,27 +300,27 @@ public final class EntityTest {
 
     final Entity entityOne = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
-                    .build();
+            .build();
     entityList.add(entityOne);
 
     final Entity entityTwo = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
-                    .build();
+            .build();
     entityList.add(entityTwo);
 
     final Entity entityThree = entities.builder(Department.TYPE)
             .with(Department.NO, 2)
-                    .build();
+            .build();
     entityList.add(entityThree);
 
     final Entity entityFour = entities.builder(Department.TYPE)
             .with(Department.NO, 3)
-                    .build();
+            .build();
     entityList.add(entityFour);
 
     final Entity entityFive = entities.builder(Department.TYPE)
             .with(Department.NO, 3)
-                    .build();
+            .build();
     entityList.add(entityFive);
 
     final Map<Integer, List<Entity>> map = Entity.mapToValue(Department.NO, entityList);
