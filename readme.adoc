@@ -368,4 +368,4 @@ connection.delete(asList(addressKey, customerKey));
 connection.close();
 ----
 
-Continue exploring on the link:https://codion.is[Codion Web Site].
+Continue exploring on the link:https://codion.is[Codion Website].
