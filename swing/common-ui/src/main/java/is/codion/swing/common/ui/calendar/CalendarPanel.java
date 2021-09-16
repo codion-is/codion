@@ -24,6 +24,7 @@ import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -31,6 +32,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -529,6 +532,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createYearSpinner() {
     final JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(0, -9999, 9999, 1));
+    yearSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(yearSpinner.getModel()));
     yearSpinner.setEditor(createYearSpinnerEditor(yearSpinner));
 
     return removeCtrlLeftRightArrowKeyEvents(yearSpinner);
@@ -537,6 +541,7 @@ public final class CalendarPanel extends JPanel {
   private static JSpinner createMonthSpinner(final JSpinner yearSpinner) {
     final List<Item<Month>> monthItems = createMonthItems();
     final JSpinner monthSpinner = new JSpinner(new SpinnerListModel(monthItems));
+    monthSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(monthSpinner.getModel()));
     final JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
     monthTextField.setFont(((JSpinner.DefaultEditor) yearSpinner.getEditor()).getTextField().getFont());
     monthTextField.setEditable(false);
@@ -551,6 +556,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createHourSpinner() {
     final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+    hourSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(hourSpinner.getModel()));
     hourSpinner.setEditor(createTimeSpinnerEditor(hourSpinner));
 
     return removeCtrlLeftRightArrowKeyEvents(hourSpinner);
@@ -558,6 +564,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createMinuteSpinner() {
     final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+    minuteSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(minuteSpinner.getModel()));
     minuteSpinner.setEditor(createTimeSpinnerEditor(minuteSpinner));
 
     return removeCtrlLeftRightArrowKeyEvents(minuteSpinner);
@@ -620,5 +627,25 @@ public final class CalendarPanel extends JPanel {
     Collections.reverse(months);
 
     return months;
+  }
+
+  private static final class SpinnerMouseWheelListener implements MouseWheelListener {
+
+    private final SpinnerModel spinnerModel;
+
+    private SpinnerMouseWheelListener(final SpinnerModel spinnerModel) {
+      this.spinnerModel = spinnerModel;
+    }
+
+    @Override
+    public void mouseWheelMoved(final MouseWheelEvent event) {
+      final int wheelRotation = event.getWheelRotation();
+      if (wheelRotation != 0) {
+        final Object newValue = wheelRotation > 0 ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
+        if (newValue != null) {
+          spinnerModel.setValue(newValue);
+        }
+      }
+    }
   }
 }

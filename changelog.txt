@@ -7251,3 +7251,4 @@
   EntityEditModel.initialize(ForeignKey, Entity) and setInitializeForeignKeyToNull() added along with INITIALIZE_FOREIGN_KEY_TO_NULL configuration value, default false
   DefaultEntityModel.onInitialization() now uses the above
   Chinook demo now uses the above for invoice lines, minor domain model fix, nullable(false) moved to respective column properties
+  CalendarPanel, mouse wheel scrolling added to spinners
