@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -18,6 +19,7 @@ final class DefaultListSpinnerBuilder<T> extends AbstractComponentBuilder<T, JSp
   private final SpinnerListModel spinnerModel;
 
   private int columns = 0;
+  private boolean mouseWheelScrolling = false;
 
   DefaultListSpinnerBuilder(final SpinnerListModel spinnerModel) {
     this.spinnerModel = requireNonNull(spinnerModel);
@@ -30,6 +32,12 @@ final class DefaultListSpinnerBuilder<T> extends AbstractComponentBuilder<T, JSp
   }
 
   @Override
+  public ListSpinnerBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
+    this.mouseWheelScrolling = mouseWheelScrolling;
+    return this;
+  }
+
+  @Override
   protected JSpinner buildComponent() {
     final JSpinner spinner = new JSpinner(spinnerModel);
     final JComponent editor = spinner.getEditor();
@@ -38,6 +46,9 @@ final class DefaultListSpinnerBuilder<T> extends AbstractComponentBuilder<T, JSp
       if (columns > 0) {
         defaultEditor.getTextField().setColumns(columns);
       }
+    }
+    if (mouseWheelScrolling) {
+      spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerModel));
     }
 
     return spinner;

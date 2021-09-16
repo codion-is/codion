@@ -16,4 +16,11 @@ public interface ItemSpinnerBuilder<T> extends ComponentBuilder<T, JSpinner, Ite
    * @return this builder instance
    */
   ItemSpinnerBuilder<T> columns(int columns);
+
+  /**
+   * Enable mouse wheel scrolling on the spinner
+   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
+   * @return this builder instance
+   */
+  ItemSpinnerBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 }

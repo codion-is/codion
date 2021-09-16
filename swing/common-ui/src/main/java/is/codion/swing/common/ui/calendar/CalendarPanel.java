@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.BorderFactory;
@@ -529,6 +530,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createYearSpinner() {
     final JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(0, -9999, 9999, 1));
+    yearSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(yearSpinner.getModel()));
     yearSpinner.setEditor(createYearSpinnerEditor(yearSpinner));
 
     return removeCtrlLeftRightArrowKeyEvents(yearSpinner);
@@ -537,6 +539,7 @@ public final class CalendarPanel extends JPanel {
   private static JSpinner createMonthSpinner(final JSpinner yearSpinner) {
     final List<Item<Month>> monthItems = createMonthItems();
     final JSpinner monthSpinner = new JSpinner(new SpinnerListModel(monthItems));
+    monthSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(monthSpinner.getModel()));
     final JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
     monthTextField.setFont(((JSpinner.DefaultEditor) yearSpinner.getEditor()).getTextField().getFont());
     monthTextField.setEditable(false);
@@ -551,6 +554,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createHourSpinner() {
     final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
+    hourSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(hourSpinner.getModel()));
     hourSpinner.setEditor(createTimeSpinnerEditor(hourSpinner));
 
     return removeCtrlLeftRightArrowKeyEvents(hourSpinner);
@@ -558,6 +562,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createMinuteSpinner() {
     final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+    minuteSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(minuteSpinner.getModel()));
     minuteSpinner.setEditor(createTimeSpinnerEditor(minuteSpinner));
 
     return removeCtrlLeftRightArrowKeyEvents(minuteSpinner);
