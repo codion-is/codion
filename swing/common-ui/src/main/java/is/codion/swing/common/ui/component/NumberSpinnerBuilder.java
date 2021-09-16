@@ -39,4 +39,11 @@ public interface NumberSpinnerBuilder<T extends Number> extends ComponentBuilder
    * @return this builder instance
    */
   NumberSpinnerBuilder<T> stepSize(T stepSize);
+
+  /**
+   * Enable mouse wheel scrolling on the spinner
+   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
+   * @return this builder instance
+   */
+  NumberSpinnerBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 }

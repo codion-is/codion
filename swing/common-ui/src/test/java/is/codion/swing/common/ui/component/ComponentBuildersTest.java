@@ -380,6 +380,7 @@ public final class ComponentBuildersTest {
             .minimum(0)
             .maximum(100)
             .stepSize(10)
+            .mouseWheelScrolling(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10, componentValue.get());
@@ -395,6 +396,7 @@ public final class ComponentBuildersTest {
             .maximum(100d)
             .stepSize(10d)
             .columns(5)
+            .mouseWheelScrolling(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10d, componentValue.get());
@@ -407,6 +409,7 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, JSpinner> componentValue = ComponentBuilders.<String>listSpinner(new SpinnerListModel(Arrays.asList("One", "Two")))
             .columns(5)
+            .mouseWheelScrolling(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals("One", componentValue.get());
@@ -420,6 +423,7 @@ public final class ComponentBuildersTest {
     final SpinnerListModel spinnerModel = new SpinnerListModel(asList(item(1, "One"), item(2, "Two")));
     final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.<Integer>itemSpinner(spinnerModel)
             .columns(5)
+            .mouseWheelScrolling(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(1, componentValue.get());

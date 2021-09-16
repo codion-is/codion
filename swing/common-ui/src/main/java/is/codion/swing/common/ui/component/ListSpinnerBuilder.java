@@ -15,4 +15,11 @@ public interface ListSpinnerBuilder<T> extends ComponentBuilder<T, JSpinner, Lis
    * @return this builder instance
    */
   ListSpinnerBuilder<T> columns(int columns);
+
+  /**
+   * Enable mouse wheel scrolling on the spinner
+   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
+   * @return this builder instance
+   */
+  ListSpinnerBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 }

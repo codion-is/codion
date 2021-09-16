@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.BorderFactory;
@@ -24,7 +25,6 @@ import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -32,8 +32,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -627,25 +625,5 @@ public final class CalendarPanel extends JPanel {
     Collections.reverse(months);
 
     return months;
-  }
-
-  private static final class SpinnerMouseWheelListener implements MouseWheelListener {
-
-    private final SpinnerModel spinnerModel;
-
-    private SpinnerMouseWheelListener(final SpinnerModel spinnerModel) {
-      this.spinnerModel = spinnerModel;
-    }
-
-    @Override
-    public void mouseWheelMoved(final MouseWheelEvent event) {
-      final int wheelRotation = event.getWheelRotation();
-      if (wheelRotation != 0) {
-        final Object newValue = wheelRotation > 0 ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
-        if (newValue != null) {
-          spinnerModel.setValue(newValue);
-        }
-      }
-    }
   }
 }

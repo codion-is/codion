@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -23,6 +24,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractCompon
   private T minimum;
   private T maximum;
   private T stepSize;
+  private boolean mouseWheelScrolling = false;
 
   DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
     this.spinnerNumberModel = requireNonNull(spinnerNumberModel);
@@ -63,6 +65,12 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractCompon
   }
 
   @Override
+  public NumberSpinnerBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
+    this.mouseWheelScrolling = mouseWheelScrolling;
+    return this;
+  }
+
+  @Override
   protected JSpinner buildComponent() {
     if (minimum != null) {
       spinnerNumberModel.setMinimum((Comparable<T>) minimum);
@@ -83,6 +91,9 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractCompon
       if (!editable) {
         defaultEditor.getTextField().setEditable(false);
       }
+    }
+    if (mouseWheelScrolling) {
+      spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerNumberModel));
     }
 
     return spinner;

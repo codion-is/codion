@@ -166,6 +166,7 @@ public final class ApplicationPanel extends JPanel {
     integerSpinner(createSpinnerModel())
             .columns(4)
             .transferFocusOnEnter(true)
+            .mouseWheelScrolling(true)
             .linkedValue(model.getIntegerSpinValue())
             .build(inputPanel::add);
 
