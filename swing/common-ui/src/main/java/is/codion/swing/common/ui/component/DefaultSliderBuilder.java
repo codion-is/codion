@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,6 +23,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   private boolean paintTrack = true;
   private boolean paintLabels = false;
   private boolean inverted = false;
+  private int orientation = SwingConstants.HORIZONTAL;
 
   DefaultSliderBuilder(final BoundedRangeModel boundedRangeModel) {
     this.boundedRangeModel = requireNonNull(boundedRangeModel);
@@ -70,6 +72,12 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   }
 
   @Override
+  public SliderBuilder orientation(final int orientation) {
+    this.orientation = orientation;
+    return this;
+  }
+
+  @Override
   protected JSlider buildComponent() {
     final JSlider slider = new JSlider(boundedRangeModel);
     if (minorTickSpacing > 0) {
@@ -83,6 +91,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
     slider.setPaintTrack(paintTrack);
     slider.setPaintLabels(paintLabels);
     slider.setInverted(inverted);
+    slider.setOrientation(orientation);
 
     return slider;
   }
