@@ -152,19 +152,19 @@ public final class EntityServerMonitorPanel extends JPanel {
             .control(Controls.builder()
                     .caption("File")
                     .mnemonic('F')
-                    .control(initializeExitControl()).build())
+                    .control(initializeExitControl()))
             .control(Controls.builder()
                     .caption("View")
                     .mnemonic('V')
                     .control(initializeRefreshControl())
                     .control(initializeUpateIntervalControl())
                     .separator()
-                    .control(initializeAlwaysOnTopControl()).build())
+                    .control(initializeAlwaysOnTopControl()))
             .control(Controls.builder()
                     .caption("Tools")
                     .mnemonic('T')
                     .control(initializeSetJDKDirControl())
-                    .control(initializeJConsoleControl()).build())
+                    .control(initializeJConsoleControl()))
             .build();
   }
 

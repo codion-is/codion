@@ -66,15 +66,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a Control for filtering this combo box
    */
   public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
-    return Control.builder(() -> {
-      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
-      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKey),
-              MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.QUESTION_MESSAGE, null, null, null);
-      if (result != JOptionPane.OK_OPTION) {
-        getModel().setForeignKeyFilterEntities(foreignKey, current);
-      }
-    }).icon(frameworkIcons().filter()).build();
+    return Control.builder(createForeignKeyFilterCommand(foreignKey))
+            .icon(frameworkIcons().filter())
+            .build();
   }
 
   /**
@@ -147,6 +141,18 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
             .build());
 
     return popupMenu;
+  }
+
+  private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
+    return () -> {
+      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
+      final int result = JOptionPane.showOptionDialog(this, createForeignKeyFilterComboBox(foreignKey),
+              MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.QUESTION_MESSAGE, null, null, null);
+      if (result != JOptionPane.OK_OPTION) {
+        getModel().setForeignKeyFilterEntities(foreignKey, current);
+      }
+    };
   }
 
   private static final class RefreshOnVisible implements AncestorListener {

@@ -61,7 +61,9 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
       }
     });
     this.columnComponents = Collections.unmodifiableMap(columnComponents);
-    this.basePanel = new JPanel(FlexibleGridLayout.builder().rows(1).build());
+    this.basePanel = new JPanel(FlexibleGridLayout.builder()
+            .rows(1)
+            .build());
     final Dimension fillerSize = new Dimension(Components.getPreferredScrollBarWidth(), 0);
     this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
     setLayout(new BorderLayout());

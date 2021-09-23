@@ -86,14 +86,17 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final Controls controls = Controls.controls();
-    controls.add(Control.builder(() -> {
-      for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
-        model.getServer().disconnect(remoteClient.getClientId());
-        model.getRemoteClientListModel().removeElement(remoteClient);
-      }
-    }).caption("Disconnect").build());
+    return Controls.builder()
+            .control(Control.builder(this::disconnect)
+                    .caption("Disconnect"))
+            .build()
+            .createPopupMenu();
+  }
 
-    return controls.createPopupMenu();
+  private void disconnect() throws RemoteException {
+    for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
+      model.getServer().disconnect(remoteClient.getClientId());
+      model.getRemoteClientListModel().removeElement(remoteClient);
+    }
   }
 }
