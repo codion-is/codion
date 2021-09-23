@@ -7255,3 +7255,4 @@
   SpinnerMouseWheelListener added, mouseWheelScrolling() added to spinner builders
   SliderBuilder.orientation() added
   CaseDocumentFilter constructor privatized, factory methods added
+  DefaultPropertyValue constructor simplified a bit
