@@ -75,7 +75,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   protected JTextArea buildComponent() {
     final JTextArea textArea = new JTextArea(rows, columns);
     final AbstractDocument document = (AbstractDocument) textArea.getDocument();
-    final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.create();
+    final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
     caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
     document.setDocumentFilter(caseDocumentFilter);
     textArea.setAutoscrolls(autoscrolls);

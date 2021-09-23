@@ -46,7 +46,7 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    * Creates a new CaseDocumentFilter instance, configured with {@link DocumentCase#NONE}
    * @return a new CaseDocumentFilter instance
    */
-  public static CaseDocumentFilter create() {
+  public static CaseDocumentFilter caseDocumentFilter() {
     return new CaseDocumentFilter(DocumentCase.NONE);
   }
 
@@ -54,7 +54,7 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    * Creates a new CaseDocumentFilter instance, configured with the given document case
    * @return a new CaseDocumentFilter instance
    */
-  public static CaseDocumentFilter create(final DocumentCase documentCase) {
+  public static CaseDocumentFilter caseDocumentFilter(final DocumentCase documentCase) {
     return new CaseDocumentFilter(documentCase);
   }
 

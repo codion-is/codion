@@ -49,7 +49,7 @@ public final class TextFields {
       ((SizedDocument) textComponent.getDocument()).getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
     }
     else {
-      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(CaseDocumentFilter.create(DocumentCase.UPPERCASE));
+      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(CaseDocumentFilter.caseDocumentFilter(DocumentCase.UPPERCASE));
     }
 
     return textComponent;
@@ -67,7 +67,7 @@ public final class TextFields {
       ((SizedDocument) textComponent.getDocument()).getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
     }
     else {
-      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(CaseDocumentFilter.create(DocumentCase.LOWERCASE));
+      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(CaseDocumentFilter.caseDocumentFilter(DocumentCase.LOWERCASE));
     }
 
     return textComponent;
