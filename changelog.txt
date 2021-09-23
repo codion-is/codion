@@ -7256,3 +7256,4 @@
   SliderBuilder.orientation() added
   CaseDocumentFilter constructor privatized, factory methods added
   DefaultPropertyValue constructor simplified a bit
+  ConnectionPoolState.set() removed
