@@ -11,7 +11,7 @@ import static is.codion.swing.common.ui.textfield.Parser.parseResult;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A DocumentFilter which parses a value from the document text and allowes for validation of the parsed value.
+ * A DocumentFilter which parses a value from the document text and allows for validation of the parsed value.
  * @param <T> the value type
  */
 public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
