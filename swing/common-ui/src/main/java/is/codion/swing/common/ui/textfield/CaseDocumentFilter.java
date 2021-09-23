@@ -60,7 +60,7 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
 
   @Override
   protected String transform(final String string) {
-    return setCase(string);
+    return string == null ? null : setCase(string);
   }
 
   private String setCase(final String string) {
