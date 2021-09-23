@@ -485,10 +485,9 @@ public final class EntitySearchField extends JTextField {
      */
     public ListSelectionProvider(final EntitySearchModel searchModel) {
       requireNonNull(searchModel, SEARCH_MODEL);
-      selectControl = Control.builder(() -> {
-        searchModel.setSelectedEntities(list.getSelectedValuesList());
-        Windows.getParentDialog(list).dispose();
-      }).caption(Messages.get(Messages.OK)).build();
+      selectControl = Control.builder(createSelectCommand(searchModel))
+              .caption(Messages.get(Messages.OK))
+              .build();
       list.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
@@ -522,6 +521,13 @@ public final class EntitySearchField extends JTextField {
     public final Control getSelectControl() {
       return selectControl;
     }
+
+    private Control.Command createSelectCommand(final EntitySearchModel searchModel) {
+      return () -> {
+        searchModel.setSelectedEntities(list.getSelectedValuesList());
+        Windows.getParentDialog(list).dispose();
+      };
+    }
   }
 
   /**
@@ -547,10 +553,9 @@ public final class EntitySearchField extends JTextField {
         }
       };
       table = new FilteredTable<>(tableModel);
-      selectControl = Control.builder(() -> {
-        searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        Windows.getParentDialog(table).dispose();
-      }).caption(Messages.get(Messages.OK)).build();
+      selectControl = Control.builder(createSelectCommand(searchModel, tableModel))
+              .caption(Messages.get(Messages.OK))
+              .build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .onKeyPressed()
@@ -591,6 +596,13 @@ public final class EntitySearchField extends JTextField {
     @Override
     public final Control getSelectControl() {
       return selectControl;
+    }
+
+    private Control.Command createSelectCommand(final EntitySearchModel searchModel, final SwingEntityTableModel tableModel) {
+      return () -> {
+        searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
+        Windows.getParentDialog(table).dispose();
+      };
     }
   }
 

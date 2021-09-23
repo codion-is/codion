@@ -51,4 +51,10 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
    * @return this builder instance
    */
   SliderBuilder inverted(boolean inverted);
+
+  /**
+   * @param orientation the orientation, SwingConstants.HORIZONTAL or SwingConstants.VERTICAL
+   * @return this builder instance
+   */
+  SliderBuilder orientation(int orientation);
 }

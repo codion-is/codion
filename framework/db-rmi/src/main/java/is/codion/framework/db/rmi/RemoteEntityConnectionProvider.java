@@ -111,7 +111,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
                               .clientId(getClientId())
                               .clientTypeId(getClientTypeId())
                               .clientVersion(getClientVersion())
-                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(getDomainClassName())).build())));
+                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(getDomainClassName()))
+                              .build())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

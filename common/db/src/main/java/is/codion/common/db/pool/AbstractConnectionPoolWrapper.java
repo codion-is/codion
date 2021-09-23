@@ -105,14 +105,14 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   /**
    * @param pool the underlying connection pool
    */
-  protected void setPool(final T pool) {
+  protected final void setPool(final T pool) {
     this.pool = requireNonNull(pool, "pool");
   }
 
   /**
    * @return the underlying pool object
    */
-  protected T getPool() {
+  protected final T getPool() {
     return pool;
   }
 
@@ -136,7 +136,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @param state the state to update
    * @return the updated state
    */
-  final ConnectionPoolState updateState(final ConnectionPoolState state) {
+  final DefaultConnectionPoolState updateState(final DefaultConnectionPoolState state) {
     state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
 
     return state;

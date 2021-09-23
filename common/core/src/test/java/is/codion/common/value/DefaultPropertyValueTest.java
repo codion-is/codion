@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultPropertyValueTest {
 
@@ -33,12 +32,12 @@ public class DefaultPropertyValueTest {
 
   @Test
   void getGetMethodInvalidMethod() throws NoSuchMethodException {
-    assertThrows(NoSuchMethodException.class, () -> DefaultPropertyValue.getGetMethod(boolean.class, "invalidValue", Bean.class));
+    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.getGetMethod(boolean.class, "invalidValue", Bean.class));
   }
 
   @Test
   void getSetMethodInvalidMethod() throws NoSuchMethodException {
-    assertThrows(NoSuchMethodException.class, () -> DefaultPropertyValue.getSetMethod(boolean.class, "invalidValue", Bean.class));
+    assertNull(DefaultPropertyValue.getSetMethod(boolean.class, "invalidValue", Bean.class));
   }
 
   @Test

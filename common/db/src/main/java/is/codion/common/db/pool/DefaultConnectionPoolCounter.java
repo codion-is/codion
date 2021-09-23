@@ -25,7 +25,7 @@ final class DefaultConnectionPoolCounter {
   private final AbstractConnectionPoolWrapper<?> connectionPool;
   private final long creationDate = System.currentTimeMillis();
   private final LinkedList<Integer> checkOutTimes = new LinkedList<>();
-  private final LinkedList<ConnectionPoolState> snapshotStatistics = new LinkedList<>();
+  private final LinkedList<DefaultConnectionPoolState> snapshotStatistics = new LinkedList<>();
   private boolean collectSnapshotStatistics = false;
   private final TaskScheduler snapshotStatisticsCollector = TaskScheduler.builder(new StatisticsCollector())
           .interval(SNAPSHOT_COLLECTION_INTERVAL_MS)

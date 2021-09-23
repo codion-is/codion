@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A SwingWorker implementation which displays a progress bar in a modal dialog
  * while background work is being performed.
- * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 - 100.
+ * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 to 100.
  * Note that instances of this class are not reusable.
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @see ProgressTask#perform(ProgressReporter) to indicate work progress

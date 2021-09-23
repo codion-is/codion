@@ -9,15 +9,6 @@ package is.codion.common.db.pool;
 public interface ConnectionPoolState {
 
   /**
-   * Sets this state
-   * @param time the time
-   * @param connectionCount the number of connections managed by the pool
-   * @param connectionsInUse the number of connections in use
-   * @param connectionsWaiting the number pending requests for connections
-   */
-  void set(long time, int connectionCount, int connectionsInUse, int connectionsWaiting);
-
-  /**
    * @return the total number of connections being managed by the pool
    */
   int getSize();

@@ -303,12 +303,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public void setFilterSelectedItem(final boolean filterSelectedItem) {
+  public final void setFilterSelectedItem(final boolean filterSelectedItem) {
     this.filterSelectedItem = filterSelectedItem;
   }
 
   @Override
-  public boolean isFilterSelectedItem() {
+  public final boolean isFilterSelectedItem() {
     return filterSelectedItem;
   }
 

@@ -25,11 +25,11 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   private final Class<V> valueClass;
   private final Object valueOwner;
   private final Method getMethod;
+  private final Method setMethod;
   private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
   private final Set<Value<V>> linkedValues = new LinkedHashSet<>();
 
   private ValueObserver<V> observer;
-  private Method setMethod;
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
                        final EventObserver<V> changeObserver) {
@@ -37,22 +37,11 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }
     this.propertyName = propertyName;
-    this.valueClass = valueClass;
-    try {
-      this.valueOwner = requireNonNull(valueOwner, "valueOwner");
-      this.changeEvent = requireNonNull(changeObserver);
-      this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
-    }
-    catch (final NoSuchMethodException e) {
-      throw new IllegalArgumentException("Get method for property " + propertyName + ", type: " + valueClass +
-              " not found in class " + valueOwner.getClass().getName(), e);
-    }
-    try {
-      this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass());
-    }
-    catch (final NoSuchMethodException ignored) {/*ignored*/
-      this.setMethod = null;
-    }
+    this.valueClass = requireNonNull(valueClass, "valueClass");
+    this.valueOwner = requireNonNull(valueOwner, "valueOwner");
+    this.changeEvent = requireNonNull(changeObserver);
+    this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
+    this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass());
   }
 
   @Override
@@ -197,16 +186,21 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     return unmodifiableSet(validators);
   }
 
-  static Method getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+  static Method getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {
     if (requireNonNull(property, "property").isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
 
-    return requireNonNull(ownerClass, "ownerClass").getMethod("set" +
-            Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType"));
+    try {
+      return requireNonNull(ownerClass, "ownerClass").getMethod("set" +
+              Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType"));
+    }
+    catch (final NoSuchMethodException e) {
+      return null;
+    }
   }
 
-  static Method getGetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+  static Method getGetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {
     requireNonNull(valueType, "valueType");
     requireNonNull(property, "property");
     requireNonNull(ownerClass, "ownerClass");
@@ -225,6 +219,13 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
       catch (final NoSuchMethodException ignored) {/*ignored*/}
     }
 
-    return ownerClass.getMethod("get" + propertyName);
+    try {
+      return ownerClass.getMethod("get" + propertyName);
+    }
+    catch (final NoSuchMethodException e) {
+      throw new IllegalArgumentException("Get method for property " + propertyName + ", type: " + valueType +
+              " not found in class " + ownerClass.getName(), e);
+    }
+
   }
 }

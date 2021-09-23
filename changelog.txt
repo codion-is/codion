@@ -7285,3 +7285,7 @@
   slf4j and logback downgraded due to temporary removal of SiftingAppender and module related errors
   CalendarPanel, mouse wheel scrolling added to spinners
   SpinnerMouseWheelListener added, mouseWheelScrolling() added to spinner builders
+  SliderBuilder.orientation() added
+  CaseDocumentFilter constructor privatized, factory methods added
+  DefaultPropertyValue constructor simplified a bit
+  ConnectionPoolState.set() removed

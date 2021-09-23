@@ -236,17 +236,13 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = Control.builder(() -> {
-      if (add) {
-        loadTestModel.addApplicationBatch();
-      }
-      else {
-        loadTestModel.removeApplicationBatch();
-      }
-    }).caption(add ? "+" : "-").build().createButton();
+    final JButton button = Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
+            .caption(add ? "+" : "-")
+            .description(add ? "Add application batch" : "Remove application batch")
+            .build()
+            .createButton();
     button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(0, 0, 0, 0));
-    button.setToolTipText(add ? "Add application batch" : "Remove application batch");
 
     return button;
   }

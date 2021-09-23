@@ -283,7 +283,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public <T> ColumnFilterModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
+  public final <T> ColumnFilterModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
     return (ColumnFilterModel<R, C, T>) columnFilterModels.get(columnIdentifier);
@@ -396,7 +396,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public void removeItemAt(final int index) {
+  public final void removeItemAt(final int index) {
     visibleItems.remove(index);
     fireTableRowsDeleted(index, index);
   }

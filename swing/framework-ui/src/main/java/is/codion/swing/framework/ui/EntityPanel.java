@@ -1364,18 +1364,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return null;
     }
 
-    final Controls controls = Controls.builder()
+    final Controls.Builder controls = Controls.builder()
             .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
-            .icon(frameworkIcons().detail())
-            .build();
-    for (final EntityPanel detailPanel : detailEntityPanels) {
-      controls.add(Control.builder(() -> {
-        setDetailPanelState(status);
-        detailPanel.activatePanel();
-      }).caption(detailPanel.getCaption()).build());
-    }
+            .icon(frameworkIcons().detail());
+    detailEntityPanels.forEach(detailPanel ->
+            controls.control(Control.builder(createDetailPanelCommand(status, detailPanel))
+                    .caption(detailPanel.getCaption())));
 
-    return controls;
+    return controls.build();
   }
 
   //#############################################################################################
@@ -1490,6 +1486,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       detailPanelDialog.dispose();
       detailPanelDialog = null;
     }
+  }
+
+  private Control.Command createDetailPanelCommand(final PanelState status, final EntityPanel detailPanel) {
+    return () -> {
+      setDetailPanelState(status);
+      detailPanel.activatePanel();
+    };
   }
 
   private void bindEvents() {

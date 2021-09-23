@@ -443,6 +443,7 @@ public final class ComponentBuildersTest {
             .minorTickSpacing(1)
             .majorTickSpacing(10)
             .linkedValue(value)
+            .orientation(SwingConstants.VERTICAL)
             .buildComponentValue();
     assertEquals(10, componentValue.get());
     value.set(50);
