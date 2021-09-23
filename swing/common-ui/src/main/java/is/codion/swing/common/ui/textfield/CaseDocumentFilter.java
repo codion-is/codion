@@ -21,16 +21,9 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
 
   /**
    * Instantiates a new CaseDocumentFilter
-   */
-  public CaseDocumentFilter() {
-    this(DocumentCase.NONE);
-  }
-
-  /**
-   * Instantiates a new CaseDocumentFilter
    * @param documentCase the document case setting
    */
-  public CaseDocumentFilter(final DocumentCase documentCase) {
+  private CaseDocumentFilter(final DocumentCase documentCase) {
     super(STRING_PARSER);
     this.documentCase = documentCase;
   }
@@ -47,6 +40,22 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    */
   public DocumentCase getDocumentCase() {
     return documentCase;
+  }
+
+  /**
+   * Creates a new CaseDocumentFilter instance, configured with {@link DocumentCase#NONE}
+   * @return a new CaseDocumentFilter instance
+   */
+  public static CaseDocumentFilter create() {
+    return new CaseDocumentFilter(DocumentCase.NONE);
+  }
+
+  /**
+   * Creates a new CaseDocumentFilter instance, configured with the given document case
+   * @return a new CaseDocumentFilter instance
+   */
+  public static CaseDocumentFilter create(final DocumentCase documentCase) {
+    return new CaseDocumentFilter(documentCase);
   }
 
   @Override

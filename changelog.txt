@@ -7254,3 +7254,4 @@
   CalendarPanel, mouse wheel scrolling added to spinners
   SpinnerMouseWheelListener added, mouseWheelScrolling() added to spinner builders
   SliderBuilder.orientation() added
+  CaseDocumentFilter constructor privatized, factory methods added
