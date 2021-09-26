@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.component;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 
-import javax.swing.JComponent;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 
 import static java.util.Objects.requireNonNull;
@@ -20,6 +20,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   private boolean editable = true;
   private int columns = 0;
   private boolean mouseWheelScrolling = false;
+  private int horizontalAlignment = -1;
 
   protected AbstractSpinnerBuilder(final SpinnerModel spinnerModel) {
     this.spinnerModel = requireNonNull(spinnerModel);
@@ -44,16 +45,30 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
+  public final B horizontalAlignment(final int horizontalAlignment) {
+    this.horizontalAlignment = horizontalAlignment;
+    return (B) this;
+  }
+
+  @Override
   protected JSpinner buildComponent() {
     final JSpinner spinner = new JSpinner(spinnerModel);
-    final JComponent editor = spinner.getEditor();
-    if (editor instanceof JSpinner.DefaultEditor) {
-      final JSpinner.DefaultEditor defaultEditor = (JSpinner.DefaultEditor) editor;
+    JTextField editorField = null;
+    if (spinner.getEditor() instanceof JSpinner.NumberEditor) {
+      editorField = ((JSpinner.NumberEditor) spinner.getEditor()).getTextField();
+    }
+    else if (spinner.getEditor() instanceof JSpinner.DefaultEditor) {
+      editorField = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+    }
+    if (editorField != null) {
       if (!editable) {
-        defaultEditor.getTextField().setEditable(false);
+        editorField.setEditable(false);
       }
       if (columns > 0) {
-        defaultEditor.getTextField().setColumns(columns);
+        editorField.setColumns(columns);
+      }
+      if (horizontalAlignment != -1) {
+        editorField.setHorizontalAlignment(horizontalAlignment);
       }
     }
     if (mouseWheelScrolling) {

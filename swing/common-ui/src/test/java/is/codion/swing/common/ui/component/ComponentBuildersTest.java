@@ -411,6 +411,7 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, JSpinner> componentValue = ComponentBuilders.<String>listSpinner(new SpinnerListModel(Arrays.asList("One", "Two")))
             .columns(5)
+            .horizontalAlignment(SwingConstants.CENTER)
             .mouseWheelScrolling(true)
             .editable(false)
             .transferFocusOnEnter(true)

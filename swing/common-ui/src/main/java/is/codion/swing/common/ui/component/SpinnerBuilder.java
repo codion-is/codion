@@ -28,4 +28,10 @@ public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends Compo
    * @return this builder instance
    */
   B mouseWheelScrolling(boolean mouseWheelScrolling);
+
+  /**
+   * @param horizontalAlignment the horizontal text alignment
+   * @return this builder instance
+   */
+  B horizontalAlignment(int horizontalAlignment);
 }
