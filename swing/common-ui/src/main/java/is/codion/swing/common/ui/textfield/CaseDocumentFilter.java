@@ -52,6 +52,7 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
 
   /**
    * Creates a new CaseDocumentFilter instance, configured with the given document case
+   * @param documentCase the document case
    * @return a new CaseDocumentFilter instance
    */
   public static CaseDocumentFilter caseDocumentFilter(final DocumentCase documentCase) {

@@ -3,24 +3,10 @@
  */
 package is.codion.swing.common.ui.component;
 
-import javax.swing.JSpinner;
-
 /**
  * A builder for number based JSpinner
  */
-public interface NumberSpinnerBuilder<T extends Number> extends ComponentBuilder<T, JSpinner, NumberSpinnerBuilder<T>> {
-
-  /**
-   * @param columns the number of colums in the spinner text component
-   * @return this builder instance
-   */
-  NumberSpinnerBuilder<T> columns(int columns);
-
-  /**
-   * @param editable false if the spinner field should not be editable
-   * @return this builder instance
-   */
-  NumberSpinnerBuilder<T> editable(boolean editable);
+public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T, NumberSpinnerBuilder<T>> {
 
   /**
    * @param minimum the minimum value
@@ -39,11 +25,4 @@ public interface NumberSpinnerBuilder<T extends Number> extends ComponentBuilder
    * @return this builder instance
    */
   NumberSpinnerBuilder<T> stepSize(T stepSize);
-
-  /**
-   * Enable mouse wheel scrolling on the spinner
-   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
-   * @return this builder instance
-   */
-  NumberSpinnerBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 }

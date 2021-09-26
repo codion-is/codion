@@ -69,11 +69,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   }
 
   /**
-   * Sets the date in the input field, clears the field if {@code date} is null.
-   * @param date the date to set
+   * Sets the temporal value in this field, clears the field if {@code temporal} is null.
+   * @param temporal the temporal value to set
    */
-  public void setTemporal(final Temporal date) {
-    setText(date == null ? "" : formatter.format(date));
+  public void setTemporal(final Temporal temporal) {
+    setText(temporal == null ? "" : formatter.format(temporal));
   }
 
   /**

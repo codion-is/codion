@@ -7289,3 +7289,5 @@
   CaseDocumentFilter constructor privatized, factory methods added
   DefaultPropertyValue constructor simplified a bit
   ConnectionPoolState.set() removed
+  SpinnerBuilder added along with AbstractSpinnerBuilder, related refactoring
+  SpinnerBuilder.horizontalAlignment() added

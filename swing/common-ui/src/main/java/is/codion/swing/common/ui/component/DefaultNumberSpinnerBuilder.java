@@ -3,47 +3,29 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
-import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractComponentBuilder<T, JSpinner, NumberSpinnerBuilder<T>> implements NumberSpinnerBuilder<T> {
+final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinnerBuilder<T, NumberSpinnerBuilder<T>>
+        implements NumberSpinnerBuilder<T> {
 
-  private final SpinnerNumberModel spinnerNumberModel;
   private final Class<T> valueClass;
 
-  private int columns = 0;
-  private boolean editable = true;
   private T minimum;
   private T maximum;
   private T stepSize;
-  private boolean mouseWheelScrolling = false;
 
   DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
-    this.spinnerNumberModel = requireNonNull(spinnerNumberModel);
+    super(spinnerNumberModel);
     this.valueClass = requireNonNull(valueClass);
     if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
       throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
     }
-  }
-
-  @Override
-  public NumberSpinnerBuilder<T> columns(final int columns) {
-    this.columns = columns;
-    return this;
-  }
-
-  @Override
-  public NumberSpinnerBuilder<T> editable(final boolean editable) {
-    this.editable = editable;
-    return this;
   }
 
   @Override
@@ -65,13 +47,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractCompon
   }
 
   @Override
-  public NumberSpinnerBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
-    this.mouseWheelScrolling = mouseWheelScrolling;
-    return this;
-  }
-
-  @Override
   protected JSpinner buildComponent() {
+    final SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) spinnerModel;
     if (minimum != null) {
       spinnerNumberModel.setMinimum((Comparable<T>) minimum);
     }
@@ -81,22 +58,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractCompon
     if (stepSize != null) {
       spinnerNumberModel.setStepSize(stepSize);
     }
-    final JSpinner spinner = new JSpinner(spinnerNumberModel);
-    final JComponent editor = spinner.getEditor();
-    if (editor instanceof JSpinner.DefaultEditor) {
-      final JSpinner.DefaultEditor defaultEditor = (JSpinner.DefaultEditor) editor;
-      if (columns > 0) {
-        defaultEditor.getTextField().setColumns(columns);
-      }
-      if (!editable) {
-        defaultEditor.getTextField().setEditable(false);
-      }
-    }
-    if (mouseWheelScrolling) {
-      spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerNumberModel));
-    }
 
-    return spinner;
+    return super.buildComponent();
   }
 
   @Override
@@ -109,16 +72,5 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractCompon
     }
 
     throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
-  }
-
-  @Override
-  protected void setInitialValue(final JSpinner component, final T initialValue) {
-    component.setValue(initialValue);
-  }
-
-  @Override
-  protected void setTransferFocusOnEnter(final JSpinner component) {
-    super.setTransferFocusOnEnter(component);
-    Components.transferFocusOnEnter(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
   }
 }

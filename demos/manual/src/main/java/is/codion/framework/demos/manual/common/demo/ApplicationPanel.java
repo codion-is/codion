@@ -21,9 +21,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
+import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -170,6 +172,16 @@ public final class ApplicationPanel extends JPanel {
             .linkedValue(model.getIntegerSpinValue())
             .build(inputPanel::add);
 
+    label("Item Spin")
+            .build(inputPanel::add);
+    ComponentBuilders.<String>itemSpinner(createItemSpinnerModel())
+            .columns(20)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .transferFocusOnEnter(true)
+            .mouseWheelScrolling(true)
+            .linkedValue(model.getItemSpinnerValue())
+            .build(inputPanel::add);
+
     label("Boolean")
             .build(inputPanel::add);
     checkBox()
@@ -227,6 +239,16 @@ public final class ApplicationPanel extends JPanel {
 
   private static SpinnerNumberModel createSpinnerModel() {
     return new SpinnerNumberModel(0, 0, 100, 10);
+  }
+
+  private static SpinnerListModel createItemSpinnerModel() {
+    return new SpinnerListModel(Arrays.asList(
+            Item.item("Hello"),
+            Item.item("Everybody"),
+            Item.item("How"),
+            Item.item("Are"),
+            Item.item("You")
+    ));
   }
 
   private static DefaultBoundedRangeModel createSliderModel() {

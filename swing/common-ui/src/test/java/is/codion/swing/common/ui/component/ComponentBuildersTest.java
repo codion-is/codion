@@ -381,6 +381,7 @@ public final class ComponentBuildersTest {
             .maximum(100)
             .stepSize(10)
             .mouseWheelScrolling(true)
+            .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10, componentValue.get());
@@ -397,6 +398,7 @@ public final class ComponentBuildersTest {
             .stepSize(10d)
             .columns(5)
             .mouseWheelScrolling(true)
+            .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(10d, componentValue.get());
@@ -409,7 +411,10 @@ public final class ComponentBuildersTest {
     final Value<String> value = Value.value();
     final ComponentValue<String, JSpinner> componentValue = ComponentBuilders.<String>listSpinner(new SpinnerListModel(Arrays.asList("One", "Two")))
             .columns(5)
+            .horizontalAlignment(SwingConstants.CENTER)
             .mouseWheelScrolling(true)
+            .editable(false)
+            .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals("One", componentValue.get());
@@ -424,6 +429,8 @@ public final class ComponentBuildersTest {
     final ComponentValue<Integer, JSpinner> componentValue = ComponentBuilders.<Integer>itemSpinner(spinnerModel)
             .columns(5)
             .mouseWheelScrolling(true)
+            .editable(false)
+            .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(1, componentValue.get());
@@ -483,5 +490,12 @@ public final class ComponentBuildersTest {
     textValue.set("three");
     assertEquals("three", componentValue.get());
     listBuilder.buildScrollPane();
+  }
+
+  @Test
+  void builder() {
+    final ComponentBuilder<Object, JButton, ?> builder = ComponentBuilders.builder(new JButton());
+    assertThrows(UnsupportedOperationException.class, builder::buildComponentValue);
+    builder.initialValue(1);
   }
 }
