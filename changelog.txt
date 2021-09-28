@@ -7259,3 +7259,4 @@
   ConnectionPoolState.set() removed
   SpinnerBuilder added along with AbstractSpinnerBuilder, related refactoring
   SpinnerBuilder.horizontalAlignment() added
+  NullableCheckBox, removed dependecy on control package
