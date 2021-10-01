@@ -7260,3 +7260,4 @@
   SpinnerBuilder added along with AbstractSpinnerBuilder, related refactoring
   SpinnerBuilder.horizontalAlignment() added
   NullableCheckBox, removed dependecy on control package
+  Components.linkToEnabledState() no longer affects the focusable state of the component, disabled components are not focusable anyway

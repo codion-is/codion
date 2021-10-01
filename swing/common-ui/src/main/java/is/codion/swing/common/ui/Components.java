@@ -109,8 +109,7 @@ public final class Components {
   }
 
   /**
-   * Links the given components to the given StateObserver, so that each component is enabled and focusable
-   * only when the observed state is active
+   * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active
    * @param enabledState the StateObserver with which to link the components
    * @param components the components
    */
@@ -120,11 +119,8 @@ public final class Components {
     for (final JComponent component : components) {
       if (component != null) {
         component.setEnabled(enabledState.get());
-        component.setFocusable(enabledState.get());
-        enabledState.addListener(() -> SwingUtilities.invokeLater(() -> {
-          component.setEnabled(enabledState.get());
-          component.setFocusable(enabledState.get());
-        }));
+        enabledState.addListener(() -> SwingUtilities.invokeLater(() ->
+                component.setEnabled(enabledState.get())));
       }
     }
   }
