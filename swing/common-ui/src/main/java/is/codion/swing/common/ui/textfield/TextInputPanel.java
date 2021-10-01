@@ -101,6 +101,13 @@ public final class TextInputPanel extends JPanel {
     return button;
   }
 
+  @Override
+  public void setEnabled(final boolean enabled) {
+    super.setEnabled(enabled);
+    textField.setEnabled(enabled);
+    button.setEnabled(enabled);
+  }
+
   /**
    * A builder for {@link TextInputPanel}.
    */

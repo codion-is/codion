@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.calendar.CalendarPanel;
 import is.codion.swing.common.ui.control.Control;
@@ -41,28 +40,16 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param temporalField the temporal input field
    */
   public TemporalInputPanel(final TemporalField<T> temporalField) {
-    this(temporalField, null);
-  }
-
-  /**
-   * Instantiates a new TemporalInputPanel.
-   * @param temporalField the temporal input field
-   * @param enabledState a StateObserver controlling the enabled state of the input field and button
-   */
-  public TemporalInputPanel(final TemporalField<T> temporalField, final StateObserver enabledState) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
     this.calendarButton = Control.builder(this::displayCalendar)
             .caption("...")
-            .enabledState(enabledState)
-            .build().createButton();
+            .build()
+            .createButton();
     this.calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     add(temporalField, BorderLayout.CENTER);
     add(calendarButton, BorderLayout.EAST);
     addFocusListener(new InputFocusAdapter(temporalField));
-    if (enabledState != null) {
-      Components.linkToEnabledState(enabledState, temporalField);
-    }
   }
 
   /**
@@ -113,6 +100,13 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       Components.removeTransferFocusOnEnter(inputField);
       Components.removeTransferFocusOnEnter(calendarButton);
     }
+  }
+
+  @Override
+  public void setEnabled(final boolean enabled) {
+    super.setEnabled(enabled);
+    inputField.setEnabled(enabled);
+    calendarButton.setEnabled(enabled);
   }
 
   private void displayCalendar() {

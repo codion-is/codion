@@ -117,8 +117,6 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   @Override
   protected void setTransferFocusOnEnter(final TextInputPanel component) {
     Components.transferFocusOnEnter(component.getTextField());
-    if (component.getButton() != null) {
-      Components.transferFocusOnEnter(component.getButton());
-    }
+    Components.transferFocusOnEnter(component.getButton());
   }
 }
