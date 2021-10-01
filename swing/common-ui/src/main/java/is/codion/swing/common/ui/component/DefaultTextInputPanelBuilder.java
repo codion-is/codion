@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -116,9 +115,6 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected void setTransferFocusOnEnter(final TextInputPanel component) {
-    Components.transferFocusOnEnter(component.getTextField());
-    if (component.getButton() != null) {
-      Components.transferFocusOnEnter(component.getButton());
-    }
+    component.setTransferFocusOnEnter(true);
   }
 }

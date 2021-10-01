@@ -71,14 +71,6 @@ public final class TextInputPanel extends JPanel {
   }
 
   /**
-   * @param textField the text field
-   * @return a new builder
-   */
-  public static Builder builder(final JTextField textField) {
-    return new DefaultBuilder(requireNonNull(textField));
-  }
-
-  /**
    * @return the current input text value
    */
   public String getText() {
@@ -99,6 +91,35 @@ public final class TextInputPanel extends JPanel {
    */
   public JButton getButton() {
     return button;
+  }
+
+  @Override
+  public void setEnabled(final boolean enabled) {
+    super.setEnabled(enabled);
+    textField.setEnabled(enabled);
+    button.setEnabled(enabled);
+  }
+
+  /**
+   * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
+   */
+  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+    if (transferFocusOnEnter) {
+      Components.transferFocusOnEnter(textField);
+      Components.transferFocusOnEnter(button);
+    }
+    else {
+      Components.removeTransferFocusOnEnter(textField);
+      Components.removeTransferFocusOnEnter(button);
+    }
+  }
+
+  /**
+   * @param textField the text field
+   * @return a new builder
+   */
+  public static Builder builder(final JTextField textField) {
+    return new DefaultBuilder(requireNonNull(textField));
   }
 
   /**
