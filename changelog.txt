@@ -7262,3 +7262,4 @@
   NullableCheckBox, removed dependecy on control package
   Components.linkToEnabledState() no longer affects the focusable state of the component, disabled components are not focusable anyway
   TemporalInputPanel and TextInputPanel now override setEnabled(), can now be linked to enabled states
+  TextInputPanel.setTransferFocusOnEnter() added

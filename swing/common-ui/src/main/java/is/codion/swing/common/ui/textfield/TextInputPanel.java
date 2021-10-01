@@ -101,6 +101,20 @@ public final class TextInputPanel extends JPanel {
   }
 
   /**
+   * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
+   */
+  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+    if (transferFocusOnEnter) {
+      Components.transferFocusOnEnter(textField);
+      Components.transferFocusOnEnter(button);
+    }
+    else {
+      Components.removeTransferFocusOnEnter(textField);
+      Components.removeTransferFocusOnEnter(button);
+    }
+  }
+
+  /**
    * @param textField the text field
    * @return a new builder
    */
