@@ -71,14 +71,6 @@ public final class TextInputPanel extends JPanel {
   }
 
   /**
-   * @param textField the text field
-   * @return a new builder
-   */
-  public static Builder builder(final JTextField textField) {
-    return new DefaultBuilder(requireNonNull(textField));
-  }
-
-  /**
    * @return the current input text value
    */
   public String getText() {
@@ -106,6 +98,14 @@ public final class TextInputPanel extends JPanel {
     super.setEnabled(enabled);
     textField.setEnabled(enabled);
     button.setEnabled(enabled);
+  }
+
+  /**
+   * @param textField the text field
+   * @return a new builder
+   */
+  public static Builder builder(final JTextField textField) {
+    return new DefaultBuilder(requireNonNull(textField));
   }
 
   /**
