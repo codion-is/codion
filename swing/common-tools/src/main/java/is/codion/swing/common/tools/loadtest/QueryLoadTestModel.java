@@ -72,7 +72,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   }
 
   /**
-   * A usage scenario based on a SQL query.
+   * A usage scenario based on an SQL query.
    */
   public static class QueryScenario extends AbstractUsageScenario<QueryApplication> {
 

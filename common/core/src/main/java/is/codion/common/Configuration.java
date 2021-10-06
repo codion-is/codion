@@ -66,7 +66,7 @@ public final class Configuration {
   }
 
   /**
-   * Creates a integer configuration value
+   * Creates an integer configuration value
    * @param key the configuration key
    * @param defaultValue the default value, if any
    * @return the configuration value
