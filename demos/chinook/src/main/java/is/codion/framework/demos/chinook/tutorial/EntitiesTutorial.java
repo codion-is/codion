@@ -168,7 +168,7 @@ public final class EntitiesTutorial {
     //this Entities object serves as a factory for Entity instances
     Entities entities = connectionProvider.getEntities();
 
-    // lets create a new band
+    // let's create a new band
     Entity myBand = entities.entity(Artist.TYPE);
 
     // and give the band a name

@@ -413,7 +413,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Initializes this EntityPanels UI, in case of some specific initialization code you can override the
    * {@code initialize()} method and add your code there.
-   * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
+   * This method marks this panel as initialized which prevents it from running again, whether an exception occurs or not.
    * @return this EntityPanel instance
    * @see #initialize()
    * @see #isPanelInitialized()
