@@ -102,7 +102,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 //    ]
 //}
 
-//task runDatabaseExplorerMariaDB(type: JavaExec) {
+//task runDatabaseExplorerMariaDB(type: ModularJavaExec) {
 //    group 'application'
 //    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 //    classpath = sourceSets.main.runtimeClasspath
