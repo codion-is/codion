@@ -43,7 +43,7 @@ public final class DatabaseExplorerModelTest {
     model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
     model.getSchemaModel().refresh();
     model.getSchemaModel().getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
-    model.getSchemaModel().getSelectionModel().setSelectedIndex(1);
+    model.getSchemaModel().getSelectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
     model.getDefinitionModel().getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
     model.getDefinitionModel().getSortModel().addSortingDirective(1, SortingDirective.ASCENDING);

@@ -7263,3 +7263,5 @@
   Components.linkToEnabledState() no longer affects the focusable state of the component, disabled components are not focusable anyway
   TemporalInputPanel and TextInputPanel now override setEnabled(), can now be linked to enabled states
   TextInputPanel.setTransferFocusOnEnter() added
+  MySQLDatabaseFactory '.jdbc' postfix removed from package name, recent driver did not include it
+  MetaDataModel now handles MySQL and MariaDb, uses catalogs for schemas, run task for MariaDB added to framework-tools-ui build script

@@ -12,8 +12,16 @@ final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
 
   @Override
   public ForeignKeyColumn fetch(final ResultSet resultSet) throws SQLException {
-    return new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
+    String pktableSchem = resultSet.getString("PKTABLE_SCHEM");
+    if (pktableSchem == null) {
+      pktableSchem = resultSet.getString("PKTABLE_CAT");
+    }
+    String fktableSchem = resultSet.getString("FKTABLE_SCHEM");
+    if (fktableSchem == null) {
+      fktableSchem = resultSet.getString("FKTABLE_CAT");
+    }
+    return new ForeignKeyColumn(pktableSchem, resultSet.getString("PKTABLE_NAME"),
             resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_NAME"),
-            resultSet.getString("FKTABLE_SCHEM"), resultSet.getString("FKCOLUMN_NAME"));
+            fktableSchem, resultSet.getString("FKCOLUMN_NAME"));
   }
 }

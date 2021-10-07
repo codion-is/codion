@@ -10,6 +10,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -44,8 +45,14 @@ public final class MetaDataModel {
   }
 
   private static Map<String, Schema> discoverSchemas(final DatabaseMetaData metaData) throws SQLException {
-    try (final ResultSet resultSet = metaData.getSchemas()) {
-      return new SchemaPacker().pack(resultSet).stream().collect(Collectors.toMap(Schema::getName, schema -> schema));
+    final Map<String, Schema> schemas = new HashMap<>();
+    try (final ResultSet resultSet = metaData.getCatalogs()) {
+      schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream().collect(Collectors.toMap(Schema::getName, schema -> schema)));
     }
+    try (final ResultSet resultSet = metaData.getSchemas()) {
+      schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream().collect(Collectors.toMap(Schema::getName, schema -> schema)));
+    }
+
+    return schemas;
   }
 }
