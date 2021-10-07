@@ -10,8 +10,14 @@ import java.sql.SQLException;
 
 final class SchemaPacker implements ResultPacker<Schema> {
 
+  private final String fieldName;
+
+  SchemaPacker(final String fieldName) {
+    this.fieldName = fieldName;
+  }
+
   @Override
   public Schema fetch(final ResultSet resultSet) throws SQLException {
-    return new Schema(resultSet.getString("TABLE_SCHEM"));
+    return new Schema(resultSet.getString(fieldName));
   }
 }

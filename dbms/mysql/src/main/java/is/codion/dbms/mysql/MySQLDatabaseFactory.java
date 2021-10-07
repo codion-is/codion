@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class MySQLDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "com.mysql.jdbc";
+  private static final String DRIVER_PACKAGE = "com.mysql";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
