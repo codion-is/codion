@@ -22,7 +22,7 @@ dependencies {
 //    runtimeOnly ('com.oracle.database.jdbc:ojdbc8:19.3.0.0') { transitive false }
 
 //    runtimeOnly project(':codion-dbms-mariadb')
-//    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+//    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.6.4'
 
     testRuntimeOnly project(':codion-framework-db-local')
     testRuntimeOnly project(':codion-framework-db-rmi')
