@@ -349,6 +349,7 @@ public final class ComponentBuildersTest {
             .textAreaSize(new Dimension(100, 100))
             .maximumLength(100)
             .caption("caption")
+            .dialogTitle("title")
             .updateOn(UpdateOn.KEYSTROKE)
             .linkedValue(value)
             .buildComponentValue();

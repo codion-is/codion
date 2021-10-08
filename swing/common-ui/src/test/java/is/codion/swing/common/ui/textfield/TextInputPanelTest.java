@@ -17,7 +17,7 @@ public class TextInputPanelTest {
   @Test
   void test() {
     final JTextField textField = new JTextField();
-    final TextInputPanel panel = TextInputPanel.builder(textField).dialogTitle("title").build();
+    final TextInputPanel panel = TextInputPanel.builder(textField).caption("caption").dialogTitle("title").build();
     assertEquals(textField, panel.getTextField());
     assertNotNull(panel.getButton());
     panel.setMaximumLength(10);
