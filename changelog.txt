@@ -7298,3 +7298,4 @@
   MySQLDatabaseFactory '.jdbc' postfix removed from package name, recent driver did not include it
   MetaDataModel now handles MySQL and MariaDB, uses catalogs for schemas, run task for MariaDB added to framework-tools-ui build script
   slf4j downgraded back to 2.0.0-alpha1
+  TextInputPanel.Builder and TextInputPanelBuilder, dialogTitle() added, caption now used for a titled border around the input field if specified

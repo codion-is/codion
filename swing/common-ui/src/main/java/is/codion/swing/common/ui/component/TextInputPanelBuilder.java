@@ -67,4 +67,10 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
    * @return this builder instance
    */
   TextInputPanelBuilder caption(String caption);
+
+  /**
+   * @param dialogTitle the title to display on the input dialog
+   * @return this builder instance
+   */
+  TextInputPanelBuilder dialogTitle(String dialogTitle);
 }

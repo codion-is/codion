@@ -202,7 +202,7 @@ public class EntityComponentBuilders {
     return ComponentBuilders.textInputPanel()
             .toolTipText(property.getDescription())
             .maximumLength(property.getMaximumLength())
-            .caption(property.getCaption());
+            .dialogTitle(property.getCaption());
   }
 
   /**

@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,15 +32,17 @@ public final class TextInputPanel extends JPanel {
   private final JTextField textField;
   private final JButton button;
   private final String dialogTitle;
+  private final String caption;
   private final Dimension textAreaSize;
   private int maximumLength = -1;
 
-  private TextInputPanel(final JTextField textField, final String dialogTitle,
+  private TextInputPanel(final JTextField textField, final String dialogTitle, final String caption,
                          final Dimension textAreaSize, final boolean buttonFocusable) {
     this.dialogTitle = dialogTitle;
     this.textField = textField;
     this.textAreaSize = textAreaSize;
     this.button = createButton(buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    this.caption = caption;
     initializeUI();
   }
 
@@ -134,6 +137,13 @@ public final class TextInputPanel extends JPanel {
     Builder dialogTitle(String dialogTitle);
 
     /**
+     * If specified a titled border with the given caption is added to the input field
+     * @param caption the caption to display
+     * @return this builder instance
+     */
+    Builder caption(String caption);
+
+    /**
      * @param textAreaSize the input text area siz
      * @return this builder instance
      */
@@ -155,6 +165,9 @@ public final class TextInputPanel extends JPanel {
     setLayout(new BorderLayout());
     add(textField, BorderLayout.CENTER);
     add(button, BorderLayout.EAST);
+    if (caption != null) {
+      setBorder(BorderFactory.createTitledBorder(caption));
+    }
     addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -193,7 +206,7 @@ public final class TextInputPanel extends JPanel {
     Components.transferFocusOnEnter(textArea);
     Dialogs.okCancelDialogBuilder(new JScrollPane(textArea))
             .owner(textField)
-            .title(dialogTitle)
+            .title(dialogTitle == null ? caption : dialogTitle)
             .onOk(() -> textField.setText(textArea.getText()))
             .show();
     textField.requestFocusInWindow();
@@ -206,6 +219,7 @@ public final class TextInputPanel extends JPanel {
     private final JTextField textField;
 
     private String dialogTitle;
+    private String caption;
     private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
     private boolean buttonFocusable;
 
@@ -216,6 +230,12 @@ public final class TextInputPanel extends JPanel {
     @Override
     public Builder dialogTitle(final String dialogTitle) {
       this.dialogTitle = dialogTitle;
+      return this;
+    }
+
+    @Override
+    public Builder caption(final String caption) {
+      this.caption = caption;
       return this;
     }
 
@@ -233,7 +253,7 @@ public final class TextInputPanel extends JPanel {
 
     @Override
     public TextInputPanel build() {
-      return new TextInputPanel(textField, dialogTitle, textAreaSize, buttonFocusable);
+      return new TextInputPanel(textField, dialogTitle, caption, textAreaSize, buttonFocusable);
     }
   }
 }

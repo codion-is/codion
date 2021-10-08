@@ -25,6 +25,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   private Dimension textAreaSize;
   private int maximumLength;
   private String caption;
+  private String dialogTitle;
 
   @Override
   public TextInputPanelBuilder updateOn(final UpdateOn updateOn) {
@@ -87,6 +88,12 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
+  public TextInputPanelBuilder dialogTitle(final String dialogTitle) {
+    this.dialogTitle = dialogTitle;
+    return this;
+  }
+
+  @Override
   protected TextInputPanel buildComponent() {
     final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class)
             .selectAllOnFocusGained(selectAllOnFocusGained)
@@ -97,7 +104,8 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
             .lowerCase(lowerCase);
 
     return TextInputPanel.builder(textFieldBuilder.build())
-            .dialogTitle(caption)
+            .caption(caption)
+            .dialogTitle(dialogTitle)
             .textAreaSize(textAreaSize)
             .buttonFocusable(buttonFocusable)
             .build();
