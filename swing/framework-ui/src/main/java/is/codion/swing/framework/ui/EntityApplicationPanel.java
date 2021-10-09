@@ -157,8 +157,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
-  private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
-  private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
