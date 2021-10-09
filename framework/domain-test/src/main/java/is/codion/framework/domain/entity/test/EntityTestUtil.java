@@ -40,6 +40,8 @@ public final class EntityTestUtil {
   private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
   private static final Random RANDOM = new Random();
 
+  private EntityTestUtil() {}
+
   /**
    * @param entities the domain model entities
    * @param entityType the entityType
@@ -86,52 +88,53 @@ public final class EntityTestUtil {
    * Creates a random value for the given property.
    * @param property the property
    * @param referenceEntities entities referenced by the given property
+   * @param <T> the property type
    * @return a random value
    */
-  public static Object createRandomValue(final Property<?> property, final Map<EntityType<?>, Entity> referenceEntities) {
+  public static <T> T createRandomValue(final Property<T> property, final Map<EntityType<?>, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
-      return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
+      return (T) getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
     }
     if (property instanceof ItemProperty) {
-      return getRandomItem((ItemProperty<?>) property);
+      return getRandomItem((ItemProperty<T>) property);
     }
     final Attribute<?> attribute = property.getAttribute();
     if (attribute.isBoolean()) {
-      return RANDOM.nextBoolean();
+      return (T) Boolean.valueOf(RANDOM.nextBoolean());
     }
     if (attribute.isCharacter()) {
-      return (char) RANDOM.nextInt();
+      return (T) Character.valueOf((char) RANDOM.nextInt());
     }
     if (attribute.isLocalDate()) {
-      return LocalDate.now();
+      return (T) LocalDate.now();
     }
     if (attribute.isLocalDateTime()) {
-      return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      return (T) LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
     if (attribute.isOffsetDateTime()) {
-      return OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      return (T) OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
     if (attribute.isLocalTime()) {
-      return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+      return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
     if (attribute.isDouble()) {
-      return getRandomDouble(property);
+      return (T) Double.valueOf(getRandomDouble(property));
     }
     if (attribute.isBigDecimal()) {
-      return BigDecimal.valueOf(getRandomDouble(property));
+      return (T) BigDecimal.valueOf(getRandomDouble(property));
     }
     if (attribute.isInteger()) {
-      return getRandomInteger(property);
+      return (T) Integer.valueOf(getRandomInteger(property));
     }
     if (attribute.isLong()) {
-      return (long) getRandomInteger(property);
+      return (T) Long.valueOf(getRandomInteger(property));
     }
     if (attribute.isString()) {
-      return getRandomString(property);
+      return (T) getRandomString(property);
     }
     if (attribute.isByteArray()) {
-      return getRandomBlob(property);
+      return (T) getRandomBlob(property);
     }
 
     return null;

@@ -3,32 +3,24 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.Util;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.framework.server.EntityServerAdmin;
 
 import javax.swing.ButtonModel;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
-import javax.swing.text.Highlighter;
 import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.awt.Color;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A ClientInstanceMonitor
@@ -43,13 +35,6 @@ public final class ClientInstanceMonitor {
   private final StyledDocument logDocument = new DefaultStyledDocument();
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
-  private final Value<String> searchStringValue = Value.value();
-  private final Highlighter logHighlighter = new DefaultHighlighter();
-  private final Highlighter.HighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
-  private final Highlighter.HighlightPainter selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
-  private final List<MatchPosition> searchTextPositions = new ArrayList<>();
-  private final Value<Integer> currentSearchTextPositionIndex = Value.value();
-  private final Value<Integer> currentSearchTextPosition = Value.value();
 
   /**
    * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
@@ -117,7 +102,6 @@ public final class ClientInstanceMonitor {
         }
         logDocument.insertString(0, logBuilder.toString(), null);
         logTreeModel.setRoot(logRootNode);
-        highlightSearchText();
       }
       else {
         logDocument.insertString(0, "Disconnected!", null);
@@ -128,46 +112,8 @@ public final class ClientInstanceMonitor {
     }
   }
 
-  public Highlighter getLogHighlighter() {
-    return logHighlighter;
-  }
-
-  public Value<String> getSearchStringValue() {
-    return searchStringValue;
-  }
-
-  public ValueObserver<Integer> getCurrentSearchTextPosition() {
-    return currentSearchTextPosition.getObserver();
-  }
-
   public Document getLogDocument() {
     return logDocument;
-  }
-
-  public void nextSearchPosition() {
-    if (!searchTextPositions.isEmpty()) {
-      clearCurrentSearchHighlight();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.equalTo(searchTextPositions.size() - 1)) {
-        currentSearchTextPositionIndex.set(0);
-      }
-      else {
-        currentSearchTextPositionIndex.set(currentSearchTextPositionIndex.get() + 1);
-      }
-      setCurrentSearchHighlight();
-    }
-  }
-
-  public void previousSearchPosition() {
-    if (!searchTextPositions.isEmpty()) {
-      clearCurrentSearchHighlight();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.equalTo(0)) {
-        currentSearchTextPositionIndex.set(searchTextPositions.size() - 1);
-      }
-      else {
-        currentSearchTextPositionIndex.set(currentSearchTextPositionIndex.get() - 1);
-      }
-      setCurrentSearchHighlight();
-    }
   }
 
   /**
@@ -194,56 +140,8 @@ public final class ClientInstanceMonitor {
     }
   }
 
-  private void highlightSearchText() {
-    currentSearchTextPositionIndex.set(null);
-    logHighlighter.removeAllHighlights();
-    searchTextPositions.clear();
-    if (!Util.nullOrEmpty(searchStringValue.get())) {
-      final Pattern pattern = Pattern.compile(searchStringValue.get(), Pattern.CASE_INSENSITIVE);
-      try {
-        final Matcher matcher = pattern.matcher(logDocument.getText(0, logDocument.getLength()));
-        int searchFrom = 0;
-        while (matcher.find(searchFrom)) {
-          final Object highlightTag = logHighlighter.addHighlight(matcher.start(), matcher.end(), highlightPainter);
-          searchTextPositions.add(new MatchPosition(matcher.start(), matcher.end(), highlightTag));
-          searchFrom = matcher.end();
-        }
-        nextSearchPosition();
-      }
-      catch (final BadLocationException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private void setCurrentSearchHighlight() {
-    final MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
-    currentSearchTextPosition.set(matchPosition.start);
-    try {
-      logHighlighter.removeHighlight(matchPosition.highlightTag);
-      matchPosition.highlightTag = logHighlighter.addHighlight(matchPosition.start, matchPosition.end, selectedHighlightPainter);
-    }
-    catch (final BadLocationException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void clearCurrentSearchHighlight() {
-    if (currentSearchTextPositionIndex.isNotNull()) {
-      final MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
-      try {
-        logHighlighter.removeHighlight(matchPosition.highlightTag);
-        matchPosition.highlightTag = logHighlighter.addHighlight(matchPosition.start, matchPosition.end, highlightPainter);
-      }
-      catch (final BadLocationException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
   private void bindEvents() {
     loggingEnabledValue.addDataListener(this::setLoggingEnabled);
-    searchStringValue.addListener(this::highlightSearchText);
   }
 
   private static void addChildEntries(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> childEntries) {
@@ -265,19 +163,5 @@ public final class ClientInstanceMonitor {
     }
 
     return builder.toString();
-  }
-
-  private static final class MatchPosition {
-
-    private final int start;
-    private final int end;
-
-    private Object highlightTag;
-
-    private MatchPosition(final int start, final int end, final Object highlightTag) {
-      this.start = start;
-      this.end = end;
-      this.highlightTag = highlightTag;
-    }
   }
 }
