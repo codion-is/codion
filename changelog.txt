@@ -7267,3 +7267,4 @@
   MetaDataModel now handles MySQL and MariaDB, uses catalogs for schemas, run task for MariaDB added to framework-tools-ui build script
   TextInputPanel.Builder and TextInputPanelBuilder, dialogTitle() added, caption now used for a titled border around the input field if specified
   EntityTestUtil, private constructor added, createRandomValue() added type parameter
+  SearchHighlighter extracted from ClientInstanceMonitor, related refactoring
