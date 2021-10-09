@@ -7268,3 +7268,4 @@
   TextInputPanel.Builder and TextInputPanelBuilder, dialogTitle() added, caption now used for a titled border around the input field if specified
   EntityTestUtil, private constructor added, createRandomValue() added type parameter
   SearchHighlighter extracted from ClientInstanceMonitor, related refactoring
+  QueryKeyGenerator added

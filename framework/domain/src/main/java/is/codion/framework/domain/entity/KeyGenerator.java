@@ -4,14 +4,11 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.database.Database;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Generates primary key values for entities on insert.
@@ -106,13 +103,7 @@ public interface KeyGenerator {
    * @return a query based primary key generator
    */
   static KeyGenerator queried(final String query) {
-    requireNonNull(query, "query");
-    return new AbstractQueriedKeyGenerator() {
-      @Override
-      protected String getQuery(final Database database) {
-        return query;
-      }
-    };
+    return new QueryKeyGenerator(query);
   }
 
   /**
