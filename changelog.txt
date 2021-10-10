@@ -7302,3 +7302,4 @@
   EntityTestUtil, private constructor added, createRandomValue() added type parameter
   SearchHighlighter extracted from ClientInstanceMonitor, related refactoring
   QueryKeyGenerator added
+  ComponentBuilder.clear() added

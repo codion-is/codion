@@ -243,6 +243,14 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     return componentValue;
   }
 
+  @Override
+  public final B clear() {
+    component = null;
+    componentValue = null;
+
+    return (B) this;
+  }
+
   /**
    * Builds the component.
    * @return a new component instance

@@ -59,6 +59,55 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ComponentBuildersTest {
 
   @Test
+  void clear() {
+    final Font defaultFont = new JTextField().getFont();
+
+    final Value<Integer> value = Value.value(42);
+
+    final IntegerFieldBuilder builder = ComponentBuilders.integerField()
+            .range(0, 100)
+            .font(defaultFont.deriveFont(Font.BOLD))
+            .foreground(Color.WHITE)
+            .background(Color.BLACK)
+            .linkedValue(value);
+
+    final IntegerField component = builder.build();
+    final ComponentValue<Integer, IntegerField> componentValue = builder.buildComponentValue();
+
+    assertSame(component, componentValue.getComponent());
+
+    builder.clear();
+
+    final IntegerField nextComponent = builder.build();
+    final ComponentValue<Integer, IntegerField> nextComponentValue = builder.buildComponentValue();
+
+    assertSame(nextComponent, nextComponentValue.getComponent());
+
+    assertNotSame(component, nextComponent);
+    assertNotSame(componentValue, nextComponentValue);
+
+    value.set(20);
+
+    assertEquals(20, component.getInteger());
+    assertEquals(20, nextComponent.getInteger());
+    assertEquals(20, componentValue.get());
+    assertEquals(20, nextComponentValue.get());
+
+    nextComponentValue.set(25);
+
+    assertEquals(25, component.getInteger());
+    assertEquals(25, nextComponent.getInteger());
+    assertEquals(25, componentValue.get());
+    assertEquals(25, nextComponentValue.get());
+
+    assertTrue(component.getFont().isBold());
+    assertTrue(nextComponent.getFont().isBold());
+
+    assertEquals(Color.WHITE, component.getForeground());
+    assertEquals(Color.BLACK, component.getBackground());
+  }
+
+  @Test
   void integerField() {
     final Value<Integer> value = Value.value(42);
     final ComponentValue<Integer, IntegerField> componentValue = ComponentBuilders.integerField()
