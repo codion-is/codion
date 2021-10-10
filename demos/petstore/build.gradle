@@ -23,8 +23,8 @@ dependencies {
 }
 
 ext {
-    execMainClass = "$moduleName/is.codion.framework.demos.petstore.ui.PetstoreAppPanel"
-    execLoadTestMainClass = "$moduleName/is.codion.framework.demos.petstore.testing.PetstoreLoadTest"
+    execMainClass = "is.codion.framework.demos.petstore.ui.PetstoreAppPanel"
+    execLoadTestMainClass = "is.codion.framework.demos.petstore.testing.PetstoreLoadTest"
     testAddModules = ['is.codion.framework.domain.test']
     testAddReads = ['is.codion.framework.demos.petstore': 'is.codion.framework.domain.test']
     testAddExports = [
@@ -53,11 +53,13 @@ test {
 
 application {
     mainClass = execMainClass
+    mainModule = moduleName
 }
 
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -69,6 +71,7 @@ task runClientLocal(type: ModularJavaExec) {
 task runClientRMI(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
@@ -81,6 +84,7 @@ task runClientRMI(type: ModularJavaExec) {
 task runClientHttp(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
@@ -92,6 +96,7 @@ task runClientHttp(type: ModularJavaExec) {
 task runLoadTestRMI(type: ModularJavaExec) {
     group 'application'
     mainClass = execLoadTestMainClass
+    mainModule = moduleName
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
@@ -104,6 +109,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'application'
     mainClass = execLoadTestMainClass
+    mainModule = moduleName
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',

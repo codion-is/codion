@@ -47,8 +47,8 @@ dependencies {
 }
 
 ext {
-    execMainClass = "$moduleName/is.codion.framework.demos.chinook.ui.ChinookAppPanel"
-    execLoadTestMainClass = "$moduleName/is.codion.framework.demos.chinook.testing.ChinookLoadTest"
+    execMainClass = "is.codion.framework.demos.chinook.ui.ChinookAppPanel"
+    execLoadTestMainClass = "is.codion.framework.demos.chinook.testing.ChinookLoadTest"
     testAddModules = ['is.codion.framework.domain.test']
     testAddReads = [
             'is.codion.framework.demos.chinook': 'is.codion.framework.domain.test',
@@ -79,6 +79,7 @@ test {
 
 application {
     mainClass = execMainClass
+    mainModule = moduleName
 }
 
 task buildReports(dependsOn: 'compileJava') {
@@ -105,6 +106,7 @@ compileTestJava.dependsOn buildReports
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -117,6 +119,7 @@ task runClientLocal(type: ModularJavaExec) {
 task runClientRMI(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -130,6 +133,7 @@ task runClientRMI(type: ModularJavaExec) {
 task runClientHttp(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType': 'http',
@@ -142,6 +146,7 @@ task runClientHttp(type: ModularJavaExec) {
 task runLoadTestRMI(type: ModularJavaExec) {
     group 'application'
     mainClass = execLoadTestMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -155,6 +160,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'application'
     mainClass = execLoadTestMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType': 'http',

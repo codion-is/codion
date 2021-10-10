@@ -26,7 +26,7 @@ dependencies {
 }
 
 ext {
-    execMainClass = "$moduleName/is.codion.framework.demos.world.ui.WorldAppPanel"
+    execMainClass = "is.codion.framework.demos.world.ui.WorldAppPanel"
     testAddModules = ['is.codion.framework.domain.test', 'is.codion.swing.framework.ui.test']
     testAddReads = [
             'is.codion.framework.demos.world': 'is.codion.framework.domain.test,is.codion.swing.framework.ui.test',
@@ -49,6 +49,7 @@ compileTestJava {
 
 application {
     mainClass = execMainClass
+    mainModule = moduleName
 }
 
 test {
@@ -64,6 +65,7 @@ test {
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -76,6 +78,7 @@ task runClientLocal(type: ModularJavaExec) {
 task runClientRMI(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -89,6 +92,7 @@ task runClientRMI(type: ModularJavaExec) {
 task runClientHttp(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
+    mainModule = moduleName
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType': 'http',

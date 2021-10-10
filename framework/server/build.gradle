@@ -45,7 +45,7 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = "$moduleName/is.codion.framework.server.EntityServer"
+mainClassName = "is.codion.framework.server.EntityServer"
 
 distTar {
     dependsOn(':codion-demos-empdept:domainJar')
@@ -125,6 +125,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group 'application'
     classpath = configurations.serverRuntime
     mainClass = mainClassName
+    mainModule = moduleName
     maxHeapSize = '256m'
     jvmArgs = [
             //using the automatic module name, since domain jars do not contain module-info
