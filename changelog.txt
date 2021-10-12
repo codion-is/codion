@@ -7270,3 +7270,4 @@
   SearchHighlighter extracted from ClientInstanceMonitor, related refactoring
   QueryKeyGenerator added
   ComponentBuilder.clear() added
+  DefaultItemComboBoxBuilder bug fixed, did not set preferredHeight when constructed with a list of items

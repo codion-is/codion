@@ -34,6 +34,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
 
   DefaultItemComboBoxBuilder(final List<Item<T>> items) {
     this.items = requireNonNull(items);
+    preferredHeight(getPreferredTextFieldHeight());
   }
 
   DefaultItemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel) {
