@@ -400,7 +400,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Map<EntityType<?>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return handleResponse(execute(createRequest("dependencies", entities)));
