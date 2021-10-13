@@ -49,7 +49,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final EntityType<?> entityType) {
+  public final EntityDefinition getDefinition(final EntityType entityType) {
     return getDefinitionInternal(requireNonNull(entityType, "entityType").getName());
   }
 
@@ -59,7 +59,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final boolean contains(final EntityType<?> entityType) {
+  public final boolean contains(final EntityType entityType) {
     return entityDefinitions.containsKey(requireNonNull(entityType).getName());
   }
 
@@ -69,7 +69,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Entity entity(final EntityType<?> entityType) {
+  public final Entity entity(final EntityType entityType) {
     return getDefinition(entityType).entity();
   }
 
@@ -79,7 +79,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Entity.Builder builder(final EntityType<?> entityType) {
+  public final Entity.Builder builder(final EntityType entityType) {
     return new DefaultEntityBuilder(getDefinition(entityType));
   }
 
@@ -92,29 +92,29 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Key primaryKey(final EntityType<?> entityType, final Integer value) {
+  public final Key primaryKey(final EntityType entityType, final Integer value) {
     return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final Key primaryKey(final EntityType<?> entityType, final Long value) {
+  public final Key primaryKey(final EntityType entityType, final Long value) {
     return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final List<Key> primaryKeys(final EntityType<?> entityType, final Integer... values) {
+  public final List<Key> primaryKeys(final EntityType entityType, final Integer... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Key> primaryKeys(final EntityType<?> entityType, final Long... values) {
+  public final List<Key> primaryKeys(final EntityType entityType, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
   }
 
   @Override
-  public final Key.Builder keyBuilder(final EntityType<?> entityType) {
+  public final Key.Builder keyBuilder(final EntityType entityType) {
     return new DefaultKeyBuilder(getDefinition(entityType));
   }
 
@@ -137,7 +137,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
                                                   final Property.Builder<?, ?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
     final DefaultEntityDefinition.DefaultBuilder definitionBuilder =
@@ -173,7 +173,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
     for (final ForeignKey foreignKey : definition.getForeignKeys()) {
-      final EntityType<?> entityType = definition.getEntityType();
+      final EntityType entityType = definition.getEntityType();
       if (!entityType.equals(foreignKey.getReferencedEntityType()) && strictForeignKeys) {
         final EntityDefinition foreignEntity = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
         if (foreignEntity == null) {

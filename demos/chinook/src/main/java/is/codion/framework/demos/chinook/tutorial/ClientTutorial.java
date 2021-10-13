@@ -9,7 +9,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -47,7 +46,7 @@ public final class ClientTutorial {
     static final DomainType DOMAIN = domainType(Chinook.class);
 
     public interface Artist {
-      EntityType<Entity> TYPE = DOMAIN.entityType("chinook.artist");
+      EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
@@ -55,7 +54,7 @@ public final class ClientTutorial {
     }
 
     public interface Album {
-      EntityType<Entity> TYPE = DOMAIN.entityType("chinook.album");
+      EntityType TYPE = DOMAIN.entityType("chinook.album");
 
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");

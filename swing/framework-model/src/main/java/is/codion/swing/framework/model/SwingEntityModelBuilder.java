@@ -25,7 +25,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
   private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
 
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
 
   private final List<SwingEntityModel.Builder> detailModelBuilders = new ArrayList<>();
 
@@ -45,12 +45,12 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
    * Instantiates a new SwingeEntityModel.Builder based on the given entityType
    * @param entityType the entityType
    */
-  SwingEntityModelBuilder(final EntityType<?> entityType) {
+  SwingEntityModelBuilder(final EntityType entityType) {
     this.entityType = requireNonNull(entityType, "entityType");
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return entityType;
   }
 

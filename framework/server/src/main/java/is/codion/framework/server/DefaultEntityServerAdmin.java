@@ -213,7 +213,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
   @Override
   public Map<String, String> getEntityDefinitions() {
-    final Map<EntityType<?>, String> entityDefinitions = server.getEntityDefinitions();
+    final Map<EntityType, String> entityDefinitions = server.getEntityDefinitions();
     final Map<String, String> definitions = new HashMap<>();
     entityDefinitions.forEach((key, value) -> definitions.put(key.getDomainName() + ":" + key.getName(), value));
 

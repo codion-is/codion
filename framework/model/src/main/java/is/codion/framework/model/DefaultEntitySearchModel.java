@@ -51,7 +51,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * The type of the entity this search model is based on
    */
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
 
   /**
    * The attributes to use when doing the search
@@ -89,7 +89,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @see EntityDefinition#getSearchAttributes()
    */
-  public DefaultEntitySearchModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntitySearchModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes());
   }
 
@@ -99,7 +99,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @param searchAttributes the attributes to search by
    */
-  public DefaultEntitySearchModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public DefaultEntitySearchModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                   final Collection<Attribute<String>> searchAttributes) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
@@ -114,7 +114,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return entityType;
   }
 
@@ -325,7 +325,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     }
   }
 
-  private static void validateSearchAttributes(final EntityType<?> entityType, final Collection<Attribute<String>> searchAttributes) {
+  private static void validateSearchAttributes(final EntityType entityType, final Collection<Attribute<String>> searchAttributes) {
     for (final Attribute<String> attribute : searchAttributes) {
       if (!entityType.equals(attribute.getEntityType())) {
         throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);

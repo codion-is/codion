@@ -17,19 +17,18 @@ import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.requireNonNull;
 
-final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serializable {
+final class DefaultEntityType implements EntityType, Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final String domainName;
   private final String name;
-  private final Class<T> entityClass;
+  private final Class<? extends Entity> entityClass;
   private final String resourceBundleName;
   private final int hashCode;
 
-  DefaultEntityType(final String domainName, final String name, final Class<T> entityClass,
+  DefaultEntityType(final String domainName, final String name, final Class<? extends Entity> entityClass,
                     final String resourceBundleName) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
@@ -39,7 +38,7 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
     }
     this.domainName = domainName;
     this.name = name;
-    this.entityClass = requireNonNull(entityClass, "entityClass");
+    this.entityClass = entityClass;
     if (resourceBundleName != null) {
       ResourceBundle.getBundle(resourceBundleName);
     }
@@ -58,8 +57,8 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public Class<T> getEntityClass() {
-    return entityClass;
+  public <T extends Entity> Class<T> getEntityClass() {
+    return (Class<T>) (entityClass == null ? Entity.class : entityClass);
   }
 
   @Override
@@ -190,7 +189,7 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultEntityType<?> that = (DefaultEntityType<?>) object;
+    final DefaultEntityType that = (DefaultEntityType) object;
 
     return hashCode == that.hashCode && name.equals(that.name) && domainName.equals(that.domainName);
   }

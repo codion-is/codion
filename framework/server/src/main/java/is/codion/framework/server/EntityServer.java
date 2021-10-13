@@ -229,8 +229,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   /**
    * @return a map containing all defined entityTypes, with their respective table names as an associated value
    */
-  final Map<EntityType<?>, String> getEntityDefinitions() {
-    final Map<EntityType<?>, String> definitions = new HashMap<>();
+  final Map<EntityType, String> getEntityDefinitions() {
+    final Map<EntityType, String> definitions = new HashMap<>();
     for (final Domain domain : domainModels.values()) {
       for (final EntityDefinition definition : domain.getEntities().getDefinitions()) {
         definitions.put(definition.getEntityType(), definition.getTableName());

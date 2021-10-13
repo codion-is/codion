@@ -45,7 +45,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return the type of the entity this entity model is based on
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this entity model
@@ -100,7 +100,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyEntityType the id of the master entity
    * @param foreignKeyValues the master entities, empty list for none
    */
-  void initialize(EntityType<?> foreignKeyEntityType, List<Entity> foreignKeyValues);
+  void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
@@ -151,7 +151,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param entityType the entityType
    * @return true if this model contains a detail model for the given entityType
    */
-  boolean containsDetailModel(EntityType<?> entityType);
+  boolean containsDetailModel(EntityType entityType);
 
   /**
    * @param detailModel the detail model
@@ -173,7 +173,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityType is found
    */
-  M getDetailModel(EntityType<?> entityType);
+  M getDetailModel(EntityType entityType);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains

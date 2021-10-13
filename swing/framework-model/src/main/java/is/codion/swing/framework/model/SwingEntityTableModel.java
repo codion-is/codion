@@ -64,7 +64,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * The entityType
    */
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
 
   /**
    * The entity definition
@@ -143,7 +143,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param entityType the entityType
    * @param connectionProvider the db provider
    */
-  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, requireNonNull(connectionProvider), new SwingEntityTableSortModel(connectionProvider.getEntities()));
   }
 
@@ -154,7 +154,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param sortModel the sort model
    * @throws NullPointerException in case sortModel is null
    */
-  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel) {
     this(entityType, connectionProvider, sortModel, new DefaultEntityTableConditionModel(entityType, connectionProvider,
                     new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
@@ -168,7 +168,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @throws NullPointerException in case conditionModel is null
    * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
    */
-  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final EntityTableConditionModel tableConditionModel) {
     this(entityType, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities()), tableConditionModel);
   }
@@ -182,7 +182,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @throws NullPointerException in case sortModel or conditionModel is null
    * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
    */
-  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
     super(new SwingFilteredTableColumnModel<>(createColumns(connectionProvider.getEntities().getDefinition(entityType))),
@@ -279,7 +279,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final EntityType<?> getEntityType() {
+  public final EntityType getEntityType() {
     return entityType;
   }
 
@@ -466,7 +466,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityType<?> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;

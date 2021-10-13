@@ -89,7 +89,7 @@ public interface Property<T> {
   /**
    * @return the type of the entity this Property is associated with
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the caption

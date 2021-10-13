@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN;
 
 public interface VetSpecialty extends Entity {
-  EntityType<VetSpecialty> TYPE = DOMAIN.entityType("petclinic.vet_specialty", VetSpecialty.class);
+  EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty", VetSpecialty.class);
 
   Attribute<Integer> VET = TYPE.integerAttribute("vet");
   Attribute<Integer> SPECIALTY = TYPE.integerAttribute("specialty");

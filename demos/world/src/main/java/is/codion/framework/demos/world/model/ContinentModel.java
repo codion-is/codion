@@ -43,7 +43,7 @@ public final class ContinentModel extends SwingEntityModel {
     surfaceAreaDataset.clear();
     gnpDataset.clear();
     lifeExpectancyDataset.clear();
-    Entity.castTo(Continent.TYPE, getTableModel().getItems()).forEach(continent -> {
+    Entity.castTo(Continent.class, getTableModel().getItems()).forEach(continent -> {
       populationDataset.setValue(continent.name(), continent.population());
       surfaceAreaDataset.setValue(continent.name(), continent.surfaceArea());
       gnpDataset.setValue(continent.name(), continent.gnp());

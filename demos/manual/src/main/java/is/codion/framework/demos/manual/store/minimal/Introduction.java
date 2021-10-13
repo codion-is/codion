@@ -25,14 +25,14 @@ class Introduction {
     DomainType DOMAIN = DomainType.domainType("StoreImpl");
 
     interface City {
-      EntityType<Entity> TYPE = DOMAIN.entityType("store.city");
+      EntityType TYPE = DOMAIN.entityType("store.city");
 
       Attribute<Integer> ID = TYPE.integerAttribute("id");
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
 
     interface Customer {
-      EntityType<Entity> TYPE = DOMAIN.entityType("store.customer");
+      EntityType TYPE = DOMAIN.entityType("store.customer");
 
       Attribute<Integer> ID = TYPE.integerAttribute("id");
       Attribute<String> NAME = TYPE.stringAttribute("name");

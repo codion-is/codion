@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 
 final class DatabaseDomain extends DefaultDomain {
 
-  private final Map<Table, EntityType<?>> tableEntityTypes = new HashMap<>();
+  private final Map<Table, EntityType> tableEntityTypes = new HashMap<>();
 
   DatabaseDomain(final DomainType domainType, final Collection<Table> tables) {
     super(domainType);
@@ -38,7 +38,7 @@ final class DatabaseDomain extends DefaultDomain {
 
   private void defineEntity(final Table table) {
     if (!tableEntityTypes.containsKey(table)) {
-      final EntityType<?> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
+      final EntityType entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
       table.getForeignKeys().stream().map(ForeignKeyConstraint::getReferencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
@@ -47,13 +47,13 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private void define(final EntityType<?> entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
+  private void define(final EntityType entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
     if (!propertyBuilders.isEmpty()) {
       define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
     }
   }
 
-  private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType<?> entityType,
+  private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType entityType,
                                                         final List<ForeignKeyConstraint> foreignKeyConstraints) {
     final List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
@@ -69,10 +69,10 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType<?> entityType) {
+  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType entityType) {
     final Table referencedTable = foreignKeyConstraint.getReferencedTable();
     //todo foreign keys to a table of the same name in different schemas, attribute name clash
-    final EntityType<?> referencedEntityType = tableEntityTypes.get(referencedTable);
+    final EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     final ForeignKey foreignKey = entityType.foreignKey(referencedTable.getTableName() + "_FK",
             foreignKeyConstraint.getReferences().entrySet().stream().map(entry ->
                     reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
@@ -81,7 +81,7 @@ final class DatabaseDomain extends DefaultDomain {
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(final Column column, final EntityType<?> entityType) {
+  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(final Column column, final EntityType entityType) {
     final String caption = getCaption(column.getColumnName());
     final Attribute<?> attribute = getAttribute(entityType, column);
     final ColumnProperty.Builder<?, ?> builder;
@@ -113,7 +113,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builder;
   }
 
-  private static <T> Attribute<T> getAttribute(final EntityType<?> entityType, final Column column) {
+  private static <T> Attribute<T> getAttribute(final EntityType entityType, final Column column) {
     return (Attribute<T>) entityType.attribute(column.getColumnName(), column.getColumnTypeClass());
   }
 

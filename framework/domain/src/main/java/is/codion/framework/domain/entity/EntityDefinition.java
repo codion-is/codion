@@ -37,7 +37,7 @@ public interface EntityDefinition {
   /**
    * @return the entity type
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -359,7 +359,7 @@ public interface EntityDefinition {
    * @param referencedEntityType the referenced entity type
    * @return a List containing the foreign keys, an empty list is returned in case no foreign keys are found
    */
-  List<ForeignKey> getForeignKeys(EntityType<?> referencedEntityType);
+  List<ForeignKey> getForeignKeys(EntityType referencedEntityType);
 
   /**
    * @param foreignKey the foreign key

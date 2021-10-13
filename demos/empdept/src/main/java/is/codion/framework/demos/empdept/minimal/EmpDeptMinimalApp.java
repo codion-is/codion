@@ -11,7 +11,6 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -49,7 +48,7 @@ public final class EmpDeptMinimalApp {
    * We start by defining attributes for the columns in the SCOTT.DEPT table.
    */
   interface Department {
-    EntityType<Entity> TYPE = DOMAIN.entityType("scott.dept");
+    EntityType TYPE = DOMAIN.entityType("scott.dept");
 
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
@@ -60,7 +59,7 @@ public final class EmpDeptMinimalApp {
    * And for the columns in the SCOTT.EMP table.
    */
   interface Employee {
-    EntityType<Entity> TYPE = DOMAIN.entityType("scott.emp");
+    EntityType TYPE = DOMAIN.entityType("scott.emp");
 
     Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
     Attribute<String> ENAME = TYPE.stringAttribute("ename");

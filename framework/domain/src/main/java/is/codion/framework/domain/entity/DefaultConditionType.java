@@ -12,16 +12,16 @@ final class DefaultConditionType implements ConditionType, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
   private final String name;
 
-  DefaultConditionType(final EntityType<?> entityType, final String name) {
+  DefaultConditionType(final EntityType entityType, final String name) {
     this.entityType = requireNonNull(entityType);
     this.name = requireNonNull(name);
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return entityType;
   }
 

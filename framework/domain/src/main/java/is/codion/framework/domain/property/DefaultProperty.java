@@ -157,7 +157,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final EntityType<?> getEntityType() {
+  public final EntityType getEntityType() {
     return attribute.getEntityType();
   }
 

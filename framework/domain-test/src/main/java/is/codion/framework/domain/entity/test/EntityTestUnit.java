@@ -86,11 +86,11 @@ public class EntityTestUnit {
    * @param entityType the type of the entity to test
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  public final void test(final EntityType<?> entityType) throws DatabaseException {
+  public final void test(final EntityType entityType) throws DatabaseException {
     final EntityConnection connection = connectionProvider.getConnection();
     connection.beginTransaction();
     try {
-      final Map<EntityType<?>, Entity> foreignKeyEntities = initializeReferencedEntities(entityType, new HashMap<>(), connection);
+      final Map<EntityType, Entity> foreignKeyEntities = initializeReferencedEntities(entityType, new HashMap<>(), connection);
       Entity testEntity = null;
       final EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
       if (!entityDefinition.isReadOnly()) {
@@ -124,7 +124,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity instance to use for testing the entity type
    */
-  protected Entity initializeTestEntity(final EntityType<?> entityType, final Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(final EntityType entityType, final Map<EntityType, Entity> foreignKeyEntities) {
     return EntityTestUtil.createRandomEntity(getEntities(), entityType, foreignKeyEntities);
   }
 
@@ -135,7 +135,7 @@ public class EntityTestUnit {
    * @return an entity of the given type
    * @throws DatabaseException in case of an exception
    */
-  protected Entity initializeReferenceEntity(final EntityType<?> entityType, final Map<EntityType<?>, Entity> foreignKeyEntities)
+  protected Entity initializeReferenceEntity(final EntityType entityType, final Map<EntityType, Entity> foreignKeyEntities)
           throws DatabaseException {
     return EntityTestUtil.createRandomEntity(getEntities(), entityType, foreignKeyEntities);
   }
@@ -145,7 +145,7 @@ public class EntityTestUnit {
    * @param testEntity the entity to modify
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  protected void modifyEntity(final Entity testEntity, final Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected void modifyEntity(final Entity testEntity, final Map<EntityType, Entity> foreignKeyEntities) {
     EntityTestUtil.randomize(getEntities(), testEntity, foreignKeyEntities);
   }
 
@@ -158,14 +158,14 @@ public class EntityTestUnit {
    * @see #initializeReferenceEntity(String, Map)
    * @return the Entities to reference mapped to their respective entityTypes
    */
-  private Map<EntityType<?>, Entity> initializeReferencedEntities(final EntityType<?> entityType,
-                                                                  final Map<EntityType<?>, Entity> foreignKeyEntities,
-                                                                  final EntityConnection connection) throws DatabaseException {
+  private Map<EntityType, Entity> initializeReferencedEntities(final EntityType entityType,
+                                                               final Map<EntityType, Entity> foreignKeyEntities,
+                                                               final EntityConnection connection) throws DatabaseException {
     final List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
     //we have to start with non-self-referential ones
     foreignKeys.sort((fk1, fk2) -> !fk1.getReferencedEntityType().equals(entityType) ? -1 : 1);
     for (final ForeignKey foreignKey : foreignKeys) {
-      final EntityType<?> referencedEntityType = foreignKey.getReferencedEntityType();
+      final EntityType referencedEntityType = foreignKey.getReferencedEntityType();
       if (!foreignKeyEntities.containsKey(referencedEntityType)) {
         if (!Objects.equals(entityType, referencedEntityType)) {
           foreignKeyEntities.put(referencedEntityType, null);//short circuit recursion, value replaced below
@@ -207,7 +207,7 @@ public class EntityTestUnit {
    * @param connection the connection to use
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private static void testSelect(final EntityType<?> entityType, final Entity testEntity,
+  private static void testSelect(final EntityType entityType, final Entity testEntity,
                                  final EntityConnection connection) throws DatabaseException {
     if (testEntity != null) {
       assertEquals(testEntity, connection.selectSingle(testEntity.getPrimaryKey()),
@@ -226,7 +226,7 @@ public class EntityTestUnit {
    * @param entityTestUnit the test unit instance, for modifying the entity
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private static void testUpdate(final Entity testEntity, final Map<EntityType<?>, Entity> foreignKeyEntities,
+  private static void testUpdate(final Entity testEntity, final Map<EntityType, Entity> foreignKeyEntities,
                                  final EntityConnection connection, final EntityTestUnit entityTestUnit) throws DatabaseException {
     entityTestUnit.modifyEntity(testEntity, foreignKeyEntities);
     if (!testEntity.isModified()) {

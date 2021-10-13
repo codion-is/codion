@@ -5,7 +5,6 @@ package is.codion.framework.demos.manual.framework;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
@@ -39,12 +38,12 @@ import static is.codion.framework.domain.DomainType.domainType;
 public final class EntityEditPanels {
 
   interface DemoMaster {
-    EntityType<Entity> TYPE = domainType("domainType").entityType("master");
+    EntityType TYPE = domainType("domainType").entityType("master");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
   }
 
   interface Demo {
-    EntityType<Entity> TYPE = domainType("domainType").entityType("entityType");
+    EntityType TYPE = domainType("domainType").entityType("entityType");
     Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
     Attribute<Integer> FOREIGN_ATTRIBUTE = TYPE.integerAttribute("foreign_id");
     ForeignKey FOREIGN_KEY = TYPE.foreignKey("foreign_key", FOREIGN_ATTRIBUTE, DemoMaster.ID);

@@ -175,7 +175,7 @@ public final class EntityConnectionDemo {
     // tag::selectDependencies[]
     List<Entity> employees = connection.select(condition(Employee.TYPE));
 
-    Map<EntityType<?>, Collection<Entity>> dependencies = connection.selectDependencies(employees);
+    Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 
     Collection<Entity> customersDependingOnEmployees = dependencies.get(Customer.TYPE);
     // end::selectDependencies[]

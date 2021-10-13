@@ -43,8 +43,8 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(EntityType<?> entityType,
-                                        Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(EntityType entityType,
+                                        Map<EntityType, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
     if (entityType.equals(Country.TYPE)) {
       entity.put(Country.CODE, "XYZ");
@@ -58,7 +58,7 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.getEntityType().equals(Country.TYPE)) {
       testEntity.put(Country.CONTINENT, "Europe");
@@ -69,8 +69,8 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(EntityType<?> entityType,
-                                             Map<EntityType<?>, Entity> foreignKeyEntities)
+  protected Entity initializeReferenceEntity(EntityType entityType,
+                                             Map<EntityType, Entity> foreignKeyEntities)
           throws DatabaseException {
     if (entityType.equals(Country.TYPE)) {
       return getEntities().builder(Country.TYPE)

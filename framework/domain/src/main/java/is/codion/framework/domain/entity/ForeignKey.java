@@ -10,7 +10,7 @@ public interface ForeignKey extends Attribute<Entity> {
   /**
    * @return the entity type referenced by this foreign key
    */
-  EntityType<?> getReferencedEntityType();
+  EntityType getReferencedEntityType();
 
   /**
    * @return the {@link Reference}s that comprise this key
@@ -60,7 +60,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @return a new {@link ForeignKey}
    * @see ForeignKey#reference(Attribute, Attribute)
    */
-  static ForeignKey foreignKey(final EntityType<?> entityType, final String name, final List<ForeignKey.Reference<?>> references) {
+  static ForeignKey foreignKey(final EntityType entityType, final String name, final List<ForeignKey.Reference<?>> references) {
     return new DefaultForeignKey(name, entityType, references);
   }
 }

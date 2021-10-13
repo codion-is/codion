@@ -39,7 +39,7 @@ public final class EmpDept extends DefaultDomain {
 
   /** Entity type for the table scott.dept*/
   public interface Department extends Entity {
-    EntityType<Department> TYPE = DOMAIN.entityType("scott.dept", Department.class);
+    EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
 
     /** Attributes for the columns in the scott.dept table*/
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
@@ -59,7 +59,7 @@ public final class EmpDept extends DefaultDomain {
   // tag::employeeConstants[]
   /** Entity type for the table scott.emp*/
   public interface Employee extends Entity {
-    EntityType<Employee> TYPE = DOMAIN.entityType("scott.emp", Employee.class);
+    EntityType TYPE = DOMAIN.entityType("scott.emp", Employee.class);
 
     /** Attributes for the columns in the scott.emp table*/
     Attribute<Integer> ID = TYPE.integerAttribute("empno");

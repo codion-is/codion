@@ -32,7 +32,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * @return the entity type
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * Sets the value of the given attribute, returning the old value if any
@@ -241,12 +241,12 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Casts this entity to the given type.
-   * @param entityType the entity type
-   * @param <T> the type
+   * @param entityClass the entity class to cast to
+   * @param <T> the entity class type
    * @return a typed entity
    * @throws IllegalArgumentException in case this entity is not of the given type
    */
-  <T extends Entity> T castTo(final EntityType<T> entityType);
+  <T extends Entity> T castTo(final Class<T> entityClass);
 
   /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
@@ -502,14 +502,14 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Casts the given entities to the given type.
-   * @param entityType the entity type
+   * @param entityClass the entity class to cast to
    * @param entities the entities
-   * @param <T> the type to cast to
+   * @param <T> the entity class type
    * @return typed entities
    * @throws IllegalArgumentException in case any of the entities is not of the given entity type
    */
-  static <T extends Entity> List<T> castTo(final EntityType<T> entityType, final List<Entity> entities) {
-    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(entityType)).collect(toList());
+  static <T extends Entity> List<T> castTo(final Class<T> entityClass, final List<Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(entityClass)).collect(toList());
   }
 
   /**
@@ -546,7 +546,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to map by entityType
    * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityType<?>, List<Entity>> mapToType(final Collection<? extends Entity> entities) {
+  static LinkedHashMap<EntityType, List<Entity>> mapToType(final Collection<? extends Entity> entities) {
     return map(entities, Entity::getEntityType);
   }
 
@@ -556,7 +556,7 @@ public interface Entity extends Comparable<Entity> {
    * @param keys the entity keys to map by entityType
    * @return a Map of entity keys mapped to entityType
    */
-  static LinkedHashMap<EntityType<?>, List<Key>> mapKeysToType(final Collection<Key> keys) {
+  static LinkedHashMap<EntityType, List<Key>> mapKeysToType(final Collection<Key> keys) {
     return map(keys, Key::getEntityType);
   }
 

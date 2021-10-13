@@ -12,7 +12,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -52,7 +51,7 @@ public final class TestDomain extends DefaultDomain {
     });
   }
 
-  public static final EntityType<Entity> T_DEPARTMENT = DOMAIN.entityType("scott.dept");
+  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -71,7 +70,7 @@ public final class TestDomain extends DefaultDomain {
             .caption("Department");
   }
 
-  public static final EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
+  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

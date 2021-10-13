@@ -357,10 +357,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Map<EntityType<?>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      final Map<EntityType<?>, Collection<Entity>> dependencies = new HashMap<>();
+      final Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
       final DomainType domainType = getEntities().getDomainType();
 
       onJsonResponse(execute(createHttpPost("dependencies",

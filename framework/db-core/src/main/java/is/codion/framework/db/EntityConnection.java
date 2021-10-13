@@ -310,7 +310,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<EntityType<?>, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
+  Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned based on the given condition
@@ -380,12 +380,12 @@ public interface EntityConnection extends AutoCloseable {
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
-                           final IncludePrimaryKeys includePrimaryKeys, final EntityType<?>... entityTypes) throws DatabaseException {
+                           final IncludePrimaryKeys includePrimaryKeys, final EntityType... entityTypes) throws DatabaseException {
     requireNonNull(source, "source");
     requireNonNull(destination, "destination");
     requireNonNull(includePrimaryKeys, "includePrimaryKeys");
     requireNonNull(entityTypes);
-    for (final EntityType<?> entityType : entityTypes) {
+    for (final EntityType entityType : entityTypes) {
       final List<Entity> entities = source.select(condition(entityType).toSelectCondition().fetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearPrimaryKey);

@@ -101,7 +101,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return definition.getEntityType();
   }
 
@@ -315,18 +315,18 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T extends Entity> T castTo(final EntityType<T> entityType) {
-    requireNonNull(entityType, "entityType");
-    if (entityType.getEntityClass().isAssignableFrom(getClass())) {
+  public <T extends Entity> T castTo(final Class<T> entityClass) {
+    requireNonNull(entityClass, "entityClass");
+    if (entityClass.isAssignableFrom(getClass())) {
       // no wrapping required
       return (T) this;
     }
-    if (!getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entity of entityType " + entityType + " expected, got: " + getEntityType());
+    if (!getEntityType().getEntityClass().equals(entityClass)) {
+      throw new IllegalArgumentException("entityClass " + getEntityType().getEntityClass() + " expected, got: " + entityClass);
     }
 
     return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {entityType.getEntityClass()}, new EntityInvoker(this, definition));
+            new Class[] {entityClass}, new EntityInvoker(this, definition));
   }
 
   @Override
@@ -521,7 +521,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity foreignKeyValue) {
-    final EntityType<?> referencedEntityType = property.getReferencedEntityType();
+    final EntityType referencedEntityType = property.getReferencedEntityType();
     if (!Objects.equals(referencedEntityType, foreignKeyValue.getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
               " expected for property " + property + ", got: " + foreignKeyValue.getEntityType());
@@ -913,7 +913,7 @@ final class DefaultEntity implements Entity, Serializable {
       if (value instanceof Entity) {
         final Entity entityValue = (Entity) value;
 
-        value = entityValue.castTo(entityValue.getEntityType());
+        value = entityValue.castTo(entityValue.getEntityType().getEntityClass());
       }
 
       return optional ? Optional.ofNullable(value) : value;

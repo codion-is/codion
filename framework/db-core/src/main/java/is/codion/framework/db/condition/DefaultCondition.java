@@ -18,7 +18,7 @@ final class DefaultCondition extends AbstractCondition {
 
   private static final long serialVersionUID = 1;
 
-  DefaultCondition(final EntityType<?> entityType) {
+  DefaultCondition(final EntityType entityType) {
     super(entityType);
   }
 

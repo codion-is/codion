@@ -25,7 +25,7 @@ public interface Entities {
    * @return the entity definition
    * @throws IllegalArgumentException in case the definition is not found
    */
-  EntityDefinition getDefinition(EntityType<?> entityType);
+  EntityDefinition getDefinition(EntityType entityType);
 
   /**
    * Returns the {@link EntityDefinition} for the given entityType name
@@ -39,7 +39,7 @@ public interface Entities {
    * @param entityType the entityType
    * @return true if this domain contains a definition for the given type
    */
-  boolean contains(EntityType<?> entityType);
+  boolean contains(EntityType entityType);
 
   /**
    * Returns all {@link EntityDefinition}s available
@@ -52,7 +52,7 @@ public interface Entities {
    * @param entityType the entityType
    * @return a new {@link Entity} instance
    */
-  Entity entity(EntityType<?> entityType);
+  Entity entity(EntityType entityType);
 
   /**
    * Creates a new {@link Entity} instance with the given primary key
@@ -66,7 +66,7 @@ public interface Entities {
    * @param entityType the entityType
    * @return a new {@link Entity.Builder}
    */
-  Entity.Builder builder(EntityType<?> entityType);
+  Entity.Builder builder(EntityType entityType);
 
   /**
    * Creates a new {@link Entity.Builder} instance, initialized with the values from the given primary key.
@@ -83,7 +83,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key primaryKey(EntityType<?> entityType, Integer value);
+  Key primaryKey(EntityType entityType, Integer value);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -93,7 +93,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key primaryKey(EntityType<?> entityType, Long value);
+  Key primaryKey(EntityType entityType, Long value);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -103,7 +103,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> primaryKeys(EntityType<?> entityType, Integer... values);
+  List<Key> primaryKeys(EntityType entityType, Integer... values);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -113,12 +113,12 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> primaryKeys(EntityType<?> entityType, Long... values);
+  List<Key> primaryKeys(EntityType entityType, Long... values);
 
   /**
    * Creates a new {@link Key.Builder} instance for the given entity type.
    * @param entityType the entity type
    * @return a new builder
    */
-  Key.Builder keyBuilder(EntityType<?> entityType);
+  Key.Builder keyBuilder(EntityType entityType);
 }

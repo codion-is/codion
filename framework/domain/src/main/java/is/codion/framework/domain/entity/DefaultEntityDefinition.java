@@ -62,7 +62,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * The entity type
    */
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
 
   /**
    * Bean property getters
@@ -195,7 +195,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final String domainName, final EntityType<?> entityType, final String tableName,
+  DefaultEntityDefinition(final String domainName, final EntityType entityType, final String tableName,
                           final List<Property.Builder<?, ?>> propertyBuilders) {
     if (propertyBuilders.isEmpty()) {
       throw new IllegalArgumentException("An entity must have one or more properties");
@@ -214,7 +214,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return entityType;
   }
 
@@ -470,7 +470,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<ForeignKey> getForeignKeys(final EntityType<?> referencedEntityType) {
+  public List<ForeignKey> getForeignKeys(final EntityType referencedEntityType) {
     requireNonNull(referencedEntityType, "referencedEntityType");
     return getForeignKeys().stream()
             .filter(foreignKey -> foreignKey.getReferencedEntityType().equals(referencedEntityType))
@@ -791,7 +791,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private final EntityType<?> entityType;
+    private final EntityType entityType;
 
     private final Map<String, Attribute<?>> attributeMap;
     private final Map<Attribute<?>, Property<?>> propertyMap;
@@ -812,7 +812,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final int serializationVersion;
 
-    private EntityProperties(final EntityType<?> entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
+    private EntityProperties(final EntityType entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.attributeMap = initializeAttributeMap();

@@ -20,7 +20,7 @@ public interface Condition {
   /**
    * @return the entity type
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return a list of the values this condition is based on, in the order they appear

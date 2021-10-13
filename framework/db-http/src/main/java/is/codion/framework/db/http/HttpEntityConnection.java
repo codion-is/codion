@@ -318,7 +318,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Map<EntityType<?>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return onResponse(execute(createHttpPost("dependencies", byteArrayEntity(entities))));

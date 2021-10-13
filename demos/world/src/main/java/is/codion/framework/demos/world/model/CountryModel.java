@@ -32,7 +32,7 @@ public final class CountryModel extends SwingEntityModel {
     if (!getEditModel().isEntityNew()) {
       Entity country = getEditModel().getEntityCopy();
 
-      List<City> cities = Entity.castTo(City.TYPE, cityTableModel.getItems()).stream()
+      List<City> cities = Entity.castTo(City.class, cityTableModel.getItems()).stream()
               .filter(city -> city.isInCountry(country)).collect(Collectors.toList());
 
       OptionalDouble averageCityPopulation = cities.stream()

@@ -9,7 +9,6 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -22,7 +21,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
   public static final DomainType DOMAIN = DomainType.domainType(TestDomainExtended.class);
 
-  public static final EntityType<Entity> T_EXTENDED = DOMAIN.entityType("extended.entity");
+  public static final EntityType T_EXTENDED = DOMAIN.entityType("extended.entity");
   public static final Attribute<Integer> EXTENDED_ID = T_EXTENDED.integerAttribute("id");
   public static final Attribute<String> EXTENDED_NAME = T_EXTENDED.stringAttribute("name");
   public static final Attribute<Integer> EXTENDED_DEPT_ID = T_EXTENDED.integerAttribute("dept_id");
@@ -79,7 +78,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
     public static final DomainType DOMAIN = DomainType.domainType(TestDomainSecondExtension.class);
 
-    public static final EntityType<Entity> T_SECOND_EXTENDED = DOMAIN.entityType("extended.second_entity");
+    public static final EntityType T_SECOND_EXTENDED = DOMAIN.entityType("extended.second_entity");
     public static final Attribute<Integer> EXTENDED_ID = T_SECOND_EXTENDED.integerAttribute("id");
     public static final Attribute<String> EXTENDED_NAME = T_SECOND_EXTENDED.stringAttribute("name");
 
@@ -100,7 +99,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
     public static final DomainType DOMAIN = DomainType.domainType(TestDomainThirdExtension.class);
 
-    public static final EntityType<Entity> T_THIRD_EXTENDED = DOMAIN.entityType("extended.second_entity");
+    public static final EntityType T_THIRD_EXTENDED = DOMAIN.entityType("extended.second_entity");
     public static final Attribute<Integer> EXTENDED_ID = T_THIRD_EXTENDED.integerAttribute("id");
     public static final Attribute<String> EXTENDED_NAME = T_THIRD_EXTENDED.stringAttribute("name");
 

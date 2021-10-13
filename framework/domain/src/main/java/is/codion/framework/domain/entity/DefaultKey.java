@@ -99,7 +99,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return definition.getEntityType();
   }
 

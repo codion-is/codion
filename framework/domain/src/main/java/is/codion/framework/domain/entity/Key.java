@@ -14,7 +14,7 @@ public interface Key {
   /**
    * @return the entity type
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the attributes comprising this key

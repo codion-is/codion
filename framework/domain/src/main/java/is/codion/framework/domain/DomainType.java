@@ -25,7 +25,7 @@ public interface DomainType {
    * @param name the entity type name
    * @return a {@link EntityType} with the given name
    */
-  EntityType<Entity> entityType(String name);
+  EntityType entityType(String name);
 
   /**
    * Instantiates a {@link EntityType} associated with this domain type.
@@ -35,17 +35,16 @@ public interface DomainType {
    * @param <T> the Entity type
    * @return a {@link EntityType} with the given name
    */
-  <T extends Entity> EntityType<T> entityType(String name, Class<T> entityClass);
+  <T extends Entity> EntityType entityType(String name, Class<T> entityClass);
 
   /**
    * Instantiates a {@link EntityType} associated with this domain type.
    * If this entity type has been defined previously that instance is returned.
    * @param name the entity type name
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
-   * @param <T> the Entity type
    * @return a {@link EntityType} with the given name
    */
-  <T extends Entity> EntityType<T> entityType(String name, String resourceBundleName);
+  EntityType entityType(String name, String resourceBundleName);
 
   /**
    * Instantiates a {@link EntityType} associated with this domain type.
@@ -56,13 +55,13 @@ public interface DomainType {
    * @param <T> the Entity type
    * @return a {@link EntityType} with the given name
    */
-  <T extends Entity> EntityType<T> entityType(String name, Class<T> entityClass, String resourceBundleName);
+  <T extends Entity> EntityType entityType(String name, Class<T> entityClass, String resourceBundleName);
 
   /**
    * @param entityType the entity type
    * @return true if this domain type contains the given entity type
    */
-  boolean contains(EntityType<?> entityType);
+  boolean contains(EntityType entityType);
 
   /**
    * Returns a new {@link DomainType} using the given classes simple name as domain name.

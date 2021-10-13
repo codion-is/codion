@@ -17,7 +17,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   private static final long serialVersionUID = 1;
 
   private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
-  private final EntityType<?> referencedEntityType;
+  private final EntityType referencedEntityType;
   private int fetchDepth;
   private boolean softReference;
 
@@ -36,7 +36,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public EntityType<?> getReferencedEntityType() {
+  public EntityType getReferencedEntityType() {
     return referencedEntityType;
   }
 

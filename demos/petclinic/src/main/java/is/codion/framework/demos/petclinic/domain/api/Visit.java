@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN;
 
 public interface Visit extends Entity {
-  EntityType<Visit> TYPE = DOMAIN.entityType("petclinic.visit", Visit.class);
+  EntityType TYPE = DOMAIN.entityType("petclinic.visit", Visit.class);
 
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<Integer> PET_ID = TYPE.integerAttribute("pet_id");

@@ -48,7 +48,7 @@ public class TestDomain extends DefaultDomain {
     transientTest();
   }
 
-  public static final EntityType<Entity> T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
+  public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_3 = T_COMPOSITE_MASTER.integerAttribute("id3");
@@ -60,7 +60,7 @@ public class TestDomain extends DefaultDomain {
             columnProperty(COMPOSITE_MASTER_ID_3).primaryKeyIndex(2));
   }
 
-  public static final EntityType<Entity> T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
+  public static final EntityType T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = T_COMPOSITE_DETAIL.integerAttribute("master_id3");
@@ -79,7 +79,7 @@ public class TestDomain extends DefaultDomain {
   }
 
   public interface Master extends Entity {
-    EntityType<Master> TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
+    EntityType TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Integer> CODE = TYPE.integerAttribute("code");
@@ -110,7 +110,7 @@ public class TestDomain extends DefaultDomain {
   }
 
   public interface Detail extends Entity {
-    EntityType<Detail> TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
+    EntityType TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<Integer> INT = TYPE.integerAttribute("int");
     Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
@@ -198,7 +198,7 @@ public class TestDomain extends DefaultDomain {
   }
 
   public interface Department extends Entity {
-    EntityType<Department> TYPE = DOMAIN.entityType("domain.scott.dept", Department.class);
+    EntityType TYPE = DOMAIN.entityType("domain.scott.dept", Department.class);
     Attribute<Integer> NO = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
@@ -235,7 +235,7 @@ public class TestDomain extends DefaultDomain {
   }
 
   public interface Employee extends Entity {
-    EntityType<Employee> TYPE = DOMAIN.entityType("domain.scott.emp", Employee.class);
+    EntityType TYPE = DOMAIN.entityType("domain.scott.emp", Employee.class);
     Attribute<Integer> ID = TYPE.integerAttribute("emp_id");
     Attribute<String> NAME = TYPE.stringAttribute("emp_name");
     Attribute<String> JOB = TYPE.stringAttribute("job");
@@ -326,7 +326,7 @@ public class TestDomain extends DefaultDomain {
   }
 
   public interface NoPk {
-    EntityType<Entity> TYPE = DOMAIN.entityType("no_pk");
+    EntityType TYPE = DOMAIN.entityType("no_pk");
     Attribute<Integer> COL1 = TYPE.integerAttribute("col1");
     Attribute<Integer> COL2 = TYPE.integerAttribute("col2");
     Attribute<Integer> COL3 = TYPE.integerAttribute("col3");
@@ -339,7 +339,7 @@ public class TestDomain extends DefaultDomain {
             columnProperty(NoPk.COL3));
   }
 
-  public static final EntityType<Entity> T_TRANS = DOMAIN.entityType("trans");
+  public static final EntityType T_TRANS = DOMAIN.entityType("trans");
 
   public static final Attribute<Integer> TRANS_ID = T_TRANS.integerAttribute("id");
   public static final Attribute<Integer> TRANS_TRANS = T_TRANS.integerAttribute("trans");

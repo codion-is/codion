@@ -24,7 +24,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   private final ArrayList<Condition> conditions = new ArrayList<>();
   private final Conjunction conjunction;
 
-  private EntityType<?> entityType;
+  private EntityType entityType;
 
   DefaultConditionCombination(final Conjunction conjunction) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
@@ -36,7 +36,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     if (entityType == null) {
       throw new IllegalStateException("No condition added to combination");
     }
