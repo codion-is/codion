@@ -67,9 +67,10 @@ final class DomainToString {
         references.add(referenceBuilder.toString());
       });
 
+      //todo wrap references if more than four
       builder.append("  ").append("ForeignKey ")
               .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.foreignKey(\"")
-              .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join(Util.LINE_SEPARATOR, references) + ");").append(Util.LINE_SEPARATOR);
+              .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join("," + Util.LINE_SEPARATOR, references) + ");").append(Util.LINE_SEPARATOR);
     }
   }
 
