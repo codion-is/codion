@@ -7306,3 +7306,4 @@
   DefaultItemComboBoxBuilder bug fixed, did not set preferredHeight when constructed with a list of items
   DomainToString bug fixed, missing comma when generating multi reference foreign keys
   SQLServerDatabaseFactory now supports JTDS driver
+  EntityType type parameter removed, Entity.cast() now takes entityClass type parameter instead of the EntityType

@@ -33,7 +33,7 @@ public interface Chinook {
   DomainType DOMAIN = domainType("ChinookImpl");
 
   interface Artist {
-    EntityType<Entity> TYPE = DOMAIN.entityType("artist@chinook", Artist.class.getName());
+    EntityType TYPE = DOMAIN.entityType("artist@chinook", Artist.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("artistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
@@ -42,7 +42,7 @@ public interface Chinook {
   }
 
   interface Album {
-    EntityType<Entity> TYPE = DOMAIN.entityType("album@chinook", Album.class.getName());
+    EntityType TYPE = DOMAIN.entityType("album@chinook", Album.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("albumid");
     Attribute<String> TITLE = TYPE.stringAttribute("title");
@@ -55,7 +55,7 @@ public interface Chinook {
   }
 
   interface Employee {
-    EntityType<Entity> TYPE = DOMAIN.entityType("employee@chinook", Employee.class.getName());
+    EntityType TYPE = DOMAIN.entityType("employee@chinook", Employee.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("employeeid");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
@@ -77,7 +77,7 @@ public interface Chinook {
   }
 
   interface Customer {
-    EntityType<Entity> TYPE = DOMAIN.entityType("customer@chinook", Customer.class.getName());
+    EntityType TYPE = DOMAIN.entityType("customer@chinook", Customer.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("customerid");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
@@ -99,21 +99,21 @@ public interface Chinook {
   }
 
   interface Genre {
-    EntityType<Entity> TYPE = DOMAIN.entityType("genre@chinook", Genre.class.getName());
+    EntityType TYPE = DOMAIN.entityType("genre@chinook", Genre.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("genreid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface MediaType {
-    EntityType<Entity> TYPE = DOMAIN.entityType("mediatype@chinook", MediaType.class.getName());
+    EntityType TYPE = DOMAIN.entityType("mediatype@chinook", MediaType.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("mediatypeid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface Track extends Entity {
-    EntityType<Track> TYPE = DOMAIN.entityType("track@chinook", Track.class, Track.class.getName());
+    EntityType TYPE = DOMAIN.entityType("track@chinook", Track.class, Track.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("trackid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
@@ -140,7 +140,7 @@ public interface Chinook {
   }
 
   interface Invoice extends Entity {
-    EntityType<Invoice> TYPE = DOMAIN.entityType("invoice@chinook", Invoice.class, Invoice.class.getName());
+    EntityType TYPE = DOMAIN.entityType("invoice@chinook", Invoice.class, Invoice.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("invoiceid");
     Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customerid");
@@ -166,7 +166,7 @@ public interface Chinook {
   }
 
   interface InvoiceLine {
-    EntityType<Entity> TYPE = DOMAIN.entityType("invoiceline@chinook", InvoiceLine.class.getName());
+    EntityType TYPE = DOMAIN.entityType("invoiceline@chinook", InvoiceLine.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("invoicelineid");
     Attribute<Long> INVOICE_ID = TYPE.longAttribute("invoiceid");
@@ -180,14 +180,14 @@ public interface Chinook {
   }
 
   interface Playlist {
-    EntityType<Entity> TYPE = DOMAIN.entityType("playlist@chinook", Playlist.class.getName());
+    EntityType TYPE = DOMAIN.entityType("playlist@chinook", Playlist.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("playlistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface PlaylistTrack {
-    EntityType<Entity> TYPE = DOMAIN.entityType("playlisttrack@chinook", PlaylistTrack.class.getName());
+    EntityType TYPE = DOMAIN.entityType("playlisttrack@chinook", PlaylistTrack.class.getName());
 
     Attribute<Long> ID = TYPE.longAttribute("playlisttrackid");
     Attribute<Long> PLAYLIST_ID = TYPE.longAttribute("playlistid");

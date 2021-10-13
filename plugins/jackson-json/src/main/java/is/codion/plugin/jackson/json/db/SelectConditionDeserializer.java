@@ -39,7 +39,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   public SelectCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
           throws IOException {
     final JsonNode jsonNode = parser.getCodec().readTree(parser);
-    final EntityType<?> entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+    final EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode conditionNode = jsonNode.get("condition");
     final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);

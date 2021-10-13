@@ -193,16 +193,16 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectDependencies() throws Exception {
-    final Map<EntityType<?>, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
+    final Map<EntityType, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.select(Department.DNAME, "ACCOUNTING");
-    final Map<EntityType<?>, Collection<Entity>> emps = connection.selectDependencies(accounting);
+    final Map<EntityType, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(T_EMP));
     assertEquals(7, emps.get(T_EMP).size());
 
     final Entity emp = connection.selectSingle(EMP_NAME, "KING");
-    final Map<EntityType<?>, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
+    final Map<EntityType, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 
@@ -888,25 +888,25 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       final List<Entity> departments = connection.select(condition(Department.TYPE));
-      Department department = departments.get(0).castTo(Department.TYPE);
+      Department department = departments.get(0).castTo(Department.class);
       department.setName("New Name");
 
-      department = connection.update(department).castTo(Department.TYPE);
+      department = connection.update(department).castTo(Department.class);
 
       assertEquals("New Name", department.getName());
 
-      List<Department> departmentsCast = Entity.castTo(Department.TYPE, connection.select(condition(Department.TYPE)));
+      List<Department> departmentsCast = Entity.castTo(Department.class, connection.select(condition(Department.TYPE)));
 
       departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
 
-      departmentsCast = Entity.castTo(Department.TYPE, connection.update(departmentsCast));
+      departmentsCast = Entity.castTo(Department.class, connection.update(departmentsCast));
 
-      final Department newDept1 = ENTITIES.entity(Department.TYPE).castTo(Department.TYPE);
+      final Department newDept1 = ENTITIES.entity(Department.TYPE).castTo(Department.class);
       newDept1.setId(-1);
       newDept1.setName("hello1");
       newDept1.setLocation("location");
 
-      final Department newDept2 = ENTITIES.entity(Department.TYPE).castTo(Department.TYPE);
+      final Department newDept2 = ENTITIES.entity(Department.TYPE).castTo(Department.class);
       newDept2.setId(-2);
       newDept2.setName("hello2");
       newDept2.setLocation("location");

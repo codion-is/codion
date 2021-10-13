@@ -22,9 +22,9 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   private final String name;
   private final Class<T> typeClass;
   private final int hashCode;
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
 
-  DefaultAttribute(final String name, final Class<T> typeClass, final EntityType<?> entityType) {
+  DefaultAttribute(final String name, final Class<T> typeClass, final EntityType entityType) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
@@ -45,7 +45,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final EntityType<?> getEntityType() {
+  public final EntityType getEntityType() {
     return entityType;
   }
 

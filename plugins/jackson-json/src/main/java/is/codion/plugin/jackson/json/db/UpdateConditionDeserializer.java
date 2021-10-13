@@ -40,7 +40,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
   public UpdateCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
           throws IOException {
     final JsonNode jsonNode = parser.getCodec().readTree(parser);
-    final EntityType<?> entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+    final EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode conditionNode = jsonNode.get("condition");
     final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);

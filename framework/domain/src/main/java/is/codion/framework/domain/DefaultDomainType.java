@@ -22,7 +22,7 @@ final class DefaultDomainType implements DomainType, Serializable {
   private static final Map<String, DefaultDomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
-  private final Map<String, EntityType<?>> entityTypes = new ConcurrentHashMap<>();
+  private final Map<String, EntityType> entityTypes = new ConcurrentHashMap<>();
 
   private DefaultDomainType(final String domainName) {
     if (nullOrEmpty(domainName)) {
@@ -37,31 +37,31 @@ final class DefaultDomainType implements DomainType, Serializable {
   }
 
   @Override
-  public EntityType<Entity> entityType(final String name) {
+  public EntityType entityType(final String name) {
     return entityType(name, Entity.class);
   }
 
   @Override
-  public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass) {
-    return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+  public <T extends Entity> EntityType entityType(final String name, final Class<T> entityClass) {
+    return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, entityClass));
   }
 
   @Override
-  public <T extends Entity> EntityType<T> entityType(final String name, final String resourceBundleName) {
-    return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+  public EntityType entityType(final String name, final String resourceBundleName) {
+    return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, resourceBundleName));
   }
 
   @Override
-  public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass,
+  public <T extends Entity> EntityType entityType(final String name, final Class<T> entityClass,
                                                      final String resourceBundleName) {
-    return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+    return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, entityClass, resourceBundleName));
   }
 
   @Override
-  public boolean contains(final EntityType<?> entityType) {
+  public boolean contains(final EntityType entityType) {
     return entityTypes.containsKey(requireNonNull(entityType).getName());
   }
 

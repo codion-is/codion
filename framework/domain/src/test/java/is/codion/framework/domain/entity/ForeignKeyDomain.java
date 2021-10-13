@@ -18,7 +18,7 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   public interface Species {
-    EntityType<Entity> TYPE = DOMAIN.entityType("species");
+    EntityType TYPE = DOMAIN.entityType("species");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
@@ -31,7 +31,7 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   public interface Maturity {
-    EntityType<Entity> TYPE = DOMAIN.entityType("species_maturity");
+    EntityType TYPE = DOMAIN.entityType("species_maturity");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
     ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
@@ -47,7 +47,7 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   public interface OtolithCategory {
-    EntityType<Entity> TYPE = DOMAIN.entityType("otolith_category");
+    EntityType TYPE = DOMAIN.entityType("otolith_category");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
     ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
@@ -63,7 +63,7 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   public interface Otolith {
-    EntityType<Entity> TYPE = DOMAIN.entityType("otolith");
+    EntityType TYPE = DOMAIN.entityType("otolith");
     Attribute<Integer> STATION_ID = TYPE.integerAttribute("station_id");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
     ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Otolith.SPECIES_NO, Species.NO);

@@ -65,7 +65,7 @@ public interface EntityEditModel {
   /**
    * @return the type of the entity this edit model is based on
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this edit model

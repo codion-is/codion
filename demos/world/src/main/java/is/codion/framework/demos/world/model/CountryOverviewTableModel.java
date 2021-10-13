@@ -41,12 +41,12 @@ public final class CountryOverviewTableModel extends CountryTableModel {
       if (!selectedCountries.isEmpty()) {
         EntityConnection connection = getConnectionProvider().getConnection();
 
-        List<City> cities = Entity.castTo(City.TYPE,
+        List<City> cities = Entity.castTo(City.class,
                 connection.select(City.COUNTRY_FK, selectedCountries));
 
         cities.forEach(city -> citiesDataset.setValue(city.name(), city.population()));
 
-        List<CountryLanguage> languages = Entity.castTo(CountryLanguage.TYPE,
+        List<CountryLanguage> languages = Entity.castTo(CountryLanguage.class,
                 connection.select(CountryLanguage.COUNTRY_FK, selectedCountries));
 
         languages.forEach(language -> languagesDataset.setValue(language.language(), language.noOfSpeakers()));

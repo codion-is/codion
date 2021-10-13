@@ -344,7 +344,7 @@ public final class EntityTest {
     final Entity four = entities.entity(Employee.TYPE);
 
     final Collection<Entity> entities = asList(one, two, three, four);
-    final Map<EntityType<?>, List<Entity>> map = Entity.mapToType(entities);
+    final Map<EntityType, List<Entity>> map = Entity.mapToType(entities);
 
     Collection<Entity> mapped = map.get(Employee.TYPE);
     assertTrue(mapped.contains(one));

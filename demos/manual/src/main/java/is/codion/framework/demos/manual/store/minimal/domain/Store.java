@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -20,7 +19,7 @@ public class Store extends DefaultDomain {
   static final DomainType DOMAIN = domainType(Store.class);
 
   public interface Customer {
-    EntityType<Entity> TYPE = DOMAIN.entityType("store.customer");
+    EntityType TYPE = DOMAIN.entityType("store.customer");
 
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
@@ -30,7 +29,7 @@ public class Store extends DefaultDomain {
   }
 
   public interface Address {
-    EntityType<Entity> TYPE = DOMAIN.entityType("store.address");
+    EntityType TYPE = DOMAIN.entityType("store.address");
 
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customer_id");

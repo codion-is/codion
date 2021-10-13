@@ -6,7 +6,6 @@ package is.codion.framework.demos.petstore.domain;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -34,7 +33,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface Address {
-    EntityType<Entity> TYPE = DOMAIN.entityType("address");
+    EntityType TYPE = DOMAIN.entityType("address");
 
     Attribute<Integer> ID = TYPE.integerAttribute("Address id");
     Attribute<String> STREET_1 = TYPE.stringAttribute("Street 1");
@@ -73,7 +72,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface Category {
-    EntityType<Entity> TYPE = DOMAIN.entityType("category");
+    EntityType TYPE = DOMAIN.entityType("category");
 
     Attribute<Integer> ID = TYPE.integerAttribute("Category id");
     Attribute<String> NAME = TYPE.stringAttribute("Name");
@@ -98,7 +97,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface Product {
-    EntityType<Entity> TYPE = DOMAIN.entityType("product");
+    EntityType TYPE = DOMAIN.entityType("product");
 
     Attribute<Integer> ID = TYPE.integerAttribute("Product id");
     Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
@@ -130,7 +129,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface SellerContactInfo {
-    EntityType<Entity> TYPE = DOMAIN.entityType("sellercontactinfo");
+    EntityType TYPE = DOMAIN.entityType("sellercontactinfo");
 
     Attribute<Integer> ID = TYPE.integerAttribute("Contactinfo id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("First name");
@@ -157,7 +156,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface Item {
-    EntityType<Entity> TYPE = DOMAIN.entityType("item");
+    EntityType TYPE = DOMAIN.entityType("item");
 
     Attribute<Integer> ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
@@ -209,7 +208,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface Tag {
-    EntityType<Entity> TYPE = DOMAIN.entityType("tag");
+    EntityType TYPE = DOMAIN.entityType("tag");
 
     Attribute<Integer> ID = TYPE.integerAttribute("Tag id");
     Attribute<String> TAG = TYPE.stringAttribute("Tag");
@@ -233,7 +232,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   public interface TagItem {
-    EntityType<Entity> TYPE = DOMAIN.entityType("tag_item");
+    EntityType TYPE = DOMAIN.entityType("tag_item");
 
     Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");

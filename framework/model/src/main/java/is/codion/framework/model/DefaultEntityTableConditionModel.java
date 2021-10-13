@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.joining;
 public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
   private final State conditionChangedState = State.state();
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> filterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels = new HashMap<>();
@@ -58,7 +58,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @param filterModelFactory provides the column filter models for this table condition model, null if not required
    * @param conditionModelFactory provides the column condition models for this table condition model
    */
-  public DefaultEntityTableConditionModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityTableConditionModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                           final FilterModelFactory filterModelFactory,
                                           final ConditionModelFactory conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
@@ -71,7 +71,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return entityType;
   }
 
@@ -291,7 +291,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return conditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
   }
 
-  private void initializeFilterModels(final EntityType<?> entityType, final FilterModelFactory filterModelProvider) {
+  private void initializeFilterModels(final EntityType entityType, final FilterModelFactory filterModelProvider) {
     if (filterModelProvider != null) {
       for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
         if (!property.isHidden()) {
@@ -302,7 +302,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializePropertyConditionModels(final EntityType<?> entityType, final ConditionModelFactory conditionModelFactory) {
+  private void initializePropertyConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelFactory) {
     final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
     for (final ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
       if (!columnProperty.isAggregateColumn()) {
@@ -315,7 +315,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeForeignKeyConditionModels(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  private void initializeForeignKeyConditionModels(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                                    final ConditionModelFactory conditionModelProvider) {
     for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {

@@ -38,7 +38,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final EntityDefinition entityDefinition;
   private final SortedList<Entity> sortedList;
@@ -59,7 +59,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @param entityType the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
+  public ObservableEntityList(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
     this.entityType = entityType;
     this.connectionProvider = connectionProvider;
@@ -71,7 +71,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   /**
    * @return the id of the underlying entity
    */
-  public final EntityType<?> getEntityType() {
+  public final EntityType getEntityType() {
     return entityType;
   }
 

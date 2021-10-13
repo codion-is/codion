@@ -35,7 +35,7 @@ public final class Store extends DefaultDomain {
   static final DomainType STORE = domainType(Store.class);
 
   public interface Address {
-    EntityType<Entity> TYPE = STORE.entityType("store.address");
+    EntityType TYPE = STORE.entityType("store.address");
 
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
@@ -44,7 +44,7 @@ public final class Store extends DefaultDomain {
   }
 
   public interface Customer {
-    EntityType<Entity> TYPE = STORE.entityType("store.customer");
+    EntityType TYPE = STORE.entityType("store.customer");
 
     Attribute<String> ID = TYPE.stringAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
@@ -54,7 +54,7 @@ public final class Store extends DefaultDomain {
   }
 
   public interface CustomerAddress {
-    EntityType<Entity> TYPE = STORE.entityType("store.customer_address");
+    EntityType TYPE = STORE.entityType("store.customer_address");
 
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");

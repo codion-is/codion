@@ -16,13 +16,13 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   private final List<Reference<?>> references;
 
-  DefaultForeignKey(final String name, final EntityType<?> entityType, final List<Reference<?>> references) {
+  DefaultForeignKey(final String name, final EntityType entityType, final List<Reference<?>> references) {
     super(name, Entity.class, entityType);
     this.references = validate(requireNonNull(references));
   }
 
   @Override
-  public EntityType<?> getReferencedEntityType() {
+  public EntityType getReferencedEntityType() {
     return references.get(0).getReferencedAttribute().getEntityType();
   }
 
@@ -47,7 +47,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     if (references.isEmpty()) {
       throw new IllegalArgumentException("No references provided for foreign key: " + getName());
     }
-    final EntityType<?> referencedEntityType = references.get(0).getReferencedAttribute().getEntityType();
+    final EntityType referencedEntityType = references.get(0).getReferencedAttribute().getEntityType();
     final List<Reference<?>> referenceList = new ArrayList<>(references.size());
     for (final Reference<?> reference : references) {
       if (!getEntityType().equals(reference.getAttribute().getEntityType())) {

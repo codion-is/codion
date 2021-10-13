@@ -206,7 +206,7 @@ public final class EntitySearchField extends JTextField {
    * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntityDefinition#getSearchAttributes()
    */
-  public static Optional<Entity> lookupEntity(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public static Optional<Entity> lookupEntity(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                               final JComponent dialogParent, final String dialogTitle) {
     final List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, dialogTitle);
 
@@ -224,7 +224,7 @@ public final class EntitySearchField extends JTextField {
    * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntityDefinition#getSearchAttributes()
    */
-  public static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String dialogTitle) {
     return lookupEntities(entityType, connectionProvider, false, dialogParent, dialogTitle);
   }
@@ -374,7 +374,7 @@ public final class EntitySearchField extends JTextField {
             .show();
   }
 
-  private static List<Entity> lookupEntities(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
+  private static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                              final boolean singleSelection, final JComponent dialogParent, final String dialogTitle) {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);

@@ -72,7 +72,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public interface Department extends Entity {
-    EntityType<Department> TYPE = DOMAIN.entityType("scott.dept", Department.class);
+    EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
@@ -90,7 +90,8 @@ public final class TestDomain extends DefaultDomain {
   void department() {
     define(Department.TYPE,
             primaryKeyProperty(Department.DEPTNO, Department.DEPTNO.getName())
-                    .updatable(true).nullable(false)
+                    .updatable(true)
+                    .nullable(false)
                     .beanProperty("id"),
             columnProperty(Department.DNAME, Department.DNAME.getName())
                     .searchProperty().preferredColumnWidth(120).maximumLength(14).nullable(false)
@@ -112,7 +113,7 @@ public final class TestDomain extends DefaultDomain {
             .caption("Department");
   }
 
-  public static final EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
+  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
@@ -164,7 +165,7 @@ public final class TestDomain extends DefaultDomain {
             .caption("Employee");
   }
 
-  public static final EntityType<Entity> T_UUID_TEST_DEFAULT = DOMAIN.entityType("scott.uuid_test_default");
+  public static final EntityType T_UUID_TEST_DEFAULT = DOMAIN.entityType("scott.uuid_test_default");
   public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = T_UUID_TEST_DEFAULT.attribute("id", UUID.class);
   public static final Attribute<String> UUID_TEST_DEFAULT_DATA = T_UUID_TEST_DEFAULT.stringAttribute("data");
 
@@ -190,7 +191,7 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(uuidKeyGenerator);
   }
 
-  public static final EntityType<Entity> T_UUID_TEST_NO_DEFAULT = DOMAIN.entityType("scott.uuid_test_no_default");
+  public static final EntityType T_UUID_TEST_NO_DEFAULT = DOMAIN.entityType("scott.uuid_test_no_default");
   public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = T_UUID_TEST_NO_DEFAULT.attribute("id", UUID.class);
   public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = T_UUID_TEST_NO_DEFAULT.stringAttribute("data");
 
@@ -213,7 +214,7 @@ public final class TestDomain extends DefaultDomain {
     defineFunction(FUNCTION_ID, (connection, arguments) -> null);
   }
 
-  public static final EntityType<Entity> GROUP_BY_QUERY_ENTITY_TYPE = DOMAIN.entityType("groupByQueryEntityType");
+  public static final EntityType GROUP_BY_QUERY_ENTITY_TYPE = DOMAIN.entityType("groupByQueryEntityType");
 
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_TYPE, "scott.emp",
@@ -223,7 +224,7 @@ public final class TestDomain extends DefaultDomain {
             .havingClause("job <> 'PRESIDENT'");
   }
 
-  public static final EntityType<Entity> T_NO_PK = DOMAIN.entityType("scott.no_pk_table");
+  public static final EntityType T_NO_PK = DOMAIN.entityType("scott.no_pk_table");
   public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
   public static final Attribute<String> NO_PK_COL2 = T_NO_PK.stringAttribute("col2");
   public static final Attribute<String> NO_PK_COL3 = T_NO_PK.stringAttribute("col3");
@@ -237,7 +238,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(NO_PK_COL4));
   }
 
-  public static final EntityType<Entity> JOINED_QUERY_ENTITY_TYPE = DOMAIN.entityType("joinedQueryEntityType");
+  public static final EntityType JOINED_QUERY_ENTITY_TYPE = DOMAIN.entityType("joinedQueryEntityType");
   public static final Attribute<Integer> JOINED_EMPNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("e.empno");
   public static final Attribute<Integer> JOINED_DEPTNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("d.deptno");
 

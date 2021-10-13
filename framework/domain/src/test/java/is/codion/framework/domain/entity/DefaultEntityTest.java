@@ -68,7 +68,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final EntityType<Entity> entityType = TestDomain.DOMAIN.entityType("entityType");
+    final EntityType entityType = TestDomain.DOMAIN.entityType("entityType");
     final Attribute<?> invalid = entityType.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);

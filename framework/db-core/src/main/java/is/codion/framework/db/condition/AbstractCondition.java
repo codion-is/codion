@@ -14,14 +14,14 @@ abstract class AbstractCondition implements Condition, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
 
-  AbstractCondition(final EntityType<?> entityType) {
+  AbstractCondition(final EntityType entityType) {
     this.entityType = requireNonNull(entityType);
   }
 
   @Override
-  public final EntityType<?> getEntityType() {
+  public final EntityType getEntityType() {
     return entityType;
   }
 

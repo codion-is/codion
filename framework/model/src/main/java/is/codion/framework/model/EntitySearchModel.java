@@ -27,7 +27,7 @@ public interface EntitySearchModel {
   /**
    * @return the type of the entity this search model is based on
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this search model

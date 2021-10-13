@@ -48,8 +48,8 @@ public final class EntityTestUtil {
    * @param referenceEntities entities referenced by the given entityType
    * @return an Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Entities entities, final EntityType<?> entityType,
-                                          final Map<EntityType<?>, Entity> referenceEntities) {
+  public static Entity createRandomEntity(final Entities entities, final EntityType entityType,
+                                          final Map<EntityType, Entity> referenceEntities) {
     return createEntity(entities, entityType, property -> createRandomValue(property, referenceEntities));
   }
 
@@ -59,7 +59,7 @@ public final class EntityTestUtil {
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Entities entities, final EntityType<?> entityType, final Function<Property<?>, Object> valueProvider) {
+  public static Entity createEntity(final Entities entities, final EntityType entityType, final Function<Property<?>, Object> valueProvider) {
     requireNonNull(entities);
     requireNonNull(entityType);
     final Entity entity = entities.entity(entityType);
@@ -76,7 +76,7 @@ public final class EntityTestUtil {
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(final Entities entities, final Entity entity, final Map<EntityType<?>, Entity> foreignKeyEntities) {
+  public static void randomize(final Entities entities, final Entity entity, final Map<EntityType, Entity> foreignKeyEntities) {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entities, entity,
@@ -91,7 +91,7 @@ public final class EntityTestUtil {
    * @param <T> the property type
    * @return a random value
    */
-  public static <T> T createRandomValue(final Property<T> property, final Map<EntityType<?>, Entity> referenceEntities) {
+  public static <T> T createRandomValue(final Property<T> property, final Map<EntityType, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return (T) getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
@@ -178,7 +178,7 @@ public final class EntityTestUtil {
     return bytes;
   }
 
-  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<EntityType<?>, Entity> referenceEntities) {
+  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<EntityType, Entity> referenceEntities) {
     return referenceEntities == null ? null : referenceEntities.get(property.getReferencedEntityType());
   }
 

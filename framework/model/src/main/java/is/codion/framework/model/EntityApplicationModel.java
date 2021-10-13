@@ -111,7 +111,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @param entityType the entityType
    * @return true if this model contains a EntityModel for the given entityType
    */
-  boolean containsEntityModel(EntityType<?> entityType);
+  boolean containsEntityModel(EntityType entityType);
 
   /**
    * @param entityModel the entity model
@@ -158,7 +158,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @param entityType the entityType
    * @return the EntityModel based on the given entityType
    */
-  M getEntityModel(EntityType<?> entityType);
+  M getEntityModel(EntityType entityType);
 
   /**
    * Refreshes all data models contained in this application model

@@ -15,7 +15,7 @@ public interface World {
   DomainType DOMAIN = DomainType.domainType("WorldImpl");
 
   interface City extends Entity {
-    EntityType<Entity> TYPE = DOMAIN.entityType("world.city");
+    EntityType TYPE = DOMAIN.entityType("world.city");
 
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
@@ -27,7 +27,7 @@ public interface World {
   }
 
   interface Country {
-    EntityType<Entity> TYPE = DOMAIN.entityType("world.country");
+    EntityType TYPE = DOMAIN.entityType("world.country");
 
     Attribute<String> CODE = TYPE.stringAttribute("code");
     Attribute<String> NAME = TYPE.stringAttribute("name");
@@ -53,7 +53,7 @@ public interface World {
   }
 
   interface CountryLanguage extends Entity {
-    EntityType<Entity> TYPE = DOMAIN.entityType("world.countrylanguage");
+    EntityType TYPE = DOMAIN.entityType("world.countrylanguage");
 
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
@@ -65,7 +65,7 @@ public interface World {
   }
 
   interface Continent extends Entity {
-    EntityType<Entity> TYPE = DOMAIN.entityType("continent");
+    EntityType TYPE = DOMAIN.entityType("continent");
 
     Attribute<String> NAME = TYPE.stringAttribute("continent");
     Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");

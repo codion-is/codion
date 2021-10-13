@@ -38,7 +38,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
 
-  private final EntityType<?> entityType;
+  private final EntityType entityType;
   private final SwingEntityModel.Builder modelBuilder;
   private final SwingEntityModel model;
 
@@ -71,7 +71,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public EntityType getEntityType() {
     return entityType;
   }
 

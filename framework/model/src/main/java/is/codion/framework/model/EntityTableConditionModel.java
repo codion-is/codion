@@ -29,7 +29,7 @@ public interface EntityTableConditionModel {
   /**
    * @return the type of the entity this table condition model is based on
    */
-  EntityType<?> getEntityType();
+  EntityType getEntityType();
 
   /**
    * @return the underlying entity definition

@@ -39,8 +39,8 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(EntityType<?> entityType,
-                                             Map<EntityType<?>, Entity> foreignKeyEntities)
+  protected Entity initializeReferenceEntity(EntityType entityType,
+                                             Map<EntityType, Entity> foreignKeyEntities)
           throws DatabaseException {
     //see if the currently running test requires an ADDRESS entity
     if (entityType.equals(Address.TYPE)) {
@@ -55,8 +55,8 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(EntityType<?> entityType,
-                                        Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(EntityType entityType,
+                                        Map<EntityType, Entity> foreignKeyEntities) {
     if (entityType.equals(Address.TYPE)) {
       //Initialize an entity representing the table STORE.ADDRESS,
       //which can be used for the testing
@@ -87,7 +87,7 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
     if (testEntity.getEntityType().equals(Address.TYPE)) {
       testEntity.put(Address.STREET, "New Street");
       testEntity.put(Address.CITY, "New City");

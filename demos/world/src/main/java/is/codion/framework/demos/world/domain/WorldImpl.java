@@ -265,7 +265,7 @@ public final class WorldImpl extends DefaultDomain {
               cityEntity.get(City.POPULATION) > 1_000_000) {
         return Color.YELLOW;
       }
-      City city = cityEntity.castTo(City.TYPE);
+      City city = cityEntity.castTo(City.class);
       if (attribute.equals(City.NAME) && city.isCapital()) {
         return Color.CYAN;
       }

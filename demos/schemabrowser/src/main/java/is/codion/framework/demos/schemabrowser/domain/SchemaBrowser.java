@@ -7,7 +7,6 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -47,7 +46,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   public interface Schema {
-    EntityType<Entity> TYPE = DOMAIN.entityType("schema");
+    EntityType TYPE = DOMAIN.entityType("schema");
 
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("schema_name"));
   }
@@ -62,7 +61,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   public interface Table {
-    EntityType<Entity> TYPE = DOMAIN.entityType("table");
+    EntityType TYPE = DOMAIN.entityType("table");
 
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("table_name"));
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("table_schema"));
@@ -82,7 +81,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   public interface Column {
-    EntityType<Entity> TYPE = DOMAIN.entityType("column");
+    EntityType TYPE = DOMAIN.entityType("column");
 
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_schema"));
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_table_name"));
@@ -108,7 +107,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   public interface Constraint {
-    EntityType<Entity> TYPE = DOMAIN.entityType("constraint");
+    EntityType TYPE = DOMAIN.entityType("constraint");
 
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("constraint_schema"));
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("constraint_name"));
@@ -134,7 +133,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   public interface ColumnConstraint {
-    EntityType<Entity> TYPE = DOMAIN.entityType("column_constraint");
+    EntityType TYPE = DOMAIN.entityType("column_constraint");
 
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_constraint_schema"));
     Attribute<String> CONSTRAINT_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_constraint_name"));

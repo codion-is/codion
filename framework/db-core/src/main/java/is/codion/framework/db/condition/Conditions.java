@@ -41,7 +41,7 @@ public final class Conditions {
    * @param entityType the entityType
    * @return a condition specifying all entities of the given type
    */
-  public static Condition condition(final EntityType<?> entityType) {
+  public static Condition condition(final EntityType entityType) {
     return new DefaultCondition(entityType);
   }
 
