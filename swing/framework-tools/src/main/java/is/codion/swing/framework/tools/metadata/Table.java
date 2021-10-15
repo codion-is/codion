@@ -3,8 +3,6 @@
  */
 package is.codion.swing.framework.tools.metadata;
 
-import is.codion.common.Util;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -26,7 +24,7 @@ public final class Table {
   private final String tableName;
   private final List<ForeignKeyColumn> foreignKeyColumns;
   private final Map<String, Column> columns = new LinkedHashMap<>();
-  private final Map<Table, ForeignKeyConstraint> foreignKeys = new LinkedHashMap<>();
+  private final List<ForeignKeyConstraint> foreignKeys = new ArrayList<>();
 
   Table(final Schema schema, final String tableName, final List<Column> columns,
         final List<ForeignKeyColumn> foreignKeyColumns) {
@@ -55,7 +53,7 @@ public final class Table {
   }
 
   public Collection<ForeignKeyConstraint> getForeignKeys() {
-    return unmodifiableCollection(foreignKeys.values());
+    return unmodifiableCollection(foreignKeys);
   }
 
   @Override
@@ -83,13 +81,19 @@ public final class Table {
   }
 
   void resolveForeignKeys(final Map<String, Schema> schemas) {
-    Util.map(foreignKeyColumns, foreignKeyColumn ->
-            getReferencedTable(foreignKeyColumn, schemas)).forEach((referencedTable, fKColumns) -> {
-      final ForeignKeyConstraint foreignKeyConstraint = foreignKeys.computeIfAbsent(referencedTable, ForeignKeyConstraint::new);
-      fKColumns.forEach(foreignKeyColumn ->
-              foreignKeyConstraint.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
-                      referencedTable.columns.get(foreignKeyColumn.getPkColumnName())));
-    });
+    for (final ForeignKeyColumn foreignKeyColumn : foreignKeyColumns) {
+      final Table referencedTable = getReferencedTable(foreignKeyColumn, schemas);
+      final ForeignKeyConstraint foreignKeyConstraint;
+      if (foreignKeyColumn.getKeySeq() == 1) {//new key
+        foreignKeyConstraint = new ForeignKeyConstraint(referencedTable);
+        foreignKeys.add(foreignKeyConstraint);
+      }
+      else {//add to previous
+        foreignKeyConstraint = foreignKeys.get(foreignKeys.size() - 1);
+      }
+      foreignKeyConstraint.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
+              referencedTable.columns.get(foreignKeyColumn.getPkColumnName()));
+    }
   }
 
   private boolean referencesExternalSchema(final ForeignKeyColumn foreignKeyColumn) {

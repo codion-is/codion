@@ -11,15 +11,18 @@ public final class ForeignKeyColumn {
   private final String fkTableName;
   private final String fkSchemaName;
   private final String fkColumnName;
+  private final int keySeq;
 
   ForeignKeyColumn(final String pkSchemaName, final String pkTableName, final String pkColumnName,
-                   final String fkTableName, final String fkSchemaName, final String fkColumnName) {
+                   final String fkTableName, final String fkSchemaName, final String fkColumnName,
+                   final int keySeq) {
     this.pkSchemaName = pkSchemaName;
     this.pkTableName = pkTableName;
     this.pkColumnName = pkColumnName;
     this.fkTableName = fkTableName;
     this.fkSchemaName = fkSchemaName;
     this.fkColumnName = fkColumnName;
+    this.keySeq = keySeq;
   }
 
   public String getPkSchemaName() {
@@ -44,5 +47,9 @@ public final class ForeignKeyColumn {
 
   public String getFkColumnName() {
     return fkColumnName;
+  }
+
+  public int getKeySeq() {
+    return keySeq;
   }
 }

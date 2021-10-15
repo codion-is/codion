@@ -7276,3 +7276,4 @@
   EntityType type parameter removed, Entity.cast() now takes entityClass type parameter instead of the EntityType
   DatabaseExplorerModel, Schema now only retreives tables and views
   DatabaseExplorerPanel, added logo icon to login dialog
+  DatabaseExplorerModel bug fixed, now handles multiple foreign keys to the same table correctly
