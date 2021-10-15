@@ -1,5 +1,5 @@
 public interface Product {
-  EntityType<Entity> TYPE = DOMAIN.entityType("petstore.product");
+  EntityType TYPE = DOMAIN.entityType("petstore.product");
 
   Attribute<Integer> PRODUCTID = TYPE.integerAttribute("productid");
   Attribute<Integer> CATEGORYID = TYPE.integerAttribute("categoryid");

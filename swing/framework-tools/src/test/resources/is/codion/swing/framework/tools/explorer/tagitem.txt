@@ -1,5 +1,5 @@
 public interface TagItem {
-  EntityType<Entity> TYPE = DOMAIN.entityType("petstore.tag_item");
+  EntityType TYPE = DOMAIN.entityType("petstore.tag_item");
 
   Attribute<Integer> TAGID = TYPE.integerAttribute("tagid");
   Attribute<Integer> ITEMID = TYPE.integerAttribute("itemid");
