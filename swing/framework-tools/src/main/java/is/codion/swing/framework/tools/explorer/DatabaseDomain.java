@@ -54,7 +54,7 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType entityType,
-                                                        final List<ForeignKeyConstraint> foreignKeyConstraints) {
+                                                           final List<ForeignKeyConstraint> foreignKeyConstraints) {
     final List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
@@ -75,7 +75,7 @@ final class DatabaseDomain extends DefaultDomain {
     final EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     final ForeignKey foreignKey = entityType.foreignKey(referencedTable.getTableName() + "_FK",
             foreignKeyConstraint.getReferences().entrySet().stream().map(entry ->
-                    reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
+                            reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
