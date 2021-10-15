@@ -7274,3 +7274,4 @@
   DomainToString bug fixed, missing comma when generating multi reference foreign keys
   SQLServerDatabaseFactory now supports JTDS driver
   EntityType type parameter removed, Entity.cast() now takes entityClass type parameter instead of the EntityType
+  DatabaseExplorerModel, Schema now only retreives tables and views
