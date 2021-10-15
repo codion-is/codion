@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
@@ -54,7 +55,7 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType entityType,
-                                                        final List<ForeignKeyConstraint> foreignKeyConstraints) {
+                                                           final List<ForeignKeyConstraint> foreignKeyConstraints) {
     final List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
@@ -71,11 +72,10 @@ final class DatabaseDomain extends DefaultDomain {
 
   private Property.Builder<?, ?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType entityType) {
     final Table referencedTable = foreignKeyConstraint.getReferencedTable();
-    //todo foreign keys to a table of the same name in different schemas, attribute name clash
     final EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
-    final ForeignKey foreignKey = entityType.foreignKey(referencedTable.getTableName() + "_FK",
+    final ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
             foreignKeyConstraint.getReferences().entrySet().stream().map(entry ->
-                    reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
+                            reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
@@ -128,5 +128,12 @@ final class DatabaseDomain extends DefaultDomain {
             .mapToInt(Column::getPosition).max();
 
     return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();
+  }
+
+  private String createForeignKeyName(final ForeignKeyConstraint foreignKeyConstraint) {
+    return foreignKeyConstraint.getReferences().keySet().stream()
+            .map(Column::getColumnName)
+            .map(String::toUpperCase)
+            .collect(Collectors.joining("_"));
   }
 }

@@ -1,5 +1,5 @@
 public interface Address {
-  EntityType<Entity> TYPE = DOMAIN.entityType("petstore.address");
+  EntityType TYPE = DOMAIN.entityType("petstore.address");
 
   Attribute<Integer> ADDRESSID = TYPE.integerAttribute("addressid");
   Attribute<String> STREET1 = TYPE.stringAttribute("street1");

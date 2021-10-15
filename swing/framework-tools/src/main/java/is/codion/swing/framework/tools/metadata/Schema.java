@@ -38,7 +38,7 @@ public final class Schema {
                        final EventDataListener<String> schemaNotifier) {
     if (!populated) {
       schemaNotifier.onEvent(name);
-      try (final ResultSet resultSet = metaData.getTables(null, name, null, null)) {
+      try (final ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
                 .collect(Collectors.toMap(Table::getTableName, table -> table)));
         tables.values().stream()

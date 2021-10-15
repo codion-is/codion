@@ -114,6 +114,7 @@ public final class DatabaseExplorerPanel extends JPanel {
       final Database database = DatabaseFactory.getDatabase();
       final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
               Dialogs.loginDialogBuilder()
+                      .icon(icons().logoTransparent())
                       .validator(user -> database.createConnection(user).close())
                       .show());
       new DatabaseExplorerPanel(explorerModel).showFrame();

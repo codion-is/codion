@@ -26,7 +26,7 @@ final class DomainToString {
     final StringBuilder builder = new StringBuilder();
     final String interfaceName = getInterfaceName(definition.getTableName(), true);
     builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
-    builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
+    builder.append("  ").append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
     final List<Property<?>> columnProperties =
             definition.getProperties().stream().filter(ColumnProperty.class::isInstance).collect(Collectors.toList());

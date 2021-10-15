@@ -22,6 +22,6 @@ final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
     }
     return new ForeignKeyColumn(pktableSchem, resultSet.getString("PKTABLE_NAME"),
             resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_NAME"),
-            fktableSchem, resultSet.getString("FKCOLUMN_NAME"));
+            fktableSchem, resultSet.getString("FKCOLUMN_NAME"), resultSet.getInt("KEY_SEQ"));
   }
 }
