@@ -59,7 +59,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   @Override
   public final Connection getConnection(final User user) throws DatabaseException {
     requireNonNull(user, "user");
-    final long nanoTime = System.nanoTime();
+    counter.startCheckOutTimer();
     checkConnectionPoolCredentials(user);
     try {
       counter.incrementRequestCounter();
@@ -71,7 +71,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
       throw new DatabaseException(e);
     }
     finally {
-      counter.addCheckOutTime((int) (System.nanoTime() - nanoTime) / 1000000);
+      counter.stopCheckOutTimer();
     }
   }
 
@@ -88,6 +88,16 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   @Override
   public final void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
     counter.setCollectSnapshotStatistics(collectSnapshotStatistics);
+  }
+
+  @Override
+  public final boolean isCollectCheckOutTimes() {
+    return counter.isCollectCheckOutTimes();
+  }
+
+  @Override
+  public final void setCollectCheckOutTimes(final boolean collectCheckOutTimes) {
+    counter.setCollectCheckOutTimes(collectCheckOutTimes);
   }
 
   @Override

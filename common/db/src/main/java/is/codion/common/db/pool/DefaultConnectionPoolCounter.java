@@ -26,7 +26,8 @@ final class DefaultConnectionPoolCounter {
   private final long creationDate = System.currentTimeMillis();
   private final LinkedList<Integer> checkOutTimes = new LinkedList<>();
   private final LinkedList<DefaultConnectionPoolState> snapshotStatistics = new LinkedList<>();
-  private boolean collectSnapshotStatistics = false;
+  private volatile boolean collectSnapshotStatistics = false;
+  private volatile boolean collectCheckOutTimes = false;
   private final TaskScheduler snapshotStatisticsCollector = TaskScheduler.builder(new StatisticsCollector())
           .interval(SNAPSHOT_COLLECTION_INTERVAL_MS)
           .timeUnit(TimeUnit.MILLISECONDS)
@@ -40,6 +41,8 @@ final class DefaultConnectionPoolCounter {
   private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
   private final AtomicInteger connectionRequestsFailed = new AtomicInteger();
   private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger();
+
+  private long checkOutTimerStart;
 
   DefaultConnectionPoolCounter(final AbstractConnectionPoolWrapper<?> connectionPool) {
     this.connectionPool = connectionPool;
@@ -63,12 +66,29 @@ final class DefaultConnectionPoolCounter {
     }
   }
 
-  void addCheckOutTime(final int time) {
+  boolean isCollectCheckOutTimes() {
+    return collectCheckOutTimes;
+  }
+
+  void setCollectCheckOutTimes(final boolean collectCheckOutTimes) {
     synchronized (checkOutTimes) {
-      checkOutTimes.add(time);
-      if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
-        checkOutTimes.removeFirst();
+      if (!collectCheckOutTimes) {
+        checkOutTimes.clear();
       }
+      this.collectCheckOutTimes = collectCheckOutTimes;
+    }
+  }
+
+  void startCheckOutTimer() {
+    if (collectCheckOutTimes) {
+      checkOutTimerStart = System.nanoTime();
+    }
+  }
+
+  void stopCheckOutTimer() {
+    if (collectCheckOutTimes && checkOutTimerStart > 0L) {
+      addCheckOutTime((int) (System.nanoTime() - checkOutTimerStart) / 1_000_000);
+      checkOutTimerStart = 0L;
     }
   }
 
@@ -130,6 +150,17 @@ final class DefaultConnectionPoolCounter {
     }
 
     return statistics;
+  }
+
+  private void addCheckOutTime(final int time) {
+    if (collectCheckOutTimes) {
+      synchronized (checkOutTimes) {
+        checkOutTimes.add(time);
+        if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
+          checkOutTimes.removeFirst();
+        }
+      }
+    }
   }
 
   private void populateCheckOutTime(final DefaultConnectionPoolStatistics statistics) {

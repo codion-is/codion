@@ -188,9 +188,9 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void resetStatistics() {
+    public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
       try {
-        server.resetConnectionPoolStatistics(user.getUsername());
+        server.setCollectPoolSnapshotStatistics(user.getUsername(), collectSnapshotStatistics);
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
@@ -198,9 +198,29 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+    public boolean isCollectCheckOutTimes() {
       try {
-        server.setCollectPoolSnapshotStatistics(user.getUsername(), collectSnapshotStatistics);
+        return server.isCollectPoolCheckOutTimes(user.getUsername());
+      }
+      catch (final RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public void setCollectCheckOutTimes(final boolean collectCheckOutTimes) {
+      try {
+        server.setCollectPoolCheckOutTimes(user.getUsername(), collectCheckOutTimes);
+      }
+      catch (final RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public void resetStatistics() {
+      try {
+        server.resetConnectionPoolStatistics(user.getUsername());
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

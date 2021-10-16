@@ -144,6 +144,20 @@ public interface EntityServerAdmin extends ServerAdmin {
   void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) throws RemoteException;
 
   /**
+   * @param username the username
+   * @return true if check out times statistics should be collected for the given connection pool
+   * @throws RemoteException in case of an exception
+   */
+  boolean isCollectPoolCheckOutTimes(String username) throws RemoteException;
+
+  /**
+   * @param username the username
+   * @param collectCheckOutTimes true if check out times should be collected for the given connection pool
+   * @throws RemoteException in case of an exception
+   */
+  void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException;
+
+  /**
    * @return a map containing all entityType names, with their respective table names as an associated value
    * @throws RemoteException in case of an exception
    */

@@ -105,8 +105,19 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
   @Override
   public void setCollectPoolSnapshotStatistics(final String username, final boolean snapshotStatistics) {
-    LOG.info("setCollectSnapshotPoolStatistics({}, {})", username, snapshotStatistics);
+    LOG.info("setCollectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
     server.getDatabase().getConnectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
+  }
+
+  @Override
+  public boolean isCollectPoolCheckOutTimes(final String username) throws RemoteException {
+    return server.getDatabase().getConnectionPool(username).isCollectCheckOutTimes();
+  }
+
+  @Override
+  public void setCollectPoolCheckOutTimes(final String username, final boolean collectCheckOutTimes) throws RemoteException {
+    LOG.info("setCollectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
+    server.getDatabase().getConnectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
   }
 
   @Override
