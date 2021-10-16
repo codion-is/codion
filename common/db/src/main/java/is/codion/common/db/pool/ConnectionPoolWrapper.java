@@ -91,6 +91,19 @@ public interface ConnectionPoolWrapper {
   void setCollectSnapshotStatistics(boolean collectSnapshotStatistics);
 
   /**
+   * @return true if connection check out times should be collected.
+   * @see #getStatistics(long)
+   */
+  boolean isCollectCheckOutTimes();
+
+  /**
+   * Specifies whether to collect connection check out times.
+   * @param collectCheckOutTimes the value
+   * @see #getStatistics(long)
+   */
+  void setCollectCheckOutTimes(boolean collectCheckOutTimes);
+
+  /**
    * @return the pool cleanup interval in milliseconds
    */
   int getCleanupInterval();

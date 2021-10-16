@@ -41,6 +41,7 @@ public final class ConnectionPoolMonitor {
   private final Value<Integer> maximumPoolSizeValue;
   private final Value<Integer> maximumCheckoutTimeValue;
   private final State collectSnapshotStatisticsState;
+  private final State collectCheckOutTimesState;
 
   private final XYSeries poolSizeSeries = new XYSeries("Size");
   private final XYSeries minimumPoolSizeSeries = new XYSeries("Min. size");
@@ -74,6 +75,7 @@ public final class ConnectionPoolMonitor {
     this.maximumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize());
     this.maximumCheckoutTimeValue = Value.value(connectionPool.getMaximumCheckOutTime());
     this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
+    this.collectCheckOutTimesState = State.state(connectionPool.isCollectCheckOutTimes());
 
     this.pooledConnectionTimeoutValue.addValidator(new MinimumValidator(0));
     this.pooledCleanupIntervalValue.addValidator(new MinimumValidator(0));
@@ -217,6 +219,13 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
+   * @return the State controlling whether checkout times are collected
+   */
+  public State getCollectCheckOutTimesState() {
+    return collectCheckOutTimesState;
+  }
+
+  /**
    * @return EventObserver notified when statistics have been updated
    */
   public EventObserver<?> getStatisticsObserver() {
@@ -301,6 +310,7 @@ public final class ConnectionPoolMonitor {
     maximumPoolSizeValue.addDataListener(this::setMaximumPoolSize);
     maximumCheckoutTimeValue.addDataListener(this::setMaximumCheckOutTime);
     collectSnapshotStatisticsState.addDataListener(connectionPool::setCollectSnapshotStatistics);
+    collectCheckOutTimesState.addDataListener(connectionPool::setCollectCheckOutTimes);
   }
 
   private static class MinimumValidator implements Value.Validator<Integer> {

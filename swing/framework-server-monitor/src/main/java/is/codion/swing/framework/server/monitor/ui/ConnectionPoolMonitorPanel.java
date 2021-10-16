@@ -202,6 +202,12 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .linkedValue(model.getCollectSnapshotStatisticsState())
             .build());
 
+    chartConfig.add(ComponentBuilders.checkBox()
+            .caption("Check out times")
+            .maximumSize(TextFields.getPreferredTextFieldSize())
+            .linkedValue(model.getCollectCheckOutTimesState())
+            .build());
+
     chartConfig.add(ComponentBuilders.builder(Control.builder(model::clearInPoolStatistics)
             .caption("Clear")
             .build().createButton())

@@ -7311,3 +7311,4 @@
   DatabaseExplorerPanel, added logo icon to login dialog
   DatabaseExplorerModel bug fixed, now handles multiple foreign keys to the same table correctly
   DatabaseExplorerModel bug fixed, was still adding type parameter to EntityType constants
+  ConnectionPoolMonitor, check out time collection can now be turned off
