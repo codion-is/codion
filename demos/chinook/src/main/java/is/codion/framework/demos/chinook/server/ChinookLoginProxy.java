@@ -98,13 +98,8 @@ public final class ChinookLoginProxy implements LoginProxy {
     }
   }
 
-  private EntityConnection getConnectionFromPool() {
-    try {
-      return localEntityConnection(domain, database, connectionPool.getConnection(databaseUser));
-    }
-    catch (final DatabaseException e) {
-      throw new RuntimeException(e);
-    }
+  private EntityConnection getConnectionFromPool() throws DatabaseException {
+    return localEntityConnection(domain, database, connectionPool.getConnection(databaseUser));
   }
 
   private static final class Authentication extends DefaultDomain {
