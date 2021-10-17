@@ -130,7 +130,7 @@ final class DatabaseDomain extends DefaultDomain {
     return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();
   }
 
-  private String createForeignKeyName(final ForeignKeyConstraint foreignKeyConstraint) {
+  private static String createForeignKeyName(final ForeignKeyConstraint foreignKeyConstraint) {
     return foreignKeyConstraint.getReferences().keySet().stream()
             .map(Column::getColumnName)
             .map(String::toUpperCase)
