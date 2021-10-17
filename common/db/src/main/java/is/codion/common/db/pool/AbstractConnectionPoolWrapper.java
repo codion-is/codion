@@ -59,8 +59,8 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   @Override
   public final Connection getConnection(final User user) throws DatabaseException {
     requireNonNull(user, "user");
-    counter.startCheckOutTimer();
     checkConnectionPoolCredentials(user);
+    counter.startCheckOutTimer();
     try {
       counter.incrementRequestCounter();
 
