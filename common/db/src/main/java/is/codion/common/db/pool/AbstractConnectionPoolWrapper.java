@@ -147,9 +147,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @return the updated state
    */
   final DefaultConnectionPoolState updateState(final DefaultConnectionPoolState state) {
-    state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
-
-    return state;
+    return state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
   }
 
   /**

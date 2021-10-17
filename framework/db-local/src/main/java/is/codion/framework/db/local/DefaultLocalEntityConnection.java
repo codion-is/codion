@@ -55,6 +55,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static is.codion.common.db.database.Database.closeSilently;
@@ -977,8 +978,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectAttributes());
     try {
       selectQuery = selectQuery(getColumnsClause(entityDefinition.getEntityType(),
-              selectCondition.getSelectAttributes(), propertiesToSelect), selectCondition,
-              entityDefinition, connection.getDatabase());
+                      selectCondition.getSelectAttributes(), propertiesToSelect),
+              selectCondition, entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
       resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
 
@@ -1062,18 +1063,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @return all foreign keys in the domain referencing entities of type {@code entityType}
    */
   private Collection<ForeignKeyProperty> getForeignKeyReferences(final EntityType entityType) {
-    return foreignKeyReferenceCache.computeIfAbsent(entityType, e -> {
-      final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
-      for (final EntityDefinition entityDefinition : domainEntities.getDefinitions()) {
-        for (final ForeignKeyProperty foreignKeyProperty : entityDefinition.getForeignKeyProperties()) {
-          if (foreignKeyProperty.getReferencedEntityType().equals(entityType)) {
-            foreignKeyReferences.add(foreignKeyProperty);
-          }
-        }
-      }
+    return foreignKeyReferenceCache.computeIfAbsent(entityType, this::initializeForeignKeyReferences);
+  }
 
-      return foreignKeyReferences;
-    });
+  private List<ForeignKeyProperty> initializeForeignKeyReferences(final EntityType entityType) {
+    return domainEntities.getDefinitions().stream()
+            .flatMap(entityDefinition -> entityDefinition.getForeignKeyProperties().stream())
+            .filter(foreignKeyProperty -> foreignKeyProperty.getReferencedEntityType().equals(entityType))
+            .collect(Collectors.toList());
   }
 
   private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {
@@ -1290,14 +1287,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
                                                        final Collection<Attribute<?>> modifiedAttributes) {
-    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED))
-            .append(", ").append(entity.getEntityType());
-    for (final Attribute<?> attribute : modifiedAttributes) {
-      builder.append(" \n").append(attribute).append(": ").append(entity.getOriginal(attribute))
-              .append(" -> ").append(modified.get(attribute));
-    }
-
-    return builder.toString();
+    return modifiedAttributes.stream()
+            .map(attribute -> " \n" + attribute + ": " + entity.getOriginal(attribute) + " -> " + modified.get(attribute))
+            .collect(Collectors.joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.getEntityType(), ""));
   }
 
   private static void validateAttribute(final EntityType entityType, final Attribute<?> conditionAttribute) {
