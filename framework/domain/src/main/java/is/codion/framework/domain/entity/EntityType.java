@@ -223,12 +223,11 @@ public interface EntityType {
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
-   * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
    */
-  static <T extends Entity> EntityType entityType(final String name, final String domainName,
-                                                  final String resourceBundleName) {
-    return new DefaultEntityType(domainName, name, (Class<T>) Entity.class, resourceBundleName);
+  static EntityType entityType(final String name, final String domainName,
+                               final String resourceBundleName) {
+    return new DefaultEntityType(domainName, name, Entity.class, resourceBundleName);
   }
 
   /**
