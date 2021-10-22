@@ -9,19 +9,19 @@ import java.util.Optional;
 
 /**
  * A read only value observer
- * @param <V> the type of the value
+ * @param <T> the type of the value
  */
-public interface ValueObserver<V> extends EventObserver<V> {
+public interface ValueObserver<T> extends EventObserver<T> {
 
   /**
    * @return the value
    */
-  V get();
+  T get();
 
   /**
    * @return an {@link Optional} wrapping this value.
    */
-  Optional<V> toOptional();
+  Optional<T> toOptional();
 
   /**
    * @return true if the underlying value is null.
@@ -44,5 +44,5 @@ public interface ValueObserver<V> extends EventObserver<V> {
    * @param value the value
    * @return true if the underlying value is equal to the given one
    */
-  boolean equalTo(V value);
+  boolean equalTo(T value);
 }

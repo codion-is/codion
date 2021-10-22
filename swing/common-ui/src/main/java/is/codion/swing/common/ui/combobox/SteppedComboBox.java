@@ -15,10 +15,10 @@ import java.util.Objects;
 /**
  * A JComboBox which automatically sets the popup width according to the largest value in the combo box.
  * Slightly modified, automatic popup size according to getDisplaySize().
- * @param <V> the type of values contained in this combo box
+ * @param <T> the type of values contained in this combo box
  * @author Nobuo Tamemasa
  */
-public class SteppedComboBox<V> extends JComboBox<V> {
+public class SteppedComboBox<T> extends JComboBox<T> {
 
   private int popupWidth = 0;
   private boolean transferFocusOnEnter = false;
@@ -27,7 +27,7 @@ public class SteppedComboBox<V> extends JComboBox<V> {
    * Instantiates a new SteppedComboBox.
    * @param comboBoxModel the combo box model
    */
-  public SteppedComboBox(final ComboBoxModel<V> comboBoxModel) {
+  public SteppedComboBox(final ComboBoxModel<T> comboBoxModel) {
     super(Objects.requireNonNull(comboBoxModel, "comboBoxModel"));
     setUI(new SteppedComboBoxUI());
   }

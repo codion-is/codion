@@ -18,21 +18,21 @@ import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultPropertyValue<V> implements PropertyValue<V> {
+final class DefaultPropertyValue<T> implements PropertyValue<T> {
 
-  private final EventObserver<V> changeEvent;
+  private final EventObserver<T> changeEvent;
   private final String propertyName;
-  private final Class<V> valueClass;
+  private final Class<T> valueClass;
   private final Object valueOwner;
   private final Method getMethod;
   private final Method setMethod;
-  private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
-  private final Set<Value<V>> linkedValues = new LinkedHashSet<>();
+  private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
+  private final Set<Value<T>> linkedValues = new LinkedHashSet<>();
 
-  private ValueObserver<V> observer;
+  private ValueObserver<T> observer;
 
-  DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
-                       final EventObserver<V> changeObserver) {
+  DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<T> valueClass,
+                       final EventObserver<T> changeObserver) {
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }
@@ -45,9 +45,9 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public V get() {
+  public T get() {
     try {
-      return (V) getMethod.invoke(valueOwner);
+      return (T) getMethod.invoke(valueOwner);
     }
     catch (final RuntimeException re) {
       throw re;
@@ -58,7 +58,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public ValueObserver<V> getObserver() {
+  public ValueObserver<T> getObserver() {
     synchronized (changeEvent) {
       if (observer == null) {
         observer = new DefaultValueObserver<>(this);
@@ -69,7 +69,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public Optional<V> toOptional() {
+  public Optional<T> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }
@@ -78,7 +78,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public void set(final V value) {
+  public void set(final T value) {
     if (setMethod == null) {
       throw new IllegalStateException("Set method for property not found: " + propertyName);
     }
@@ -100,14 +100,14 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public V getOrThrow() throws IllegalStateException {
+  public T getOrThrow() throws IllegalStateException {
     return getOrThrow("Value of " + propertyName + " is null");
   }
 
   @Override
-  public V getOrThrow(final String message) throws IllegalStateException {
+  public T getOrThrow(final String message) throws IllegalStateException {
     requireNonNull(message, "message");
-    final V value = get();
+    final T value = get();
     if (value == null) {
       throw new IllegalStateException(message);
     }
@@ -131,7 +131,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public boolean equalTo(final V value) {
+  public boolean equalTo(final T value) {
     return Objects.equals(get(), value);
   }
 
@@ -146,17 +146,17 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public void addDataListener(final EventDataListener<V> listener) {
+  public void addDataListener(final EventDataListener<T> listener) {
     changeEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<V> listener) {
+  public void removeDataListener(final EventDataListener<T> listener) {
     changeEvent.removeDataListener(listener);
   }
 
   @Override
-  public void link(final Value<V> originalValue) {
+  public void link(final Value<T> originalValue) {
     if (linkedValues.contains(requireNonNull(originalValue, "originalValue"))) {
       throw new IllegalArgumentException("Values are already linked");
     }
@@ -165,24 +165,24 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public void link(final ValueObserver<V> originalValueObserver) {
+  public void link(final ValueObserver<T> originalValueObserver) {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
     originalValueObserver.addDataListener(this::set);
   }
 
   @Override
-  public Set<Value<V>> getLinkedValues() {
+  public Set<Value<T>> getLinkedValues() {
     return unmodifiableSet(linkedValues);
   }
 
   @Override
-  public void addValidator(final Validator<V> validator) {
+  public void addValidator(final Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
     validators.add(validator);
   }
 
   @Override
-  public Collection<Validator<V>> getValidators() {
+  public Collection<Validator<T>> getValidators() {
     return unmodifiableSet(validators);
   }
 

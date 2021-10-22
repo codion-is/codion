@@ -116,14 +116,14 @@ public final class Util {
    * @param values the values to map
    * @param keyProvider the object providing keys for values
    * @param <K> the key type
-   * @param <V> the value type
+   * @param <T> the value type
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<? extends V> values, final Function<V, K> keyProvider) {
+  public static <K, T> LinkedHashMap<K, List<T>> map(final Collection<? extends T> values, final Function<T, K> keyProvider) {
     requireNonNull(values, "values");
     requireNonNull(keyProvider, "keyProvider");
-    final LinkedHashMap<K, List<V>> map = new LinkedHashMap<>(values.size());
-    for (final V value : values) {
+    final LinkedHashMap<K, List<T>> map = new LinkedHashMap<>(values.size());
+    for (final T value : values) {
       map.computeIfAbsent(keyProvider.apply(value), k -> new ArrayList<>()).add(value);
     }
 

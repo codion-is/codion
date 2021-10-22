@@ -8,7 +8,7 @@ import is.codion.common.item.Item;
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 
-final class SelectedItemValue<V, C extends JComboBox<Item<V>>> extends AbstractComponentValue<V, C> {
+final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractComponentValue<T, C> {
 
   SelectedItemValue(final C comboBox) {
     super(comboBox);
@@ -20,14 +20,14 @@ final class SelectedItemValue<V, C extends JComboBox<Item<V>>> extends AbstractC
   }
 
   @Override
-  protected V getComponentValue(final C component) {
-    final Item<V> selectedValue = (Item<V>) component.getModel().getSelectedItem();
+  protected T getComponentValue(final C component) {
+    final Item<T> selectedValue = (Item<T>) component.getModel().getSelectedItem();
 
     return selectedValue == null ? null : selectedValue.getValue();
   }
 
   @Override
-  protected void setComponentValue(final C component, final V value) {
+  protected void setComponentValue(final C component, final T value) {
     component.getModel().setSelectedItem(value);
   }
 }

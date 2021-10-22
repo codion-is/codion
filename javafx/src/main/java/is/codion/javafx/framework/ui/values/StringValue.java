@@ -9,12 +9,12 @@ import javafx.util.StringConverter;
 
 /**
  * A {@link Value} based on a String
- * @param <V> the type of the actual value
+ * @param <T> the type of the actual value
  */
-public interface StringValue<V> extends Value<V> {
+public interface StringValue<T> extends Value<T> {
 
   /**
    * @return the {@link StringConverter} used to convert the value to and from String
    */
-  StringConverter<V> getConverter();
+  StringConverter<T> getConverter();
 }

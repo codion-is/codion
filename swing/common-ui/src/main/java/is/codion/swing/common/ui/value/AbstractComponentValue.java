@@ -20,10 +20,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link ComponentValue} implementation.
- * @param <V> the value type
+ * @param <T> the value type
  * @param <C> the component type
  */
-public abstract class AbstractComponentValue<V, C extends JComponent> extends AbstractValue<V> implements ComponentValue<V, C> {
+public abstract class AbstractComponentValue<T, C extends JComponent> extends AbstractValue<T> implements ComponentValue<T, C> {
 
   private final C component;
 
@@ -40,13 +40,13 @@ public abstract class AbstractComponentValue<V, C extends JComponent> extends Ab
    * @param component the component
    * @param nullValue the value to use instead of null
    */
-  public AbstractComponentValue(final C component, final V nullValue) {
+  public AbstractComponentValue(final C component, final T nullValue) {
     super(nullValue);
     this.component = requireNonNull(component, "component");
   }
 
   @Override
-  public final V get() {
+  public final T get() {
     return getComponentValue(component);
   }
 
@@ -56,12 +56,12 @@ public abstract class AbstractComponentValue<V, C extends JComponent> extends Ab
   }
 
   @Override
-  public final V showDialog(final JComponent owner) {
+  public final T showDialog(final JComponent owner) {
     return showDialog(owner, null);
   }
 
   @Override
-  public final V showDialog(final JComponent owner, final String title) {
+  public final T showDialog(final JComponent owner, final String title) {
     final State okPressed = State.state();
     final JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(component, BorderLayout.CENTER);
@@ -79,7 +79,7 @@ public abstract class AbstractComponentValue<V, C extends JComponent> extends Ab
   }
 
   @Override
-  protected final void setValue(final V value) {
+  protected final void setValue(final T value) {
     if (SwingUtilities.isEventDispatchThread()) {
       setComponentValue(component, value);
     }
@@ -113,12 +113,12 @@ public abstract class AbstractComponentValue<V, C extends JComponent> extends Ab
    * @param component the component
    * @return the value from the given component
    */
-  protected abstract V getComponentValue(C component);
+  protected abstract T getComponentValue(C component);
 
   /**
    * Sets the given value in the input component. Note that this method is called on the EDT.
    * @param component the component
    * @param value the value to display in the input component
    */
-  protected abstract void setComponentValue(C component, V value);
+  protected abstract void setComponentValue(C component, T value);
 }

@@ -650,9 +650,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <V> Value<V> value(final Attribute<V> attribute) {
+  public final <T> Value<T> value(final Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    return (Value<V>) editModelValues.computeIfAbsent(attribute,
+    return (Value<T>) editModelValues.computeIfAbsent(attribute,
             valueAttribute -> new EditModelValue<>(this, attribute));
   }
 
@@ -1168,24 +1168,24 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     <T> T get(Property<T> property);
   }
 
-  private static final class EditModelValue<V> extends AbstractValue<V> {
+  private static final class EditModelValue<T> extends AbstractValue<T> {
 
     private final EntityEditModel editModel;
-    private final Attribute<V> attribute;
+    private final Attribute<T> attribute;
 
-    private EditModelValue(final EntityEditModel editModel, final Attribute<V> attribute) {
+    private EditModelValue(final EntityEditModel editModel, final Attribute<T> attribute) {
       this.editModel = editModel;
       this.attribute = attribute;
       this.editModel.addValueListener(attribute, valueChange -> notifyValueChange());
     }
 
     @Override
-    public V get() {
+    public T get() {
       return editModel.get(attribute);
     }
 
     @Override
-    protected void setValue(final V value) {
+    protected void setValue(final T value) {
       editModel.put(attribute, value);
     }
   }

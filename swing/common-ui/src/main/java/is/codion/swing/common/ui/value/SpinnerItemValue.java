@@ -9,7 +9,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
 import java.util.Objects;
 
-final class SpinnerItemValue<V> extends AbstractComponentValue<V, JSpinner> {
+final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
 
   SpinnerItemValue(final JSpinner spinner) {
     super(spinner);
@@ -20,14 +20,14 @@ final class SpinnerItemValue<V> extends AbstractComponentValue<V, JSpinner> {
   }
 
   @Override
-  protected V getComponentValue(final JSpinner component) {
-    final Item<V> selectedValue = (Item<V>) component.getModel().getValue();
+  protected T getComponentValue(final JSpinner component) {
+    final Item<T> selectedValue = (Item<T>) component.getModel().getValue();
 
     return selectedValue == null ? null : selectedValue.getValue();
   }
 
   @Override
-  protected void setComponentValue(final JSpinner component, final V value) {
+  protected void setComponentValue(final JSpinner component, final T value) {
     final SpinnerListModel model = (SpinnerListModel) component.getModel();
     model.getList().stream()
             .map(Item.class::cast)

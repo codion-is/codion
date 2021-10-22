@@ -82,7 +82,7 @@ public interface PropertyStore {
 
   /**
    * Instantiates a Value representing the given property.
-   * @param <V> the value type
+   * @param <T> the value type
    * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no initial value is present
    * @param nullValue the value to use instead of null, if any
@@ -92,12 +92,12 @@ public interface PropertyStore {
    * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  <V> PropertyValue<V> propertyValue(String propertyName, V defaultValue, V nullValue,
-                                     Function<String, V> decoder, Function<V, String> encoder);
+  <T> PropertyValue<T> propertyValue(String propertyName, T defaultValue, T nullValue,
+                                     Function<String, T> decoder, Function<T, String> encoder);
 
   /**
    * Instantiates a Value representing the given property.
-   * @param <V> the value type
+   * @param <T> the value type
    * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no initial value is present
    * @param decoder a decoder for decoding the value from a string
@@ -106,16 +106,16 @@ public interface PropertyStore {
    * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  <V> PropertyValue<List<V>> propertyListValue(String propertyName, List<V> defaultValue,
-                                               Function<String, V> decoder, Function<V, String> encoder);
+  <T> PropertyValue<List<T>> propertyListValue(String propertyName, List<T> defaultValue,
+                                               Function<String, T> decoder, Function<T, String> encoder);
 
   /**
    * Returns the Value associated with the given property, null if none has been created.
    * @param propertyName the property name
-   * @param <V> the value type
+   * @param <T> the value type
    * @return the configuration value or null if none is found
    */
-  <V> PropertyValue<V> getPropertyValue(String propertyName);
+  <T> PropertyValue<T> getPropertyValue(String propertyName);
 
   /**
    * Sets the value of the given property
