@@ -1,1 +1,0 @@
-java -Xmx512m -Dcodion.configurationFile=load_test.config -cp chinook.jar;config is.codion.framework.demos.chinook.testing.ChinookLoadTest

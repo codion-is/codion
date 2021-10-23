@@ -1,1 +1,0 @@
-java -Xmx128m -Dcodion.configurationFile=remote.config -cp world.jar;config is.codion.framework.demos.world.ui.WorldAppPanel

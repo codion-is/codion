@@ -1,1 +1,0 @@
-java -Xmx128m -Dcodion.configurationFile=remote.config -cp chinook.jar:config is.codion.framework.demos.chinook.ui.ChinookAppPanel &

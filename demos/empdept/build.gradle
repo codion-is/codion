@@ -112,7 +112,7 @@ task runClientLocal(type: ModularJavaExec) {
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
             'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'logback.configurationFile'   : 'src/main/config/logback.xml'
     ]
 }
 
@@ -124,7 +124,7 @@ task runClientLocalFX(type: ModularJavaExec) {
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
             'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'logback.configurationFile'   : 'src/main/config/logback.xml'
     ]
 }
 
@@ -149,7 +149,7 @@ task runClientHttp(type: ModularJavaExec) {
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
             'codion.client.http.hostname' : "${serverHostName}",
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'logback.configurationFile'   : 'src/main/config/logback.xml'
     ]
 }
 
@@ -174,7 +174,7 @@ task runLoadTestHttp(type: ModularJavaExec) {
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
             'codion.client.http.hostname' : "${serverHostName}",
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'logback.configurationFile'   : 'src/main/config/logback.xml'
     ]
 }
 
@@ -237,7 +237,7 @@ task loadTestHttpScript(type: ModularCreateStartScripts) {
 
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
-    from(files('src/main/resources/logback.xml'))
+    from(files('src/main/config/logback.xml'))
     from(files('../../framework/server/src/main/security/truststore.jks'))
 }
 

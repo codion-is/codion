@@ -244,7 +244,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entityClass the entity class to cast to
    * @param <T> the entity class type
    * @return a typed entity
-   * @throws IllegalArgumentException in case this entity is not of the given type
+   * @throws IllegalArgumentException in case the given class has not been associated with the underlying {@link EntityType}.
    */
   <T extends Entity> T castTo(final Class<T> entityClass);
 

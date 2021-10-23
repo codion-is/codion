@@ -1,1 +1,0 @@
-java -Xmx128m -Dcodion.configurationFile=load_test.config -cp schemabrowser.jar;config is.codion.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest

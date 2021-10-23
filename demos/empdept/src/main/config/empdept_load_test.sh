@@ -1,1 +1,0 @@
-java -Xmx512m -Dcodion.configurationFile=load_test.config -cp empdept.jar:config is.codion.framework.demos.empdept.testing.EmpDeptLoadTest &

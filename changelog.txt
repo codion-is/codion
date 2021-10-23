@@ -7314,3 +7314,4 @@
   ConnectionPoolMonitor, check out time collection can now be turned off
   AbstractConnectionPoolWrapper.getConnection() bug fixed, check out timer was started before credentials were checked
   Value<V> type parameter renamed to the more typical T
+  prefix and postfix parameters used when using Collectors.joining() instead of appending manually
