@@ -5,20 +5,20 @@ package is.codion.swing.common.ui.value;
 
 import javax.swing.JList;
 
-final class ListValue<V> extends AbstractComponentValue<V, JList<V>> {
+final class ListValue<T> extends AbstractComponentValue<T, JList<T>> {
 
-  ListValue(final JList<V> list) {
+  ListValue(final JList<T> list) {
     super(list);
     list.addListSelectionListener(e -> notifyValueChange());
   }
 
   @Override
-  protected V getComponentValue(final JList<V> component) {
+  protected T getComponentValue(final JList<T> component) {
     return component.getSelectedValue();
   }
 
   @Override
-  protected void setComponentValue(final JList<V> component, final V value) {
+  protected void setComponentValue(final JList<T> component, final T value) {
     component.setSelectedValue(value, true);
   }
 }

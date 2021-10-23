@@ -7,12 +7,12 @@ import java.util.Set;
 
 /**
  * A class for linking two values.
- * @param <V> the type of the value
+ * @param <T> the type of the value
  */
-final class ValueLink<V> {
+final class ValueLink<T> {
 
-  private final Value<V> linkedValue;
-  private final Value<V> originalValue;
+  private final Value<T> linkedValue;
+  private final Value<T> originalValue;
 
   /**
    * True while the linked value is being updated
@@ -29,7 +29,7 @@ final class ValueLink<V> {
    * @param linkedValue the value to link to the original value
    * @param originalValue the original value
    */
-  ValueLink(final Value<V> linkedValue, final Value<V> originalValue) {
+  ValueLink(final Value<T> linkedValue, final Value<T> originalValue) {
     preventLinkCycle(linkedValue, originalValue);
     this.linkedValue = linkedValue;
     this.originalValue = originalValue;
@@ -75,38 +75,38 @@ final class ValueLink<V> {
     }
   }
 
-  private void combineValidators(final Value<V> linkedValue, final Value<V> originalValue) {
-    final LinkedValidator<V> originalValidators = new LinkedValidator<>(originalValue);
-    final LinkedValidator<V> linkedValidators = new LinkedValidator<>(linkedValue);
+  private void combineValidators(final Value<T> linkedValue, final Value<T> originalValue) {
+    final LinkedValidator<T> originalValidators = new LinkedValidator<>(originalValue);
+    final LinkedValidator<T> linkedValidators = new LinkedValidator<>(linkedValue);
     originalValidators.excluded = linkedValidators;
     linkedValidators.excluded = originalValidators;
     linkedValue.addValidator(originalValidators);
     originalValue.addValidator(linkedValidators);
   }
 
-  private static <V> void preventLinkCycle(final Value<V> linkedValue, final Value<V> originalValue) {
+  private static <T> void preventLinkCycle(final Value<T> linkedValue, final Value<T> originalValue) {
     if (originalValue == linkedValue) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }
-    final Set<Value<V>> linkedValues = originalValue.getLinkedValues();
+    final Set<Value<T>> linkedValues = originalValue.getLinkedValues();
     if (linkedValues.contains(linkedValue)) {
       throw new IllegalStateException("Cyclical value link detected");
     }
     linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
   }
 
-  private static final class LinkedValidator<V> implements Value.Validator<V> {
+  private static final class LinkedValidator<T> implements Value.Validator<T> {
 
-    private final Value<V> linkedValue;
+    private final Value<T> linkedValue;
 
-    private Value.Validator<V> excluded;
+    private Value.Validator<T> excluded;
 
-    private LinkedValidator(final Value<V> linkedValue) {
+    private LinkedValidator(final Value<T> linkedValue) {
       this.linkedValue = linkedValue;
     }
 
     @Override
-    public void validate(final V value) throws IllegalArgumentException {
+    public void validate(final T value) throws IllegalArgumentException {
       linkedValue.getValidators().stream()
               .filter(validator -> validator != excluded)
               .forEach(validator -> validator.validate(value));

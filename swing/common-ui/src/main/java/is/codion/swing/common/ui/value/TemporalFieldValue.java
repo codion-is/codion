@@ -8,19 +8,19 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 
-final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponentValue<V, TemporalField<V>> {
+final class TemporalFieldValue<T extends Temporal> extends FormattedTextComponentValue<T, TemporalField<T>> {
 
-  TemporalFieldValue(final TemporalField<V> textComponent, final UpdateOn updateOn) {
+  TemporalFieldValue(final TemporalField<T> textComponent, final UpdateOn updateOn) {
     super(textComponent, null, updateOn);
   }
 
   @Override
-  protected String formatTextFromValue(final V value) {
+  protected String formatTextFromValue(final T value) {
     return getComponent().getDateTimeFormatter().format(value);
   }
 
   @Override
-  protected V parseValueFromText(final String text) {
+  protected T parseValueFromText(final String text) {
     try {
       return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
     }

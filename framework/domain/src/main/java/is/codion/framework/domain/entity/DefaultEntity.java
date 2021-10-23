@@ -121,7 +121,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean isModified() {
-    return isModifiedInternal(false);
+    return isModified(false);
   }
 
   @Override
@@ -728,11 +728,7 @@ final class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private boolean isModifiedInternal(final boolean overrideModifiesEntity) {
-    return originalValues != null && writablePropertiesModified(overrideModifiesEntity);
-  }
-
-  private boolean writablePropertiesModified(final boolean overrideModifiesEntity) {
+  private boolean isModified(final boolean overrideModifiesEntity) {
     if (originalValues != null) {
       for (final Attribute<?> attribute : originalValues.keySet()) {
         final Property<?> property = definition.getProperty(attribute);
@@ -751,7 +747,7 @@ final class DefaultEntity implements Entity, Serializable {
     return false;
   }
 
-  private <T> void setOriginalValue(final Attribute<T> attribute, final Object originalValue) {
+  private <T> void setOriginalValue(final Attribute<T> attribute, final T originalValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
@@ -781,7 +777,7 @@ final class DefaultEntity implements Entity, Serializable {
     stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
     stream.writeInt(definition.getSerializationVersion());
-    final boolean isModified = isModifiedInternal(true);
+    final boolean isModified = isModified(true);
     stream.writeBoolean(isModified);
     final List<Property<?>> properties = definition.getProperties();
     for (int i = 0; i < properties.size(); i++) {
@@ -793,7 +789,7 @@ final class DefaultEntity implements Entity, Serializable {
         if (containsValue) {
           stream.writeObject(values.get(attribute));
           if (isModified) {
-            final boolean valueModified = originalValues != null && originalValues.containsKey(attribute);
+            final boolean valueModified = originalValues.containsKey(attribute);
             stream.writeBoolean(valueModified);
             if (valueModified) {
               stream.writeObject(originalValues.get(attribute));

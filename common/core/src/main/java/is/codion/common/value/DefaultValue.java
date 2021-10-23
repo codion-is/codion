@@ -3,22 +3,22 @@
  */
 package is.codion.common.value;
 
-final class DefaultValue<V> extends AbstractValue<V> {
+final class DefaultValue<T> extends AbstractValue<T> {
 
-  private V value;
+  private T value;
 
-  DefaultValue(final V initialValue, final V nullValue) {
+  DefaultValue(final T initialValue, final T nullValue) {
     super(nullValue, NotifyOnSet.YES);
     set(initialValue);
   }
 
   @Override
-  public V get() {
+  public T get() {
     return value;
   }
 
   @Override
-  protected void setValue(final V value) {
+  protected void setValue(final T value) {
     this.value = value;
   }
 }

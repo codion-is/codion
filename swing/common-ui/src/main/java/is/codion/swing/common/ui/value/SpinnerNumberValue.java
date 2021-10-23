@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.value;
 
 import javax.swing.JSpinner;
 
-final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<V, JSpinner> {
+final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<T, JSpinner> {
 
   SpinnerNumberValue(final JSpinner spinner) {
     super(spinner);
@@ -13,12 +13,12 @@ final class SpinnerNumberValue<V extends Number> extends AbstractComponentValue<
   }
 
   @Override
-  protected V getComponentValue(final JSpinner component) {
-    return (V) component.getValue();
+  protected T getComponentValue(final JSpinner component) {
+    return (T) component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final JSpinner component, final V value) {
+  protected void setComponentValue(final JSpinner component, final T value) {
     component.setValue(value == null ? 0 : value);
   }
 }

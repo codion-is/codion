@@ -18,38 +18,38 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A base Value implementation handling everything except the value itself.
- * @param <V> the value type
+ * @param <T> the value type
  */
-public abstract class AbstractValue<V> implements Value<V> {
+public abstract class AbstractValue<T> implements Value<T> {
 
   public enum NotifyOnSet {
     YES, NO
   }
 
-  private final Event<V> changeEvent = Event.event();
-  private final V nullValue;
+  private final Event<T> changeEvent = Event.event();
+  private final T nullValue;
   private final boolean notifyOnSet;
-  private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
-  private final Set<Value<V>> linkedValues = new LinkedHashSet<>();
+  private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
+  private final Set<Value<T>> linkedValues = new LinkedHashSet<>();
 
-  private ValueObserver<V> observer;
+  private ValueObserver<T> observer;
 
   protected AbstractValue() {
     this(null);
   }
 
-  protected AbstractValue(final V nullValue) {
+  protected AbstractValue(final T nullValue) {
     this(nullValue, NotifyOnSet.NO);
   }
 
-  protected AbstractValue(final V nullValue, final NotifyOnSet notifyOnSet) {
+  protected AbstractValue(final T nullValue, final NotifyOnSet notifyOnSet) {
     this.nullValue = nullValue;
     this.notifyOnSet = notifyOnSet == NotifyOnSet.YES;
   }
 
   @Override
-  public final void set(final V value) {
-    final V actualValue = value == null ? nullValue : value;
+  public final void set(final T value) {
+    final T actualValue = value == null ? nullValue : value;
     validators.forEach(validator -> validator.validate(actualValue));
     if (!Objects.equals(get(), actualValue)) {
       setValue(actualValue);
@@ -60,7 +60,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final ValueObserver<V> getObserver() {
+  public final ValueObserver<T> getObserver() {
     synchronized (changeEvent) {
       if (observer == null) {
         observer = new DefaultValueObserver<>(this);
@@ -71,7 +71,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final Optional<V> toOptional() {
+  public final Optional<T> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }
@@ -95,7 +95,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final boolean equalTo(final V value) {
+  public final boolean equalTo(final T value) {
     return Objects.equals(get(), value);
   }
 
@@ -110,17 +110,17 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final void addDataListener(final EventDataListener<V> listener) {
+  public final void addDataListener(final EventDataListener<T> listener) {
     changeEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeDataListener(final EventDataListener<V> listener) {
+  public final void removeDataListener(final EventDataListener<T> listener) {
     changeEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void link(final Value<V> originalValue) {
+  public final void link(final Value<T> originalValue) {
     if (linkedValues.contains(requireNonNull(originalValue, "originalValue"))) {
       throw new IllegalArgumentException("Values are already linked");
     }
@@ -129,24 +129,24 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final void link(final ValueObserver<V> originalValueObserver) {
+  public final void link(final ValueObserver<T> originalValueObserver) {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
     originalValueObserver.addDataListener(this::set);
   }
 
   @Override
-  public final Set<Value<V>> getLinkedValues() {
+  public final Set<Value<T>> getLinkedValues() {
     return unmodifiableSet(linkedValues);
   }
 
   @Override
-  public final void addValidator(final Validator<V> validator) {
+  public final void addValidator(final Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
     validators.add(validator);
   }
 
   @Override
-  public final Collection<Validator<V>> getValidators() {
+  public final Collection<Validator<T>> getValidators() {
     return unmodifiableSet(validators);
   }
 
@@ -154,7 +154,7 @@ public abstract class AbstractValue<V> implements Value<V> {
    * Sets the actual internal value.
    * @param value the value
    */
-  protected abstract void setValue(final V value);
+  protected abstract void setValue(final T value);
 
   /**
    * Fires the change event for this value, using the current value, indicating that

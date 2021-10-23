@@ -9,26 +9,26 @@ import java.time.temporal.Temporal;
 
 /**
  * A InputProvider for Temporal value input
- * @param <V> the Temporal type
+ * @param <T> the Temporal type
  */
-final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponentValue<V, TemporalInputPanel<V>> {
+final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
 
   /**
    * Instantiates a new {@link TemporalInputPanelValue} for {@link Temporal} values.
    * @param inputPanel the input panel to use
    */
-  TemporalInputPanelValue(final TemporalInputPanel<V> inputPanel) {
+  TemporalInputPanelValue(final TemporalInputPanel<T> inputPanel) {
     super(inputPanel);
     inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
   }
 
   @Override
-  protected V getComponentValue(final TemporalInputPanel<V> component) {
+  protected T getComponentValue(final TemporalInputPanel<T> component) {
     return component.getTemporal();
   }
 
   @Override
-  protected void setComponentValue(final TemporalInputPanel<V> component, final V value) {
+  protected void setComponentValue(final TemporalInputPanel<T> component, final T value) {
     component.setTemporal(value);
   }
 }

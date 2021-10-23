@@ -12,21 +12,21 @@ import java.util.Set;
 /**
  * A wrapper class for setting and getting a value.
  * A factory class for {@link Value} instances.
- * @param <V> the type of the value
+ * @param <T> the type of the value
  */
-public interface Value<V> extends ValueObserver<V> {
+public interface Value<T> extends ValueObserver<T> {
 
   /**
    * Sets the value, setting the same value again does not trigger a value change
    * @param value the value
    */
-  void set(V value);
+  void set(T value);
 
   /**
    * Returns a ValueObserver notified each time this value changes.
    * @return a ValueObserver for this value
    */
-  ValueObserver<V> getObserver();
+  ValueObserver<T> getObserver();
 
   /**
    * Creates a bidirectional link between this and the given original value,
@@ -34,7 +34,7 @@ public interface Value<V> extends ValueObserver<V> {
    * Note that after a call to this method this value is the same as {@code originalValue}.
    * @param originalValue the original value to link this value to
    */
-  void link(Value<V> originalValue);
+  void link(Value<T> originalValue);
 
   /**
    * Creates a unidirectional link between this value and the given original value observer,
@@ -42,12 +42,12 @@ public interface Value<V> extends ValueObserver<V> {
    * Note that after a call to this method the value of this value is the same as the original value.
    * @param originalValueObserver the original value to link this value to
    */
-  void link(ValueObserver<V> originalValueObserver);
+  void link(ValueObserver<T> originalValueObserver);
 
   /**
    * @return an unmodifiable set containing the values that have been linked to this value
    */
-  Set<Value<V>> getLinkedValues();
+  Set<Value<T>> getLinkedValues();
 
   /**
    * Adds a validator to this {@link Value}.
@@ -55,43 +55,43 @@ public interface Value<V> extends ValueObserver<V> {
    * @param validator the validator
    * @throws IllegalArgumentException in case the current value is invalid according to the validator
    */
-  void addValidator(Validator<V> validator);
+  void addValidator(Validator<T> validator);
 
   /**
    * @return the validators
    */
-  Collection<Validator<V>> getValidators();
+  Collection<Validator<T>> getValidators();
 
   /**
    * A Validator for {@link Value}s.
-   * @param <V> the value type
+   * @param <T> the value type
    */
-  interface Validator<V> {
+  interface Validator<T> {
 
     /**
      * Validates the given value.
      * @param value the value to validate
      * @throws IllegalArgumentException in case of an invalid value
      */
-    void validate(final V value) throws IllegalArgumentException;
+    void validate(final T value) throws IllegalArgumentException;
   }
 
   /**
    * Instantiates a new Value instance wrapping a null initial value
-   * @param <V> type to wrap
+   * @param <T> type to wrap
    * @return a Value for the given type
    */
-  static <V> Value<V> value() {
+  static <T> Value<T> value() {
     return value(null);
   }
 
   /**
    * Instantiates a new Value
    * @param initialValue the initial value
-   * @param <V> type to wrap
+   * @param <T> type to wrap
    * @return a Value for the given type with the given initial value
    */
-  static <V> Value<V> value(final V initialValue) {
+  static <T> Value<T> value(final T initialValue) {
     return value(initialValue, null);
   }
 
@@ -99,29 +99,29 @@ public interface Value<V> extends ValueObserver<V> {
    * Instantiates a new Value
    * @param initialValue the initial value
    * @param nullValue the actual value to use when the value is set to null
-   * @param <V> type to wrap
+   * @param <T> type to wrap
    * @return a Value for the given type with the given initial value
    */
-  static <V> Value<V> value(final V initialValue, final V nullValue) {
+  static <T> Value<T> value(final T initialValue, final T nullValue) {
     return new DefaultValue<>(initialValue, nullValue);
   }
 
   /**
    * Instantiates a new empty ValueSet
-   * @param <V> the value type
+   * @param <T> the value type
    * @return a ValueSet
    */
-  static <V> ValueSet<V> valueSet() {
+  static <T> ValueSet<T> valueSet() {
     return valueSet(Collections.emptySet());
   }
 
   /**
    * Instantiates a new ValueSet
    * @param initialValues the initial values, may not be null
-   * @param <V> the value type
+   * @param <T> the value type
    * @return a ValueSet
    */
-  static <V> ValueSet<V> valueSet(final Set<V> initialValues) {
+  static <T> ValueSet<T> valueSet(final Set<T> initialValues) {
     return new DefaultValueSet<>(initialValues);
   }
 
@@ -131,11 +131,11 @@ public interface Value<V> extends ValueObserver<V> {
    * @param propertyName the name of the property
    * @param valueClass the value class
    * @param valueChangeObserver an observer notified each time the value changes
-   * @param <V> type to wrap
+   * @param <T> type to wrap
    * @return a Value for the given property
    */
-  static <V> PropertyValue<V> propertyValue(final Object owner, final String propertyName, final Class<V> valueClass,
-                                            final EventObserver<V> valueChangeObserver) {
+  static <T> PropertyValue<T> propertyValue(final Object owner, final String propertyName, final Class<T> valueClass,
+                                            final EventObserver<T> valueChangeObserver) {
     return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 }

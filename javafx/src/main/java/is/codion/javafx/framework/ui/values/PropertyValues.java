@@ -41,10 +41,10 @@ public final class PropertyValues {
 
   /**
    * @param selectionModel the selection model
-   * @param <V> the value type
+   * @param <T> the value type
    * @return a {@link Value} based on the selected item in the given selection model
    */
-  public static <V> Value<V> selectedItemValue(final SingleSelectionModel<Item<V>> selectionModel) {
+  public static <T> Value<T> selectedItemValue(final SingleSelectionModel<Item<T>> selectionModel) {
     return new SelectedItemValue<>(selectionModel);
   }
 
@@ -58,10 +58,10 @@ public final class PropertyValues {
 
   /**
    * @param selectionModel the selection model
-   * @param <V> the type of the actual value
+   * @param <T> the type of the actual value
    * @return a {@link Value} based on the selected item in the given selection model
    */
-  public static <V> Value<V> selectedValue(final SingleSelectionModel<V> selectionModel) {
+  public static <T> Value<T> selectedValue(final SingleSelectionModel<T> selectionModel) {
     return new SelectedValue<>(selectionModel);
   }
 
@@ -356,29 +356,29 @@ public final class PropertyValues {
     }
   }
 
-  private static final class DefaultStringValue<V> extends AbstractValue<V> implements StringValue<V> {
+  private static final class DefaultStringValue<T> extends AbstractValue<T> implements StringValue<T> {
 
     private final StringProperty stringProperty;
-    private final StringConverter<V> converter;
+    private final StringConverter<T> converter;
 
-    public DefaultStringValue(final StringProperty stringProperty, final StringConverter<V> converter) {
+    public DefaultStringValue(final StringProperty stringProperty, final StringConverter<T> converter) {
       this.stringProperty = stringProperty;
       this.converter = converter;
       this.stringProperty.addListener((observable, oldValue, newValue) -> notifyValueChange());
     }
 
     @Override
-    public V get() {
+    public T get() {
       return converter.fromString(stringProperty.get());
     }
 
     @Override
-    public StringConverter<V> getConverter() {
+    public StringConverter<T> getConverter() {
       return converter;
     }
 
     @Override
-    protected void setValue(final V value) {
+    protected void setValue(final T value) {
       stringProperty.set(converter.toString(value));
     }
   }
@@ -403,22 +403,22 @@ public final class PropertyValues {
     }
   }
 
-  private static final class SelectedValue<V> extends AbstractValue<V> {
+  private static final class SelectedValue<T> extends AbstractValue<T> {
 
-    private final SingleSelectionModel<V> selectionModel;
+    private final SingleSelectionModel<T> selectionModel;
 
-    public SelectedValue(final SingleSelectionModel<V> selectionModel) {
+    public SelectedValue(final SingleSelectionModel<T> selectionModel) {
       this.selectionModel = selectionModel;
       this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> notifyValueChange());
     }
 
     @Override
-    public V get() {
+    public T get() {
       return selectionModel.getSelectedItem();
     }
 
     @Override
-    protected void setValue(final V value) {
+    protected void setValue(final T value) {
       selectionModel.select(value);
     }
   }

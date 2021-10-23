@@ -106,20 +106,20 @@ public final class ComponentValues {
   /**
    * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
    * @param inputPanel the input panel to use
-   * @param <V> the temporal value type
+   * @param <T> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <V extends Temporal> ComponentValue<V, TemporalInputPanel<V>> temporalInputPanel(final TemporalInputPanel<V> inputPanel) {
+  public static <T extends Temporal> ComponentValue<T, TemporalInputPanel<T>> temporalInputPanel(final TemporalInputPanel<T> inputPanel) {
     return new TemporalInputPanelValue<>(inputPanel);
   }
 
   /**
    * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
    * @param temporalField the temporal field to use
-   * @param <V> the temporal value type
+   * @param <T> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <V extends Temporal> ComponentValue<V, TemporalField<V>> temporalField(final TemporalField<V> temporalField) {
+  public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(final TemporalField<T> temporalField) {
     return temporalField(temporalField, UpdateOn.KEYSTROKE);
   }
 
@@ -127,32 +127,32 @@ public final class ComponentValues {
    * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
    * @param temporalField the temporal field to use
    * @param updateOn specifies when the underlying value should be updated
-   * @param <V> the temporal value type
+   * @param <T> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <V extends Temporal> ComponentValue<V, TemporalField<V>> temporalField(final TemporalField<V> temporalField,
+  public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(final TemporalField<T> temporalField,
                                                                                        final UpdateOn updateOn) {
     return new TemporalFieldValue<>(temporalField, updateOn);
   }
 
   /**
    * Instantiates an Item based ComponentValue.
-   * @param <V> the value type
+   * @param <T> the value type
    * @param <C> the combo box type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V, C extends JComboBox<Item<V>>> ComponentValue<V, C> itemComboBox(final C comboBox) {
+  public static <T, C extends JComboBox<Item<T>>> ComponentValue<T, C> itemComboBox(final C comboBox) {
     return new SelectedItemValue<>(comboBox);
   }
 
   /**
-   * @param <V> the value type
+   * @param <T> the value type
    * @param <C> the combo box type
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V, C extends JComboBox<V>> ComponentValue<V, C> comboBox(final C comboBox) {
+  public static <T, C extends JComboBox<T>> ComponentValue<T, C> comboBox(final C comboBox) {
     return new SelectedValue<>(comboBox);
   }
 

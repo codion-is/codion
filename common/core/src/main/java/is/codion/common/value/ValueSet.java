@@ -7,23 +7,23 @@ import java.util.Set;
 
 /**
  * A Value holding a set of values, including a possible null value.
- * @param <V> the value type
+ * @param <T> the value type
  */
-public interface ValueSet<V> extends Value<Set<V>> {
+public interface ValueSet<T> extends Value<Set<T>> {
 
   /**
    * Adds a value to this set, returns true if the set did not contain the value before adding.
    * @param value the value to add
    * @return true if the value was added
    */
-  boolean add(V value);
+  boolean add(T value);
 
   /**
    * Removes a value from this set, returns true if the set contained the value before removing.
    * @param value the value to remove
    * @return true if the value was removed
    */
-  boolean remove(V value);
+  boolean remove(T value);
 
   /**
    * @return true if this value set is empty
@@ -47,5 +47,5 @@ public interface ValueSet<V> extends Value<Set<V>> {
    * case it contains multiple items.
    * @return a single item value based on this value set
    */
-  Value<V> value();
+  Value<T> value();
 }

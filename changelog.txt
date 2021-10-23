@@ -7313,3 +7313,4 @@
   DatabaseExplorerModel bug fixed, was still adding type parameter to EntityType constants
   ConnectionPoolMonitor, check out time collection can now be turned off
   AbstractConnectionPoolWrapper.getConnection() bug fixed, check out timer was started before credentials were checked
+  Value<V> type parameter renamed to the more typical T

@@ -173,10 +173,10 @@ public interface EntityEditModel {
    * Returns a Value based on {@code attribute} in this edit model, note that
    * subsequent calls for the same attribute may return the same value.
    * @param attribute the attribute
-   * @param <V> the value type
+   * @param <T> the value type
    * @return a Value based on the given edit model value
    */
-  <V> Value<V> value(Attribute<V> attribute);
+  <T> Value<T> value(Attribute<T> attribute);
 
   /**
    * @return the underlying domain entities

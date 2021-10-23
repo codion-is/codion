@@ -11,21 +11,21 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultValueObserver<V> implements ValueObserver<V> {
+final class DefaultValueObserver<T> implements ValueObserver<T> {
 
-  private final Value<V> value;
+  private final Value<T> value;
 
-  DefaultValueObserver(final Value<V> value) {
+  DefaultValueObserver(final Value<T> value) {
     this.value = requireNonNull(value, "value");
   }
 
   @Override
-  public V get() {
+  public T get() {
     return value.get();
   }
 
   @Override
-  public Optional<V> toOptional() {
+  public Optional<T> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }
@@ -49,7 +49,7 @@ final class DefaultValueObserver<V> implements ValueObserver<V> {
   }
 
   @Override
-  public boolean equalTo(final V value) {
+  public boolean equalTo(final T value) {
     return Objects.equals(get(), value);
   }
 
@@ -64,12 +64,12 @@ final class DefaultValueObserver<V> implements ValueObserver<V> {
   }
 
   @Override
-  public void addDataListener(final EventDataListener<V> listener) {
+  public void addDataListener(final EventDataListener<T> listener) {
     value.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<V> listener) {
+  public void removeDataListener(final EventDataListener<T> listener) {
     value.removeDataListener(listener);
   }
 }

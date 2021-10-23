@@ -10,10 +10,10 @@ import javax.swing.JComponent;
 /**
  * A {@link Value} represented by an input component of some sort.<br>
  * {@link ComponentValues} is a factory for {@link ComponentValue} implementations.
- * @param <V> the value type
+ * @param <T> the value type
  * @param <C> the component type
  */
-public interface ComponentValue<V, C extends JComponent> extends Value<V> {
+public interface ComponentValue<T, C extends JComponent> extends Value<T> {
 
   /**
    * @return the input component representing the value
@@ -26,7 +26,7 @@ public interface ComponentValue<V, C extends JComponent> extends Value<V> {
    * @return the value from the underlying component if the user presses OK
    * @throws is.codion.common.model.CancelException if the user cancels
    */
-  V showDialog(final JComponent owner);
+  T showDialog(final JComponent owner);
 
   /**
    * Displays the underlying component in a dialog and returns the value if the user presses OK.
@@ -35,5 +35,5 @@ public interface ComponentValue<V, C extends JComponent> extends Value<V> {
    * @return the value from the underlying component if the user presses OK
    * @throws is.codion.common.model.CancelException if the user cancels
    */
-  V showDialog(final JComponent owner, final String title);
+  T showDialog(final JComponent owner, final String title);
 }

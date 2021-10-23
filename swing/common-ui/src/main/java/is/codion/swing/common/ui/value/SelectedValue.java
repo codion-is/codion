@@ -10,7 +10,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 
-final class SelectedValue<V, C extends JComboBox<V>> extends AbstractComponentValue<V, C> {
+final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentValue<T, C> {
 
   SelectedValue(final C comboBox) {
     super(comboBox);
@@ -25,17 +25,17 @@ final class SelectedValue<V, C extends JComboBox<V>> extends AbstractComponentVa
   }
 
   @Override
-  protected V getComponentValue(final C component) {
-    final ComboBoxModel<V> comboBoxModel = component.getModel();
+  protected T getComponentValue(final C component) {
+    final ComboBoxModel<T> comboBoxModel = component.getModel();
     if (comboBoxModel instanceof FilteredComboBoxModel) {
-      return ((FilteredComboBoxModel<V>) comboBoxModel).getSelectedValue();
+      return ((FilteredComboBoxModel<T>) comboBoxModel).getSelectedValue();
     }
 
-    return (V) comboBoxModel.getSelectedItem();
+    return (T) comboBoxModel.getSelectedItem();
   }
 
   @Override
-  protected void setComponentValue(final C component, final V value) {
+  protected void setComponentValue(final C component, final T value) {
     component.getModel().setSelectedItem(value);
   }
 }

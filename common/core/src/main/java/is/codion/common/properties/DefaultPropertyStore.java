@@ -72,25 +72,25 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public <V> PropertyValue<V> propertyValue(final String propertyName, final V defaultValue, final V nullValue,
-                                            final Function<String, V> decoder, final Function<V, String> encoder) {
+  public <T> PropertyValue<T> propertyValue(final String propertyName, final T defaultValue, final T nullValue,
+                                            final Function<String, T> decoder, final Function<T, String> encoder) {
     if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
-    final DefaultPropertyValue<V> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
+    final DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
     propertyValues.put(propertyName, value);
 
     return value;
   }
 
   @Override
-  public <V> PropertyValue<List<V>> propertyListValue(final String propertyName, final List<V> defaultValue,
-                                                      final Function<String, V> decoder, final Function<V, String> encoder) {
+  public <T> PropertyValue<List<T>> propertyListValue(final String propertyName, final List<T> defaultValue,
+                                                      final Function<String, T> decoder, final Function<T, String> encoder) {
     if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
 
-    final DefaultPropertyValue<List<V>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
+    final DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
             stringValue -> stringValue == null ? emptyList() :
                     Arrays.stream(stringValue.split(VALUE_SEPARATOR)).map(decoder).collect(Collectors.toList()),
             valueList -> valueList.stream().map(encoder).collect(Collectors.joining(VALUE_SEPARATOR)));
@@ -100,8 +100,8 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public <V> PropertyValue<V> getPropertyValue(final String propertyName) {
-    return (PropertyValue<V>) propertyValues.get(propertyName);
+  public <T> PropertyValue<T> getPropertyValue(final String propertyName) {
+    return (PropertyValue<T>) propertyValues.get(propertyName);
   }
 
   @Override
@@ -154,15 +154,15 @@ final class DefaultPropertyStore implements PropertyStore {
     }
   }
 
-  private final class DefaultPropertyValue<V> extends AbstractValue<V> implements PropertyValue<V> {
+  private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
     private final String propertyName;
-    private final Function<V, String> encoder;
+    private final Function<T, String> encoder;
 
-    private V value;
+    private T value;
 
-    private DefaultPropertyValue(final String propertyName, final V defaultValue, final V nullValue,
-                                 final Function<String, V> decoder, final Function<V, String> encoder) {
+    private DefaultPropertyValue(final String propertyName, final T defaultValue, final T nullValue,
+                                 final Function<String, T> decoder, final Function<T, String> encoder) {
       super(nullValue, NotifyOnSet.YES);
       this.propertyName = propertyName;
       requireNonNull(decoder, "decoder");
@@ -177,12 +177,12 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    public V getOrThrow() throws IllegalStateException {
+    public T getOrThrow() throws IllegalStateException {
       return getOrThrow("Required configuration value is missing: " + propertyName);
     }
 
     @Override
-    public V getOrThrow(final String message) throws IllegalStateException {
+    public T getOrThrow(final String message) throws IllegalStateException {
       requireNonNull(message, "message");
       if (value == null) {
         throw new IllegalStateException(message);
@@ -192,7 +192,7 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    public V get() {
+    public T get() {
       return value;
     }
 
@@ -202,7 +202,7 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    protected void setValue(final V value) {
+    protected void setValue(final T value) {
       this.value = value;
       if (value == null) {
         properties.remove(propertyName);
