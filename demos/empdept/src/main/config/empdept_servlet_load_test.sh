@@ -1,1 +1,0 @@
-java -Xmx512m -Dcodion.configurationFile=rest_load_test.config -cp empdept.jar:config is.codion.framework.demos.empdept.servlet.EmpDeptServletLoadTest &

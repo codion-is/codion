@@ -1,1 +1,0 @@
-java -Xmx512m -Dcodion.configurationFile=load_test.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* is.codion.framework.demos.empdept.testing.EmpDeptLoadTest

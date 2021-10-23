@@ -1,1 +1,0 @@
-java -Xmx128m -Dcodion.configurationFile=h2db.config -cp empdept.jar:config is.codion.framework.demos.empdept.ui.EmpDeptAppPanel &

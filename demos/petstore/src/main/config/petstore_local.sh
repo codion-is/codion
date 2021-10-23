@@ -1,1 +1,0 @@
-java -Xmx128m -Dcodion.configurationFile=h2db.config -cp petstore.jar:config is.codion.framework.demos.petstore.ui.PetstoreAppPanel &

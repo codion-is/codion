@@ -1,1 +1,0 @@
-java -Xmx128m -Dcodion.configurationFile=remote.config -cp empdept.jar;config is.codion.framework.demos.empdept.ui.EmpDeptAppPanel

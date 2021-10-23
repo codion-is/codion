@@ -107,7 +107,7 @@ task loadTestHttpScript(type: CreateStartScripts) {
 
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
-    from(files('src/main/resources/logback.xml'))
+    from(files('src/main/config/logback.xml'))
     from(files('../../framework/server/src/main/security/truststore.jks'))
 }
 
@@ -130,7 +130,7 @@ task runClientLocal(type: JavaExec) {
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
             'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml',
+            'logback.configurationFile'   : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'         : 'true'
     ]
 }
