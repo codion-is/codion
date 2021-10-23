@@ -127,10 +127,10 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
       return conditions.get(0).getWhereClause(definition);
     }
 
-    return new StringBuilder("(").append(conditions.stream()
+    return conditions.stream()
             .map(condition -> condition.getWhereClause(definition))
             .filter(string -> !string.isEmpty())
-            .collect(joining(toString(conjunction)))).append(")").toString();
+            .collect(joining(toString(conjunction), "(", ")"));
   }
 
   @Override
