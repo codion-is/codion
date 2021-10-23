@@ -371,7 +371,7 @@ public interface EntityDefinition {
   /**
    * @param columnAttribute the column attribute
    * @param <T> the attribute type
-   * @return the ForeignKeyProperties based on the given column property
+   * @return the ForeignKeyProperties based on the given column attribute
    */
   <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute);
 
