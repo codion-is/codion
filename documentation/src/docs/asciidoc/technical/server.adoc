@@ -107,7 +107,7 @@ include::{dir-source}/src/main/config/h2_embedded.config[]
 
 == Code examples
 
-Absolute bare bones examples of how to run the EntityServer and connect to it.
+Absolute bare-bones examples of how to run the EntityServer and connect to it.
 
 === RMI
 [source]
