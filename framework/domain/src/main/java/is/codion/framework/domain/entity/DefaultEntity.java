@@ -732,26 +732,7 @@ final class DefaultEntity implements Entity, Serializable {
     return originalValues != null && writablePropertiesModified(overrideModifiesEntity);
   }
 
-  private boolean writablePropertiesModified(final boolean overrideModifiesEntity) {
-    if (originalValues != null) {
-      for (final Attribute<?> attribute : originalValues.keySet()) {
-        final Property<?> property = definition.getProperty(attribute);
-        if (property instanceof ColumnProperty) {
-          final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-          if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
-            return true;
-          }
-        }
-        if (property instanceof TransientProperty) {
-          return overrideModifiesEntity || ((TransientProperty<?>) property).isModifiesEntity();
-        }
-      }
-    }
-
-    return false;
-  }
-
-  private <T> void setOriginalValue(final Attribute<T> attribute, final Object originalValue) {
+  private <T> void setOriginalValue(final Attribute<T> attribute, final T originalValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
