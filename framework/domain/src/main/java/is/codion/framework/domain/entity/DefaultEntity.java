@@ -793,7 +793,7 @@ final class DefaultEntity implements Entity, Serializable {
         if (containsValue) {
           stream.writeObject(values.get(attribute));
           if (isModified) {
-            final boolean valueModified = originalValues != null && originalValues.containsKey(attribute);
+            final boolean valueModified = originalValues.containsKey(attribute);
             stream.writeBoolean(valueModified);
             if (valueModified) {
               stream.writeObject(originalValues.get(attribute));
