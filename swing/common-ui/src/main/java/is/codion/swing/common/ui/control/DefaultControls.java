@@ -7,6 +7,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -119,7 +120,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public JPanel createVerticalButtonPanel() {
-    final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
+    final JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(0, 1)));
     new ButtonControlHandler(panel, this, true);
 
     return panel;
@@ -127,7 +128,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public JPanel createHorizontalButtonPanel() {
-    final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
+    final JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(1, 0)));
     new ButtonControlHandler(panel, this, false);
 
     return panel;
@@ -175,5 +176,14 @@ final class DefaultControls extends AbstractControl implements Controls {
     actions.forEach(new ToolBarControlHandler(toolBar));
 
     return toolBar;
+  }
+
+  private static JPanel addEmptyBorder(final JPanel panel) {
+    final Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    if (gap != null) {
+      panel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+    }
+
+    return panel;
   }
 }

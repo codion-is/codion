@@ -7315,3 +7315,5 @@
   AbstractConnectionPoolWrapper.getConnection() bug fixed, check out timer was started before credentials were checked
   Value<V> type parameter renamed to the more typical T
   prefix and postfix parameters used when using Collectors.joining() instead of appending manually
+  DefaultControls.createVerticalButtonPanel() and createHorizontalButtonPanel() now adds an empty border around the buttons, using the gap from Layouts.HORIZONTAL_VERTICAL_GAP configuration value
+  Value now extends EventDataListener, setting the value on onEvent

@@ -114,6 +114,11 @@ class DefaultState implements State {
   }
 
   @Override
+  public final void onEvent(final Boolean data) {
+    set(data);
+  }
+
+  @Override
   public final void addListener(final EventListener listener) {
     getObserver().addListener(listener);
   }

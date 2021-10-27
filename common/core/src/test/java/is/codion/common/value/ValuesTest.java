@@ -366,4 +366,21 @@ public class ValuesTest {
     assertThrows(IllegalArgumentException.class, () -> value3.set(5));
     assertThrows(IllegalArgumentException.class, () -> value4.set(5));
   }
+
+  @Test
+  void valueAsEventDataListener() {
+    final Value<Integer> value = Value.value();
+    final Value<Integer> listeningValue = Value.value();
+
+    value.addDataListener(listeningValue);
+    value.set(1);
+
+    assertEquals(1, listeningValue.get());
+
+    listeningValue.set(2);
+
+    value.set(3);
+
+    assertEquals(3, listeningValue.get());
+  }
 }
