@@ -136,6 +136,11 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
   }
 
   @Override
+  public void onEvent(final T data) {
+    set(data);
+  }
+
+  @Override
   public void addListener(final EventListener listener) {
     changeEvent.addListener(listener);
   }

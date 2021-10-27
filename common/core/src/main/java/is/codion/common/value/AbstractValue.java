@@ -100,6 +100,11 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
+  public final void onEvent(final T data) {
+    set(data);
+  }
+
+  @Override
   public final void addListener(final EventListener listener) {
     changeEvent.addListener(listener);
   }

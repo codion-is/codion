@@ -3,6 +3,7 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.Set;
  * A factory class for {@link Value} instances.
  * @param <T> the type of the value
  */
-public interface Value<T> extends ValueObserver<T> {
+public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
 
   /**
    * Sets the value, setting the same value again does not trigger a value change
