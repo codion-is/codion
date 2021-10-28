@@ -31,7 +31,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     final Controls printControls = super.createPrintControls();
     printControls.add(Control.builder(this::viewCustomerReport)
             .caption(BUNDLE.getString("customer_report"))
-            .enabledState(getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver())
+            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
             .build());
 
     return printControls;
