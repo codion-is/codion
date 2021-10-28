@@ -141,6 +141,12 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
+  public SelectCondition attributes(final List<Attribute<?>> attributes) {
+    this.selectAttributes = new ArrayList<>(requireNonNull(attributes));
+    return this;
+  }
+
+  @Override
   public List<Attribute<?>> getSelectAttributes() {
     return selectAttributes;
   }
