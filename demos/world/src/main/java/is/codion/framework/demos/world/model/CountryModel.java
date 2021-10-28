@@ -33,12 +33,15 @@ public final class CountryModel extends SwingEntityModel {
       Entity country = getEditModel().getEntityCopy();
 
       List<City> cities = Entity.castTo(City.class, cityTableModel.getItems()).stream()
-              .filter(city -> city.isInCountry(country)).collect(Collectors.toList());
+              .filter(city -> city.isInCountry(country))
+              .collect(Collectors.toList());
 
       OptionalDouble averageCityPopulation = cities.stream()
               .map(city -> city.getOptional(City.POPULATION))
-              .filter(Optional::isPresent).map(Optional::get)
-              .mapToInt(Integer::valueOf).average();
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .mapToInt(Integer::valueOf)
+              .average();
 
       return averageCityPopulation.isPresent() ? averageCityPopulation.getAsDouble() : null;
     }
