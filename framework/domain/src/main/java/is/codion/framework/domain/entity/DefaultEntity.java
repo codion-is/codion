@@ -126,7 +126,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
-    return putInternal(definition.getProperty(attribute), value);
+    return put(definition.getProperty(attribute), value);
   }
 
   @Override
@@ -465,7 +465,7 @@ final class DefaultEntity implements Entity, Serializable {
     return get(property);
   }
 
-  private <T> T putInternal(final Property<T> property, final T value) {
+  private <T> T put(final Property<T> property, final T value) {
     final T newValue = validateAndPrepareForPut(property, value);
     final Attribute<T> attribute = property.getAttribute();
     final boolean initialization = !values.containsKey(attribute);
@@ -582,7 +582,7 @@ final class DefaultEntity implements Entity, Serializable {
       final ForeignKey.Reference<?> reference = references.get(i);
       if (!foreignKeyProperty.isReadOnly(reference.getAttribute())) {
         final Property<Object> columnProperty = definition.getColumnProperty((Attribute<Object>) reference.getAttribute());
-        putInternal(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.getReferencedAttribute()));
+        put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.getReferencedAttribute()));
       }
     }
   }
@@ -598,7 +598,7 @@ final class DefaultEntity implements Entity, Serializable {
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
         final DenormalizedProperty<Object> denormalizedProperty = (DenormalizedProperty<Object>) denormalizedProperties.get(i);
-        putInternal(denormalizedProperty, referencedEntity == null ? null :
+        put(denormalizedProperty, referencedEntity == null ? null :
                 referencedEntity.get(denormalizedProperty.getDenormalizedAttribute()));
       }
     }
@@ -705,8 +705,8 @@ final class DefaultEntity implements Entity, Serializable {
     return new DefaultKey(definition, attribute, originalValues ? getOriginal(attribute) : values.get(attribute), true);
   }
 
-  private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty, final boolean originalValues) {
-    return derivedProperty.getValueProvider().get(getSourceValues(derivedProperty, originalValues));
+  private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty, final boolean originalValue) {
+    return derivedProperty.getValueProvider().get(getSourceValues(derivedProperty, originalValue));
   }
 
   private DerivedProperty.SourceValues getSourceValues(final DerivedProperty<?> derivedProperty, final boolean originalValues) {

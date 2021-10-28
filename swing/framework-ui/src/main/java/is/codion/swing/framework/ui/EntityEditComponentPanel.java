@@ -467,7 +467,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final TextInputPanelBuilder createTextInputPanel(final Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.textInputPanel(attribute)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns)
+            .onBuild(inputPanel -> addValidator(attribute, inputPanel.getTextField(), getEditModel())));
   }
 
   /**
@@ -491,7 +492,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(final Attribute<T> attribute) {
     return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponentBuilders.textField(attribute)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns)
+            .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -500,7 +502,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a local time field builder
    */
   protected final LocalTimeFieldBuilder createLocalTimeField(final Attribute<LocalTime> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.localTimeField(attribute));
+    return setComponentBuilder(attribute, entityComponentBuilders.localTimeField(attribute)
+            .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -509,7 +512,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a local date field builder
    */
   protected final LocalDateFieldBuilder createLocalDateField(final Attribute<LocalDate> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.localDateField(attribute));
+    return setComponentBuilder(attribute, entityComponentBuilders.localDateField(attribute)
+            .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -518,7 +522,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a local date time field builder
    */
   protected final LocalDateTimeFieldBuilder createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.localDateTimeField(attribute));
+    return setComponentBuilder(attribute, entityComponentBuilders.localDateTimeField(attribute)
+            .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -527,7 +532,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return an offset date time field builder
    */
   protected final OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
-    return setComponentBuilder(attribute, entityComponentBuilders.offsetDateTimeField(attribute));
+    return setComponentBuilder(attribute, entityComponentBuilders.offsetDateTimeField(attribute)
+            .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -537,7 +543,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final IntegerFieldBuilder createIntegerField(final Attribute<Integer> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.integerField(attribute)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns)
+            .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -547,7 +554,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final LongFieldBuilder createLongField(final Attribute<Long> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.longField(attribute)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns)
+            .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -557,7 +565,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final DoubleFieldBuilder createDoubleField(final Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.doubleField(attribute)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns)
+            .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
 
   /**
@@ -567,7 +576,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final BigDecimalFieldBuilder createBigDecimalField(final Attribute<BigDecimal> attribute) {
     return setComponentBuilder(attribute, entityComponentBuilders.bigDecimalField(attribute)
-            .columns(defaultTextFieldColumns));
+            .columns(defaultTextFieldColumns)
+            .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
 
   /**

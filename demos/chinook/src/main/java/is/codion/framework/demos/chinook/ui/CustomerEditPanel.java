@@ -31,8 +31,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.CITY);
     createTextField(Customer.STATE)
             .upperCase(true)
-            .lookupDialog(new StateValueSupplier())
-            .build();
+            .lookupDialog(new StateValueSupplier());
     createTextField(Customer.COUNTRY);
     createTextField(Customer.POSTALCODE);
     createTextField(Customer.PHONE);
