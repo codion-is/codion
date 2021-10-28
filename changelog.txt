@@ -7318,3 +7318,4 @@
   DefaultControls.createVerticalButtonPanel() and createHorizontalButtonPanel() now adds an empty border around the buttons, using the gap from Layouts.HORIZONTAL_VERTICAL_GAP configuration value
   Value now extends EventDataListener, setting the value on onEvent
   IdentityKeyGenerator bug fixed, now uses primary key column name when fetching generated value, instead of index 1, which happened to work most of the time, since the primary key column is usually the first column in the table, PostgreSQL for example returns the whole record if no column is specified in the returning clause
+  SelectCondition.attributes() overloaded with List parameter

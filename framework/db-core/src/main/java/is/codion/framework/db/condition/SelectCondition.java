@@ -118,6 +118,18 @@ public interface SelectCondition extends Condition {
   SelectCondition attributes(Attribute<?>... attributes);
 
   /**
+   * Sets the attributes to include in the resulting Entities,
+   * including the column attributes involved in a foreign key
+   * causes the foreign key values to be populated.
+   * If you want the primary key to be populated you must include
+   * the primary key attributes.
+   * Note that these must be ColumnProperty attributes
+   * @param attributes the attributes to include
+   * @return this SelectCondition instance
+   */
+  SelectCondition attributes(List<Attribute<?>> attributes);
+
+  /**
    * @return the attributes to include in the query result,
    * an empty list if all should be included
    */
