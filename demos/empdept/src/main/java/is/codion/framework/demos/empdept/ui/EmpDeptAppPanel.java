@@ -23,6 +23,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -58,6 +59,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   public void importJSON() throws Exception {
     final File file = Dialogs.fileSelectionDialogBuilder()
             .owner(this)
+            .addFileFilter(new FileNameExtensionFilter("JSON files", "json"))
+            .addFileFilter(new FileNameExtensionFilter("Text files", "txt"))
             .selectFile();
 
     final EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(

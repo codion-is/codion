@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.List;
 
@@ -15,15 +16,21 @@ public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionD
 
   /**
    * @param startDirectory the start directory
-   * @return this DialogBuilder instance
+   * @return this builder instance
    */
   FileSelectionDialogBuilder startDirectory(String startDirectory);
 
   /**
    * @param confirmOverwrite specifies whether overwriting a file should be confirmed
-   * @return this DialogBuilder instance
+   * @return this builder instance
    */
   FileSelectionDialogBuilder confirmOverwrite(boolean confirmOverwrite);
+
+  /**
+   * @param fileFilter the file filter to add, only applicable to file selection
+   * @return this builder instance
+   */
+  FileSelectionDialogBuilder addFileFilter(FileFilter fileFilter);
 
   /**
    * @return the selected file

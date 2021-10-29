@@ -8,14 +8,17 @@ import is.codion.swing.common.ui.Components;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import java.awt.Window;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<FileSelectionDialogBuilder>
         implements FileSelectionDialogBuilder {
@@ -27,6 +30,8 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
    */
   private static JFileChooser fileChooserOpen;
   private static JFileChooser fileChooserSave;
+
+  private final List<FileFilter> fileFilters = new ArrayList<>();
   private String startDirectory;
   private boolean confirmOverwrite = true;
 
@@ -43,14 +48,20 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   }
 
   @Override
+  public FileSelectionDialogBuilder addFileFilter(final FileFilter fileFilter) {
+    this.fileFilters.add(requireNonNull(fileFilter));
+    return this;
+  }
+
+  @Override
   public File selectFile() {
-    return selectFile(owner, startDirectory, title == null ? MESSAGES.getString("select_file") : title);
+    return selectFile(owner, startDirectory, title == null ? MESSAGES.getString("select_file") : title, fileFilters);
   }
 
   @Override
   public List<File> selectFiles() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.FILES, false,
-            title == null ? MESSAGES.getString("select_files") : title);
+            title == null ? MESSAGES.getString("select_files") : title, fileFilters);
   }
 
   @Override
@@ -61,19 +72,19 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   @Override
   public List<File> selectDirectories() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false,
-            title == null ? MESSAGES.getString("select_directories") : title);
+            title == null ? MESSAGES.getString("select_directories") : title, null);
   }
 
   @Override
   public File selectFileOrDirectory() {
     return selectFileOrDirectory(owner, startDirectory, FilesOrDirectories.BOTH,
-            title == null ? MESSAGES.getString("select_file_or_directory") : title);
+            title == null ? MESSAGES.getString("select_file_or_directory") : title, fileFilters);
   }
 
   @Override
   public List<File> selectFilesOrDirectories() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.BOTH, false,
-            title == null ? MESSAGES.getString("select_files_or_directories") : title);
+            title == null ? MESSAGES.getString("select_files_or_directories") : title, fileFilters);
   }
 
   @Override
@@ -105,22 +116,25 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   }
 
   static File selectDirectory(final Window dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle);
+    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle, null);
   }
 
-  static File selectFile(final Window dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.FILES, dialogTitle);
+  static File selectFile(final Window dialogParent, final String startDir, final String dialogTitle,
+                         final List<FileFilter> fileFilters) {
+    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.FILES, dialogTitle, fileFilters);
   }
 
   static File selectFileOrDirectory(final Window dialogParent, final String startDir,
-                                    final FilesOrDirectories filesOrDirectories, final String dialogTitle) {
-    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, false, dialogTitle).get(0);
+                                    final FilesOrDirectories filesOrDirectories, final String dialogTitle,
+                                    final List<FileFilter> fileFilters) {
+    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, false, dialogTitle, fileFilters).get(0);
   }
 
   static synchronized List<File> selectFilesOrDirectories(final Window dialogParent, final String startDir,
                                                           final FilesOrDirectories filesOrDirectories,
                                                           final boolean singleSelection,
-                                                          final String dialogTitle) {
+                                                          final String dialogTitle,
+                                                          final List<FileFilter> fileFilters) {
     if (fileChooserOpen == null) {
       try {
         Components.showWaitCursor(dialogParent);
@@ -142,7 +156,11 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
         break;
     }
     fileChooserOpen.setSelectedFiles(new File[] {new File("")});
-    fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
+    fileChooserOpen.resetChoosableFileFilters();
+    if (!fileFilters.isEmpty()) {
+      fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
+    }
+    fileFilters.forEach(fileChooserOpen::addChoosableFileFilter);
     fileChooserOpen.setMultiSelectionEnabled(!singleSelection);
     if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
       fileChooserOpen.setCurrentDirectory(new File(startDir));
