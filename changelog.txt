@@ -7320,3 +7320,5 @@
   IdentityKeyGenerator bug fixed, now uses primary key column name when fetching generated value, instead of index 1, which happened to work most of the time, since the primary key column is usually the first column in the table, PostgreSQL for example returns the whole record if no column is specified in the returning clause
   SelectCondition.attributes() overloaded with List parameter
   EntityEditComponentPanel bug(s) fixed, text fields missing validators
+  DefaultEntityValidator no longer validates SubqueryProperty, DerivedProperty and AuditProperty
+  DefaultItemComboBoxBuilder bug fixed, now adds the null item at the front of the item list

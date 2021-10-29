@@ -145,6 +145,18 @@ public final class EntityComponentBuildersTest {
   }
 
   @Test
+  void createNullableUnsortedItemComboBox() {
+    final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
+            inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST)
+                    .sorted(false)
+                    .buildComponentValue();
+    final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) componentValue.getComponent().getModel();
+
+    //null item should be first, regardless of sorting
+    assertEquals(0, model.getItems().indexOf(Item.item(null)));
+  }
+
+  @Test
   void createComboBox() {
     final DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
     final ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =

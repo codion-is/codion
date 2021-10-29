@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JComponent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -108,20 +109,23 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   private ItemComboBoxModel<T> initializeItemComboBoxModel() {
+    final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     if (comboBoxModel == null) {
+      final List<Item<T>> modelItems = new ArrayList<>(items);
+      if (nullable && !modelItems.contains(nullItem)) {
+        modelItems.add(0, nullItem);
+      }
       if (sortComparator != null) {
-        comboBoxModel = ItemComboBoxModel.createSortedModel(items, sortComparator);
+        comboBoxModel = ItemComboBoxModel.createSortedModel(modelItems, sortComparator);
       }
       else if (sorted) {
-        comboBoxModel = ItemComboBoxModel.createSortedModel(items);
+        comboBoxModel = ItemComboBoxModel.createSortedModel(modelItems);
       }
       else {
-        comboBoxModel = ItemComboBoxModel.createModel(items);
+        comboBoxModel = ItemComboBoxModel.createModel(modelItems);
       }
     }
-    final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
-    if (nullable && !comboBoxModel.containsItem(nullItem)) {
-      comboBoxModel.addItem(nullItem);
+    if (nullable && comboBoxModel.containsItem(nullItem)) {
       comboBoxModel.setSelectedItem(nullItem);
     }
 
