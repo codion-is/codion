@@ -7288,3 +7288,4 @@
   SelectCondition.attributes() overloaded with List parameter
   EntityEditComponentPanel bug(s) fixed, text fields missing validators
   DefaultEntityValidator no longer validates SubqueryProperty, DerivedProperty and AuditProperty
+  DefaultItemComboBoxBuilder bug fixed, now adds the null item at the front of the item list
