@@ -7,14 +7,19 @@ import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.AuditProperty;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * A default {@link EntityValidator} implementation providing null validation for properties marked as not null,
@@ -80,7 +85,10 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   @Override
   public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
-    for (final Property<?> property : definition.getProperties()) {
+    final List<Property<?>> properties = definition.getProperties().stream()
+            .filter(DefaultEntityValidator::validationRequired)
+            .collect(Collectors.toList());
+    for (final Property<?> property : properties) {
       validate(entity, definition, property);
     }
   }
@@ -163,5 +171,9 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property<?> property) {
     return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
             && !((ColumnProperty<?>) property).columnHasDefaultValue();
+  }
+
+  private static boolean validationRequired(final Property<?> property) {
+    return !(property instanceof DerivedProperty || property instanceof SubqueryProperty || property instanceof AuditProperty);
   }
 }
