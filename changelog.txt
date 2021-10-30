@@ -7294,3 +7294,4 @@
   Components.darker(Color, factor) added, Color.darker() was a bit too much
   ColumnConditionPanel, operator combo box font size increased
   EntityTablePanel bug fixed, now repaints on every condition model state change
+  DefaultTextFieldHint now uses the average of background and foreground color for the hint text
