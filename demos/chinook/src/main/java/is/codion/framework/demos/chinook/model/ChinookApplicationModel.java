@@ -28,7 +28,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   private static SwingEntityModel initializeArtistModel(final EntityConnectionProvider connectionProvider) {
     final SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
-    final SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
+    final SwingEntityModel albumModel = new SwingEntityModel(new AlbumTableModel(connectionProvider));
     final SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
 
     albumModel.addDetailModel(trackModel);

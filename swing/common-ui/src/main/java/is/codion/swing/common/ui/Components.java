@@ -38,6 +38,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -400,6 +401,35 @@ public final class Components {
   }
 
   /**
+   * Returns a darker version of the given color, using 0.8 as the mulitiplication factor.
+   * @param color the color to darken
+   * @return a darker version of the given color
+   * @see Color#darker()
+   */
+  public static Color darker(final Color color) {
+    return darker(color, 0.8);
+  }
+
+  /**
+   * Returns a darker version of the given color, using the given factor.
+   * @param color the color to darken
+   * @param factor a number between 0 and 1, non-inclusive
+   * @return a darker version of the given color
+   * @see Color#darker()
+   */
+  public static Color darker(final Color color, final double factor) {
+    requireNonNull(color);
+    if (factor <= 0 || factor >= 1) {
+      throw new IllegalArgumentException("Factor must be between 0 and 1, non-inclusive");
+    }
+
+    return new Color(Math.max((int) (color.getRed() * factor), 0),
+            Math.max((int) (color.getGreen() * factor), 0),
+            Math.max((int) (color.getBlue() * factor), 0),
+            color.getAlpha());
+  }
+
+  /**
    * Adds the given look and feel provider.
    * Note that this overrides any existing look and feel provider with the same name.
    * @param lookAndFeelProvider the look and feel provider to add
@@ -709,9 +739,9 @@ public final class Components {
     }
 
     /**
-     * Configures and applies this LookAndFeel.
+     * Configures and enables this LookAndFeel.
      */
-    default void configure() {
+    default void enable() {
       try {
         UIManager.setLookAndFeel(getClassName());
       }
@@ -722,7 +752,7 @@ public final class Components {
   }
 
   /**
-   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to configure.
+   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
    * @param classname the look and feel classname
    * @return a look and feel provider
    */
@@ -740,15 +770,15 @@ public final class Components {
   /**
    * Instantiates a new LookAndFeelProvider.
    * @param classname the look and feel classname
-   * @param configurer applies and configures this look and feel
+   * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final Runnable configurer) {
-    return lookAndFeelProvider(classname, classname, configurer);
+  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final Runnable enabler) {
+    return lookAndFeelProvider(classname, classname, enabler);
   }
 
   /**
-   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to configure.
+   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
    * @param classname the look and feel classname
    * @param name a unique name
    * @return a look and feel provider
@@ -768,23 +798,23 @@ public final class Components {
    * Instantiates a new LookAndFeelProvider.
    * @param classname the look and feel classname
    * @param name a unique name
-   * @param configurer applies and configures this look and feel
+   * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final String name, final Runnable configurer) {
-    return new DefaultLookAndFeelProvider(classname, name, configurer);
+  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final String name, final Runnable enabler) {
+    return new DefaultLookAndFeelProvider(classname, name, enabler);
   }
 
   private static final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 
     private final String classname;
     private final String name;
-    private final Runnable configurer;
+    private final Runnable enabler;
 
-    private DefaultLookAndFeelProvider(final String classname, final String name, final Runnable configurer) {
+    private DefaultLookAndFeelProvider(final String classname, final String name, final Runnable enabler) {
       this.classname = requireNonNull(classname);
       this.name = requireNonNull(name);
-      this.configurer = requireNonNull(configurer);
+      this.enabler = requireNonNull(enabler);
     }
 
     @Override
@@ -798,8 +828,8 @@ public final class Components {
     }
 
     @Override
-    public void configure() {
-      this.configurer.run();
+    public void enable() {
+      this.enabler.run();
     }
 
     @Override

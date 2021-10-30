@@ -1174,7 +1174,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                               final boolean includeMainMenu, final boolean displayProgressDialog) {
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::configure);
+    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
     final Integer fontSize = getDefaultFontSize();
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);

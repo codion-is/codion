@@ -13,6 +13,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.Components.darker;
 
 /**
  * A factory class for adding validators to components.
@@ -166,7 +167,7 @@ public final class EntityComponentValidators {
     protected TextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
                             final String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
-      this.invalidBackgroundColor = VALID_ENABLED_BACKGROUND_COLOR.darker();
+      this.invalidBackgroundColor = darker(VALID_ENABLED_BACKGROUND_COLOR);
     }
 
     /**

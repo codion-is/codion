@@ -1380,7 +1380,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilterListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
-    tableModel.getTableConditionModel().addConditionListener(this::onConditionChanged);
+    tableModel.getTableConditionModel().getConditionModels().forEach(conditionModel ->
+            conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.addSortListener(table.getTableHeader()::repaint);
     tableModel.addRefreshStartedListener(() -> Components.showWaitCursor(EntityTablePanel.this));
     tableModel.addRefreshDoneListener(() -> Components.hideWaitCursor(EntityTablePanel.this));
