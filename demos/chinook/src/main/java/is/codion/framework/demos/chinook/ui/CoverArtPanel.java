@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
@@ -34,6 +35,7 @@ final class CoverArtPanel extends JPanel {
   private static final String SELECT_COVER = "select_cover";
   private static final String REMOVE_COVER = "remove_cover";
   private static final String SELECT_IMAGE = "select_image";
+  private static final String IMAGES = "images";
 
   private final NavigableImagePanel imagePanel;
   private final Value<byte[]> imageBytesValue;
@@ -73,6 +75,7 @@ final class CoverArtPanel extends JPanel {
     final File coverFile = Dialogs.fileSelectionDialogBuilder()
             .owner(this)
             .title(BUNDLE.getString(SELECT_IMAGE))
+            .addFileFilter(new FileNameExtensionFilter(BUNDLE.getString(IMAGES), "jpg", "jpeg", "png", "bmp", "gif"))
             .selectFile();
     imageBytesValue.set(Files.readAllBytes(coverFile.toPath()));
   }
