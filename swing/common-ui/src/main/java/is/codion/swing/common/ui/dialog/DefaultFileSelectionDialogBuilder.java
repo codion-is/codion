@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
@@ -72,7 +73,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   @Override
   public List<File> selectDirectories() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false,
-            title == null ? MESSAGES.getString("select_directories") : title, null);
+            title == null ? MESSAGES.getString("select_directories") : title, emptyList());
   }
 
   @Override
