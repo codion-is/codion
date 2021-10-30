@@ -7289,4 +7289,6 @@
   EntityEditComponentPanel bug(s) fixed, text fields missing validators
   DefaultEntityValidator no longer validates SubqueryProperty, DerivedProperty and AuditProperty
   DefaultItemComboBoxBuilder bug fixed, now adds the null item at the front of the item list
-  FileSelectionDialogBuilder.addFileFilter() added, related refactoring
+  FileSelectionDialogBuilder.addFileFilter() added, related refactorin
+  Components.LookAndFeelProvider.configure() renamed enable()
+  Components.darker(Color, factor) added, Color.darker() was a bit too much

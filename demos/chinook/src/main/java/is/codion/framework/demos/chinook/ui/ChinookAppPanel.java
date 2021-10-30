@@ -49,8 +49,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
-import static is.codion.swing.common.ui.Components.addLookAndFeelProvider;
-import static is.codion.swing.common.ui.Components.lookAndFeelProvider;
+import static is.codion.swing.common.ui.Components.*;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
@@ -199,22 +198,22 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), () -> {
       FlatLightLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", background.darker());
+      UIManager.put("Table.alternateRowColor", darker(background));
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatIntelliJLaf.class.getName(), () -> {
       FlatIntelliJLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", background.darker());
+      UIManager.put("Table.alternateRowColor", darker(background));
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), () -> {
       FlatDarkLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", background.brighter());
+      UIManager.put("Table.alternateRowColor", darker(background));
     }));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarculaLaf.class.getName(), () -> {
       FlatDarculaLaf.setup();
       final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", background.brighter());
+      UIManager.put("Table.alternateRowColor", darker(background));
     }));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());

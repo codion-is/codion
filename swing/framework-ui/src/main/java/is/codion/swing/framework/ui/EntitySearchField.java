@@ -65,6 +65,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.Components.darker;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -113,7 +114,7 @@ public final class EntitySearchField extends JTextField {
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
     setValidBackgroundColor(getBackground());
-    setInvalidBackgroundColor(getBackground().darker());
+    setInvalidBackgroundColor(darker(getBackground()));
     setToolTipText(searchModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());

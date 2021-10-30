@@ -24,6 +24,7 @@ import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
+import static is.codion.swing.common.ui.Components.darker;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -34,8 +35,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
-  private static final int SHADE_AMOUNT = 42;
-
   private static final Color DEFAULT_BACKGROUND;
   private static final Color SEARCH_BACKGROUND;
   private static final Color DOUBLE_SEARCH_BACKGROUND;
@@ -44,16 +43,17 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
   private static final Color SEARCH_ALTERNATE_BACKGROUND;
   private static final Color DOUBLE_ALTERNATE_SEARCH_BACKGROUND;
 
-  private static final int RGB_CENTER = 128;
+  private static final double DARKENING_FACTOR = 0.9;
+  private static final double DOUBLE_DARKENING_FACTOR = 0.8;
 
   static {
     DEFAULT_BACKGROUND = UIManager.getColor("Table.background");
-    SEARCH_BACKGROUND = shade(DEFAULT_BACKGROUND, SHADE_AMOUNT);
-    DOUBLE_SEARCH_BACKGROUND = shade(DEFAULT_BACKGROUND, SHADE_AMOUNT * 2);
+    SEARCH_BACKGROUND = darker(DEFAULT_BACKGROUND, DARKENING_FACTOR);
+    DOUBLE_SEARCH_BACKGROUND = darker(DEFAULT_BACKGROUND, DOUBLE_DARKENING_FACTOR);
     final Color alternate = UIManager.getColor("Table.alternateRowColor");
     DEFAULT_ALTERNATE_BACKGROUND = alternate == null ? DEFAULT_BACKGROUND : alternate;
-    SEARCH_ALTERNATE_BACKGROUND = shade(DEFAULT_ALTERNATE_BACKGROUND, SHADE_AMOUNT);
-    DOUBLE_ALTERNATE_SEARCH_BACKGROUND = shade(DEFAULT_ALTERNATE_BACKGROUND, SHADE_AMOUNT * 2);
+    SEARCH_ALTERNATE_BACKGROUND = darker(DEFAULT_ALTERNATE_BACKGROUND, DARKENING_FACTOR);
+    DOUBLE_ALTERNATE_SEARCH_BACKGROUND = darker(DEFAULT_ALTERNATE_BACKGROUND, DOUBLE_DARKENING_FACTOR);
   }
 
   private final SwingEntityTableModel tableModel;
@@ -163,26 +163,13 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
                                                 final boolean propertyFilterEnabled, final Color cellColor) {
     final boolean doubleShade = propertyConditionEnabled && propertyFilterEnabled;
     if (cellColor != null) {
-      return shade(cellColor, doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT);
+      return darker(cellColor, DARKENING_FACTOR);
     }
     else {
       return row % 2 == 0 ?
               (doubleShade ? DOUBLE_SEARCH_BACKGROUND : SEARCH_BACKGROUND) :
               (doubleShade ? DOUBLE_ALTERNATE_SEARCH_BACKGROUND : SEARCH_ALTERNATE_BACKGROUND);
     }
-  }
-
-  private static Color shade(final Color color, final int amount) {
-    requireNonNull(color, "color");
-    int r = color.getRed();
-    int g = color.getGreen();
-    int b = color.getBlue();
-
-    r += r < RGB_CENTER ? amount : -amount;
-    g += g < RGB_CENTER ? amount : -amount;
-    b += b < RGB_CENTER ? amount : -amount;
-
-    return new Color(r, g, b);
   }
 
   static final class BooleanRenderer extends NullableCheckBox
