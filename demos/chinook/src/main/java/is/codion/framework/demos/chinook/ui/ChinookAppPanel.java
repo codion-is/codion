@@ -190,7 +190,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
       UserPreferences.putUserPreference(LANGUAGE_PREFERENCES_KEY, newLanguage);
       showMessageDialog(this,
               "Language has been changed, restart the application to apply the changes.\n\n" +
-                      "Tungumáli hefur verið breytt, endurræstu kerfið til að virkja breytingar");
+                      "Tungumáli hefur verið breytt, endurræstu kerfið til að virkja breytingarnar.");
     }
   }
 

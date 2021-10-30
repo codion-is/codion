@@ -7330,3 +7330,4 @@
   DefaultTextFieldHint now uses the average of background and foreground color for the hint text
   ColumnConditionPanel.enableDialog(), title parameter added
   FilteredTable no longer displays error when user tries to display filter dialog for unsupported column type
+  DefaultFileSelectionDialogBuilder bug fixed, NullPointerException prevented
