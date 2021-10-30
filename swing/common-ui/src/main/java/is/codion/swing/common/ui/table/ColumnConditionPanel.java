@@ -172,11 +172,12 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * Displays this condition panel in a dialog
    * @param dialogParent the dialog parent
+   * @param title the dialog title
    * @param position the position
    */
-  public final void enableDialog(final Container dialogParent, final Point position) {
+  public final void enableDialog(final Container dialogParent, final String title, final Point position) {
     if (!isDialogEnabled()) {
-      initializeConditionDialog(dialogParent);
+      initializeConditionDialog(dialogParent, title);
       Point actualPosition = position;
       if (position == null) {
         actualPosition = lastDialogPosition;
@@ -569,17 +570,17 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     onAdvancedChange(advancedConditionState.get());
   }
 
-  private void initializeConditionDialog(final Container parent) {
+  private void initializeConditionDialog(final Container parent, final String title) {
     if (dialog != null) {
       return;
     }
 
     final JDialog dialogParent = Windows.getParentDialog(parent);
     if (dialogParent != null) {
-      dialog = new JDialog(dialogParent, conditionModel.getColumnIdentifier().toString(), false);
+      dialog = new JDialog(dialogParent, title, false);
     }
     else {
-      dialog = new JDialog(Windows.getParentFrame(parent), conditionModel.getColumnIdentifier().toString(), false);
+      dialog = new JDialog(Windows.getParentFrame(parent), title, false);
     }
 
     final JPanel conditionPanel = new JPanel(new BorderLayout());

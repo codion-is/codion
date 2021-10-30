@@ -585,16 +585,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       columnFilterPanels.put(column, (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column));
     }
 
-    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), this);
+    toggleFilterPanel(columnFilterPanels.get(column), this, column.getHeaderValue().toString(), event.getLocationOnScreen());
   }
 
-  private static void toggleFilterPanel(final Point position, final ColumnConditionPanel<?, ?> columnFilterPanel,
-                                        final Container parent) {
+  private static void toggleFilterPanel(final ColumnConditionPanel<?, ?> columnFilterPanel, final Container parent,
+                                        final String title, final Point position) {
     if (columnFilterPanel.isDialogEnabled()) {
       columnFilterPanel.disableDialog();
     }
     else {
-      columnFilterPanel.enableDialog(parent, position);
+      columnFilterPanel.enableDialog(parent, title, position);
     }
   }
 
