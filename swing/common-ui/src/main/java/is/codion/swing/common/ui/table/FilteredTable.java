@@ -278,8 +278,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
     final Map<TableColumn, JCheckBox> columnCheckBoxes =
             columnModel.getAllColumns().stream().collect(Collectors.toMap(column -> column, column ->
-            new JCheckBox(column.getHeaderValue().toString(),
-                    tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()))));
+                    new JCheckBox(column.getHeaderValue().toString(),
+                            tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()))));
     Dialogs.okCancelDialogBuilder(initializeSelectColumnsPanel(columnCheckBoxes))
             .owner(this)
             .onOk(() -> SwingUtilities.invokeLater(() -> columnCheckBoxes.forEach((column, checkBox) -> {
@@ -540,7 +540,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnCheckBoxes.size()), 0));
     final Collator columnCollator = Collator.getInstance();
     columnCheckBoxes.keySet().stream().sorted((column1, column2) ->
-            Text.collateSansSpaces(columnCollator, column1.getIdentifier().toString(), column2.getIdentifier().toString()))
+                    Text.collateSansSpaces(columnCollator, column1.getIdentifier().toString(), column2.getIdentifier().toString()))
             .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
     final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
     northPanel.add(Control.builder(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true)))
@@ -579,13 +579,15 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
     final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
-    final int index = columnModel.getColumnIndexAtX(event.getX());
-    final TableColumn column = columnModel.getColumn(index);
-    if (!columnFilterPanels.containsKey(column)) {
-      columnFilterPanels.put(column, (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column));
-    }
+    final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
+    try {
+      if (!columnFilterPanels.containsKey(column)) {
+        columnFilterPanels.put(column, (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column));
+      }
 
-    toggleFilterPanel(columnFilterPanels.get(column), this, column.getHeaderValue().toString(), event.getLocationOnScreen());
+      toggleFilterPanel(columnFilterPanels.get(column), this, column.getHeaderValue().toString(), event.getLocationOnScreen());
+    }
+    catch (final IllegalArgumentException ignored) {/*filtering not supported for the column type*/}
   }
 
   private static void toggleFilterPanel(final ColumnConditionPanel<?, ?> columnFilterPanel, final Container parent,
