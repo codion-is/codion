@@ -70,6 +70,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private static final int ENABLED_BUTTON_SIZE = 20;
+  private static final float OPERATOR_FONT_SIZE = 18f;
 
   private final ColumnConditionModel<C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
@@ -544,6 +545,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
     ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
+    comboBox.setFont(comboBox.getFont().deriveFont(OPERATOR_FONT_SIZE));
 
     return comboBox;
   }
