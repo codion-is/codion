@@ -1,5 +1,6 @@
 package is.codion.swing.common.ui.combobox;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.text.BadLocationException;
@@ -21,7 +22,6 @@ class CompletionDocument extends PlainDocument {
 
   private final JComboBox<?> comboBox;
   private final ComboBoxModel<?> model;
-  private final JTextComponent editorComponent;
   private final boolean normalize;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
@@ -29,24 +29,21 @@ class CompletionDocument extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
+  private JTextComponent editorComponent;
+
   protected CompletionDocument(final JComboBox<?> comboBox, final boolean normalize) {
     this.comboBox = requireNonNull(comboBox);
     this.normalize = normalize;
-    model = comboBox.getModel();
-    editorComponent = (JTextComponent) comboBox.getEditor().getEditorComponent();
-    if (editorComponent.getDocument() instanceof CompletionDocument) {
-      throw new IllegalStateException("Completion has already been set for combo box");
-    }
-    editorComponent.setDocument(this);
-    comboBox.addActionListener(e -> {
-      if (!selecting) {
-        highlightCompletedText(0);
+    this.model = comboBox.getModel();
+    setEditorComponent((JTextComponent) comboBox.getEditor().getEditorComponent());
+    comboBox.addPropertyChangeListener("editor", event -> {
+      final ComboBoxEditor editor = (ComboBoxEditor) event.getNewValue();
+      if (editor != null) {
+        setEditorComponent((JTextComponent) editor.getEditorComponent());
       }
     });
-    editorComponent.addKeyListener(new MatchKeyAdapter());
-    editorComponent.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusGained(final FocusEvent e) {
+    comboBox.addActionListener(e -> {
+      if (!selecting) {
         highlightCompletedText(0);
       }
     });
@@ -159,6 +156,21 @@ class CompletionDocument extends PlainDocument {
   protected static String normalize(final String string) {
     //http://stackoverflow.com/a/4225698/317760
     return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+  }
+
+  private void setEditorComponent(final JTextComponent component) {
+    editorComponent = component;
+    if (editorComponent.getDocument() instanceof CompletionDocument) {
+      throw new IllegalStateException("Completion has already been set for combo box");
+    }
+    editorComponent.setDocument(this);
+    editorComponent.addKeyListener(new MatchKeyAdapter());
+    editorComponent.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusGained(final FocusEvent e) {
+        highlightCompletedText(0);
+      }
+    });
   }
 
   private final class MatchKeyAdapter extends KeyAdapter {
