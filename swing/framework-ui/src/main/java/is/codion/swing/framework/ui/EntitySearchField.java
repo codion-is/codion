@@ -46,6 +46,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -98,7 +100,7 @@ public final class EntitySearchField extends JTextField {
 
   private SelectionProvider selectionProvider;
 
-  private Color validBackgroundColor;
+  private Color backgroundColor;
   private Color invalidBackgroundColor;
   private boolean performingSearch = false;
   private boolean transferFocusOnEnter = false;
@@ -113,17 +115,24 @@ public final class EntitySearchField extends JTextField {
     this.settingsPanel = new SettingsPanel(searchModel);
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
-    setValidBackgroundColor(getBackground());
-    setInvalidBackgroundColor(darker(getBackground()));
     setToolTipText(searchModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
     this.searchHint = TextFields.hint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
-    updateColors();
+    configureColors();
     Components.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Components.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
+  }
+
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    if (model != null) {
+      configureColors();
+      searchHint.updateHint();
+    }
   }
 
   /**
@@ -142,20 +151,6 @@ public final class EntitySearchField extends JTextField {
    */
   public void setSelectionProvider(final SelectionProvider selectionProvider) {
     this.selectionProvider = requireNonNull(selectionProvider);
-  }
-
-  /**
-   * @param validBackgroundColor the background color to use when the text represents the selected items
-   */
-  public void setValidBackgroundColor(final Color validBackgroundColor) {
-    this.validBackgroundColor = validBackgroundColor;
-  }
-
-  /**
-   * @param invalidBackgroundColor the background color to use when the text does not represent the selected items
-   */
-  public void setInvalidBackgroundColor(final Color invalidBackgroundColor) {
-    this.invalidBackgroundColor = invalidBackgroundColor;
   }
 
   /**
@@ -285,9 +280,16 @@ public final class EntitySearchField extends JTextField {
     };
   }
 
+  private void configureColors() {
+    final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
+    this.backgroundColor = lookAndFeel.getDefaults().getColor("TextField.background");
+    this.invalidBackgroundColor = darker(backgroundColor);
+    updateColors();
+  }
+
   private void updateColors() {
     final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintVisible());
-    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
+    setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
   }
 
   private void performSearch(final boolean promptUser) {
