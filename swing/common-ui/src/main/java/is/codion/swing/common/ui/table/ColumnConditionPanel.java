@@ -566,6 +566,12 @@ public class ColumnConditionPanel<C, T> extends JPanel {
             .rowsColumns(2, 1)
             .gap(0)
             .build());
+    if (toggleEnabledButton != null) {
+      this.toggleEnabledButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    }
+    if (toggleAdvancedButton != null) {
+      this.toggleAdvancedButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    }
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.getOperator());
     onAdvancedChange(advancedConditionState.get());
