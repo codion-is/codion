@@ -7342,3 +7342,6 @@
   DefaultEntityTableCellRenderer bug fixed, did not set the cell highlight border
   updateUI() overridden in EntityPanel related components to support setting the Look&Feel dynamically, with uninitialized EntityPanels, calling updateUI() for non-visible components, seems like I'm missing something here, seems a bit complicated
   EntityApplicationPanel.selectLookAndFeel() now enables the Look&Feel right away
+  CompletionDocument bug fixed, completion document got lost when changing look and feel since the editor got changed
+  SteppedComboBox, now uses the same font as text fields
+  NumberParsingDocumentFilter bug fixed, reference to caret replaced with the text component, seems to have gotten rid of the occasional NullPointerException when moving caret, seems to happen after Look&Feel was changed

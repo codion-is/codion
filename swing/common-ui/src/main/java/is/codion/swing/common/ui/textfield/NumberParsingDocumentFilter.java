@@ -7,8 +7,8 @@ import is.codion.common.value.Value;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Caret;
 import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
@@ -20,7 +20,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
   private final NumberRangeValidator<T> rangeValidator;
   private final NumberParser<T> parser;
 
-  private Caret caret;
+  private JTextComponent textComponent;
 
   NumberParsingDocumentFilter(final NumberParser<T> parser) {
     this.parser = requireNonNull(parser, "parser");
@@ -51,15 +51,8 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
         validate(parseResult.getValue());
       }
       super.replace(filterBypass, 0, document.getLength(), parseResult.getText(), attributeSet);
-      if (caret != null) {
-        try {
-          caret.setDot(offset + text.length() + parseResult.getCharetOffset());
-        }
-        catch (final NullPointerException e) {
-          e.printStackTrace();
-          //Yeah, here's a hack, this error occurs occasionally, within DefaultCaret.setDot(),
-          //probably EDT related, so I'll suppress it until I understand what's going on
-        }
+      if (textComponent != null) {
+        textComponent.getCaret().setDot(offset + text.length() + parseResult.getCharetOffset());
       }
     }
   }
@@ -82,11 +75,11 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
   }
 
   /**
-   * Sets the caret, necessary for keeping the correct caret position when editing
-   * @param caret the text field caret
+   * Sets the text component, necessary for keeping the correct caret position when editing
+   * @param textComponent the text component
    */
-  void setCaret(final Caret caret) {
-    this.caret = caret;
+  void setTextComponent(final JTextComponent textComponent) {
+    this.textComponent = textComponent;
   }
 
   private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {

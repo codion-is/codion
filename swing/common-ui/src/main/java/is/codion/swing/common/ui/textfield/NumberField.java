@@ -38,7 +38,7 @@ public class NumberField<T extends Number> extends JTextField {
    */
   public NumberField(final NumberDocument<T> document, final int columns) {
     super(document, null, columns);
-    document.setCaret(getCaret());
+    document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
