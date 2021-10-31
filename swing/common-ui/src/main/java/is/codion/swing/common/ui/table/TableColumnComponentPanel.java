@@ -72,6 +72,17 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     resetPanel();
   }
 
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    if (columnComponents != null) {
+      Components.updateUI(columnComponents.values());
+    }
+    if (nullComponents != null) {
+      Components.updateUI(nullComponents.values());
+    }
+  }
+
   /**
    * @return the column components mapped their respective columns
    */

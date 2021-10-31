@@ -183,7 +183,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   @Override
   public void updateUI() {
     super.updateUI();
-    Components.updateUI(searchField);
+    Components.updateUI(getTableHeader(), searchField);
     if (searchFieldHint != null) {
       searchFieldHint.updateHint();
     }

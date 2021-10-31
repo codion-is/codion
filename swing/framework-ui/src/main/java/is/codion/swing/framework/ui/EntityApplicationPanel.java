@@ -31,7 +31,6 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Components.LookAndFeelProvider;
 import is.codion.swing.common.ui.HierarchyPanel;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
@@ -84,7 +83,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -114,7 +112,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String SET_LOG_LEVEL = "set_log_level";
   private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
   private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
-  private static final String LOOK_AND_FEEL_SELECTED_MESSAGE = "look_and_feel_selected_message";
   private static final String HELP = "help";
   private static final String ABOUT = "about";
   private static final String ALWAYS_ON_TOP = "always_on_top";
@@ -212,6 +209,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     //initialize button captions, not in a static initializer since applications may set the locale in main()
     UiManagerDefaults.initialize();
     setUncaughtExceptionHandler();
+  }
+
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    Components.updateUI(entityPanels);
   }
 
   @Override
@@ -347,11 +350,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see Components#selectLookAndFeel(JComponent, String)
    */
   public final void selectLookAndFeel() {
-    final LookAndFeelProvider provider = Components.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL));
-    if (provider != null) {
+    Components.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL)).ifPresent(provider -> {
+      provider.enable();
+      for (final Window window : Window.getWindows()) {
+        SwingUtilities.updateComponentTreeUI(window);
+      }
       UserPreferences.putUserPreference(applicationLookAndFeelProperty, provider.getName());
-      JOptionPane.showMessageDialog(this, resourceBundle.getString(LOOK_AND_FEEL_SELECTED_MESSAGE));
-    }
+    });
   }
 
   /**

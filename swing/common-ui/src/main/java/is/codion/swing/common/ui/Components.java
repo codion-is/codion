@@ -110,9 +110,11 @@ public final class Components {
    * @param components the components to update the UI for
    */
   public static void updateUI(final Collection<? extends JComponent> components) {
-    for (final JComponent component : requireNonNull(components)) {
-      if (component != null) {
-        component.updateUI();
+    if (components != null) {
+      for (final JComponent component : components) {
+        if (component != null) {
+          component.updateUI();
+        }
       }
     }
   }

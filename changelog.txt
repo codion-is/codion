@@ -7307,3 +7307,5 @@
   FilteredTable.updateUI() overridden, calls updateUI() for subcomponents and refreshes text field hint
   EntityComponentValidators.TextValidator now reconfigures colors when the text field UI changes
   DefaultEntityTableCellRenderer bug fixed, did not set the cell highlight border
+  updateUI() overridden in EntityPanel related components to support setting the Look&Feel dynamically, with uninitialized EntityPanels, calling updateUI() for non-visible components, seems like I'm missing something here, seems a bit complicated
+  EntityApplicationPanel.selectLookAndFeel() now enables the Look&Feel right away
