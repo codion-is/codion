@@ -16,7 +16,6 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
@@ -43,6 +42,8 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
   private static Color ALTERNATE_BACKGROUND;
   private static Color ALTERNATE_BACKGROUND_SEARCH;
   private static Color ALTERNATE_BACKGROUND_DOUBLE_SEARCH;
+
+  private static Border FOCUSED_CELL_BORDER;
 
   private static final double DARKENING_FACTOR = 0.9;
   private static final double DOUBLE_DARKENING_FACTOR = 0.8;
@@ -107,6 +108,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     setForeground(getForeground(table, isSelected));
     setBackground(getBackground(table, row, isSelected));
+    setBorder(hasFocus ? FOCUSED_CELL_BORDER : null);
     if (isTooltipData()) {
       setToolTipText(value == null ? "" : value.toString());
     }
@@ -182,13 +184,11 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     ALTERNATE_BACKGROUND = alternate == null ? BACKGROUND : alternate;
     ALTERNATE_BACKGROUND_SEARCH = darker(ALTERNATE_BACKGROUND, DARKENING_FACTOR);
     ALTERNATE_BACKGROUND_DOUBLE_SEARCH = darker(ALTERNATE_BACKGROUND, DOUBLE_DARKENING_FACTOR);
+    FOCUSED_CELL_BORDER = UIManager.getBorder("Table.focusCellHighlightBorder");
   }
 
   static final class BooleanRenderer extends NullableCheckBox
           implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer {
-
-    private static final Border nonFocusedBorder = new EmptyBorder(1, 1, 1, 1);
-    private static final Border focusedBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
 
     private final SwingEntityTableModel tableModel;
     private final Property<Boolean> property;
@@ -209,7 +209,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
       getNullableModel().setState((Boolean) value);
       setForeground(getForeground(table, isSelected));
       setBackground(getBackground(table, row, isSelected));
-      setBorder(hasFocus ? focusedBorder : nonFocusedBorder);
+      setBorder(hasFocus ? FOCUSED_CELL_BORDER : null);
 
       return this;
     }

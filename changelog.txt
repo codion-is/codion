@@ -7306,3 +7306,4 @@
   DefaultTextFieldHint now reconfigures colors when text field UI changes
   FilteredTable.updateUI() overridden, calls updateUI() for subcomponents and refreshes text field hint
   EntityComponentValidators.TextValidator now reconfigures colors when the text field UI changes
+  DefaultEntityTableCellRenderer bug fixed, did not set the cell highlight border
