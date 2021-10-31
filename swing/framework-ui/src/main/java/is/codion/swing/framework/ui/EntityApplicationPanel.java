@@ -897,29 +897,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           persistentEntityPanels.put(panelBuilder, entityPanel);
         }
       }
-      final JDialog dialog = new JDialog(getParentWindow(), panelBuilder.getCaption() == null ?
-              applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption());
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(final WindowEvent e) {
-          entityPanel.getModel().savePreferences();
-          entityPanel.savePreferences();
-        }
-      });
-      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      dialog.setLayout(new BorderLayout());
-      dialog.add(entityPanel, BorderLayout.CENTER);
-      KeyEvents.builder(KeyEvent.VK_ESCAPE)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(Control.control(dialog::dispose))
-              .enable(dialog.getRootPane());
-      dialog.pack();
-      dialog.setLocationRelativeTo(this);
-      if (modalDialog) {
-        dialog.setModal(true);
-      }
-      dialog.setResizable(true);
-      SwingUtilities.invokeLater(() -> dialog.setVisible(true));
+      Dialogs.componentDialogBuilder(entityPanel)
+              .owner(getParentWindow())
+              .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+              .onClosedAction(Control.control(() -> {
+                entityPanel.getModel().savePreferences();
+                entityPanel.savePreferences();
+              }))
+              .modal(modalDialog)
+              .resizable(true)
+              .show();
     }
     finally {
       Components.hideWaitCursor(this);
