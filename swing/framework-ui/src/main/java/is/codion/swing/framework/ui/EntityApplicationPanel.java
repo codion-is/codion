@@ -343,8 +343,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Allows the user the select between the available Look and Feels, saving the selection as a user preference,
-   * which will be activated on next appliation start.
+   * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
    * @see Components#addLookAndFeelProvider(LookAndFeelProvider)
    * @see Components#getLookAndFeelProvider(String)
    * @see Components#selectLookAndFeel(JComponent, String)
