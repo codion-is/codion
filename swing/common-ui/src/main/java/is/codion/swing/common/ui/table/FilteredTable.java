@@ -37,7 +37,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -131,6 +130,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * The text field used for entering the search condition
    */
   private final JTextField searchField;
+  private final TextFields.Hint searchFieldHint;
 
   /**
    * Fired each time the table is double-clicked
@@ -175,8 +175,21 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = initializeSearchField();
+    this.searchFieldHint = initializeSearchFieldHint();
     initializeTableHeader();
     bindEvents();
+  }
+
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    Components.updateUI(searchField);
+    if (searchFieldHint != null) {
+      searchFieldHint.updateHint();
+    }
+    if (columnFilterPanels != null) {
+      Components.updateUI(columnFilterPanels.values());
+    }
   }
 
   @Override
@@ -436,16 +449,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   private JTextField initializeSearchField() {
     final JTextField field = new JTextField();
-    field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     field.setColumns(SEARCH_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(field);
-    final TextFields.Hint textFieldHint = TextFields.hint(field, Messages.get(Messages.SEARCH_FIELD_HINT));
-    field.getDocument().addDocumentListener((DocumentAdapter) e -> {
-      if (!textFieldHint.isHintVisible()) {
-        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
-                lastSearchResultCoordinate.getRow(), true, field.getText());
-      }
-    });
     final Control findNext = Control.control(() -> findNext(field.getText()));
     final Control findAndSelectNext = Control.control(() -> findAndSelectNext(field.getText()));
     final Control findPrevious = Control.control(() -> findPrevious(field.getText()));
@@ -486,6 +491,18 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
     return field;
+  }
+
+  private TextFields.Hint initializeSearchFieldHint() {
+    final TextFields.Hint textFieldHint = TextFields.hint(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
+    searchField.getDocument().addDocumentListener((DocumentAdapter) e -> {
+      if (!textFieldHint.isHintVisible()) {
+        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
+                lastSearchResultCoordinate.getRow(), true, searchField.getText());
+      }
+    });
+
+    return textFieldHint;
   }
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
