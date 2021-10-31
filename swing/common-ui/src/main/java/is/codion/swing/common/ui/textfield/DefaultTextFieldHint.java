@@ -6,6 +6,8 @@ package is.codion.swing.common.ui.textfield;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -19,8 +21,9 @@ final class DefaultTextFieldHint implements TextFields.Hint {
 
   private final JTextField textField;
   private final String hintText;
-  private final Color defaultForegroundColor;
-  private final Color hintForegroundColor;
+
+  private Color foregroundColor;
+  private Color hintForegroundColor;
 
   DefaultTextFieldHint(final JTextField textField, final String hintText) {
     requireNonNull(textField, "textField");
@@ -29,10 +32,10 @@ final class DefaultTextFieldHint implements TextFields.Hint {
     }
     this.textField = textField;
     this.hintText = hintText;
-    this.defaultForegroundColor = textField.getForeground();
-    this.hintForegroundColor = getHintForegroundColor(textField);
     this.textField.addFocusListener(initializeFocusListener());
     this.textField.getDocument().addDocumentListener((DocumentAdapter) e -> updateColor());
+    configureColors();
+    textField.addPropertyChangeListener("UI", event -> configureColors());
     updateHint();
   }
 
@@ -76,14 +79,20 @@ final class DefaultTextFieldHint implements TextFields.Hint {
 
   private void updateColor() {
     final boolean hintForeground = !textField.hasFocus() && isHintVisible();
-    textField.setForeground(hintForeground ? hintForegroundColor : defaultForegroundColor);
+    textField.setForeground(hintForeground ? hintForegroundColor : foregroundColor);
   }
 
-  private static Color getHintForegroundColor(final JTextField textField) {
-    final Color background = textField.getBackground();
-    final Color foreground = textField.getForeground();
+  private void configureColors() {
+    final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
+    final Color foreground = lookAndFeel.getDefaults().getColor("TextField.foreground");
+    final Color background = lookAndFeel.getDefaults().getColor("TextField.background");
+    foregroundColor = foreground;
+    hintForegroundColor = getHintForegroundColor(background, foreground);
+    updateColor();
+  }
 
-    //simplistic averaging of two colors
+  private static Color getHintForegroundColor(final Color background, final Color foreground) {
+    //simplistic averaging of background and foreground
     final int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);
     final int g = (int) sqrt((pow(background.getGreen(), 2) + pow(foreground.getGreen(), 2)) / 2);
     final int b = (int) sqrt((pow(background.getBlue(), 2) + pow(foreground.getBlue(), 2)) / 2);

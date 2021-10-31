@@ -7303,3 +7303,4 @@
   Components.updateUI() added
   ColumnConditionPanel.updateUI() now calls updateUI() for all subcomponents, minor UI improvements
   EntitySearchField.updateUI() overridden, configures colors and refreshes text field hint
+  DefaultTextFieldHint now reconfigures colors when text field UI changes
