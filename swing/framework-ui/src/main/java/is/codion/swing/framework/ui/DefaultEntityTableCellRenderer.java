@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JTable;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -35,25 +36,19 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
-  private static final Color DEFAULT_BACKGROUND;
-  private static final Color SEARCH_BACKGROUND;
-  private static final Color DOUBLE_SEARCH_BACKGROUND;
+  private static Color BACKGROUND;
+  private static Color BACKGROUND_SEARCH;
+  private static Color BACKGROUND_DOUBLE_SEARCH;
 
-  private static final Color DEFAULT_ALTERNATE_BACKGROUND;
-  private static final Color SEARCH_ALTERNATE_BACKGROUND;
-  private static final Color DOUBLE_ALTERNATE_SEARCH_BACKGROUND;
+  private static Color ALTERNATE_BACKGROUND;
+  private static Color ALTERNATE_BACKGROUND_SEARCH;
+  private static Color ALTERNATE_BACKGROUND_DOUBLE_SEARCH;
 
   private static final double DARKENING_FACTOR = 0.9;
   private static final double DOUBLE_DARKENING_FACTOR = 0.8;
 
   static {
-    DEFAULT_BACKGROUND = UIManager.getColor("Table.background");
-    SEARCH_BACKGROUND = darker(DEFAULT_BACKGROUND, DARKENING_FACTOR);
-    DOUBLE_SEARCH_BACKGROUND = darker(DEFAULT_BACKGROUND, DOUBLE_DARKENING_FACTOR);
-    final Color alternate = UIManager.getColor("Table.alternateRowColor");
-    DEFAULT_ALTERNATE_BACKGROUND = alternate == null ? DEFAULT_BACKGROUND : alternate;
-    SEARCH_ALTERNATE_BACKGROUND = darker(DEFAULT_ALTERNATE_BACKGROUND, DARKENING_FACTOR);
-    DOUBLE_ALTERNATE_SEARCH_BACKGROUND = darker(DEFAULT_ALTERNATE_BACKGROUND, DOUBLE_DARKENING_FACTOR);
+    configureColors();
   }
 
   private final SwingEntityTableModel tableModel;
@@ -72,6 +67,12 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     this.format = format == null ? property.getFormat() : format;
     this.dateTimeFormatter = dateTimeFormatter;
     setHorizontalAlignment(horizontalAlignment);
+  }
+
+  @Override
+  public final void updateUI() {
+    super.updateUI();
+    configureColors();
   }
 
   @Override
@@ -155,21 +156,32 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
       return cellColor;
     }
     else {
-      return row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND;
+      return row % 2 == 0 ? BACKGROUND : ALTERNATE_BACKGROUND;
     }
   }
 
   private static Color getConditionEnabledColor(final int row, final boolean propertyConditionEnabled,
                                                 final boolean propertyFilterEnabled, final Color cellColor) {
-    final boolean doubleShade = propertyConditionEnabled && propertyFilterEnabled;
+    final boolean doubleSearch = propertyConditionEnabled && propertyFilterEnabled;
     if (cellColor != null) {
       return darker(cellColor, DARKENING_FACTOR);
     }
     else {
       return row % 2 == 0 ?
-              (doubleShade ? DOUBLE_SEARCH_BACKGROUND : SEARCH_BACKGROUND) :
-              (doubleShade ? DOUBLE_ALTERNATE_SEARCH_BACKGROUND : SEARCH_ALTERNATE_BACKGROUND);
+              (doubleSearch ? BACKGROUND_DOUBLE_SEARCH : BACKGROUND_SEARCH) :
+              (doubleSearch ? ALTERNATE_BACKGROUND_DOUBLE_SEARCH : ALTERNATE_BACKGROUND_SEARCH);
     }
+  }
+
+  private static void configureColors() {
+    final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
+    BACKGROUND = lookAndFeel.getDefaults().getColor("Table.background");
+    BACKGROUND_SEARCH = darker(BACKGROUND, DARKENING_FACTOR);
+    BACKGROUND_DOUBLE_SEARCH = darker(BACKGROUND, DOUBLE_DARKENING_FACTOR);
+    final Color alternate = darker(BACKGROUND, DOUBLE_DARKENING_FACTOR);
+    ALTERNATE_BACKGROUND = alternate == null ? BACKGROUND : alternate;
+    ALTERNATE_BACKGROUND_SEARCH = darker(ALTERNATE_BACKGROUND, DARKENING_FACTOR);
+    ALTERNATE_BACKGROUND_DOUBLE_SEARCH = darker(ALTERNATE_BACKGROUND, DOUBLE_DARKENING_FACTOR);
   }
 
   static final class BooleanRenderer extends NullableCheckBox
