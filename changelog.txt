@@ -7300,3 +7300,5 @@
   DefaultFileSelectionDialogBuilder bug fixed, NullPointerException prevented
   EntityApplicationPanel.displayEntityPanelDialog() now uses Dialogs.componentDialogBuilder()
   DefaultEntityTableCellRenderer now implements alternateRowColor by default and updates colors on updateUI()
+  Components.updateUI() added
+  ColumnConditionPanel.updateUI() now calls updateUI() for all subcomponents, minor UI improvements
