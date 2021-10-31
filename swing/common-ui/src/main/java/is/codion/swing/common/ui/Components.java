@@ -57,6 +57,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -92,6 +94,30 @@ public final class Components {
   }
 
   private Components() {}
+
+  /**
+   * Calls {@link JComponent#updateUI()} for the given components, ignores null components.
+   * @param components the components to update the UI for
+   */
+  public static void updateUI(final JComponent... components) {
+    if (components != null) {
+      updateUI(Arrays.asList(components));
+    }
+  }
+
+  /**
+   * Calls {@link JComponent#updateUI()} for the given components, ignores null components.
+   * @param components the components to update the UI for
+   */
+  public static void updateUI(final Collection<? extends JComponent> components) {
+    if (components != null) {
+      for (final JComponent component : components) {
+        if (component != null) {
+          component.updateUI();
+        }
+      }
+    }
+  }
 
   /**
    * Links the given action to the given StateObserver, so that the action is enabled
@@ -441,7 +467,7 @@ public final class Components {
   /**
    * Returns a look and feel provider with the given name, if available
    * @param name the look and feel name
-   * @return a look and feel provider, null if not found
+   * @return a look and feel provider, an empty Optional if not found
    */
   public static Optional<LookAndFeelProvider> getLookAndFeelProvider(final String name) {
     return name == null ? Optional.empty() : Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(name));
@@ -451,9 +477,9 @@ public final class Components {
    * Allows the user the select between all available Look and Feels.
    * @param dialogOwner the dialog owner
    * @param dialogTitle the dialog title
-   * @return the selected look and feel provider, null if none was selected
+   * @return the selected look and feel provider, an empty Optional if cancelled
    */
-  public static LookAndFeelProvider selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
+  public static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
     final List<Item<LookAndFeelProvider>> items = new ArrayList<>();
     final Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
     final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
@@ -472,7 +498,7 @@ public final class Components {
     final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(comboBoxModel),
             dialogTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-    return option == JOptionPane.OK_OPTION ? comboBoxModel.getSelectedValue().getValue() : null;
+    return option == JOptionPane.OK_OPTION ? Optional.of(comboBoxModel.getSelectedValue().getValue()) : Optional.empty();
   }
 
   /**

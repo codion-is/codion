@@ -83,7 +83,7 @@ group by c.customerid, i.invoicedate]]>
 				<reportElement key="textField" x="109" y="0" width="100" height="18" uuid="69bdf05e-b37e-4da2-b613-7865898e9416"/>
 				<textFieldExpression><![CDATA[$F{LAST_NAME}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="false">
+			<textField pattern="0.##" isBlankWhenNull="false">
 				<reportElement key="textField" x="224" y="0" width="100" height="18" uuid="64fcb085-72cd-47f7-aa9e-3e0cd54e5703"/>
 				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
 			</textField>

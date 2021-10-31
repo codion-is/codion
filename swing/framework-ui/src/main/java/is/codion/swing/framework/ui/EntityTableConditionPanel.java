@@ -11,6 +11,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -67,6 +68,12 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     this.columnModel = columnModel;
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
+  }
+
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    Components.updateUI(conditionPanel);
   }
 
   /**

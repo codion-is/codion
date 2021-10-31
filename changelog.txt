@@ -7331,3 +7331,14 @@
   ColumnConditionPanel.enableDialog(), title parameter added
   FilteredTable no longer displays error when user tries to display filter dialog for unsupported column type
   DefaultFileSelectionDialogBuilder bug fixed, NullPointerException prevented
+  EntityApplicationPanel.displayEntityPanelDialog() now uses Dialogs.componentDialogBuilder()
+  DefaultEntityTableCellRenderer now implements alternateRowColor by default and updates colors on updateUI()
+  Components.updateUI() added
+  ColumnConditionPanel.updateUI() now calls updateUI() for all subcomponents, minor UI improvements
+  EntitySearchField.updateUI() overridden, configures colors and refreshes text field hint
+  DefaultTextFieldHint now reconfigures colors when text field UI changes
+  FilteredTable.updateUI() overridden, calls updateUI() for subcomponents and refreshes text field hint
+  EntityComponentValidators.TextValidator now reconfigures colors when the text field UI changes
+  DefaultEntityTableCellRenderer bug fixed, did not set the cell highlight border
+  updateUI() overridden in EntityPanel related components to support setting the Look&Feel dynamically, with uninitialized EntityPanels, calling updateUI() for non-visible components, seems like I'm missing something here, seems a bit complicated
+  EntityApplicationPanel.selectLookAndFeel() now enables the Look&Feel right away

@@ -28,21 +28,15 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.ButtonGroup;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Arrays;
@@ -51,7 +45,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
-import static is.codion.swing.common.ui.Components.*;
+import static is.codion.swing.common.ui.Components.addLookAndFeelProvider;
+import static is.codion.swing.common.ui.Components.lookAndFeelProvider;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
@@ -197,28 +192,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   public static void main(final String[] args) throws CancelException {
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
-    addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), () -> {
-      FlatLightLaf.setup();
-      final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", darker(background));
-    }));
-    addLookAndFeelProvider(lookAndFeelProvider(FlatIntelliJLaf.class.getName(), () -> {
-      FlatIntelliJLaf.setup();
-      final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", darker(background));
-    }));
-    addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), () -> {
-      FlatDarkLaf.setup();
-      final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", darker(background));
-    }));
-    addLookAndFeelProvider(lookAndFeelProvider(FlatDarculaLaf.class.getName(), () -> {
-      FlatDarculaLaf.setup();
-      final Color background = (Color) UIManager.get("Table.background");
-      UIManager.put("Table.alternateRowColor", darker(background));
-    }));
-    JFrame.setDefaultLookAndFeelDecorated(true);
-    JDialog.setDefaultLookAndFeelDecorated(true);
+    addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), FlatLightLaf::setup));
+    addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), FlatDarkLaf::setup));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);

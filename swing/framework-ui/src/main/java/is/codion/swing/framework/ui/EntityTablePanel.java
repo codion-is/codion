@@ -218,6 +218,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
 
+  private final JScrollPane tableScrollPane;
+
   private final EntityComponentValues componentValues;
 
   private final AbstractEntityTableConditionPanel conditionPanel;
@@ -321,11 +323,24 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.table = initializeFilteredTable();
     this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
-    final JScrollPane tableScrollPane = new JScrollPane(table);
+    this.tableScrollPane = new JScrollPane(table);
     this.conditionScrollPane = initializeConditionScrollPane(tableScrollPane);
     this.summaryScrollPane = initializeSummaryScrollPane(tableScrollPane);
     this.tablePanel = initializeTablePanel(tableScrollPane);
     this.refreshToolBar = initializeRefreshToolBar();
+  }
+
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    Components.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane);
+    if (refreshToolBar != null) {
+      Components.updateUI(refreshToolBar, (JComponent) refreshToolBar.getComponent(0));
+    }
+    if (tableScrollPane != null) {
+      Components.updateUI(tableScrollPane, tableScrollPane.getViewport(),
+              tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
+    }
   }
 
   /**

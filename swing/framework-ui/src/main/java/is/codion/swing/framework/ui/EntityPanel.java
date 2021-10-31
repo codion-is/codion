@@ -322,6 +322,15 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     this.tablePanel = tablePanel;
   }
 
+  @Override
+  public void updateUI() {
+    super.updateUI();
+    Components.updateUI(editControlPanel, editControlTablePanel, horizontalSplitPane, tablePanel, editPanel);
+    if (detailEntityPanels != null) {
+      Components.updateUI(detailEntityPanels);
+    }
+  }
+
   /**
    * @return the EntityModel
    */

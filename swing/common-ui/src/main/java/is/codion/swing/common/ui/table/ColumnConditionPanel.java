@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.DefaultComboBoxModel;
@@ -69,7 +70,6 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     NO
   }
 
-  private static final int ENABLED_BUTTON_SIZE = 20;
   private static final float OPERATOR_FONT_SIZE = 18f;
 
   private final ColumnConditionModel<C, T> conditionModel;
@@ -139,6 +139,13 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     conditionModel.setLocked(modelLocked);
     initializeUI();
     bindEvents();
+  }
+
+  @Override
+  public final void updateUI() {
+    super.updateUI();
+    Components.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
+            equalField, lowerBoundField, upperBoundField, controlPanel, inputPanel);
   }
 
   /**
@@ -544,6 +551,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
+    Components.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
     ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
     comboBox.setFont(comboBox.getFont().deriveFont(OPERATOR_FONT_SIZE));
@@ -557,15 +565,8 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     setLayout(FlexibleGridLayout.builder()
             .rowsColumns(2, 1)
             .gap(0)
-            .fixRowHeights(true)
             .build());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
-    if (toggleEnabledButton != null) {
-      this.toggleEnabledButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
-    }
-    if (toggleAdvancedButton != null) {
-      this.toggleAdvancedButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
-    }
     onOperatorChanged(conditionModel.getOperator());
     onAdvancedChange(advancedConditionState.get());
   }
