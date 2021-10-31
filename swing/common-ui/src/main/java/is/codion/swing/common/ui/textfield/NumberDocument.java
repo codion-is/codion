@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.textfield;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Caret;
 import javax.swing.text.DocumentFilter;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -87,8 +87,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
     }
   }
 
-  void setCaret(final Caret caret) {
-    getDocumentFilter().setCaret(caret);
+  void setTextComponent(final JTextComponent textComponent) {
+    getDocumentFilter().setTextComponent(textComponent);
   }
 
   void setSeparators(final char decimalSeparator, final char groupingSeparator) {
