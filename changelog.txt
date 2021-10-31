@@ -7305,3 +7305,4 @@
   EntitySearchField.updateUI() overridden, configures colors and refreshes text field hint
   DefaultTextFieldHint now reconfigures colors when text field UI changes
   FilteredTable.updateUI() overridden, calls updateUI() for subcomponents and refreshes text field hint
+  EntityComponentValidators.TextValidator now reconfigures colors when the text field UI changes

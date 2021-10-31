@@ -8,7 +8,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 
 import javax.swing.JComponent;
-import javax.swing.JTextField;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
@@ -144,37 +145,22 @@ public final class EntityComponentValidators {
 
   private static class TextValidator<T> extends AbstractValidator<T> {
 
-    protected static final Color VALID_ENABLED_BACKGROUND_COLOR;
-    protected static final Color VALID_DISABLED_BACKGROUND_COLOR;
-
-    static {
-      final JTextField textField = new JTextField();
-      VALID_ENABLED_BACKGROUND_COLOR = textField.getBackground();
-      textField.setEnabled(false);
-      VALID_DISABLED_BACKGROUND_COLOR = textField.getBackground();
-    }
-
-    private final Color invalidBackgroundColor;
+    protected Color backgroundColor;
+    protected Color inactiveBackgroundColor;
+    protected Color invalidBackgroundColor;
 
     /**
      * Instantiates a new TextValidator
      * @param attribute the attribute of the value to validate
      * @param textComponent the text component bound to the value
      * @param editModel the edit model handling the value editing
-     * @param invalidBackgroundColor the background color to use when the field value is invalid
      * @param defaultToolTip the default tooltip to show when the field value is valid
      */
     protected TextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
                             final String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
-      this.invalidBackgroundColor = darker(VALID_ENABLED_BACKGROUND_COLOR);
-    }
-
-    /**
-     * @return the background color to use when the field value is invalid
-     */
-    protected final Color getInvalidBackgroundColor() {
-      return invalidBackgroundColor;
+      configureColors();
+      textComponent.addPropertyChangeListener("UI", event -> configureColors());
     }
 
     @Override
@@ -183,8 +169,16 @@ public final class EntityComponentValidators {
       final boolean enabled = component.isEnabled();
       final String validationMessage = getValidationMessage();
       component.setBackground(validationMessage == null ?
-              (enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR) : invalidBackgroundColor);
+              (enabled ? backgroundColor : inactiveBackgroundColor) : invalidBackgroundColor);
       setToolTipText(validationMessage);
+    }
+
+    private void configureColors() {
+      final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
+      this.backgroundColor = lookAndFeel.getDefaults().getColor("TextField.background");
+      this.inactiveBackgroundColor = lookAndFeel.getDefaults().getColor("TextField.inactiveBackground");
+      this.invalidBackgroundColor = darker(backgroundColor);
+      validate();
     }
   }
 
@@ -206,10 +200,10 @@ public final class EntityComponentValidators {
       final boolean validInputString = !isNull() || (stringEqualsMask && isNullable());
       final String validationMessage = getValidationMessage();
       if (validInputString && validationMessage == null) {
-        textComponent.setBackground(enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR);
+        textComponent.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
       }
       else {
-        textComponent.setBackground(getInvalidBackgroundColor());
+        textComponent.setBackground(invalidBackgroundColor);
       }
       setToolTipText(validationMessage);
     }
