@@ -35,18 +35,18 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
-  private static Color BACKGROUND;
-  private static Color BACKGROUND_SEARCH;
-  private static Color BACKGROUND_DOUBLE_SEARCH;
-
-  private static Color ALTERNATE_BACKGROUND;
-  private static Color ALTERNATE_BACKGROUND_SEARCH;
-  private static Color ALTERNATE_BACKGROUND_DOUBLE_SEARCH;
-
-  private static Border FOCUSED_CELL_BORDER;
-
   private static final double DARKENING_FACTOR = 0.9;
   private static final double DOUBLE_DARKENING_FACTOR = 0.8;
+
+  private static Color backgroundColor;
+  private static Color backgroundColorSearch;
+  private static Color backgroundColorDoubleSearch;
+
+  private static Color alternateBackgroundColor;
+  private static Color alternateBackgroundColorSearch;
+  private static Color alternateBackgroundColorDoubleSearch;
+
+  private static Border focusedCellBorder;
 
   static {
     configureColors();
@@ -108,7 +108,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     setForeground(getForeground(table, isSelected));
     setBackground(getBackground(table, row, isSelected));
-    setBorder(hasFocus ? FOCUSED_CELL_BORDER : null);
+    setBorder(hasFocus ? focusedCellBorder : null);
     if (isTooltipData()) {
       setToolTipText(value == null ? "" : value.toString());
     }
@@ -158,7 +158,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
       return cellColor;
     }
     else {
-      return row % 2 == 0 ? BACKGROUND : ALTERNATE_BACKGROUND;
+      return row % 2 == 0 ? backgroundColor : alternateBackgroundColor;
     }
   }
 
@@ -170,21 +170,21 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     }
     else {
       return row % 2 == 0 ?
-              (doubleSearch ? BACKGROUND_DOUBLE_SEARCH : BACKGROUND_SEARCH) :
-              (doubleSearch ? ALTERNATE_BACKGROUND_DOUBLE_SEARCH : ALTERNATE_BACKGROUND_SEARCH);
+              (doubleSearch ? backgroundColorDoubleSearch : backgroundColorSearch) :
+              (doubleSearch ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
     }
   }
 
   private static void configureColors() {
     final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
-    BACKGROUND = lookAndFeel.getDefaults().getColor("Table.background");
-    BACKGROUND_SEARCH = darker(BACKGROUND, DARKENING_FACTOR);
-    BACKGROUND_DOUBLE_SEARCH = darker(BACKGROUND, DOUBLE_DARKENING_FACTOR);
-    final Color alternate = darker(BACKGROUND, DOUBLE_DARKENING_FACTOR);
-    ALTERNATE_BACKGROUND = alternate == null ? BACKGROUND : alternate;
-    ALTERNATE_BACKGROUND_SEARCH = darker(ALTERNATE_BACKGROUND, DARKENING_FACTOR);
-    ALTERNATE_BACKGROUND_DOUBLE_SEARCH = darker(ALTERNATE_BACKGROUND, DOUBLE_DARKENING_FACTOR);
-    FOCUSED_CELL_BORDER = UIManager.getBorder("Table.focusCellHighlightBorder");
+    backgroundColor = lookAndFeel.getDefaults().getColor("Table.background");
+    backgroundColorSearch = darker(backgroundColor, DARKENING_FACTOR);
+    backgroundColorDoubleSearch = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
+    final Color alternate = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
+    alternateBackgroundColor = alternate == null ? backgroundColor : alternate;
+    alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
+    alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
+    focusedCellBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
   }
 
   static final class BooleanRenderer extends NullableCheckBox
@@ -209,7 +209,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
       getNullableModel().setState((Boolean) value);
       setForeground(getForeground(table, isSelected));
       setBackground(getBackground(table, row, isSelected));
-      setBorder(hasFocus ? FOCUSED_CELL_BORDER : null);
+      setBorder(hasFocus ? focusedCellBorder : null);
 
       return this;
     }
