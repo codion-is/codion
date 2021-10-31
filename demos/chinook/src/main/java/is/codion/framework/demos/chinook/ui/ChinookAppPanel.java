@@ -28,9 +28,7 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.ButtonGroup;
@@ -195,9 +193,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
     addLookAndFeelProvider(lookAndFeelProvider(FlatLightLaf.class.getName(), FlatLightLaf::setup));
-    addLookAndFeelProvider(lookAndFeelProvider(FlatIntelliJLaf.class.getName(), FlatIntelliJLaf::setup));
     addLookAndFeelProvider(lookAndFeelProvider(FlatDarkLaf.class.getName(), FlatDarkLaf::setup));
-    addLookAndFeelProvider(lookAndFeelProvider(FlatDarculaLaf.class.getName(), FlatDarculaLaf::setup));
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
