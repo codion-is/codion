@@ -21,7 +21,7 @@ class CompletionDocument extends PlainDocument {
 
   private final JComboBox<?> comboBox;
   private final ComboBoxModel<?> model;
-  private final JTextComponent editor;
+  private final JTextComponent editorComponent;
   private final boolean normalize;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
@@ -33,18 +33,18 @@ class CompletionDocument extends PlainDocument {
     this.comboBox = requireNonNull(comboBox);
     this.normalize = normalize;
     model = comboBox.getModel();
-    editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
-    if (editor.getDocument() instanceof CompletionDocument) {
+    editorComponent = (JTextComponent) comboBox.getEditor().getEditorComponent();
+    if (editorComponent.getDocument() instanceof CompletionDocument) {
       throw new IllegalStateException("Completion has already been set for combo box");
     }
-    editor.setDocument(this);
+    editorComponent.setDocument(this);
     comboBox.addActionListener(e -> {
       if (!selecting) {
         highlightCompletedText(0);
       }
     });
-    editor.addKeyListener(new MatchKeyAdapter());
-    editor.addFocusListener(new FocusAdapter() {
+    editorComponent.addKeyListener(new MatchKeyAdapter());
+    editorComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
         highlightCompletedText(0);
@@ -117,8 +117,8 @@ class CompletionDocument extends PlainDocument {
   }
 
   protected final void highlightCompletedText(final int start) {
-    editor.setCaretPosition(getLength());
-    editor.moveCaretPosition(start);
+    editorComponent.setCaretPosition(getLength());
+    editorComponent.moveCaretPosition(start);
   }
 
   /**
@@ -170,7 +170,7 @@ class CompletionDocument extends PlainDocument {
         // determine if the pressed key is backspace (needed by the remove method)
         case KeyEvent.VK_BACK_SPACE:
           hitBackspace = true;
-          hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
+          hitBackspaceOnSelection = editorComponent.getSelectionStart() != editorComponent.getSelectionEnd();
           break;
         // ignore delete key
         case KeyEvent.VK_DELETE:
