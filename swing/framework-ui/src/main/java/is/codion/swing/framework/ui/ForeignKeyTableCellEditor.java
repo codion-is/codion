@@ -42,7 +42,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
       final ComponentValue<Entity, EntityComboBox> componentValue =
               getInputComponents().getComponentBuilders().foreignKeyComboBox(foreignKey, comboBoxModel)
                       .buildComponentValue();
-      getCellValue().link(componentValue);
+      componentValue.link(getCellValue());
 
       return componentValue.getComponent();
     }
@@ -50,7 +50,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
     final ComponentValue<Entity, EntitySearchField> componentValue =
             getInputComponents().getComponentBuilders().foreignKeySearchField(foreignKey, new DefaultEntitySearchModel(foreignEntityType, connectionProvider))
                     .buildComponentValue();
-    getCellValue().link(componentValue);
+    componentValue.link(getCellValue());
 
     return componentValue.getComponent();
   }
