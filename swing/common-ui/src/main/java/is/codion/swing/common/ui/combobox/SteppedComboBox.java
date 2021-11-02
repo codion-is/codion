@@ -4,7 +4,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JScrollBar;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.plaf.metal.MetalComboBoxUI;
@@ -31,7 +30,6 @@ public class SteppedComboBox<T> extends JComboBox<T> {
   public SteppedComboBox(final ComboBoxModel<T> comboBoxModel) {
     super(Objects.requireNonNull(comboBoxModel, "comboBoxModel"));
     setUI(new SteppedComboBoxUI());
-    setFont(UIManager.getFont("TextField.font"));
   }
 
   /**
