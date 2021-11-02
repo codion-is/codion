@@ -11,7 +11,6 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -38,6 +37,7 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
@@ -1634,10 +1634,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     @Override
     public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
-      final ColumnFilterModel<Entity, Attribute<Object>, Object> model =
-              tableModel.getTableConditionModel().getFilterModel((Attribute<Object>) column.getIdentifier());
-
-      return new ColumnConditionPanel<>(model, ColumnConditionPanel.ToggleAdvancedButton.YES, getOperators(model));
+      return tableModel.getTableConditionModel().getFilterModel((Attribute<Object>) column.getIdentifier())
+              .map(filterModel -> new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel)))
+              .orElse(null);
     }
 
     private static <C extends Attribute<?>> List<Operator> getOperators(final ColumnConditionModel<C, ?> model) {

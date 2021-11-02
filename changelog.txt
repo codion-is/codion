@@ -7315,3 +7315,4 @@
   ColumnConditionPanel, button sizes restricted to textfield square size
   SteppedComboBox, let's just use the default Look & Feel font
   DomainToString now uses primaryKeyProperty() for non-composite primary keys
+  EntityTableConditionModel.getConditionModel() and getFilterModel() now return Optional

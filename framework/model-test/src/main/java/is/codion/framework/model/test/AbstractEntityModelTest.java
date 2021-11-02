@@ -7,6 +7,7 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -28,6 +29,7 @@ import java.util.Objects;
 
 import static is.codion.framework.db.condition.Conditions.where;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -266,7 +268,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     editModel.put(TestDomain.DEPARTMENT_NAME, "Name");
     editModel.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final Entity inserted = editModel.insert();
-    final Collection<Entity> equalsValues = employeeModel.getTableModel().getTableConditionModel().getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualValues();
+    final Collection<Entity> equalsValues = employeeModel.getTableModel().getTableConditionModel().getConditionModel(TestDomain.EMP_DEPARTMENT_FK)
+            .map(ColumnConditionModel::getEqualValues)
+            .orElse(emptyList());
     assertEquals(inserted, equalsValues.iterator().next());
     editModel.delete();
   }

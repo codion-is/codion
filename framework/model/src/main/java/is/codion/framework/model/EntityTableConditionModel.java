@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -138,11 +139,10 @@ public interface EntityTableConditionModel {
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
-   * @return the {@link ColumnConditionModel} associated with {@code attribute}
-   * @throws IllegalArgumentException in case no condition model is found
+   * @return the {@link ColumnConditionModel} associated with {@code attribute}, an empty Optional if none is found
    * @see #containsConditionModel(Attribute)
    */
-  <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
+  <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getConditionModel(Attribute<T> attribute);
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and
@@ -160,9 +160,9 @@ public interface EntityTableConditionModel {
    * @param <C> the property type
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
-   * @return the {@link ColumnFilterModel} for the {@code attribute}, null if none is found
+   * @return the {@link ColumnFilterModel} for the {@code attribute}, an empty Optional if none is found
    */
-  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
+  <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilterModel(Attribute<T> attribute);
 
   /**
    * @param attribute column attribute

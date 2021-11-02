@@ -16,6 +16,10 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
   public <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(final Property<T> property) {
+    if (property.getAttribute().isEntity()) {
+      return null;
+    }
+
     final DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
             property.getAttribute(), property.getAttribute().getTypeClass(),
             Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
