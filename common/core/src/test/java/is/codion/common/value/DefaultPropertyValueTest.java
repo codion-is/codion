@@ -37,7 +37,7 @@ public class DefaultPropertyValueTest {
 
   @Test
   void getSetMethodInvalidMethod() throws NoSuchMethodException {
-    assertNull(DefaultPropertyValue.getSetMethod(boolean.class, "invalidValue", Bean.class));
+    assertFalse(DefaultPropertyValue.getSetMethod(boolean.class, "invalidValue", Bean.class).isPresent());
   }
 
   @Test
