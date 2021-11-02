@@ -8,6 +8,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -169,10 +170,10 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * @param fromRowIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param searchText the text to search for
-   * @return the search result coordinate, null if nothing was found
+   * @return the search result coordinate, an empty Optional if nothing was found
    * @see #isRegularExpressionSearch()
    */
-  RowColumn findNext(int fromRowIndex, String searchText);
+  Optional<RowColumn> findNext(int fromRowIndex, String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -180,10 +181,10 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * @param fromRowIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param searchText the text to search for
-   * @return the search result coordinate, null if nothing was found
+   * @return the search result coordinate, an empty Optional if nothing was found
    * @see #isRegularExpressionSearch()
    */
-  RowColumn findPrevious(int fromRowIndex, String searchText);
+  Optional<RowColumn> findPrevious(int fromRowIndex, String searchText);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -191,9 +192,9 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * @param fromRowIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param condition the search condition
-   * @return the search result coordinate, null if nothing was found
+   * @return the search result coordinate, an empty Optional if nothing was found
    */
-  RowColumn findNext(int fromRowIndex, Predicate<String> condition);
+  Optional<RowColumn> findNext(int fromRowIndex, Predicate<String> condition);
 
   /**
    * Returns a RowColumn denoting the row and column index of the first value to fulfill
@@ -201,9 +202,9 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
    * @param fromRowIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param condition the search condition
-   * @return the search result coordinate, null if nothing was found
+   * @return the search result coordinate, an empty Optional if nothing was found
    */
-  RowColumn findPrevious(int fromRowIndex, Predicate<String> condition);
+  Optional<RowColumn> findPrevious(int fromRowIndex, Predicate<String> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model

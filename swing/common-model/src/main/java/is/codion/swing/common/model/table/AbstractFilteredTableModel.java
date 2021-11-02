@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -195,37 +196,37 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final RowColumn findNext(final int fromRowIndex, final String searchText) {
+  public final Optional<RowColumn> findNext(final int fromRowIndex, final String searchText) {
     return findNext(fromRowIndex, getSearchCondition(searchText));
   }
 
   @Override
-  public final RowColumn findPrevious(final int fromRowIndex, final String searchText) {
+  public final Optional<RowColumn> findPrevious(final int fromRowIndex, final String searchText) {
     return findPrevious(fromRowIndex, getSearchCondition(searchText));
   }
 
   @Override
-  public final RowColumn findNext(final int fromRowIndex, final Predicate<String> condition) {
+  public final Optional<RowColumn> findNext(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
       final RowColumn coordinate = findColumnValue(row, condition);
       if (coordinate != null) {
-        return coordinate;
+        return Optional.of(coordinate);
       }
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @Override
-  public final RowColumn findPrevious(final int fromRowIndex, final Predicate<String> condition) {
+  public final Optional<RowColumn> findPrevious(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
       final RowColumn coordinate = findColumnValue(row, condition);
       if (coordinate != null) {
-        return coordinate;
+        return Optional.of(coordinate);
       }
     }
 
-    return null;
+    return Optional.empty();
   }
 
   /**

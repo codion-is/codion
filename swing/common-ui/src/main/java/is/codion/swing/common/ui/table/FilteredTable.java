@@ -508,8 +508,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (!searchText.isEmpty()) {
-      final RowColumn coordinate = forward ? tableModel.findNext(fromIndex, searchText) :
+      final Optional<RowColumn> optionalRowColumn = forward ? tableModel.findNext(fromIndex, searchText) :
               tableModel.findPrevious(fromIndex, searchText);
+      final RowColumn coordinate = optionalRowColumn.orElse(null);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
