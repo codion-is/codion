@@ -7322,3 +7322,4 @@
   DefaultPropertyValue.getSetMethod() now returns Optional
   FilteredTableModel, find methods now return Optional
   HierarchyPanel now Optional based
+  DomainToString bug fixed, missing quotes from description value

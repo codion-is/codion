@@ -133,7 +133,7 @@ final class DomainToString {
     }
     if (!nullOrEmpty(property.getDescription())) {
       builder.append(Util.LINE_SEPARATOR).append("                .description(")
-              .append(property.getDescription()).append(")");
+              .append("\"").append(property.getDescription()).append("\")");
     }
 
     return builder.toString();
