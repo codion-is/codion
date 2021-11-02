@@ -12,13 +12,11 @@ import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -34,12 +32,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
@@ -181,8 +177,10 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel initializeUserPanel() {
     final User user = loadTestModel.getUser();
-    final JTextField usernameField = new JTextField(user.getUsername());
-    usernameField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
+    final JTextField usernameField = ComponentBuilders.textField()
+            .columns(LARGE_TEXT_FIELD_COLUMNS)
+            .initialValue(user.getUsername())
+            .build();
     final JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
     passwordField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
     final ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
@@ -204,24 +202,21 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeApplicationPanel() {
-    final IntegerField applicationCountField = new IntegerField();
-    applicationCountField.setHorizontalAlignment(SwingConstants.CENTER);
-    ComponentValues.integerField(applicationCountField, false)
-            .link(loadTestModel.applicationCountObserver());
-    final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
-    applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
-
-    final JSpinner batchSizeSpinner = new JSpinner();
-    ComponentValues.integerSpinner(batchSizeSpinner).link(loadTestModel.getApplicationBatchSizeValue());
-    batchSizeSpinner.setToolTipText("Application batch size");
-    ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
-
     final JPanel applicationCountPanel = new JPanel(Layouts.borderLayout());
     applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
-    applicationCountPanel.add(applicationCountField, BorderLayout.CENTER);
-    applicationCountPanel.add(batchSizeSpinner, BorderLayout.EAST);
+    applicationCountPanel.add(ComponentBuilders.integerField()
+            .horizontalAlignment(SwingConstants.CENTER)
+            .linkedValueObserver(loadTestModel.applicationCountObserver())
+            .build(), BorderLayout.CENTER);
+    applicationCountPanel.add(ComponentBuilders.integerSpinner()
+            .editable(false)
+            .columns(SMALL_TEXT_FIELD_COLUMNS)
+            .toolTipText("Application batch size")
+            .linkedValue(loadTestModel.getApplicationBatchSizeValue())
+            .build(), BorderLayout.EAST);
 
+    final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
+    applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
     applicationPanel.add(applicationCountPanel, BorderLayout.NORTH);
 
     return applicationPanel;
@@ -336,34 +331,27 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    final SpinnerNumberModel maxSpinnerModel = new SpinnerNumberModel();
-    maxSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
-    final JSpinner maxThinkTimeSpinner = new JSpinner(maxSpinnerModel);
-    ComponentValues.integerSpinner(maxThinkTimeSpinner).link(loadTestModel.getMaximumThinkTimeValue());
-    ((JSpinner.DefaultEditor) maxThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
-
-    final SpinnerNumberModel minSpinnerModel = new SpinnerNumberModel();
-    minSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
-    final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
-    ComponentValues.integerSpinner(minThinkTimeSpinner).link(loadTestModel.getMinimumThinkTimeValue());
-    ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
-
-    final ToggleControl pauseControl = ToggleControl.builder(loadTestModel.getPausedState())
-            .caption("Pause")
-            .mnemonic('P')
-            .build();
-
-    final FlexibleGridLayout layout = Layouts.flexibleGridLayoutBuilder()
+    final JPanel thinkTimePanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
             .rowsColumns(4, 2)
             .fixRowHeights(true)
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
-            .build();
-    final JPanel thinkTimePanel = new JPanel(layout);
+            .build());
     thinkTimePanel.add(new JLabel("Max. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(maxThinkTimeSpinner);
+    thinkTimePanel.add(ComponentBuilders.integerSpinner()
+            .stepSize(SPINNER_STEP_SIZE)
+            .columns(SMALL_TEXT_FIELD_COLUMNS)
+            .linkedValue(loadTestModel.getMaximumThinkTimeValue())
+            .build());
     thinkTimePanel.add(new JLabel("Min. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(minThinkTimeSpinner);
-    thinkTimePanel.add(pauseControl.createToggleButton());
+    thinkTimePanel.add(ComponentBuilders.integerSpinner()
+            .stepSize(SPINNER_STEP_SIZE)
+            .columns(SMALL_TEXT_FIELD_COLUMNS)
+            .linkedValue(loadTestModel.getMinimumThinkTimeValue())
+            .build());
+    thinkTimePanel.add(ToggleControl.builder(loadTestModel.getPausedState())
+            .caption("Pause")
+            .mnemonic('P')
+            .build().createToggleButton());
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 

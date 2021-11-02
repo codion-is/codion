@@ -7,18 +7,15 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -46,8 +43,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @throws NullPointerException in case itemRandomizer is null
    */
   public ItemRandomizerPanel(final ItemRandomizer<T> itemRandomizer) {
-    requireNonNull(itemRandomizer, "itemRandomizer");
-    this.model = itemRandomizer;
+    this.model = requireNonNull(itemRandomizer, "itemRandomizer");
     initializeUI();
   }
 
@@ -106,43 +102,22 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JPanel initializeWeightPanel(final ItemRandomizer.RandomItem<T> item) {
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
-    ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-    spinner.setToolTipText(item.getItem().toString());
-    final JCheckBox enabledCheckBox = createEnabledCheckBox(item.getItem());
-    final JLabel weightLabel = new JLabel("Weight");
-    weightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-
     panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
-    panel.add(enabledCheckBox, BorderLayout.WEST);
-    panel.add(weightLabel, BorderLayout.CENTER);
-    panel.add(spinner, BorderLayout.EAST);
+    panel.add(ComponentBuilders.checkBox()
+            .caption("Enabled")
+            .linkedValue(new EnabledModelValue(item.getItem()))
+            .build(), BorderLayout.WEST);
+    panel.add(ComponentBuilders.label("Weight")
+            .horizontalAlignment(SwingConstants.RIGHT)
+            .build(), BorderLayout.CENTER);
+    panel.add(ComponentBuilders.integerSpinner()
+            .minimum(0)
+            .columns(SPINNER_COLUMNS)
+            .toolTipText(item.getItem().toString())
+            .linkedValue(new WeightModelValue(item.getItem()))
+            .build(), BorderLayout.EAST);
 
     return panel;
-  }
-
-  /**
-   * Returns a JCheckBox for controlling the enabled state of the given item.
-   * @param item the item
-   * @return an enabling JCheckBox
-   */
-  private JCheckBox createEnabledCheckBox(final T item) {
-    final JCheckBox enabledBox = new JCheckBox("Enabled");
-    new EnabledUIValue(enabledBox.getModel()).link(new EnabledModelValue(item));
-
-    return enabledBox;
-  }
-
-  /**
-   * Returns a SpinnerModel for controlling the weight of the given item.
-   * @param item the item
-   * @return a weight controlling SpinnerModel
-   */
-  private SpinnerModel createWeightSpinnerModel(final T item) {
-    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    new WeightUIValue(spinnerModel).link(new WeightModelValue(item));
-
-    return spinnerModel;
   }
 
   private final class EnabledModelValue extends AbstractValue<Boolean> {
@@ -203,27 +178,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     protected void setValue(final Integer value) {
       model.setWeight(item, value);
-    }
-  }
-
-  private static final class WeightUIValue extends AbstractValue<Integer> {
-
-    private final SpinnerNumberModel spinnerModel;
-
-    private WeightUIValue(final SpinnerNumberModel spinnerModel) {
-      super(0);
-      this.spinnerModel = spinnerModel;
-      spinnerModel.addChangeListener(e -> notifyValueChange());
-    }
-
-    @Override
-    public Integer get() {
-      return (Integer) spinnerModel.getValue();
-    }
-
-    @Override
-    protected void setValue(final Integer value) {
-      spinnerModel.setValue(value);
     }
   }
 }

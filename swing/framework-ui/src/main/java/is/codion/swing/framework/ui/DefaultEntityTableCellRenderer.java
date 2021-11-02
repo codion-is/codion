@@ -57,7 +57,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
   private final Format format;
   private final DateTimeFormatter dateTimeFormatter;
 
-  private boolean indicateCondition = true;
+  private boolean displayConditionStatus = true;
   private boolean tooltipData = false;
 
   protected DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<T> property,
@@ -78,12 +78,12 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
 
   @Override
   public final boolean isDisplayConditionStatus() {
-    return indicateCondition;
+    return displayConditionStatus;
   }
 
   @Override
   public final void setDisplayConditionStatus(final boolean displayConditionStatus) {
-    this.indicateCondition = displayConditionStatus;
+    this.displayConditionStatus = displayConditionStatus;
   }
 
   @Override
@@ -122,7 +122,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
       return table.getSelectionBackground();
     }
 
-    return getBackgroundColor(tableModel, property.getAttribute(), row, indicateCondition);
+    return getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionStatus);
   }
 
   /**
