@@ -8,6 +8,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
+import java.util.Optional;
+
 /**
  * Specifies an object responsible for providing attribute filter models
  */
@@ -17,7 +19,8 @@ public interface FilterModelFactory {
    * Initializes a ColumnFilterModel for the given property
    * @param <T> the column value type
    * @param property the Property for which to initialize a ColumnFilterModel
-   * @return a ColumnFilterModel for the given property
+   * @return a ColumnFilterModel for the given property, an empty Optional if filtering should
+   * not be allowed for this property
    */
-  <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
+  <T> Optional<ColumnFilterModel<Entity, Attribute<?>, T>> createFilterModel(Property<T> property);
 }
