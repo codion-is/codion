@@ -80,7 +80,7 @@ final class DomainToString {
     properties.forEach(property -> {
       if (property instanceof ColumnProperty) {
         strings.add(getColumnProperty(interfaceName, (ColumnProperty<?>) property,
-                definition.isForeignKeyAttribute(property.getAttribute())));
+                definition.isForeignKeyAttribute(property.getAttribute()), definition.getPrimaryKeyAttributes().size() > 1));
       }
       else if (property instanceof ForeignKeyProperty) {
         strings.add(getForeignKeyProperty(interfaceName, (ForeignKeyProperty) property));
@@ -100,8 +100,9 @@ final class DomainToString {
   }
 
   private static String getColumnProperty(final String interfaceName, final ColumnProperty<?> property,
-                                          final boolean isForeignKey) {
-    final StringBuilder builder = new StringBuilder(getPropertyType(property.getAttribute()))
+                                          final boolean isForeignKey, final boolean compositePrimaryKey) {
+    final StringBuilder builder = new StringBuilder(getPropertyType(property.getAttribute(),
+            property.isPrimaryKeyColumn() && !compositePrimaryKey))
             .append(interfaceName).append(".").append(property.getColumnName().toUpperCase());
     if (!isForeignKey && !property.isPrimaryKeyColumn()) {
       builder.append(", ").append("\"").append(property.getCaption()).append("\")");
@@ -112,7 +113,7 @@ final class DomainToString {
     if (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
       builder.append(Util.LINE_SEPARATOR).append("                .eagerlyLoaded()");
     }
-    if (property.isPrimaryKeyColumn()) {
+    if (property.isPrimaryKeyColumn() && compositePrimaryKey) {
       builder.append(Util.LINE_SEPARATOR).append("                .primaryKeyIndex(")
               .append(property.getPrimaryKeyIndex()).append(")");
     }
@@ -146,8 +147,12 @@ final class DomainToString {
     return typeClassName.substring(0, 1).toLowerCase() + typeClassName.substring(1);
   }
 
-  private static String getPropertyType(final Attribute<?> attribute) {
-    return attribute.isByteArray() ? "          blobProperty(" : "          columnProperty(";
+  private static String getPropertyType(final Attribute<?> attribute, final boolean primaryKeyProperty) {
+    if (attribute.isByteArray()) {
+      return "          blobProperty(";
+    }
+
+    return primaryKeyProperty ? "          primaryKeyProperty(" : "          columnProperty(";
   }
 
   private static String getInterfaceName(final String tableName, final boolean uppercase) {

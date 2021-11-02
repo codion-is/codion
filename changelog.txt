@@ -7314,3 +7314,4 @@
   NumberParsingDocumentFilter bug fixed, reference to caret replaced with the text component, seems to have gotten rid of the occasional NullPointerException when moving caret, seems to happen after Look&Feel was changed
   ColumnConditionPanel, button sizes restricted to textfield square size
   SteppedComboBox, let's just use the default Look & Feel font
+  DomainToString now uses primaryKeyProperty() for non-composite primary keys

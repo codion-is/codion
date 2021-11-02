@@ -12,8 +12,7 @@ public interface Product {
 
 void product() {
   define(Product.TYPE,
-          columnProperty(Product.PRODUCTID)
-                .primaryKeyIndex(0),
+          primaryKeyProperty(Product.PRODUCTID),
           columnProperty(Product.CATEGORYID)
                 .nullable(false),
           foreignKeyProperty(Product.CATEGORYID_FK, "Category"),

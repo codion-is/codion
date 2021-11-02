@@ -14,8 +14,7 @@ public interface Address {
 
 void address() {
   define(Address.TYPE,
-          columnProperty(Address.ADDRESSID)
-                .primaryKeyIndex(0),
+          primaryKeyProperty(Address.ADDRESSID),
           columnProperty(Address.STREET1, "Street1")
                 .nullable(false)
                 .maximumLength(55),
