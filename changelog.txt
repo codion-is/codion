@@ -7317,3 +7317,4 @@
   DomainToString now uses primaryKeyProperty() for non-composite primary keys
   EntityTableConditionModel.getConditionModel() and getFilterModel() now return Optional
   FilterModelFactory and ConditionModelFactory now Optional based
+  ConditionPanelFactory now Optional based

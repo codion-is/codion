@@ -162,12 +162,10 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   private static Map<TableColumn, ColumnConditionPanel<?, ?>> createConditionPanels(
           final SwingFilteredTableColumnModel<Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
     final Map<TableColumn, ColumnConditionPanel<?, ?>> conditionPanels = new HashMap<>();
-    columnModel.getAllColumns().forEach(column -> {
-      final ColumnConditionPanel<?, ?> conditionPanel = conditionPanelFactory.createConditionPanel(column);
-      if (conditionPanel != null) {
-        conditionPanels.put(column, conditionPanel);
-      }
-    });
+    columnModel.getAllColumns().forEach(column ->
+            conditionPanelFactory.createConditionPanel(column)
+                    .ifPresent(conditionPanel -> conditionPanels.put(column, conditionPanel)));
+
     return conditionPanels;
   }
 }
