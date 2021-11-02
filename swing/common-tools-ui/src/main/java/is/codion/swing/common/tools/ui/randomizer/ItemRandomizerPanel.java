@@ -10,7 +10,6 @@ import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -137,27 +136,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     protected void setValue(final Boolean value) {
       model.setItemEnabled(item, value);
-    }
-  }
-
-  private static final class EnabledUIValue extends AbstractValue<Boolean> {
-
-    private final ButtonModel buttonModel;
-
-    private EnabledUIValue(final ButtonModel buttonModel) {
-      super(false);
-      this.buttonModel = buttonModel;
-      buttonModel.addItemListener(e -> notifyValueChange());
-    }
-
-    @Override
-    public Boolean get() {
-      return buttonModel.isSelected();
-    }
-
-    @Override
-    protected void setValue(final Boolean value) {
-      buttonModel.setSelected(value);
     }
   }
 
