@@ -11,6 +11,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -324,8 +326,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModel();
     tableModel.setQueryRowCountLimit(6);
     assertThrows(IllegalStateException.class, tableModel::refresh);
-    final ColumnConditionModel<?, Double> commissionConditionModel =
-            tableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION).orElse(null);
+    final Optional<ColumnConditionModel<? extends Attribute<Double>, Double>> optional =
+            tableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION);
+    assertTrue(optional.isPresent());
+    final ColumnConditionModel<?, Double> commissionConditionModel = optional.get();
     commissionConditionModel.setOperator(Operator.EQUAL);
     commissionConditionModel.setEnabled(true);
     tableModel.refresh();
