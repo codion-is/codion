@@ -9,13 +9,19 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
+import java.util.Optional;
+
 /**
  * A default FilterModelFactory implementation.
  */
 public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
-  public <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(final Property<T> property) {
+  public <T> Optional<ColumnFilterModel<Entity, Attribute<?>, T>> createFilterModel(final Property<T> property) {
+    if (property.getAttribute().isEntity()) {
+      return Optional.empty();
+    }
+
     final DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
             property.getAttribute(), property.getAttribute().getTypeClass(),
             Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
@@ -32,6 +38,6 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
       return (Comparable<T>) value;
     });
 
-    return filterModel;
+    return Optional.of(filterModel);
   }
 }

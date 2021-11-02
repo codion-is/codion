@@ -3,8 +3,6 @@
  */
 package is.codion.javafx.framework.ui;
 
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -61,16 +59,15 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
 
   private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel, final Property<T> property) {
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
-      final ColumnConditionModel<? extends Attribute<?>, T> conditionModel =
-              listModel.getTableConditionModel().getConditionModel(property.getAttribute());
-      if (conditionModel != null) {
-        final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
-        view.prefWidthProperty().setValue(getWidth());
-        widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
-        widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
+      listModel.getTableConditionModel().getConditionModel(property.getAttribute()).map(conditionModel -> {
+                final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
+                view.prefWidthProperty().setValue(getWidth());
+                widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
+                widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
 
-        return view;
-      }
+                return view;
+              })
+              .orElse(null);
     }
 
     return null;

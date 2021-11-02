@@ -24,6 +24,7 @@ import javax.swing.table.TableColumn;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,13 +49,10 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   }
 
   @Override
-  public final <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
-    final Attribute<T> attribute = (Attribute<T>) column.getIdentifier();
-    if (tableConditionModel.containsConditionModel(attribute)) {
-      return createConditionPanel(tableConditionModel.getConditionModel(attribute));
-    }
-
-    return null;
+  public final <T> Optional<ColumnConditionPanel<?, T>> createConditionPanel(final TableColumn column) {
+    return Optional.ofNullable(tableConditionModel.getConditionModel((Attribute<T>) column.getIdentifier())
+            .map(this::createConditionPanel)
+            .orElse(null));
   }
 
   /**

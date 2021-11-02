@@ -10,6 +10,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultConditionModelFactory;
 
+import java.util.Optional;
+
 /**
  * Provides foreign key condition models based on {@link ObservableEntityList} for
  * entities based on small datasets, see {@link EntityDefinition#isSmallDataset()}
@@ -17,11 +19,11 @@ import is.codion.framework.model.DefaultConditionModelFactory;
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<ForeignKey, Entity> createForeignKeyConditionModel(
+  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
           final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      return new FXForeignKeyConditionListModel(foreignKey,
-              new ObservableEntityList(foreignKey.getReferencedEntityType(), connectionProvider));
+      return Optional.of(new FXForeignKeyConditionListModel(foreignKey,
+              new ObservableEntityList(foreignKey.getReferencedEntityType(), connectionProvider)));
     }
 
     return super.createForeignKeyConditionModel(foreignKey, connectionProvider);

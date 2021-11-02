@@ -41,7 +41,7 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
     this.valueOwner = requireNonNull(valueOwner, "valueOwner");
     this.changeEvent = requireNonNull(changeObserver);
     this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
-    this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass());
+    this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass()).orElse(null);
   }
 
   @Override
@@ -191,17 +191,17 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
     return unmodifiableSet(validators);
   }
 
-  static Method getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {
+  static Optional<Method> getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {
     if (requireNonNull(property, "property").isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
 
     try {
-      return requireNonNull(ownerClass, "ownerClass").getMethod("set" +
-              Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType"));
+      return Optional.of(requireNonNull(ownerClass, "ownerClass").getMethod("set" +
+              Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType")));
     }
     catch (final NoSuchMethodException e) {
-      return null;
+      return Optional.empty();
     }
   }
 
@@ -231,6 +231,5 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
       throw new IllegalArgumentException("Get method for property " + propertyName + ", type: " + valueType +
               " not found in class " + ownerClass.getName(), e);
     }
-
   }
 }

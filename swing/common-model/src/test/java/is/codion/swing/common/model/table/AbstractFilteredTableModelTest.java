@@ -377,64 +377,64 @@ public final class AbstractFilteredTableModelTest {
     };
 
     testModel.refresh();
-    RowColumn coordinate = testModel.findNext(0, "b");
+    RowColumn coordinate = testModel.findNext(0, "b").orElse(null);
     assertEquals(RowColumn.rowColumn(1, 1), coordinate);
-    coordinate = testModel.findNext(coordinate.getRow(), "e");
+    coordinate = testModel.findNext(coordinate.getRow(), "e").orElse(null);
     assertEquals(RowColumn.rowColumn(4, 1), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "c");
+    coordinate = testModel.findPrevious(coordinate.getRow(), "c").orElse(null);
     assertEquals(RowColumn.rowColumn(2, 1), coordinate);
-    coordinate = testModel.findNext(0, "x");
+    coordinate = testModel.findNext(0, "x").orElse(null);
     assertNull(coordinate);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.DESCENDING);
 
-    coordinate = testModel.findNext(0, "b");
+    coordinate = testModel.findNext(0, "b").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "e");
+    coordinate = testModel.findPrevious(coordinate.getRow(), "e").orElse(null);
     assertEquals(RowColumn.rowColumn(0, 1), coordinate);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
-    coordinate = testModel.findNext(0, "(?i)B");
+    coordinate = testModel.findNext(0, "(?i)B").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
 
     Predicate<String> condition = item -> item.equals("b") || item.equals("e");
 
-    coordinate = testModel.findPrevious(4, condition);
+    coordinate = testModel.findPrevious(4, condition).orElse(null);
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition);
+    coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition).orElse(null);
     assertEquals(RowColumn.rowColumn(0, 1), coordinate);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
-    coordinate = testModel.findNext(0, "b");
+    coordinate = testModel.findNext(0, "b").orElse(null);
     assertEquals(RowColumn.rowColumn(1, 0), coordinate);
-    coordinate = testModel.findNext(coordinate.getRow(), "e");
+    coordinate = testModel.findNext(coordinate.getRow(), "e").orElse(null);
     assertEquals(RowColumn.rowColumn(4, 0), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "c");
+    coordinate = testModel.findPrevious(coordinate.getRow(), "c").orElse(null);
     assertEquals(RowColumn.rowColumn(2, 0), coordinate);
-    coordinate = testModel.findNext(0, "x");
+    coordinate = testModel.findNext(0, "x").orElse(null);
     assertNull(coordinate);
 
     testModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING);
 
-    coordinate = testModel.findNext(0, "b");
+    coordinate = testModel.findNext(0, "b").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 0), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "e");
+    coordinate = testModel.findPrevious(coordinate.getRow(), "e").orElse(null);
     assertEquals(RowColumn.rowColumn(0, 0), coordinate);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
-    coordinate = testModel.findNext(0, "(?i)B");
+    coordinate = testModel.findNext(0, "(?i)B").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 0), coordinate);
 
     condition = item -> item.equals("b") || item.equals("e");
 
-    coordinate = testModel.findPrevious(4, condition);
+    coordinate = testModel.findPrevious(4, condition).orElse(null);
     assertEquals(RowColumn.rowColumn(3, 0), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition);
+    coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition).orElse(null);
     assertEquals(RowColumn.rowColumn(0, 0), coordinate);
   }
 
