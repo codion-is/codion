@@ -24,9 +24,9 @@ public class DefaultPropertyValueTest {
 
   @Test
   void getSetMethod() throws NoSuchMethodException {
-    Method setMethod = DefaultPropertyValue.getSetMethod(boolean.class, "booleanValue", Bean.class);
+    Method setMethod = DefaultPropertyValue.getSetMethod(boolean.class, "booleanValue", Bean.class).orElse(null);
     assertEquals("setBooleanValue", setMethod.getName());
-    setMethod = DefaultPropertyValue.getSetMethod(int.class, "intValue", Bean.class);
+    setMethod = DefaultPropertyValue.getSetMethod(int.class, "intValue", Bean.class).orElse(null);
     assertEquals("setIntValue", setMethod.getName());
   }
 
