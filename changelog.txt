@@ -7321,3 +7321,4 @@
   EntityTableConditionPanel.getConditionPanel() now returns Optional
   DefaultPropertyValue.getSetMethod() now returns Optional
   FilteredTableModel, find methods now return Optional
+  HierarchyPanel now Optional based

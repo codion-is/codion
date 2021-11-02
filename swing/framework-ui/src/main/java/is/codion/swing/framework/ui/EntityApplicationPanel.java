@@ -94,6 +94,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
@@ -396,17 +397,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final HierarchyPanel getParentPanel() {
-    return null;
+  public final Optional<HierarchyPanel> getParentPanel() {
+    return Optional.empty();
   }
 
   @Override
-  public final EntityPanel getSelectedChildPanel() {
+  public final Optional<HierarchyPanel> getSelectedChildPanel() {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
-      applicationTabPane.getSelectedComponent();
+      return Optional.of((HierarchyPanel) applicationTabPane.getSelectedComponent());
     }
 
-    return entityPanels.isEmpty() ? null : entityPanels.get(0);
+    return entityPanels.isEmpty() ? Optional.empty() : Optional.of(entityPanels.get(0));
   }
 
   @Override
@@ -417,13 +418,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final HierarchyPanel getPreviousSiblingPanel() {
-    return null;
+  public final Optional<HierarchyPanel> getPreviousSiblingPanel() {
+    return Optional.empty();
   }
 
   @Override
-  public final HierarchyPanel getNextSiblingPanel() {
-    return null;
+  public final Optional<HierarchyPanel> getNextSiblingPanel() {
+    return Optional.empty();
   }
 
   @Override

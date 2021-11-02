@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A panel which is part of a navigable tree hierarchy
@@ -11,9 +12,9 @@ import java.util.List;
 public interface HierarchyPanel {
 
   /**
-   * @return the parent panel, if one exists
+   * @return the parent panel, an empty Optional if none exists
    */
-  HierarchyPanel getParentPanel();
+  Optional<HierarchyPanel> getParentPanel();
 
   /**
    * @return the child panels, an empty list if no child panels exist
@@ -23,7 +24,7 @@ public interface HierarchyPanel {
   /**
    * @return a child panel, if one exists, which child panel exactly is up the implementation
    */
-  HierarchyPanel getSelectedChildPanel();
+  Optional<HierarchyPanel> getSelectedChildPanel();
 
   /**
    * Activates (and shows) the given child panel
@@ -34,12 +35,12 @@ public interface HierarchyPanel {
   /**
    * @return the previous sibling panel, if one exists, with wrap around
    */
-  HierarchyPanel getPreviousSiblingPanel();
+  Optional<HierarchyPanel> getPreviousSiblingPanel();
 
   /**
    * @return the next sibling panel, if one exists, with wrap around
    */
-  HierarchyPanel getNextSiblingPanel();
+  Optional<HierarchyPanel> getNextSiblingPanel();
 
   /**
    * Activates this panel, showing it and preparing it for input

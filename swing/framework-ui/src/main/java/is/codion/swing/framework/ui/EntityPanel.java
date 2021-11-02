@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -555,31 +556,30 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final void activatePanel() {
-    if (getParentPanel() != null) {
-      getParentPanel().setSelectedChildPanel(this);
-    }
+    getParentPanel().ifPresent(parentPanel ->
+            parentPanel.setSelectedChildPanel(this));
     initializePanel();
     requestInitialFocus();
   }
 
   @Override
-  public final HierarchyPanel getParentPanel() {
+  public final Optional<HierarchyPanel> getParentPanel() {
     HierarchyPanel parentPanel = masterPanel;
     if (parentPanel == null) {
       parentPanel = Components.getParentOfType(this, HierarchyPanel.class);
     }
 
-    return parentPanel;
+    return Optional.ofNullable(parentPanel);
   }
 
   @Override
-  public final EntityPanel getSelectedChildPanel() {
+  public final Optional<HierarchyPanel> getSelectedChildPanel() {
     final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
-      return linkedDetailPanels.iterator().next();
+      return Optional.of(linkedDetailPanels.iterator().next());
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @Override
@@ -594,39 +594,43 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final HierarchyPanel getPreviousSiblingPanel() {
-    if (getParentPanel() == null) {//no parent, no siblings
-      return null;
+  public final Optional<HierarchyPanel> getPreviousSiblingPanel() {
+    final Optional<HierarchyPanel> optionalParent = getParentPanel();
+    if (!optionalParent.isPresent()) {//no parent, no siblings
+      return Optional.empty();
     }
-    final List<? extends HierarchyPanel> siblingPanels = getParentPanel().getChildPanels();
+    final HierarchyPanel parentPanel = optionalParent.get();
+    final List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
     if (siblingPanels.contains(this)) {
       final int index = siblingPanels.indexOf(this);
       if (index == 0) {//wrap around
-        return siblingPanels.get(siblingPanels.size() - 1);
+        return Optional.of(siblingPanels.get(siblingPanels.size() - 1));
       }
 
-      return siblingPanels.get(index - 1);
+      return Optional.of(siblingPanels.get(index - 1));
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @Override
-  public final HierarchyPanel getNextSiblingPanel() {
-    if (getParentPanel() == null) {//no parent, no siblings
-      return null;
+  public final Optional<HierarchyPanel> getNextSiblingPanel() {
+    final Optional<HierarchyPanel> optionalParent = getParentPanel();
+    if (!optionalParent.isPresent()) {//no parent, no siblings
+      return Optional.empty();
     }
-    final List<? extends HierarchyPanel> siblingPanels = getParentPanel().getChildPanels();
+    final HierarchyPanel parentPanel = optionalParent.get();
+    final List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
     if (siblingPanels.contains(this)) {
       final int index = siblingPanels.indexOf(this);
       if (index == siblingPanels.size() - 1) {//wrap around
-        return siblingPanels.get(0);
+        return Optional.of(siblingPanels.get(0));
       }
 
-      return siblingPanels.get(index + 1);
+      return Optional.of(siblingPanels.get(index + 1));
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @Override
@@ -1529,29 +1533,28 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final HierarchyPanel panel;
       switch (direction) {
         case LEFT:
-          panel = entityPanel.getPreviousSiblingPanel();
+          entityPanel.getPreviousSiblingPanel()
+                  .ifPresent(HierarchyPanel::activatePanel);
           break;
         case RIGHT:
-          panel = entityPanel.getNextSiblingPanel();
+          entityPanel.getNextSiblingPanel()
+                  .ifPresent(HierarchyPanel::activatePanel);
           break;
         case UP:
-          panel = entityPanel.getParentPanel();
+          entityPanel.getParentPanel()
+                  .ifPresent(HierarchyPanel::activatePanel);
           break;
         case DOWN:
           if (entityPanel.getDetailPanelState() == HIDDEN) {
             entityPanel.setDetailPanelState(EMBEDDED);
           }
-          panel = entityPanel.getSelectedChildPanel();
+          entityPanel.getSelectedChildPanel()
+                  .ifPresent(HierarchyPanel::activatePanel);
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);
-      }
-
-      if (panel != null) {
-        panel.activatePanel();
       }
     }
   }
