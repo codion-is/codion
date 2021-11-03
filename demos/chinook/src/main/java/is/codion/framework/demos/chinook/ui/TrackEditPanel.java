@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSecondsPanel;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -46,19 +45,19 @@ public class TrackEditPanel extends EntityEditPanel {
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
     createTextInputPanel(Track.COMPOSER)
             .buttonFocusable(false);
-    final IntegerField millisecondsField = (IntegerField) createTextField(Track.MILLISECONDS)
+    createIntegerField(Track.MILLISECONDS)
+            .groupingUsed(true)
             .columns(8)
             .build();
-    millisecondsField.setGroupingUsed(true);
-    final IntegerField bytesField = (IntegerField) createTextField(Track.BYTES)
+    createIntegerField(Track.BYTES)
+            .groupingUsed(true)
             .build();
-    bytesField.setGroupingUsed(true);
     createTextField(Track.UNITPRICE);
 
     final ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
     minutesSecondsValue.link(getEditModel().value(Track.MILLISECONDS));
     final JPanel durationPanel = new JPanel(gridLayout(1, 2));
-    durationPanel.add(createInputPanel(Track.MILLISECONDS, millisecondsField));
+    durationPanel.add(createInputPanel(Track.MILLISECONDS));
     durationPanel.add(minutesSecondsValue.getComponent());
 
     setLayout(flexibleGridLayout(4, 2));
