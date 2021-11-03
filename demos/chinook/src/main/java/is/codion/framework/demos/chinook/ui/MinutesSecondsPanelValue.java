@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 
@@ -12,10 +13,8 @@ import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
-import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 
 final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
@@ -40,16 +39,20 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
 
-    private final IntegerField minutesField = new IntegerField(2);
-    private final IntegerField secondsField = new IntegerField(2);
+    private final IntegerField minutesField = ComponentBuilders.integerField()
+            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
+            .columns(2)
+            .build();
+    private final IntegerField secondsField = ComponentBuilders.integerField()
+            .range(0, 59)
+            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
+            .columns(2)
+            .build();
 
     private MinutesSecondsPanel() {
       super(borderLayout());
-      secondsField.setRange(0, 59);
-      transferFocusOnEnter(minutesField);
-      transferFocusOnEnter(secondsField);
-      selectAllOnFocusGained(minutesField);
-      selectAllOnFocusGained(secondsField);
       final JPanel northPanel = new JPanel(gridLayout(1, 2));
       northPanel.add(new JLabel(BUNDLE.getString("min")));
       northPanel.add(new JLabel(BUNDLE.getString("sec")));
