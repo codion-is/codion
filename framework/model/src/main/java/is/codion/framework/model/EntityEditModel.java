@@ -26,6 +26,7 @@ import is.codion.framework.domain.property.Property;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -160,6 +161,14 @@ public interface EntityEditModel {
    * @return the value associated with the given property
    */
   <T> T get(Attribute<T> attribute);
+
+  /**
+   * Returns the value associated with the given property
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return the value associated with the given property, an empty Optional in case it is null
+   */
+  <T> Optional<T> getOptional(Attribute<T> attribute);
 
   /**
    * Returns the value associated with the given foreign key.

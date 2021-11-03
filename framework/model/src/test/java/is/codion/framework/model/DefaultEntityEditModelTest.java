@@ -522,6 +522,11 @@ public final class DefaultEntityEditModelTest {
     assertEquals(42, employeeEditModel.get(TestDomain.EMP_MGR));
     employeeEditModel.put(TestDomain.EMP_MGR, 2);
     assertEquals(2, value.get());
+    value.set(null);
+    assertFalse(employeeEditModel.getOptional(TestDomain.EMP_MGR).isPresent());
+    assertFalse(employeeEditModel.getOptional(TestDomain.EMP_MGR_FK).isPresent());
+    value.set(3);
+    assertTrue(employeeEditModel.getOptional(TestDomain.EMP_MGR).isPresent());
   }
 
   @Test
