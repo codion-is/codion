@@ -7358,3 +7358,4 @@
   DomainToString bug fixed, missing quotes from description value
   ItemRandomizerPanel, minor UI refactoring
   LoadTestPanel, minor UI refactoring
+  EntityEditModel.getOptional() added

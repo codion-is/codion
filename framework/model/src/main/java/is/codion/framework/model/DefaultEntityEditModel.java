@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -388,6 +389,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> T get(final Attribute<T> attribute) {
     return entity.get(attribute);
+  }
+
+  @Override
+  public final <T> Optional<T> getOptional(final Attribute<T> attribute) {
+    return entity.getOptional(attribute);
   }
 
   @Override
