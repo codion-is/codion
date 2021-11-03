@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on the SwingEntityComboBoxModel.
@@ -66,7 +67,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a Control for filtering this combo box
    */
   public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
-    return Control.builder(createForeignKeyFilterCommand(foreignKey))
+    return Control.builder(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
             .icon(frameworkIcons().filter())
             .build();
   }
@@ -77,7 +78,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return an EntityComboBox for filtering this combo box
    */
   public EntityComboBox createForeignKeyFilterComboBox(final ForeignKey foreignKey) {
-    return Completion.maximumMatch(new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKey)));
+    return Completion.maximumMatch(new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey))));
   }
 
   /**
@@ -86,6 +87,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link IntegerField} bound to the selected value
    */
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
+    requireNonNull(attribute);
     return ComponentBuilders.integerField()
             .columns(2)
             .selectAllOnFocusGained(true)
@@ -100,6 +102,8 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link IntegerField} bound to the selected value
    */
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
+    requireNonNull(attribute);
+    requireNonNull(finder);
     return ComponentBuilders.integerField()
             .columns(2)
             .selectAllOnFocusGained(true)
@@ -113,6 +117,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} bound to the selected value
    */
   public JTextField textFieldSelector(final Attribute<String> attribute) {
+    requireNonNull(attribute);
     return ComponentBuilders.textField()
             .columns(2)
             .selectAllOnFocusGained(true)
@@ -127,6 +132,8 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} bound to the selected value
    */
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
+    requireNonNull(attribute);
+    requireNonNull(finder);
     return ComponentBuilders.textField()
             .columns(2)
             .selectAllOnFocusGained(true)
