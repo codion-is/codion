@@ -7359,3 +7359,5 @@
   ItemRandomizerPanel, minor UI refactoring
   LoadTestPanel, minor UI refactoring
   EntityEditModel.getOptional() added
+  EntityComboBox, added some null checks
+  EntitySearchField, added some null checks
