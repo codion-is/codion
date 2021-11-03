@@ -508,6 +508,7 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     public final JComponent getSelectionComponent(final List<Entity> entities) {
+      requireNonNull(entities);
       list.setListData(entities.toArray(new Entity[0]));
       list.removeSelectionInterval(0, list.getModel().getSize());
       list.scrollRectToVisible(list.getCellBounds(0, 0));
@@ -584,6 +585,7 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     public final JComponent getSelectionComponent(final List<Entity> entities) {
+      requireNonNull(entities);
       table.getModel().clear();
       table.getModel().addEntitiesAt(0, entities);
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
