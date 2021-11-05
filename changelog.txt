@@ -7361,3 +7361,5 @@
   EntityEditModel.getOptional() added
   EntityComboBox, added some null checks
   EntitySearchField, added some null checks
+  LocalEntityConnection.setQueryTimeout() added along with LocalEntityConnection.QUERY_TIMEOUT_SECONDS configuration value, defaults to 120 seconds
+  DefaultLocalEntityConnection.optimisticLockingEnabled and limitForeignKeyFetchDepth now initialized with configuration values, LocalEntityConnection.localEntityConnection() no longer sets those

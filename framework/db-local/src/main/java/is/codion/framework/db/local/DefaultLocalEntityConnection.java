@@ -91,8 +91,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<EntityType, String> allColumnsClauseCache = new HashMap<>();
 
-  private boolean optimisticLockingEnabled = true;
-  private boolean limitForeignKeyFetchDepth = true;
+  private boolean optimisticLockingEnabled = LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get();
+  private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
+  private int queryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
 
   /**
    * Constructs a new LocalEntityConnection instance
@@ -845,6 +846,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
+  public int getQueryTimeout() {
+    return queryTimeout;
+  }
+
+  @Override
+  public LocalEntityConnection setQueryTimeout(final int queryTimeout) {
+    this.queryTimeout = queryTimeout;
+    return this;
+  }
+
+  @Override
   public Domain getDomain() {
     return domain;
   }
@@ -1047,11 +1059,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private PreparedStatement prepareStatement(final String query, final boolean returnGeneratedKeys) throws SQLException {
     try {
       logAccess("prepareStatement", query);
+      final PreparedStatement statement;
       if (returnGeneratedKeys) {
-        return connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement = connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       }
+      else {
+        statement = connection.getConnection().prepareStatement(query);
+      }
+      statement.setQueryTimeout(queryTimeout);
 
-      return connection.getConnection().prepareStatement(query);
+      return statement;
     }
     finally {
       logExit("prepareStatement");
