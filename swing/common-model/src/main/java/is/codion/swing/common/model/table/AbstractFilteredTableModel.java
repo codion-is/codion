@@ -56,7 +56,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event<?> filterEvent = Event.event();
   private final Event<?> sortEvent = Event.event();
   private final Event<?> refreshStartedEvent = Event.event();
-  private final Event<?> refreshDoneEvent = Event.event();
+  private final Event<Boolean> refreshDoneEvent = Event.event();
   private final Event<?> tableDataChangedEvent = Event.event();
   private final Event<?> tableModelClearedEvent = Event.event();
   private final Event<Removal> rowsRemovedEvent = Event.event();
@@ -235,8 +235,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
+    refreshStartedEvent.onEvent();
     try {
-      refreshStartedEvent.onEvent();
       final Collection<R> items = refreshItems();
       if (mergeOnRefresh && !items.isEmpty()) {
         merge(items);
@@ -247,9 +247,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         addItemsSorted(items);
         selectionModel.setSelectedItems(selectedItems);
       }
+      refreshDoneEvent.onEvent(true);
     }
-    finally {
-      refreshDoneEvent.onEvent();
+    catch (final RuntimeException e) {
+      refreshDoneEvent.onEvent(false);
+      throw e;
+    }
+    catch (final Exception e) {
+      refreshDoneEvent.onEvent(false);
+      throw new RuntimeException(e);
     }
   }
 
@@ -448,13 +454,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final void addRefreshDoneListener(final EventListener listener) {
-    refreshDoneEvent.addListener(listener);
+  public final void addRefreshDoneListener(final EventDataListener<Boolean> listener) {
+    refreshDoneEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRefreshDoneListener(final EventListener listener) {
-    refreshDoneEvent.removeListener(listener);
+  public final void removeRefreshDoneListener(final EventDataListener<Boolean> listener) {
+    refreshDoneEvent.removeDataListener(listener);
   }
 
   @Override

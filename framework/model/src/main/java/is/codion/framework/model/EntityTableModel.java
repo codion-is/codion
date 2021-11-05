@@ -382,7 +382,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void addSelectionChangedListener(EventListener listener);
 
   /**
-   * @param listener notified each time this model is refreshed.
+   * @param listener notified each time this model is successfully refreshed.
    */
   void addRefreshListener(EventListener listener);
 

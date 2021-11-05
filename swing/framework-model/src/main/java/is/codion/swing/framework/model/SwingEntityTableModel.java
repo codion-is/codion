@@ -723,10 +723,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
-    addRefreshDoneListener(() -> {
-      tableConditionModel.rememberCondition();
-      refreshEvent.onEvent();
-    });
+    addRefreshDoneListener(this::onRefreshDone);
   }
 
   private void bindEditModelEvents() {
@@ -777,6 +774,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private void onEntitySet(final Entity entity) {
     if (entity == null && !getSelectionModel().isSelectionEmpty()) {
       getSelectionModel().clearSelection();
+    }
+  }
+
+  private void onRefreshDone(final boolean successful) {
+    if (successful) {
+      tableConditionModel.rememberCondition();
+      refreshEvent.onEvent();
     }
   }
 
