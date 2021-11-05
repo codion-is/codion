@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
-public class CustomerEditPanel extends EntityEditPanel {
+public final class CustomerEditPanel extends EntityEditPanel {
 
   public CustomerEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);

@@ -9,7 +9,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public class PlaylistTrackEditPanel extends EntityEditPanel {
+public final class PlaylistTrackEditPanel extends EntityEditPanel {
 
   public PlaylistTrackEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);

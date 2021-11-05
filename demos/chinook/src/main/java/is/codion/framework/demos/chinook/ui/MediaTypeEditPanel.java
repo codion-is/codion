@@ -9,7 +9,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public class MediaTypeEditPanel extends EntityEditPanel {
+public final class MediaTypeEditPanel extends EntityEditPanel {
 
   public MediaTypeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);

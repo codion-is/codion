@@ -21,7 +21,7 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.sql.Connection;
 
-public class EntityConnectionProviderDemo {
+public final class EntityConnectionProviderDemo {
 
   static void localConnectionProvider() {
     // tag::local[]

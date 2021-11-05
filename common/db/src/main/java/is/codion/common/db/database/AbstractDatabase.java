@@ -196,6 +196,11 @@ public abstract class AbstractDatabase implements Database {
     return false;
   }
 
+  @Override
+  public boolean isTimeoutException(final SQLException exception) {
+    return false;
+  }
+
   /**
    * @return the connection timeout in seconds
    * @see Database#LOGIN_TIMEOUT

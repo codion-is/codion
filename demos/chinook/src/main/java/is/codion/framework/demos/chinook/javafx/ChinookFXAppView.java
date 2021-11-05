@@ -17,7 +17,7 @@ import is.codion.javafx.framework.model.FXEntityModel;
 import is.codion.javafx.framework.ui.EntityApplicationView;
 import is.codion.javafx.framework.ui.EntityView;
 
-public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
+public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
 
   public ChinookFXAppView() {
     super("Chinook FX Demo");

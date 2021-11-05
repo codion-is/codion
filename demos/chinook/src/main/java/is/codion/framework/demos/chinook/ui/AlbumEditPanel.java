@@ -13,7 +13,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Album;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public class AlbumEditPanel extends EntityEditPanel {
+public final class AlbumEditPanel extends EntityEditPanel {
 
   public AlbumEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);

@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TrackTablePanel extends EntityTablePanel {
+public final class TrackTablePanel extends EntityTablePanel {
 
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
 

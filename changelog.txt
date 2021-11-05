@@ -7365,3 +7365,5 @@
   DefaultLocalEntityConnection.optimisticLockingEnabled and limitForeignKeyFetchDepth now initialized with configuration values, LocalEntityConnection.localEntityConnection() no longer sets those
   EntityTableModel.refreshDoneEvent now indicates whether the refresh was successful or not, EntityTableModel.refreshEvent now only triggered on successful refresh along with remembering the condition
   LocalEntityConnectionProvider.setQueryTimeout() added
+  DefaultLocalEntityConnection.translateDeleteSQLException() and translateInsertUpdateSQLException() combined into translateSQLException(), doing pretty much the same thing, used throughout, not just for updates and deletes
+  QueryTimeoutException added along with Database.isTimeoutException(), implemented for DerbyDatabase, H2Database, MariaDBDatabase, OracleDatabase and PostgreSQLDatabase, couldn't find the error code for the others

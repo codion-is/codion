@@ -16,6 +16,7 @@ import static java.util.Objects.requireNonNull;
 final class DerbyDatabase extends AbstractDatabase {
 
   private static final String SHUTDOWN_ERROR_CODE = "08006";
+  private static final String TIMEOUT_ERROR_CODE = "XCL52";
   private static final int FOREIGN_KEY_ERROR = 23503;
 
   private static final String JDBC_URL_PREFIX_TCP = "jdbc:derby://";
@@ -49,13 +50,14 @@ final class DerbyDatabase extends AbstractDatabase {
     return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception is a referential integrity error
-   */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == FOREIGN_KEY_ERROR;
+  }
+
+  @Override
+  public boolean isTimeoutException(final SQLException exception) {
+    return TIMEOUT_ERROR_CODE.equals(exception.getSQLState());
   }
 
   @Override

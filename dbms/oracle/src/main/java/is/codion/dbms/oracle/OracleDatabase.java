@@ -37,6 +37,7 @@ final class OracleDatabase extends AbstractDatabase {
   private static final int UNABLE_TO_CONNECT_ERROR = 1045;
   private static final int VALUE_TOO_LARGE_ERROR = 1401;
   private static final int VIEW_HAS_ERRORS_ERROR = 4063;
+  private static final int TIMEOUT_ERROR = 17016;
 
   static final String CHECK_QUERY = "select 1 from dual";
 
@@ -142,5 +143,10 @@ final class OracleDatabase extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_KEY_ERROR;
+  }
+
+  @Override
+  public boolean isTimeoutException(final SQLException exception) {
+    return exception.getErrorCode() == TIMEOUT_ERROR;
   }
 }

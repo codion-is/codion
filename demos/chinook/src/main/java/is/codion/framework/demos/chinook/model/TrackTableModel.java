@@ -14,7 +14,7 @@ import java.util.List;
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 import static java.util.Arrays.asList;
 
-public class TrackTableModel extends SwingEntityTableModel {
+public final class TrackTableModel extends SwingEntityTableModel {
 
   public TrackTableModel(final EntityConnectionProvider connectionProvider) {
     super(Track.TYPE, connectionProvider);
