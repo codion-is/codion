@@ -18,7 +18,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public class TrackEditPanel extends EntityEditPanel {
+public final class TrackEditPanel extends EntityEditPanel {
 
   public TrackEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);

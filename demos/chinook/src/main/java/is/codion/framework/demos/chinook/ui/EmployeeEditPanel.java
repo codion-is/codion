@@ -9,7 +9,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import static is.codion.framework.demos.chinook.domain.Chinook.Employee;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
-public class EmployeeEditPanel extends EntityEditPanel {
+public final class EmployeeEditPanel extends EntityEditPanel {
 
   public EmployeeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);

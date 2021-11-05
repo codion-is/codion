@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class CustomerTablePanel extends EntityTablePanel {
+public final class CustomerTablePanel extends EntityTablePanel {
 
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
 

@@ -14,7 +14,7 @@ import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
-public class InvoiceLineEditPanel extends EntityEditPanel {
+public final class InvoiceLineEditPanel extends EntityEditPanel {
 
   private final JTextField tableSearchField;
 
