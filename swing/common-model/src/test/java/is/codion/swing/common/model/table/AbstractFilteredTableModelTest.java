@@ -177,7 +177,7 @@ public final class AbstractFilteredTableModelTest {
     final AtomicInteger done = new AtomicInteger();
     final AtomicInteger cleared = new AtomicInteger();
     final EventListener startListener = started::incrementAndGet;
-    final EventListener doneListener = done::incrementAndGet;
+    final EventDataListener<Boolean> doneListener = successful -> done.incrementAndGet();
     final EventListener clearedListener = cleared::incrementAndGet;
     tableModel.addRefreshStartedListener(startListener);
     tableModel.addRefreshDoneListener(doneListener);

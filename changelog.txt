@@ -7363,3 +7363,5 @@
   EntitySearchField, added some null checks
   LocalEntityConnection.setQueryTimeout() added along with LocalEntityConnection.QUERY_TIMEOUT_SECONDS configuration value, defaults to 120 seconds
   DefaultLocalEntityConnection.optimisticLockingEnabled and limitForeignKeyFetchDepth now initialized with configuration values, LocalEntityConnection.localEntityConnection() no longer sets those
+  EntityTableModel.refreshDoneEvent now indicates whether the refresh was successful or not, EntityTableModel.refreshEvent now only triggered on successful refresh along with remembering the condition
+  LocalEntityConnectionProvider.setQueryTimeout() added
