@@ -122,6 +122,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /**
    * Note that calling this method closes the underlying connection, if one has been established.
    * @param queryTimeout the query timeout in seconds
+   * @return this LocalEntityConnectionProvider instance
    */
   public LocalEntityConnectionProvider setQueryTimeout(final int queryTimeout) {
     close();

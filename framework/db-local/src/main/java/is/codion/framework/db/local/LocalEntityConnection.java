@@ -126,6 +126,7 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param queryTimeout the query timeout in seconds
+   * @return this LocalEntityConnection instance
    */
   LocalEntityConnection setQueryTimeout(int queryTimeout);
 
