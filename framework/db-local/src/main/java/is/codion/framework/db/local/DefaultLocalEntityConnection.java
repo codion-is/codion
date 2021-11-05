@@ -8,6 +8,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.DeleteException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
+import is.codion.common.db.exception.QueryTimeoutException;
 import is.codion.common.db.exception.RecordModifiedException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -1152,6 +1153,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     else if (database.isReferentialIntegrityException(exception)) {
       return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
+    }
+    else if (database.isTimeoutException(exception)) {
+      return new QueryTimeoutException(exception, database.getErrorMessage(exception));
     }
 
     return new DatabaseException(exception, database.getErrorMessage(exception));

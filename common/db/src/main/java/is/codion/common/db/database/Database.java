@@ -183,6 +183,13 @@ public interface Database extends ConnectionFactory {
   boolean isUniqueConstraintException(SQLException exception);
 
   /**
+   * Returns true if this exception is a timeout exception
+   * @param exception the exception
+   * @return true if this exception is a timeout exception
+   */
+  boolean isTimeoutException(SQLException exception);
+
+  /**
    * Counts this query, based on the first character.
    * @param query the query to count
    * @see #getStatistics()

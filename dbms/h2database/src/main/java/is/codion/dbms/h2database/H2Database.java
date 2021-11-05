@@ -30,6 +30,7 @@ final class H2Database extends AbstractDatabase {
   private static final int REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS = 23503;
   private static final int REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING = 23506;
   private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
+  private static final int TIMEOUT_ERROR = 57014;
   private static final Set<String> INITIALIZED_DATABASES = new HashSet<>();
 
   private static final String JDBC_URL_PREFIX = "jdbc:h2:";
@@ -107,6 +108,11 @@ final class H2Database extends AbstractDatabase {
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
+  }
+
+  @Override
+  public boolean isTimeoutException(final SQLException exception) {
+    return exception.getErrorCode() == TIMEOUT_ERROR;
   }
 
   private void initializeEmbeddedDatabase(final List<String> scriptPaths) {
