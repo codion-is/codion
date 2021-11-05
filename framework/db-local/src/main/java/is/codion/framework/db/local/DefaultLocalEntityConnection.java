@@ -244,7 +244,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(insertQuery, statementValues, e), e);
-        throw translateInsertUpdateSQLException(e);
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(statement);
@@ -316,7 +316,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, e), e);
-        throw translateInsertUpdateSQLException(e);
+        throw translateSQLException(e);
       }
       catch (final RecordModifiedException e) {
         rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
@@ -368,7 +368,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, e), e);
-        throw translateInsertUpdateSQLException(e);
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(statement);
@@ -396,7 +396,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(deleteQuery, condition.getValues(), e), e);
-        throw translateDeleteSQLException(e);
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(statement);
@@ -440,7 +440,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(deleteQuery, condition == null ? emptyList() : condition.getValues(), e), e);
-        throw translateDeleteSQLException(e);
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(statement);
@@ -493,7 +493,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateSQLException(e);
       }
     }
   }
@@ -531,7 +531,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateSQLException(e);
       }
     }
   }
@@ -570,7 +570,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, asList(attribute, combinedCondition), e), e);
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(resultSet);
@@ -604,7 +604,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, condition.getValues(), e), e);
-        throw new DatabaseException(e, database.getErrorMessage(e));
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(resultSet);
@@ -702,7 +702,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(null, singletonList(reportType), e), e);
-        throw new ReportException(e);
+        throw new ReportException(translateSQLException(e));
       }
       catch (final ReportException e) {
         exception = e;
@@ -748,7 +748,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, exception), e);
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateSQLException(e);
       }
       catch (final UpdateException e) {
         exception = e;
@@ -795,7 +795,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, condition.getValues(), exception), e);
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateSQLException(e);
       }
       finally {
         closeSilently(statement);
@@ -818,7 +818,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         return entityIterator(condition);
       }
       catch (final SQLException e) {
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateSQLException(e);
       }
     }
   }
@@ -1145,21 +1145,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return columnsClause(propertiesToSelect);
   }
 
-  private DatabaseException translateInsertUpdateSQLException(final SQLException exception) {
+  private DatabaseException translateSQLException(final SQLException exception) {
     final Database database = connection.getDatabase();
     if (database.isUniqueConstraintException(exception)) {
       return new UniqueConstraintException(exception, database.getErrorMessage(exception));
     }
     else if (database.isReferentialIntegrityException(exception)) {
-      return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
-    }
-
-    return new DatabaseException(exception, database.getErrorMessage(exception));
-  }
-
-  private DatabaseException translateDeleteSQLException(final SQLException exception) {
-    final Database database = connection.getDatabase();
-    if (database.isReferentialIntegrityException(exception)) {
       return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
     }
 
