@@ -145,9 +145,7 @@ public interface LocalEntityConnection extends EntityConnection {
    */
   static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
                                                      final User user) throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, user)
-            .setOptimisticLockingEnabled(USE_OPTIMISTIC_LOCKING.get())
-            .setLimitFetchDepth(LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
+    return new DefaultLocalEntityConnection(domain, database, user);
   }
 
   /**
@@ -162,8 +160,6 @@ public interface LocalEntityConnection extends EntityConnection {
    */
   static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
                                                      final Connection connection) throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, connection)
-            .setOptimisticLockingEnabled(USE_OPTIMISTIC_LOCKING.get())
-            .setLimitFetchDepth(LIMIT_FOREIGN_KEY_FETCH_DEPTH.get());
+    return new DefaultLocalEntityConnection(domain, database, connection);
   }
 }
