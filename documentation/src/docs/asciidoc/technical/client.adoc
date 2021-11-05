@@ -139,7 +139,7 @@ codion.db.initScripts=classpath:create_schema.sql
 
 * kbd:[Shift + Alt + &#x2190;] Left
 * kbd:[Shift + Alt + &#x2192;] Right
-* kbd:[Ctrl + Alt + &#x2191;/&#x2193;] Toggle edit panel
+* kbd:[Shift + Alt + &#x2191;/&#x2193;] Toggle edit panel
 
 ==== Transfer focus
 
@@ -147,10 +147,12 @@ codion.db.initScripts=classpath:create_schema.sql
 * kbd:[Ctrl + T] Table
 * kbd:[Ctrl + I] Input field
 * kbd:[Ctrl + S] Search field
-* kbd:[Ctrl + F] Quick search
+* kbd:[Ctrl + F] Find in table
 
 ==== Edit panel
 
+* kbd:[Enter] Transfer focus to the next input field
+* kbd:[Shift + Enter] Transfer focus to the previous input field
 * kbd:[Alt + S] Save
 * kbd:[Alt + A] Add (when available)
 * kbd:[Alt + U] Update
@@ -165,3 +167,4 @@ codion.db.initScripts=classpath:create_schema.sql
 * kbd:[Shift + Alt + &#x2192;] Move selected column right
 * kbd:[Ctrl + &#x002B;] Increase selected column size
 * kbd:[Ctrl + &#x2212;] Decrease selected column size
+* kbd:[Ctrl + G] Show popup menu
