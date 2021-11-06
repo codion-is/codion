@@ -138,17 +138,17 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   /**
    * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
    * @param columnIdentifier the column identifier
-   * @return the ColumnSummaryModel for the column identified by the given identifier, null if none is available
+   * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
    */
-  ColumnSummaryModel getColumnSummaryModel(C columnIdentifier);
+  Optional<ColumnSummaryModel> getColumnSummaryModel(C columnIdentifier);
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
    * @param <T> the column value type
    * @param columnIdentifier the column identifier
-   * @return the ColumnConditionModel for the column with the given identifier, null if none exists.
+   * @return the ColumnConditionModel for the column with the given identifier, an empty Optional if none exists.
    */
-  <T> ColumnFilterModel<R, C, T> getColumnFilterModel(C columnIdentifier);
+  <T> Optional<ColumnFilterModel<R, C, T>> getColumnFilterModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values

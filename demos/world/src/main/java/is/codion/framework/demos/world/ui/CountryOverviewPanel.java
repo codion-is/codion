@@ -46,9 +46,11 @@ public final class CountryOverviewPanel extends EntityPanel {
   @Override
   protected void initializeUI() {
     SwingEntityModel countryModel = getModel();
-    countryModel.getTableModel().getColumnSummaryModel(Country.POPULATION).setSummary(ColumnSummary.SUM);
+    countryModel.getTableModel().getColumnSummaryModel(Country.POPULATION)
+            .ifPresent(summaryModel -> summaryModel.setSummary(ColumnSummary.SUM));
     SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
-    cityModel.getTableModel().getColumnSummaryModel(City.POPULATION).setSummary(ColumnSummary.SUM);
+    cityModel.getTableModel().getColumnSummaryModel(City.POPULATION)
+            .ifPresent(summaryModel -> summaryModel.setSummary(ColumnSummary.SUM));
     SwingEntityModel countryLanguageModel = countryModel.getDetailModel(CountryLanguage.TYPE);
 
     countryModel.addLinkedDetailModel(cityModel);

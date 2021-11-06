@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -620,12 +621,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  protected final <T extends Number> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final Attribute<?> attribute) {
+  protected final <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(final Attribute<?> attribute) {
     if (attribute.isNumerical()) {
-      return new DefaultColumnValueProvider<>(attribute, this, entityDefinition.getProperty(attribute).getFormat());
+      return Optional.of(new DefaultColumnValueProvider<>(attribute, this, entityDefinition.getProperty(attribute).getFormat()));
     }
 
-    return null;
+    return Optional.empty();
   }
 
   /**

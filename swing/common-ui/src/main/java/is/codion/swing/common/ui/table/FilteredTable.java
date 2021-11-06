@@ -508,9 +508,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (!searchText.isEmpty()) {
-      final Optional<RowColumn> optionalRowColumn = forward ? tableModel.findNext(fromIndex, searchText) :
-              tableModel.findPrevious(fromIndex, searchText);
-      final RowColumn coordinate = optionalRowColumn.orElse(null);
+      final RowColumn coordinate = (forward ?
+              tableModel.findNext(fromIndex, searchText) :
+              tableModel.findPrevious(fromIndex, searchText))
+              .orElse(null);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
@@ -578,8 +579,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnConditionModel<C, ?> model = getModel().getColumnFilterModel((C) column.getIdentifier());
-    if (model != null) {
+    getModel().getColumnFilterModel((C) column.getIdentifier()).ifPresent(model -> {
       model.addConditionChangedListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
           addFilterIndicator(column);
@@ -593,7 +593,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       if (model.isEnabled()) {
         SwingUtilities.invokeLater(() -> addFilterIndicator(column));
       }
-    }
+    });
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
@@ -695,9 +695,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     @Override
     public <T> Optional<ColumnConditionPanel<?, T>> createConditionPanel(final TableColumn column) {
-      final ColumnConditionModel<C, T> filterModel = tableModel.getColumnFilterModel((C) column.getIdentifier());
-
-      return filterModel == null ? Optional.empty() : Optional.of(new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES));
+      return tableModel.getColumnFilterModel((C) column.getIdentifier())
+              .map(filterModel -> new ColumnConditionPanel<>((ColumnConditionModel<?, T>) filterModel, ToggleAdvancedButton.YES));
     }
   }
 
