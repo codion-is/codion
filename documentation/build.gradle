@@ -21,7 +21,7 @@ asciidoctor {
     }
     baseDirFollowsSourceFile()
     sources {
-        include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc', 'howto/**/*.adoc'
+        include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc', 'help/**/*.adoc'
     }
     attributes 'codion-version': documentationVersion, 'codion-jdk': project.targetJdk,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,

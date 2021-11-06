@@ -7337,3 +7337,4 @@
   ForeignKeyConditionPanel now restricts the size of components to preferred text field size
   ColumnConditionPanel now uses BorderLayout instead of FlexibleGridLayout
   EntityPanel now focusCycleRoot, otherwise the focus travels all the way up the parent hierarcy when the condition panel is hidden while having the focus
+  Tips&Tricks file removed, Help-Help... now opens documentation help url

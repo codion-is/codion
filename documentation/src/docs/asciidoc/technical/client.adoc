@@ -127,4 +127,4 @@ codion.db.initScripts=classpath:create_schema.sql
 
 == Usage
 
-** <<{basedir}/howto/client.adoc#_client, Client how-to>>
+** <<{basedir}/help/client.adoc#_client, Client help>>

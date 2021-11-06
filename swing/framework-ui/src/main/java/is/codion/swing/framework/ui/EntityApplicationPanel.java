@@ -64,7 +64,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -78,6 +77,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -85,7 +85,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -155,7 +155,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
-  private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
+  private static final String HELP_URL = "https://codion.is/doc/" + Version.getVersionString() + "/jdk8/howto/client.html";
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
@@ -477,15 +477,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Shows a help dialog
-   * @see #getHelpPanel()
+   * Displays the help.
+   * @throws Exception in case of an exception, for example a malformed URL
    */
-  public final void displayHelp() {
-    Dialogs.componentDialogBuilder(getHelpPanel())
-            .owner(this)
-            .modal(false)
-            .title(resourceBundle.getString(HELP))
-            .show();
+  public void displayHelp() throws Exception {
+    Desktop.getDesktop().browse(new URL(HELP_URL).toURI());
   }
 
   /**
@@ -753,36 +749,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Control.builder(this::displayHelp)
             .caption(resourceBundle.getString(HELP) + "...")
             .build();
-  }
-
-  /**
-   * @return the panel shown when Help -&#62; Help is selected
-   */
-  protected JPanel getHelpPanel() {
-    try {
-      final JPanel panel = new JPanel(new BorderLayout());
-      final String contents = getHelpText();
-      final JTextArea text = new JTextArea(contents, 20, 60);
-      final JScrollPane scrollPane = new JScrollPane(text);
-      text.setEditable(false);
-      text.setFocusable(false);
-      text.setLineWrap(true);
-      text.setWrapStyleWord(true);
-      panel.add(scrollPane, BorderLayout.CENTER);
-
-      return panel;
-    }
-    catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * @return the text to show in the help panel
-   * @throws IOException in case of an IO exception
-   */
-  protected String getHelpText() throws IOException {
-    return Text.getTextFileContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
   }
 
   /**
