@@ -986,6 +986,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
+   * Not called if the south panel has been disabled via {@link #setIncludeSouthPanel(boolean)}.
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
