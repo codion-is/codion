@@ -8,6 +8,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -40,7 +41,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Foreign
 
     @Override
     public JComponent createEqualField() {
-      return createForeignKeyField();
+      return Components.setPreferredHeight(createForeignKeyField(), TextFields.getPreferredTextFieldHeight());
     }
 
     @Override

@@ -1,6 +1,7 @@
 = Client
 :dir-source: ../../../../../demos/chinook/src/main/java
 :imagesdir: ../images
+:basedir: ..
 
 == Features
 
@@ -126,60 +127,4 @@ codion.db.initScripts=classpath:create_schema.sql
 
 == Usage
 
-=== Keyboard shortcuts
-
-[cols="1,3"]
-|===
-2+|Navigation
-
-|kbd:[Ctrl + Alt + &#x2191;]|Up
-|kbd:[Ctrl + Alt + &#x2193;]|Down
-|kbd:[Ctrl + Alt + &#x2190;]|Left
-|kbd:[Ctrl + Alt + &#x2192;]|Right
-|===
-
-[cols="1,3"]
-|===
-2+|Resizing
-
-|kbd:[Shift + Alt + &#x2190;]|Left
-|kbd:[Shift + Alt + &#x2192;]|Right
-|kbd:[Shift + Alt + &#x2191;/&#x2193;]|Toggle edit panel
-|===
-
-[cols="1,3"]
-|===
-2+|Transfer focus
-
-|kbd:[Ctrl + E]|Edit panel (initial focus component)
-|kbd:[Ctrl + T]|Table
-|kbd:[Ctrl + I]|Input field
-|kbd:[Ctrl + S]|Search field
-|kbd:[Ctrl + F]|Find in table
-|===
-
-[cols="1,3"]
-|===
-2+|Edit panel
-
-|kbd:[Enter]|Transfer focus to the next input field
-|kbd:[Shift + Enter]|Transfer focus to the previous input field
-|kbd:[Alt + S]|Save
-|kbd:[Alt + A]|Add (when available)
-|kbd:[Alt + U]|Update
-|kbd:[Alt + D]|Delete
-|kbd:[Alt + C]|Clear
-|kbd:[Alt + R]|Refresh
-|===
-
-[cols="1,3"]
-|===
-2+|Table panel
-
-|kbd:[Del]|Delete selected
-|kbd:[Shift + Alt + &#x2190;]|Move selected column left
-|kbd:[Shift + Alt + &#x2192;]|Move selected column right
-|kbd:[Ctrl + &#x002B;]|Increase selected column size
-|kbd:[Ctrl + &#x2212;]|Decrease selected column size
-|kbd:[Ctrl + G]|Show popup menu
-|===
+** <<{basedir}/help/client.adoc#_client, Client help>>

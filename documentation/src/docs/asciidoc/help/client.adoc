@@ -1,0 +1,98 @@
+[#_client]
+= Client
+:toc: left
+:docinfo: shared-head
+:basedir: ..
+
+== Keyboard shortcuts
+
+[cols="1,3"]
+|===
+2+|Navigation
+
+|kbd:[Ctrl + Alt + &#x2191;/&#x2193;]|Navigate up/down
+|kbd:[Ctrl + Alt + &#x2190;/&#x2192;]|Navigate left/right
+|===
+
+[cols="1,3"]
+|===
+2+|Resizing
+
+|kbd:[Shift + Alt + &#x2190;/&#x2192;]|Resize left/right
+|kbd:[Shift + Alt + &#x2191;/&#x2193;]|Toggle edit panel
+|===
+
+[cols="1,3"]
+|===
+2+|Transfer focus
+
+|kbd:[Ctrl + E]|Edit panel (initial focus component)
+|kbd:[Ctrl + T]|Table
+|kbd:[Ctrl + I]|Input field
+|kbd:[Ctrl + S]|Search field
+|kbd:[Ctrl + F]|Find in table
+|===
+
+[cols="1,3"]
+|===
+2+|Edit panel
+
+|kbd:[Enter]|Transfer focus to the next input field
+|kbd:[Shift + Enter]|Transfer focus to the previous input field
+|kbd:[Alt + S]|Save
+|kbd:[Alt + A]|Add (when available)
+|kbd:[Alt + U]|Update
+|kbd:[Alt + D]|Delete
+|kbd:[Alt + C]|Clear
+|kbd:[Alt + R]|Refresh
+|===
+
+[cols="1,3"]
+|===
+2+|Table panel
+
+|kbd:[Del]|Delete selected
+|kbd:[Shift + Alt + &#x2190;/&#x2192;]|Move selected column left/right
+|kbd:[Ctrl + &#x002B;/&#x2212;]|Increase/decrease selected column size
+|kbd:[Ctrl + G]|Show popup menu
+|kbd:[F5]|Refresh when condition refresh button is visible and enabled
+|===
+
+[cols="1,3"]
+|===
+2+|Table condition panel
+
+|kbd:[Enter]|Refresh table data
+|===
+
+[cols="1,3"]
+|===
+2+|Table search field
+
+|kbd:[Enter]|Find next
+|kbd:[Shift + Enter]|Find and select next
+|kbd:[&#x2193;]|Find next
+|kbd:[Shift + &#x2193;]|Find and select next
+|kbd:[&#x2191;]|Find previous
+|kbd:[Shift + &#x2191;]|Find and select previous
+|kbd:[Esc]|Cancel and move focus to table
+|===
+
+[cols="1,3"]
+|===
+2+|Calendar panel
+
+|kbd:[Ctrl + &#x2190;/&#x2192;]|Previous/next year
+|kbd:[Shift + &#x2190;/&#x2192;]|Previous/next month
+|kbd:[Alt + &#x2190;/&#x2192;]|Previous/next day
+|kbd:[Alt + &#x2191;/&#x2193;]|Previous/next week
+|kbd:[Shift + Alt + &#x2190;/&#x2192;]|Previous/next hour
+|kbd:[Ctrl + Alt + &#x2190;/&#x2192;]|Previous/next minute
+|===
+
+[cols="1,3"]
+|===
+2+|Entity combo box with new item action
+
+|kbd:[Insert] or kbd:[Ctrl + +]|Add new item
+|===
