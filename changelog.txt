@@ -7341,3 +7341,4 @@
   AbstractFilteredTableModel.createColumnValueProvider() now returns Optional
   FilteredTableModel.getColumnSummaryModel() and getColumnFilterModel() now return Optional
   EntityComboBoxModel.getEntity(primaryKey) now returns Optional
+  TemporalField and TemporalInputPanel.getTemporal() now return Optional
