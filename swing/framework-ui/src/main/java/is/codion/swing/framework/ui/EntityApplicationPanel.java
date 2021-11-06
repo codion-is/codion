@@ -155,7 +155,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
-  private static final String HELP_URL = "https://codion.is/doc/" + Version.getVersionString() + "/jdk8/help/client.html";
+  private static final String HELP_URL = "https://codion.is/doc/" + Version.getVersionString() + "/jdk11/help/client.html";
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
