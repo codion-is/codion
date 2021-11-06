@@ -7334,3 +7334,5 @@
   LocalEntityConnectionProvider.setQueryTimeout() added
   DefaultLocalEntityConnection.translateDeleteSQLException() and translateInsertUpdateSQLException() combined into translateSQLException(), doing pretty much the same thing, used throughout, not just for updates and deletes
   QueryTimeoutException added along with Database.isTimeoutException(), implemented for DerbyDatabase, H2Database, MariaDBDatabase, OracleDatabase and PostgreSQLDatabase, couldn't find the error code for the others
+  ForeignKeyConditionPanel now restricts the size of components to preferred text field size
+  ColumnConditionPanel now uses BorderLayout instead of FlexibleGridLayout

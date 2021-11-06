@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -525,8 +524,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       controlPanel.remove(toggleAdvancedButton);
       inputPanel.add(toggleAdvancedButton, BorderLayout.WEST);
     }
-    ((FlexibleGridLayout) getLayout()).setRows(1);
-    add(inputPanel);
+    add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
     revalidate();
   }
@@ -540,9 +538,8 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       inputPanel.remove(toggleAdvancedButton);
       controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
     }
-    ((FlexibleGridLayout) getLayout()).setRows(2);
-    add(controlPanel);
-    add(inputPanel);
+    add(controlPanel, BorderLayout.NORTH);
+    add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
   }
@@ -562,10 +559,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   private void initializeUI() {
     Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
-    setLayout(FlexibleGridLayout.builder()
-            .rowsColumns(2, 1)
-            .gap(0)
-            .build());
+    setLayout(new BorderLayout());
     if (toggleEnabledButton != null) {
       this.toggleEnabledButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     }
@@ -590,9 +584,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
       dialog = new JDialog(Windows.getParentFrame(parent), title, false);
     }
 
-    final JPanel conditionPanel = new JPanel(new BorderLayout());
-    conditionPanel.add(this, BorderLayout.NORTH);
-    dialog.getContentPane().add(conditionPanel);
+    dialog.getContentPane().add(this);
     dialog.pack();
 
     addAdvancedListener(advanced -> dialog.pack());
