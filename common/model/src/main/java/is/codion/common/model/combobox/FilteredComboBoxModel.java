@@ -98,6 +98,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   /**
    * @return the selected item, null in case the value representing null is selected
    * @see #setNullString(String)
+   * @see #isNullValueSelected()
    */
   T getSelectedValue();
 

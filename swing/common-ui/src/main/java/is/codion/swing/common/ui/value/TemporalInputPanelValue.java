@@ -24,7 +24,7 @@ final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponen
 
   @Override
   protected T getComponentValue(final TemporalInputPanel<T> component) {
-    return component.getTemporal();
+    return component.getTemporal().orElse(null);
   }
 
   @Override

@@ -65,7 +65,7 @@ public final class SwingEntityComboBoxModelTest {
     updated.put(temp.getPrimaryKey(), temp);
 
     EntityEditEvents.notifyUpdated(updated);
-    assertEquals("Newname", comboBoxModel.getEntity(temp.getPrimaryKey()).get(TestDomain.EMP_NAME));
+    assertEquals("Newname", comboBoxModel.getEntity(temp.getPrimaryKey()).orElse(null).get(TestDomain.EMP_NAME));
 
     EntityEditEvents.notifyDeleted(singletonList(temp));
     assertFalse(comboBoxModel.isVisible(temp));
@@ -310,6 +310,6 @@ public final class SwingEntityComboBoxModelTest {
     final Key allenPK = ENTITIES.primaryKey(TestDomain.T_EMP, 1);
     assertNotNull(comboBoxModel.getEntity(allenPK));
     final Key nobodyPK = ENTITIES.primaryKey(TestDomain.T_EMP, -1);
-    assertNull(comboBoxModel.getEntity(nobodyPK));
+    assertFalse(comboBoxModel.getEntity(nobodyPK).isPresent());
   }
 }

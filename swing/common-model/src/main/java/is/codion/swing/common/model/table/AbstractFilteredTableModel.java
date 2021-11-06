@@ -281,19 +281,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier) {
-    return columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier -> {
-      final ColumnSummaryModel.ColumnValueProvider<Number> provider = createColumnValueProvider(columnIdentifier);
-
-      return provider == null ? null : new DefaultColumnSummaryModel<>(provider);
-    });
+  public final Optional<ColumnSummaryModel> getColumnSummaryModel(final C columnIdentifier) {
+    return Optional.ofNullable(columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier ->
+            createColumnValueProvider(columnIdentifier)
+                    .map(DefaultColumnSummaryModel::new)
+                    .orElse(null)));
   }
 
   @Override
-  public final <T> ColumnFilterModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
-    requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
-
-    return (ColumnFilterModel<R, C, T>) columnFilterModels.get(columnIdentifier);
+  public final <T> Optional<ColumnFilterModel<R, C, T>> getColumnFilterModel(final C columnIdentifier) {
+    return Optional.ofNullable((ColumnFilterModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER)));
   }
 
   @Override
@@ -517,10 +514,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Creates a ColumnValueProvider for the given column, null if the column type is not numerical
    * @param columnIdentifier the column identifier
    * @param <T> the value type
-   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, null if not applicable
+   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, an empty Optional if not applicable
    */
-  protected <T extends Number> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final C columnIdentifier) {
-    return new DefaultColumnValueProvider<>(columnIdentifier, this, null);
+  protected <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(final C columnIdentifier) {
+    return Optional.of(new DefaultColumnValueProvider<>(columnIdentifier, this, null));
   }
 
   /**

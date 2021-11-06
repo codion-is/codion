@@ -11,7 +11,6 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
@@ -987,6 +986,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Initializes the south panel, override and return null for no south panel.
+   * Not called if the south panel has been disabled via {@link #setIncludeSouthPanel(boolean)}.
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
@@ -1547,12 +1547,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Attribute<?>> tableModel) {
     final Map<TableColumn, JPanel> components = new HashMap<>();
-    tableModel.getColumnModel().getAllColumns().forEach(column -> {
-      final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((Attribute<?>) column.getIdentifier());
-      if (columnSummaryModel != null) {
-        components.put(column, new ColumnSummaryPanel(columnSummaryModel));
-      }
-    });
+    tableModel.getColumnModel().getAllColumns().forEach(column ->
+            tableModel.getColumnSummaryModel((Attribute<?>) column.getIdentifier())
+                    .ifPresent(columnSummaryModel ->
+                            components.put(column, new ColumnSummaryPanel(columnSummaryModel))));
 
     return components;
   }

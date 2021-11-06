@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -171,8 +172,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final Entity getEntity(final Key primaryKey) {
-    return getItems().stream().filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey)).findFirst().orElse(null);
+  public final Optional<Entity> getEntity(final Key primaryKey) {
+    return getItems().stream().filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey)).findFirst();
   }
 
   @Override

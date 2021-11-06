@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -35,9 +36,9 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * @param primaryKey the primary key of the entity to fetch from this model
-   * @return the entity with the given key if found in the model, null otherwise
+   * @return the entity with the given key if found in the model, an empty Optional otherwise
    */
-  Entity getEntity(Key primaryKey);
+  Optional<Entity> getEntity(Key primaryKey);
 
   /**
    * Use this method to retrieve the default foreign key filter include condition if you

@@ -18,6 +18,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,7 +47,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.formatter = requireNonNull(dateTimeFormatter, "dateTimeFormatter");
     this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
     setFocusLostBehavior(focusLostBehaviour);
-    getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
+    getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal().orElse(null)));
   }
 
   /**
@@ -57,14 +58,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   }
 
   /**
-   * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
+   * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
    */
-  public T getTemporal() {
+  public Optional<T> getTemporal() {
     try {
-      return dateTimeParser.parse(getText(), formatter);
+      return Optional.of(dateTimeParser.parse(getText(), formatter));
     }
     catch (final DateTimeParseException e) {
-      return null;
+      return Optional.empty();
     }
   }
 

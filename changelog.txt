@@ -7371,3 +7371,7 @@
   ColumnConditionPanel now uses BorderLayout instead of FlexibleGridLayout
   EntityPanel now focusCycleRoot, otherwise the focus travels all the way up the parent hierarcy when the condition panel is hidden while having the focus
   Tips&Tricks file removed, Help-Help... now opens documentation help url
+  AbstractFilteredTableModel.createColumnValueProvider() now returns Optional
+  FilteredTableModel.getColumnSummaryModel() and getColumnFilterModel() now return Optional
+  EntityComboBoxModel.getEntity(primaryKey) now returns Optional
+  TemporalField and TemporalInputPanel.getTemporal() now return Optional
