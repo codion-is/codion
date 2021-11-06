@@ -7340,3 +7340,4 @@
   Tips&Tricks file removed, Help-Help... now opens documentation help url
   AbstractFilteredTableModel.createColumnValueProvider() now returns Optional
   FilteredTableModel.getColumnSummaryModel() and getColumnFilterModel() now return Optional
+  EntityComboBoxModel.getEntity(primaryKey) now returns Optional
