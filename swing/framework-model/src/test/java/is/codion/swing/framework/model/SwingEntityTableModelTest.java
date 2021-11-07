@@ -105,7 +105,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void nonMatchingConditionModelEntityType() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
-            new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
+            new DefaultFilterModelFactory(), new DefaultConditionModelFactory(getConnectionProvider()));
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
             new SwingEntityTableSortModel(getConnectionProvider().getEntities()), conditionModel));
   }
@@ -118,7 +118,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void testFiltering() {
     testModel.refresh();
-    final ColumnConditionModel<Attribute<String>, String> filterModel = testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING).orElse(null);
+    final ColumnConditionModel<Attribute<String>, String> filterModel =
+            testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setEqualValue("a");
     testModel.filterContents();
     assertEquals(4, testModel.getFilteredItems().size());

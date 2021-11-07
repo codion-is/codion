@@ -33,7 +33,7 @@ public class DefaultEntityTableConditionModelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
-          CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
+          CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));
 
   @Test
   void test() {
@@ -46,9 +46,9 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isFilterEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
 
-    assertFalse(conditionModel.isEnabled());
-    conditionModel.enable(TestDomain.EMP_DEPARTMENT_FK);
-    assertTrue(conditionModel.isEnabled());
+    assertFalse(conditionModel.isConditionEnabled());
+    conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).setEnabled(true);
+    assertTrue(conditionModel.isConditionEnabled());
 
     conditionModel.refresh();
   }
@@ -56,33 +56,40 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void noSearchPropertiesDefined() {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
-            CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
+            CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));
     //no search properties defined for master entity
     final ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
-            model.getConditionModel(TestDomain.DETAIL_MASTER_FK).orElse(null);
+            model.getConditionModel(TestDomain.DETAIL_MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
             ((DefaultForeignKeyConditionModel) masterModel).getEntitySearchModel().performQuery());
   }
 
   @Test
   void getPropertyFilterModel() {
-    assertTrue(conditionModel.getFilterModel(TestDomain.EMP_COMMISSION).isPresent());
+    assertTrue(conditionModel.getFilter(TestDomain.EMP_COMMISSION).isPresent());
   }
 
   @Test
   void getPropertyConditionModel() {
-    assertTrue(conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).isPresent());
+    assertTrue(conditionModel.getCondition(TestDomain.EMP_COMMISSION).isPresent());
   }
 
   @Test
   void getPropertyConditionModelNonExisting() {
-    assertFalse(conditionModel.getConditionModel(TestDomain.DEPARTMENT_ID).isPresent());
+    assertFalse(conditionModel.getCondition(TestDomain.DEPARTMENT_ID).isPresent());
+    assertThrows(IllegalArgumentException.class, () -> conditionModel.getConditionModel(TestDomain.DEPARTMENT_ID));
+  }
+
+  @Test
+  void getPropertyFilterModelNonExisting() {
+    assertFalse(conditionModel.getFilter(TestDomain.EMP_DEPARTMENT_FK).isPresent());
+    assertThrows(IllegalArgumentException.class, () -> conditionModel.getFilterModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test
   void setEqualFilterValue() {
     conditionModel.setEqualFilterValue(TestDomain.EMP_COMMISSION, 1400d);
-    final ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION).orElse(null);
+    final ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Operator.EQUAL, propertyConditionModel.getOperator());
@@ -98,7 +105,7 @@ public class DefaultEntityTableConditionModelTest {
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     final ColumnConditionModel<? extends Attribute<Entity>, Entity> deptModel =
-            conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).orElse(null);
+            conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK);
     assertTrue(deptModel.getEqualValues().contains(sales));
     assertTrue(deptModel.getEqualValues().contains(accounting));
     searchStateChanged = conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, null);
@@ -113,8 +120,17 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    conditionModel.clearConditionModels();
+    conditionModel.clearConditions();
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
+  }
+
+  @Test
+  void clearPropertyFilterModels() throws DatabaseException {
+    assertFalse(conditionModel.isFilterEnabled(TestDomain.EMP_NAME));
+    conditionModel.setEqualFilterValue(TestDomain.EMP_NAME, "SCOTT");
+    assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_NAME));
+    conditionModel.clearFilters();
+    assertFalse(conditionModel.isFilterEnabled(TestDomain.EMP_NAME));
   }
 
   @Test
@@ -123,7 +139,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
-    final ColumnConditionModel<?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME).orElse(null);
+    final ColumnConditionModel<?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());
@@ -135,7 +151,7 @@ public class DefaultEntityTableConditionModelTest {
     final EventListener conditionChangedListener = counter::incrementAndGet;
     conditionModel.addConditionListener(conditionChangedListener);
     final ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
-            conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).orElse(null);
+            conditionModel.getConditionModel(TestDomain.EMP_COMMISSION);
     commissionModel.setEnabled(true);
     assertEquals(1, counter.get());
     commissionModel.setEnabled(false);
@@ -151,7 +167,7 @@ public class DefaultEntityTableConditionModelTest {
   void testSearchState() {
     assertFalse(conditionModel.hasConditionChanged());
     final ColumnConditionModel<? extends Attribute<String>, String> jobModel =
-            conditionModel.getConditionModel(TestDomain.EMP_JOB).orElse(null);
+            conditionModel.getConditionModel(TestDomain.EMP_JOB);
     jobModel.setEqualValue("job");
     assertTrue(conditionModel.hasConditionChanged());
     jobModel.setEnabled(false);

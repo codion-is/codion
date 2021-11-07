@@ -76,7 +76,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, new DefaultEntityTableConditionModel(entityType, connectionProvider,
-            null, new FXConditionModelFactory()));
+            null, new FXConditionModelFactory(connectionProvider)));
   }
 
   /**
@@ -426,7 +426,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   @Override
   protected List<Entity> performQuery() {
-    if (!tableConditionModel.isEnabled() && queryConditionRequiredState.get()) {
+    if (!tableConditionModel.isConditionEnabled() && queryConditionRequiredState.get()) {
       return emptyList();
     }
 
@@ -444,7 +444,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   @Override
   protected int getQueryRowCount() {
-    if (!tableConditionModel.isEnabled() && queryConditionRequiredState.get()) {
+    if (!tableConditionModel.isConditionEnabled() && queryConditionRequiredState.get()) {
       return 0;
     }
 

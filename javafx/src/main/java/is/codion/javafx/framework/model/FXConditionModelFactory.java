@@ -5,7 +5,7 @@ package is.codion.javafx.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultConditionModelFactory;
@@ -18,14 +18,20 @@ import java.util.Optional;
  */
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
+  public FXConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+    super(connectionProvider);
+  }
+
   @Override
-  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
-          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
-    if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      return Optional.of(new FXForeignKeyConditionListModel(foreignKey,
-              new ObservableEntityList(foreignKey.getReferencedEntityType(), connectionProvider)));
+  public <T, A extends Attribute<T>> Optional<ColumnConditionModel<A, T>> createConditionModel(final A attribute) {
+    if (attribute instanceof ForeignKey) {
+      final ForeignKey foreignKey = (ForeignKey) attribute;
+      if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
+        return Optional.of((ColumnConditionModel<A, T>) new FXForeignKeyConditionListModel(foreignKey,
+                new ObservableEntityList(foreignKey.getReferencedEntityType(), getConnectionProvider())));
+      }
     }
 
-    return super.createForeignKeyConditionModel(foreignKey, connectionProvider);
+    return super.createConditionModel(attribute);
   }
 }

@@ -28,13 +28,12 @@ public class SwingForeignKeyConditionModelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
-          CONNECTION_PROVIDER, new DefaultFilterModelFactory(),
-          new SwingConditionModelFactory());
+          CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new SwingConditionModelFactory(CONNECTION_PROVIDER));
 
   @Test
   void refresh() {
     conditionModel.refresh();
-    assertTrue(((SwingForeignKeyConditionModel) conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).orElse(null))
+    assertTrue(((SwingForeignKeyConditionModel) conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK))
             .getEntityComboBoxModel().getSize() > 1);
   }
 

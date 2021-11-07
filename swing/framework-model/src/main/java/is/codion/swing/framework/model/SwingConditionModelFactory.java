@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.ConditionModelFactory;
 import is.codion.framework.model.DefaultConditionModelFactory;
@@ -19,16 +19,34 @@ import java.util.Optional;
  */
 public class SwingConditionModelFactory extends DefaultConditionModelFactory {
 
-  @Override
-  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
-          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
-    if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), connectionProvider);
-      comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+  public SwingConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+    super(connectionProvider);
+  }
 
-      return Optional.of(new SwingForeignKeyConditionModel(foreignKey, comboBoxModel));
+  @Override
+  public <T, A extends Attribute<T>> Optional<ColumnConditionModel<A, T>> createConditionModel(final A attribute) {
+    if (attribute instanceof ForeignKey) {
+      final ForeignKey foreignKey = (ForeignKey) attribute;
+      if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
+        return Optional.of((ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, createComboBoxModel(foreignKey)));
+      }
     }
 
-    return super.createForeignKeyConditionModel(foreignKey, connectionProvider);
+    return super.createConditionModel(attribute);
+  }
+
+  /**
+   * Creates a combo box model based on the given foreign key, adding a null string (and thereby and null value)
+   * to the model if the foreign key is nullable.
+   * @param foreignKey the foreign key
+   * @return a combo box model based on the given foreign key
+   */
+  protected SwingEntityComboBoxModel createComboBoxModel(final ForeignKey foreignKey) {
+    final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+    if (getForeignKeyProperty(foreignKey).isNullable()) {
+      comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    }
+
+    return comboBoxModel;
   }
 }

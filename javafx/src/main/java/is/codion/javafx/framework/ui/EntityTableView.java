@@ -210,7 +210,7 @@ public class EntityTableView extends TableView<Entity> {
     final CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
     advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneAdvanced(newValue));
     final MenuItem clearSearch = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    clearSearch.setOnAction(event -> listModel.getTableConditionModel().clearConditionModels());
+    clearSearch.setOnAction(event -> listModel.getTableConditionModel().clearConditions());
 
     final Menu searchMenu = new Menu(FrameworkMessages.get(FrameworkMessages.SEARCH));
     searchMenu.getItems().add(showConditionPane);

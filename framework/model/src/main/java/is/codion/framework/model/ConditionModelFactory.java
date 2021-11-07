@@ -4,11 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.Optional;
 
@@ -18,21 +14,11 @@ import java.util.Optional;
 public interface ConditionModelFactory {
 
   /**
-   * Initializes a {@link ColumnConditionModel} for the given property
+   * Initializes a {@link ColumnConditionModel} for the given attribute
    * @param <T> the column value type
-   * @param property the Property for which to create a {@link ColumnConditionModel}
-   * @return a {@link ColumnConditionModel} for the given property, an empty Optional if searching
-   * should not be allowed for this property
+   * @param <A> the Attribute type
+   * @param attribute the Attribute for which to create a {@link ColumnConditionModel}
+   * @return a {@link ColumnConditionModel} based on the given attribute, an empty Optional if searching should not be available for this attribute
    */
-  <T> Optional<ColumnConditionModel<Attribute<?>, T>> createColumnConditionModel(ColumnProperty<T> property);
-
-  /**
-   * Initializes a {@link ColumnConditionModel} for the given property
-   * @param foreignKey the Property for which to create a {@link ColumnConditionModel}
-   * @param connectionProvider the EntityConnectionProvider instance to use
-   * @return a {@link ColumnConditionModel} for the given property, an empty Optional if if searching
-   * should not be allowed for this property
-   */
-  Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
-          ForeignKey foreignKey, EntityConnectionProvider connectionProvider);
+  <T, A extends Attribute<T>> Optional<ColumnConditionModel<A, T>> createConditionModel(final A attribute);
 }

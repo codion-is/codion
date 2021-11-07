@@ -7375,3 +7375,10 @@
   FilteredTableModel.getColumnSummaryModel() and getColumnFilterModel() now return Optional
   EntityComboBoxModel.getEntity(primaryKey) now returns Optional
   TemporalField and TemporalInputPanel.getTemporal() now return Optional
+  EntityTableConditionModel.getFilterModel() and getConditionModel() reintroduced, now throw IllegalArgumentException instead of returning null, methods returning Optional renamed getFilter() and getCondition() respectively
+  EntityTableConditionModel.containsConditionModel() removed, isEnabled() renamed isConditionEnabled(), isFilterEnabled() added for consistency
+  EntityTableConditionModel.enableCondition() and disableCondition() removed, some more cleanup and minor refactoring
+  EntityTableConditionPanel.getConditionPanel() reintroduced, now throws IllegalArgumentException instead of returning null, method returning Optional renamed getPanel()
+  ConditionModelFactory.createForeignKeyConditionModel() connectionProvider parameter removed
+  ConditionModelFactory.createPropertyConditionModel() renamed createConditionModel(), merged with createForeignKeyConditionModel()
+  SwingConditionModelFactory.createComboBox() added, now only sets the nullString in the combo box if the underlying foreign key is nullable
