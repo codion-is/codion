@@ -18,14 +18,18 @@ import java.util.Optional;
  */
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
+  public FXConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+    super(connectionProvider);
+  }
+
   @Override
-  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
-          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
+  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(final ForeignKey foreignKey) {
+    final EntityConnectionProvider connectionProvider = getConnectionProvider();
     if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       return Optional.of(new FXForeignKeyConditionListModel(foreignKey,
               new ObservableEntityList(foreignKey.getReferencedEntityType(), connectionProvider)));
     }
 
-    return super.createForeignKeyConditionModel(foreignKey, connectionProvider);
+    return super.createForeignKeyConditionModel(foreignKey);
   }
 }

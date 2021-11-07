@@ -19,9 +19,13 @@ import java.util.Optional;
  */
 public class SwingConditionModelFactory extends DefaultConditionModelFactory {
 
+  public SwingConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+    super(connectionProvider);
+  }
+
   @Override
-  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
-          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
+  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(final ForeignKey foreignKey) {
+    final EntityConnectionProvider connectionProvider = getConnectionProvider();
     if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), connectionProvider);
       comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
@@ -29,6 +33,6 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
       return Optional.of(new SwingForeignKeyConditionModel(foreignKey, comboBoxModel));
     }
 
-    return super.createForeignKeyConditionModel(foreignKey, connectionProvider);
+    return super.createForeignKeyConditionModel(foreignKey);
   }
 }

@@ -158,7 +158,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel) {
     this(entityType, connectionProvider, sortModel, new DefaultEntityTableConditionModel(entityType, connectionProvider,
-                    new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
+                    new DefaultFilterModelFactory(), new SwingConditionModelFactory(connectionProvider)));
   }
 
   /**

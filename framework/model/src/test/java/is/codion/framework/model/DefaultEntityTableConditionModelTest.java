@@ -33,7 +33,7 @@ public class DefaultEntityTableConditionModelTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
-          CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
+          CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));
 
   @Test
   void test() {
@@ -56,7 +56,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void noSearchPropertiesDefined() {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
-            CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
+            CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));
     //no search properties defined for master entity
     final ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
             model.getConditionModel(TestDomain.DETAIL_MASTER_FK);

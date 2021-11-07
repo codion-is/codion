@@ -303,7 +303,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
                                                    final ConditionModelFactory conditionModelProvider) {
     for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      conditionModelProvider.createForeignKeyConditionModel(foreignKeyProperty.getAttribute(), connectionProvider)
+      conditionModelProvider.createForeignKeyConditionModel(foreignKeyProperty.getAttribute())
               .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
     }
   }

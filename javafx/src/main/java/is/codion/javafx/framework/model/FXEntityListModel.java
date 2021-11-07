@@ -76,7 +76,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, new DefaultEntityTableConditionModel(entityType, connectionProvider,
-            null, new FXConditionModelFactory()));
+            null, new FXConditionModelFactory(connectionProvider)));
   }
 
   /**

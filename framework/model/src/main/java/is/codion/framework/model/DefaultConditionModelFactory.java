@@ -14,10 +14,18 @@ import is.codion.framework.domain.property.Property;
 
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A default ConditionModelFactory implementation.
  */
 public class DefaultConditionModelFactory implements ConditionModelFactory {
+
+  private final EntityConnectionProvider connectionProvider;
+
+  public DefaultConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+    this.connectionProvider = requireNonNull(connectionProvider);
+  }
 
   @Override
   public <T> Optional<ColumnConditionModel<Attribute<?>, T>> createColumnConditionModel(final ColumnProperty<T> property) {
@@ -26,11 +34,17 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   }
 
   @Override
-  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(
-          final ForeignKey foreignKey, final EntityConnectionProvider connectionProvider) {
+  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(final ForeignKey foreignKey) {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(true);
 
     return Optional.of(new DefaultForeignKeyConditionModel(foreignKey, searchModel));
+  }
+
+  /**
+   * @return the underlying connection provider
+   */
+  protected final EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 }
