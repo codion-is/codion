@@ -24,8 +24,6 @@ public class ColumnConditionPanelTest {
     assertNotNull(panel.getEqualField());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
-    assertNull(panel.getLastDialogPosition());
-    assertFalse(panel.isDialogEnabled());
     assertFalse(panel.isDialogVisible());
     assertFalse(panel.isAdvanced());
     panel.setAdvanced(true);
