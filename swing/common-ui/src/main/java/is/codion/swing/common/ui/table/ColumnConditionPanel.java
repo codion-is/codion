@@ -32,8 +32,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,9 +83,6 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   private final State advancedConditionState = State.state();
 
   private JDialog dialog;
-  private Point lastDialogPosition;
-  private boolean dialogEnabled = false;
-  private boolean dialogVisible = false;
 
   /**
    * Instantiates a new ColumnConditionPanel, with a default bound field factory and all available Operators.
@@ -155,75 +150,46 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   /**
-   * @return the last screen position
-   */
-  public final Point getLastDialogPosition() {
-    return lastDialogPosition;
-  }
-
-  /**
    * @return true if the dialog is enabled
    */
   public final boolean isDialogEnabled() {
-    return dialogEnabled;
+    return dialog != null;
   }
 
   /**
    * @return true if the dialog is being shown
    */
   public final boolean isDialogVisible() {
-    return dialogVisible;
+    return dialog != null && dialog.isVisible();
   }
 
   /**
    * Displays this condition panel in a dialog
    * @param dialogParent the dialog parent
    * @param title the dialog title
-   * @param position the position
    */
-  public final void enableDialog(final Container dialogParent, final String title, final Point position) {
+  public final void enableDialog(final Container dialogParent, final String title) {
     if (!isDialogEnabled()) {
       initializeConditionDialog(dialogParent, title);
-      Point actualPosition = position;
-      if (position == null) {
-        actualPosition = lastDialogPosition;
-      }
-      if (actualPosition == null) {
-        actualPosition = new Point(0, 0);
-      }
-
-      actualPosition.y = actualPosition.y - dialog.getHeight();
-      dialog.setLocation(actualPosition);
-      dialogEnabled = true;
-    }
-
-    showDialog();
-  }
-
-  /**
-   * Hides the dialog displaying this condition panel
-   */
-  public final void disableDialog() {
-    if (isDialogEnabled()) {
-      if (isDialogVisible()) {
-        hideDialog();
-      }
-      lastDialogPosition = dialog.getLocation();
-      lastDialogPosition.y = lastDialogPosition.y + dialog.getHeight();
-      dialog.dispose();
-      dialog = null;
-      dialogEnabled = false;
     }
   }
 
   /**
    * Displays this panel in a dialog
+   * @param position the location, used if specified
    */
-  public final void showDialog() {
-    if (isDialogEnabled() && !isDialogVisible()) {
+  public final void showDialog(final Point position) {
+    if (!isDialogEnabled()) {
+      throw new IllegalStateException("Dialog has not been enabled for this condition panel");
+    }
+    if (!isDialogVisible()) {
+      if (position != null) {
+        final Point adjustedPosition = position;
+        adjustedPosition.y = adjustedPosition.y - dialog.getHeight();
+        dialog.setLocation(adjustedPosition);
+      }
       dialog.setVisible(true);
       requestInputFocus();
-      dialogVisible = true;
     }
   }
 
@@ -233,7 +199,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   public final void hideDialog() {
     if (isDialogVisible()) {
       dialog.setVisible(false);
-      dialogVisible = false;
+      dialog.dispose();
     }
   }
 
@@ -588,13 +554,6 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     dialog.pack();
 
     addAdvancedListener(advanced -> dialog.pack());
-
-    dialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        disableDialog();
-      }
-    });
   }
 
   private void singleValuePanel(final JComponent boundField) {

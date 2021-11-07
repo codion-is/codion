@@ -275,12 +275,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param filterPanelsVisible true if the active filter panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(final boolean filterPanelsVisible) {
-    columnFilterPanels.values().forEach(columnFilterPanel -> SwingUtilities.invokeLater(() -> {
+    columnFilterPanels.forEach((column, conditionPanel) -> SwingUtilities.invokeLater(() -> {
       if (filterPanelsVisible) {
-        columnFilterPanel.showDialog();
+        conditionPanel.showDialog(null);
       }
       else {
-        columnFilterPanel.hideDialog();
+        conditionPanel.hideDialog();
       }
     }));
   }
@@ -607,11 +607,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private static void toggleFilterPanel(final ColumnConditionPanel<?, ?> columnFilterPanel, final Container parent,
                                         final String title, final Point position) {
     if (columnFilterPanel != null) {
-      if (columnFilterPanel.isDialogEnabled()) {
-        columnFilterPanel.disableDialog();
+      if (!columnFilterPanel.isDialogEnabled()) {
+        columnFilterPanel.enableDialog(parent, title);
+      }
+      if (columnFilterPanel.isDialogVisible()) {
+        columnFilterPanel.hideDialog();
       }
       else {
-        columnFilterPanel.enableDialog(parent, title, position);
+        columnFilterPanel.showDialog(position);
       }
     }
   }
