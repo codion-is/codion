@@ -64,9 +64,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
                                           final ConditionModelFactory conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
-    initializePropertyConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
+    initializeConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
     initializeFilterModels(entityType, filterModelFactory);
-    initializeForeignKeyConditionModels(entityType, connectionProvider, conditionModelFactory);
     rememberCondition();
     bindEvents();
   }
@@ -289,21 +288,15 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializePropertyConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelFactory) {
+  private void initializeConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelFactory) {
     final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
     for (final ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
-      if (!columnProperty.isAggregateColumn()) {
-        conditionModelFactory.createColumnConditionModel(columnProperty)
-                .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
-      }
+      conditionModelFactory.createConditionModel(columnProperty.getAttribute())
+              .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
     }
-  }
-
-  private void initializeForeignKeyConditionModels(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                                   final ConditionModelFactory conditionModelProvider) {
     for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      conditionModelProvider.createForeignKeyConditionModel(foreignKeyProperty.getAttribute())
+      conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute())
               .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
     }
   }

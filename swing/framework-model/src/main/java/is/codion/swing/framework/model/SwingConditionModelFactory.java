@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.ConditionModelFactory;
 import is.codion.framework.model.DefaultConditionModelFactory;
@@ -24,15 +24,17 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
   }
 
   @Override
-  public Optional<ColumnConditionModel<ForeignKey, Entity>> createForeignKeyConditionModel(final ForeignKey foreignKey) {
-    final EntityConnectionProvider connectionProvider = getConnectionProvider();
-    if (connectionProvider.getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), connectionProvider);
-      comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+  public <T, A extends Attribute<T>> Optional<ColumnConditionModel<A, T>> createConditionModel(final A attribute) {
+    if (attribute instanceof ForeignKey) {
+      final ForeignKey foreignKey = (ForeignKey) attribute;
+      if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
+        final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+        comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
 
-      return Optional.of(new SwingForeignKeyConditionModel(foreignKey, comboBoxModel));
+        return Optional.of((ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, comboBoxModel));
+      }
     }
 
-    return super.createForeignKeyConditionModel(foreignKey);
+    return super.createConditionModel(attribute);
   }
 }

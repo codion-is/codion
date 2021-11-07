@@ -7347,3 +7347,4 @@
   EntityTableConditionModel.enableCondition() and disableCondition() removed, some more cleanup and minor refactoring
   EntityTableConditionPanel.getConditionPanel() reintroduced, now throws IllegalArgumentException instead of returning null, method returning Optional renamed getPanel()
   ConditionModelFactory.createForeignKeyConditionModel() connectionProvider parameter removed
+  ConditionModelFactory.createPropertyConditionModel() renamed createConditionModel(), merged with createForeignKeyConditionModel()
