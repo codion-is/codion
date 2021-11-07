@@ -71,27 +71,15 @@ public interface EntityTableConditionModel {
   void setAdditionalConditionSupplier(Supplier<Condition> conditionSupplier);
 
   /**
-   * @return true if any of the underlying PropertyConditionModels is enabled
+   * @return true if any of the underlying condition models are enabled
    */
-  boolean isEnabled();
+  boolean isConditionEnabled();
 
   /**
    * @param attribute the column attribute
    * @return true if the {@link ColumnConditionModel} associated with the given attribute is enabled
    */
   boolean isConditionEnabled(Attribute<?> attribute);
-
-  /**
-   * Enables the search for the given attribute, if the condition model is not locked.
-   * @param attribute the attribute for which to enable the search
-   */
-  void enable(Attribute<?> attribute);
-
-  /**
-   * Disables the search for the given attribute, if the condition model is not locked.
-   * @param attribute the attribute for which to disable the search
-   */
-  void disable(Attribute<?> attribute);
 
   /**
    * Remembers the current condition model state, any subsequent changes to condition
@@ -124,13 +112,6 @@ public interface EntityTableConditionModel {
   void setConjunction(Conjunction conjunction);
 
   /**
-   * @param attribute the attribute for which to check for the {@link ColumnConditionModel}
-   * @return true if this EntityTableConditionModel contains a {@link ColumnConditionModel} associated
-   * with {@code attribute}
-   */
-  boolean containsConditionModel(Attribute<?> attribute);
-
-  /**
    * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
    */
   Collection<ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels();
@@ -139,16 +120,25 @@ public interface EntityTableConditionModel {
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
-   * @return the {@link ColumnConditionModel} associated with {@code attribute}, an empty Optional if none is found
-   * @see #containsConditionModel(Attribute)
+   * @return the {@link ColumnConditionModel} associated with {@code attribute}
+   * @throws IllegalArgumentException in case filter model exists for the given attribute
+   * @throws IllegalArgumentException in case no condition model exists for the given attribute
    */
-  <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getConditionModel(Attribute<T> attribute);
+  <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
 
   /**
-   * Clears the search state of all {@link ColumnConditionModel}, disables them and
+   * Returns the {@link ColumnConditionModel} associated with the given attribute.
+   * @param <T> the column value type
+   * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
+   * @return the {@link ColumnConditionModel} associated with {@code attribute}, an empty Optional if none is found
+   */
+  <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getCondition(Attribute<T> attribute);
+
+  /**
+   * Clears the search state of all the condition models, disables them and
    * resets the operator to {@link Operator#EQUAL}
    */
-  void clearConditionModels();
+  void clearConditions();
 
   /**
    * @return a Collection containing the filter models available in this table condition model
@@ -160,9 +150,30 @@ public interface EntityTableConditionModel {
    * @param <C> the property type
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
+   * @return the {@link ColumnFilterModel} for the {@code attribute}
+   * @throws IllegalArgumentException in case no filter model exists for the given attribute
+   */
+  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
+
+  /**
+   * The filter model associated with {@code attribute}
+   * @param <C> the property type
+   * @param <T> the column value type
+   * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
    * @return the {@link ColumnFilterModel} for the {@code attribute}, an empty Optional if none is found
    */
-  <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilterModel(Attribute<T> attribute);
+  <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilter(Attribute<T> attribute);
+
+  /**
+   * Clears the search state of all the filter models, disables them and
+   * resets the operator to {@link Operator#EQUAL}
+   */
+  void clearFilters();
+
+  /**
+   * @return true if any of the underlying filter models are enabled
+   */
+  boolean isFilterEnabled();
 
   /**
    * @param attribute column attribute

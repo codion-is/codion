@@ -93,8 +93,19 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilterModel(final Attribute<T> attribute) {
+  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(final Attribute<T> attribute) {
+    return (ColumnFilterModel<Entity, C, T>) getFilter(attribute).orElseThrow(() ->
+            new IllegalArgumentException("No filter model available for attribute: " + attribute));
+  }
+
+  @Override
+  public <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilter(final Attribute<T> attribute) {
     return Optional.ofNullable((ColumnFilterModel<Entity, C, T>) filterModels.get(attribute));
+  }
+
+  @Override
+  public void clearFilters() {
+    filterModels.values().forEach(ColumnConditionModel::clearCondition);
   }
 
   @Override
@@ -112,10 +123,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void clearConditionModels() {
-    for (final ColumnConditionModel<?, ?> conditionModel : conditionModels.values()) {
-      conditionModel.clearCondition();
-    }
+  public void clearConditions() {
+    conditionModels.values().forEach(ColumnConditionModel::clearCondition);
   }
 
   @Override
@@ -124,45 +133,55 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean containsConditionModel(final Attribute<?> attribute) {
-    return conditionModels.containsKey(attribute);
+  public <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(final Attribute<T> attribute) {
+    return getCondition(attribute).orElseThrow(() ->
+            new IllegalArgumentException("No condition model available for attribute: " + attribute));
   }
 
   @Override
-  public <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getConditionModel(final Attribute<T> attribute) {
+  public <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getCondition(final Attribute<T> attribute) {
     return Optional.ofNullable((ColumnConditionModel<? extends Attribute<T>, T>) conditionModels.get(attribute));
   }
 
   @Override
-  public boolean isEnabled() {
+  public boolean isConditionEnabled() {
     return conditionModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
   public boolean isConditionEnabled(final Attribute<?> attribute) {
-    return getConditionModel(attribute).map(ColumnConditionModel::isEnabled).orElse(false);
+    return getCondition(attribute).map(ColumnConditionModel::isEnabled).orElse(false);
+  }
+
+  @Override
+  public boolean isFilterEnabled() {
+    return filterModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
   public boolean isFilterEnabled(final Attribute<?> attribute) {
-    return getFilterModel(attribute).map(ColumnConditionModel::isEnabled).orElse(false);
+    return getFilter(attribute).map(ColumnConditionModel::isEnabled).orElse(false);
   }
 
   @Override
   public <T> boolean setEqualConditionValues(final Attribute<T> attribute, final Collection<T> values) {
     final String conditionsString = getConditionsString();
-    getConditionModel(attribute).ifPresent(conditionModel -> {
+    getCondition(attribute).ifPresent(conditionModel -> {
       conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
-      conditionModel.setEqualValues(null);//because the upperBound could be a reference to the active entity which changes accordingly
-      conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
+      conditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
+      conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
     });
     return !conditionsString.equals(getConditionsString());
   }
 
   @Override
   public <T> void setEqualFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
-    getFilterModel(attribute).ifPresent(filterModel -> filterModel.setEqualValue((T) value));
+    getFilter(attribute).ifPresent(filterModel -> {
+      filterModel.setOperator(Operator.EQUAL);
+      filterModel.setEqualValue((T) value);
+      filterModel.setEnabled(value != null);
+    });
   }
 
   @Override
@@ -211,24 +230,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void enable(final Attribute<?> attribute) {
-    getConditionModel(attribute).ifPresent(conditionModel -> {
-      if (!conditionModel.isLocked()) {
-        conditionModel.setEnabled(true);
-      }
-    });
-  }
-
-  @Override
-  public void disable(final Attribute<?> attribute) {
-    getConditionModel(attribute).ifPresent(conditionModel -> {
-      if (!conditionModel.isLocked()) {
-        conditionModel.setEnabled(false);
-      }
-    });
-  }
-
-  @Override
   public StateObserver getConditionObserver() {
     return conditionChangedState.getObserver();
   }
@@ -249,7 +250,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
               conditionChangedState.set(!rememberedCondition.equals(getConditionsString())));
     }
     simpleConditionStringValue.addDataListener(conditionString -> {
-      clearConditionModels();
+      clearConditions();
       if (!Util.nullOrEmpty(conditionString)) {
         setConditionString(conditionString);
       }
@@ -260,7 +261,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final Collection<Attribute<String>> searchAttributes =
             connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes();
     for (final Attribute<String> searchAttribute : searchAttributes) {
-      getConditionModel(searchAttribute).ifPresent(conditionModel -> {
+      getCondition(searchAttribute).ifPresent(conditionModel -> {
         conditionModel.setCaseSensitive(false);
         conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
         conditionModel.setEqualValue(searchString);

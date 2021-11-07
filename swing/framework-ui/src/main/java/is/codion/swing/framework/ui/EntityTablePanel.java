@@ -1633,7 +1633,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     @Override
     public Optional<ColumnConditionPanel<?, ?>> createConditionPanel(final TableColumn column) {
-      return Optional.ofNullable(tableModel.getTableConditionModel().getFilterModel((Attribute<Object>) column.getIdentifier())
+      return Optional.ofNullable(tableModel.getTableConditionModel().getFilter((Attribute<Object>) column.getIdentifier())
               .map(filterModel -> new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel)))
               .orElse(null));
     }

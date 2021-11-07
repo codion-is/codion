@@ -30,7 +30,7 @@ public final class TrackTableModelTest {
 
     final TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
     trackTableModel.getTableConditionModel().getConditionModel(Track.ALBUM_FK)
-            .ifPresent(albumConditionModel -> albumConditionModel.setEqualValue(masterOfPuppets));
+            .setEqualValue(masterOfPuppets);
 
     trackTableModel.refresh();
     assertEquals(8, trackTableModel.getRowCount());

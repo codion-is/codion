@@ -638,7 +638,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   @Override
   protected Collection<Entity> refreshItems() {
-    if (queryConditionRequiredState.get() && !getTableConditionModel().isEnabled()) {
+    if (queryConditionRequiredState.get() && !getTableConditionModel().isConditionEnabled()) {
       return emptyList();
     }
     checkQueryRowCount();
@@ -655,7 +655,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @return the number of rows {@link #refreshItems()} would return on next invocation
    */
   protected int getQueryRowCount() {
-    if (queryConditionRequiredState.get() && !getTableConditionModel().isEnabled()) {
+    if (queryConditionRequiredState.get() && !getTableConditionModel().isConditionEnabled()) {
       return 0;
     }
 
@@ -819,7 +819,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void onColumnHidden(final Attribute<?> attribute) {
     //disable the condition model for the column to be hidden, to prevent confusion
-    tableConditionModel.disable(attribute);
+    tableConditionModel.getCondition(attribute).ifPresent(conditionModel -> {
+      if (!conditionModel.isLocked()) {
+        conditionModel.setEnabled(false);
+      }
+    });
   }
 
   private org.json.JSONObject createPreferences() throws Exception {
