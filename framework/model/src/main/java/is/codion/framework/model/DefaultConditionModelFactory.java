@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return Optional.empty();
     }
 
-    return Optional.of((ColumnConditionModel<A, T>) new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(),
+    return Optional.of(new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(),
             Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern()));
   }
 
@@ -69,5 +70,13 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
    */
   protected final <T> ColumnProperty<T> getColumnProperty(final Attribute<T> attribute) {
     return connectionProvider.getEntities().getDefinition(attribute.getEntityType()).getColumnProperty(attribute);
+  }
+
+  /**
+   * @param foreignKey the foreign key
+   * @return the ForeignKeyProperty based on the given foreign key
+   */
+  protected final ForeignKeyProperty getForeignKeyProperty(final ForeignKey foreignKey) {
+    return connectionProvider.getEntities().getDefinition(foreignKey.getEntityType()).getForeignKeyProperty(foreignKey);
   }
 }

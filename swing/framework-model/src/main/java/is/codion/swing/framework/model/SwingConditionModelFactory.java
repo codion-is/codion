@@ -28,13 +28,25 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
     if (attribute instanceof ForeignKey) {
       final ForeignKey foreignKey = (ForeignKey) attribute;
       if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-        final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
-        comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
-
-        return Optional.of((ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, comboBoxModel));
+        return Optional.of((ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, createComboBoxModel(foreignKey)));
       }
     }
 
     return super.createConditionModel(attribute);
+  }
+
+  /**
+   * Creates a combo box model based on the given foreign key, adding a null string (and thereby and null value)
+   * to the model if the foreign key is nullable.
+   * @param foreignKey the foreign key
+   * @return a combo box model based on the given foreign key
+   */
+  protected SwingEntityComboBoxModel createComboBoxModel(final ForeignKey foreignKey) {
+    final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+    if (getForeignKeyProperty(foreignKey).isNullable()) {
+      comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    }
+
+    return comboBoxModel;
   }
 }
