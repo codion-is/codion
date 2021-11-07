@@ -154,6 +154,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private boolean scrollToSelectedItem = true;
 
   /**
+   * Specifies the scrolling behaviour when scrolling to the selected row/column
+   */
+  private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
+
+  /**
    * The coordinate of the last search result
    */
   private RowColumn lastSearchResultCoordinate = NULL_COORDINATE;
@@ -265,6 +270,21 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     this.scrollToSelectedItem = scrollToSelectedItem;
   }
 
+  /**
+   * @return the scrolling behaviour when scrolling to the selected row/column
+   */
+  public CenterOnScroll getCenterOnScroll() {
+    return centerOnScroll;
+  }
+
+  /**
+   * Specifies the scrolling behaviour when scrolling to the selected row/column
+   * @param centerOnScroll the scrolling behaviour
+   */
+  public void setCenterOnScroll(final CenterOnScroll centerOnScroll) {
+    this.centerOnScroll = requireNonNull(centerOnScroll);
+  }
+
   @Override
   public void setSelectionMode(final int selectionMode) {
     tableModel.getSelectionModel().setSelectionMode(selectionMode);
@@ -334,7 +354,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
-              getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER);
+              getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.COLUMN);
     }
   }
 
@@ -345,24 +365,28 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param centerOnScroll specifies whether to center the selected row and or column
    */
   public void scrollToCoordinate(final int row, final int column, final CenterOnScroll centerOnScroll) {
+    requireNonNull(centerOnScroll);
     final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       final Rectangle cellRectangle = getCellRect(row, column, true);
       final Rectangle viewRectangle = viewport.getViewRect();
       cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-      if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
-        int centerX = (viewRectangle.width - cellRectangle.width) / 2;
-        if (cellRectangle.x < centerX) {
-          centerX = -centerX;
+      int x = cellRectangle.x;
+      int y = cellRectangle.y;
+      if (centerOnScroll != CenterOnScroll.NEITHER) {
+        if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
+          x = (viewRectangle.width - cellRectangle.width) / 2;
+          if (cellRectangle.x < x) {
+            x = -x;
+          }
         }
-        cellRectangle.translate(centerX, cellRectangle.y);
-      }
-      if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
-        int centerY = (viewRectangle.height - cellRectangle.height) / 2;
-        if (cellRectangle.y < centerY) {
-          centerY = -centerY;
+        if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
+          y = (viewRectangle.height - cellRectangle.height) / 2;
+          if (cellRectangle.y < y) {
+            y = -y;
+          }
         }
-        cellRectangle.translate(cellRectangle.x, centerY);
+        cellRectangle.translate(x, y);
       }
       viewport.scrollRectToVisible(cellRectangle);
     }
@@ -521,7 +545,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
           tableModel.getSelectionModel().setSelectedIndex(coordinate.getRow());
           setColumnSelectionInterval(coordinate.getColumn(), coordinate.getColumn());
         }
-        scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), CenterOnScroll.NEITHER);
+        scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), centerOnScroll);
       }
       else {
         tableModel.getSelectionModel().clearSelection();
@@ -655,7 +679,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     addMouseListener(initializeTableMouseListener());
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
       if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-        scrollToCoordinate(selected, getSelectedColumn(), CenterOnScroll.NEITHER);
+        scrollToCoordinate(selected, getSelectedColumn(), centerOnScroll);
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
