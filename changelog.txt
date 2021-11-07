@@ -7349,3 +7349,4 @@
   ConditionModelFactory.createForeignKeyConditionModel() connectionProvider parameter removed
   ConditionModelFactory.createPropertyConditionModel() renamed createConditionModel(), merged with createForeignKeyConditionModel()
   SwingConditionModelFactory.createComboBox() added, now only sets the nullString in the combo box if the underlying foreign key is nullable
+  FilteredTable.toggleColumnFilterPanel() refactored a bit

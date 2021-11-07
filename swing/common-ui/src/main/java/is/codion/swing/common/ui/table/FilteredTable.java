@@ -118,12 +118,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private final T tableModel;
 
   /**
-   * Provides filter panels
+   * Creates the filter condition panels
    */
   private final ConditionPanelFactory conditionPanelFactory;
 
   /**
-   * the property filter panels
+   * The column filter panels
    */
   private final Map<TableColumn, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
 
@@ -599,14 +599,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private void toggleColumnFilterPanel(final MouseEvent event) {
     final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
     final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
-    try {
-      if (!columnFilterPanels.containsKey(column)) {
-        columnFilterPanels.put(column, (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column).orElse(null));
-      }
-
-      toggleFilterPanel(columnFilterPanels.get(column), this, column.getHeaderValue().toString(), event.getLocationOnScreen());
-    }
-    catch (final IllegalArgumentException ignored) {/*filtering not supported for the column type*/}
+    toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
+                    (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column).orElse(null)),
+            this, column.getHeaderValue().toString(), event.getLocationOnScreen());
   }
 
   private static void toggleFilterPanel(final ColumnConditionPanel<?, ?> columnFilterPanel, final Container parent,
