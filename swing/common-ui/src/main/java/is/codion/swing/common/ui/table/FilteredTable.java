@@ -350,7 +350,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Has no effect if this table is not contained in a scrollpanel.
    * @param columnIdentifier the column identifier
    */
-  public void scrollToColumn(final Object columnIdentifier) {
+  public void scrollToColumn(final C columnIdentifier) {
     final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),

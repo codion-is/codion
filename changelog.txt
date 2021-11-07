@@ -7353,3 +7353,4 @@
   FilteredTable, ColumnConditionPanel, dialog functionality simplified
   FilteredTable bug fixed, did not scroll to center correctly when centering both on row and column
   FilteredTable.centerOnScroll added, used when searching as well
+  FilteredTable.scrollToColumn() parameter now generic
