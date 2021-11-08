@@ -7354,3 +7354,4 @@
   FilteredTable bug fixed, did not scroll to center correctly when centering both on row and column
   FilteredTable.centerOnScroll added, used when searching as well
   FilteredTable.scrollToColumn() parameter now generic
+  TemporalField and TemporalPanel.getTemporal() reverted back to returning null, getOptional() added for Optional

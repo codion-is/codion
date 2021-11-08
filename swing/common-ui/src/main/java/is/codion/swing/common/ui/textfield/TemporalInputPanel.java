@@ -69,7 +69,14 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
    */
-  public Optional<T> getTemporal() {
+  public Optional<T> getOptional() {
+    return inputField.getOptional();
+  }
+
+  /**
+   * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
+   */
+  public T getTemporal() {
     return inputField.getTemporal();
   }
 
@@ -122,7 +129,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendarForLocalDate() {
-    getLocalDateWithCalendar((LocalDate) getTemporal().orElse(null), MESSAGES.getString("select_date"), inputField)
+    getLocalDateWithCalendar((LocalDate) getTemporal(), MESSAGES.getString("select_date"), inputField)
             .ifPresent(localDate -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDate));
               inputField.requestFocusInWindow();
@@ -130,7 +137,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendarForLocalDateTime() {
-    getLocalDateTimeWithCalendar((LocalDateTime) getTemporal().orElse(null), MESSAGES.getString("select_date_time"), inputField)
+    getLocalDateTimeWithCalendar((LocalDateTime) getTemporal(), MESSAGES.getString("select_date_time"), inputField)
             .ifPresent(localDateTime -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDateTime));
               inputField.requestFocusInWindow();
