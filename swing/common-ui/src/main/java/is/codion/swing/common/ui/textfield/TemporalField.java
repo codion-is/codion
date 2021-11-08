@@ -47,7 +47,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.formatter = requireNonNull(dateTimeFormatter, "dateTimeFormatter");
     this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
     setFocusLostBehavior(focusLostBehaviour);
-    getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal().orElse(null)));
+    getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
   }
 
   /**
@@ -60,12 +60,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   /**
    * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
    */
-  public Optional<T> getTemporal() {
+  public Optional<T> getOptional() {
+    return Optional.ofNullable(getTemporal());
+  }
+
+  /**
+   * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
+   */
+  public T getTemporal() {
     try {
-      return Optional.of(dateTimeParser.parse(getText(), formatter));
+      return dateTimeParser.parse(getText(), formatter);
     }
     catch (final DateTimeParseException e) {
-      return Optional.empty();
+      return null;
     }
   }
 
