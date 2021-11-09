@@ -15,7 +15,7 @@ import javax.swing.JComponent;
  * @param <A> the attribute type
  * @param <C> the component type
  */
-public interface EntityComponentValueFactory<T, A extends Attribute<T>, C extends JComponent> {
+public interface EntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> {
 
   /**
    * Provides value input components for multiple entity update, override to supply

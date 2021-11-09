@@ -14,7 +14,7 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.DefaultEntityComponentValueFactory;
+import is.codion.swing.framework.ui.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.math.BigDecimal;
@@ -52,7 +52,7 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private static final class MinutesSecondsComponentValueFactory
-          extends DefaultEntityComponentValueFactory<Integer, Attribute<Integer>, MinutesSecondsPanelValue.MinutesSecondsPanel> {
+          extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
     @Override
     public ComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> createComponentValue(final Attribute<Integer> attribute,

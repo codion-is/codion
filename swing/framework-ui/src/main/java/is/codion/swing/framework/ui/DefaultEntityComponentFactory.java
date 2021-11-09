@@ -20,9 +20,9 @@ import static is.codion.swing.common.ui.value.ComponentValues.fileInputPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityComponentValueFactory} implementation.
+ * A default {@link EntityComponentFactory} implementation.
  */
-public class DefaultEntityComponentValueFactory<T, A extends Attribute<T>, C extends JComponent> implements EntityComponentValueFactory<T, A, C> {
+public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends JComponent> implements EntityComponentFactory<T, A, C> {
 
   @Override
   public ComponentValue<T, C> createComponentValue(final A attribute, final SwingEntityEditModel editModel, final T initialValue) {

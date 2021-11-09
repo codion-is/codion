@@ -12,7 +12,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
 
-public final class DefaultEntityComponentValueFactoryTest {
+public final class DefaultEntityComponentFactoryTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -23,11 +23,11 @@ public final class DefaultEntityComponentValueFactoryTest {
 
   @Test
   void test() {
-    final EntityComponentValueFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentValueFactory<>();
+    final EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
     foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_MASTER_FK, editModel, null);
     foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_DETAIL_FK, editModel, null);
 
-    final EntityComponentValueFactory<Integer, Attribute<Integer>, IntegerField> integerComponentFactory = new DefaultEntityComponentValueFactory<>();
+    final EntityComponentFactory<Integer, Attribute<Integer>, IntegerField> integerComponentFactory = new DefaultEntityComponentFactory<>();
     integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT, editModel, null);
     integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT_DERIVED, editModel, null);
   }
