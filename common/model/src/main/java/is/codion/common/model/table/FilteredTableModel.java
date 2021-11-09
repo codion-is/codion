@@ -218,6 +218,17 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R> {
   void setRegularExpressionSearch(boolean regularExpressionSearch);
 
   /**
+   * @return true if searching this table model is case-sensitive
+   */
+  boolean isCaseSensitiveSearch();
+
+  /**
+   * Specifies whether searching this table model should be case-sensitive
+   * @param caseSensitiveSearch true if search should be case-sensitive
+   */
+  void setCaseSensitiveSearch(boolean caseSensitiveSearch);
+
+  /**
    * @return true if merge on refresh is enabled
    */
   boolean isMergeOnRefresh();
