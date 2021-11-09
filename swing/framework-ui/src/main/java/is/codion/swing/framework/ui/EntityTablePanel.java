@@ -214,13 +214,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
+  private final Map<Attribute<?>, EntityComponentValueFactory<?, ?, ?>> componentValueFactories = new HashMap<>();
+
   private final SwingEntityTableModel tableModel;
 
   private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
 
   private final JScrollPane tableScrollPane;
-
-  private final EntityComponentValues componentValues;
 
   private final AbstractEntityTableConditionPanel conditionPanel;
 
@@ -288,7 +288,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, new EntityComponentValues());
+    this(tableModel, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel()));
   }
 
   /**
@@ -297,31 +297,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param conditionPanel the condition panel, if any
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final AbstractEntityTableConditionPanel conditionPanel) {
-    this(tableModel, new EntityComponentValues(), conditionPanel);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param componentValues the component value provider for this table panel, provides the components used to
-   * update property values via this table panel.
-   */
-  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues) {
-    this(tableModel, componentValues, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel()));
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param componentValues the component value provider for this table panel, provides the components used to
-   * update property values via this table panel.
-   * @param conditionPanel the condition panel, if any
-   */
-  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues,
-                          final AbstractEntityTableConditionPanel conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = initializeFilteredTable();
-    this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
     this.conditionScrollPane = initializeConditionScrollPane(tableScrollPane);
@@ -457,6 +434,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final boolean isConditionPanelVisible() {
     return conditionScrollPane != null && conditionScrollPane.isVisible();
+  }
+
+  /**
+   * Sets the component factory for the given attribute.
+   * @param attribute the attribute
+   * @param componentFactory the component factory
+   * @param <T> the value type
+   * @param <A> the attribute type
+   * @param <C> the component type
+   */
+  public final <T, A extends Attribute<T>, C extends JComponent> void setComponentFactory(final A attribute,
+                                                                                          final EntityComponentValueFactory<T, A, C> componentFactory) {
+    getTableModel().getEntityDefinition().getProperty(attribute);
+    componentValueFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -656,7 +647,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
    * @param <T> the property type
-   * @see EntityComponentValues#createComponentValue(Attribute, SwingEntityEditModel, Object)
+   * @see #setComponentFactory(Attribute, EntityComponentValueFactory)
    */
   public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
     requireNonNull(propertyToUpdate);
@@ -667,7 +658,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final T newValue = componentValues.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
+    final EntityComponentValueFactory<T, Attribute<T>, ?> factory =
+            (EntityComponentValueFactory<T, Attribute<T>, ?>) componentValueFactories.computeIfAbsent(propertyToUpdate.getAttribute(),
+                    attribute -> new DefaultEntityComponentValueFactory<T, Attribute<T>, JComponent>());
+    final T newValue = factory.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
             .showDialog(this, propertyToUpdate.getCaption());
     Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
     try {

@@ -14,10 +14,9 @@ import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityComponentValues;
+import is.codion.swing.framework.ui.DefaultEntityComponentValueFactory;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -27,7 +26,8 @@ public final class TrackTablePanel extends EntityTablePanel {
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(TrackTablePanel.class.getName());
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
-    super(tableModel, new TrackComponentValues());
+    super(tableModel);
+    setComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentValueFactory());
   }
 
   @Override
@@ -51,20 +51,17 @@ public final class TrackTablePanel extends EntityTablePanel {
             .showDialog(this, BUNDLE.getString("amount"));
   }
 
-  private static final class TrackComponentValues extends EntityComponentValues {
+  private static final class MinutesSecondsComponentValueFactory
+          extends DefaultEntityComponentValueFactory<Integer, Attribute<Integer>, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
     @Override
-    public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Attribute<T> attribute,
-                                                                               final SwingEntityEditModel editModel,
-                                                                               final T initialValue) {
-      if (attribute.equals(Track.MILLISECONDS)) {
-        final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue();
-        minutesSecondsPanelValue.set((Integer) initialValue);
+    public ComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> createComponentValue(final Attribute<Integer> attribute,
+                                                                                                      final SwingEntityEditModel editModel,
+                                                                                                      final Integer initialValue) {
+      final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue();
+      minutesSecondsPanelValue.set((Integer) initialValue);
 
-        return (ComponentValue<T, C>) minutesSecondsPanelValue;
-      }
-
-      return super.createComponentValue(attribute, editModel, initialValue);
+      return minutesSecondsPanelValue;
     }
   }
 }

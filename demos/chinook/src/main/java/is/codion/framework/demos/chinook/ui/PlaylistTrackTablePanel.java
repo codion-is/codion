@@ -17,9 +17,9 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(final SwingEntityTableModel tableModel) {
-    super(tableModel, new ChinookComponentValues(PlaylistTrack.TRACK_FK),
-            new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel(),
-                    new PlaylistTrackConditionPanelFactory(tableModel.getTableConditionModel())));
+    super(tableModel, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel(),
+            new PlaylistTrackConditionPanelFactory(tableModel.getTableConditionModel())));
+    setComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }
 
   private static final class PlaylistTrackConditionPanelFactory extends EntityConditionPanelFactory {
