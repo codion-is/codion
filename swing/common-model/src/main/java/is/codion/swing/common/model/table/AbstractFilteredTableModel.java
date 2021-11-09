@@ -107,6 +107,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private boolean regularExpressionSearch = false;
 
   /**
+   * true if searching the table model should be case-sensitive
+   */
+  private boolean caseSensitiveSearch = false;
+
+  /**
    * true if refresh should merge, in order to not clear the selection during refresh
    */
   private boolean mergeOnRefresh = false;
@@ -313,6 +318,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void setRegularExpressionSearch(final boolean regularExpressionSearch) {
     this.regularExpressionSearch = regularExpressionSearch;
+  }
+
+  @Override
+  public final boolean isCaseSensitiveSearch() {
+    return caseSensitiveSearch;
+  }
+
+  @Override
+  public final void setCaseSensitiveSearch(final boolean caseSensitiveSearch) {
+    this.caseSensitiveSearch = caseSensitiveSearch;
   }
 
   @Override
@@ -643,7 +658,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       return new RegexSearchCondition(searchText);
     }
 
-    return item -> !(item == null || searchText == null) && item.toLowerCase().contains(searchText.toLowerCase());
+    return item -> !(item == null || searchText == null) && (caseSensitiveSearch ? item : item.toLowerCase())
+                    .contains((caseSensitiveSearch ? searchText : searchText.toLowerCase()));
   }
 
   private void bindEventsInternal() {

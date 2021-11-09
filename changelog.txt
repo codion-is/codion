@@ -7355,3 +7355,4 @@
   FilteredTable.centerOnScroll added, used when searching as well
   FilteredTable.scrollToColumn() parameter now generic
   TemporalField and TemporalPanel.getTemporal() reverted back to returning null, getOptional() added for Optional
+  FilteredTableModel.setCaseSensitiveSearch() added, configuration added to search field popup menu in FilteredTablePanel

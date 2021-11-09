@@ -558,11 +558,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
+    final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive_search"), tableModel.isCaseSensitiveSearch());
     final JCheckBox boxRegexp = new JCheckBox(MESSAGES.getString("regular_expression_search"), tableModel.isRegularExpressionSearch());
-    final JPanel panel = new JPanel(Layouts.gridLayout(1, 1));
+    final JPanel panel = new JPanel(Layouts.gridLayout(2, 1));
+    panel.add(boxCaseSensitive);
     panel.add(boxRegexp);
 
-    final Control control = Control.builder(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()))
+    final Control control = Control.builder(() -> {
+              tableModel.setCaseSensitiveSearch(boxCaseSensitive.isSelected());
+              tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
+            })
             .caption(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
             .build();
