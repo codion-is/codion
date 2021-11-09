@@ -7391,3 +7391,4 @@
   FilteredTableModel.setCaseSensitiveSearch() added, configuration added to search field popup menu in FilteredTablePanel
   EntityComponentValues renamed EntityComponentValueFactory, now instance based, DefaultEntityComponentValueFactory default implementation added
   EntityTablePanel.setComponentFactory() added
+  EntityComponentValueFactory renamed EntityComponentFactory

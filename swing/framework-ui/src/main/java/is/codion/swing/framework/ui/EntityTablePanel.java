@@ -214,7 +214,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
-  private final Map<Attribute<?>, EntityComponentValueFactory<?, ?, ?>> componentValueFactories = new HashMap<>();
+  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> componentFactories = new HashMap<>();
 
   private final SwingEntityTableModel tableModel;
 
@@ -445,9 +445,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param <C> the component type
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setComponentFactory(final A attribute,
-                                                                                          final EntityComponentValueFactory<T, A, C> componentFactory) {
+                                                                                          final EntityComponentFactory<T, A, C> componentFactory) {
     getTableModel().getEntityDefinition().getProperty(attribute);
-    componentValueFactories.put(attribute, requireNonNull(componentFactory));
+    componentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -647,7 +647,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
    * @param <T> the property type
-   * @see #setComponentFactory(Attribute, EntityComponentValueFactory)
+   * @see #setComponentFactory(Attribute, EntityComponentFactory)
    */
   public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
     requireNonNull(propertyToUpdate);
@@ -658,10 +658,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final EntityComponentValueFactory<T, Attribute<T>, ?> factory =
-            (EntityComponentValueFactory<T, Attribute<T>, ?>) componentValueFactories.computeIfAbsent(propertyToUpdate.getAttribute(),
-                    attribute -> new DefaultEntityComponentValueFactory<T, Attribute<T>, JComponent>());
-    final T newValue = factory.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
+    final EntityComponentFactory<T, Attribute<T>, ?> componentFactory =
+            (EntityComponentFactory<T, Attribute<T>, ?>) componentFactories.computeIfAbsent(propertyToUpdate.getAttribute(),
+                    attribute -> new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>());
+    final T newValue = componentFactory.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
             .showDialog(this, propertyToUpdate.getCaption());
     Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
     try {
