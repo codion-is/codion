@@ -10,7 +10,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnSummaryModel;
-import is.codion.common.model.table.TableSortModel;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -32,6 +31,7 @@ import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.table.TableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,11 +1,15 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.model.table;
+package is.codion.swing.common.model.table;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.SelectionModel;
 
 import java.util.Collection;
 import java.util.Optional;

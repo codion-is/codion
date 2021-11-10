@@ -8,9 +8,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
-import is.codion.common.model.table.FilteredTableModel.RowColumn;
-import is.codion.common.model.table.TableSortModel;
 import is.codion.common.state.State;
+import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
