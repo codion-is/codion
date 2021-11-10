@@ -10,12 +10,12 @@ import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.common.model.table.FilteredTableModel.RowColumn;
 import is.codion.common.model.table.TableSortModel;
-import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.common.state.State;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -121,7 +121,7 @@ public final class AbstractFilteredTableModelTest {
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.containsItem(B));
     tableModel.addItemsAt(Collections.singletonList(F), 0);
-    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING);
+    tableModel.getSortModel().setSortOrder(0, SortOrder.DESCENDING);
     assertFalse(tableModel.isVisible(F));
     assertTrue(tableModel.containsItem(F));
     tableModel.setIncludeCondition(null);
@@ -214,7 +214,7 @@ public final class AbstractFilteredTableModelTest {
     testModel.getSelectionModel().addSelectionChangedListener(selectionEvents::incrementAndGet);
     testModel.setMergeOnRefresh(true);
     testModel.refresh();
-    testModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
+    testModel.getSortModel().setSortOrder(0, SortOrder.ASCENDING);
     testModel.getSelectionModel().setSelectedIndex(1);//b
 
     assertEquals(1, selectionEvents.get());
@@ -383,7 +383,7 @@ public final class AbstractFilteredTableModelTest {
     coordinate = testModel.findNext(0, "x").orElse(null);
     assertNull(coordinate);
 
-    testModel.getSortModel().setSortingDirective(1, SortingDirective.DESCENDING);
+    testModel.getSortModel().setSortOrder(1, SortOrder.DESCENDING);
 
     coordinate = testModel.findNext(0, "b").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
@@ -402,7 +402,7 @@ public final class AbstractFilteredTableModelTest {
     coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition).orElse(null);
     assertEquals(RowColumn.rowColumn(0, 1), coordinate);
 
-    testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING);
+    testModel.getSortModel().setSortOrder(1, SortOrder.ASCENDING);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
@@ -415,7 +415,7 @@ public final class AbstractFilteredTableModelTest {
     coordinate = testModel.findNext(0, "x").orElse(null);
     assertNull(coordinate);
 
-    testModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING);
+    testModel.getSortModel().setSortOrder(0, SortOrder.DESCENDING);
 
     coordinate = testModel.findNext(0, "b").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 0), coordinate);
@@ -448,9 +448,9 @@ public final class AbstractFilteredTableModelTest {
     final AbstractFilteredTableModel<List<String>, Integer> tableModel = new TestAbstractFilteredTableModel(Comparator.reverseOrder());
     tableModel.refresh();
     final TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
-    sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
+    sortModel.setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(E, tableModel.getItemAt(0));
-    sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
+    sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(A, tableModel.getItemAt(0));
   }
 
@@ -462,38 +462,38 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     final TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
-    sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
-    assertEquals(SortingDirective.DESCENDING, sortModel.getSortingState(0).getDirective());
+    sortModel.setSortOrder(0, SortOrder.DESCENDING);
+    assertEquals(SortOrder.DESCENDING, sortModel.getSortingState(0).getSortOrder());
     assertEquals(E, tableModel.getItemAt(0));
     assertEquals(1, actionsPerformed.get());
-    sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
-    assertEquals(SortingDirective.ASCENDING, sortModel.getSortingState(0).getDirective());
+    sortModel.setSortOrder(0, SortOrder.ASCENDING);
+    assertEquals(SortOrder.ASCENDING, sortModel.getSortingState(0).getSortOrder());
     assertEquals(A, tableModel.getItemAt(0));
     assertEquals(0, sortModel.getSortingState(0).getPriority());
     assertEquals(2, actionsPerformed.get());
 
-    sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
+    sortModel.setSortOrder(0, SortOrder.DESCENDING);
     tableModel.refresh();
     assertEquals(A, tableModel.getItemAt(4));
     assertEquals(E, tableModel.getItemAt(0));
-    sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
+    sortModel.setSortOrder(0, SortOrder.ASCENDING);
 
     final List<List<String>> items = new ArrayList<>();
     items.add(NULL);
     tableModel.addItemsAt(0, items);
-    sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
+    sortModel.setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(0, tableModel.indexOf(NULL));
-    sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
+    sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(tableModel.getRowCount() - 1, tableModel.indexOf(NULL));
 
     tableModel.refresh();
     items.add(NULL);
     tableModel.addItemsAt(0, items);
-    sortModel.setSortingDirective(0, SortingDirective.ASCENDING);
+    sortModel.setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(0, tableModel.indexOf(NULL));
-    sortModel.setSortingDirective(0, SortingDirective.DESCENDING);
+    sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
-    sortModel.setSortingDirective(0, SortingDirective.UNSORTED);
+    sortModel.setSortOrder(0, SortOrder.UNSORTED);
     tableModel.removeSortListener(listener);
   }
 
@@ -708,13 +708,13 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(3, selectionModel.getMinSelectionIndex());
     assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
 
-    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
+    tableModel.getSortModel().setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(ITEMS.get(2), selectionModel.getSelectedItem());
     assertEquals(2, selectionModel.getMinSelectionIndex());
 
     tableModel.getSelectionModel().setSelectedIndexes(singletonList(0));
     assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
-    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING);
+    tableModel.getSortModel().setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(4, selectionModel.getMinSelectionIndex());
 
     assertEquals(singletonList(4), selectionModel.getSelectedIndexes());

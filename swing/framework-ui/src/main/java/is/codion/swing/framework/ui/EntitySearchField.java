@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -47,6 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.LookAndFeel;
+import javax.swing.SortOrder;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -568,7 +568,7 @@ public final class EntitySearchField extends JTextField {
               .enable(table);
       final Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
       tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
-      tableModel.getSortModel().setSortingDirective(searchAttributes.iterator().next(), SortingDirective.ASCENDING);
+      tableModel.getSortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
       table.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);

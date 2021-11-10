@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.TableSortModel;
 
+import javax.swing.SortOrder;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
   private static final Comparator<?> LEXICAL_COMPARATOR = Text.getSpaceAwareCollator();
 
-  private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortingDirective.UNSORTED, -1);
+  private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
   /**
    * The comparators used to compare column values
@@ -56,13 +57,13 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   @Override
-  public final void setSortingDirective(final C columnIdentifier, final SortingDirective directive) {
-    setSortingDirective(columnIdentifier, directive, false);
+  public final void setSortOrder(final C columnIdentifier, final SortOrder sortOrder) {
+    setSortOrder(columnIdentifier, sortOrder, false);
   }
 
   @Override
-  public final void addSortingDirective(final C columnIdentifier, final SortingDirective directive) {
-    setSortingDirective(columnIdentifier, directive, true);
+  public final void addSortOrder(final C columnIdentifier, final SortOrder sortOrder) {
+    setSortOrder(columnIdentifier, sortOrder, true);
   }
 
   @Override
@@ -101,24 +102,24 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return LEXICAL_COMPARATOR;
   }
 
-  private void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
-                                   final boolean addColumnToSort) {
+  private void setSortOrder(final C columnIdentifier, final SortOrder sortOrder,
+                            final boolean addColumnToSort) {
     requireNonNull(columnIdentifier, "columnIdentifier");
-    requireNonNull(directive, "directive");
+    requireNonNull(sortOrder, "sortOrder");
     if (!addColumnToSort) {
       sortingStates.clear();
     }
-    if (directive == SortingDirective.UNSORTED) {
+    if (sortOrder == SortOrder.UNSORTED) {
       sortingStates.remove(columnIdentifier);
     }
     else {
       final SortingState state = getSortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
         final int priority = getNextSortPriority();
-        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, priority));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, priority));
       }
       else {
-        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, state.getPriority()));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.getPriority()));
       }
     }
     sortingChangedEvent.onEvent();
@@ -153,7 +154,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     @Override
     public int compare(final R o1, final R o2) {
       for (final Map.Entry<C, TableSortModel.SortingState> state : sortedSortingStates) {
-        final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
+        final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getSortOrder());
         if (comparison != 0) {
           return comparison;
         }
@@ -162,7 +163,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       return 0;
     }
 
-    private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
+    private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortOrder sortOrder) {
       final Comparable<?> valueOne = getComparable(rowOne, columnIdentifier);
       final Comparable<?> valueTwo = getComparable(rowTwo, columnIdentifier);
       final int comparison;
@@ -181,7 +182,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
                 k -> initializeColumnComparator(columnIdentifier))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
-        return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+        return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;
       }
 
       return 0;
@@ -190,12 +191,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   private static final class DefaultSortingState implements SortingState {
 
-    private final SortingDirective directive;
+    private final SortOrder sortOrder;
     private final int priority;
 
-    private DefaultSortingState(final SortingDirective directive, final int priority) {
-      requireNonNull(directive, "direction");
-      this.directive = directive;
+    private DefaultSortingState(final SortOrder sortOrder, final int priority) {
+      requireNonNull(sortOrder, "sortOrder");
+      this.sortOrder = sortOrder;
       this.priority = priority;
     }
 
@@ -205,8 +206,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     @Override
-    public SortingDirective getDirective() {
-      return directive;
+    public SortOrder getSortOrder() {
+      return sortOrder;
     }
   }
 }

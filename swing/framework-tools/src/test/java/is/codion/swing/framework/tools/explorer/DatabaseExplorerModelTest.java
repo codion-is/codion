@@ -5,13 +5,13 @@ package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.Text;
 import is.codion.common.db.database.DatabaseFactory;
-import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,11 +42,11 @@ public final class DatabaseExplorerModelTest {
   void setUp() throws Exception {
     model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
     model.getSchemaModel().refresh();
-    model.getSchemaModel().getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
+    model.getSchemaModel().getSortModel().setSortOrder(0, SortOrder.ASCENDING);
     model.getSchemaModel().getSelectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
-    model.getDefinitionModel().getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
-    model.getDefinitionModel().getSortModel().addSortingDirective(1, SortingDirective.ASCENDING);
+    model.getDefinitionModel().getSortModel().setSortOrder(0, SortOrder.ASCENDING);
+    model.getDefinitionModel().getSortModel().addSortOrder(1, SortOrder.ASCENDING);
   }
 
   @AfterEach

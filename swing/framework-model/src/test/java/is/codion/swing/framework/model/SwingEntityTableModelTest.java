@@ -6,7 +6,6 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
@@ -19,6 +18,7 @@ import is.codion.framework.model.test.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -63,7 +63,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   protected SwingEntityTableModel createDepartmentTableModel() {
     final SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
-    deptModel.getSortModel().setSortingDirective(TestDomain.DEPARTMENT_NAME, SortingDirective.ASCENDING);
+    deptModel.getSortModel().setSortOrder(TestDomain.DEPARTMENT_NAME, SortOrder.ASCENDING);
 
     return deptModel;
   }
@@ -203,8 +203,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void indexOf() {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
-    tableModel.getSortModel().setSortingDirective(TestDomain.EMP_NAME, SortingDirective.ASCENDING);
-    assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel().getSortingState(TestDomain.EMP_NAME).getDirective());
+    tableModel.getSortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    assertEquals(SortOrder.ASCENDING, tableModel.getSortModel().getSortingState(TestDomain.EMP_NAME).getSortOrder());
 
     final Key pk1 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));

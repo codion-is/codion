@@ -7359,3 +7359,4 @@
   EntityComponentValues renamed EntityComponentValueFactory, now instance based, DefaultEntityComponentValueFactory default implementation added
   EntityTablePanel.setComponentFactory() added
   EntityComponentValueFactory renamed EntityComponentFactory
+  TableSortModel.SortingDirective replaced with javax.swing.SortOrder
