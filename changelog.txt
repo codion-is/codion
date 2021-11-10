@@ -7360,3 +7360,4 @@
   EntityTablePanel.setComponentFactory() added
   EntityComponentValueFactory renamed EntityComponentFactory
   TableSortModel.SortingDirective replaced with javax.swing.SortOrder
+  FilteredTableModel, FilteredTableColumnModel and TableSortModel moved from common.model to swing.common.model

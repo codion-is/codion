@@ -6,7 +6,6 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.FilteredTableModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;

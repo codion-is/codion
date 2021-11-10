@@ -5,7 +5,6 @@ package is.codion.swing.common.model.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.model.table.FilteredTableColumnModel;
 import is.codion.common.state.State;
 
 import javax.swing.table.DefaultTableColumnModel;

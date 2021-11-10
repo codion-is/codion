@@ -3,11 +3,9 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.table.FilteredTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain;
 
@@ -70,5 +68,5 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     }
   }
 
-  public interface TestEntityTableModel extends EntityTableModel<TestEntityEditModel>, FilteredTableModel<Entity, Property<?>, Object> {}
+  public interface TestEntityTableModel extends EntityTableModel<TestEntityEditModel> {}
 }

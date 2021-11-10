@@ -154,7 +154,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param index the index at which to add
    * @param entities the entities to add
-   * @see is.codion.common.model.table.TableSortModel#isSortingEnabled()
    */
   void addEntitiesAtSorted(int index, List<Entity> entities);
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.model.table;
+package is.codion.swing.common.model.table;
 
 import is.codion.common.event.EventListener;
 
