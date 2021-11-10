@@ -16,11 +16,11 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static is.codion.common.model.table.TableSortModel.SortingDirective.ASCENDING;
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
 
@@ -77,7 +77,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
       super(searchModel);
       final SwingEntityTableModel tableModel = getTable().getModel();
       tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
-      tableModel.getSortModel().setSortingDirective(Customer.LASTNAME, ASCENDING);
+      tableModel.getSortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       setPreferredSize(new Dimension(500, 300));
     }
   }

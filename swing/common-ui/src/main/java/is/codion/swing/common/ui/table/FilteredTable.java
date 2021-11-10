@@ -11,7 +11,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.FilteredTableModel;
 import is.codion.common.model.table.FilteredTableModel.RowColumn;
 import is.codion.common.model.table.TableSortModel;
-import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
@@ -35,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
@@ -750,12 +750,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private Icon getHeaderRendererIcon(final C columnIdentifier, final int iconSizePixels) {
-      final SortingDirective directive = tableModel.getSortModel().getSortingState(columnIdentifier).getDirective();
-      if (directive == SortingDirective.UNSORTED) {
+      final SortOrder sortOrder = tableModel.getSortModel().getSortingState(columnIdentifier).getSortOrder();
+      if (sortOrder == SortOrder.UNSORTED) {
         return null;
       }
 
-      return new Arrow(directive == SortingDirective.DESCENDING, iconSizePixels,
+      return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
               tableModel.getSortModel().getSortingState(columnIdentifier).getPriority());
     }
   }
@@ -834,30 +834,30 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       if (index >= 0) {
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         final TableSortModel<R, C> sortModel = getModel().getSortModel();
-        SortingDirective status = sortModel.getSortingState(columnIdentifier).getDirective();
+        SortOrder status = sortModel.getSortingState(columnIdentifier).getSortOrder();
         final boolean shiftDown = e.isShiftDown();
         switch (status) {
           case UNSORTED:
             if (shiftDown) {
-              status = SortingDirective.DESCENDING;
+              status = SortOrder.DESCENDING;
             }
             else {
-              status = SortingDirective.ASCENDING;
+              status = SortOrder.ASCENDING;
             }
             break;
           case ASCENDING:
-            status = SortingDirective.DESCENDING;
+            status = SortOrder.DESCENDING;
             break;
           default://case DESCENDING:
-            status = SortingDirective.ASCENDING;
+            status = SortOrder.ASCENDING;
             break;
         }
 
         if (e.isControlDown()) {
-          sortModel.addSortingDirective(columnIdentifier, status);
+          sortModel.addSortOrder(columnIdentifier, status);
         }
         else {
-          sortModel.setSortingDirective(columnIdentifier, status);
+          sortModel.setSortOrder(columnIdentifier, status);
         }
       }
     }

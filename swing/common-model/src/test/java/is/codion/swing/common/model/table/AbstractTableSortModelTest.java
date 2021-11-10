@@ -3,10 +3,9 @@
  */
 package is.codion.swing.common.model.table;
 
-import is.codion.common.model.table.TableSortModel.SortingDirective;
-
 import org.junit.jupiter.api.Test;
 
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,38 +35,38 @@ public class AbstractTableSortModelTest {
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
-    model.setSortingDirective(0, SortingDirective.ASCENDING);
+    model.setSortOrder(0, SortOrder.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
-    model.setSortingDirective(2, SortingDirective.ASCENDING);
+    model.setSortOrder(2, SortOrder.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
 
-    model.setSortingDirective(0, SortingDirective.ASCENDING);
-    model.addSortingDirective(1, SortingDirective.DESCENDING);
+    model.setSortOrder(0, SortOrder.ASCENDING);
+    model.addSortOrder(1, SortOrder.DESCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(firstRow));
     assertEquals(2, items.indexOf(secondRow));
 
-    model.addSortingDirective(2, SortingDirective.DESCENDING);
+    model.addSortOrder(2, SortOrder.DESCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(firstRow));
 
-    model.addSortingDirective(2, SortingDirective.ASCENDING);
+    model.addSortOrder(2, SortOrder.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(thirdRow));
     assertEquals(1, items.indexOf(firstRow));
     assertEquals(2, items.indexOf(secondRow));
 
-    model.setSortingDirective(2, SortingDirective.ASCENDING);
+    model.setSortOrder(2, SortOrder.ASCENDING);
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
@@ -88,7 +87,7 @@ public class AbstractTableSortModelTest {
       }
     };
     final List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
-    model.setSortingDirective(0, SortingDirective.DESCENDING);
+    model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);
   }
 

@@ -4,11 +4,11 @@
 package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.model.table.DefaultColumnFilterModel;
-import is.codion.common.model.table.TableSortModel.SortingDirective;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +27,7 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
             asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
                     new DefaultColumnFilterModel<>(0, Boolean.class, "%")));
     this.schemas = schemas;
-    getSortModel().setSortingDirective(0, SortingDirective.ASCENDING);
+    getSortModel().setSortOrder(0, SortOrder.ASCENDING);
   }
 
   @Override

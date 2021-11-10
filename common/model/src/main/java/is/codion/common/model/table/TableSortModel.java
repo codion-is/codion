@@ -5,6 +5,7 @@ package is.codion.common.model.table;
 
 import is.codion.common.event.EventListener;
 
+import javax.swing.SortOrder;
 import java.util.List;
 
 /**
@@ -21,24 +22,24 @@ public interface TableSortModel<R, C> {
   void sort(List<R> items);
 
   /**
-   * Clears the sorting state and adds the given column sorting directive.
+   * Clears the sorting state and adds the given column sorting order.
    * @param columnIdentifier the identifier of the column to sort by
-   * @param directive the sorting directive
-   * @see #addSortingDirective(Object, SortingDirective)
+   * @param sortOrder the sorting order
+   * @see #addSortOrder(Object, SortOrder)
    * @see #getSortingState(Object)
    */
-  void setSortingDirective(C columnIdentifier, SortingDirective directive);
+  void setSortOrder(C columnIdentifier, SortOrder sortOrder);
 
   /**
-   * Adds the given column sorting directive to the currently sorted columns.
+   * Adds the given column sorting order to the currently sorted columns.
    * If no column sorting is enabled, this call is the equivilent to using
-   * {@link #setSortingDirective(Object, SortingDirective)}.
+   * {@link #setSortOrder(Object, SortOrder)}.
    * @param columnIdentifier the identifier of the column to sort by
-   * @param directive the sorting directive
-   * @see #setSortingDirective(Object, SortingDirective)
+   * @param sortOrder the sorting order
+   * @see #setSortOrder(Object, SortOrder)
    * @see #getSortingState(Object)
    */
-  void addSortingDirective(C columnIdentifier, SortingDirective directive);
+  void addSortOrder(C columnIdentifier, SortOrder sortOrder);
 
   /**
    * @param columnIdentifier the column identifier
@@ -64,21 +65,14 @@ public interface TableSortModel<R, C> {
   void addSortingChangedListener(EventListener listener);
 
   /**
-   * Specifies sorting directives.
-   */
-  enum SortingDirective {
-    DESCENDING, ASCENDING, UNSORTED
-  }
-
-  /**
    * Specifies a sorting state for a column.
    */
   interface SortingState {
 
     /**
-     * @return the sorting directive currently associated with the column
+     * @return the sorting order currently associated with the column
      */
-    SortingDirective getDirective();
+    SortOrder getSortOrder();
 
     /**
      * @return the sorting priority, 0 for first, 1 for second etc.
