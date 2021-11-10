@@ -27,7 +27,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel);
-    setComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentValueFactory());
+    setComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory());
   }
 
   @Override
@@ -51,7 +51,7 @@ public final class TrackTablePanel extends EntityTablePanel {
             .showDialog(this, BUNDLE.getString("amount"));
   }
 
-  private static final class MinutesSecondsComponentValueFactory
+  private static final class MinutesSecondsComponentFactory
           extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
     @Override
