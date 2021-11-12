@@ -34,7 +34,7 @@ public final class CountryOverviewPanel extends EntityPanel {
 
   public CountryOverviewPanel(SwingEntityModel entityModel) {
     super(entityModel, new CountryEditPanel(entityModel.getEditModel()));
-    final CountryOverviewTableModel tableModel = (CountryOverviewTableModel) entityModel.getTableModel();
+    CountryOverviewTableModel tableModel = (CountryOverviewTableModel) entityModel.getTableModel();
     cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCitiesDataset()));
     cityChartPanel.getChart().removeLegend();
     cityChartPanel.setPreferredSize(new Dimension(300, 300));
@@ -106,7 +106,7 @@ public final class CountryOverviewPanel extends EntityPanel {
   }
 
   private void displayEditPanel() {
-    final JPanel editPanel = getEditControlPanel();
+    JPanel editPanel = getEditControlPanel();
     if (!editPanel.isShowing()) {
       Dialogs.componentDialog(editPanel)
               .owner(this)

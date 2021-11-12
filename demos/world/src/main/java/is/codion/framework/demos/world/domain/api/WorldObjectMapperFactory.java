@@ -40,7 +40,7 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
       @Override
       public GeoPosition deserialize(JsonParser parser, DeserializationContext ctxt)
               throws IOException, JsonProcessingException {
-        final JsonNode node = parser.getCodec().readTree(parser);
+        JsonNode node = parser.getCodec().readTree(parser);
 
         return new GeoPosition(node.get("lat").asDouble(), node.get("lon").asDouble());
       }

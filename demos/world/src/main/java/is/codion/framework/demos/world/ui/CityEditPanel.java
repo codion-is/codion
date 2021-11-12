@@ -74,15 +74,15 @@ public final class CityEditPanel extends EntityEditPanel {
 
     private final JXMapViewer mapViewer;
 
-    private LocationListener(final JXMapViewer mapViewer) {
+    private LocationListener(JXMapViewer mapViewer) {
       this.mapViewer = mapViewer;
     }
 
     @Override
     public void onEvent(ValueChange<GeoPosition> locationChange) {
-      final WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
+      WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
       if (locationChange.getValue() != null) {
-        final GeoPosition position = locationChange.getValue();
+        GeoPosition position = locationChange.getValue();
         overlayPainter.setWaypoints(singleton((new DefaultWaypoint(position.getLatitude(), position.getLongitude()))));
         mapViewer.setCenterPosition(position);
       }

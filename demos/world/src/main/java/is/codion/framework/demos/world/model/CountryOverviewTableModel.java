@@ -17,7 +17,7 @@ public final class CountryOverviewTableModel extends CountryTableModel {
   private final DefaultPieDataset<String> citiesDataset = new DefaultPieDataset<>();
   private final DefaultPieDataset<String> languagesDataset = new DefaultPieDataset<>();
 
-  public CountryOverviewTableModel(final EntityConnectionProvider connectionProvider) {
+  public CountryOverviewTableModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     bindEvents();
   }
