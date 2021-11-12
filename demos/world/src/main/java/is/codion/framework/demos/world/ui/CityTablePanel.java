@@ -6,7 +6,8 @@ import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.worker.ProgressWorker;
+import is.codion.swing.common.ui.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.ui.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -35,7 +36,7 @@ public final class CityTablePanel extends EntityTablePanel {
   private void updateLocation() {
     final UpdateLocationTask updateLocationTask = new UpdateLocationTask((CityTableModel) getTableModel());
 
-    ProgressWorker.builder(updateLocationTask)
+    Dialogs.progressWorkerDialogBuilder(updateLocationTask)
             .owner(this)
             .title("Updating locations")
             .stringPainted(true)
@@ -55,7 +56,7 @@ public final class CityTablePanel extends EntityTablePanel {
             .show(exception);
   }
 
-  private static final class UpdateLocationTask implements ProgressWorker.ProgressTask<Void> {
+  private static final class UpdateLocationTask implements ProgressTask<Void, String> {
 
     private final CityTableModel tableModel;
     private final State cancelledState = State.state();
@@ -65,7 +66,7 @@ public final class CityTablePanel extends EntityTablePanel {
     }
 
     @Override
-    public Void perform(ProgressWorker.ProgressReporter progressReporter) throws Exception {
+    public Void perform(ProgressReporter<String> progressReporter) throws Exception {
       tableModel.updateLocationForSelected(progressReporter, cancelledState);
       return null;
     }

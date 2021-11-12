@@ -7362,3 +7362,4 @@
   TableSortModel.SortingDirective replaced with javax.swing.SortOrder
   FilteredTableModel, FilteredTableColumnModel and TableSortModel moved from common.model to swing.common.model
   TableColumnComponentPanel bug fixed, NullPointerException when a column was added to the column model, now dynamically initializes a null component for newly added columns
+  ProgressWorker refactored, no longer depends on ProgressDialog, Dialogs.progressWorkerDialogBuilder() added instead

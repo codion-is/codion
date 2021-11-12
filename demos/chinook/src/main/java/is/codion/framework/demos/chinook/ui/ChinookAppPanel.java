@@ -18,7 +18,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
-import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -146,7 +145,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void updateInvoiceTotals() {
-    ProgressWorker.builder(getModel()::updateInvoiceTotals)
+    Dialogs.progressWorkerDialogBuilder(getModel()::updateInvoiceTotals)
             .owner(this)
             .title(bundle.getString(UPDATING_TOTALS))
             .onSuccess(this::handleUpdateTotalsSuccess)

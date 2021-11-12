@@ -3,91 +3,71 @@
  */
 package is.codion.swing.common.ui.worker;
 
-import is.codion.common.i18n.Messages;
-import is.codion.common.model.CancelException;
-import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.ProgressDialog;
-
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A SwingWorker implementation which displays a progress bar in a modal dialog
- * while background work is being performed.
- * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 to 100.
+ * A SwingWorker implementation.
  * Note that instances of this class are not reusable.
  * @param <T> the type of result this {@link ProgressWorker} produces.
- * @see ProgressTask#perform(ProgressReporter) to indicate work progress
+ * @param <V> the type of intermediate result produced by this worker
+ * @see #builder(Task)
+ * @see #builder(ProgressTask)
  */
-public final class ProgressWorker<T> extends SwingWorker<T, String> {
+public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
 
-  private final ProgressTask<T> task;
-  private final ProgressDialog progressDialog;
-  private final ProgressReporter progressReporter = new DefaultProgressReporter();
-  private final Consumer<T> resultHandler;
-  private final Consumer<Throwable> exceptionHandler;
+  private final ProgressTask<T, V> task;
+  private final ProgressReporter<V> progressReporter = new DefaultProgressReporter();
 
-  private ProgressWorker(final ProgressTask<T> task, final ProgressDialog progressDialog,
-                         final Consumer<T> resultHandler, final Consumer<Throwable> exceptionHandler) {
+  private final Runnable onStarted;
+  private final Runnable onFinished;
+  private final Consumer<T> onResult;
+  private final Consumer<Integer> onProgress;
+  private final Consumer<List<V>> onPublish;
+  private final Consumer<Throwable> onException;
+  private final Runnable onInterrupted;
+
+  private ProgressWorker(final ProgressTask<T, V> task, final Runnable onStarted, final Runnable onFinished,
+                         final Consumer<T> onResult, final Consumer<Integer> onProgress, final Consumer<List<V>> onPublish,
+                         final Consumer<Throwable> onException, final Runnable onInterrupted) {
     this.task = requireNonNull(task);
-    this.progressDialog = requireNonNull(progressDialog);
-    this.resultHandler = requireNonNull(resultHandler);
-    this.exceptionHandler = requireNonNull(exceptionHandler);
+    this.onStarted = onStarted;
+    this.onFinished = onFinished;
+    this.onResult = onResult;
+    this.onProgress = onProgress;
+    this.onPublish = onPublish;
+    this.onException = onException;
+    this.onInterrupted = onInterrupted;
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
   /**
    * @param task the task to run
+   * @param <T> the worker result type
    * @return a new {@link Builder} instance
    */
-  public static Builder<?> builder(final Control.Command task) {
+  public static <T> Builder<T, ?> builder(final Task<T> task) {
     requireNonNull(task);
 
-    return new DefaultBuilder<>(progressReporter -> {
-      task.perform();
-      return null;
-    }).indeterminate(true);
+    return builder(progressReporter -> task.perform());
   }
 
   /**
    * @param task the task to run
    * @param <T> the worker result type
+   * @param <V> the intermediate result type
    * @return a new {@link Builder} instance
    */
-  public static <T> Builder<T> builder(final Task<T> task) {
-    requireNonNull(task);
-
-    return new DefaultBuilder<>(progressReporter -> task.perform()).indeterminate(true);
-  }
-
-  /**
-   * Note, also sets the progress bar type to 'determinate'.
-   * @param task the task to run
-   * @param <T> the worker result type
-   * @return a new {@link Builder} instance
-   * @see Builder#indeterminate(boolean)
-   */
-  public static <T> Builder<T> builder(final ProgressTask<T> task) {
-    requireNonNull(task);
-
-    return new DefaultBuilder<>(task).indeterminate(false);
+  public static <T, V> Builder<T, V> builder(final ProgressTask<T, V> task) {
+    return new DefaultBuilder<>(task);
   }
 
   @Override
@@ -96,35 +76,85 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
   }
 
   @Override
-  protected void process(final List<String> chunks) {
-    progressDialog.getProgressBar().setString(chunks.isEmpty() ? null : chunks.get(chunks.size() - 1));
+  protected void process(final List<V> chunks) {
+    handleProcess(chunks);
+  }
+
+  @Override
+  protected void done() {
+    finish();
   }
 
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
       if (StateValue.STARTED.equals(changeEvent.getNewValue())) {
-        SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
-      }
-      else if (StateValue.DONE.equals(changeEvent.getNewValue())) {
-        SwingUtilities.invokeLater(this::finish);
+        handleStarted();
       }
     }
     else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
-      SwingUtilities.invokeLater(() -> progressDialog.getProgressBar().getModel().setValue((Integer) changeEvent.getNewValue()));
+      handleProgress((Integer) changeEvent.getNewValue());
     }
   }
 
   private void finish() {
-    progressDialog.setVisible(false);
-    progressDialog.dispose();
+    handleFinished();
     try {
-      resultHandler.accept(get());
+      handleResult();
     }
     catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
+      handleInterrupted();
     }
     catch (final ExecutionException e) {
-      exceptionHandler.accept(e.getCause());
+      handleException(e);
+    }
+  }
+
+  private void handleStarted() {
+    if (onStarted != null) {
+      onStarted.run();
+    }
+  }
+
+  private void handleProcess(final List<V> chunks) {
+    if (onPublish != null) {
+      onPublish.accept(chunks);
+    }
+  }
+
+  private void handleProgress(final Integer progress) {
+    if (onProgress != null) {
+      onProgress.accept(progress);
+    }
+  }
+
+  private void handleFinished() {
+    if (onFinished != null) {
+      onFinished.run();
+    }
+  }
+
+  private void handleResult() throws InterruptedException, ExecutionException {
+    if (onResult != null) {
+      onResult.accept(get());
+    }
+  }
+
+  private void handleInterrupted() {
+    if (onInterrupted != null) {
+      onInterrupted.run();
+    }
+  }
+
+  private void handleException(final ExecutionException e) {
+    if (onException != null) {
+      onException.accept(e.getCause());
+    }
+    else if (e.getCause() instanceof RuntimeException) {
+      throw (RuntimeException) e.getCause();
+    }
+    else {
+      throw new RuntimeException(e.getCause());
     }
   }
 
@@ -146,7 +176,7 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
    * A progress aware background task.
    * @param <T> the task result type
    */
-  public interface ProgressTask<T> {
+  public interface ProgressTask<T, V> {
 
     /**
      * Performs the task.
@@ -154,13 +184,13 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
      * @return the task result
      * @throws Exception in case of an exception
      */
-    T perform(ProgressReporter progressReporter) throws Exception;
+    T perform(ProgressReporter<V> progressReporter) throws Exception;
   }
 
   /**
    * Reports progress for a ProgressWorker
    */
-  public interface ProgressReporter {
+  public interface ProgressReporter<V> {
 
     /**
      * @param progress the progress, 0 - 100.
@@ -168,266 +198,153 @@ public final class ProgressWorker<T> extends SwingWorker<T, String> {
     void setProgress(int progress);
 
     /**
-     * @param message the message to display
-     * @see Builder#stringPainted(boolean)
+     * @param chunks the chunks to publish
      */
-    void setMessage(String message);
+    void publish(V... chunks);
   }
 
   /**
-   * A builder for a {@link ProgressWorker} with an indeterminate progress bar.
-   * @param <T> the result type
+   * Builds a {@link ProgressWorker} instance.
+   * @param <T> the worker result type
+   * @param <V> the intermediate result type
    */
-  public interface Builder<T> {
+  public interface Builder<T, V> {
 
     /**
-     * @param owner the dialog owner
-     * @return this DialogBuilder instance
+     * @param onStarted called when the worker starts
+     * @return this builder instance
      */
-    Builder<T> owner(Window owner);
+    Builder<T, V> onStarted(Runnable onStarted);
 
     /**
-     * @param owner the dialog parent component
-     * @return this Builder instance
+     * @param onFinished called on the EDT when the task finishes, successfully or not, before the result is processed
+     * @return this builder instance
      */
-    Builder<T> owner(JComponent owner);
+    Builder<T, V> onFinished(Runnable onFinished);
 
     /**
-     * @param title the dialog title
-     * @return this Builder instance
+     * @param onResult called on the EDT when result of a successful run is available
+     * @return this builder instance
      */
-    Builder<T> title(String title);
+    Builder<T, V> onResult(Consumer<T> onResult);
 
     /**
-     * @param indeterminate true if the progress bar should be indeterminate
-     * @return this Builder instance
+     * @param onProgress called on the EDT when progress is reported
+     * @return this builder instance
      */
-    Builder<T> indeterminate(boolean indeterminate);
+    Builder<T, V> onProgress(Consumer<Integer> onProgress);
 
     /**
-     * @param stringPainted the string painted status of the progress bar
-     * @return this ProgressDialogBuilder instance
+     * @param onPublish called on the EDT when chunks are available for publishing
+     * @return this builder instance
      */
-    Builder<T> stringPainted(boolean stringPainted);
+    Builder<T, V> onPublish(Consumer<List<V>> onPublish);
 
     /**
-     * @param onSuccess executed on the EDT after a successful run
-     * @return this Builder instance
+     * @param onException called on the EDT if an exception occurred
+     * @return this builder instance
      */
-    Builder<T> onSuccess(Runnable onSuccess);
+    Builder<T, V> onException(Consumer<Throwable> onException);
 
     /**
-     * @param onSuccess executed on the EDT after a successful run
-     * @return this Builder instance
+     * @param onInterrupted called on the EDT if the worker was interrupted
+     * @return this builder instance
      */
-    Builder<T> onSuccess(Consumer<T> onSuccess);
-
-    /**
-     * @param successMessage if specified then this message is displayed after the task has successfully run
-     * @return this Builder instance
-     */
-    Builder<T> successMessage(String successMessage);
-
-    /**
-     * @param onException the exception handler
-     * @return this Builder instance
-     */
-    Builder<T> onException(Consumer<Throwable> onException);
-
-    /**
-     * @param failTitle the title of the failure dialog
-     * @return this Builder instance
-     */
-    Builder<T> failTitle(String failTitle);
-
-    /**
-     * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-     * @return this Builder instance
-     */
-    Builder<T> northPanel(JPanel northPanel);
-
-    /**
-     * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
-     * @return this Builder instance
-     */
-    Builder<T> westPanel(JPanel westPanel);
-
-    /**
-     * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
-     * @return this Builder instance
-     */
-    Builder<T> controls(Controls controls);
+    Builder<T, V> onInterrupted(Runnable onInterrupted);
 
     /**
      * Builds and executes a new {@link ProgressWorker} based on this builder
-     * @throws IllegalStateException in case no task has been specified
      * @return a {@link ProgressWorker} based on this builder
      */
-    ProgressWorker<T> execute();
+    ProgressWorker<T, V> execute();
 
     /**
      * @return a {@link ProgressWorker} based on this builder
-     * @throws IllegalStateException in case no task has been specified
      */
-    ProgressWorker<T> build();
+    ProgressWorker<T, V> build();
   }
 
-  static final class DefaultBuilder<T> implements Builder<T> {
-
-    private final ProgressTask<T> progressTask;
-
-    private Window owner;
-    private String title;
-    private Consumer<T> onSuccess;
-    private Consumer<Throwable> onException;
-    private JPanel northPanel;
-    private JPanel westPanel;
-    private Controls buttonControls;
-    private boolean indeterminate = true;
-    private boolean stringPainted = false;
-
-    DefaultBuilder(final ProgressTask<T> progressTask) {
-      this.progressTask = progressTask;
-    }
-
-    @Override
-    public Builder<T> owner(final Window owner) {
-      this.owner = owner;
-      return this;
-    }
-
-    @Override
-    public Builder<T> owner(final JComponent owner) {
-      if (this.owner != null) {
-        throw new IllegalStateException("owner has alrady been set");
-      }
-      this.owner = owner == null ? null : Windows.getParentWindow(owner);
-      return this;
-    }
-
-    @Override
-    public Builder<T> title(final String title) {
-      this.title = title;
-      return this;
-    }
-
-    @Override
-    public Builder<T> indeterminate(final boolean indeterminate) {
-      this.indeterminate = indeterminate;
-      return this;
-    }
-
-    @Override
-    public Builder<T> stringPainted(final boolean stringPainted) {
-      this.stringPainted = stringPainted;
-      return this;
-    }
-
-    @Override
-    public Builder<T> onSuccess(final Runnable onSuccess) {
-      return onSuccess(result -> onSuccess.run());
-    }
-
-    @Override
-    public Builder<T> onSuccess(final Consumer<T> onSuccess) {
-      this.onSuccess = onSuccess;
-      return this;
-    }
-
-    @Override
-    public Builder<T> successMessage(final String successMessage) {
-      return onSuccess(result -> {
-        if (!nullOrEmpty(successMessage)) {
-          JOptionPane.showMessageDialog(owner, successMessage, null, JOptionPane.INFORMATION_MESSAGE);
-        }
-      });
-    }
-
-    @Override
-    public Builder<T> onException(final Consumer<Throwable> onException) {
-      this.onException = onException;
-      return this;
-    }
-
-    @Override
-    public Builder<T> failTitle(final String failTitle) {
-      return onException(exception -> {
-        if (!(exception instanceof CancelException)) {
-          Dialogs.exceptionDialogBuilder()
-                  .owner(owner)
-                  .title(failTitle)
-                  .show(exception);
-        }
-      });
-    }
-
-    @Override
-    public Builder<T> northPanel(final JPanel northPanel) {
-      this.northPanel = northPanel;
-      return this;
-    }
-
-    @Override
-    public Builder<T> westPanel(final JPanel westPanel) {
-      this.westPanel = westPanel;
-      return this;
-    }
-
-    @Override
-    public Builder<T> controls(final Controls controls) {
-      this.buttonControls = controls;
-      return this;
-    }
-
-    @Override
-    public ProgressWorker<T> execute() {
-      final ProgressWorker<T> worker = build();
-      worker.execute();
-
-      return worker;
-    }
-
-    @Override
-    public ProgressWorker<T> build() {
-      final ProgressDialog progressDialog = Dialogs.progressDialogBuilder()
-              .owner(owner)
-              .indeterminate(indeterminate)
-              .stringPainted(stringPainted)
-              .title(title)
-              .northPanel(northPanel)
-              .westPanel(westPanel)
-              .buttonControls(buttonControls)
-              .build();
-
-      return new ProgressWorker<>(progressTask, progressDialog,
-              onSuccess == null ? result -> {} : onSuccess,
-              this::handleException);
-    }
-
-    private void handleException(final Throwable exception) {
-      if (!(exception instanceof CancelException)) {
-        if (onException != null) {
-          onException.accept(exception);
-        }
-        else {
-          Dialogs.exceptionDialogBuilder()
-                  .owner(owner)
-                  .message(Messages.get(Messages.EXCEPTION))
-                  .show(exception);
-        }
-      }
-    }
-  }
-
-  private final class DefaultProgressReporter implements ProgressReporter {
+  private final class DefaultProgressReporter implements ProgressReporter<V> {
     @Override
     public void setProgress(final int progress) {
       ProgressWorker.this.setProgress(progress);
     }
 
     @Override
-    public void setMessage(final String message) {
-      ProgressWorker.this.publish(message);
+    public void publish(final V... chunks) {
+      ProgressWorker.this.publish(chunks);
+    }
+  }
+
+  private static final class DefaultBuilder<T, V> implements Builder<T, V> {
+
+    private final ProgressTask<T, V> task;
+
+    private Runnable onStarted;
+    private Runnable onFinished;
+    private Consumer<T> onResult;
+    private Consumer<Integer> onProgress;
+    private Consumer<List<V>> onPublish;
+    private Consumer<Throwable> onException;
+    private Runnable onInterrupted;
+
+    private DefaultBuilder(final ProgressTask<T, V> task) {
+      this.task = requireNonNull(task);
+    }
+
+    @Override
+    public Builder<T, V> onStarted(final Runnable onStarted) {
+      this.onStarted = onStarted;
+      return this;
+    }
+
+    @Override
+    public Builder<T, V> onFinished(final Runnable onFinished) {
+      this.onFinished = onFinished;
+      return this;
+    }
+
+    @Override
+    public Builder<T, V> onResult(final Consumer<T> onResult) {
+      this.onResult = onResult;
+      return this;
+    }
+
+    @Override
+    public Builder<T, V> onProgress(final Consumer<Integer> onProgress) {
+      this.onProgress = onProgress;
+      return this;
+    }
+
+    @Override
+    public Builder<T, V> onPublish(final Consumer<List<V>> onPublish) {
+      this.onPublish = onPublish;
+      return this;
+    }
+
+    @Override
+    public Builder<T, V> onException(final Consumer<Throwable> onException) {
+      this.onException = onException;
+      return this;
+    }
+
+    @Override
+    public Builder<T, V> onInterrupted(final Runnable onInterrupted) {
+      this.onInterrupted = onInterrupted;
+      return this;
+    }
+
+    @Override
+    public ProgressWorker<T, V> execute() {
+      final ProgressWorker<T, V> worker = build();
+      worker.execute();
+
+      return worker;
+    }
+
+    @Override
+    public ProgressWorker<T, V> build() {
+      return new ProgressWorker<>(task, onStarted, onFinished, onResult, onProgress, onPublish, onException, onInterrupted);
     }
   }
 }

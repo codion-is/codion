@@ -37,14 +37,14 @@ public final class CityTableModel extends SwingEntityTableModel {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
   }
 
-  public void updateLocationForSelected(ProgressReporter progressReporter,
+  public void updateLocationForSelected(ProgressReporter<String> progressReporter,
                                         StateObserver cancelLocationUpdateObserver)
           throws IOException, DatabaseException, ValidationException {
     List<Entity> updatedCities = new ArrayList<>();
     List<Entity> selectedCities = getSelectionModel().getSelectedItems();
     for (Entity city : selectedCities) {
       if (!cancelLocationUpdateObserver.get()) {
-        progressReporter.setMessage(city.toString());
+        progressReporter.publish(city.toString());
         updateLocation(city);
         updatedCities.add(city);
         progressReporter.setProgress(100 * updatedCities.size() / selectedCities.size());
