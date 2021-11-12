@@ -4,9 +4,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.worker.ProgressWorker;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

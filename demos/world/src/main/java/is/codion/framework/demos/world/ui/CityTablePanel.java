@@ -3,11 +3,11 @@ package is.codion.framework.demos.world.ui;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.demos.world.model.CityTableModel;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.ui.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 

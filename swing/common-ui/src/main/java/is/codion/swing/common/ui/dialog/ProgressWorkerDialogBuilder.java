@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.worker.ProgressWorker;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;

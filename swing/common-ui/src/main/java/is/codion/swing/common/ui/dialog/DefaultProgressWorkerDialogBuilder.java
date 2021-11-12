@@ -5,9 +5,9 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.worker.ProgressWorker;
-import is.codion.swing.common.ui.worker.ProgressWorker.ProgressTask;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
