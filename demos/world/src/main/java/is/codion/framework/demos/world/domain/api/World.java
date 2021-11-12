@@ -34,7 +34,7 @@ public interface World {
     String name();
     Integer population();
 
-    default boolean isInCountry(final Entity country) {
+    default boolean isInCountry(Entity country) {
       return country != null && Objects.equals(get(COUNTRY_FK), country);
     }
 
