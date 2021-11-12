@@ -6,4 +6,5 @@ module is.codion.swing.common.model {
   exports is.codion.swing.common.model.combobox;
   exports is.codion.swing.common.model.table;
   exports is.codion.swing.common.model.textfield;
+  exports is.codion.swing.common.model.worker;
 }
