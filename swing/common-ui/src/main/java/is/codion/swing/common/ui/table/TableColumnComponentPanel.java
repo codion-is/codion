@@ -55,11 +55,6 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
         throw new IllegalArgumentException("Column with model index " + column.getModelIndex() + " is not part of column model");
       }
     });
-    columns.forEach(column -> {
-      if (!columnComponents.containsKey(column)) {
-        nullComponents.put(column, new JPanel());
-      }
-    });
     this.columnComponents = Collections.unmodifiableMap(columnComponents);
     this.basePanel = new JPanel(FlexibleGridLayout.builder()
             .rows(1)
@@ -117,12 +112,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   }
 
   private JComponent getColumnComponent(final TableColumn column) {
-    JComponent component = columnComponents.get(column);
-    if (component == null) {
-      component = nullComponents.get(column);
-    }
-
-    return component;
+    return columnComponents.getOrDefault(column, (T) nullComponents.computeIfAbsent(column, c -> new JPanel()));
   }
 
   private static void syncPanelWidth(final JComponent component, final TableColumn column) {
