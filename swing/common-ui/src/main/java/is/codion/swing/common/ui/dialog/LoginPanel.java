@@ -120,7 +120,7 @@ final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
-    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
             .build());

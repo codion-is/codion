@@ -7366,3 +7366,4 @@
   ProgressWorker moved from swing.common.ui to swing.common.model
   Dialogs, Builder suffix removed from builder functions
   ProgressWorkerDialogBuilder, removed a few unnecessary overrides
+  Layouts.flexibleGridLayoutBuilder() renamed flexibleGridLayout()

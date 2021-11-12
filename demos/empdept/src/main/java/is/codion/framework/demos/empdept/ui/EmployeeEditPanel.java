@@ -16,7 +16,7 @@ import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.Components.transferFocusOnEnter;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayoutBuilder;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 // tag::constructor[]
 public class EmployeeEditPanel extends EntityEditPanel {
@@ -40,7 +40,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTextField(Employee.COMMISSION);
     createTemporalInputPanel(Employee.HIREDATE);
 
-    setLayout(flexibleGridLayoutBuilder()
+    setLayout(flexibleGridLayout()
             .rowsColumns(3, 3)
             .fixRowHeights(true)
             .build());
