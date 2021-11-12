@@ -74,7 +74,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
     private final JXMapViewer mapViewer;
 
-    private LocationListener(final JXMapViewer mapViewer) {
+    private LocationListener(JXMapViewer mapViewer) {
       this.mapViewer = mapViewer;
     }
 

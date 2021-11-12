@@ -34,7 +34,7 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   private void updateLocation() {
-    final UpdateLocationTask updateLocationTask = new UpdateLocationTask((CityTableModel) getTableModel());
+    UpdateLocationTask updateLocationTask = new UpdateLocationTask((CityTableModel) getTableModel());
 
     Dialogs.progressWorkerDialog(updateLocationTask)
             .owner(this)
@@ -61,7 +61,7 @@ public final class CityTablePanel extends EntityTablePanel {
     private final CityTableModel tableModel;
     private final State cancelledState = State.state();
 
-    private UpdateLocationTask(final CityTableModel tableModel) {
+    private UpdateLocationTask(CityTableModel tableModel) {
       this.tableModel = tableModel;
     }
 
