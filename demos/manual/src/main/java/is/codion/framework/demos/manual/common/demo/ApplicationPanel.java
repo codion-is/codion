@@ -327,7 +327,7 @@ public final class ApplicationPanel extends JPanel {
 
     ApplicationPanel applicationPanel = new ApplicationPanel(applicationModel);
 
-    Dialogs.componentDialogBuilder(applicationPanel)
+    Dialogs.componentDialog(applicationPanel)
             .title("Codion Input Components Demo")
             .icon(Icons.icons().logoTransparent())
             .show();

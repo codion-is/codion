@@ -74,7 +74,7 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
   public ProgressWorkerDialogBuilder<T> failTitle(final String failTitle) {
     return onException(exception -> {
       if (!(exception instanceof CancelException)) {
-        Dialogs.exceptionDialogBuilder()
+        Dialogs.exceptionDialog()
                 .owner(owner)
                 .title(failTitle)
                 .show(exception);
@@ -110,7 +110,7 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
 
   @Override
   public ProgressWorker<T, String> build() {
-    final ProgressDialog progressDialog = Dialogs.progressDialogBuilder()
+    final ProgressDialog progressDialog = Dialogs.progressDialog()
             .owner(owner)
             .indeterminate(indeterminate)
             .stringPainted(stringPainted)
@@ -137,7 +137,7 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
         onException.accept(exception);
       }
       else {
-        Dialogs.exceptionDialogBuilder()
+        Dialogs.exceptionDialog()
                 .owner(owner)
                 .message(Messages.get(Messages.EXCEPTION))
                 .show(exception);

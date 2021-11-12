@@ -66,7 +66,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
     final JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(component, BorderLayout.CENTER);
     basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    Dialogs.okCancelDialogBuilder(basePanel)
+    Dialogs.okCancelDialog(basePanel)
             .owner(owner)
             .title(title)
             .onOk(() -> okPressed.set(true))

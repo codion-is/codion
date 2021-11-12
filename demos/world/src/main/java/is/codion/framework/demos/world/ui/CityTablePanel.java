@@ -36,7 +36,7 @@ public final class CityTablePanel extends EntityTablePanel {
   private void updateLocation() {
     final UpdateLocationTask updateLocationTask = new UpdateLocationTask((CityTableModel) getTableModel());
 
-    Dialogs.progressWorkerDialogBuilder(updateLocationTask)
+    Dialogs.progressWorkerDialog(updateLocationTask)
             .owner(this)
             .title("Updating locations")
             .stringPainted(true)
@@ -50,7 +50,7 @@ public final class CityTablePanel extends EntityTablePanel {
   }
 
   private void displayUpdateException(Throwable exception) {
-    Dialogs.exceptionDialogBuilder()
+    Dialogs.exceptionDialog()
             .owner(this)
             .title("Unable to update locations")
             .show(exception);

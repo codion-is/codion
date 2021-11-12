@@ -108,7 +108,7 @@ public final class CountryOverviewPanel extends EntityPanel {
   private void displayEditPanel() {
     final JPanel editPanel = getEditControlPanel();
     if (!editPanel.isShowing()) {
-      Dialogs.componentDialogBuilder(editPanel)
+      Dialogs.componentDialog(editPanel)
               .owner(this)
               .modal(false)
               .show();

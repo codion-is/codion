@@ -324,7 +324,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    Dialogs.componentDialogBuilder(initializeApplicationTree())
+    Dialogs.componentDialog(initializeApplicationTree())
             .owner(this)
             .title(resourceBundle.getString("view_application_tree"))
             .modal(false)
@@ -335,7 +335,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    Dialogs.componentDialogBuilder(initializeDependencyTree())
+    Dialogs.componentDialog(initializeDependencyTree())
             .owner(this)
             .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
             .modal(false)
@@ -488,7 +488,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getAboutPanel()
    */
   public final void displayAbout() {
-    Dialogs.componentDialogBuilder(getAboutPanel())
+    Dialogs.componentDialog(getAboutPanel())
             .owner(this)
             .title(resourceBundle.getString(ABOUT))
             .show();
@@ -867,7 +867,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           persistentEntityPanels.put(panelBuilder, entityPanel);
         }
       }
-      Dialogs.componentDialogBuilder(entityPanel)
+      Dialogs.componentDialog(entityPanel)
               .owner(getParentWindow())
               .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
               .onClosedAction(Control.control(() -> {
@@ -1078,7 +1078,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected User getLoginUser(final User defaultUser, final LoginValidator loginValidator) {
     final String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
-    final User user = Dialogs.loginDialogBuilder()
+    final User user = Dialogs.loginDialog()
             .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
             .validator(loginValidator)
             .title(loginDialogTitle)
@@ -1152,7 +1152,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setVersionProperty();
     final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
-      Dialogs.progressWorkerDialogBuilder(applicationStarter)
+      Dialogs.progressWorkerDialog(applicationStarter)
               .title(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))

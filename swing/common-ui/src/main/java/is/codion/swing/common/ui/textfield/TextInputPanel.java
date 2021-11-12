@@ -204,7 +204,7 @@ public final class TextInputPanel extends JPanel {
     textArea.setWrapStyleWord(true);
     textArea.setEditable(textField.isEditable());
     Components.transferFocusOnEnter(textArea);
-    Dialogs.okCancelDialogBuilder(new JScrollPane(textArea))
+    Dialogs.okCancelDialog(new JScrollPane(textArea))
             .owner(textField)
             .title(dialogTitle == null ? caption : dialogTitle)
             .onOk(() -> textField.setText(textArea.getText()))
