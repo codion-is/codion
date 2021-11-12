@@ -411,7 +411,7 @@ public final class InputControls {
 
     fieldValue.addListener(panel::revalidate);
 
-    Dialogs.componentDialogBuilder(panel)
+    Dialogs.componentDialog(panel)
             .title("test")
             .show();
     // end::customTextFieldHorizontalAlignment[]

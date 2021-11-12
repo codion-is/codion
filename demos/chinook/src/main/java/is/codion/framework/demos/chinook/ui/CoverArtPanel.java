@@ -72,7 +72,7 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void setCover() throws IOException {
-    final File coverFile = Dialogs.fileSelectionDialogBuilder()
+    final File coverFile = Dialogs.fileSelectionDialog()
             .owner(this)
             .title(BUNDLE.getString(SELECT_IMAGE))
             .addFileFilter(new FileNameExtensionFilter(BUNDLE.getString(IMAGES), "jpg", "jpeg", "png", "bmp", "gif"))

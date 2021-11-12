@@ -126,7 +126,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public static synchronized void setJDKDir(final JComponent dialogParent) {
     try {
-      jdkDir = Dialogs.fileSelectionDialogBuilder()
+      jdkDir = Dialogs.fileSelectionDialog()
               .owner(dialogParent)
               .startDirectory(jdkDir)
               .title("Set JDK home")
@@ -220,7 +220,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
-    Dialogs.okCancelDialogBuilder(panel)
+    Dialogs.okCancelDialog(panel)
             .owner(this)
             .title("Update interval (s)")
             .onOk(() -> getModel().setUpdateInterval(field.getInteger()))
@@ -258,7 +258,7 @@ public final class EntityServerMonitorPanel extends JPanel {
       }
       catch (final Exception exception) {
         LOG.error(exception.getMessage(), exception);
-        Dialogs.exceptionDialogBuilder()
+        Dialogs.exceptionDialog()
                 .title("Error during startup")
                 .show(exception);
         System.exit(1);

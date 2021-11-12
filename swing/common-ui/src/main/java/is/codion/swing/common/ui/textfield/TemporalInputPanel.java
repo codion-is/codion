@@ -157,7 +157,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       calendarPanel.setDate(startDate);
     }
     final State okPressed = State.state();
-    Dialogs.okCancelDialogBuilder(calendarPanel)
+    Dialogs.okCancelDialog(calendarPanel)
             .owner(parent)
             .title(message)
             .onOk(() -> okPressed.set(true))
@@ -180,7 +180,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       calendarPanel.setDateTime(startDateTime);
     }
     final State okPressed = State.state();
-    Dialogs.okCancelDialogBuilder(calendarPanel)
+    Dialogs.okCancelDialog(calendarPanel)
             .owner(parent)
             .title(dialogTitle)
             .onOk(() -> okPressed.set(true))

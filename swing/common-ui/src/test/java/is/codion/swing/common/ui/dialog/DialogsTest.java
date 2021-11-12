@@ -19,8 +19,8 @@ import java.util.Collections;
 public final class DialogsTest {
 
   @Test
-  void dialogBuilder() {
-    Dialogs.componentDialogBuilder(new JLabel())
+  void componentDialog() {
+    Dialogs.componentDialog(new JLabel())
             .owner(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
@@ -35,8 +35,23 @@ public final class DialogsTest {
   }
 
   @Test
-  void exceptionDialogBuilder() {
-    Dialogs.exceptionDialogBuilder()
+  void progressWorkerDialog() {
+    Dialogs.progressWorkerDialog(() -> {})
+            .owner(new JLabel())
+            .title("title")
+            .icon(Icons.icons().filter())
+            .northPanel(new JPanel())
+            .westPanel(new JPanel())
+            .failTitle("Fail")
+            .successMessage("Success")
+            .stringPainted(true)
+            .indeterminate(false)
+            .build();
+  }
+
+  @Test
+  void exceptionDialog() {
+    Dialogs.exceptionDialog()
             .owner(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
@@ -44,8 +59,8 @@ public final class DialogsTest {
   }
 
   @Test
-  void fileSelectionDialogBuilder() {
-    Dialogs.fileSelectionDialogBuilder()
+  void fileSelectionDialog() {
+    Dialogs.fileSelectionDialog()
             .owner(new JLabel())
             .title("title")
             .startDirectory(System.getProperty("user.home"))
@@ -53,8 +68,8 @@ public final class DialogsTest {
   }
 
   @Test
-  void loginDialogBuilder() {
-    Dialogs.loginDialogBuilder()
+  void loginDialog() {
+    Dialogs.loginDialog()
             .owner(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
@@ -64,8 +79,8 @@ public final class DialogsTest {
   }
 
   @Test
-  void okCancelDialogBuilder() {
-    Dialogs.okCancelDialogBuilder(new JLabel())
+  void okCancelDialog() {
+    Dialogs.okCancelDialog(new JLabel())
             .owner(new JLabel())
             .title("title")
             .icon(Icons.icons().filter())
@@ -75,8 +90,8 @@ public final class DialogsTest {
   }
 
   @Test
-  void progressDialogBuilder() {
-    Dialogs.progressDialogBuilder()
+  void progressDialog() {
+    Dialogs.progressDialog()
             .owner(new JLabel())
             .title("title")
             .indeterminate(true)
@@ -90,8 +105,8 @@ public final class DialogsTest {
   }
 
   @Test
-  void selectionDialogBuilder() {
-    Dialogs.selectionDialogBuilder(Collections.singletonList("hello"))
+  void selectionDialog() {
+    Dialogs.selectionDialog(Collections.singletonList("hello"))
             .owner(new JLabel())
             .title("title")
             .singleSelection(false)

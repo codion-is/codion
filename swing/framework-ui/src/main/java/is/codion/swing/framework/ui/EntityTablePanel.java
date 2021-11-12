@@ -1532,7 +1532,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               MESSAGES.getString("none_found"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      Dialogs.componentDialogBuilder(createDependenciesPanel(dependencies, connectionProvider))
+      Dialogs.componentDialog(createDependenciesPanel(dependencies, connectionProvider))
               .owner(dialogParent)
               .title(MESSAGES.getString("dependent_records_found"))
               .show();

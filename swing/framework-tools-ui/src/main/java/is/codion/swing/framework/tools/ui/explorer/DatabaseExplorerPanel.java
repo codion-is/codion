@@ -96,7 +96,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     final JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
     northPanel.add(schemaLabel, BorderLayout.CENTER);
     final EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
-    Dialogs.progressWorkerDialogBuilder(() -> model.populateSelected(schemaNotifier))
+    Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))
             .owner(this)
             .title("Populating")
             .northPanel(northPanel)
@@ -112,7 +112,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     try {
       final Database database = DatabaseFactory.getDatabase();
       final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
-              Dialogs.loginDialogBuilder()
+              Dialogs.loginDialog()
                       .icon(icons().logoTransparent())
                       .validator(user -> database.createConnection(user).close())
                       .show());

@@ -192,7 +192,7 @@ final class ExceptionDialog extends JDialog {
             .description(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    final Control saveControl = Control.builder(() -> Files.write(Dialogs.fileSelectionDialogBuilder()
+    final Control saveControl = Control.builder(() -> Files.write(Dialogs.fileSelectionDialog()
                     .owner(detailsArea)
                     .selectFileToSave("error.txt")
                     .toPath(),

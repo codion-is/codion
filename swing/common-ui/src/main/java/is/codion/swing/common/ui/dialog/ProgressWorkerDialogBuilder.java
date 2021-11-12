@@ -6,9 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Controls;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.awt.Window;
 import java.util.function.Consumer;
 
 /**
@@ -19,24 +17,6 @@ import java.util.function.Consumer;
  * @see ProgressWorker.ProgressTask#perform(ProgressWorker.ProgressReporter) to indicate work progress
  */
 public interface ProgressWorkerDialogBuilder<T> extends DialogBuilder<ProgressWorkerDialogBuilder<T>>{
-
-  /**
-   * @param owner the dialog owner
-   * @return this DialogBuilder instance
-   */
-  ProgressWorkerDialogBuilder<T> owner(Window owner);
-
-  /**
-   * @param owner the dialog parent component
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T> owner(JComponent owner);
-
-  /**
-   * @param title the dialog title
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T> title(String title);
 
   /**
    * @param indeterminate true if the progress bar should be indeterminate

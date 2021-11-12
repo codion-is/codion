@@ -145,7 +145,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void updateInvoiceTotals() {
-    Dialogs.progressWorkerDialogBuilder(getModel()::updateInvoiceTotals)
+    Dialogs.progressWorkerDialog(getModel()::updateInvoiceTotals)
             .owner(this)
             .title(bundle.getString(UPDATING_TOTALS))
             .onSuccess(this::handleUpdateTotalsSuccess)
@@ -160,7 +160,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void handleUpdateTotalsException(final Throwable exception) {
-    Dialogs.exceptionDialogBuilder()
+    Dialogs.exceptionDialog()
             .owner(this)
             .title(bundle.getString(UPDATING_TOTALS_FAILED))
             .show(exception);

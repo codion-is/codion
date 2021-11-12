@@ -98,7 +98,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     });
     if (!conditionProperties.isEmpty()) {
       Properties.sort(conditionProperties);
-      Dialogs.selectionDialogBuilder(conditionProperties)
+      Dialogs.selectionDialog(conditionProperties)
               .owner(this)
               .title(Messages.get(Messages.SELECT_INPUT_FIELD))
               .selectSingle()

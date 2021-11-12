@@ -40,7 +40,7 @@ public final class FileInputPanel extends JPanel {
 
   private void browseFile() {
     try {
-      final File file = Dialogs.fileSelectionDialogBuilder()
+      final File file = Dialogs.fileSelectionDialog()
               .owner(filePathField)
               .title("Select file")
               .selectFile();

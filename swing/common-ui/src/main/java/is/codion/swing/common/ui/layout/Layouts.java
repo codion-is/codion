@@ -69,7 +69,7 @@ public final class Layouts {
    * @see #HORIZONTAL_VERTICAL_GAP
    */
   public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns) {
-    return flexibleGridLayoutBuilder()
+    return flexibleGridLayout()
             .rowsColumns(rows, columns)
             .build();
   }
@@ -79,7 +79,7 @@ public final class Layouts {
    * @return a FlexibleGridLayout.Builder instance
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static FlexibleGridLayout.Builder flexibleGridLayoutBuilder() {
+  public static FlexibleGridLayout.Builder flexibleGridLayout() {
     return FlexibleGridLayout.builder()
             .horizontalGap(HORIZONTAL_VERTICAL_GAP.get())
             .verticalGap(HORIZONTAL_VERTICAL_GAP.get());

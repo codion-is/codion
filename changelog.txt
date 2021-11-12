@@ -7397,3 +7397,6 @@
   TableColumnComponentPanel bug fixed, NullPointerException when a column was added to the column model, now dynamically initializes a null component for newly added columns
   ProgressWorker refactored, no longer depends on ProgressDialog, Dialogs.progressWorkerDialogBuilder() added instead
   ProgressWorker moved from swing.common.ui to swing.common.model
+  Dialogs, Builder suffix removed from builder functions
+  ProgressWorkerDialogBuilder, removed a few unnecessary overrides
+  Layouts.flexibleGridLayoutBuilder() renamed flexibleGridLayout()

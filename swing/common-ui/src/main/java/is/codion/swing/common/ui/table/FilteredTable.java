@@ -314,7 +314,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             columnModel.getAllColumns().stream().collect(Collectors.toMap(column -> column, column ->
                     new JCheckBox(column.getHeaderValue().toString(),
                             tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()))));
-    Dialogs.okCancelDialogBuilder(initializeSelectColumnsPanel(columnCheckBoxes))
+    Dialogs.okCancelDialog(initializeSelectColumnsPanel(columnCheckBoxes))
             .owner(this)
             .onOk(() -> SwingUtilities.invokeLater(() -> columnCheckBoxes.forEach((column, checkBox) -> {
               if (checkBox.isSelected()) {
@@ -574,7 +574,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     final JPopupMenu popupMenu = new JPopupMenu();
     final String settingsMessage = MESSAGES.getString("settings");
-    popupMenu.add(Control.builder(() -> Dialogs.componentDialogBuilder(panel)
+    popupMenu.add(Control.builder(() -> Dialogs.componentDialog(panel)
                     .owner(FilteredTable.this)
                     .title(settingsMessage)
                     .onClosedAction(control)

@@ -88,7 +88,7 @@ final class LoginPanel extends JPanel {
     if (icon != null) {
       add(new JLabel(icon), BorderLayout.WEST);
     }
-    final JDialog dialog = Dialogs.componentDialogBuilder(this)
+    final JDialog dialog = Dialogs.componentDialog(this)
             .owner(parentWindow)
             .title(title == null ? Messages.get(Messages.LOGIN) : title)
             .icon(icon)
@@ -120,7 +120,7 @@ final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
-    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
             .build());

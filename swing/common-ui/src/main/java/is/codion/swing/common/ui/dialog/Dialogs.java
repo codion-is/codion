@@ -33,14 +33,14 @@ public final class Dialogs {
    * @param component the component to display
    * @return a new {@link ComponentDialogBuilder} instance.
    */
-  public static ComponentDialogBuilder componentDialogBuilder(final JComponent component) {
+  public static ComponentDialogBuilder componentDialog(final JComponent component) {
     return new DefaultComponentDialogBuilder(component);
   }
 
   /**
    * @return a new {@link ProgressDialogBuilder} instance.
    */
-  public static ProgressDialogBuilder progressDialogBuilder() {
+  public static ProgressDialogBuilder progressDialog() {
     return new DefaultProgressDialogBuilder();
   }
 
@@ -48,7 +48,7 @@ public final class Dialogs {
    * @param task the task to run
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    */
-  public static ProgressWorkerDialogBuilder<?> progressWorkerDialogBuilder(final Control.Command task) {
+  public static ProgressWorkerDialogBuilder<?> progressWorkerDialog(final Control.Command task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
@@ -62,7 +62,7 @@ public final class Dialogs {
    * @param <T> the worker result type
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    */
-  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialogBuilder(final ProgressWorker.Task<T> task) {
+  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialog(final ProgressWorker.Task<T> task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.perform()).indeterminate(true);
@@ -75,7 +75,7 @@ public final class Dialogs {
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
    */
-  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialogBuilder(final ProgressWorker.ProgressTask<T, String> task) {
+  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialog(final ProgressWorker.ProgressTask<T, String> task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);
@@ -84,21 +84,21 @@ public final class Dialogs {
   /**
    * @return a new login dialog builder
    */
-  public static LoginDialogBuilder loginDialogBuilder() {
+  public static LoginDialogBuilder loginDialog() {
     return new DefaultLoginDialogBuilder();
   }
 
   /**
    * @return a new exception dialog builder
    */
-  public static ExceptionDialogBuilder exceptionDialogBuilder() {
+  public static ExceptionDialogBuilder exceptionDialog() {
     return new DefaultExceptionDialogBuilder();
   }
 
   /**
    * @return a new FileSelectionDialogBuilder
    */
-  public static FileSelectionDialogBuilder fileSelectionDialogBuilder() {
+  public static FileSelectionDialogBuilder fileSelectionDialog() {
     return new DefaultFileSelectionDialogBuilder();
   }
 
@@ -108,7 +108,7 @@ public final class Dialogs {
    * @return a new selection dialog builder
    * @throws IllegalArgumentException in case values is empty
    */
-  public static <T> SelectionDialogBuilder<T> selectionDialogBuilder(final Collection<T> values) {
+  public static <T> SelectionDialogBuilder<T> selectionDialog(final Collection<T> values) {
     return new DefaultSelectionDialogBuilder<>(values);
   }
 
@@ -116,7 +116,7 @@ public final class Dialogs {
    * @param component the component to display
    * @return a new OkCancelDialogBuilder
    */
-  public static OkCancelDialogBuilder okCancelDialogBuilder(final JComponent component) {
+  public static OkCancelDialogBuilder okCancelDialog(final JComponent component) {
     return new DefaultOkCancelDialogBuilder(component);
   }
 
@@ -147,7 +147,7 @@ public final class Dialogs {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          final File file = fileSelectionDialogBuilder()
+          final File file = fileSelectionDialog()
                   .owner(filenameField)
                   .startDirectory(getParentPath(filenameField.getText()))
                   .selectFile();
@@ -183,7 +183,7 @@ public final class Dialogs {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      selectionDialogBuilder(valueProvider.get())
+      selectionDialog(valueProvider.get())
               .owner(textField)
               .selectSingle()
               .ifPresent(value -> textField.setText(value.toString()));

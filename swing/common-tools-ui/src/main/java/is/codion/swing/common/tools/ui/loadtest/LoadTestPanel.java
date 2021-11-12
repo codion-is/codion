@@ -132,7 +132,7 @@ public final class LoadTestPanel<T> extends JPanel {
     final JPanel userBase = initializeUserPanel();
     final JPanel chartControlPanel = initializeChartControlPanel();
 
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(5, 1)
             .fixColumnWidths(true)
             .build());
@@ -186,7 +186,7 @@ public final class LoadTestPanel<T> extends JPanel {
     final ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
-    final JPanel userBase = new JPanel(Layouts.flexibleGridLayoutBuilder()
+    final JPanel userBase = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
@@ -243,7 +243,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeChartControlPanel() {
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(1, 2)
             .fixRowHeights(true)
             .build());
@@ -331,7 +331,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    final JPanel thinkTimePanel = new JPanel(Layouts.flexibleGridLayoutBuilder()
+    final JPanel thinkTimePanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(4, 2)
             .fixRowHeights(true)
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
