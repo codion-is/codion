@@ -326,7 +326,7 @@ public final class WorldImpl extends DefaultDomain {
         return null;
       }
 
-      return "POINT (" + geoPosition.getLatitude() + " " + geoPosition.getLongitude() + ")";
+      return "POINT (" + geoPosition.getLongitude() + " " + geoPosition.getLatitude() + ")";
     }
 
     @Override
@@ -338,7 +338,7 @@ public final class WorldImpl extends DefaultDomain {
       String[] latLon = columnValue.replace("POINT (", "")
               .replace(")", "").split(" ");
 
-      return new GeoPosition(parseDouble(latLon[0]), parseDouble(latLon[1]));
+      return new GeoPosition(parseDouble(latLon[1]), parseDouble(latLon[0]));
     }
   }
   // end::converter[]
