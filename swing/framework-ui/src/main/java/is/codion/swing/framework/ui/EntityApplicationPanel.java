@@ -41,7 +41,6 @@ import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -1153,7 +1152,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setVersionProperty();
     final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
-      ProgressWorker.builder(applicationStarter)
+      Dialogs.progressWorkerDialogBuilder(applicationStarter)
               .title(applicationName)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))

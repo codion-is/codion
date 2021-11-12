@@ -4,7 +4,6 @@ import is.codion.framework.demos.world.model.LookupTableModel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -39,7 +38,7 @@ public final class LookupTablePanel extends EntityTablePanel {
     File fileToSave = Dialogs.fileSelectionDialogBuilder()
             .owner(this)
             .selectFileToSave("export.csv");
-    ProgressWorker.builder(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
+    Dialogs.progressWorkerDialogBuilder(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
             .owner(this)
             .title("Exporting data")
             .successMessage("Export successful")

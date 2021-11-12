@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.swing.common.ui.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingEntityTableSortModel;
 
@@ -37,14 +37,14 @@ public final class CityTableModel extends SwingEntityTableModel {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
   }
 
-  public void updateLocationForSelected(ProgressReporter progressReporter,
+  public void updateLocationForSelected(ProgressReporter<String> progressReporter,
                                         StateObserver cancelLocationUpdateObserver)
           throws IOException, DatabaseException, ValidationException {
     List<Entity> updatedCities = new ArrayList<>();
     List<Entity> selectedCities = getSelectionModel().getSelectedItems();
     for (Entity city : selectedCities) {
       if (!cancelLocationUpdateObserver.get()) {
-        progressReporter.setMessage(city.toString());
+        progressReporter.publish(city.toString());
         updateLocation(city);
         updatedCities.add(city);
         progressReporter.setProgress(100 * updatedCities.size() / selectedCities.size());

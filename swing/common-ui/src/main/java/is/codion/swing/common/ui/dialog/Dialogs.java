@@ -4,7 +4,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -40,6 +42,43 @@ public final class Dialogs {
    */
   public static ProgressDialogBuilder progressDialogBuilder() {
     return new DefaultProgressDialogBuilder();
+  }
+
+  /**
+   * @param task the task to run
+   * @return a new {@link ProgressWorkerDialogBuilder} instance
+   */
+  public static ProgressWorkerDialogBuilder<?> progressWorkerDialogBuilder(final Control.Command task) {
+    requireNonNull(task);
+
+    return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
+      task.perform();
+      return null;
+    }).indeterminate(true);
+  }
+
+  /**
+   * @param task the task to run
+   * @param <T> the worker result type
+   * @return a new {@link ProgressWorkerDialogBuilder} instance
+   */
+  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialogBuilder(final ProgressWorker.Task<T> task) {
+    requireNonNull(task);
+
+    return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.perform()).indeterminate(true);
+  }
+
+  /**
+   * Note, also sets the progress bar type to 'determinate'.
+   * @param task the task to run
+   * @param <T> the worker result type
+   * @return a new {@link ProgressWorkerDialogBuilder} instance
+   * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
+   */
+  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialogBuilder(final ProgressWorker.ProgressTask<T, String> task) {
+    requireNonNull(task);
+
+    return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);
   }
 
   /**

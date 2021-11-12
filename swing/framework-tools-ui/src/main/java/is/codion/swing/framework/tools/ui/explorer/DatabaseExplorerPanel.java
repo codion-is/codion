@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
 import is.codion.swing.framework.tools.explorer.DefinitionRow;
 import is.codion.swing.framework.tools.metadata.Schema;
@@ -97,7 +96,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     final JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
     northPanel.add(schemaLabel, BorderLayout.CENTER);
     final EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
-    ProgressWorker.builder(() -> model.populateSelected(schemaNotifier))
+    Dialogs.progressWorkerDialogBuilder(() -> model.populateSelected(schemaNotifier))
             .owner(this)
             .title("Populating")
             .northPanel(northPanel)
