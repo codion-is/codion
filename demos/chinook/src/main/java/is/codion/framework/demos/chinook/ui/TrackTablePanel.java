@@ -59,7 +59,7 @@ public final class TrackTablePanel extends EntityTablePanel {
                                                                                                       final SwingEntityEditModel editModel,
                                                                                                       final Integer initialValue) {
       final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue();
-      minutesSecondsPanelValue.set((Integer) initialValue);
+      minutesSecondsPanelValue.set(initialValue);
 
       return minutesSecondsPanelValue;
     }

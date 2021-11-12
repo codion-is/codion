@@ -29,7 +29,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     requireNonNull(attribute, "attribute");
     requireNonNull(editModel, "editModel");
     if (attribute instanceof ForeignKey) {
-      return (ComponentValue<T, C>) createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
+      return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
 
     final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
