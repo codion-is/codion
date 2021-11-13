@@ -12,8 +12,17 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A SwingWorker implementation.
- * Note that instances of this class are not reusable.
+ * A SwingWorker implementation. Note that instances of this class are not reusable.
+ * <pre>
+ * ProgressWorker.builder(this::performTask)
+ *   .onStarted(this::displayDialog)
+ *   .onFinished(this::closeDialog)
+ *   .onResult(this::handleResult)
+ *   .onProgress(this::displayProgress)
+ *   .onPublish(this::publishMessage)
+ *   .onException(this::displayException)
+ *   .execute();
+ * </pre>
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this worker
  * @see #builder(Task)
