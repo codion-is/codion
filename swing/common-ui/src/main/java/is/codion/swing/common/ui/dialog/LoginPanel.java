@@ -8,6 +8,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.UiManagerDefaults;
@@ -28,14 +29,11 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.concurrent.ExecutionException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -156,37 +154,39 @@ final class LoginPanel extends JPanel {
   }
 
   private void onOkPressed() {
-    final JDialog parentDialog = Windows.getParentDialog(this);
-    final User user = User.user(usernameField.getText(), passwordField.getPassword());
-    final SwingWorker<User, Object> worker = new SwingWorker<User, Object>() {
-      @Override
-      protected User doInBackground() throws Exception {
-        loginValidator.validate(user);
+    ProgressWorker.builder(this::validateLogin)
+            .onStarted(this::onValidationStarted)
+            .onResult(this::onValidationSuccess)
+            .onException(this::onValidationFailure)
+            .onInterrupted(() -> Thread.currentThread().interrupt())
+            .execute();
+  }
 
-        return user;
-      }
-    };
+  private User validateLogin() throws Exception {
+    final User user = User.user(usernameField.getText(), passwordField.getPassword());
+    loginValidator.validate(user);
+
+    return user;
+  }
+
+  private void onValidationStarted() {
     usernameField.setEnabled(false);
     passwordField.setEnabled(false);
     validatingState.set(true);
-    SwingUtilities.invokeLater(() -> {
-      worker.execute();
-      try {
-        userValue.set(worker.get());
-        validatingState.set(false);
-        parentDialog.dispose();
-      }
-      catch (final ExecutionException exception) {
-        userValue.set(null);
-        validatingState.set(false);
-        usernameField.setEnabled(true);
-        passwordField.setEnabled(true);
-        DefaultDialogExceptionHandler.getInstance().displayException(exception.getCause(), parentDialog);
-      }
-      catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    });
+  }
+
+  private void onValidationSuccess(final User user) {
+    userValue.set(user);
+    validatingState.set(false);
+    Windows.getParentDialog(this).dispose();
+  }
+
+  private void onValidationFailure(final Throwable exception) {
+    userValue.set(null);
+    validatingState.set(false);
+    usernameField.setEnabled(true);
+    passwordField.setEnabled(true);
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentDialog(this));
   }
 
   private static JFrame createDummyFrame(final String title, final ImageIcon icon) {

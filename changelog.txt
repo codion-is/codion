@@ -7370,3 +7370,4 @@
   CalendarPanel, added a button to select the current date
   ProgressDialogBuilder moved to ProgressDialog and renamed Builder
   ProgressDialog.setProgress() and setMessage() added
+  LoginPanel.onOkPressed() refactored using ProgressWorker
