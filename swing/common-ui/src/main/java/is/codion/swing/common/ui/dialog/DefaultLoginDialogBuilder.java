@@ -35,6 +35,6 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 
   @Override
   public User show() {
-    return new LoginPanel(defaultUser, validator, southComponent).showLoginPanel(owner, title, icon);
+    return new LoginPanel(defaultUser, validator, icon, southComponent).showLoginPanel(owner, title);
   }
 }

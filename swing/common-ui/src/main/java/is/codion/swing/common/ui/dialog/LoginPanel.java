@@ -57,15 +57,14 @@ final class LoginPanel extends JPanel {
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
   private final Value<User> userValue = Value.value();
   private final LoginValidator loginValidator;
+  private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
 
-  /**
-   * Instantiates a new LoginPanel
-   */
   LoginPanel(final User defaultUser, final LoginValidator loginValidator,
-             final JComponent southComponent) {
+             final ImageIcon icon, final JComponent southComponent) {
+    this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)
             .caption(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
@@ -80,15 +79,12 @@ final class LoginPanel extends JPanel {
     initializeUI(defaultUser, southComponent);
   }
 
-  User showLoginPanel(final Window parent, final String title, final ImageIcon icon) {
+  User showLoginPanel(final Window parent, final String title) {
     Window parentWindow = parent;
     JFrame dummyFrame = null;
     if (parentWindow == null && isWindows()) {
       dummyFrame = createDummyFrame(title, icon);
       parentWindow = dummyFrame;
-    }
-    if (icon != null) {
-      add(new JLabel(icon), BorderLayout.WEST);
     }
     final JDialog dialog = Dialogs.componentDialog(this)
             .owner(parentWindow)
@@ -148,11 +144,10 @@ final class LoginPanel extends JPanel {
     }
 
     final JPanel centerPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+    centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 20));
     centerPanel.add(credentialsBasePanel);
-    setLayout(Layouts.borderLayout());
+    setLayout(new BorderLayout(0, 0));
     add(centerPanel, BorderLayout.CENTER);
-    centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     if (usernameField.getText().isEmpty()) {
       Components.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
@@ -166,6 +161,11 @@ final class LoginPanel extends JPanel {
             .build()
             .createHorizontalButtonPanel());
     add(buttonBasePanel, BorderLayout.SOUTH);
+    if (icon != null) {
+      final JLabel label = new JLabel(icon, SwingConstants.CENTER);
+      label.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 10));
+      add(label, BorderLayout.WEST);
+    }
   }
 
   private void onOkPressed() {
