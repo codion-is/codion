@@ -9,6 +9,17 @@ def documentationVersion = project.version.replace('-SNAPSHOT', '')
 def documentationDir = "doc/${documentationVersion}/${project.targetJdk}"
 
 asciidoctor {
+    // since the sources included in the docs may have changed, there's definitely
+    // a more gradle like way to do this, but it escapes me
+    inputs.dir(new File("../demos/chinook/src"));
+    inputs.dir(new File("../demos/empdept/src"));
+    inputs.dir(new File("../demos/manual/src"));
+    inputs.dir(new File("../demos/petclinic/src"));
+    inputs.dir(new File("../demos/petstore/src"));
+    inputs.dir(new File("../demos/world/src"));
+    // config files
+    inputs.dir(new File("../framework/server/src/main"));
+
     doFirst {
         frameworkModules.each {
             def moduleDir = it.projectDir
@@ -34,8 +45,6 @@ asciidoctor {
         }
         attributes 'source-highlighter': 'prettify'
     }
-    //possible code changes
-    outputs.upToDateWhen { false }
 }
 
 task combinedJavadoc(type: Javadoc) {
