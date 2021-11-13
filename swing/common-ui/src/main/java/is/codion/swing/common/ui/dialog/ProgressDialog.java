@@ -19,6 +19,7 @@ import java.awt.Window;
 
 /**
  * A dialog containing a progress bar.
+ * @see Dialogs#progressDialog()
  */
 public final class ProgressDialog extends JDialog {
 
@@ -39,10 +40,19 @@ public final class ProgressDialog extends JDialog {
   }
 
   /**
-   * @return the progress bar
+   * Sets the progress in the underlying JProgressBar
+   * @param progress the progress (0 - 100)
    */
-  public JProgressBar getProgressBar() {
-    return progressBar;
+  public void setProgress(final int progress) {
+    progressBar.getModel().setValue(progress);
+  }
+
+  /**
+   * Sets the message displayed on the JProgress bar
+   * @param message the message
+   */
+  public void setMessage(final String message) {
+    progressBar.setString(message);
   }
 
   /**
@@ -81,5 +91,46 @@ public final class ProgressDialog extends JDialog {
     }
 
     return progressBar;
+  }
+
+  /**
+   * A builder for {@link ProgressDialog}.
+   */
+  public interface Builder extends DialogBuilder<Builder> {
+
+    /**
+     * @param indeterminate the indeterminate status of the progress bar
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder indeterminate(boolean indeterminate);
+
+    /**
+     * @param stringPainted the string painted status of the progress bar
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder stringPainted(boolean stringPainted);
+
+    /**
+     * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder northPanel(JPanel northPanel);
+
+    /**
+     * @param westPanel if specified this panel is added to the {@link BorderLayout#WEST} position
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder westPanel(JPanel westPanel);
+
+    /**
+     * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder buttonControls(Controls buttonControls);
+
+    /**
+     * @return a new ProgressDialog
+     */
+    ProgressDialog build();
   }
 }

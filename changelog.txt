@@ -7368,3 +7368,5 @@
   ProgressWorkerDialogBuilder, removed a few unnecessary overrides
   Layouts.flexibleGridLayoutBuilder() renamed flexibleGridLayout()
   CalendarPanel, added a button to select the current date
+  ProgressDialogBuilder moved to ProgressDialog and renamed Builder
+  ProgressDialog.setProgress() and setMessage() added
