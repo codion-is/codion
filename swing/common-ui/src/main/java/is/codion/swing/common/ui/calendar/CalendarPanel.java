@@ -17,6 +17,7 @@ import is.codion.swing.common.ui.value.ComponentValues;
 import javax.swing.BorderFactory;
 import javax.swing.FocusManager;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -48,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -68,6 +70,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class CalendarPanel extends JPanel {
 
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(CalendarPanel.class.getName());
+
   private static final int YEAR_COLUMNS = 4;
   private static final int TIME_COLUMNS = 2;
   private static final int DAYS_IN_WEEK = 7;
@@ -86,6 +90,7 @@ public final class CalendarPanel extends JPanel {
   private final Value<Integer> dayValue;
   private final Value<Integer> hourValue;
   private final Value<Integer> minuteValue;
+  private final State todaySelectedState;
 
   private final Map<Integer, JToggleButton> dayButtons;
   private final Map<Integer, State> dayStates;
@@ -110,6 +115,7 @@ public final class CalendarPanel extends JPanel {
     }
     localDateValue = Value.value(createLocalDateTime().toLocalDate());
     localDateTimeValue = Value.value(createLocalDateTime());
+    todaySelectedState = State.state(isTodaySelected());
     dayStates = createDayStates();
     dayButtons = createDayButtons();
     dayFillLabels = IntStream.rangeClosed(0, MAX_DAY_FILLERS + 1).mapToObj(counter -> new JLabel()).collect(Collectors.toList());
@@ -362,8 +368,18 @@ public final class CalendarPanel extends JPanel {
       yearMonthHourMinutePanel.add(new JLabel(":", SwingConstants.CENTER));
       yearMonthHourMinutePanel.add(minuteSpinner);
     }
+    yearMonthHourMinutePanel.add(createSelectTodayButton());
 
     return yearMonthHourMinutePanel;
+  }
+
+  private JButton createSelectTodayButton() {
+    return Control.builder(this::selectToday)
+            .caption(MESSAGES.getString("today"))
+            .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
+            .enabledState(todaySelectedState.getReversedObserver())
+            .build()
+            .createButton();
   }
 
   private JPanel createDayPanel() {
@@ -434,7 +450,18 @@ public final class CalendarPanel extends JPanel {
     final LocalDateTime localDateTime = createLocalDateTime();
     localDateValue.set(localDateTime.toLocalDate());
     localDateTimeValue.set(localDateTime);
+    todaySelectedState.set(isTodaySelected());
     SwingUtilities.invokeLater(this::updateFormattedDate);
+  }
+
+  private boolean isTodaySelected() {
+    return getDate().equals(LocalDate.now());
+  }
+
+  private void selectToday() {
+    final LocalDate now = LocalDate.now();
+    setDateTime(getDateTime().withYear(now.getYear()).withMonth(now.getMonthValue()).withDayOfMonth(now.getDayOfMonth()));
+    requestCurrentDayButtonFocus();
   }
 
   private void updateFormattedDate() {
