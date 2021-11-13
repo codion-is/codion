@@ -27,9 +27,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
@@ -48,6 +50,8 @@ final class LoginPanel extends JPanel {
   }
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;
+  private static final String PASSWORD_CARD = "password";
+  private static final String PROGRESS_CARD = "progress";
 
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
@@ -67,7 +71,7 @@ final class LoginPanel extends JPanel {
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
             .enabledState(validatingState.getReversedObserver())
             .build();
-    this.cancelControl = Control.builder(() -> Windows.getParentDialog(this).dispose())
+    this.cancelControl = Control.builder(this::closeDialog)
             .caption(Messages.get(Messages.CANCEL))
             .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
             .enabledState(validatingState.getReversedObserver())
@@ -110,6 +114,7 @@ final class LoginPanel extends JPanel {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(usernameField);
+    Components.linkToEnabledState(validatingState.getReversedObserver(), usernameField);
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
@@ -118,6 +123,16 @@ final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
+    final JProgressBar progressBar = new JProgressBar();
+    progressBar.setPreferredSize(passwordField.getPreferredSize());
+    progressBar.setIndeterminate(true);
+    final CardLayout passwordProgressLayout = new CardLayout();
+    final JPanel passwordProgressPanel = new JPanel(passwordProgressLayout);
+    passwordProgressPanel.add(passwordField, PASSWORD_CARD);
+    passwordProgressPanel.add(progressBar, PROGRESS_CARD);
+    validatingState.addDataListener(validating ->
+            passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
+
     final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
@@ -125,7 +140,7 @@ final class LoginPanel extends JPanel {
     credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT));
     credentialsPanel.add(usernameField);
     credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT));
-    credentialsPanel.add(passwordField);
+    credentialsPanel.add(passwordProgressPanel);
     final JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
     credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);
     if (southComponent != null) {
@@ -170,23 +185,23 @@ final class LoginPanel extends JPanel {
   }
 
   private void onValidationStarted() {
-    usernameField.setEnabled(false);
-    passwordField.setEnabled(false);
     validatingState.set(true);
   }
 
   private void onValidationSuccess(final User user) {
     userValue.set(user);
     validatingState.set(false);
-    Windows.getParentDialog(this).dispose();
+    closeDialog();
   }
 
   private void onValidationFailure(final Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
-    usernameField.setEnabled(true);
-    passwordField.setEnabled(true);
     DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentDialog(this));
+  }
+
+  private void closeDialog() {
+    Windows.getParentDialog(this).dispose();
   }
 
   private static JFrame createDummyFrame(final String title, final ImageIcon icon) {
