@@ -88,12 +88,11 @@ final class LoginPanel extends JPanel {
     }
     final JDialog dialog = Dialogs.componentDialog(this)
             .owner(parentWindow)
+            .resizable(false)
             .title(title == null ? Messages.get(Messages.LOGIN) : title)
             .icon(icon)
             .enterAction(okControl)
-            .build();
-    dialog.setResizable(false);
-    dialog.setVisible(true);
+            .show();
     if (dummyFrame != null) {
       dummyFrame.dispose();
     }
