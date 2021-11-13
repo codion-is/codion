@@ -8,6 +8,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.UiManagerDefaults;
@@ -26,16 +27,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.concurrent.ExecutionException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,26 +50,27 @@ final class LoginPanel extends JPanel {
   }
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;
+  private static final String PASSWORD_CARD = "password";
+  private static final String PROGRESS_CARD = "progress";
 
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
   private final Value<User> userValue = Value.value();
   private final LoginValidator loginValidator;
+  private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
 
-  /**
-   * Instantiates a new LoginPanel
-   */
   LoginPanel(final User defaultUser, final LoginValidator loginValidator,
-             final JComponent southComponent) {
+             final ImageIcon icon, final JComponent southComponent) {
+    this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)
             .caption(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
             .enabledState(validatingState.getReversedObserver())
             .build();
-    this.cancelControl = Control.builder(() -> Windows.getParentDialog(this).dispose())
+    this.cancelControl = Control.builder(this::closeDialog)
             .caption(Messages.get(Messages.CANCEL))
             .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
             .enabledState(validatingState.getReversedObserver())
@@ -78,15 +79,12 @@ final class LoginPanel extends JPanel {
     initializeUI(defaultUser, southComponent);
   }
 
-  User showLoginPanel(final Window parent, final String title, final ImageIcon icon) {
+  User showLoginPanel(final Window parent, final String title) {
     Window parentWindow = parent;
     JFrame dummyFrame = null;
     if (parentWindow == null && isWindows()) {
       dummyFrame = createDummyFrame(title, icon);
       parentWindow = dummyFrame;
-    }
-    if (icon != null) {
-      add(new JLabel(icon), BorderLayout.WEST);
     }
     final JDialog dialog = Dialogs.componentDialog(this)
             .owner(parentWindow)
@@ -112,6 +110,7 @@ final class LoginPanel extends JPanel {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(usernameField);
+    Components.linkToEnabledState(validatingState.getReversedObserver(), usernameField);
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
@@ -120,6 +119,16 @@ final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
+    final JProgressBar progressBar = new JProgressBar();
+    progressBar.setPreferredSize(passwordField.getPreferredSize());
+    progressBar.setIndeterminate(true);
+    final CardLayout passwordProgressLayout = new CardLayout();
+    final JPanel passwordProgressPanel = new JPanel(passwordProgressLayout);
+    passwordProgressPanel.add(passwordField, PASSWORD_CARD);
+    passwordProgressPanel.add(progressBar, PROGRESS_CARD);
+    validatingState.addDataListener(validating ->
+            passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
+
     final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
@@ -127,7 +136,7 @@ final class LoginPanel extends JPanel {
     credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT));
     credentialsPanel.add(usernameField);
     credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT));
-    credentialsPanel.add(passwordField);
+    credentialsPanel.add(passwordProgressPanel);
     final JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
     credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);
     if (southComponent != null) {
@@ -135,11 +144,10 @@ final class LoginPanel extends JPanel {
     }
 
     final JPanel centerPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+    centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 20));
     centerPanel.add(credentialsBasePanel);
-    setLayout(Layouts.borderLayout());
+    setLayout(new BorderLayout(0, 0));
     add(centerPanel, BorderLayout.CENTER);
-    centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     if (usernameField.getText().isEmpty()) {
       Components.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
@@ -153,40 +161,47 @@ final class LoginPanel extends JPanel {
             .build()
             .createHorizontalButtonPanel());
     add(buttonBasePanel, BorderLayout.SOUTH);
+    if (icon != null) {
+      final JLabel label = new JLabel(icon, SwingConstants.CENTER);
+      label.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 10));
+      add(label, BorderLayout.WEST);
+    }
   }
 
   private void onOkPressed() {
-    final JDialog parentDialog = Windows.getParentDialog(this);
-    final User user = User.user(usernameField.getText(), passwordField.getPassword());
-    final SwingWorker<User, Object> worker = new SwingWorker<User, Object>() {
-      @Override
-      protected User doInBackground() throws Exception {
-        loginValidator.validate(user);
+    ProgressWorker.builder(this::validateLogin)
+            .onStarted(this::onValidationStarted)
+            .onResult(this::onValidationSuccess)
+            .onException(this::onValidationFailure)
+            .onInterrupted(() -> Thread.currentThread().interrupt())
+            .execute();
+  }
 
-        return user;
-      }
-    };
-    usernameField.setEnabled(false);
-    passwordField.setEnabled(false);
+  private User validateLogin() throws Exception {
+    final User user = User.user(usernameField.getText(), passwordField.getPassword());
+    loginValidator.validate(user);
+
+    return user;
+  }
+
+  private void onValidationStarted() {
     validatingState.set(true);
-    SwingUtilities.invokeLater(() -> {
-      worker.execute();
-      try {
-        userValue.set(worker.get());
-        validatingState.set(false);
-        parentDialog.dispose();
-      }
-      catch (final ExecutionException exception) {
-        userValue.set(null);
-        validatingState.set(false);
-        usernameField.setEnabled(true);
-        passwordField.setEnabled(true);
-        DefaultDialogExceptionHandler.getInstance().displayException(exception.getCause(), parentDialog);
-      }
-      catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    });
+  }
+
+  private void onValidationSuccess(final User user) {
+    userValue.set(user);
+    validatingState.set(false);
+    closeDialog();
+  }
+
+  private void onValidationFailure(final Throwable exception) {
+    userValue.set(null);
+    validatingState.set(false);
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentDialog(this));
+  }
+
+  private void closeDialog() {
+    Windows.getParentDialog(this).dispose();
   }
 
   private static JFrame createDummyFrame(final String title, final ImageIcon icon) {

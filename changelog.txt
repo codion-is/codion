@@ -7400,3 +7400,9 @@
   Dialogs, Builder suffix removed from builder functions
   ProgressWorkerDialogBuilder, removed a few unnecessary overrides
   Layouts.flexibleGridLayoutBuilder() renamed flexibleGridLayout()
+  CalendarPanel, added a button to select the current date
+  ProgressDialogBuilder moved to ProgressDialog and renamed Builder
+  ProgressDialog.setProgress() and setMessage() added
+  LoginPanel.onOkPressed() refactored using ProgressWorker
+  LoginPanel now displays an indeterminate progress dialog while validating the login
+  LoginPanel, minor UI improvements, padding added

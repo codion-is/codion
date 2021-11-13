@@ -123,8 +123,8 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
 
     return ProgressWorker.builder(progressTask)
             .onStarted(() -> progressDialog.setVisible(true))
-            .onProgress(progress -> progressDialog.getProgressBar().getModel().setValue(progress))
-            .onPublish(chunks -> progressDialog.getProgressBar().setString(getMessage(chunks)))
+            .onProgress(progressDialog::setProgress)
+            .onPublish(chunks -> progressDialog.setMessage(getMessage(chunks)))
             .onFinished(progressDialog::dispose)
             .onResult(onSuccess)
             .onException(this::handleException)

@@ -38,9 +38,9 @@ public final class Dialogs {
   }
 
   /**
-   * @return a new {@link ProgressDialogBuilder} instance.
+   * @return a new {@link ProgressDialog.Builder} instance.
    */
-  public static ProgressDialogBuilder progressDialog() {
+  public static ProgressDialog.Builder progressDialog() {
     return new DefaultProgressDialogBuilder();
   }
 

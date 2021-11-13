@@ -7,7 +7,7 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JPanel;
 
-class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialogBuilder> implements ProgressDialogBuilder {
+class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.Builder> implements ProgressDialog.Builder {
 
   private boolean indeterminate = true;
   private boolean stringPainted = false;
@@ -16,31 +16,31 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialogB
   private Controls buttonControls;
 
   @Override
-  public ProgressDialogBuilder indeterminate(final boolean indeterminate) {
+  public ProgressDialog.Builder indeterminate(final boolean indeterminate) {
     this.indeterminate = indeterminate;
     return this;
   }
 
   @Override
-  public ProgressDialogBuilder stringPainted(final boolean stringPainted) {
+  public ProgressDialog.Builder stringPainted(final boolean stringPainted) {
     this.stringPainted = stringPainted;
     return this;
   }
 
   @Override
-  public ProgressDialogBuilder northPanel(final JPanel northPanel) {
+  public ProgressDialog.Builder northPanel(final JPanel northPanel) {
     this.northPanel = northPanel;
     return this;
   }
 
   @Override
-  public ProgressDialogBuilder westPanel(final JPanel westPanel) {
+  public ProgressDialog.Builder westPanel(final JPanel westPanel) {
     this.westPanel = westPanel;
     return this;
   }
 
   @Override
-  public ProgressDialogBuilder buttonControls(final Controls buttonControls) {
+  public ProgressDialog.Builder buttonControls(final Controls buttonControls) {
     this.buttonControls = buttonControls;
     return this;
   }
