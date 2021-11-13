@@ -7373,3 +7373,4 @@
   LoginPanel.onOkPressed() refactored using ProgressWorker
   LoginPanel now displays an indeterminate progress dialog while validating the login
   LoginPanel, minor UI improvements, padding added
+  ProgressWorker refactored

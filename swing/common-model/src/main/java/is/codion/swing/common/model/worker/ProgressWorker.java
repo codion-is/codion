@@ -34,8 +34,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private static final String PROGRESS_PROPERTY = "progress";
 
   private final ProgressTask<T, V> task;
-  private final ProgressReporter<V> progressReporter = new DefaultProgressReporter();
-
   private final Runnable onStarted;
   private final Runnable onFinished;
   private final Consumer<T> onResult;
@@ -48,13 +46,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
                          final Consumer<T> onResult, final Consumer<Integer> onProgress, final Consumer<List<V>> onPublish,
                          final Consumer<Throwable> onException, final Runnable onInterrupted) {
     this.task = requireNonNull(task);
-    this.onStarted = onStarted;
-    this.onFinished = onFinished;
-    this.onResult = onResult;
-    this.onProgress = onProgress;
-    this.onPublish = onPublish;
-    this.onException = onException;
-    this.onInterrupted = onInterrupted;
+    this.onStarted = onStarted == null ? () -> {} : onStarted;
+    this.onFinished = onFinished == null ? () -> {} : onFinished;
+    this.onResult = onResult == null ? result -> {} : onResult;
+    this.onProgress = onProgress == null ? progress -> {} : onProgress;
+    this.onPublish = onPublish == null ? chunks -> {} : onPublish;
+    this.onException = onException == null ? ProgressWorker::handleException : onException;
+    this.onInterrupted = onInterrupted == null ? () -> Thread.currentThread().interrupt() : onInterrupted;
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -81,12 +79,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected T doInBackground() throws Exception {
-    return task.perform(progressReporter);
+    return task.perform(new TaskProgressReporter());
   }
 
   @Override
   protected void process(final List<V> chunks) {
-    handleProcess(chunks);
+    onPublish.accept(chunks);
   }
 
   @Override
@@ -97,73 +95,33 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
       if (StateValue.STARTED.equals(changeEvent.getNewValue())) {
-        handleStarted();
+        onStarted.run();
       }
     }
     else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
-      handleProgress((Integer) changeEvent.getNewValue());
+      onProgress.accept((Integer) changeEvent.getNewValue());
     }
   }
 
   private void finish() {
-    handleFinished();
+    onFinished.run();
     try {
-      handleResult();
-    }
-    catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      handleInterrupted();
-    }
-    catch (final ExecutionException e) {
-      handleException(e);
-    }
-  }
-
-  private void handleStarted() {
-    if (onStarted != null) {
-      onStarted.run();
-    }
-  }
-
-  private void handleProcess(final List<V> chunks) {
-    if (onPublish != null) {
-      onPublish.accept(chunks);
-    }
-  }
-
-  private void handleProgress(final Integer progress) {
-    if (onProgress != null) {
-      onProgress.accept(progress);
-    }
-  }
-
-  private void handleFinished() {
-    if (onFinished != null) {
-      onFinished.run();
-    }
-  }
-
-  private void handleResult() throws InterruptedException, ExecutionException {
-    if (onResult != null) {
       onResult.accept(get());
     }
-  }
-
-  private void handleInterrupted() {
-    if (onInterrupted != null) {
+    catch (final InterruptedException e) {
       onInterrupted.run();
     }
-  }
-
-  private void handleException(final ExecutionException e) {
-    if (onException != null) {
+    catch (final ExecutionException e) {
       onException.accept(e.getCause());
     }
-    else if (e.getCause() instanceof RuntimeException) {
-      throw (RuntimeException) e.getCause();
+  }
+
+  private static void handleException(final Throwable exception) {
+    if (exception instanceof RuntimeException) {
+      throw (RuntimeException) exception;
     }
     else {
-      throw new RuntimeException(e.getCause());
+      throw new RuntimeException(exception);
     }
   }
 
@@ -256,7 +214,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     Builder<T, V> onException(Consumer<Throwable> onException);
 
     /**
-     * @param onInterrupted called on the EDT if the worker was interrupted
+     * @param onInterrupted called on the EDT if the background task was interrupted
      * @return this builder instance
      */
     Builder<T, V> onInterrupted(Runnable onInterrupted);
@@ -273,7 +231,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     ProgressWorker<T, V> build();
   }
 
-  private final class DefaultProgressReporter implements ProgressReporter<V> {
+  private final class TaskProgressReporter implements ProgressReporter<V> {
     @Override
     public void setProgress(final int progress) {
       ProgressWorker.this.setProgress(progress);

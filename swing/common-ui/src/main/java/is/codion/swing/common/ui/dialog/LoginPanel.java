@@ -172,7 +172,6 @@ final class LoginPanel extends JPanel {
             .onStarted(this::onValidationStarted)
             .onResult(this::onValidationSuccess)
             .onException(this::onValidationFailure)
-            .onInterrupted(() -> Thread.currentThread().interrupt())
             .execute();
   }
 
