@@ -54,7 +54,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   /**
    * Instantiates a new DefaultEntityTableConditionModel
-   * @param entityType the id of the underlying entity
+   * @param entityType the underlying entity type
    * @param connectionProvider a EntityConnectionProvider instance
    * @param filterModelFactory provides the column filter models for this table condition model, null if not required
    * @param conditionModelFactory provides the column condition models for this table condition model
