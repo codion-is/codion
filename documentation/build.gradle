@@ -51,7 +51,6 @@ task combinedJavadoc(type: Javadoc) {
     group 'documentation'
     title "Codion Framework API ${documentationVersion}"
     options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
-    options.addBooleanOption "-no-module-directories", true
     destinationDir = file("${buildDir}/docs/javadoc")
     modularity.inferModulePath = false
 	frameworkModules.each { module ->
