@@ -47,7 +47,7 @@ import static java.util.stream.Collectors.toList;
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  */
-public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
+public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -786,7 +786,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected static final class DefaultColumnValueProvider<T extends Number, C> implements ColumnSummaryModel.ColumnValueProvider<T> {
 
     private final C columnIdentifier;
-    private final FilteredTableModel<?, C, ?> tableModel;
+    private final FilteredTableModel<?, C> tableModel;
     private final Format format;
 
     /**
@@ -794,7 +794,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * @param tableModel the table model
      * @param format the format to use for presenting the summary value
      */
-    public DefaultColumnValueProvider(final C columnIdentifier, final FilteredTableModel<?, C, ?> tableModel,
+    public DefaultColumnValueProvider(final C columnIdentifier, final FilteredTableModel<?, C> tableModel,
                                       final Format format) {
       this.columnIdentifier = columnIdentifier;
       this.tableModel = tableModel;

@@ -714,9 +714,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private static final class DefaultConditionPanelFactory<C> implements ConditionPanelFactory {
 
-    private final FilteredTableModel<?, C, ?> tableModel;
+    private final FilteredTableModel<?, C> tableModel;
 
-    private DefaultConditionPanelFactory(final FilteredTableModel<?, C, ?> tableModel) {
+    private DefaultConditionPanelFactory(final FilteredTableModel<?, C> tableModel) {
       this.tableModel = tableModel;
     }
 

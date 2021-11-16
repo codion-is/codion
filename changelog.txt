@@ -7376,3 +7376,4 @@
   ProgressWorker refactored
   FileUtil removed
 0.17.14
+  FilteredTableModel, replaced column type parameter with TableColumn, since it now resides in swing.common.model
