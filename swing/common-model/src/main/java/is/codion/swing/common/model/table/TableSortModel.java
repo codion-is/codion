@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.model.table;
 
-import is.codion.common.event.EventListener;
+import is.codion.common.event.EventDataListener;
 
 import javax.swing.SortOrder;
 import java.util.List;
@@ -60,9 +60,9 @@ public interface TableSortModel<R, C> {
   Class<?> getColumnClass(C columnIdentifier);
 
   /**
-   * @param listener a listener notified each time the sorting state changes
+   * @param listener a listener notified each time the sorting state changes, with the column identifier as event data
    */
-  void addSortingChangedListener(EventListener listener);
+  void addSortingChangedListener(EventDataListener<C> listener);
 
   /**
    * Specifies a sorting state for a column.

@@ -5,7 +5,7 @@ package is.codion.swing.common.model.table;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
+import is.codion.common.event.EventDataListener;
 
 import javax.swing.SortOrder;
 import java.util.Comparator;
@@ -36,7 +36,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /**
    * Fired when a column sorting state changes
    */
-  private final Event<?> sortingChangedEvent = Event.event();
+  private final Event<C> sortingChangedEvent = Event.event();
 
   /**
    * holds the column sorting states
@@ -71,8 +71,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   @Override
-  public final void addSortingChangedListener(final EventListener listener) {
-    sortingChangedEvent.addListener(listener);
+  public final void addSortingChangedListener(final EventDataListener<C> listener) {
+    sortingChangedEvent.addDataListener(listener);
   }
 
   /**
@@ -121,7 +121,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
         sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.getPriority()));
       }
     }
-    sortingChangedEvent.onEvent();
+    sortingChangedEvent.onEvent(columnIdentifier);
   }
 
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
