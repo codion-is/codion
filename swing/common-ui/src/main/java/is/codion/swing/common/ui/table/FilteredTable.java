@@ -346,7 +346,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
-   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible.
+   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible.
    * Has no effect if this table is not contained in a scrollpanel.
    * @param columnIdentifier the column identifier
    */
@@ -354,7 +354,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JViewport viewport = Components.getParentOfType(this, JViewport.class);
     if (viewport != null) {
       scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
-              getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.COLUMN);
+              getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER);
     }
   }
 
