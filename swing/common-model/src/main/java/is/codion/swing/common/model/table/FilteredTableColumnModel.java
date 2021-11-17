@@ -12,7 +12,6 @@ import java.util.Collection;
 /**
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
- * @param <T> the type representing table columns
  */
 public interface FilteredTableColumnModel<C> {
 

@@ -665,7 +665,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     for (final ColumnConditionModel<C, ?> conditionModel : columnFilterModels.values()) {
       conditionModel.addConditionChangedListener(this::filterContents);
     }
-    sortModel.addSortingChangedListener(this::sort);
+    sortModel.addSortingChangedListener(columnIdentifier -> sort());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
         rowsRemovedEvent.onEvent(new DefaultRemoval(e.getFirstRow(), e.getLastRow()));

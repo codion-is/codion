@@ -832,33 +832,30 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       final TableColumnModel columnModel = tableHeader.getColumnModel();
       final int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
+        if (!getSelectionModel().isSelectionEmpty()) {
+          setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
+        }
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         final TableSortModel<R, C> sortModel = getModel().getSortModel();
-        SortOrder status = sortModel.getSortingState(columnIdentifier).getSortOrder();
-        final boolean shiftDown = e.isShiftDown();
-        switch (status) {
-          case UNSORTED:
-            if (shiftDown) {
-              status = SortOrder.DESCENDING;
-            }
-            else {
-              status = SortOrder.ASCENDING;
-            }
-            break;
-          case ASCENDING:
-            status = SortOrder.DESCENDING;
-            break;
-          default://case DESCENDING:
-            status = SortOrder.ASCENDING;
-            break;
-        }
-
+        final SortOrder sortOrder = getSortOrder(columnIdentifier,
+                sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
         if (e.isControlDown()) {
-          sortModel.addSortOrder(columnIdentifier, status);
+          sortModel.addSortOrder(columnIdentifier, sortOrder);
         }
         else {
-          sortModel.setSortOrder(columnIdentifier, status);
+          sortModel.setSortOrder(columnIdentifier, sortOrder);
         }
+      }
+    }
+
+    private SortOrder getSortOrder(final C columnIdentifier, final SortOrder currentSortOrder, final boolean isShiftDown) {
+      switch (currentSortOrder) {
+        case UNSORTED:
+          return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        case ASCENDING:
+          return SortOrder.DESCENDING;
+        default://case DESCENDING:
+          return SortOrder.ASCENDING;
       }
     }
   }
