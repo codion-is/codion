@@ -832,6 +832,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       final TableColumnModel columnModel = tableHeader.getColumnModel();
       final int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
+        if (!getSelectionModel().isSelectionEmpty()) {
+          setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
+        }
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         final TableSortModel<R, C> sortModel = getModel().getSortModel();
         SortOrder status = sortModel.getSortingState(columnIdentifier).getSortOrder();

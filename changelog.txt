@@ -7379,3 +7379,4 @@
   FilteredTableModel, replaced column type parameter with TableColumn, since it now resides in swing.common.model
   SwingEntityComboBoxModel.orderBy field added
   FilteredTable.scrollToColumn() no longer centers the column by default, quite confusing when used by EntityTablePanel to center on column when condition panel received focus
+  FilteredTable bug fixed, sorting by clicking on a table header now selects the column, otherwise, the focus jumps to the selected column after sorting
