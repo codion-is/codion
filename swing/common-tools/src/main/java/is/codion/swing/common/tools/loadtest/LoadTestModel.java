@@ -65,7 +65,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final Value<Integer> applicationBatchSizeValue;
   private final Value<Integer> maximumThinkTimeValue;
   private final Value<Integer> minimumThinkTimeValue;
-  private final Value<Integer> applicationCountValue = Value.value();
+  private final Value<Integer> applicationCountValue = Value.value(0);
   private final Event<?> shutdownEvent = Event.event();
 
   private User user;

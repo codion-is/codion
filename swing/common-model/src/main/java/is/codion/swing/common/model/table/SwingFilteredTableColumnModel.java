@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
  */
-public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C, TableColumn> {
+public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 

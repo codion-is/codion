@@ -6,6 +6,7 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
+import javax.swing.table.TableColumn;
 import java.util.Collection;
 
 /**
@@ -13,17 +14,17 @@ import java.util.Collection;
  * @param <C> the type of column identifier
  * @param <T> the type representing table columns
  */
-public interface FilteredTableColumnModel<C, T> {
+public interface FilteredTableColumnModel<C> {
 
   /**
    * @return all columns in this model, both hidden and visible, in no particular order
    */
-  Collection<T> getAllColumns();
+  Collection<TableColumn> getAllColumns();
 
   /**
    * @return an unmodifiable view of hidden table columns
    */
-  Collection<T> getHiddenColumns();
+  Collection<TableColumn> getHiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -66,7 +67,7 @@ public interface FilteredTableColumnModel<C, T> {
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  T getTableColumn(C identifier);
+  TableColumn getTableColumn(C identifier);
 
   /**
    * @param identifier the column identifier

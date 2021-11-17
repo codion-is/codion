@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityEditEvents;
@@ -59,6 +60,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * The domain model entities
    */
   private final Entities entities;
+
+  /**
+   * The order by clause
+   */
+  private final OrderBy orderBy;
 
   /**
    * true if the data should only be fetched once, unless {@code forceRefresh()} is called
@@ -114,6 +120,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.entityType = entityType;
     this.connectionProvider = connectionProvider;
     this.entities = connectionProvider.getEntities();
+    this.orderBy = this.entities.getDefinition(entityType).getOrderBy();
     setStaticData(this.entities.getDefinition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
     addEditEventListeners();
@@ -315,7 +322,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       }
 
       return connectionProvider.getConnection().select(condition.toSelectCondition()
-              .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
+              .orderBy(orderBy));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
