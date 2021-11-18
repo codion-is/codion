@@ -7382,3 +7382,4 @@
   FilteredTable bug fixed, sorting by clicking on a table header now selects the column, otherwise, the focus jumps to the selected column after sorting
   FilteredTable.MouseSortHandler refactored
   TableSortModel.addSortingChangedListener() now notifies which column was involved
+  ComponentBuilder.keyEvent() added
