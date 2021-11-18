@@ -6,6 +6,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
@@ -23,11 +24,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -95,6 +98,10 @@ public final class ApplicationPanel extends JPanel {
             .lineWrap(true)
             .wrapStyleWord(true)
             .transferFocusOnEnter(true)
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_SPACE)
+                    .modifiers(KeyEvent.CTRL_DOWN_MASK)
+                    .action(Control.actionControl(actionEvent ->
+                            ((JTextArea) actionEvent.getSource()).append("SPACE"))))
             .enabledState(inputEnabledState)
             .linkedValue(model.getTextValue())
             .buildScrollPane(inputPanel::add);
