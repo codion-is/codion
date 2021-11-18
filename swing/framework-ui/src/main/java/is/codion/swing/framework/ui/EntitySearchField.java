@@ -198,7 +198,7 @@ public final class EntitySearchField extends JTextField {
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
    * @param dialogTitle the title to display on the dialog
-   * @return the selected entity
+   * @return the selected entity, an empty Optional in case none was selected
    * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntityDefinition#getSearchAttributes()
    */
