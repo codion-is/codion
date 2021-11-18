@@ -9,7 +9,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.KeyEvents.KeyEventBuilder;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -138,13 +138,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B validator(Validator<T> validator);
 
   /**
-   * Enables the key event defined by {@link KeyEventBuilder} on the component.
+   * Enables the key event defined by the given {@link KeyEvents.Builder} on the component.
    * Note that setting {@link #transferFocusOnEnter(boolean)} to true overrides
    * any conflicting key event based on {@link java.awt.event.KeyEvent#VK_ENTER} added via this method.
    * @param keyEventBuilder a key event builder to enable on the component
    * @return this builder instance
    */
-  B keyEvent(KeyEventBuilder keyEventBuilder);
+  B keyEvent(KeyEvents.Builder keyEventBuilder);
 
   /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.

@@ -244,14 +244,14 @@ public final class EntitySearchField extends JTextField {
     });
   }
 
-  private KeyEvents.KeyEventBuilder createForwardEvent() {
+  private KeyEvents.Builder createForwardEvent() {
     return KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(transferFocusAction);
   }
 
-  private KeyEvents.KeyEventBuilder createBackwardEvent() {
+  private KeyEvents.Builder createBackwardEvent() {
     return KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_FOCUSED)
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
