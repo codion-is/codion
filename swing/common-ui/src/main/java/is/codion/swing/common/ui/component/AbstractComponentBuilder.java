@@ -8,7 +8,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.KeyEvents.KeyEventBuilder;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
 
   private final Event<C> buildEvent = Event.event();
-  private final List<KeyEventBuilder> keyEventBuilders = new ArrayList<>(1);
+  private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 
   private C component;
   private ComponentValue<T, C> componentValue;
@@ -149,7 +149,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B keyEvent(final KeyEventBuilder keyEventBuilder) {
+  public final B keyEvent(final KeyEvents.Builder keyEventBuilder) {
     this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
     return (B) this;
   }

@@ -7383,3 +7383,4 @@
   FilteredTable.MouseSortHandler refactored
   TableSortModel.addSortingChangedListener() now notifies which column was involved
   ComponentBuilder.keyEvent() added
+  KeyEvents.KeyEventBuilder renamed Builder

@@ -28,12 +28,12 @@ public final class KeyEvents {
   private KeyEvents() {}
 
   /**
-   * Instantiates a new {@link KeyEventBuilder} instance.
+   * Instantiates a new {@link KeyEvents.Builder} instance.
    * @param keyEvent the key event
-   * @return a {@link KeyEventBuilder} instance.
+   * @return a {@link Builder} instance.
    */
-  public static KeyEventBuilder builder(final int keyEvent) {
-    return new DefaultKeyEventBuilder(keyEvent);
+  public static Builder builder(final int keyEvent) {
+    return new DefaultBuilder(keyEvent);
   }
 
   /**
@@ -41,36 +41,36 @@ public final class KeyEvents {
    * and condition {@link JComponent#WHEN_FOCUSED}.
    * @see KeyEvents#builder(int)
    */
-  public interface KeyEventBuilder {
+  public interface Builder {
 
     /**
      * @param modifiers the modifiers
      * @return this builder instance
      */
-    KeyEventBuilder modifiers(int modifiers);
+    Builder modifiers(int modifiers);
 
     /**
      * Sets the key event condition, {@link JComponent#WHEN_FOCUSED} by default.
      * @param condition the condition
      * @return this builder instance
      */
-    KeyEventBuilder condition(int condition);
+    Builder condition(int condition);
 
     /**
      * @return this builder instance
      */
-    KeyEventBuilder onKeyPressed();
+    Builder onKeyPressed();
 
     /**
      * @return this builder instance
      */
-    KeyEventBuilder onKeyReleased();
+    Builder onKeyReleased();
 
     /**
      * @param action the action, if null then the action binding is removed
      * @return this builder instance
      */
-    KeyEventBuilder action(Action action);
+    Builder action(Action action);
 
     /**
      * Returns a KeyStroke based on this builder
@@ -91,7 +91,7 @@ public final class KeyEvents {
     void disable(JComponent component);
   }
 
-  private static final class DefaultKeyEventBuilder implements KeyEventBuilder {
+  private static final class DefaultBuilder implements Builder {
 
     private final int keyEvent;
 
@@ -100,36 +100,36 @@ public final class KeyEvents {
     private boolean onKeyRelease = true;
     private Action action;
 
-    private DefaultKeyEventBuilder(final int keyEvent) {
+    private DefaultBuilder(final int keyEvent) {
       this.keyEvent = keyEvent;
     }
 
     @Override
-    public KeyEventBuilder modifiers(final int modifiers) {
+    public Builder modifiers(final int modifiers) {
       this.modifiers = modifiers;
       return this;
     }
 
     @Override
-    public KeyEventBuilder condition(final int condition) {
+    public Builder condition(final int condition) {
       this.condition = condition;
       return this;
     }
 
     @Override
-    public KeyEventBuilder onKeyPressed() {
+    public Builder onKeyPressed() {
       this.onKeyRelease = false;
       return this;
     }
 
     @Override
-    public KeyEventBuilder onKeyReleased() {
+    public Builder onKeyReleased() {
       this.onKeyRelease = true;
       return this;
     }
 
     @Override
-    public KeyEventBuilder action(final Action action) {
+    public Builder action(final Action action) {
       this.action = action;
       return this;
     }
