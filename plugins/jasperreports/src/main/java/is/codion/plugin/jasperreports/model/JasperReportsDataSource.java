@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JRField;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,6 +21,7 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
 
   private final Iterator<T> reportIterator;
   private final BiFunction<T, JRField, Object> valueProvider;
+  private final Consumer<T> onNext;
   private T currentItem = null;
 
   /**
@@ -28,8 +30,20 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
    * @param valueProvider a Function returning the value for a given field from the given item
    */
   public JasperReportsDataSource(final Iterator<T> reportIterator, final BiFunction<T, JRField, Object> valueProvider) {
+    this(reportIterator, valueProvider, null);
+  }
+
+  /**
+   * Instantiates a new JasperReportsDataSource.
+   * @param reportIterator the iterator providing the report data
+   * @param valueProvider a Function returning the value for a given field from the given item
+   * @param onNext called each time next has been called
+   */
+  public JasperReportsDataSource(final Iterator<T> reportIterator, final BiFunction<T, JRField, Object> valueProvider,
+                                 final Consumer<T> onNext) {
     this.reportIterator = requireNonNull(reportIterator, "reportIterator");
     this.valueProvider = requireNonNull(valueProvider, "valueProvider");
+    this.onNext = onNext == null ? next -> {} : onNext;
   }
 
   @Override
@@ -37,6 +51,7 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
     final boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
       currentItem = reportIterator.next();
+      onNext.accept(currentItem);
     }
 
     return hasNext;
