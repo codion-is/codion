@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -72,5 +73,12 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
     catch (final Exception e) {
       throw new JRException("Unable to get field value: " + field.getName(), e);
     }
+  }
+
+  /**
+   * @return the current item, an empty Optional if none is available
+   */
+  public Optional<T> currentItem() {
+    return Optional.ofNullable(currentItem);
   }
 }

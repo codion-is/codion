@@ -7385,3 +7385,4 @@
   ComponentBuilder.keyEvent() added
   KeyEvents.KeyEventBuilder renamed Builder
   JasperReportsDataSource.onNext added
+  JasperReportsDataSource.currentItem() added
