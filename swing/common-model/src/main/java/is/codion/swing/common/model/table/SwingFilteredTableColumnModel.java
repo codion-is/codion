@@ -9,7 +9,6 @@ import is.codion.common.state.State;
 
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -120,8 +119,8 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   }
 
   @Override
-  public List<TableColumn> getHiddenColumns() {
-    return new ArrayList<>(hiddenColumns.values());
+  public Collection<TableColumn> getHiddenColumns() {
+    return Collections.unmodifiableCollection(hiddenColumns.values());
   }
 
   @Override
