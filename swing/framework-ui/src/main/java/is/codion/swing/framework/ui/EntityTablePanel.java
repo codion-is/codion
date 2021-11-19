@@ -1458,7 +1458,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     final JPopupMenu popupMenu = popupControls.createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
-    table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }

@@ -837,8 +837,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         }
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         final TableSortModel<R, C> sortModel = getModel().getSortModel();
-        final SortOrder sortOrder = getSortOrder(columnIdentifier,
-                sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
+        final SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
         if (e.isControlDown()) {
           sortModel.addSortOrder(columnIdentifier, sortOrder);
         }
@@ -848,7 +847,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     }
 
-    private SortOrder getSortOrder(final C columnIdentifier, final SortOrder currentSortOrder, final boolean isShiftDown) {
+    private SortOrder getSortOrder(final SortOrder currentSortOrder, final boolean isShiftDown) {
       switch (currentSortOrder) {
         case UNSORTED:
           return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;
