@@ -24,8 +24,11 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
   private final EntityConnection connection;
 
-  CountryReportDataSource(final List<Entity> countries, final ProgressReporter<String> progressReporter, final EntityConnection connection) {
-    super(countries.iterator(), new CountryValueProvider(), new CountryReportProgressReporter(progressReporter, countries.size()));
+  CountryReportDataSource(final List<Entity> countries,
+                          final ProgressReporter<String> progressReporter,
+                          final EntityConnection connection) {
+    super(countries.iterator(), new CountryValueProvider(),
+            new CountryReportProgressReporter(progressReporter, countries.size()));
     this.connection = connection;
   }
 
@@ -33,7 +36,8 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     try {
       final Optional<Entity> entity = currentItem();
       if (entity.isPresent()) {
-        final List<Entity> select = connection.select(where(City.COUNTRY_CODE).equalTo(entity.get().get(Country.CODE))
+        final List<Entity> select = connection.select(where(City.COUNTRY_CODE)
+                .equalTo(entity.get().get(Country.CODE))
                 .toSelectCondition()
                 .orderBy(orderBy().ascending(City.NAME)));
 
@@ -87,7 +91,8 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     private final ProgressReporter<String> progressReporter;
     private final int noOfCountries;
 
-    private CountryReportProgressReporter(final ProgressReporter<String> progressReporter, final int noOfCountries) {
+    private CountryReportProgressReporter(final ProgressReporter<String> progressReporter,
+                                          final int noOfCountries) {
       this.progressReporter = progressReporter;
       this.noOfCountries = noOfCountries;
     }
