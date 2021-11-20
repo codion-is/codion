@@ -113,61 +113,67 @@ public final class TestDomain extends DefaultDomain {
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
-  public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
-  public static final Attribute<OffsetDateTime> EMP_HIRETIME = T_EMP.offsetDateTimeAttribute("hiretime");
-  public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final ForeignKey EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, Department.DEPTNO);
-  public static final ForeignKey EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
-  public static final Attribute<byte[]> EMP_DATA_LAZY = T_EMP.byteArrayAttribute("data_lazy");
-  public static final Attribute<byte[]> EMP_DATA = T_EMP.byteArrayAttribute("data");
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-  public static final ConditionType EMP_NAME_IS_BLAKE_CONDITION_ID = T_EMP.conditionType("condition1Id");
-  public static final ConditionType EMP_MGR_GREATER_THAN_CONDITION_ID = T_EMP.conditionType("condition2Id");
+    Attribute<Integer> ID = TYPE.integerAttribute("empno");
+    Attribute<String> NAME = TYPE.stringAttribute("ename");
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
+    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
+    Attribute<OffsetDateTime> HIRETIME = TYPE.offsetDateTimeAttribute("hiretime");
+    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
+    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
+    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
+    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Attribute<byte[]> DATA_LAZY = TYPE.byteArrayAttribute("data_lazy");
+    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
+
+    ConditionType NAME_IS_BLAKE_CONDITION_ID = TYPE.conditionType("condition1Id");
+    ConditionType MGR_GREATER_THAN_CONDITION_ID = TYPE.conditionType("condition2Id");
+  }
 
   void employee() {
-    define(T_EMP,
-            primaryKeyProperty(EMP_ID, EMP_ID.getName()),
-            columnProperty(EMP_NAME, EMP_NAME.getName())
+    define(Employee.TYPE,
+            primaryKeyProperty(Employee.ID, Employee.ID.getName()),
+            columnProperty(Employee.NAME, Employee.NAME.getName())
                     .searchProperty().maximumLength(10).nullable(false),
-            columnProperty(EMP_DEPARTMENT)
+            columnProperty(Employee.DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
-            itemProperty(EMP_JOB, EMP_JOB.getName(),
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName()),
+            itemProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(),
-            columnProperty(EMP_SALARY, EMP_SALARY.getName())
+            columnProperty(Employee.SALARY, Employee.SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
+            columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
-            columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName())
+            columnProperty(Employee.MGR),
+            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.getName())
                     //not really soft, just for testing purposes
                     .softReference(),
-            columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
+            columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .nullable(false),
-            columnProperty(EMP_HIRETIME, EMP_HIRETIME.getName()),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, Department.LOC.getName(), EMP_DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
-            columnProperty(EMP_DATA_LAZY),
-            blobProperty(EMP_DATA)
+            columnProperty(Employee.HIRETIME, Employee.HIRETIME.getName()),
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.getName(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
+            columnProperty(Employee.DATA_LAZY),
+            blobProperty(Employee.DATA)
                     .eagerlyLoaded())
-            .stringFactory(stringFactory(EMP_NAME))
+            .stringFactory(stringFactory(Employee.NAME))
             .keyGenerator(increment("scott.emp", "empno"))
-            .conditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
-            .conditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (attributes, values) -> "mgr > ?")
+            .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
+            .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION_ID, (attributes, values) -> "mgr > ?")
             .caption("Employee");
   }
 
-  public static final EntityType T_UUID_TEST_DEFAULT = DOMAIN.entityType("scott.uuid_test_default");
-  public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = T_UUID_TEST_DEFAULT.attribute("id", UUID.class);
-  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = T_UUID_TEST_DEFAULT.stringAttribute("data");
+  public interface UUIDTestDefault {
+    EntityType TYPE = DOMAIN.entityType("scott.uuid_test_default");
+
+    Attribute<UUID> ID = TYPE.attribute("id", UUID.class);
+    Attribute<String> DATA = TYPE.stringAttribute("data");
+  }
 
   private void uuidTestDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -176,7 +182,7 @@ public final class TestDomain extends DefaultDomain {
                               final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
         try (final ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
           if (generatedKeys.next()) {
-            entity.put(UUID_TEST_DEFAULT_ID, (UUID) generatedKeys.getObject(1));
+            entity.put(UUIDTestDefault.ID, (UUID) generatedKeys.getObject(1));
           }
         }
       }
@@ -185,27 +191,30 @@ public final class TestDomain extends DefaultDomain {
         return true;
       }
     };
-    define(T_UUID_TEST_DEFAULT,
-            primaryKeyProperty(UUID_TEST_DEFAULT_ID, "Id"),
-            columnProperty(UUID_TEST_DEFAULT_DATA, "Data"))
+    define(UUIDTestDefault.TYPE,
+            primaryKeyProperty(UUIDTestDefault.ID, "Id"),
+            columnProperty(UUIDTestDefault.DATA, "Data"))
             .keyGenerator(uuidKeyGenerator);
   }
 
-  public static final EntityType T_UUID_TEST_NO_DEFAULT = DOMAIN.entityType("scott.uuid_test_no_default");
-  public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = T_UUID_TEST_NO_DEFAULT.attribute("id", UUID.class);
-  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = T_UUID_TEST_NO_DEFAULT.stringAttribute("data");
+  public interface UUIDTestNoDefault {
+    EntityType TYPE = DOMAIN.entityType("scott.uuid_test_no_default");
+    
+    Attribute<UUID> ID = TYPE.attribute("id", UUID.class);
+    Attribute<String> DATA = TYPE.stringAttribute("data");
+  }
 
   private void uuidTestNoDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
       public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                                final DatabaseConnection connection) throws SQLException {
-        entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
+        entity.put(UUIDTestNoDefault.ID, UUID.randomUUID());
       }
     };
-    define(T_UUID_TEST_NO_DEFAULT,
-            primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, "Id"),
-            columnProperty(UUID_TEST_NO_DEFAULT_DATA, "Data"))
+    define(UUIDTestNoDefault.TYPE,
+            primaryKeyProperty(UUIDTestNoDefault.ID, "Id"),
+            columnProperty(UUIDTestNoDefault.DATA, "Data"))
             .keyGenerator(uuidKeyGenerator);
   }
 

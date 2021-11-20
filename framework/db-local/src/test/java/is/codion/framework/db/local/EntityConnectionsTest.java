@@ -12,6 +12,8 @@ import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.IncludePrimaryKeys;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.TestDomain.Department;
+import is.codion.framework.db.local.TestDomain.Employee;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
@@ -44,8 +46,8 @@ public class EntityConnectionsTest {
       final Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = localEntityConnection(DOMAIN, destinationDatabase, User.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
-      DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
-      DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));
+      DESTINATION_CONNECTION.delete(condition(Employee.TYPE));
+      DESTINATION_CONNECTION.delete(condition(Department.TYPE));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -60,31 +62,31 @@ public class EntityConnectionsTest {
   @Test
   void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
-    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.Department.TYPE);
+    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, Department.TYPE);
 
-    assertEquals(sourceConnection.rowCount(condition(TestDomain.Department.TYPE)),
-            DESTINATION_CONNECTION.rowCount(condition(TestDomain.Department.TYPE)));
+    assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
+            DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
 
-    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_EMP);
-    DESTINATION_CONNECTION.select(condition(TestDomain.T_EMP));
+    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, Employee.TYPE);
+    DESTINATION_CONNECTION.select(condition(Employee.TYPE));
 
-    DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
-    DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));
+    DESTINATION_CONNECTION.delete(condition(Employee.TYPE));
+    DESTINATION_CONNECTION.delete(condition(Department.TYPE));
   }
 
   @Test
   void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.select(condition(TestDomain.Department.TYPE));
+    final List<Entity> source = sourceConnection.select(condition(Department.TYPE));
 
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnection.batchInsert(DESTINATION_CONNECTION, source.iterator(), 2, progressReporter, null);
-    assertEquals(sourceConnection.rowCount(condition(TestDomain.Department.TYPE)),
-            DESTINATION_CONNECTION.rowCount(condition(TestDomain.Department.TYPE)));
+    assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
+            DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
 
     EntityConnection.batchInsert(DESTINATION_CONNECTION, Collections.emptyIterator(), 10, null, null);
-    DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));
+    DESTINATION_CONNECTION.delete(condition(Department.TYPE));
   }
 
   @Test
