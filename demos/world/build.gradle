@@ -4,6 +4,7 @@ dependencies {
     implementation project(':codion-swing-framework-ui')
     implementation project(':codion-plugin-jackson-json')
     implementation project(':codion-plugin-ikonli-foundation')
+    implementation project(':codion-plugin-jasperreports')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
     implementation 'org.jxmapviewer:jxmapviewer2:2.6'
@@ -18,6 +19,16 @@ dependencies {
     runtimeOnly project(':codion-framework-db-rmi')
     runtimeOnly project(':codion-framework-db-http')
 
+    implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
+        transitive = false
+    }
+
+    runtimeOnly "commons-logging:commons-logging:${commonsLoggingVersion}"
+    runtimeOnly "commons-digester:commons-digester:${commonsDigesterVersion}"
+    runtimeOnly "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
+    runtimeOnly "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
+    runtimeOnly "org.eclipse.jdt:ecj:${jdtCoreCompilerVersion}"
+
     runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
@@ -28,6 +39,25 @@ test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
 }
+
+task buildReports(dependsOn: 'compileJava') {
+    group 'build'
+    def jasperSourceDir = file('src/main/reports')
+    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/ui')
+    inputs.dir jasperSourceDir
+    outputs.dir jasperTargetDir
+    doLast {
+        ant {
+            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
+            jasperTargetDir.mkdirs()
+            jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
+                classpath(path: sourceSets.main.output.classesDirs)
+                include(name: '**/*.jrxml')
+            }
+        }
+    }
+}
+classes.finalizedBy buildReports
 
 startScripts {
     mainClass = execMainClass

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="country_report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="65647229-b9ea-492c-9579-df6c5298a9a2">
+	<property name="ireport.scriptlethandling" value="2"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="continent" class="java.lang.String"/>
+	<field name="region" class="java.lang.String"/>
+	<field name="surfacearea" class="java.lang.String"/>
+	<field name="indepyear" class="java.lang.String"/>
+	<field name="population" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="34">
+			<staticText>
+				<reportElement x="0" y="0" width="535" height="30" uuid="4b9651aa-ee01-4585-bdad-8e92b68e2528"/>
+				<textElement textAlignment="Center">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Countries]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="0" width="100" height="14" uuid="52591026-2ffa-4ca3-b73d-31bb53463220"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="0" width="100" height="14" uuid="a37319e9-d3d7-4adc-a058-4783281221be">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{continent}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="1" width="100" height="14" uuid="94bb3563-d458-47f3-bb98-bb9914e458f7"/>
+				<textFieldExpression><![CDATA[$F{region}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="1" width="100" height="14" uuid="7ae9640c-d57f-4cd9-b08c-b2e582ae4084">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{surfacearea}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="1" width="100" height="14" uuid="0aeaac02-df9f-4c84-9533-3daee90d0082">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{population}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
