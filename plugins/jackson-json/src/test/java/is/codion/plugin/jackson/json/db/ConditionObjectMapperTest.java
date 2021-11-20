@@ -97,7 +97,7 @@ public final class ConditionObjectMapperTest {
             .forUpdate()
             .fetchDepth(2)
             .fetchDepth(TestDomain.EMP_DEPARTMENT_FK, 0)
-            .attributes(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT);
+            .selectAttributes(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT);
 
     String jsonString = mapper.writeValueAsString(selectCondition);
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);

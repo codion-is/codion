@@ -311,7 +311,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void selectAttributes() throws Exception {
     final List<Entity> emps = connection.select(condition(Employee.TYPE).toSelectCondition()
-            .attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT));
+            .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT));
     for (final Entity emp : emps) {
       assertTrue(emp.contains(Employee.ID));
       assertTrue(emp.contains(Employee.JOB));
@@ -327,7 +327,7 @@ public class DefaultLocalEntityConnectionTest {
   void selectInvalidAttributes() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
             connection.select(condition(Employee.TYPE).toSelectCondition()
-                    .attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK)));
+                    .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK)));
   }
 
   @Test
@@ -808,7 +808,7 @@ public class DefaultLocalEntityConnectionTest {
     assertNotNull(scottFromDb.get(Employee.DATA));
 
     //overrides lazy loading
-    scottFromDb = connection.selectSingle(condition(scott.getPrimaryKey()).toSelectCondition().attributes(Employee.DATA_LAZY));
+    scottFromDb = connection.selectSingle(condition(scott.getPrimaryKey()).toSelectCondition().selectAttributes(Employee.DATA_LAZY));
     assertNotNull(scottFromDb.get(Employee.DATA_LAZY));
   }
 

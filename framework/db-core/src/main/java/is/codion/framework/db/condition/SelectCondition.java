@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -106,28 +107,22 @@ public interface SelectCondition extends Condition {
   SelectCondition fetchDepth(int fetchDepth);
 
   /**
-   * Sets the attributes to include in the resulting Entities,
-   * including the column attributes involved in a foreign key
-   * causes the foreign key values to be populated.
-   * If you want the primary key to be populated you must include
-   * the primary key attributes.
+   * Sets the attributes to include in the resulting Entities.
+   * Note that primary key attribute values are always included.
    * Note that these must be ColumnProperty attributes
    * @param attributes the attributes to include
    * @return this SelectCondition instance
    */
-  SelectCondition attributes(Attribute<?>... attributes);
+  SelectCondition selectAttributes(Attribute<?>... attributes);
 
   /**
-   * Sets the attributes to include in the resulting Entities,
-   * including the column attributes involved in a foreign key
-   * causes the foreign key values to be populated.
-   * If you want the primary key to be populated you must include
-   * the primary key attributes.
-   * Note that these must be ColumnProperty attributes
+   * Sets the attributes to include in the resulting Entities.
+   * Note that primary key attribute values are always included.
+   * Note that primary key attribute values are always included.
    * @param attributes the attributes to include
    * @return this SelectCondition instance
    */
-  SelectCondition attributes(List<Attribute<?>> attributes);
+  SelectCondition selectAttributes(Collection<Attribute<?>> attributes);
 
   /**
    * @return the attributes to include in the query result,

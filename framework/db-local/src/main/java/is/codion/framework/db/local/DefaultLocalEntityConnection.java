@@ -876,7 +876,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (final Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       final List<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
       final SelectCondition selectForUpdateCondition = condition(originalKeys).toSelectCondition()
-              .attributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
+              .selectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
               .forUpdate();
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final EntityDefinition definition = domainEntities.getDefinition(entitiesByEntityTypeEntry.getKey());
