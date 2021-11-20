@@ -149,6 +149,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final ForeignKeyProperty foreignKeyProperty = getEntityDefinition().getForeignKeyProperty(foreignKey);
     final SwingEntityComboBoxModel model =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
+    model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
