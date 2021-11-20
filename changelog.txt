@@ -7392,3 +7392,4 @@
   SwingEntityEditModel.createForeignKeyComboBoxModel() now sets the select attributes according to the foreign key select attributes
   ComponentDialogBuilder.preferredSize() added
   EntityReports removed
+  JasperReportsDataSource no longer final, quite convenient to override
