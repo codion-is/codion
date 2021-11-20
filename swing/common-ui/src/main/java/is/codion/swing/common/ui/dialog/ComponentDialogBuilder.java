@@ -9,6 +9,7 @@ import is.codion.common.state.State;
 
 import javax.swing.Action;
 import javax.swing.JDialog;
+import java.awt.Dimension;
 
 /**
  * A builder for JDialog containing a single component.
@@ -26,6 +27,12 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this DialogBuilder instance
    */
   ComponentDialogBuilder resizable(boolean resizable);
+
+  /**
+   * @param preferredSize the preferred size of the component
+   * @return this DialogBuilder instance
+   */
+  ComponentDialogBuilder preferredSize(Dimension preferredSize);
 
   /**
    * @param enterAction the action to associate with the ENTER key

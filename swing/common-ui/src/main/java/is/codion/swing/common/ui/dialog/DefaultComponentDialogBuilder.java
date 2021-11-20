@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -27,6 +28,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   private boolean modal = true;
   private boolean resizable = true;
+  private Dimension preferredSize;
   private Action enterAction;
   private Action onClosedAction;
   private EventObserver<?> closeEvent;
@@ -46,6 +48,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   @Override
   public ComponentDialogBuilder resizable(final boolean resizable) {
     this.resizable = resizable;
+    return this;
+  }
+
+  @Override
+  public ComponentDialogBuilder preferredSize(final Dimension preferredSize) {
+    this.preferredSize = requireNonNull(preferredSize);
     return this;
   }
 
@@ -92,6 +100,9 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     final JDialog dialog = new JDialog(owner, title);
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
+    }
+    if (preferredSize != null) {
+      component.setPreferredSize(preferredSize);
     }
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);

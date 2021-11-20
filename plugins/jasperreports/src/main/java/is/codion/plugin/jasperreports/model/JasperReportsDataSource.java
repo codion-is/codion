@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  * A default JRDataSource implementation which iterates through the iterator received via the constructor.
  * @param <T> the type to fetch the data from
  */
-public final class JasperReportsDataSource<T> implements JRDataSource {
+public class JasperReportsDataSource<T> implements JRDataSource {
 
   private final Iterator<T> reportIterator;
   private final BiFunction<T, JRField, Object> valueProvider;
@@ -48,7 +48,7 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
   }
 
   @Override
-  public boolean next() {
+  public final boolean next() {
     final boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
       currentItem = reportIterator.next();
@@ -65,7 +65,7 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
    */
   @Override
-  public Object getFieldValue(final JRField field) throws JRException {
+  public final Object getFieldValue(final JRField field) throws JRException {
     requireNonNull(field, "field");
     try {
       return valueProvider.apply(currentItem, field);
@@ -78,7 +78,7 @@ public final class JasperReportsDataSource<T> implements JRDataSource {
   /**
    * @return the current item, an empty Optional if none is available
    */
-  public Optional<T> currentItem() {
+  public final Optional<T> currentItem() {
     return Optional.ofNullable(currentItem);
   }
 }

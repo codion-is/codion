@@ -3,16 +3,20 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.report.ReportException;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,12 +42,26 @@ public final class CustomerTablePanel extends EntityTablePanel {
   }
 
   private void viewCustomerReport() throws Exception {
+    Dialogs.progressWorkerDialog(this::fillCustomerReport)
+            .onSuccess(this::viewReport)
+            .execute();
+  }
+
+  private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
     final Collection<Long> customerIDs = Entity.getDistinct(Customer.ID,
             getTableModel().getSelectionModel().getSelectedItems());
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    EntityReports.viewJdbcReport(CustomerTablePanel.this, Customer.REPORT,
-            reportParameters, JRViewer::new, null, getTableModel().getConnectionProvider());
+    return getTableModel().getConnectionProvider().getConnection().fillReport(Customer.REPORT, reportParameters);
+  }
+
+  private void viewReport(final JasperPrint customerReport) {
+    Dialogs.componentDialog(new JRViewer(customerReport))
+            .owner(this)
+            .modal(false)
+            .title(BUNDLE.getString("customer_report"))
+            .preferredSize(new Dimension(800, 600))
+            .show();
   }
 }

@@ -28,7 +28,7 @@ dependencies {
     implementation project(':codion-framework-db-http')
     implementation project(':codion-framework-db-rmi')
 
-    implementation 'com.formdev:flatlaf:1.6.2'
+    implementation 'com.formdev:flatlaf:1.6.4'
 
     testImplementation project(':codion-framework-domain-test')
 
@@ -93,7 +93,6 @@ task buildReports(dependsOn: 'compileJava') {
             taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
             jasperTargetDir.mkdirs()
             jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-                classpath(path: sourceSets.main.output.classesDirs)
                 include(name: '**/*.jrxml')
             }
         }

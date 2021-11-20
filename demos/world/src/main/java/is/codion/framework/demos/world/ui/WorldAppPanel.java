@@ -45,7 +45,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
 
     EntityPanel countryPanel = new EntityPanel(countryModel,
-            new CountryEditPanel(countryModel.getEditModel()));
+            new CountryEditPanel(countryModel.getEditModel()),
+            new CountryTablePanel(countryModel.getTableModel()));
     countryPanel.setDetailSplitPanelResizeWeight(0.7);
     countryModel.refresh();
 
