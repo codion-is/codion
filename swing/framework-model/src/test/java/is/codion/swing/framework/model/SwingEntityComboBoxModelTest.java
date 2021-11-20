@@ -21,6 +21,7 @@ import is.codion.framework.model.test.TestDomain;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -218,6 +220,36 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals("ADAMS", comboBoxModel.getSelectedValue().get(TestDomain.EMP_NAME));
     empIdValue.set(null);
     assertNull(comboBoxModel.getSelectedValue());
+  }
+
+  @Test
+  void selectAttributes() {
+    comboBoxModel.setSelectAttributes(Arrays.asList(TestDomain.EMP_NAME, TestDomain.EMP_DEPARTMENT_FK));
+    comboBoxModel.refresh();
+    for (final Entity emp : comboBoxModel.getItems()) {
+      assertTrue(emp.contains(TestDomain.EMP_ID));
+      assertTrue(emp.contains(TestDomain.EMP_NAME));
+      assertTrue(emp.contains(TestDomain.EMP_DEPARTMENT));
+      assertTrue(emp.contains(TestDomain.EMP_DEPARTMENT_FK));
+      assertFalse(emp.contains(TestDomain.EMP_JOB));
+      assertFalse(emp.contains(TestDomain.EMP_MGR));
+      assertFalse(emp.contains(TestDomain.EMP_COMMISSION));
+      assertFalse(emp.contains(TestDomain.EMP_HIREDATE));
+      assertFalse(emp.contains(TestDomain.EMP_SALARY));
+    }
+    comboBoxModel.setSelectAttributes(emptyList());
+    comboBoxModel.refresh();
+    for (final Entity emp : comboBoxModel.getItems()) {
+      assertTrue(emp.contains(TestDomain.EMP_ID));
+      assertTrue(emp.contains(TestDomain.EMP_NAME));
+      assertTrue(emp.contains(TestDomain.EMP_DEPARTMENT));
+      assertTrue(emp.contains(TestDomain.EMP_DEPARTMENT_FK));
+      assertTrue(emp.contains(TestDomain.EMP_JOB));
+      assertTrue(emp.contains(TestDomain.EMP_MGR));
+      assertTrue(emp.contains(TestDomain.EMP_COMMISSION));
+      assertTrue(emp.contains(TestDomain.EMP_HIREDATE));
+      assertTrue(emp.contains(TestDomain.EMP_SALARY));
+    }
   }
 
   @Test

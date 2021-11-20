@@ -7388,3 +7388,4 @@
   JasperReportsDataSource.currentItem() added
   SelectCondition.attributes() renamed to selectAttributes()
   ForeignKeyProperty, selectAttributes added, related refactoring
+  EntityComboBoxModel.setSelectAttributes() added

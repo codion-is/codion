@@ -57,6 +57,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final EntityConnectionProvider connectionProvider;
 
   /**
+   * The attributes to include when selecting the entities for this combo box model,
+   * an empty list indicates all attributes
+   */
+  private final Collection<Attribute<?>> selectAttributes = new ArrayList<>(0);
+
+  /**
    * The domain model entities
    */
   private final Entities entities;
@@ -160,6 +166,17 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public final void setStaticData(final boolean staticData) {
     this.staticData = staticData;
+  }
+
+  @Override
+  public final void setSelectAttributes(final Collection<Attribute<?>> selectAttributes) {
+    for (final Attribute<?> attribute : requireNonNull(selectAttributes)) {
+      if (!attribute.getEntityType().equals(entityType)) {
+        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity type: " + entityType);
+      }
+    }
+    this.selectAttributes.clear();
+    this.selectAttributes.addAll(selectAttributes);
   }
 
   @Override
@@ -322,6 +339,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       }
 
       return connectionProvider.getConnection().select(condition.toSelectCondition()
+              .selectAttributes(selectAttributes)
               .orderBy(orderBy));
     }
     catch (final DatabaseException e) {
