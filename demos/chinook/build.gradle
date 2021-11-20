@@ -58,7 +58,6 @@ task buildReports(dependsOn: 'compileJava') {
             taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
             jasperTargetDir.mkdirs()
             jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-                classpath(path: sourceSets.main.output.classesDirs)
                 include(name: '**/*.jrxml')
             }
         }
