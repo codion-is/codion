@@ -135,6 +135,16 @@ include::{dir-source}/is/codion/framework/demos/world/ui/CountryEditPanel.java[t
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/world/ui/CountryTablePanel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/ui/CountryReportDataSource.java[tag=**]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/world/ui/CityEditPanel.java[tag=**]
 ----
 
