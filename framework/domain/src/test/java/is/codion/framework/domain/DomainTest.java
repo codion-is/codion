@@ -495,12 +495,6 @@ public class DomainTest {
   }
 
   @Test
-  void selectableProperty() {
-    assertThrows(IllegalArgumentException.class, () ->
-            entities.getDefinition(Detail.TYPE).getSelectableColumnProperties(singletonList(Detail.STRING)));
-  }
-
-  @Test
   void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> {
       final EntityType entityType = DOMAIN.entityType("test.entity");

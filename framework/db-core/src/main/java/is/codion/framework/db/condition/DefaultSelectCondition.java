@@ -9,12 +9,14 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultSelectCondition extends AbstractCondition implements SelectCondition {
@@ -135,14 +137,14 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public SelectCondition attributes(final Attribute<?>... attributes) {
-    this.selectAttributes = new ArrayList<>(asList(attributes));
+  public SelectCondition selectAttributes(final Attribute<?>... attributes) {
+    this.selectAttributes = unmodifiableList(asList(requireNonNull(attributes)));
     return this;
   }
 
   @Override
-  public SelectCondition attributes(final List<Attribute<?>> attributes) {
-    this.selectAttributes = new ArrayList<>(requireNonNull(attributes));
+  public SelectCondition selectAttributes(final Collection<Attribute<?>> attributes) {
+    this.selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
     return this;
   }
 

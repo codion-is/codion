@@ -8,9 +8,14 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements ForeignKeyProperty {
 
@@ -18,6 +23,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
   private final EntityType referencedEntityType;
+  private List<Attribute<?>> selectAttributes = emptyList();
   private int fetchDepth;
   private boolean softReference;
 
@@ -60,6 +66,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     return getAttribute().getReferences();
   }
 
+  @Override
+  public List<Attribute<?>> getSelectAttributes() {
+    return selectAttributes;
+  }
+
   /**
    * @return a builder for this property instance
    */
@@ -97,11 +108,25 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public <T> ForeignKeyProperty.Builder readOnly(final Attribute<T> referenceAttribute) {
+    public ForeignKeyProperty.Builder readOnly(final Attribute<?> referenceAttribute) {
       if (foreignKeyProperty.getAttribute().getReference(referenceAttribute) == null) {
         throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + foreignKeyProperty.getAttribute());
       }
       foreignKeyProperty.readOnlyAttributes.add(referenceAttribute);
+      return this;
+    }
+
+    @Override
+    public ForeignKeyProperty.Builder selectAttributes(final Attribute<?>... attributes) {
+      final Set<Attribute<?>> selectAttributes = new HashSet<>();
+      for (final Attribute<?> attribute : requireNonNull(attributes)) {
+        if (!attribute.getEntityType().equals(foreignKeyProperty.referencedEntityType)) {
+          throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");
+        }
+        selectAttributes.add(attribute);
+      }
+      foreignKeyProperty.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributes));
+
       return this;
     }
   }

@@ -7419,3 +7419,7 @@
   KeyEvents.KeyEventBuilder renamed Builder
   JasperReportsDataSource.onNext added
   JasperReportsDataSource.currentItem() added
+  SelectCondition.attributes() renamed to selectAttributes()
+  ForeignKeyProperty, selectAttributes added, related refactoring
+  EntityComboBoxModel.setSelectAttributes() added
+  SwingEntityEditModel.createForeignKeyComboBoxModel() now sets the select attributes according to the foreign key select attributes

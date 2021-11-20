@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.query.SelectQuery;
-import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -189,14 +188,6 @@ public interface EntityDefinition {
   List<ColumnProperty<?>> getColumnProperties();
 
   /**
-   * Returns the default select column properties used when selecting this entity type,
-   * this does not include properties where {@link ColumnProperty#isSelectable()} returns false
-   * and {@link BlobProperty}s with {@link BlobProperty#isEagerlyLoaded()} returning true.
-   * @return a list containing the default column properties to include in select queries
-   */
-  List<ColumnProperty<?>> getSelectableColumnProperties();
-
-  /**
    * @return a list containing all lazy loaded blob properties for this entity type
    */
   List<ColumnProperty<?>> getLazyLoadedBlobProperties();
@@ -296,16 +287,6 @@ public interface EntityDefinition {
   List<Property<?>> getProperties(Collection<Attribute<?>> attributes);
 
   /**
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return the column property associated with the attribute
-   * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
-   * or if it is not selectable
-   * @see ColumnProperty#isSelectable()
-   */
-  <T> ColumnProperty<T> getSelectableColumnProperty(Attribute<T> attribute);
-
-  /**
    * Returns the {@link ColumnProperty}s identified
    * by the attributes in {@code attributes}
    * @param attributes the attributes which properties to retrieve
@@ -344,15 +325,6 @@ public interface EntityDefinition {
    * @return true if the given attribute is part of a foreign key
    */
   boolean isForeignKeyAttribute(Attribute<?> attribute);
-
-  /**
-   * Returns the selectable {@link ColumnProperty}s identified
-   * by the attributes in {@code attributes}
-   * @param attributes the ids of the properties to retrieve
-   * @return a list containing all column properties found in the entity identified by {@code entityType},
-   * that is, properties that map to database columns, an empty list if none exist
-   */
-  List<ColumnProperty<?>> getSelectableColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * Returns the foreign keys referencing entities of the given type

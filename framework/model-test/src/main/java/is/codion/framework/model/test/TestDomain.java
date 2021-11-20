@@ -155,7 +155,8 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty().maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName())
+                    .selectAttributes(DEPARTMENT_NAME),
             itemProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(),

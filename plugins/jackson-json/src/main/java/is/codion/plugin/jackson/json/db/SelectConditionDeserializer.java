@@ -80,7 +80,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     }
     final JsonNode selectAttributes = jsonNode.get("selectAttributes");
     if (selectAttributes != null && !selectAttributes.isNull()) {
-      selectCondition.attributes(deserializeSelectAttributes(definition, selectAttributes));
+      selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
     }
 
     return selectCondition;

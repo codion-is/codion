@@ -50,6 +50,11 @@ public interface ForeignKeyProperty extends Property<Entity> {
   List<ForeignKey.Reference<?>> getReferences();
 
   /**
+   * @return the attributes to select when fetching entities referenced via this foreign key, an empty list in case of all attributes
+   */
+  List<Attribute<?>> getSelectAttributes();
+
+  /**
    * Provides setters for ForeignKeyProperty properties
    */
   interface Builder extends Property.Builder<Entity, Builder> {
@@ -75,9 +80,16 @@ public interface ForeignKeyProperty extends Property<Entity> {
     /**
      * Marks the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
      * @param referenceAttribute the reference attribute
-     * @param <T> the attribute type
      * @return this instance
      */
-    <T> ForeignKeyProperty.Builder readOnly(Attribute<T> referenceAttribute);
+    ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute);
+
+    /**
+     * Specifies the attributes from the referenced entity to select. Note that the primary key attributes
+     * are always selected and do not have to be added via this method.
+     * @param attributes the attributes to select
+     * @return this instance
+     */
+    ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes);
   }
 }
