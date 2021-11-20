@@ -8,12 +8,14 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,9 +51,15 @@ public class CustomerTablePanel extends EntityTablePanel {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
-    EntityReports.viewJdbcReport(this, Store.CUSTOMER_REPORT,
-            reportParameters, JRViewer::new,  "Customer Report",
-            getTableModel().getConnectionProvider());
+    JasperPrint customerReport = getTableModel().getConnectionProvider().getConnection()
+            .fillReport(Store.CUSTOMER_REPORT, reportParameters);
+
+    Dialogs.componentDialog(new JRViewer(customerReport))
+            .owner(this)
+            .modal(false)
+            .title("Customer Report")
+            .preferredSize(new Dimension(800, 600))
+            .show();
   }
 }
 // end::customerTablePanel[]

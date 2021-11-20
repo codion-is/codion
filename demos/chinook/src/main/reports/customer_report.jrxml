@@ -30,7 +30,7 @@ group by c.customerid, i.invoicedate]]>
 	<title>
 		<band height="42" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText-1" x="198" y="4" width="138" height="35" uuid="bbfd4060-5a27-46e5-a105-49eb87de82be"/>
+				<reportElement key="staticText-1" x="198" y="4" width="200" height="35" uuid="bbfd4060-5a27-46e5-a105-49eb87de82be"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>

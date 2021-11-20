@@ -9,12 +9,14 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityReports;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -33,8 +35,15 @@ public class DepartmentTablePanel extends EntityTablePanel {
                     getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    EntityReports.viewJdbcReport(DepartmentTablePanel.this, Employee.EMPLOYEE_REPORT,
-            reportParameters, JRViewer::new, "Employee Report", getTableModel().getConnectionProvider());
+
+    final JasperPrint employeeReport = getTableModel().getConnectionProvider().getConnection()
+            .fillReport(Employee.EMPLOYEE_REPORT, reportParameters);
+
+    Dialogs.componentDialog(new JRViewer(employeeReport))
+            .owner(this)
+            .modal(false)
+            .preferredSize(new Dimension(800, 600))
+            .show();
   }
   // end::viewEmployeeReport[]
 
