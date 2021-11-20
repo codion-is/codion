@@ -398,16 +398,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> ColumnProperty<T> getSelectableColumnProperty(final Attribute<T> attribute) {
-    final ColumnProperty<T> property = getColumnProperty(attribute);
-    if (!property.isSelectable()) {
-      throw new IllegalArgumentException("Property based on " + attribute + " is not selectable");
-    }
-
-    return property;
-  }
-
-  @Override
   public List<ColumnProperty<?>> getColumnProperties(final List<Attribute<?>> attributes) {
     requireNonNull(attributes, ATTRIBUTES);
     final List<ColumnProperty<?>> theProperties = new ArrayList<>(attributes.size());
@@ -457,16 +447,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public boolean isForeignKeyAttribute(final Attribute<?> attribute) {
     return entityProperties.foreignKeyColumnAttributes.contains(attribute);
-  }
-
-  @Override
-  public List<ColumnProperty<?>> getSelectableColumnProperties(final List<Attribute<?>> attributes) {
-    final List<ColumnProperty<?>> selectables = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
-    for (int i = 0; i < attributes.size(); i++) {
-      selectables.add(getSelectableColumnProperty(attributes.get(i)));
-    }
-
-    return selectables;
   }
 
   @Override
@@ -539,11 +519,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public List<ColumnProperty<?>> getColumnProperties() {
     return entityProperties.columnProperties;
-  }
-
-  @Override
-  public List<ColumnProperty<?>> getSelectableColumnProperties() {
-    return entityProperties.selectableColumnProperties;
   }
 
   @Override
@@ -798,7 +773,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<Property<?>> properties;
     private final List<ColumnProperty<?>> columnProperties;
     private final List<ColumnProperty<?>> lazyLoadedBlobProperties;
-    private final List<ColumnProperty<?>> selectableColumnProperties;
     private final List<Attribute<?>> primaryKeyAttribues;
     private final List<ColumnProperty<?>> primaryKeyProperties;
     private final Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap;
@@ -819,7 +793,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
       this.columnProperties = unmodifiableList(getColumnProperties());
       this.lazyLoadedBlobProperties = initializeLazyLoadedByteArrayProperties();
-      this.selectableColumnProperties = unmodifiableList(getSelectableProperties());
       this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties());
       this.primaryKeyAttribues = unmodifiableList(getPrimaryKeyAttributes());
       this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
@@ -995,13 +968,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private List<Attribute<?>> getPrimaryKeyAttributes() {
       return primaryKeyProperties.stream()
               .map(Property::getAttribute)
-              .collect(toList());
-    }
-
-    private List<ColumnProperty<?>> getSelectableProperties() {
-      return columnProperties.stream()
-              .filter(property -> !lazyLoadedBlobProperties.contains(property))
-              .filter(ColumnProperty::isSelectable)
               .collect(toList());
     }
 

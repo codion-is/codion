@@ -51,6 +51,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -66,6 +67,7 @@ import static is.codion.framework.db.local.Queries.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default LocalEntityConnection implementation
@@ -86,6 +88,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Domain domain;
   private final Entities domainEntities;
   private final DatabaseConnection connection;
+  private final Map<EntityType, List<ColumnProperty<?>>> selectablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
@@ -928,7 +931,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void setForeignKeys(final List<Entity> entities, final SelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            domainEntities.getDefinition(entities.get(0).getEntityType()).getForeignKeyProperties();
+            getForeignKeyPropertiesToSet(entities.get(0).getEntityType(), condition.getSelectAttributes());
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       final ForeignKey foreignKey = foreignKeyProperty.getAttribute();
@@ -936,8 +939,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (conditionFetchDepthLimit == null) {//use the default one
         conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();
       }
-      if (!limitForeignKeyFetchDepth || conditionFetchDepthLimit.intValue() == -1 ||
-              currentForeignKeyFetchDepth < conditionFetchDepthLimit.intValue()) {
+      if (isWithinFetchDepthLimit(currentForeignKeyFetchDepth, conditionFetchDepthLimit)
+              && containsReferenceAttributes(entities.get(0), foreignKey.getReferences())) {
         try {
           logAccess("setForeignKeys", foreignKeyProperty);
           final List<Key> referencedKeys = new ArrayList<>(Entity.getReferencedKeys(entities, foreignKey));
@@ -948,7 +951,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
           else {
             final SelectCondition referencedEntitiesCondition = condition(referencedKeys)
-                    .toSelectCondition().fetchDepth(conditionFetchDepthLimit);
+                    .toSelectCondition()
+                    .fetchDepth(conditionFetchDepthLimit)
+                    .selectAttributes(getAttributesToSelect(foreignKeyProperty, referencedKeys.get(0).getAttributes()));
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
             final Map<Key, Entity> referencedEntitiesMappedByKey = Entity.mapToPrimaryKey(referencedEntities);
@@ -964,6 +969,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
       }
     }
+  }
+
+  private List<ForeignKeyProperty> getForeignKeyPropertiesToSet(final EntityType entityType,
+                                                                final List<Attribute<?>> conditionSelectAttributes) {
+    if (conditionSelectAttributes.isEmpty()) {
+      return domainEntities.getDefinition(entityType).getForeignKeyProperties();
+    }
+
+    final Set<Attribute<?>> selectAttributes = new HashSet<>(conditionSelectAttributes);
+
+    return domainEntities.getDefinition(entityType).getForeignKeyProperties().stream()
+            .filter(foreignKeyProperty -> selectAttributes.contains(foreignKeyProperty.getAttribute()))
+            .collect(toList());
+  }
+
+  private boolean isWithinFetchDepthLimit(final int currentForeignKeyFetchDepth, final int conditionFetchDepthLimit) {
+    return !limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit;
   }
 
   private Entity getReferencedEntity(final Key referencedKey, final Map<Key, Entity> entitiesMappedByKey) {
@@ -986,9 +1008,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ResultSet resultSet = null;
     String selectQuery = null;
     final EntityDefinition entityDefinition = domainEntities.getDefinition(selectCondition.getEntityType());
-    final List<ColumnProperty<?>> propertiesToSelect = selectCondition.getSelectAttributes().isEmpty() ?
-            entityDefinition.getSelectableColumnProperties() :
-            entityDefinition.getSelectableColumnProperties(selectCondition.getSelectAttributes());
+    final List<ColumnProperty<?>> propertiesToSelect = getPropertiesToSelect(selectCondition.getSelectAttributes(), entityDefinition);
     try {
       selectQuery = selectQuery(getColumnsClause(entityDefinition.getEntityType(),
                       selectCondition.getSelectAttributes(), propertiesToSelect),
@@ -1005,6 +1025,27 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       LOG.error(createLogMessage(selectQuery, selectCondition.getValues(), e), e);
       throw e;
     }
+  }
+
+  private List<ColumnProperty<?>> getPropertiesToSelect(final List<Attribute<?>> selectAttributes,
+                                                        final EntityDefinition entityDefinition) {
+    if (selectAttributes.isEmpty()) {
+      return getSelectableProperties(entityDefinition);
+    }
+
+    final Set<Attribute<?>> attributesToSelect = new HashSet<>(entityDefinition.getPrimaryKeyAttributes());
+    selectAttributes.forEach(attribute -> {
+      if (attribute instanceof ForeignKey) {
+        ((ForeignKey) attribute).getReferences().forEach(reference -> attributesToSelect.add(reference.getAttribute()));
+      }
+      else {
+        attributesToSelect.add(attribute);
+      }
+    });
+
+    return attributesToSelect.stream()
+            .map(entityDefinition::getColumnProperty)
+            .collect(toList());
   }
 
   private int executeStatement(final PreparedStatement statement, final String query,
@@ -1109,6 +1150,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       logExit("packResult", packingException, "row count: " + result.size());
     }
+  }
+
+  private List<ColumnProperty<?>> getSelectableProperties(final EntityDefinition entityDefinition) {
+    return selectablePropertiesCache.computeIfAbsent(entityDefinition.getEntityType(), entityType ->
+            entityDefinition.getColumnProperties().stream()
+                    .filter(property -> !entityDefinition.getLazyLoadedBlobProperties().contains(property))
+                    .filter(ColumnProperty::isSelectable)
+                    .collect(toList()));
   }
 
   private List<ColumnProperty<?>> getInsertableProperties(final EntityDefinition entityDefinition,
@@ -1302,6 +1351,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return modifiedAttributes.stream()
             .map(attribute -> " \n" + attribute + ": " + entity.getOriginal(attribute) + " -> " + modified.get(attribute))
             .collect(Collectors.joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.getEntityType(), ""));
+  }
+
+  private static boolean containsReferenceAttributes(final Entity entity, final List<ForeignKey.Reference<?>> references) {
+    for (int i = 0; i < references.size(); i++) {
+      if (!entity.contains(references.get(i).getAttribute())) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private static Collection<Attribute<?>> getAttributesToSelect(final ForeignKeyProperty foreignKeyProperty,
+                                                                final List<Attribute<?>> referencedAttributes) {
+    if (foreignKeyProperty.getSelectAttributes().isEmpty()) {
+      return emptyList();
+    }
+
+    final Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyProperty.getSelectAttributes());
+    selectAttributes.addAll(referencedAttributes);
+
+    return selectAttributes;
   }
 
   private static void validateAttribute(final EntityType entityType, final Attribute<?> conditionAttribute) {

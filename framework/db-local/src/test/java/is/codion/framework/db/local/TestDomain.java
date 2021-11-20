@@ -51,6 +51,8 @@ public final class TestDomain extends DefaultDomain {
     super(DOMAIN);
     department();
     employee();
+    departmentFk();
+    employeeFk();
     uuidTestDefaultValue();
     uuidTestNoDefaultValue();
     operations();
@@ -165,6 +167,62 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
             .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION_ID, (attributes, values) -> "mgr > ?")
+            .caption("Employee");
+  }
+
+  public interface DepartmentFk extends Entity {
+    EntityType TYPE = DOMAIN.entityType("scott.deptfk");
+    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
+    Attribute<String> DNAME = TYPE.stringAttribute("dname");
+    Attribute<String> LOC = TYPE.stringAttribute("loc");
+  }
+
+  void departmentFk() {
+    define(DepartmentFk.TYPE, "scott.dept",
+            primaryKeyProperty(DepartmentFk.DEPTNO, Department.DEPTNO.getName()),
+            columnProperty(DepartmentFk.DNAME, DepartmentFk.DNAME.getName()),
+            columnProperty(DepartmentFk.LOC, DepartmentFk.LOC.getName()))
+            .stringFactory(stringFactory(DepartmentFk.DNAME));
+  }
+
+  public interface EmployeeFk {
+    EntityType TYPE = DOMAIN.entityType("scott.empfk");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("empno");
+    Attribute<String> NAME = TYPE.stringAttribute("ename");
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
+    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
+    Attribute<OffsetDateTime> HIRETIME = TYPE.offsetDateTimeAttribute("hiretime");
+    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
+    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
+    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, DepartmentFk.DEPTNO);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
+  }
+
+  void employeeFk() {
+    define(EmployeeFk.TYPE, "scott.emp",
+            primaryKeyProperty(EmployeeFk.ID, EmployeeFk.ID.getName()),
+            columnProperty(EmployeeFk.NAME, EmployeeFk.NAME.getName())
+                    .nullable(false),
+            columnProperty(EmployeeFk.DEPARTMENT)
+                    .nullable(false),
+            foreignKeyProperty(EmployeeFk.DEPARTMENT_FK, EmployeeFk.DEPARTMENT_FK.getName())
+                    .selectAttributes(DepartmentFk.DNAME),
+            columnProperty(EmployeeFk.JOB, EmployeeFk.JOB.getName()),
+            columnProperty(EmployeeFk.SALARY, EmployeeFk.SALARY.getName())
+                    .maximumFractionDigits(2),
+            columnProperty(EmployeeFk.COMMISSION, EmployeeFk.COMMISSION.getName()),
+            columnProperty(EmployeeFk.MGR),
+            foreignKeyProperty(EmployeeFk.MGR_FK, EmployeeFk.MGR_FK.getName())
+                    .selectAttributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
+            columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.getName())
+                    .nullable(false),
+            columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.getName()))
+            .stringFactory(stringFactory(EmployeeFk.NAME))
+            .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee");
   }
 

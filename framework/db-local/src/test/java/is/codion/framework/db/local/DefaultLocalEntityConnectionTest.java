@@ -309,25 +309,51 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  void foreignKeyAttributes() throws DatabaseException {
+    final List<Entity> emps = connection.select(where(EmployeeFk.MGR_FK).isNotNull()
+            .toSelectCondition().fetchDepth(EmployeeFk.MGR_FK, 2));
+    for (final Entity emp : emps) {
+      final Entity mgr = emp.getForeignKey(EmployeeFk.MGR_FK);
+      assertTrue(mgr.contains(EmployeeFk.ID));//pk automatically included
+      assertTrue(mgr.contains(EmployeeFk.NAME));
+      assertTrue(mgr.contains(EmployeeFk.JOB));
+      assertTrue(mgr.contains(EmployeeFk.DEPARTMENT));
+      assertTrue(mgr.contains(EmployeeFk.DEPARTMENT_FK));
+      assertFalse(mgr.contains(EmployeeFk.MGR));
+      assertFalse(mgr.contains(EmployeeFk.MGR_FK));
+      assertFalse(mgr.contains(EmployeeFk.COMMISSION));
+      assertFalse(mgr.contains(EmployeeFk.HIREDATE));
+      assertFalse(mgr.contains(EmployeeFk.SALARY));
+    }
+  }
+
+  @Test
   void selectAttributes() throws Exception {
     final List<Entity> emps = connection.select(condition(Employee.TYPE).toSelectCondition()
             .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT));
     for (final Entity emp : emps) {
       assertTrue(emp.contains(Employee.ID));
       assertTrue(emp.contains(Employee.JOB));
-      assertTrue(emp.contains(Employee.DEPARTMENT_FK));
+      assertTrue(emp.contains(Employee.DEPARTMENT));
+      assertFalse(emp.contains(Employee.DEPARTMENT_FK));
       assertFalse(emp.contains(Employee.COMMISSION));
       assertFalse(emp.contains(Employee.HIREDATE));
       assertFalse(emp.contains(Employee.NAME));
       assertFalse(emp.contains(Employee.SALARY));
     }
-  }
-
-  @Test
-  void selectInvalidAttributes() throws Exception {
-    assertThrows(IllegalArgumentException.class, () ->
-            connection.select(condition(Employee.TYPE).toSelectCondition()
-                    .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK)));
+    for (final Entity emp : connection.select(condition(Employee.TYPE).toSelectCondition()
+            .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK, Employee.MGR, Employee.COMMISSION))) {
+      assertTrue(emp.contains(Employee.ID));//pk automatically included
+      assertTrue(emp.contains(Employee.JOB));
+      assertTrue(emp.contains(Employee.DEPARTMENT));
+      assertTrue(emp.contains(Employee.DEPARTMENT_FK));
+      assertTrue(emp.contains(Employee.MGR));
+      assertFalse(emp.contains(Employee.MGR_FK));
+      assertTrue(emp.contains(Employee.COMMISSION));
+      assertFalse(emp.contains(Employee.HIREDATE));
+      assertFalse(emp.contains(Employee.NAME));
+      assertFalse(emp.contains(Employee.SALARY));
+    }
   }
 
   @Test
