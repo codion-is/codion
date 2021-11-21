@@ -125,7 +125,7 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
             .onStarted(() -> progressDialog.setVisible(true))
             .onProgress(progressDialog::setProgress)
             .onPublish(chunks -> progressDialog.setMessage(getMessage(chunks)))
-            .onFinished(progressDialog::dispose)
+            .onFinished(() -> closeDialog(progressDialog))
             .onResult(onSuccess)
             .onException(this::handleException)
             .build();
@@ -147,5 +147,10 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
 
   private static String getMessage(final List<String> chunks) {
     return chunks.isEmpty() ? null : chunks.get(chunks.size() - 1);
+  }
+
+  private static void closeDialog(final ProgressDialog dialog) {
+    dialog.setVisible(false);
+    dialog.dispose();
   }
 }

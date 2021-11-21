@@ -8,7 +8,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -23,6 +22,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
   private final Iterator<T> reportIterator;
   private final BiFunction<T, JRField, Object> valueProvider;
   private final Consumer<T> onNext;
+
   private T currentItem = null;
 
   /**
@@ -76,9 +76,14 @@ public class JasperReportsDataSource<T> implements JRDataSource {
   }
 
   /**
-   * @return the current item, an empty Optional if none is available
+   * @return the current item
+   * @throws IllegalStateException in case next has not been called and no current item is available
    */
-  public final Optional<T> currentItem() {
-    return Optional.ofNullable(currentItem);
+  public final T getCurrentItem() {
+    if (currentItem == null) {
+      throw new IllegalStateException("Next has not been called, no current item available");
+    }
+
+    return currentItem;
   }
 }

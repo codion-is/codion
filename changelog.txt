@@ -7426,3 +7426,4 @@
   ComponentDialogBuilder.preferredSize() added
   EntityReports removed
   JasperReportsDataSource no longer final, quite convenient to override
+  JasperReportsDataSource.currentItem() no longer returns Optional, now throws IllegalStateException if no current item is available

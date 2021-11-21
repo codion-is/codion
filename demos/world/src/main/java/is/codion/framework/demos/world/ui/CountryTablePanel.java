@@ -33,7 +33,7 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   @Override
   protected Controls createPrintControls() {
-    final Controls printControls = super.createPrintControls();
+    Controls printControls = super.createPrintControls();
     printControls.add(Control.builder(this::viewCountryReport)
             .caption("Country report")
             .build());
@@ -50,7 +50,7 @@ public final class CountryTablePanel extends EntityTablePanel {
   }
 
   private JasperPrint fillCustomerReport(final ProgressReporter<String> progressReporter) throws DatabaseException, ReportException {
-    final CountryReportDataSource dataSource = new CountryReportDataSource(getReportCountries(),
+    CountryReportDataSource dataSource = new CountryReportDataSource(getReportCountries(),
             progressReporter, getTableModel().getConnectionProvider().getConnection());
 
     return fillReport(classPathReport(CountryTablePanel.class, "country_report.jasper"), dataSource, getReportParameters());
@@ -66,7 +66,7 @@ public final class CountryTablePanel extends EntityTablePanel {
   }
 
   private List<Entity> getReportCountries() {
-    final List<Entity> countries = new ArrayList<>();
+    List<Entity> countries = new ArrayList<>();
     if (getTableModel().getSelectionModel().isSelectionEmpty()) {
       countries.addAll(getTableModel().getItems());
     }

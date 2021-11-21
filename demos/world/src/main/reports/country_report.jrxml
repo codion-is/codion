@@ -19,53 +19,85 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<columnHeader>
-		<band height="34">
-			<staticText>
-				<reportElement x="0" y="0" width="535" height="30" uuid="4b9651aa-ee01-4585-bdad-8e92b68e2528"/>
-				<textElement textAlignment="Center">
-					<font size="18"/>
-				</textElement>
-				<text><![CDATA[Countries]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
 	<detail>
-		<band height="32">
+		<band height="52">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="0" y="0" width="100" height="14" uuid="52591026-2ffa-4ca3-b73d-31bb53463220"/>
+				<reportElement x="0" y="14" width="100" height="14" uuid="52591026-2ffa-4ca3-b73d-31bb53463220"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="0" width="100" height="14" uuid="a37319e9-d3d7-4adc-a058-4783281221be">
+				<reportElement x="100" y="14" width="100" height="14" uuid="a37319e9-d3d7-4adc-a058-4783281221be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{continent}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="1" width="100" height="14" uuid="94bb3563-d458-47f3-bb98-bb9914e458f7"/>
+				<reportElement x="200" y="14" width="140" height="14" uuid="94bb3563-d458-47f3-bb98-bb9914e458f7"/>
 				<textFieldExpression><![CDATA[$F{region}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="1" width="100" height="14" uuid="7ae9640c-d57f-4cd9-b08c-b2e582ae4084">
+				<reportElement x="350" y="14" width="84" height="14" uuid="7ae9640c-d57f-4cd9-b08c-b2e582ae4084">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{surfacearea}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="400" y="1" width="100" height="14" uuid="0aeaac02-df9f-4c84-9533-3daee90d0082">
+				<reportElement x="435" y="14" width="100" height="14" uuid="0aeaac02-df9f-4c84-9533-3daee90d0082">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{population}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="-30" y="16" width="595" height="16" uuid="fe0b73e2-e164-4dd6-a08d-9afb8d964fc2">
+				<reportElement x="-30" y="30" width="595" height="16" uuid="fe0b73e2-e164-4dd6-a08d-9afb8d964fc2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<dataSourceExpression><![CDATA[((is.codion.framework.demos.world.ui.CountryReportDataSource) $P{REPORT_DATA_SOURCE}).getCityDataSource()]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{CITY_SUBREPORT}]]></subreportExpression>
 			</subreport>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="14" uuid="c61d049d-040d-4aba-9cf4-4aa277459142"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="0" width="100" height="14" uuid="2fcd930a-a99f-4f90-b303-4b33938c1a34">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Continent]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="0" width="140" height="14" uuid="510dab14-feac-4935-b8b6-130686c249dc"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Region]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="0" width="84" height="14" uuid="2ee9691c-9b08-44ea-a57f-fc3e58608a95">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Surface area]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="435" y="0" width="100" height="14" uuid="ac3794a2-c395-49ea-848f-066599941669">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Population]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>
