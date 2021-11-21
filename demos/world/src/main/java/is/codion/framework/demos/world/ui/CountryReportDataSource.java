@@ -34,9 +34,9 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
   public JRDataSource getCityDataSource() {
     try {
-      final Optional<Entity> entity = currentItem();
+      Optional<Entity> entity = currentItem();
       if (entity.isPresent()) {
-        final List<Entity> select = connection.select(where(City.COUNTRY_CODE)
+        List<Entity> select = connection.select(where(City.COUNTRY_CODE)
                 .equalTo(entity.get().get(Country.CODE))
                 .toSelectCondition()
                 .orderBy(orderBy().ascending(City.NAME)));
