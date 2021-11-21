@@ -33,12 +33,14 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
   public JRDataSource getCityDataSource() {
     try {
-        List<Entity> select = connection.select(where(City.COUNTRY_CODE)
-                .equalTo(getCurrentItem().get(Country.CODE))
-                .toSelectCondition()
-                .orderBy(orderBy().ascending(City.NAME)));
+      List<Entity> largestCities = connection.select(where(City.COUNTRY_FK)
+              .equalTo(getCurrentItem())
+              .toSelectCondition()
+              .selectAttributes(City.NAME, City.POPULATION)
+              .orderBy(orderBy().descending(City.POPULATION))
+              .limit(5));
 
-        return new JasperReportsDataSource<>(select.iterator(), new CityValueProvider());
+      return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -74,6 +76,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     public Object apply(final Entity entity, final JRField field) {
       switch (field.getName()) {
         case "name": return entity.get(City.NAME);
+        case "population": return entity.getAsString(City.POPULATION);
         default: return "";
       }
     }
