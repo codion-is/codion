@@ -12,7 +12,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -34,17 +33,12 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
   public JRDataSource getCityDataSource() {
     try {
-      Optional<Entity> entity = currentItem();
-      if (entity.isPresent()) {
         List<Entity> select = connection.select(where(City.COUNTRY_CODE)
-                .equalTo(entity.get().get(Country.CODE))
+                .equalTo(getCurrentItem().get(Country.CODE))
                 .toSelectCondition()
                 .orderBy(orderBy().ascending(City.NAME)));
 
         return new JasperReportsDataSource<>(select.iterator(), new CityValueProvider());
-      }
-
-      return null;
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
