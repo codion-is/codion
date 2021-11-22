@@ -42,14 +42,14 @@ public final class CountryTablePanel extends EntityTablePanel {
   }
 
   private void viewCountryReport() throws Exception {
-    Dialogs.progressWorkerDialog(this::fillCustomerReport)
+    Dialogs.progressWorkerDialog(this::fillCountryReport)
             .indeterminate(false)
             .stringPainted(true)
             .onSuccess(this::viewReport)
             .execute();
   }
 
-  private JasperPrint fillCustomerReport(final ProgressReporter<String> progressReporter) throws DatabaseException, ReportException {
+  private JasperPrint fillCountryReport(final ProgressReporter<String> progressReporter) throws DatabaseException, ReportException {
     CountryReportDataSource dataSource = new CountryReportDataSource(getCountriesForReport(),
             getTableModel().getConnectionProvider().getConnection(), progressReporter);
 
