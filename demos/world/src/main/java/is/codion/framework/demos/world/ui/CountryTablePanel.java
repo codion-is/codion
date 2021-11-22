@@ -15,8 +15,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +22,12 @@ import java.util.Map;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.model.JasperReports.fillReport;
 import static java.util.Collections.singletonMap;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 public final class CountryTablePanel extends EntityTablePanel {
+
+  private static final String COUNTRY_REPORT = "Country report";
 
   public CountryTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel);
@@ -33,12 +35,10 @@ public final class CountryTablePanel extends EntityTablePanel {
 
   @Override
   protected Controls createPrintControls() {
-    Controls printControls = super.createPrintControls();
-    printControls.add(Control.builder(this::viewCountryReport)
-            .caption("Country report")
-            .build());
-
-    return printControls;
+    return super.createPrintControls()
+            .add(Control.builder(this::viewCountryReport)
+                    .caption(COUNTRY_REPORT)
+                    .build());
   }
 
   private void viewCountryReport() throws Exception {
@@ -50,8 +50,8 @@ public final class CountryTablePanel extends EntityTablePanel {
   }
 
   private JasperPrint fillCustomerReport(final ProgressReporter<String> progressReporter) throws DatabaseException, ReportException {
-    CountryReportDataSource dataSource = new CountryReportDataSource(getReportCountries(),
-            progressReporter, getTableModel().getConnectionProvider().getConnection());
+    CountryReportDataSource dataSource = new CountryReportDataSource(getCountriesForReport(),
+            getTableModel().getConnectionProvider().getConnection(), progressReporter);
 
     return fillReport(classPathReport(CountryTablePanel.class, "country_report.jasper"), dataSource, getReportParameters());
   }
@@ -60,25 +60,25 @@ public final class CountryTablePanel extends EntityTablePanel {
     Dialogs.componentDialog(new JRViewer(customerReport))
             .owner(this)
             .modal(false)
-            .title("Country report")
+            .title(COUNTRY_REPORT)
             .preferredSize(new Dimension(800, 600))
             .show();
   }
 
-  private List<Entity> getReportCountries() {
-    List<Entity> countries = new ArrayList<>();
-    if (getTableModel().getSelectionModel().isSelectionEmpty()) {
-      countries.addAll(getTableModel().getItems());
-    }
-    else {
-      countries.addAll(getTableModel().getSelectionModel().getSelectedItems());
-    }
-    countries.sort(Comparator.comparing(country -> country.get(Country.NAME)));
+  private List<Entity> getCountriesForReport() {
+    return getAllOrSelected().stream()
+            .sorted(comparing(country -> country.get(Country.NAME)))
+            .collect(toList());
+  }
 
-    return countries;
+  private List<Entity> getAllOrSelected() {
+    return getTableModel().getSelectionModel().isSelectionEmpty() ?
+            getTableModel().getItems() :
+            getTableModel().getSelectionModel().getSelectedItems();
   }
 
   private static Map<String, Object> getReportParameters() throws ReportException {
-    return new HashMap<>(singletonMap("CITY_SUBREPORT", classPathReport(CountryTablePanel.class, "city_report.jasper").loadReport()));
+    return new HashMap<>(singletonMap("CITY_SUBREPORT",
+            classPathReport(CountryTablePanel.class, "city_report.jasper").loadReport()));
   }
 }
