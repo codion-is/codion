@@ -7395,3 +7395,4 @@
   JasperReportsDataSource no longer final, quite convenient to override
   JasperReportsDataSource.currentItem() no longer returns Optional, now throws IllegalStateException if no current item is available
   DefaultFileSelectionDialogBuilder.selectDirectory() bug fixed, NullPointerException due to fileFilters being null
+  ProgressWorker bug fixed, onStarted and onFinished now called on the EDT directly from doInBackground() instead of relying on state changes via property change listener, which was prone to deadlocks when used with ProgressDialog, especially with very short tasks
