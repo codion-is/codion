@@ -23,14 +23,14 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
   private final EntityConnection connection;
 
-  CountryReportDataSource(final List<Entity> countries,
-                          final ProgressReporter<String> progressReporter,
-                          final EntityConnection connection) {
+  CountryReportDataSource(final List<Entity> countries, final EntityConnection connection,
+                          final ProgressReporter<String> progressReporter) {
     super(countries.iterator(), new CountryValueProvider(),
             new CountryReportProgressReporter(progressReporter, countries.size()));
     this.connection = connection;
   }
 
+  /* See usage in src/main/reports/country_report.jrxml, subreport element */
   public JRDataSource getCityDataSource() {
     try {
       List<Entity> largestCities = connection.select(where(City.COUNTRY_FK)
