@@ -117,7 +117,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   }
 
   static File selectDirectory(final Window dialogParent, final String startDir, final String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle, null);
+    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle, emptyList());
   }
 
   static File selectFile(final Window dialogParent, final String startDir, final String dialogTitle,
