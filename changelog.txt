@@ -7399,3 +7399,4 @@
   Dialogs, reduce cyclical dependencies
   ButtonBuilder added, related refactoring
   ButtonBuilder.mnemonic() now with int instead of char parameter
+  LabelBuilder.mnemonic() now with int instead of char parameter, for consistency

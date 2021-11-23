@@ -19,7 +19,7 @@ final class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel,
 
   private Icon icon;
   private int horizontalAlignment = LABEL_TEXT_ALIGNMENT.get();
-  private char displayedMnemonic = 0;
+  private int displayedMnemonic = 0;
   private JComponent component;
 
   DefaultLabelBuilder(final Icon icon) {
@@ -40,7 +40,7 @@ final class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel,
   }
 
   @Override
-  public LabelBuilder displayedMnemonic(final char displayedMnemonic) {
+  public LabelBuilder displayedMnemonic(final int displayedMnemonic) {
     this.displayedMnemonic = displayedMnemonic;
     return this;
   }
