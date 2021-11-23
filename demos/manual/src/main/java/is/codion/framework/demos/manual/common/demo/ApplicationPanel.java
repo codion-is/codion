@@ -10,7 +10,6 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -56,10 +55,10 @@ public final class ApplicationPanel extends JPanel {
 
     State inputEnabledState = State.state(true);
 
-    JCheckBox inputEnabledCheckBox = ToggleControl.builder(inputEnabledState)
+    JCheckBox inputEnabledCheckBox = ComponentBuilders.checkBox()
             .caption("Enable input fields")
-            .build()
-            .createCheckBox();
+            .linkedValue(inputEnabledState)
+            .build();
     Components.transferFocusOnEnter(inputEnabledCheckBox);
 
     settingsPanel.add(inputEnabledCheckBox);

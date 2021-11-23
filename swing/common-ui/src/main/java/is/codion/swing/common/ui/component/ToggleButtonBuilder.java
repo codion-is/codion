@@ -6,24 +6,12 @@ package is.codion.swing.common.ui.component;
 import javax.swing.JToggleButton;
 
 /**
- * Builds a JToggleButton.
+ * Builds a ToggleButton.
  */
-public interface ToggleButtonBuilder extends ComponentBuilder<Boolean, JToggleButton, ToggleButtonBuilder> {
-
-  /**
-   * @param caption the caption
-   * @return this builder instance
-   */
-  ToggleButtonBuilder caption(String caption);
-
-  /**
-   * @param includeCaption specifies whether a caption should be included
-   * @return this builder instance
-   */
-  ToggleButtonBuilder includeCaption(boolean includeCaption);
+public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> extends ButtonBuilder<Boolean, C, B> {
 
   /**
    * @return a new toggle button
    */
-  JToggleButton build();
+  C build();
 }

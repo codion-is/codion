@@ -11,12 +11,13 @@ import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -178,9 +179,10 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
+    final JCheckBox detailsCheckBox = ComponentBuilders.checkBox()
             .caption(MESSAGES.getString("details"))
-            .description(MESSAGES.getString("show_details"))
+            .toolTipText(MESSAGES.getString("show_details"))
+            .linkedValue(showDetailsState)
             .build();
     final Control printControl = Control.builder(() -> detailsArea.print())
             .caption(Messages.get(Messages.PRINT))
@@ -231,7 +233,7 @@ final class ExceptionDialog extends JDialog {
     rightButtonPanel.add(printButton);
     rightButtonPanel.add(saveButton);
     rightButtonPanel.add(closeButton);
-    leftButtonPanel.add(detailsControl.createCheckBox());
+    leftButtonPanel.add(detailsCheckBox);
 
     baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
     baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);

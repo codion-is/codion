@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
 
@@ -248,9 +247,10 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixRowHeights(true)
             .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ToggleControl.builder(loadTestModel.getCollectChartDataState())
+    controlPanel.add(ComponentBuilders.checkBox()
             .caption("Collect chart data")
-            .build().createCheckBox());
+            .linkedValue(loadTestModel.getCollectChartDataState())
+            .build());
     controlPanel.add(new JButton(Control.builder(loadTestModel::resetChartData)
             .caption("Reset")
             .build()));
@@ -348,10 +348,11 @@ public final class LoadTestPanel<T> extends JPanel {
             .columns(SMALL_TEXT_FIELD_COLUMNS)
             .linkedValue(loadTestModel.getMinimumThinkTimeValue())
             .build());
-    thinkTimePanel.add(ToggleControl.builder(loadTestModel.getPausedState())
+    thinkTimePanel.add(ComponentBuilders.toggleButton()
             .caption("Pause")
             .mnemonic('P')
-            .build().createToggleButton());
+            .linkedValue(loadTestModel.getPausedState())
+            .build());
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
