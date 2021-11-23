@@ -10,7 +10,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
         extends AbstractComponentBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
 
   private String caption;
-  private char mnemonic;
+  private int mnemonic;
   private boolean includeCaption = true;
   private Icon icon;
 
@@ -21,7 +21,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  public final B mnemonic(final char mnemonic) {
+  public final B mnemonic(final int mnemonic) {
     this.mnemonic = mnemonic;
     return (B) this;
   }
@@ -43,9 +43,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     final C button = createButton();
     if (includeCaption) {
       button.setText(caption);
-      if (mnemonic != 0) {
-        button.setMnemonic(mnemonic);
-      }
+    }
+    if (mnemonic != 0) {
+      button.setMnemonic(mnemonic);
     }
     if (icon != null) {
       button.setIcon(icon);
