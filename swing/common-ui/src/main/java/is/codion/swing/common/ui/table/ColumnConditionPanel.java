@@ -12,7 +12,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -124,12 +124,14 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
     this.operatorCombo = initializeOperatorComboBox(operators);
-    this.toggleEnabledButton = ToggleControl.builder(conditionModel.getEnabledState())
+    this.toggleEnabledButton = ComponentBuilders.toggleButton()
             .icon(icons().filter())
-            .build().createToggleButton();
-    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? ToggleControl.builder(advancedConditionState)
+            .linkedValue(conditionModel.getEnabledState())
+            .build();
+    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? ComponentBuilders.toggleButton()
             .icon(icons().configure())
-            .build().createToggleButton() : null;
+            .linkedValue(advancedConditionState)
+            .build() : null;
     conditionModel.setLocked(modelLocked);
     initializeUI();
     bindEvents();

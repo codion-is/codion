@@ -11,6 +11,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
@@ -38,10 +39,11 @@ public final class ComponentBuilders {
   }
 
   /**
+   * @param <B> the builder typ
    * @return a builder for a component
    */
-  public static ToggleButtonBuilder toggleButton() {
-    return new DefaultToggleButtonBuilder();
+  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton() {
+    return new DefaultToggleButtonBuilder<>();
   }
 
   /**

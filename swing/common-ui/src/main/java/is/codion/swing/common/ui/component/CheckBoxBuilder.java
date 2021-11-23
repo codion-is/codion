@@ -10,19 +10,7 @@ import javax.swing.JCheckBox;
 /**
  * Builds a JCheckBox.
  */
-public interface CheckBoxBuilder extends ComponentBuilder<Boolean, JCheckBox, CheckBoxBuilder> {
-
-  /**
-   * @param caption the caption
-   * @return this builder instance
-   */
-  CheckBoxBuilder caption(String caption);
-
-  /**
-   * @param includeCaption specifies whether a caption should be included
-   * @return this builder instance
-   */
-  CheckBoxBuilder includeCaption(boolean includeCaption);
+public interface CheckBoxBuilder extends ToggleButtonBuilder<JCheckBox, CheckBoxBuilder> {
 
   /**
    * @param nullable if true then a {@link NullableCheckBox} is built.

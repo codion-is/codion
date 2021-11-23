@@ -86,7 +86,7 @@ final class LoginPanel extends JPanel {
       dummyFrame = createDummyFrame(title, icon);
       parentWindow = dummyFrame;
     }
-    final JDialog dialog = Dialogs.componentDialog(this)
+    final JDialog dialog = new DefaultComponentDialogBuilder(this)
             .owner(parentWindow)
             .resizable(false)
             .title(title == null ? Messages.get(Messages.LOGIN) : title)

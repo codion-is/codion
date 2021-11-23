@@ -9,8 +9,8 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -316,9 +316,10 @@ public final class CalendarPanel extends JPanel {
 
   private Map<Integer, JToggleButton> createDayButtons() {
     final Map<Integer, JToggleButton> buttons = new HashMap<>();
-    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ToggleControl.builder(dayState)
+    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ComponentBuilders.toggleButton()
             .caption(Integer.toString(dayOfMonth))
-            .build().createToggleButton()));
+            .linkedValue(dayState)
+            .build()));
 
     return buttons;
   }

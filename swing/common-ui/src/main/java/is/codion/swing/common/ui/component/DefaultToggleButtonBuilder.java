@@ -3,41 +3,13 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
-
 import javax.swing.JToggleButton;
 
-final class DefaultToggleButtonBuilder extends AbstractComponentBuilder<Boolean, JToggleButton, ToggleButtonBuilder>
-        implements ToggleButtonBuilder {
-
-  private String caption;
-  private boolean includeCaption = true;
+final class DefaultToggleButtonBuilder<B extends ToggleButtonBuilder<JToggleButton, B>>
+        extends AbstractToggleButtonBuilder<JToggleButton, B> implements ToggleButtonBuilder<JToggleButton, B> {
 
   @Override
-  public ToggleButtonBuilder caption(final String caption) {
-    this.caption = caption;
-    return this;
-  }
-
-  @Override
-  public ToggleButtonBuilder includeCaption(final boolean includeCaption) {
-    this.includeCaption = includeCaption;
-    return this;
-  }
-
-  @Override
-  protected JToggleButton buildComponent() {
-    return includeCaption ? new JToggleButton(caption) : new JToggleButton();
-  }
-
-  @Override
-  protected ComponentValue<Boolean, JToggleButton> buildComponentValue(final JToggleButton component) {
-    return ComponentValues.toggleButton(component);
-  }
-
-  @Override
-  protected void setInitialValue(final JToggleButton component, final Boolean initialValue) {
-    component.setSelected(initialValue);
+  protected JToggleButton createButton() {
+    return new JToggleButton();
   }
 }

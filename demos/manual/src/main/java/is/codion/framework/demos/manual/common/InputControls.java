@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
@@ -71,21 +70,19 @@ public final class InputControls {
     // tag::toggleControl[]
     State state = State.state();
 
-    ToggleControl stateControl = ToggleControl.builder(state)
+    JToggleButton toggleButton = ComponentBuilders.toggleButton()
             .caption("Change state")
             .mnemonic('C')
+            .linkedValue(state)
             .build();
-
-    JToggleButton toggleButton = stateControl.createToggleButton();
 
     Value<Boolean> booleanValue = Value.value();
 
-    ToggleControl valueControl = ToggleControl.builder(booleanValue)
+    JCheckBox checkBox = ComponentBuilders.checkBox()
             .caption("Change value")
             .mnemonic('V')
+            .linkedValue(booleanValue)
             .build();
-
-    JCheckBox checkBox = valueControl.createCheckBox();
     // end::toggleControl[]
   }
 
