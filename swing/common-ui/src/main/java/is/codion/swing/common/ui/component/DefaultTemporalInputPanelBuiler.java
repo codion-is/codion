@@ -15,7 +15,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.component.ComponentBuilders.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultTemporalInputPanelBuiler<T extends Temporal>
@@ -80,28 +79,28 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   private TemporalField<T> createTemporalField() {
     if (valueClass.equals(LocalTime.class)) {
-      return (TemporalField<T>) localTimeField(dateTimePattern)
+      return (TemporalField<T>) new DefaultLocalTimeFieldBuilder(dateTimePattern)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(LocalDate.class)) {
-      return (TemporalField<T>) localDateField(dateTimePattern)
+      return (TemporalField<T>) new DefaultLocalDateFieldBuilder(dateTimePattern)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(LocalDateTime.class)) {
-      return (TemporalField<T>) localDateTimeField(dateTimePattern)
+      return (TemporalField<T>) new DefaultLocalDateTimeFieldBuilder(dateTimePattern)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(OffsetDateTime.class)) {
-      return (TemporalField<T>) offsetDateTimeField(dateTimePattern)
+      return (TemporalField<T>) new DefaultOffsetDateTimeFieldBuilder(dateTimePattern)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)

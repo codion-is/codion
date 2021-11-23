@@ -45,7 +45,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     if (nullOrEmpty(message)) {
       message = rootCause.getCause() != null ? trimMessage(rootCause.getCause()) : trimMessage(rootCause);
     }
-    Dialogs.exceptionDialog()
+    new DefaultExceptionDialogBuilder()
             .owner(dialogParent)
             .title(getMessageTitle(rootCause))
             .message(message)
