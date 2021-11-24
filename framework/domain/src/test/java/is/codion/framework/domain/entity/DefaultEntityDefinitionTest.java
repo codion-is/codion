@@ -8,7 +8,9 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
+import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.Properties;
 
@@ -65,6 +67,55 @@ public class DefaultEntityDefinitionTest {
     assertEquals("name", definition.getGroupByClause());
     assertEquals(stringFactory, definition.getStringProvider());
     assertEquals(comparator, definition.getComparator());
+  }
+
+  @Test
+  void defaultSelectAttributes() {
+    final Domain domain = new TestDomain();
+
+    Collection<Attribute<?>> defaultSelectAttributes = domain.getEntities()
+            .getDefinition(Employee.TYPE).getDefaultSelectAttributes();
+    assertTrue(defaultSelectAttributes.contains(Employee.ID));
+    assertTrue(defaultSelectAttributes.contains(Employee.NAME));
+    assertTrue(defaultSelectAttributes.contains(Employee.JOB));
+    assertTrue(defaultSelectAttributes.contains(Employee.MGR));
+    assertTrue(defaultSelectAttributes.contains(Employee.HIREDATE));
+    assertTrue(defaultSelectAttributes.contains(Employee.SALARY));
+    assertTrue(defaultSelectAttributes.contains(Employee.COMMISSION));
+    assertTrue(defaultSelectAttributes.contains(Employee.DEPARTMENT));
+    assertTrue(defaultSelectAttributes.contains(Employee.DEPARTMENT_FK));
+    assertTrue(defaultSelectAttributes.contains(Employee.MANAGER_FK));
+    assertTrue(defaultSelectAttributes.contains(Employee.DATA));
+    assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_LOCATION));
+    assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_NAME));
+
+    defaultSelectAttributes = domain.getEntities()
+            .getDefinition(Department.TYPE).getDefaultSelectAttributes();
+    assertTrue(defaultSelectAttributes.contains(Department.NO));
+    assertTrue(defaultSelectAttributes.contains(Department.NAME));
+    assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
+    assertTrue(defaultSelectAttributes.contains(Department.ACTIVE));
+    assertFalse(defaultSelectAttributes.contains(Department.DATA));
+
+    defaultSelectAttributes = domain.getEntities()
+            .getDefinition(Detail.TYPE).getDefaultSelectAttributes();
+    assertTrue(defaultSelectAttributes.contains(Detail.ID));
+    assertTrue(defaultSelectAttributes.contains(Detail.INT));
+    assertTrue(defaultSelectAttributes.contains(Detail.DOUBLE));
+    assertFalse(defaultSelectAttributes.contains(Detail.STRING));
+    assertTrue(defaultSelectAttributes.contains(Detail.TIMESTAMP));
+    assertTrue(defaultSelectAttributes.contains(Detail.BOOLEAN));
+    assertTrue(defaultSelectAttributes.contains(Detail.BOOLEAN_NULLABLE));
+    assertTrue(defaultSelectAttributes.contains(Detail.MASTER_ID));
+    assertTrue(defaultSelectAttributes.contains(Detail.MASTER_FK));
+    assertFalse(defaultSelectAttributes.contains(Detail.MASTER_NAME));
+    assertTrue(defaultSelectAttributes.contains(Detail.MASTER_CODE_NON_DENORM));
+    assertFalse(defaultSelectAttributes.contains(Detail.MASTER_CODE));
+    assertTrue(defaultSelectAttributes.contains(Detail.MASTER_VIA_CODE_FK));
+    assertTrue(defaultSelectAttributes.contains(Detail.INT_VALUE_LIST));
+    assertFalse(defaultSelectAttributes.contains(Detail.INT_DERIVED));
+    assertTrue(defaultSelectAttributes.contains(Detail.MASTER_CODE_DENORM));
+    assertFalse(defaultSelectAttributes.contains(Detail.BYTES));
   }
 
   @Test
@@ -402,7 +453,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   void singleValueConstructorWrongType() {
     assertThrows(IllegalArgumentException.class, () -> new TestDomain().getEntities()
-            .getDefinition(TestDomain.Department.TYPE).primaryKey(1L));
+            .getDefinition(Department.TYPE).primaryKey(1L));
   }
 
   @Test
