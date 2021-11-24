@@ -215,6 +215,13 @@ public final class ComponentBuildersTest {
   }
 
   @Test
+  void button() {
+    ComponentBuilders.button()
+            .action(Control.control(() -> {}))
+            .build();
+  }
+
+  @Test
   void checkBox() {
     final Value<Boolean> value = Value.value(true, false);
     final ComponentValue<Boolean, JCheckBox> componentValue = ComponentBuilders.checkBox()

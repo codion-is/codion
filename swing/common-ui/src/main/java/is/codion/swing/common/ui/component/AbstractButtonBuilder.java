@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.Icon;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
@@ -13,6 +14,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private int mnemonic;
   private boolean includeCaption = true;
   private Icon icon;
+  private Action action;
 
   @Override
   public final B caption(final String caption) {
@@ -39,8 +41,17 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B action(final Action action) {
+    this.action = action;
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     final C button = createButton();
+    if (action != null) {
+      button.setAction(action);
+    }
     if (includeCaption) {
       button.setText(caption);
     }

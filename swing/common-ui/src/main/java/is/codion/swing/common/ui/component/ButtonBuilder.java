@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.Icon;
 
 /**
@@ -37,4 +38,10 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @return this builder instance
    */
   B icon(Icon icon);
+
+  /**
+   * @param action the button action
+   * @return this builder instance
+   */
+  B action(Action action);
 }
