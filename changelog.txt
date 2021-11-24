@@ -7431,3 +7431,4 @@
   ProgressWorker bug fixed, onStarted and onFinished now called on the EDT directly from doInBackground() instead of relying on state changes via property change listener, which was prone to deadlocks when used with ProgressDialog, especially with very short tasks
   Dialogs, reduce cyclical dependencies
   ButtonBuilder added, related refactoring
+  EntityDefinition.getDefaultSelectAttributes() added, convenient when excluding certain attributes from a select condition
