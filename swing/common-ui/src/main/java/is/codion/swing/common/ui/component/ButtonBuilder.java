@@ -24,7 +24,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @param mnemonic the mnemonic
    * @return this builder instance
    */
-  B mnemonic(char mnemonic);
+  B mnemonic(int mnemonic);
 
   /**
    * @param includeCaption specifies whether a caption should be included

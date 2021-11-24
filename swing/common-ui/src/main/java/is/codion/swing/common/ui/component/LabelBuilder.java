@@ -34,7 +34,7 @@ public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuil
    * @param displayedMnemonic the label mnemonic
    * @return this builder instance
    */
-  LabelBuilder displayedMnemonic(char displayedMnemonic);
+  LabelBuilder displayedMnemonic(int displayedMnemonic);
 
   /**
    * @param component the component to associate with this label

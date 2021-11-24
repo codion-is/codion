@@ -7432,3 +7432,5 @@
   Dialogs, reduce cyclical dependencies
   ButtonBuilder added, related refactoring
   EntityDefinition.getDefaultSelectAttributes() added, convenient when excluding certain attributes from a select condition
+  ButtonBuilder.mnemonic() now with int instead of char parameter
+  LabelBuilder.mnemonic() now with int instead of char parameter, for consistency
