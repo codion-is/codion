@@ -255,6 +255,13 @@ public interface EntityDefinition {
   Collection<Attribute<String>> getSearchAttributes();
 
   /**
+   * Returns the attributes selected by default for this entity type.
+   * Contains the selectable column property attributes and foreign keys, excluding lazy loaded blob attributes.
+   * @return the default select attributes
+   */
+  Collection<Attribute<?>> getDefaultSelectAttributes();
+
+  /**
    * @param attribute the attribute
    * @return the column property associated with the attribute
    * @param <T> the attribute type

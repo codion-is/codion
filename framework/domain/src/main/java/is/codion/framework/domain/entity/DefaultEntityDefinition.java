@@ -357,6 +357,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
+  public Collection<Attribute<?>> getDefaultSelectAttributes() {
+    return entityProperties.defaultSelectAttributes;
+  }
+
+  @Override
   public <T> ColumnProperty<T> getColumnProperty(final Attribute<T> attribute) {
     final Property<T> property = getProperty(attribute);
     if (!(property instanceof ColumnProperty)) {
@@ -783,6 +788,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<Entity>, List<DenormalizedProperty<?>>> denormalizedProperties;
+    private final List<Attribute<?>> defaultSelectAttributes;
 
     private final int serializationVersion;
 
@@ -805,6 +811,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.derivedAttributes = initializeDerivedAttributes();
       this.transientProperties = unmodifiableList(getTransientProperties());
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
+      this.defaultSelectAttributes = unmodifiableList(getDefaultSelectAttributes());
       this.serializationVersion = createSerializationVersion();
     }
 
@@ -939,6 +946,19 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
                               new ArrayList<>()).add(denormalizedProperty));
 
       return denormalizedPropertyMap;
+    }
+
+    private List<Attribute<?>> getDefaultSelectAttributes() {
+      final List<Attribute<?>> selectableAttributes = columnProperties.stream()
+              .filter(ColumnProperty::isSelectable)
+              .filter(property -> !lazyLoadedBlobProperties.contains(property))
+              .map(Property::getAttribute)
+              .collect(toList());
+      selectableAttributes.addAll(foreignKeyProperties.stream()
+              .map(ForeignKeyProperty::getAttribute)
+              .collect(toList()));
+
+      return selectableAttributes;
     }
 
     private Map<Attribute<?>, Set<Attribute<?>>> initializeDerivedAttributes() {
