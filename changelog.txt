@@ -7436,3 +7436,7 @@
   LabelBuilder.mnemonic() now with int instead of char parameter, for consistency
   ButtonBuilder.action() added
   ComponentBuilders.button() and DefaultButtonBuilder added
+  EntityApplicationPanel, user can now select smaller font size as well as larger, down to 50%
+  Windows.frameBuilder() added
+  EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME configuration value added
+  EntityApplicationPanel.displayEntityPanel() added, uses the above to determine how to display the panel, used for support table panels
