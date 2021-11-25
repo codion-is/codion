@@ -3,12 +3,21 @@
  */
 package is.codion.swing.common.ui;
 
+import is.codion.swing.common.ui.layout.Layouts;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for windows, dialogs and frames.
@@ -119,5 +128,153 @@ public final class Windows {
     final Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     window.setLocation((int) (screen.getWidth() - size.getWidth()) / 2,
             (int) (screen.getHeight() - size.getHeight()) / 2);
+  }
+
+  /**
+   * @param component the component to display in the frame
+   * @return a frame builder
+   */
+  public static FrameBuilder frameBuilder(final JComponent component) {
+    return new DefaultFrameBuilder(component);
+  }
+
+  /**
+   * A builder for a JFrame.
+   */
+  public interface FrameBuilder {
+
+    /**
+     * @param title the title
+     * @return this builder instance
+     */
+    FrameBuilder title(String title);
+
+    /**
+     * @param icon the icon
+     * @return this builder instance
+     */
+    FrameBuilder icon(ImageIcon icon);
+
+    /**
+     * @param preferredSize the preferred size
+     * @return this builder instance
+     */
+    FrameBuilder preferredSize(Dimension preferredSize);
+
+    /**
+     * @param resizable true if the frame should be resizable
+     * @return this builder instance
+     */
+    FrameBuilder resizable(boolean resizable);
+
+    /**
+     * @param relativeTo the component to which the location should be relative
+     * @return this builder instance
+     */
+    FrameBuilder relativeTo(JComponent relativeTo);
+
+    /**
+     * @param onClosed called when the frame has been closed
+     * @return this builder instance
+     */
+    FrameBuilder onClosed(Runnable onClosed);
+
+    /**
+     * @return a JFrame based on this builder
+     */
+    JFrame build();
+
+    /**
+     * Builds and shows a JFrame based on this builder
+     */
+    void show();
+  }
+
+  private static final class DefaultFrameBuilder implements FrameBuilder {
+
+    private final JComponent component;
+
+    private ImageIcon icon;
+    private String title;
+    private Runnable onClosed;
+    private Dimension preferredSize;
+    private boolean resizable = true;
+    private JComponent relativeTo;
+
+    private DefaultFrameBuilder(final JComponent component) {
+      this.component = requireNonNull(component);
+    }
+
+    @Override
+    public FrameBuilder title(final String title) {
+      this.title = title;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder icon(final ImageIcon icon) {
+      this.icon = icon;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder preferredSize(final Dimension preferredSize) {
+      this.preferredSize = preferredSize;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder resizable(final boolean resizable) {
+      this.resizable = resizable;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder relativeTo(final JComponent relativeTo) {
+      this.relativeTo = relativeTo;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder onClosed(final Runnable onClosed) {
+      this.onClosed = onClosed;
+      return this;
+    }
+
+    @Override
+    public JFrame build() {
+      final JFrame frame = new JFrame();
+      frame.setLayout(Layouts.borderLayout());
+      frame.add(component, BorderLayout.CENTER);
+      if (title != null) {
+        frame.setTitle(title);
+      }
+      if (icon != null) {
+        frame.setIconImage(icon.getImage());
+      }
+      if (preferredSize != null) {
+        frame.setPreferredSize(preferredSize);
+      }
+      else {
+        frame.pack();
+      }
+      frame.setResizable(resizable);
+      frame.setLocationRelativeTo(relativeTo);
+      if (onClosed != null) {
+        frame.addWindowListener(new WindowAdapter() {
+          @Override
+          public void windowClosed(final WindowEvent e) {
+            onClosed.run();
+          }
+        });
+      }
+
+      return frame;
+    }
+
+    @Override
+    public void show() {
+      build().setVisible(true);
+    }
   }
 }

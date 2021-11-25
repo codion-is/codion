@@ -136,8 +136,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
 
   /**
-   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanelDialog} method
-   * should be persisted, or kept in memory, when the dialog is closed, instead of being created each time.<br>
+   * Specifies if EntityPanels opened via the {@link EntityApplicationPanel#displayEntityPanel(EntityPanel.Builder)} method
+   * should be displayed in a frame instead of the default dialog<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   * @see EntityApplicationPanel#displayEntityPanel(EntityPanel.Builder)
+   */
+  public static final PropertyValue<Boolean> DISPLAY_ENTITY_PANELS_IN_FRAME = Configuration.booleanValue("codion.swing.displayEntityPanelsInFrame", false);
+
+  /**
+   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanel} method
+   * should be persisted, or kept in memory, when the dialog/frame is closed, instead of being created each time.<br>
    * Value type: Boolean<br>
    * Default value: false
    * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)
@@ -825,15 +834,55 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return comparator.compare(thisCompare, thatCompare);
     });
-    final Controls controls = Controls.builder()
+    final Controls.Builder controlsBuilder = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
-            .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0))
-            .build();
-    supportPanelBuilders.forEach(panelBuilder -> controls.add(Control.builder(() -> displayEntityPanelDialog(panelBuilder))
-            .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
-            .build()));
+            .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
+    supportPanelBuilders.forEach(panelBuilder -> controlsBuilder.control(Control.builder(() -> displayEntityPanel(panelBuilder))
+            .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())));
 
-    return controls;
+    return controlsBuilder.build();
+  }
+
+  /**
+   * Displays the panel provided by the given builder in a frame or dialog,
+   * depending on {@link EntityApplicationPanel#DISPLAY_ENTITY_PANELS_IN_FRAME}.
+   * @param panelBuilder the entity panel builder
+   */
+  protected final void displayEntityPanel(final EntityPanel.Builder panelBuilder) {
+    if (DISPLAY_ENTITY_PANELS_IN_FRAME.get()) {
+      displayEntityPanelFrame(panelBuilder);
+    }
+    else {
+      displayEntityPanelDialog(panelBuilder);
+    }
+  }
+
+  /**
+   * Shows a frame containing the entity panel provided by the given panel builder
+   * @param panelBuilder the entity panel builder
+   */
+  protected final void displayEntityPanelFrame(final EntityPanel.Builder panelBuilder) {
+    requireNonNull(panelBuilder, "panelBuilder");
+    try {
+      Components.showWaitCursor(this);
+      final EntityPanel entityPanel = getEntityPanel(panelBuilder);
+      if (entityPanel.isShowing()) {
+        Windows.getParentWindow(entityPanel).toFront();
+      }
+      else {
+        Windows.frameBuilder(entityPanel)
+                .relativeTo(this)
+                .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+                .onClosed(() -> {
+                  entityPanel.getModel().savePreferences();
+                  entityPanel.savePreferences();
+                })
+                .show();
+      }
+    }
+    finally {
+      Components.hideWaitCursor(this);
+    }
   }
 
   /**
@@ -853,30 +902,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(panelBuilder, "panelBuilder");
     try {
       Components.showWaitCursor(this);
-      final EntityPanel entityPanel;
-      if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelBuilder)) {
-        entityPanel = persistentEntityPanels.get(panelBuilder);
-        if (entityPanel.isShowing()) {
-          return;
-        }
+      final EntityPanel entityPanel = getEntityPanel(panelBuilder);
+      if (entityPanel.isShowing()) {
+        Windows.getParentWindow(entityPanel).toFront();
       }
       else {
-        entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
-        entityPanel.initializePanel();
-        if (PERSIST_ENTITY_PANELS.get()) {
-          persistentEntityPanels.put(panelBuilder, entityPanel);
-        }
+        Dialogs.componentDialog(entityPanel)
+                .owner(getParentWindow())
+                .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+                .onClosedAction(Control.control(() -> {
+                  entityPanel.getModel().savePreferences();
+                  entityPanel.savePreferences();
+                }))
+                .modal(modalDialog)
+                .resizable(true)
+                .show();
       }
-      Dialogs.componentDialog(entityPanel)
-              .owner(getParentWindow())
-              .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
-              .onClosedAction(Control.control(() -> {
-                entityPanel.getModel().savePreferences();
-                entityPanel.savePreferences();
-              }))
-              .modal(modalDialog)
-              .resizable(true)
-              .show();
     }
     finally {
       Components.hideWaitCursor(this);
@@ -1241,6 +1282,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     initializeUI();
     bindEventsInternal();
     bindEvents();
+  }
+
+  private EntityPanel getEntityPanel(final EntityPanel.Builder panelBuilder) {
+    if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelBuilder)) {
+      return persistentEntityPanels.get(panelBuilder);
+    }
+
+    final EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
+    entityPanel.initializePanel();
+    if (PERSIST_ENTITY_PANELS.get()) {
+      persistentEntityPanels.put(panelBuilder, entityPanel);
+    }
+
+    return entityPanel;
   }
 
   private JScrollPane initializeApplicationTree() {
