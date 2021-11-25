@@ -362,8 +362,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Display a dialog for selecting the application font size
    */
   public final void selectFontSize() {
-    final List<Item<Integer>> values = new ArrayList<>(21);
-    for (int i = 100; i <= 200; i += 5) {
+    final List<Item<Integer>> values = new ArrayList<>();
+    for (int i = 50; i <= 200; i += 5) {
       values.add(Item.item(i, i + "%"));
     }
     final ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
