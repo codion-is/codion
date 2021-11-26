@@ -19,7 +19,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -55,13 +54,10 @@ public final class ApplicationPanel extends JPanel {
 
     State inputEnabledState = State.state(true);
 
-    JCheckBox inputEnabledCheckBox = ComponentBuilders.checkBox()
+    ComponentBuilders.checkBox(inputEnabledState)
             .caption("Enable input fields")
-            .linkedValue(inputEnabledState)
-            .build();
-    Components.transferFocusOnEnter(inputEnabledCheckBox);
-
-    settingsPanel.add(inputEnabledCheckBox);
+            .transferFocusOnEnter(true)
+            .build(settingsPanel::add);
 
     JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(0, 2));
 

@@ -7411,3 +7411,4 @@
   Unnecessary space around equals sign in property files removed
   FileChooser messages added to UIManagerDefaults
   ComponentBuilders.button(), toggleButton() and checkBox() added Action and Value<Boolean> parameters
+  TemporalInpuPanel.getLocalDateWithCalendar() and getLocalDateTimeWithCalendar() moved to CalendarPanel and renamed getLocalDate() and getLocalDateTime() respectively, some refactoring
