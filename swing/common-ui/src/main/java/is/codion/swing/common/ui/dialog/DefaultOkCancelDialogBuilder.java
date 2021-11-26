@@ -4,13 +4,13 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -107,7 +107,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    buttonBasePanel.add(Components.createOkCancelButtonPanel(okAction, theCancelAction));
+    buttonBasePanel.add(createOkCancelButtonPanel(okAction, theCancelAction));
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
@@ -122,5 +122,21 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
       command.perform();
       Windows.getParentDialog(component).dispose();
     });
+  }
+
+  private static JPanel createOkCancelButtonPanel(final Action okAction, final Action cancelAction) {
+    requireNonNull(okAction, "okAction");
+    requireNonNull(cancelAction, "cancelAction");
+    final JButton okButton = new JButton(okAction);
+    final JButton cancelButton = new JButton(cancelAction);
+    okButton.setText(Messages.get(Messages.OK));
+    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    cancelButton.setText(Messages.get(Messages.CANCEL));
+    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    final JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+
+    return buttonPanel;
   }
 }

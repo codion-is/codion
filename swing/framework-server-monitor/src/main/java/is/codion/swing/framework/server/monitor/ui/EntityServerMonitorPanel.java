@@ -9,7 +9,6 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.ComponentBuilders;
@@ -21,6 +20,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.MemoryUsageField;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
@@ -240,7 +240,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(Components.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
+    southPanel.add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
   }

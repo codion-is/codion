@@ -3,11 +3,8 @@
  */
 package is.codion.swing.common.ui;
 
-import is.codion.common.Memory;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
-import is.codion.common.i18n.Messages;
-import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -17,9 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
@@ -53,7 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
@@ -314,45 +308,6 @@ public final class Components {
     }
 
     return panel;
-  }
-
-  /**
-   * Creates a JPanel with two buttons, based on the given ok and cancel actions.
-   * @param okAction the OK button action
-   * @param cancelAction the cancel button action
-   * @return a ok/cancel button panel
-   */
-  public static JPanel createOkCancelButtonPanel(final Action okAction, final Action cancelAction) {
-    requireNonNull(okAction, "okAction");
-    requireNonNull(cancelAction, "cancelAction");
-    final JButton okButton = new JButton(okAction);
-    final JButton cancelButton = new JButton(cancelAction);
-    okButton.setText(Messages.get(Messages.OK));
-    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    cancelButton.setText(Messages.get(Messages.CANCEL));
-    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-    final JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelButton);
-
-    return buttonPanel;
-  }
-
-  /**
-   * Creates a text field containing information about the memory usage in KB.
-   * @param updateIntervalMilliseconds the interval between updating the memory usage info
-   * @return a text field displaying the current VM memory usage
-   */
-  public static JTextField createMemoryUsageField(final int updateIntervalMilliseconds) {
-    final JTextField textField = new JTextField(8);
-    textField.setEditable(false);
-    textField.setHorizontalAlignment(SwingConstants.CENTER);
-    TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> textField.setText(Memory.getMemoryUsage())))
-            .interval(updateIntervalMilliseconds)
-            .timeUnit(TimeUnit.MILLISECONDS)
-            .start();
-
-    return textField;
   }
 
   /**

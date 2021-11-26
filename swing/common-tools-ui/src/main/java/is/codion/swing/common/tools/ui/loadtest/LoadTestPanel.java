@@ -10,11 +10,11 @@ import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.MemoryUsageField;
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import org.jfree.chart.ChartFactory;
@@ -161,7 +161,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static JPanel initializeSouthPanel() {
     final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(Components.createMemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
+    southPanel.add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
   }
