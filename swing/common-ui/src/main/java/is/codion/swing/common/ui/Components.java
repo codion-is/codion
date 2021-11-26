@@ -6,14 +6,11 @@ package is.codion.swing.common.ui;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
@@ -23,7 +20,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.JTextComponent;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -237,77 +233,6 @@ public final class Components {
         });
       }
     });
-  }
-
-  /**
-   * Creates a JPanel, using a BorderLayout, adding the given components to their respective positions.
-   * @param north the panel to display in the BorderLayout.NORTH position
-   * @param center the panel to display in the BorderLayout.CENTER position
-   * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
-   */
-  public static JPanel createNorthCenterPanel(final JComponent north, final JComponent center) {
-    requireNonNull(north, "north");
-    requireNonNull(center, "center");
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(north, BorderLayout.NORTH);
-    panel.add(center, BorderLayout.CENTER);
-
-    return panel;
-  }
-
-  /**
-   * Creates a JPanel, using a BorderLayout, adding the given components to their respective positions.
-   * @param west the panel to display in the BorderLayout.WEST position
-   * @param center the panel to display in the BorderLayout.CENTER position
-   * @return a panel displaying the given components in the WEST an CENTER positions in a BorderLayout
-   */
-  public static JPanel createWestCenterPanel(final JComponent west, final JComponent center) {
-    requireNonNull(west, "west");
-    requireNonNull(center, "center");
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(west, BorderLayout.WEST);
-    panel.add(center, BorderLayout.CENTER);
-
-    return panel;
-  }
-
-  /**
-   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a non-focusable button based on buttonAction
-   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
-   * @param centerComponent the center component
-   * @param buttonAction the button action
-   * @return a panel
-   * @see #createEastFocusableButtonPanel(JComponent, Action)
-   */
-  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction) {
-    requireNonNull(centerComponent, "centerComponent");
-    requireNonNull(buttonAction, "buttonAction");
-    final JPanel panel = new JPanel(new BorderLayout());
-    final JButton button = new JButton(buttonAction);
-    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
-    button.setFocusable(false);
-    panel.add(centerComponent, BorderLayout.CENTER);
-    panel.add(button, BorderLayout.EAST);
-
-    return panel;
-  }
-
-  /**
-   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a focusable button based on buttonAction
-   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
-   * @param centerComponent the center component
-   * @param buttonAction the button action
-   * @return a panel
-   */
-  public static JPanel createEastFocusableButtonPanel(final JComponent centerComponent, final Action buttonAction) {
-    final JPanel panel = createEastButtonPanel(centerComponent, buttonAction);
-    for (final Component component : panel.getComponents()) {
-      if (component instanceof JButton && ((JButton) component).getAction() == buttonAction) {
-        component.setFocusable(true);
-      }
-    }
-
-    return panel;
   }
 
   /**

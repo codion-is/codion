@@ -5,7 +5,7 @@ package is.codion.framework.demos.petstore.ui;
 
 import is.codion.framework.demos.petstore.domain.Petstore.Tag;
 import is.codion.framework.demos.petstore.domain.Petstore.TagItem;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -29,7 +29,7 @@ public class TagItemEditPanel extends EntityEditPanel {
     addInputPanel(TagItem.ITEM_FK);
     final EntityComboBox itemTagBox = createForeignKeyComboBox(TagItem.TAG_FK)
             .build();
-    addInputPanel(TagItem.TAG_FK, Components.createEastButtonPanel(itemTagBox,
+    addInputPanel(TagItem.TAG_FK, Panels.createEastButtonPanel(itemTagBox,
             EntityPanel.builder(Tag.TYPE).editPanelClass(TagEditPanel.class)
                     .createEditPanelAction(itemTagBox)));
   }

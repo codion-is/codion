@@ -7417,3 +7417,4 @@
   TransferFocusOnEnter utility class split from Components
   MemoryUsageField refactored from Components
   Components.createOkCancelButtonPanel() removed
+  Panels utility class split from Components

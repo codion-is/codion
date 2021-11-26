@@ -29,7 +29,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import static is.codion.swing.common.ui.Components.createWestCenterPanel;
+import static is.codion.swing.common.ui.Panels.createWestCenterPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;

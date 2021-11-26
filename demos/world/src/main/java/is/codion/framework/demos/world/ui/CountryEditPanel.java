@@ -16,7 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import static is.codion.swing.common.ui.Components.createEastButtonPanel;
+import static is.codion.swing.common.ui.Panels.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CountryEditPanel extends EntityEditPanel {
