@@ -18,6 +18,7 @@ import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
@@ -96,8 +97,8 @@ public final class EntitySearchField extends JTextField {
   private final EntitySearchModel model;
   private final TextFields.Hint searchHint;
   private final SettingsPanel settingsPanel;
-  private final Action transferFocusAction = Components.transferFocusForwardAction(this);
-  private final Action transferFocusBackwardAction = Components.transferFocusBackwardAction(this);
+  private final Action transferFocusAction = TransferFocusOnEnter.forwardAction(this);
+  private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction(this);
 
   private SelectionProvider selectionProvider;
 

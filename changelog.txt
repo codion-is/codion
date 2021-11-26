@@ -7414,3 +7414,4 @@
   TemporalInpuPanel.getLocalDateWithCalendar() and getLocalDateTimeWithCalendar() moved to CalendarPanel and renamed getLocalDate() and getLocalDateTime() respectively, some refactoring
   SpinnerMouseWheelListener, now up/away increases the value and down/towards decreases it unless reversed
   Components.getPreferredScrollBarWidth() removed
+  TransferFocusOnEnter utility class split from Components

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.calendar.CalendarPanel;
 import is.codion.swing.common.ui.control.Control;
 
@@ -96,12 +96,12 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(inputField);
-      Components.transferFocusOnEnter(calendarButton);
+      TransferFocusOnEnter.enable(inputField);
+      TransferFocusOnEnter.enable(calendarButton);
     }
     else {
-      Components.removeTransferFocusOnEnter(inputField);
-      Components.removeTransferFocusOnEnter(calendarButton);
+      TransferFocusOnEnter.disable(inputField);
+      TransferFocusOnEnter.disable(calendarButton);
     }
   }
 

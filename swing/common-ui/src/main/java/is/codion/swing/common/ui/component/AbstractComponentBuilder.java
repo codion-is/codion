@@ -7,8 +7,8 @@ import is.codion.common.event.Event;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -286,7 +286,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    * @param component the component
    */
   protected void setTransferFocusOnEnter(final C component) {
-    Components.transferFocusOnEnter(component);
+    TransferFocusOnEnter.enable(component);
   }
 
   private void setSizes(final C component) {
