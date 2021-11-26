@@ -18,6 +18,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
@@ -253,7 +254,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Clients.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(() -> {
       try {
-        UIManager.setLookAndFeel(Components.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(LookAndFeelProvider.getSystemLookAndFeelClassName());
         new EntityServerMonitorPanel().showFrame();
       }
       catch (final Exception exception) {

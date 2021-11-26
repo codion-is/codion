@@ -7,11 +7,8 @@ import is.codion.common.Memory;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
@@ -19,9 +16,7 @@ import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
@@ -59,12 +54,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
@@ -80,18 +73,8 @@ public final class Components {
   private static final Map<Window, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
-  private static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
   private static final String COMPONENT = "component";
   private static JScrollBar verticalScrollBar;
-
-  static {
-    final LookAndFeelProvider systemProvider = lookAndFeelProvider(getSystemLookAndFeelClassName());
-    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.getName(), systemProvider);
-    final LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
-    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.getName())) {
-      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.getName(), crossPlatformProvider);
-    }
-  }
 
   private Components() {}
 
@@ -456,67 +439,6 @@ public final class Components {
   }
 
   /**
-   * Adds the given look and feel provider.
-   * Note that this overrides any existing look and feel provider with the same name.
-   * @param lookAndFeelProvider the look and feel provider to add
-   */
-  public static void addLookAndFeelProvider(final LookAndFeelProvider lookAndFeelProvider) {
-    LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).getName(), lookAndFeelProvider);
-  }
-
-  /**
-   * Returns a look and feel provider with the given name, if available
-   * @param name the look and feel name
-   * @return a look and feel provider, an empty Optional if not found
-   */
-  public static Optional<LookAndFeelProvider> getLookAndFeelProvider(final String name) {
-    return name == null ? Optional.empty() : Optional.ofNullable(LOOK_AND_FEEL_PROVIDERS.get(name));
-  }
-
-  /**
-   * Allows the user the select between all available Look and Feels.
-   * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
-   * @return the selected look and feel provider, an empty Optional if cancelled
-   */
-  public static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
-    final List<Item<LookAndFeelProvider>> items = new ArrayList<>();
-    final Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
-    final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
-    LOOK_AND_FEEL_PROVIDERS.values().stream()
-            .sorted(Comparator.comparing(LookAndFeelProvider::getName))
-            .map(provider -> Item.item(provider, provider.getName()))
-            .forEach(item -> {
-              items.add(item);
-              if (currentLookAndFeelClassName.equals(item.getValue().getClassName())) {
-                currentLookAndFeel.set(item);
-              }
-            });
-    final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
-    currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
-
-    final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(comboBoxModel),
-            dialogTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-
-    return option == JOptionPane.OK_OPTION ? Optional.of(comboBoxModel.getSelectedValue().getValue()) : Optional.empty();
-  }
-
-  /**
-   * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
-   * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
-   * tabbed panes look bad
-   * @return the default look and feel for the platform we're running on
-   */
-  public static String getSystemLookAndFeelClassName() {
-    String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-    if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
-      systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
-    }
-
-    return systemLookAndFeel;
-  }
-
-  /**
    * Sets the given string as clipboard contents
    * @param string the string to put on the clipboard
    */
@@ -744,124 +666,6 @@ public final class Components {
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(transferFocusForwardAction(component));
-  }
-
-  /**
-   * Provides a LookAndFeel implementation.
-   */
-  public interface LookAndFeelProvider {
-
-    /**
-     * The name of the underlying LookAndFeel class
-     * @return the look and feel classname
-     */
-    String getClassName();
-
-    /**
-     * @return a unique name representing this look and feel, the classname by default
-     */
-    default String getName() {
-      return getClassName();
-    }
-
-    /**
-     * Configures and enables this LookAndFeel.
-     */
-    default void enable() {
-      try {
-        UIManager.setLookAndFeel(getClassName());
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  /**
-   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
-   * @param classname the look and feel classname
-   * @return a look and feel provider
-   */
-  public static LookAndFeelProvider lookAndFeelProvider(final String classname) {
-    return lookAndFeelProvider(classname, () -> {
-      try {
-        UIManager.setLookAndFeel(classname);
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
-  }
-
-  /**
-   * Instantiates a new LookAndFeelProvider.
-   * @param classname the look and feel classname
-   * @param enabler configures and enables this look and feel
-   * @return a look and feel provider
-   */
-  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final Runnable enabler) {
-    return lookAndFeelProvider(classname, classname, enabler);
-  }
-
-  /**
-   * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
-   * @param classname the look and feel classname
-   * @param name a unique name
-   * @return a look and feel provider
-   */
-  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final String name) {
-    return lookAndFeelProvider(classname, name, () -> {
-      try {
-        UIManager.setLookAndFeel(classname);
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
-  }
-
-  /**
-   * Instantiates a new LookAndFeelProvider.
-   * @param classname the look and feel classname
-   * @param name a unique name
-   * @param enabler configures and enables this look and feel
-   * @return a look and feel provider
-   */
-  public static LookAndFeelProvider lookAndFeelProvider(final String classname, final String name, final Runnable enabler) {
-    return new DefaultLookAndFeelProvider(classname, name, enabler);
-  }
-
-  private static final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
-
-    private final String classname;
-    private final String name;
-    private final Runnable enabler;
-
-    private DefaultLookAndFeelProvider(final String classname, final String name, final Runnable enabler) {
-      this.classname = requireNonNull(classname);
-      this.name = requireNonNull(name);
-      this.enabler = requireNonNull(enabler);
-    }
-
-    @Override
-    public String getClassName() {
-      return classname;
-    }
-
-    @Override
-    public String getName() {
-      return name;
-    }
-
-    @Override
-    public void enable() {
-      this.enabler.run();
-    }
-
-    @Override
-    public String toString() {
-      return getName();
-    }
   }
 
   private static final class FileTransferHandler extends TransferHandler {

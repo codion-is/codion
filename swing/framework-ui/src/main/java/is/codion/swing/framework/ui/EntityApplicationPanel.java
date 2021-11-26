@@ -29,7 +29,6 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
-import is.codion.swing.common.ui.Components.LookAndFeelProvider;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
@@ -40,6 +39,7 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -354,11 +354,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
    * @see Components#addLookAndFeelProvider(LookAndFeelProvider)
-   * @see Components#getLookAndFeelProvider(String)
-   * @see Components#selectLookAndFeel(JComponent, String)
+   * @see LookAndFeelProvider#getLookAndFeelProvider(String)
+   * @see LookAndFeelProvider#selectLookAndFeel(JComponent, String)
    */
   public final void selectLookAndFeel() {
-    Components.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL)).ifPresent(provider -> {
+    LookAndFeelProvider.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL)).ifPresent(provider -> {
       provider.enable();
       for (final Window window : Window.getWindows()) {
         SwingUtilities.updateComponentTreeUI(window);
@@ -969,10 +969,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the default look and feel to use for the system we're running on.
-   * @see Components#getSystemLookAndFeelClassName()
+   * @see LookAndFeelProvider#getSystemLookAndFeelClassName()
    */
   protected String getDefaultSystemLookAndFeelName() {
-    return Components.getSystemLookAndFeelClassName();
+    return LookAndFeelProvider.getSystemLookAndFeelClassName();
   }
 
   /**
@@ -1172,7 +1172,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                               final boolean includeMainMenu, final boolean displayProgressDialog) {
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    Components.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
+    LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
     final Integer fontSize = getDefaultFontSize();
     if (!Objects.equals(fontSize, 100)) {
       Components.setFontSize(fontSize / 100f);
