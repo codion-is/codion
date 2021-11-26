@@ -46,14 +46,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * A factory for {@link is.codion.swing.common.ui.component.ComponentBuilder}.
  */
-public class EntityComponentBuilders {
+public class EntityComponents {
 
   private final EntityDefinition entityDefinition;
 
   /**
    * @param entityDefinition the entity definition
    */
-  public EntityComponentBuilders(final EntityDefinition entityDefinition) {
+  public EntityComponents(final EntityDefinition entityDefinition) {
     this.entityDefinition = requireNonNull(entityDefinition);
   }
 
