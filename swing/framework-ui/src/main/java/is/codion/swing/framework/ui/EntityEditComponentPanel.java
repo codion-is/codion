@@ -13,7 +13,7 @@ import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
@@ -681,7 +681,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> LabelBuilder createLabel(final Attribute<T> attribute) {
     final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    return ComponentBuilders.label(property.getCaption())
+    return Components.label(property.getCaption())
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
             .labelFor(getComponent(attribute));
   }

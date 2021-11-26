@@ -7,7 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.DefaultListModel;
@@ -102,14 +102,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private JPanel initializeWeightPanel(final ItemRandomizer.RandomItem<T> item) {
     final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
-    panel.add(ComponentBuilders.checkBox()
+    panel.add(Components.checkBox()
             .caption("Enabled")
             .linkedValue(new EnabledModelValue(item.getItem()))
             .build(), BorderLayout.WEST);
-    panel.add(ComponentBuilders.label("Weight")
+    panel.add(Components.label("Weight")
             .horizontalAlignment(SwingConstants.RIGHT)
             .build(), BorderLayout.CENTER);
-    panel.add(ComponentBuilders.integerSpinner()
+    panel.add(Components.integerSpinner()
             .minimum(0)
             .columns(SPINNER_COLUMNS)
             .toolTipText(item.getItem().toString())

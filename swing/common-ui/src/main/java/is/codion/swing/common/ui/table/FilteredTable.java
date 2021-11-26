@@ -16,7 +16,7 @@ import is.codion.swing.common.model.table.TableSortModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -594,10 +594,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                     Text.collateSansSpaces(columnCollator, column1.getIdentifier().toString(), column2.getIdentifier().toString()))
             .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
     final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
-    ComponentBuilders.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true))))
+    Components.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true))))
             .caption(MESSAGES.getString("select_all"))
             .build(northPanel::add);
-    ComponentBuilders.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(false))))
+    Components.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(false))))
             .caption(MESSAGES.getString("select_none"))
             .build(northPanel::add);
 

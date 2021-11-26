@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
@@ -86,7 +86,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(ComponentBuilders.button(control(model::refresh))
+    clientTypeBase.add(Components.button(control(model::refresh))
             .caption("Refresh")
             .build(), BorderLayout.SOUTH);
 
@@ -95,17 +95,17 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    actionBase.add(ComponentBuilders.integerSpinner(new SpinnerNumberModel())
+    actionBase.add(Components.integerSpinner(new SpinnerNumberModel())
             .columns(7)
             .linkedValue(model.getConnectionTimeoutValue())
             .build());
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(ComponentBuilders.button(control(model::disconnectTimedOut))
+    actionBase.add(Components.button(control(model::disconnectTimedOut))
             .caption("Disconnect idle")
             .toolTipText("Disconnect those that have exceeded the allowed idle time")
             .build());
-    actionBase.add(ComponentBuilders.button(control(this::disconnectAll))
+    actionBase.add(Components.button(control(this::disconnectAll))
             .caption("Disconnect all")
             .toolTipText("Disconnect all clients")
             .build());
@@ -130,7 +130,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     configPanel.add(new JLabel("Update interval (s)"));
-    configPanel.add(ComponentBuilders.integerSpinner()
+    configPanel.add(Components.integerSpinner()
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
@@ -139,7 +139,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
-    configBase.add(ComponentBuilders.button(control(model::resetHistory))
+    configBase.add(Components.button(control(model::resetHistory))
             .caption("Reset")
             .build(), BorderLayout.EAST);
 

@@ -12,7 +12,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -40,7 +39,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
@@ -124,11 +123,11 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
     this.operatorCombo = initializeOperatorComboBox(operators);
-    this.toggleEnabledButton = ComponentBuilders.toggleButton()
+    this.toggleEnabledButton = toggleButton()
             .icon(icons().filter())
             .linkedValue(conditionModel.getEnabledState())
             .build();
-    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? ComponentBuilders.toggleButton()
+    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton()
             .icon(icons().configure())
             .linkedValue(advancedConditionState)
             .build() : null;

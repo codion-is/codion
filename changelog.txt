@@ -7419,3 +7419,4 @@
   Components.createOkCancelButtonPanel() removed
   Panels utility class split from Components
   Components renamed Utilities
+  ComponentBuilders renamed Components

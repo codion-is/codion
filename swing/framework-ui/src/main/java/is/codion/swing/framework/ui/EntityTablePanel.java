@@ -29,7 +29,7 @@ import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -1303,7 +1303,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final JButton button = ComponentBuilders.button(control(tableModel::refresh))
+    final JButton button = Components.button(control(tableModel::refresh))
             .enabledState(tableModel.getTableConditionModel().getConditionObserver())
             .toolTipText(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired())

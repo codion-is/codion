@@ -11,7 +11,7 @@ import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.MemoryUsageField;
@@ -176,7 +176,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel initializeUserPanel() {
     final User user = loadTestModel.getUser();
-    final JTextField usernameField = ComponentBuilders.textField()
+    final JTextField usernameField = Components.textField()
             .columns(LARGE_TEXT_FIELD_COLUMNS)
             .initialValue(user.getUsername())
             .build();
@@ -203,11 +203,11 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeApplicationPanel() {
     final JPanel applicationCountPanel = new JPanel(Layouts.borderLayout());
     applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
-    applicationCountPanel.add(ComponentBuilders.integerField()
+    applicationCountPanel.add(Components.integerField()
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValueObserver(loadTestModel.applicationCountObserver())
             .build(), BorderLayout.CENTER);
-    applicationCountPanel.add(ComponentBuilders.integerSpinner()
+    applicationCountPanel.add(Components.integerSpinner()
             .editable(false)
             .columns(SMALL_TEXT_FIELD_COLUMNS)
             .toolTipText("Application batch size")
@@ -247,7 +247,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixRowHeights(true)
             .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ComponentBuilders.checkBox()
+    controlPanel.add(Components.checkBox()
             .caption("Collect chart data")
             .linkedValue(loadTestModel.getCollectChartDataState())
             .build());
@@ -337,18 +337,18 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
             .build());
     thinkTimePanel.add(new JLabel("Max. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(ComponentBuilders.integerSpinner()
+    thinkTimePanel.add(Components.integerSpinner()
             .stepSize(SPINNER_STEP_SIZE)
             .columns(SMALL_TEXT_FIELD_COLUMNS)
             .linkedValue(loadTestModel.getMaximumThinkTimeValue())
             .build());
     thinkTimePanel.add(new JLabel("Min. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(ComponentBuilders.integerSpinner()
+    thinkTimePanel.add(Components.integerSpinner()
             .stepSize(SPINNER_STEP_SIZE)
             .columns(SMALL_TEXT_FIELD_COLUMNS)
             .linkedValue(loadTestModel.getMinimumThinkTimeValue())
             .build());
-    thinkTimePanel.add(ComponentBuilders.toggleButton()
+    thinkTimePanel.add(Components.toggleButton()
             .caption("Pause")
             .mnemonic('P')
             .linkedValue(loadTestModel.getPausedState())

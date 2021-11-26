@@ -8,7 +8,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Arrays.asList;
 
 /*
@@ -54,7 +54,7 @@ public final class ApplicationPanel extends JPanel {
 
     State inputEnabledState = State.state(true);
 
-    ComponentBuilders.checkBox(inputEnabledState)
+    checkBox(inputEnabledState)
             .caption("Enable input fields")
             .transferFocusOnEnter(true)
             .build(settingsPanel::add);
@@ -203,7 +203,7 @@ public final class ApplicationPanel extends JPanel {
 
     label("Item Spin")
             .build(inputPanel::add);
-    ComponentBuilders.<String>itemSpinner(createItemSpinnerModel())
+    Components.<String>itemSpinner(createItemSpinnerModel())
             .columns(20)
             .horizontalAlignment(SwingConstants.CENTER)
             .mouseWheelScrolling(true)
@@ -232,7 +232,7 @@ public final class ApplicationPanel extends JPanel {
 
     label("Text List Selection")
             .build(inputPanel::add);
-    ComponentBuilders.list(createStringListModel())
+    Components.list(createStringListModel())
             .visibleRowCount(4)
             .layoutOrientation(JList.HORIZONTAL_WRAP)
             .transferFocusOnEnter(true)

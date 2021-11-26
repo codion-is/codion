@@ -9,7 +9,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -383,7 +383,7 @@ public final class CalendarPanel extends JPanel {
 
   private Map<Integer, JToggleButton> createDayButtons() {
     final Map<Integer, JToggleButton> buttons = new HashMap<>();
-    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ComponentBuilders.toggleButton(dayState)
+    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, Components.toggleButton(dayState)
             .caption(Integer.toString(dayOfMonth))
             .build()));
 
@@ -441,7 +441,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JButton createSelectTodayButton() {
-    return ComponentBuilders.button(control(this::selectToday))
+    return Components.button(control(this::selectToday))
             .caption(MESSAGES.getString("today"))
             .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
             .enabledState(todaySelectedState.getReversedObserver())
@@ -622,7 +622,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JSpinner createYearSpinner() {
-    return ComponentBuilders.integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1))
+    return Components.integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1))
             .mouseWheelScrolling(true)
             .onBuild(CalendarPanel::setYearSpinnerEditor)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
@@ -631,7 +631,7 @@ public final class CalendarPanel extends JPanel {
 
   private static JSpinner createMonthSpinner(final JSpinner yearSpinner) {
     final List<Item<Month>> monthItems = createMonthItems();
-    final JSpinner monthSpinner = ComponentBuilders.itemSpinner(new SpinnerListModel(monthItems))
+    final JSpinner monthSpinner = Components.itemSpinner(new SpinnerListModel(monthItems))
             .mouseWheelScrolling(true)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
             .build();
@@ -648,7 +648,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JSpinner createHourSpinner() {
-    return ComponentBuilders.integerSpinner(new SpinnerNumberModel(0, 0, 23, 1))
+    return Components.integerSpinner(new SpinnerNumberModel(0, 0, 23, 1))
             .mouseWheelScrolling(true)
             .onBuild(CalendarPanel::setTimeSpinnerEditor)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
@@ -656,7 +656,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JSpinner createMinuteSpinner() {
-    return ComponentBuilders.integerSpinner(new SpinnerNumberModel(0, 0, 59, 1))
+    return Components.integerSpinner(new SpinnerNumberModel(0, 0, 59, 1))
             .mouseWheelScrolling(true)
             .onBuild(CalendarPanel::setTimeSpinnerEditor)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)

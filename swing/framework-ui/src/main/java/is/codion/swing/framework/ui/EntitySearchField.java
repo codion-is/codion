@@ -20,7 +20,7 @@ import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -354,7 +354,7 @@ public final class EntitySearchField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
-    final JButton okButton = ComponentBuilders.button(control(closeEvent::onEvent))
+    final JButton okButton = Components.button(control(closeEvent::onEvent))
             .caption(Messages.get(Messages.OK))
             .build();
     KeyEvents.builder(KeyEvent.VK_ENTER)
@@ -410,14 +410,14 @@ public final class EntitySearchField extends JTextField {
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
-      generalSettingsPanel.add(ComponentBuilders.checkBox()
+      generalSettingsPanel.add(Components.checkBox()
               .caption(MESSAGES.getString("enable_multiple_search_values"))
               .linkedValue(searchModel.getMultipleSelectionEnabledValue())
               .build());
 
       final JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
-      valueSeparatorPanel.add(ComponentBuilders.textField()
+      valueSeparatorPanel.add(Components.textField()
               .columns(1)
               .maximumLength(1)
               .linkedValue(searchModel.getMultipleItemSeparatorValue())
@@ -433,15 +433,15 @@ public final class EntitySearchField extends JTextField {
 
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
-      panel.add(ComponentBuilders.checkBox()
+      panel.add(Components.checkBox()
               .caption(MESSAGES.getString("case_sensitive"))
               .linkedValue(settings.getCaseSensitiveValue())
               .build());
-      panel.add(ComponentBuilders.checkBox()
+      panel.add(Components.checkBox()
               .caption(MESSAGES.getString("prefix_wildcard"))
               .linkedValue(settings.getWildcardPrefixValue())
               .build());
-      panel.add(ComponentBuilders.checkBox()
+      panel.add(Components.checkBox()
               .caption(MESSAGES.getString("postfix_wildcard"))
               .linkedValue(settings.getWildcardPostfixValue())
               .build());
