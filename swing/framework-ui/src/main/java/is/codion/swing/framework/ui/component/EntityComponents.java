@@ -34,6 +34,7 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,12 +83,13 @@ public class EntityComponents {
   /**
    * Creates a builder.
    * @param attribute the attribute
+   * @param <B> the builder type
    * @return a builder
    */
-  public final ToggleButtonBuilder toggleButton(final Attribute<Boolean> attribute) {
+  public final <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return Components.toggleButton()
+    return (ToggleButtonBuilder<JToggleButton, B>) Components.toggleButton()
             .toolTipText(property.getDescription())
             .caption(property.getCaption())
             .includeCaption(false);
