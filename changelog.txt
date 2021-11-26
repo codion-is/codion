@@ -7407,3 +7407,4 @@
   Windows.frameBuilder() added
   EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME configuration value added
   EntityApplicationPanel.displayEntityPanel() added, uses the above to determine how to display the panel, used for support table panels
+  Components.LookAndFeelProvider moved to laf package along with related methods and classes
