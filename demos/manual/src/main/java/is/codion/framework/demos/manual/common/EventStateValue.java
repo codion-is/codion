@@ -8,7 +8,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -75,7 +75,7 @@ public final class EventStateValue {
       public void actionPerformed(ActionEvent e) {}
     };
 
-    Components.linkToEnabledState(state, action);
+    Utilities.linkToEnabledState(state, action);
 
     System.out.println(action.isEnabled());// output: false
 

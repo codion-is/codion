@@ -42,8 +42,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static is.codion.swing.common.ui.Components.hideWaitCursor;
-import static is.codion.swing.common.ui.Components.showWaitCursor;
+import static is.codion.swing.common.ui.Utilities.hideWaitCursor;
+import static is.codion.swing.common.ui.Utilities.showWaitCursor;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;

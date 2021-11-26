@@ -50,16 +50,16 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility class for UI components.
+ * A utility class for UI related things.
  */
-public final class Components {
+public final class Utilities {
 
   private static final Map<Window, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static final String COMPONENT = "component";
 
-  private Components() {}
+  private Utilities() {}
 
   /**
    * Calls {@link JComponent#updateUI()} for the given components, ignores null components.

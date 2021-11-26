@@ -9,7 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComponentBuilders;
@@ -140,7 +140,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   @Override
   public final void updateUI() {
     super.updateUI();
-    Components.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
+    Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
             equalField, lowerBoundField, upperBoundField, controlPanel, inputPanel);
   }
 
@@ -516,7 +516,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    Components.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
+    Utilities.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
     ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
     comboBox.setFont(comboBox.getFont().deriveFont(OPERATOR_FONT_SIZE));
@@ -525,7 +525,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
+    Utilities.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(new BorderLayout());
     if (toggleEnabledButton != null) {

@@ -8,8 +8,8 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
 import is.codion.common.value.PropertyValue;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -139,7 +139,7 @@ final class ExceptionDialog extends JDialog {
     exceptionField = new JTextField();
     exceptionField.setEnabled(false);
     final JLabel messageLabel = new JLabel(MESSAGES.getString("message") + ": ", SwingConstants.LEFT);
-    Components.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
+    Utilities.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
     messageArea = new JTextArea();
     messageArea.setEnabled(false);
     messageArea.setLineWrap(true);
@@ -202,7 +202,7 @@ final class ExceptionDialog extends JDialog {
             .toolTipText(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
-    final JButton copyButton = ComponentBuilders.button(control(() -> Components.setClipboard(detailsArea.getText())))
+    final JButton copyButton = ComponentBuilders.button(control(() -> Utilities.setClipboard(detailsArea.getText())))
             .caption(Messages.get(Messages.COPY))
             .toolTipText(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))

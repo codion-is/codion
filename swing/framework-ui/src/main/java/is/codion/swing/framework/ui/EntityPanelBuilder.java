@@ -8,8 +8,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -437,7 +437,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       final JDialog dialog = optionPane.createDialog(component, getCaption() == null ?
               connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption());
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      Components.addInitialFocusHack(editPanel, Control.control(editPanel::requestInitialFocus));
+      Utilities.addInitialFocusHack(editPanel, Control.control(editPanel::requestInitialFocus));
       try {
         boolean insertPerformed = false;
         while (!insertPerformed) {

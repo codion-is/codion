@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -138,11 +138,11 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
                                                           final List<FileFilter> fileFilters) {
     if (fileChooserOpen == null) {
       try {
-        Components.showWaitCursor(dialogParent);
+        Utilities.showWaitCursor(dialogParent);
         fileChooserOpen = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
       }
       finally {
-        Components.hideWaitCursor(dialogParent);
+        Utilities.hideWaitCursor(dialogParent);
       }
     }
     switch (filesOrDirectories) {
@@ -199,11 +199,11 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
                                             final String defaultFileName, final boolean confirmOverwrite) {
     if (fileChooserSave == null) {
       try {
-        Components.showWaitCursor(dialogParent);
+        Utilities.showWaitCursor(dialogParent);
         fileChooserSave = new JFileChooser();
       }
       finally {
-        Components.hideWaitCursor(dialogParent);
+        Utilities.hideWaitCursor(dialogParent);
       }
     }
     fileChooserSave.setSelectedFiles(new File[] {new File("")});

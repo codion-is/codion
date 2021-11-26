@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.Components.*;
+import static is.codion.swing.common.ui.Utilities.*;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {

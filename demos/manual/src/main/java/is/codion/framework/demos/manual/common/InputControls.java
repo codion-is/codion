@@ -7,7 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComponentBuilders;
@@ -394,7 +394,7 @@ public final class InputControls {
 
     Value<Integer> horizontalAlignmentValue =
             Value.propertyValue(horizontalAlignmentField, "horizontalAlignment",
-                    int.class, Components.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
+                    int.class, Utilities.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
 
     Value<Integer> fieldValue =
             ComponentValues.integerField(horizontalAlignmentField, false);

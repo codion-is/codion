@@ -5,8 +5,8 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
@@ -252,7 +252,7 @@ public final class ApplicationPanel extends JPanel {
             .linkedValueObserver(model.getMessageObserver())
             .build(component -> add(component, BorderLayout.SOUTH));
 
-    Components.setPreferredWidth(this, 380);
+    Utilities.setPreferredWidth(this, 380);
   }
 
   private static class PGValidator implements Value.Validator<String> {

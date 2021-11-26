@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ComponentsTest {
+public class UtilitiesTest {
 
   @Test
   void linkToEnabledState() {
@@ -30,7 +30,7 @@ public class ComponentsTest {
     };
     State state = State.state();
 
-    Components.linkToEnabledState(state, action);
+    Utilities.linkToEnabledState(state, action);
     assertFalse(action.isEnabled());
     state.set(true);
     assertTrue(action.isEnabled());
@@ -42,7 +42,7 @@ public class ComponentsTest {
 
     final State theState = state;
     try {
-      Components.linkToEnabledState(theState, comp);
+      Utilities.linkToEnabledState(theState, comp);
       assertFalse(comp.isEnabled());
       theState.set(true);
       Thread.sleep(50);//due to EDT
@@ -57,11 +57,11 @@ public class ComponentsTest {
   @Test
   void setPreferredWidth() {
     final JTextField textField = new JTextField();
-    Components.setPreferredWidth(textField, 42);
+    Utilities.setPreferredWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
     final JComboBox<String> box = new JComboBox<>();
     box.setPreferredSize(new Dimension(10, 10));
-    Components.setPreferredWidth(box, 42);
+    Utilities.setPreferredWidth(box, 42);
     assertEquals(10, box.getPreferredSize().height);
     assertEquals(42, box.getPreferredSize().width);
   }
@@ -69,7 +69,7 @@ public class ComponentsTest {
   @Test
   void setPreferredHeight() {
     final JTextField textField = new JTextField();
-    Components.setPreferredHeight(textField, 42);
+    Utilities.setPreferredHeight(textField, 42);
     assertEquals(new Dimension(textField.getPreferredSize().width, 42), textField.getPreferredSize());
   }
 
@@ -78,7 +78,7 @@ public class ComponentsTest {
     final JTextField textField = new JTextField();
     final AtomicInteger counter = new AtomicInteger();
     final EventObserver<Integer> alignmentObserver =
-            Components.propertyChangeObserver(textField, "horizontalAlignment");
+            Utilities.propertyChangeObserver(textField, "horizontalAlignment");
     alignmentObserver.addListener(counter::incrementAndGet);
     textField.setHorizontalAlignment(SwingConstants.RIGHT);
     assertEquals(1, counter.get());

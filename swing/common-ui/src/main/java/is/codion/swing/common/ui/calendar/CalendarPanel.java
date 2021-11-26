@@ -7,8 +7,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -126,7 +126,7 @@ public final class CalendarPanel extends JPanel {
     initializeUI();
     updateFormattedDate();
     bindEvents();
-    Components.addInitialFocusHack(this, control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
+    Utilities.addInitialFocusHack(this, control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
   }
 
   /**

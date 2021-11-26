@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.table;
 
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Box;
@@ -72,10 +72,10 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   public void updateUI() {
     super.updateUI();
     if (columnComponents != null) {
-      Components.updateUI(columnComponents.values());
+      Utilities.updateUI(columnComponents.values());
     }
     if (nullComponents != null) {
-      Components.updateUI(nullComponents.values());
+      Utilities.updateUI(nullComponents.values());
     }
   }
 
