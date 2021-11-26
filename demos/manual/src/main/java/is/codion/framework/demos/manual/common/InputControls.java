@@ -52,7 +52,7 @@ public final class InputControls {
             .enabledState(somethingEnabledState)
             .build();
 
-    JButton somethingButton = control.createButton();
+    JButton somethingButton = new JButton(control);
 
     Control.ActionCommand actionCommand = actionEvent -> {
       if ((actionEvent.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
@@ -64,24 +64,22 @@ public final class InputControls {
             .mnemonic('S')
             .build();
 
-    JButton somethingElseButton = actionControl.createButton();
+    JButton somethingElseButton = new JButton(actionControl);
     // end::control[]
 
     // tag::toggleControl[]
     State state = State.state();
 
-    JToggleButton toggleButton = ComponentBuilders.toggleButton()
+    JToggleButton toggleButton = ComponentBuilders.toggleButton(state)
             .caption("Change state")
             .mnemonic('C')
-            .linkedValue(state)
             .build();
 
     Value<Boolean> booleanValue = Value.value();
 
-    JCheckBox checkBox = ComponentBuilders.checkBox()
+    JCheckBox checkBox = ComponentBuilders.checkBox(booleanValue)
             .caption("Change value")
             .mnemonic('V')
-            .linkedValue(booleanValue)
             .build();
     // end::toggleControl[]
   }

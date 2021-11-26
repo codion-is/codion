@@ -10,8 +10,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.ComponentBuilders;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.BorderFactory;
@@ -49,10 +48,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 
@@ -125,7 +126,7 @@ public final class CalendarPanel extends JPanel {
     initializeUI();
     updateFormattedDate();
     bindEvents();
-    Components.addInitialFocusHack(this, Control.control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
+    Components.addInitialFocusHack(this, control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
   }
 
   /**
@@ -205,6 +206,72 @@ public final class CalendarPanel extends JPanel {
    */
   public static CalendarPanel dateTimeCalendarPanel() {
     return new CalendarPanel(CalendarView.DATE_TIME);
+  }
+
+  /**
+   * Retrieves a LocalDate from the user.
+   * @param dialogTitle the dialog title
+   * @param dialogOwner the dialog owner
+   * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
+   */
+  public static Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner) {
+    return getLocalDate(dialogTitle, dialogOwner, null);
+  }
+
+  /**
+   * Retrieves a LocalDate from the user.
+   * @param dialogTitle the dialog title
+   * @param dialogOwner the dialog owner
+   * @param startDate the starting date, if null the current date is used
+   * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
+   */
+  public static Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
+                                                 final LocalDate startDate) {
+    final CalendarPanel calendarPanel = dateCalendarPanel();
+    if (startDate != null) {
+      calendarPanel.setDate(startDate);
+    }
+    final State okPressed = State.state();
+    Dialogs.okCancelDialog(calendarPanel)
+            .owner(dialogOwner)
+            .title(dialogTitle)
+            .onOk(() -> okPressed.set(true))
+            .show();
+
+    return okPressed.get() ? Optional.of(calendarPanel.getDate()) : Optional.empty();
+  }
+
+  /**
+   * Retrieves a LocalDateTime from the user.
+   * @param dialogTitle the dialog title
+   * @param dialogOwner the dialog owner
+   * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
+   */
+  public static Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner) {
+    return getLocalDateTime(dialogTitle, dialogOwner, null);
+  }
+
+  /**
+   * Retrieves a LocalDateTime from the user.
+   * @param dialogTitle the dialog title
+   * @param dialogOwner the dialog owner
+   * @param startDateTime the starting date, if null the current date is used
+   * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
+   */
+  public static Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
+                                                         final LocalDateTime startDateTime) {
+    final CalendarPanel calendarPanel = dateTimeCalendarPanel();
+    if (startDateTime != null) {
+      calendarPanel.setDateTime(startDateTime);
+    }
+    final State okPressed = State.state();
+    Dialogs.okCancelDialog(calendarPanel)
+            .owner(dialogOwner)
+            .title(dialogTitle)
+            .onOk(() -> okPressed.set(true))
+            .show();
+
+    return okPressed.get() ? Optional.of(calendarPanel.getDateTime()) : Optional.empty();
   }
 
   void previousMonth() {
@@ -316,9 +383,8 @@ public final class CalendarPanel extends JPanel {
 
   private Map<Integer, JToggleButton> createDayButtons() {
     final Map<Integer, JToggleButton> buttons = new HashMap<>();
-    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ComponentBuilders.toggleButton()
+    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ComponentBuilders.toggleButton(dayState)
             .caption(Integer.toString(dayOfMonth))
-            .linkedValue(dayState)
             .build()));
 
     return buttons;
@@ -375,12 +441,11 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JButton createSelectTodayButton() {
-    return Control.builder(this::selectToday)
+    return ComponentBuilders.button(control(this::selectToday))
             .caption(MESSAGES.getString("today"))
             .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
             .enabledState(todaySelectedState.getReversedObserver())
-            .build()
-            .createButton();
+            .build();
   }
 
   private JPanel createDayPanel() {
@@ -471,74 +536,74 @@ public final class CalendarPanel extends JPanel {
 
   private void addKeyEvents() {
     KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(Control.control(this::previousYear))
+            .action(control(this::previousYear))
             .onKeyPressed()
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(Control.control(this::nextYear))
+            .action(control(this::nextYear))
             .onKeyPressed()
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(Control.control(this::previousMonth))
+            .action(control(this::previousMonth))
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(Control.control(this::nextMonth))
+            .action(control(this::nextMonth))
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_UP)
-            .action(Control.control(this::previousWeek))
+            .action(control(this::previousWeek))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_DOWN)
-            .action(Control.control(this::nextWeek))
+            .action(control(this::nextWeek))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(Control.control(this::previousDay))
+            .action(control(this::previousDay))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(Control.control(this::nextDay))
+            .action(control(this::nextDay))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     if (calendarView.includesTime()) {
       KeyEvents.builder(KeyEvent.VK_LEFT)
-              .action(Control.control(this::previousHour))
+              .action(control(this::previousHour))
               .onKeyPressed()
               .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_RIGHT)
-              .action(Control.control(this::nextHour))
+              .action(control(this::nextHour))
               .onKeyPressed()
               .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_LEFT)
-              .action(Control.control(this::previousMinute))
+              .action(control(this::previousMinute))
               .onKeyPressed()
               .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_RIGHT)
-              .action(Control.control(this::nextMinute))
+              .action(control(this::nextMinute))
               .onKeyPressed()
               .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -557,17 +622,19 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JSpinner createYearSpinner() {
-    final JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(0, -9999, 9999, 1));
-    yearSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(yearSpinner.getModel()));
-    yearSpinner.setEditor(createYearSpinnerEditor(yearSpinner));
-
-    return removeCtrlLeftRightArrowKeyEvents(yearSpinner);
+    return ComponentBuilders.integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1))
+            .mouseWheelScrolling(true)
+            .onBuild(CalendarPanel::setYearSpinnerEditor)
+            .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
+            .build();
   }
 
   private static JSpinner createMonthSpinner(final JSpinner yearSpinner) {
     final List<Item<Month>> monthItems = createMonthItems();
-    final JSpinner monthSpinner = new JSpinner(new SpinnerListModel(monthItems));
-    monthSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(monthSpinner.getModel()));
+    final JSpinner monthSpinner = ComponentBuilders.itemSpinner(new SpinnerListModel(monthItems))
+            .mouseWheelScrolling(true)
+            .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
+            .build();
     final JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
     monthTextField.setFont(((JSpinner.DefaultEditor) yearSpinner.getEditor()).getTextField().getFont());
     monthTextField.setEditable(false);
@@ -577,42 +644,40 @@ public final class CalendarPanel extends JPanel {
             .max()
             .ifPresent(monthTextField::setColumns);
 
-    return removeCtrlLeftRightArrowKeyEvents(monthSpinner);
+    return monthSpinner;
   }
 
   private static JSpinner createHourSpinner() {
-    final JSpinner hourSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 23, 1));
-    hourSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(hourSpinner.getModel()));
-    hourSpinner.setEditor(createTimeSpinnerEditor(hourSpinner));
-
-    return removeCtrlLeftRightArrowKeyEvents(hourSpinner);
+    return ComponentBuilders.integerSpinner(new SpinnerNumberModel(0, 0, 23, 1))
+            .mouseWheelScrolling(true)
+            .onBuild(CalendarPanel::setTimeSpinnerEditor)
+            .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
+            .build();
   }
 
   private static JSpinner createMinuteSpinner() {
-    final JSpinner minuteSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
-    minuteSpinner.addMouseWheelListener(new SpinnerMouseWheelListener(minuteSpinner.getModel()));
-    minuteSpinner.setEditor(createTimeSpinnerEditor(minuteSpinner));
-
-    return removeCtrlLeftRightArrowKeyEvents(minuteSpinner);
+    return ComponentBuilders.integerSpinner(new SpinnerNumberModel(0, 0, 59, 1))
+            .mouseWheelScrolling(true)
+            .onBuild(CalendarPanel::setTimeSpinnerEditor)
+            .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
+            .build();
   }
 
-  private static JSpinner.NumberEditor createYearSpinnerEditor(final JSpinner spinner) {
+  private static void setYearSpinnerEditor(final JSpinner spinner) {
     final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner);
     editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
     editor.getTextField().setColumns(YEAR_COLUMNS);
     editor.getTextField().setEditable(false);
     editor.getFormat().setGroupingUsed(false);
-
-    return editor;
+    spinner.setEditor(editor);
   }
 
-  private static JSpinner.NumberEditor createTimeSpinnerEditor(final JSpinner spinner) {
+  private static void setTimeSpinnerEditor(final JSpinner spinner) {
     final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "00");
     editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
     editor.getTextField().setColumns(TIME_COLUMNS);
     editor.getTextField().setEditable(false);
-
-    return editor;
+    spinner.setEditor(editor);
   }
 
   private static JSpinner removeCtrlLeftRightArrowKeyEvents(final JSpinner spinner) {

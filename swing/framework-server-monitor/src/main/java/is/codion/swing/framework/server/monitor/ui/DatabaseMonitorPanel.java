@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.swing.common.ui.component.ComponentBuilders;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.DatabaseMonitor;
 
@@ -19,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
+
+import static is.codion.swing.common.ui.control.Control.control;
 
 /**
  * A DatabaseMonitorPanel
@@ -64,9 +65,9 @@ public final class DatabaseMonitorPanel extends JPanel {
             .editable(false)
             .linkedValue(model.getUpdateIntervalValue())
             .build());
-    chartConfig.add(Control.builder(model::clearStatistics)
+    chartConfig.add(ComponentBuilders.button(control(model::clearStatistics))
             .caption("Clear")
-            .build().createButton());
+            .build());
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);

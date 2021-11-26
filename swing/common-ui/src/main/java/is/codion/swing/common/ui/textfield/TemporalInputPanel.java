@@ -3,14 +3,11 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.state.State;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.calendar.CalendarPanel;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -42,10 +39,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   public TemporalInputPanel(final TemporalField<T> temporalField) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
-    this.calendarButton = Control.builder(this::displayCalendar)
+    this.calendarButton = new JButton(Control.builder(this::displayCalendar)
             .caption("...")
-            .build()
-            .createButton();
+            .build());
     this.calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     add(temporalField, BorderLayout.CENTER);
     add(calendarButton, BorderLayout.EAST);
@@ -129,7 +125,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendarForLocalDate() {
-    getLocalDateWithCalendar((LocalDate) getTemporal(), MESSAGES.getString("select_date"), inputField)
+    CalendarPanel.getLocalDate(MESSAGES.getString("select_date"), inputField, (LocalDate) getTemporal())
             .ifPresent(localDate -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDate));
               inputField.requestFocusInWindow();
@@ -137,56 +133,11 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendarForLocalDateTime() {
-    getLocalDateTimeWithCalendar((LocalDateTime) getTemporal(), MESSAGES.getString("select_date_time"), inputField)
+    CalendarPanel.getLocalDateTime(MESSAGES.getString("select_date_time"), inputField, (LocalDateTime) getTemporal())
             .ifPresent(localDateTime -> {
               inputField.setText(getInputField().getDateTimeFormatter().format(localDateTime));
               inputField.requestFocusInWindow();
             });
-  }
-
-  /**
-   * Retrieves a LocalDate from the user.
-   * @param startDate the starting date, if null the current date is used
-   * @param message the message to display as dialog title
-   * @param parent the dialog parent
-   * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
-   */
-  public static Optional<LocalDate> getLocalDateWithCalendar(final LocalDate startDate, final String message, final JComponent parent) {
-    final CalendarPanel calendarPanel = CalendarPanel.dateCalendarPanel();
-    if (startDate != null) {
-      calendarPanel.setDate(startDate);
-    }
-    final State okPressed = State.state();
-    Dialogs.okCancelDialog(calendarPanel)
-            .owner(parent)
-            .title(message)
-            .onOk(() -> okPressed.set(true))
-            .show();
-
-    return okPressed.get() ? Optional.of(calendarPanel.getDate()) : Optional.empty();
-  }
-
-  /**
-   * Retrieves a LocalDateTime from the user.
-   * @param startDateTime the starting date, if null the current date is used
-   * @param dialogTitle the dialog title
-   * @param parent the dialog parent
-   * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
-   */
-  public static Optional<LocalDateTime> getLocalDateTimeWithCalendar(final LocalDateTime startDateTime, final String dialogTitle,
-                                                                     final JComponent parent) {
-    final CalendarPanel calendarPanel = CalendarPanel.dateTimeCalendarPanel();
-    if (startDateTime != null) {
-      calendarPanel.setDateTime(startDateTime);
-    }
-    final State okPressed = State.state();
-    Dialogs.okCancelDialog(calendarPanel)
-            .owner(parent)
-            .title(dialogTitle)
-            .onOk(() -> okPressed.set(true))
-            .show();
-
-    return okPressed.get() ? Optional.of(calendarPanel.getDateTime()) : Optional.empty();
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {

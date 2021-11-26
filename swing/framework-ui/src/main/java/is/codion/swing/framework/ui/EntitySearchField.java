@@ -68,6 +68,7 @@ import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Components.darker;
+import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -352,16 +353,16 @@ public final class EntitySearchField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
-    final JButton okButton = Control.builder(closeEvent::onEvent)
+    final JButton okButton = ComponentBuilders.button(control(closeEvent::onEvent))
             .caption(Messages.get(Messages.OK))
-            .build().createButton();
+            .build();
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .onKeyPressed()
-            .action(Control.control(okButton::doClick))
+            .action(control(okButton::doClick))
             .enable(okButton);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .onKeyPressed()
-            .action(Control.control(closeEvent::onEvent))
+            .action(control(closeEvent::onEvent))
             .enable(okButton);
     final JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);

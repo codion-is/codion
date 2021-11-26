@@ -32,6 +32,7 @@ import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -76,13 +77,12 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     creationDatePanel.add(creationDateField);
 
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    settingsPanel.add(ComponentBuilders.checkBox()
+    ComponentBuilders.checkBox(model.getLoggingEnabledValue())
             .caption("Logging enabled")
-            .linkedValue(model.getLoggingEnabledValue())
-            .build());
-    settingsPanel.add(Control.builder(this::updateView)
+            .build(settingsPanel::add);
+    ComponentBuilders.button(control(this::updateView))
             .caption("Refresh log")
-            .build().createButton());
+            .build(settingsPanel::add);
 
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.setBorder(BorderFactory.createTitledBorder("Connection info"));

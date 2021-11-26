@@ -6,7 +6,6 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.ComponentBuilders;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
@@ -31,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static is.codion.swing.common.ui.Components.createWestCenterPanel;
+import static is.codion.swing.common.ui.control.Control.control;
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;
 
@@ -196,21 +196,18 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .linkedValue(model.getUpdateIntervalValue())
             .build());
 
-    chartConfig.add(ComponentBuilders.checkBox()
+    chartConfig.add(ComponentBuilders.checkBox(model.getCollectSnapshotStatisticsState())
             .caption("Snapshot")
             .maximumSize(TextFields.getPreferredTextFieldSize())
-            .linkedValue(model.getCollectSnapshotStatisticsState())
             .build());
 
-    chartConfig.add(ComponentBuilders.checkBox()
+    chartConfig.add(ComponentBuilders.checkBox(model.getCollectCheckOutTimesState())
             .caption("Check out times")
             .maximumSize(TextFields.getPreferredTextFieldSize())
-            .linkedValue(model.getCollectCheckOutTimesState())
             .build());
 
-    chartConfig.add(ComponentBuilders.builder(Control.builder(model::clearInPoolStatistics)
+    chartConfig.add(ComponentBuilders.button(control(model::clearInPoolStatistics))
             .caption("Clear")
-            .build().createButton())
             .maximumSize(TextFields.getPreferredTextFieldSize())
             .build());
 
@@ -243,9 +240,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statisticsBase.add(createWestCenterPanel(new JLabel("Created"), createdField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField));
     statisticsBase.add(createWestCenterPanel(new JLabel("Since"), resetTimeField));
-    statisticsBase.add(Control.builder(model::clearStatistics)
+    statisticsBase.add(ComponentBuilders.button(control(model::clearStatistics))
             .caption("Clear")
-            .build().createButton(), BorderLayout.SOUTH);
+            .build(), BorderLayout.SOUTH);
 
     statisticsBase.setBorder(BorderFactory.createTitledBorder("Statistics"));
 

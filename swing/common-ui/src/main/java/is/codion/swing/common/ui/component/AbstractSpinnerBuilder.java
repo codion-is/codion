@@ -20,6 +20,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   private boolean editable = true;
   private int columns = 0;
   private boolean mouseWheelScrolling = false;
+  private boolean mouseWheelScrollingReversed = false;
   private int horizontalAlignment = -1;
 
   protected AbstractSpinnerBuilder(final SpinnerModel spinnerModel) {
@@ -41,6 +42,12 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   @Override
   public final B mouseWheelScrolling(final boolean mouseWheelScrolling) {
     this.mouseWheelScrolling  = mouseWheelScrolling;
+    return (B) this;
+  }
+
+  @Override
+  public B mouseWheelScrollingReversed(final boolean reversed) {
+    this.mouseWheelScrollingReversed = reversed;
     return (B) this;
   }
 
@@ -72,7 +79,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
       }
     }
     if (mouseWheelScrolling) {
-      spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerModel));
+      spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerModel, mouseWheelScrollingReversed));
     }
 
     return spinner;

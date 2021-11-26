@@ -12,7 +12,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.ComponentBuilders;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.BorderFactory;
@@ -40,6 +39,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 
@@ -179,51 +179,45 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final JCheckBox detailsCheckBox = ComponentBuilders.checkBox()
+    final JCheckBox detailsCheckBox = ComponentBuilders.checkBox(showDetailsState)
             .caption(MESSAGES.getString("details"))
             .toolTipText(MESSAGES.getString("show_details"))
-            .linkedValue(showDetailsState)
             .build();
-    final Control printControl = Control.builder(() -> detailsArea.print())
+    final JButton printButton = ComponentBuilders.button(control(() -> detailsArea.print()))
             .caption(Messages.get(Messages.PRINT))
-            .description(MESSAGES.getString("print_error_report"))
+            .toolTipText(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build();
-    final Control closeControl = Control.builder(this::dispose)
+    final JButton closeButton = ComponentBuilders.button(control(this::dispose))
             .caption(MESSAGES.getString("close"))
-            .description(MESSAGES.getString("close_dialog"))
+            .toolTipText(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    final Control saveControl = Control.builder(() -> Files.write(new DefaultFileSelectionDialogBuilder()
-                    .owner(detailsArea)
-                    .selectFileToSave("error.txt")
-                    .toPath(),
-            Arrays.asList(detailsArea.getText().split("\\r?\\n"))))
+    final JButton saveButton = ComponentBuilders.button(control(() -> Files.write(new DefaultFileSelectionDialogBuilder()
+                            .owner(detailsArea)
+                            .selectFileToSave("error.txt")
+                            .toPath(),
+                    Arrays.asList(detailsArea.getText().split("\\r?\\n")))))
             .caption(MESSAGES.getString("save"))
-            .description(MESSAGES.getString("save_error_log"))
+            .toolTipText(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
-    final Control copyControl = Control.builder(() -> Components.setClipboard(detailsArea.getText()))
+    final JButton copyButton = ComponentBuilders.button(control(() -> Components.setClipboard(detailsArea.getText())))
             .caption(Messages.get(Messages.COPY))
-            .description(MESSAGES.getString("copy_to_clipboard"))
+            .toolTipText(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
             .build();
 
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
-            .action(closeControl)
+            .action(closeButton.getAction())
             .enable(getRootPane());
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
-            .action(closeControl)
+            .action(closeButton.getAction())
             .enable(getRootPane());
-
-    final JButton closeButton = closeControl.createButton();
-    printButton = printControl.createButton();
-    saveButton = saveControl.createButton();
-    copyButton = copyControl.createButton();
 
     final JPanel baseButtonPanel = new JPanel(new BorderLayout());
     final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
