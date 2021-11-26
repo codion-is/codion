@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.laf;
 
-
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
