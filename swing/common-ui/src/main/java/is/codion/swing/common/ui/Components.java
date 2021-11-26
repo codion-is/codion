@@ -18,7 +18,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -31,7 +30,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.JTextComponent;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -74,7 +72,6 @@ public final class Components {
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static final String COMPONENT = "component";
-  private static JScrollBar verticalScrollBar;
 
   private Components() {}
 
@@ -227,17 +224,6 @@ public final class Components {
     }
     // Expansion or collapse must be done bottom-up
     tree.collapsePath(parent);
-  }
-
-  /**
-   * @return the preferred width of a JScrollBar
-   */
-  public static synchronized int getPreferredScrollBarWidth() {
-    if (verticalScrollBar == null) {
-      verticalScrollBar = new JScrollBar(Adjustable.VERTICAL);
-    }
-
-    return verticalScrollBar.getPreferredSize().width;
   }
 
   /**
