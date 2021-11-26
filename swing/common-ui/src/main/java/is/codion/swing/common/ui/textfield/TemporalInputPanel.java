@@ -42,10 +42,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   public TemporalInputPanel(final TemporalField<T> temporalField) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
-    this.calendarButton = Control.builder(this::displayCalendar)
+    this.calendarButton = new JButton(Control.builder(this::displayCalendar)
             .caption("...")
-            .build()
-            .createButton();
+            .build());
     this.calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     add(temporalField, BorderLayout.CENTER);
     add(calendarButton, BorderLayout.EAST);

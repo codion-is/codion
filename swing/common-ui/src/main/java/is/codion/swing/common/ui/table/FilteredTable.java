@@ -16,6 +16,7 @@ import is.codion.swing.common.model.table.TableSortModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -65,6 +66,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -476,11 +478,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JTextField field = new JTextField();
     field.setColumns(SEARCH_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(field);
-    final Control findNext = Control.control(() -> findNext(field.getText()));
-    final Control findAndSelectNext = Control.control(() -> findAndSelectNext(field.getText()));
-    final Control findPrevious = Control.control(() -> findPrevious(field.getText()));
-    final Control findAndSelectPrevious = Control.control(() -> findAndSelectPrevious(field.getText()));
-    final Control cancel = Control.control(this::requestFocusInWindow);
+    final Control findNext = control(() -> findNext(field.getText()));
+    final Control findAndSelectNext = control(() -> findAndSelectNext(field.getText()));
+    final Control findPrevious = control(() -> findPrevious(field.getText()));
+    final Control findAndSelectPrevious = control(() -> findAndSelectPrevious(field.getText()));
+    final Control cancel = control(this::requestFocusInWindow);
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .onKeyPressed()
             .action(findNext)
@@ -592,12 +594,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                     Text.collateSansSpaces(columnCollator, column1.getIdentifier().toString(), column2.getIdentifier().toString()))
             .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
     final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
-    northPanel.add(Control.builder(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true)))
+    ComponentBuilders.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true))))
             .caption(MESSAGES.getString("select_all"))
-            .build().createButton());
-    northPanel.add(Control.builder(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(false)))
+            .build(northPanel::add);
+    ComponentBuilders.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(false))))
             .caption(MESSAGES.getString("select_none"))
-            .build().createButton());
+            .build(northPanel::add);
 
     final JPanel base = new JPanel(Layouts.borderLayout());
     base.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

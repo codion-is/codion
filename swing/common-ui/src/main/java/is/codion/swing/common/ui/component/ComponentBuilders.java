@@ -4,8 +4,10 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
+import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
@@ -37,14 +39,31 @@ public final class ComponentBuilders {
    * @return a builder for a JButton
    */
   public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button() {
-    return new DefaultButtonBuilder<>();
+    return button(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param action the button action
+   * @return a builder for a JButton
+   */
+  public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(final Action action) {
+    return new DefaultButtonBuilder<>(action);
   }
 
   /**
    * @return a builder for a component
    */
   public static CheckBoxBuilder checkBox() {
-    return new DefaultCheckBoxBuilder();
+    return new DefaultCheckBoxBuilder(null);
+  }
+
+  /**
+   * @param value a value to link to the check box
+   * @return a builder for a component
+   */
+  public static CheckBoxBuilder checkBox(final Value<Boolean> value) {
+    return new DefaultCheckBoxBuilder(value);
   }
 
   /**
@@ -52,7 +71,16 @@ public final class ComponentBuilders {
    * @return a builder for a component
    */
   public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton() {
-    return new DefaultToggleButtonBuilder<>();
+    return new DefaultToggleButtonBuilder<>(null);
+  }
+
+  /**
+   * @param value a value to link to the button
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Value<Boolean> value) {
+    return new DefaultToggleButtonBuilder<>(value);
   }
 
   /**

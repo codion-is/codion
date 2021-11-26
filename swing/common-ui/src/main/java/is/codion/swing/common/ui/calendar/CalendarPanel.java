@@ -10,7 +10,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.ComponentBuilders;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -53,6 +52,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 
@@ -125,7 +125,7 @@ public final class CalendarPanel extends JPanel {
     initializeUI();
     updateFormattedDate();
     bindEvents();
-    Components.addInitialFocusHack(this, Control.control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
+    Components.addInitialFocusHack(this, control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
   }
 
   /**
@@ -316,9 +316,8 @@ public final class CalendarPanel extends JPanel {
 
   private Map<Integer, JToggleButton> createDayButtons() {
     final Map<Integer, JToggleButton> buttons = new HashMap<>();
-    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ComponentBuilders.toggleButton()
+    dayStates.forEach((dayOfMonth, dayState) -> buttons.put(dayOfMonth, ComponentBuilders.toggleButton(dayState)
             .caption(Integer.toString(dayOfMonth))
-            .linkedValue(dayState)
             .build()));
 
     return buttons;
@@ -375,12 +374,11 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JButton createSelectTodayButton() {
-    return Control.builder(this::selectToday)
+    return ComponentBuilders.button(control(this::selectToday))
             .caption(MESSAGES.getString("today"))
             .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
             .enabledState(todaySelectedState.getReversedObserver())
-            .build()
-            .createButton();
+            .build();
   }
 
   private JPanel createDayPanel() {
@@ -471,74 +469,74 @@ public final class CalendarPanel extends JPanel {
 
   private void addKeyEvents() {
     KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(Control.control(this::previousYear))
+            .action(control(this::previousYear))
             .onKeyPressed()
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(Control.control(this::nextYear))
+            .action(control(this::nextYear))
             .onKeyPressed()
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(Control.control(this::previousMonth))
+            .action(control(this::previousMonth))
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(Control.control(this::nextMonth))
+            .action(control(this::nextMonth))
             .onKeyPressed()
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_UP)
-            .action(Control.control(this::previousWeek))
+            .action(control(this::previousWeek))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_DOWN)
-            .action(Control.control(this::nextWeek))
+            .action(control(this::nextWeek))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_LEFT)
-            .action(Control.control(this::previousDay))
+            .action(control(this::previousDay))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_RIGHT)
-            .action(Control.control(this::nextDay))
+            .action(control(this::nextDay))
             .onKeyPressed()
             .modifiers(InputEvent.ALT_DOWN_MASK)
             .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     if (calendarView.includesTime()) {
       KeyEvents.builder(KeyEvent.VK_LEFT)
-              .action(Control.control(this::previousHour))
+              .action(control(this::previousHour))
               .onKeyPressed()
               .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_RIGHT)
-              .action(Control.control(this::nextHour))
+              .action(control(this::nextHour))
               .onKeyPressed()
               .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_LEFT)
-              .action(Control.control(this::previousMinute))
+              .action(control(this::previousMinute))
               .onKeyPressed()
               .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_RIGHT)
-              .action(Control.control(this::nextMinute))
+              .action(control(this::nextMinute))
               .onKeyPressed()
               .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

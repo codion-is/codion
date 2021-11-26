@@ -5,7 +5,6 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.ComponentBuilders;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ServerMonitor;
 
@@ -36,6 +35,7 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
 
 /**
@@ -125,9 +125,9 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    shutdownBasePanel.add(Control.builder(this::shutdownServer)
+    shutdownBasePanel.add(ComponentBuilders.button(control(this::shutdownServer))
             .caption("Shutdown")
-            .build().createButton(), BorderLayout.EAST);
+            .build(), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
     northPanel.setBorder(BorderFactory.createTitledBorder("Server"));
 
@@ -157,9 +157,9 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
-    chartsPanel.add(Control.builder(model::clearStatistics)
+    chartsPanel.add(ComponentBuilders.button(control(model::clearStatistics))
             .caption("Clear")
-            .build().createButton(), BorderLayout.EAST);
+            .build(), BorderLayout.EAST);
 
     controlPanel.add(chartsPanel);
 
@@ -168,9 +168,9 @@ public final class ServerMonitorPanel extends JPanel {
             .caption("Synchronize zoom")
             .linkedValue(synchronizedZoomState)
             .build(), BorderLayout.CENTER);
-    zoomPanel.add(Control.builder(this::resetZoom)
+    zoomPanel.add(ComponentBuilders.button(control(this::resetZoom))
             .caption("Reset zoom")
-            .build().createButton(), BorderLayout.EAST);
+            .build(), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
 
     final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
@@ -214,9 +214,9 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(Control.builder(model::refreshDomainList)
+    refreshPanel.add(ComponentBuilders.button(control(model::refreshDomainList))
             .caption("Refresh")
-            .build().createButton());
+            .build());
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 

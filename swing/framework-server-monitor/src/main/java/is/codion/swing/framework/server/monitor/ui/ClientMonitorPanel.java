@@ -4,6 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -18,6 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
+
+import static is.codion.swing.common.ui.control.Control.control;
 
 /**
  * A ClientMonitorPanel
@@ -55,9 +58,9 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(Control.builder(this::refresh)
+    clientInstanceBase.add(ComponentBuilders.button(control(this::refresh))
             .caption("Refresh")
-            .build().createButton(), BorderLayout.SOUTH);
+            .build(), BorderLayout.SOUTH);
 
     final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);

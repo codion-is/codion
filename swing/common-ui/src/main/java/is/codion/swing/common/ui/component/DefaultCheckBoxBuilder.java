@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 
@@ -13,6 +14,10 @@ final class DefaultCheckBoxBuilder extends AbstractToggleButtonBuilder<JCheckBox
 
   private boolean nullable = false;
   private int horizontalAlignment = SwingConstants.LEADING;
+
+  DefaultCheckBoxBuilder(final Value<Boolean> value) {
+    super(value);
+  }
 
   @Override
   public CheckBoxBuilder nullable(final boolean nullable) {

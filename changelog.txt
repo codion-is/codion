@@ -7410,3 +7410,4 @@
   Components.LookAndFeelProvider moved to laf package along with related methods and classes
   Unnecessary space around equals sign in property files removed
   FileChooser messages added to UIManagerDefaults
+  ComponentBuilders.button(), toggleButton() and checkBox() added Action and Value<Boolean> parameters
