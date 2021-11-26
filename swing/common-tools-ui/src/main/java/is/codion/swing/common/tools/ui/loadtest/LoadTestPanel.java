@@ -247,9 +247,8 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixRowHeights(true)
             .build());
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(Components.checkBox()
+    controlPanel.add(Components.checkBox(loadTestModel.getCollectChartDataState())
             .caption("Collect chart data")
-            .linkedValue(loadTestModel.getCollectChartDataState())
             .build());
     controlPanel.add(new JButton(Control.builder(loadTestModel::resetChartData)
             .caption("Reset")
@@ -348,10 +347,9 @@ public final class LoadTestPanel<T> extends JPanel {
             .columns(SMALL_TEXT_FIELD_COLUMNS)
             .linkedValue(loadTestModel.getMinimumThinkTimeValue())
             .build());
-    thinkTimePanel.add(Components.toggleButton()
+    thinkTimePanel.add(Components.toggleButton(loadTestModel.getPausedState())
             .caption("Pause")
             .mnemonic('P')
-            .linkedValue(loadTestModel.getPausedState())
             .build());
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));

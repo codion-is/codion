@@ -224,12 +224,11 @@ public final class ComponentsTest {
   @Test
   void checkBox() {
     final Value<Boolean> value = Value.value(true, false);
-    final ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox()
+    final ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
             .caption("caption")
             .horizontalAlignment(SwingConstants.CENTER)
             .includeCaption(true)
             .transferFocusOnEnter(true)
-            .linkedValue(value)
             .buildComponentValue();
     final JCheckBox box = componentValue.getComponent();
     assertTrue(box.isSelected());
@@ -247,11 +246,10 @@ public final class ComponentsTest {
   @Test
   void toggleButton() {
     final Value<Boolean> value = Value.value(true, false);
-    final ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton()
+    final ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton(value)
             .caption("caption")
             .includeCaption(true)
             .transferFocusOnEnter(true)
-            .linkedValue(value)
             .buildComponentValue();
     final JToggleButton box = componentValue.getComponent();
     assertTrue(box.isSelected());
@@ -269,10 +267,9 @@ public final class ComponentsTest {
   @Test
   void nullableCheckBox() {
     final Value<Boolean> value = Value.value(true);
-    final ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox()
+    final ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
             .transferFocusOnEnter(true)
             .nullable(true)
-            .linkedValue(value)
             .buildComponentValue();
     final NullableCheckBox box = (NullableCheckBox) componentValue.getComponent();
     assertTrue(box.isSelected());

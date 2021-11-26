@@ -164,9 +164,8 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanel.add(chartsPanel);
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
-    zoomPanel.add(Components.checkBox()
+    zoomPanel.add(Components.checkBox(synchronizedZoomState)
             .caption("Synchronize zoom")
-            .linkedValue(synchronizedZoomState)
             .build(), BorderLayout.CENTER);
     zoomPanel.add(Components.button(control(this::resetZoom))
             .caption("Reset zoom")

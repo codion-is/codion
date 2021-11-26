@@ -135,12 +135,10 @@ public final class InputControls {
     Value<Boolean> booleanValue = Value.value(true, nullValue);
 
     ComponentValue<Boolean, JCheckBox> componentValue =
-            Components.checkBox()
+            Components.checkBox(booleanValue)
                     .caption("Check")
                     .horizontalAlignment(SwingConstants.CENTER)
                     .buildComponentValue();
-
-    componentValue.link(booleanValue);
 
     JCheckBox checkBox = componentValue.getComponent();
 
@@ -153,10 +151,9 @@ public final class InputControls {
     Value<Boolean> booleanValue = Value.value();
 
     ComponentValue<Boolean, JCheckBox> componentValue =
-            Components.checkBox()
+            Components.checkBox(booleanValue)
                     .caption("Check")
                     .nullable(true)
-                    .linkedValue(booleanValue)
                     .buildComponentValue();
 
     NullableCheckBox nullableCheckBox =
