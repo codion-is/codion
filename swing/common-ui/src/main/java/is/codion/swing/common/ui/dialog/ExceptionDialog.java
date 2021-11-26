@@ -8,10 +8,10 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
 import is.codion.common.value.PropertyValue;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.BorderFactory;
@@ -139,7 +139,7 @@ final class ExceptionDialog extends JDialog {
     exceptionField = new JTextField();
     exceptionField.setEnabled(false);
     final JLabel messageLabel = new JLabel(MESSAGES.getString("message") + ": ", SwingConstants.LEFT);
-    Components.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
+    Utilities.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
     messageArea = new JTextArea();
     messageArea.setEnabled(false);
     messageArea.setLineWrap(true);
@@ -179,21 +179,21 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final JCheckBox detailsCheckBox = ComponentBuilders.checkBox(showDetailsState)
+    final JCheckBox detailsCheckBox = Components.checkBox(showDetailsState)
             .caption(MESSAGES.getString("details"))
             .toolTipText(MESSAGES.getString("show_details"))
             .build();
-    final JButton printButton = ComponentBuilders.button(control(() -> detailsArea.print()))
+    final JButton printButton = Components.button(control(() -> detailsArea.print()))
             .caption(Messages.get(Messages.PRINT))
             .toolTipText(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build();
-    final JButton closeButton = ComponentBuilders.button(control(this::dispose))
+    final JButton closeButton = Components.button(control(this::dispose))
             .caption(MESSAGES.getString("close"))
             .toolTipText(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    final JButton saveButton = ComponentBuilders.button(control(() -> Files.write(new DefaultFileSelectionDialogBuilder()
+    final JButton saveButton = Components.button(control(() -> Files.write(new DefaultFileSelectionDialogBuilder()
                             .owner(detailsArea)
                             .selectFileToSave("error.txt")
                             .toPath(),
@@ -202,7 +202,7 @@ final class ExceptionDialog extends JDialog {
             .toolTipText(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
-    final JButton copyButton = ComponentBuilders.button(control(() -> Components.setClipboard(detailsArea.getText())))
+    final JButton copyButton = Components.button(control(() -> Utilities.setClipboard(detailsArea.getText())))
             .caption(Messages.get(Messages.COPY))
             .toolTipText(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))

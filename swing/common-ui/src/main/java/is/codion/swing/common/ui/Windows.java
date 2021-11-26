@@ -88,7 +88,7 @@ public final class Windows {
       return (Window) component;
     }
 
-    return Components.getParentOfType(component, Window.class);
+    return Utilities.getParentOfType(component, Window.class);
   }
 
   /**
@@ -102,7 +102,7 @@ public final class Windows {
       return (JFrame) component;
     }
 
-    return Components.getParentOfType(component, JFrame.class);
+    return Utilities.getParentOfType(component, JFrame.class);
   }
 
   /**
@@ -116,7 +116,7 @@ public final class Windows {
       return (JDialog) component;
     }
 
-    return Components.getParentOfType(component, JDialog.class);
+    return Utilities.getParentOfType(component, JDialog.class);
   }
 
   /**

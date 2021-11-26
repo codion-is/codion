@@ -9,9 +9,9 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -327,9 +327,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public void updateUI() {
     super.updateUI();
-    Components.updateUI(editControlPanel, editControlTablePanel, horizontalSplitPane, tablePanel, editPanel);
+    Utilities.updateUI(editControlPanel, editControlTablePanel, horizontalSplitPane, tablePanel, editPanel);
     if (detailEntityPanels != null) {
-      Components.updateUI(detailEntityPanels);
+      Utilities.updateUI(detailEntityPanels);
     }
   }
 
@@ -432,7 +432,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final EntityPanel initializePanel() {
     if (!panelInitialized) {
       try {
-        Components.showWaitCursor(this);
+        Utilities.showWaitCursor(this);
         initializeAssociatedPanels();
         initializeControlPanels();
         bindEvents();
@@ -441,7 +441,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
       finally {
         panelInitialized = true;
-        Components.hideWaitCursor(this);
+        Utilities.hideWaitCursor(this);
       }
     }
 
@@ -567,7 +567,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final Optional<HierarchyPanel> getParentPanel() {
     HierarchyPanel parentPanel = masterPanel;
     if (parentPanel == null) {
-      parentPanel = Components.getParentOfType(this, HierarchyPanel.class);
+      parentPanel = Utilities.getParentOfType(this, HierarchyPanel.class);
     }
 
     return Optional.ofNullable(parentPanel);
@@ -1510,8 +1510,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(() -> Components.showWaitCursor(EntityPanel.this));
-    entityModel.addAfterRefreshListener(() -> Components.hideWaitCursor(EntityPanel.this));
+    entityModel.addBeforeRefreshListener(() -> Utilities.showWaitCursor(EntityPanel.this));
+    entityModel.addAfterRefreshListener(() -> Utilities.hideWaitCursor(EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
   }
 
@@ -1599,12 +1599,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
-      final EntityEditPanel editPanelParent = Components.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class);
+      final EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
       }
       else {
-        final EntityPanel parent = Components.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class);
+        final EntityPanel parent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class);
         if (parent != null && parent.getEditPanel() != null) {
           parent.getEditPanel().setActive(true);
         }

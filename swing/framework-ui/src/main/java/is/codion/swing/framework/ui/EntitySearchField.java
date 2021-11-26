@@ -15,11 +15,12 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -67,7 +68,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.Components.darker;
+import static is.codion.swing.common.ui.Utilities.darker;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -96,8 +97,8 @@ public final class EntitySearchField extends JTextField {
   private final EntitySearchModel model;
   private final TextFields.Hint searchHint;
   private final SettingsPanel settingsPanel;
-  private final Action transferFocusAction = Components.transferFocusForwardAction(this);
-  private final Action transferFocusBackwardAction = Components.transferFocusBackwardAction(this);
+  private final Action transferFocusAction = TransferFocusOnEnter.forwardAction(this);
+  private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction(this);
 
   private SelectionProvider selectionProvider;
 
@@ -123,8 +124,8 @@ public final class EntitySearchField extends JTextField {
     addKeyListener(new EscapeKeyListener());
     this.searchHint = TextFields.hint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     configureColors();
-    Components.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
-    Components.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
+    Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
+    Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
 
   @Override
@@ -304,11 +305,11 @@ public final class EntitySearchField extends JTextField {
           try {
             List<Entity> queryResult;
             try {
-              Components.showWaitCursor(this);
+              Utilities.showWaitCursor(this);
               queryResult = model.performQuery();
             }
             finally {
-              Components.hideWaitCursor(this);
+              Utilities.hideWaitCursor(this);
             }
             if (queryResult.size() == 1) {
               model.setSelectedEntities(queryResult);
@@ -353,7 +354,7 @@ public final class EntitySearchField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event<?> closeEvent = Event.event();
-    final JButton okButton = ComponentBuilders.button(control(closeEvent::onEvent))
+    final JButton okButton = Components.button(control(closeEvent::onEvent))
             .caption(Messages.get(Messages.OK))
             .build();
     KeyEvents.builder(KeyEvent.VK_ENTER)
@@ -409,14 +410,13 @@ public final class EntitySearchField extends JTextField {
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
-      generalSettingsPanel.add(ComponentBuilders.checkBox()
+      generalSettingsPanel.add(Components.checkBox(searchModel.getMultipleSelectionEnabledValue())
               .caption(MESSAGES.getString("enable_multiple_search_values"))
-              .linkedValue(searchModel.getMultipleSelectionEnabledValue())
               .build());
 
       final JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
-      valueSeparatorPanel.add(ComponentBuilders.textField()
+      valueSeparatorPanel.add(Components.textField()
               .columns(1)
               .maximumLength(1)
               .linkedValue(searchModel.getMultipleItemSeparatorValue())
@@ -432,17 +432,14 @@ public final class EntitySearchField extends JTextField {
 
     private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
-      panel.add(ComponentBuilders.checkBox()
+      panel.add(Components.checkBox(settings.getCaseSensitiveValue())
               .caption(MESSAGES.getString("case_sensitive"))
-              .linkedValue(settings.getCaseSensitiveValue())
               .build());
-      panel.add(ComponentBuilders.checkBox()
+      panel.add(Components.checkBox(settings.getWildcardPrefixValue())
               .caption(MESSAGES.getString("prefix_wildcard"))
-              .linkedValue(settings.getWildcardPrefixValue())
               .build());
-      panel.add(ComponentBuilders.checkBox()
+      panel.add(Components.checkBox(settings.getWildcardPostfixValue())
               .caption(MESSAGES.getString("postfix_wildcard"))
-              .linkedValue(settings.getWildcardPostfixValue())
               .build());
 
       return panel;

@@ -28,9 +28,9 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -223,7 +223,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   @Override
   public void updateUI() {
     super.updateUI();
-    Components.updateUI(entityPanels);
+    Utilities.updateUI(entityPanels);
   }
 
   @Override
@@ -864,7 +864,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final void displayEntityPanelFrame(final EntityPanel.Builder panelBuilder) {
     requireNonNull(panelBuilder, "panelBuilder");
     try {
-      Components.showWaitCursor(this);
+      Utilities.showWaitCursor(this);
       final EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Windows.getParentWindow(entityPanel).toFront();
@@ -881,7 +881,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
     }
     finally {
-      Components.hideWaitCursor(this);
+      Utilities.hideWaitCursor(this);
     }
   }
 
@@ -901,7 +901,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final void displayEntityPanelDialog(final EntityPanel.Builder panelBuilder, final boolean modalDialog) {
     requireNonNull(panelBuilder, "panelBuilder");
     try {
-      Components.showWaitCursor(this);
+      Utilities.showWaitCursor(this);
       final EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Windows.getParentWindow(entityPanel).toFront();
@@ -920,7 +920,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
     }
     finally {
-      Components.hideWaitCursor(this);
+      Utilities.hideWaitCursor(this);
     }
   }
 
@@ -1175,7 +1175,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
     final Integer fontSize = getDefaultFontSize();
     if (!Objects.equals(fontSize, 100)) {
-      Components.setFontSize(fontSize / 100f);
+      Utilities.setFontSize(fontSize / 100f);
     }
 
     final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
@@ -1362,7 +1362,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
     tree.setRootVisible(false);
-    Components.expandAll(tree, new TreePath(tree.getModel().getRoot()));
+    Utilities.expandAll(tree, new TreePath(tree.getModel().getRoot()));
 
     return new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }

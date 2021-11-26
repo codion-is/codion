@@ -9,9 +9,9 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -109,7 +109,7 @@ final class LoginPanel extends JPanel {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(usernameField);
-    Components.linkToEnabledState(validatingState.getReversedObserver(), usernameField);
+    Utilities.linkToEnabledState(validatingState.getReversedObserver(), usernameField);
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     TextFields.selectAllOnFocusGained(passwordField);
@@ -148,10 +148,10 @@ final class LoginPanel extends JPanel {
     setLayout(new BorderLayout(0, 0));
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().isEmpty()) {
-      Components.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
+      Utilities.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
-      Components.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
+      Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
     final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonBasePanel.add(Controls.builder()

@@ -32,7 +32,7 @@ import javax.swing.JToggleButton;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class EntityComponentBuildersTest {
+public final class EntityComponentsTest {
 
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
@@ -40,7 +40,7 @@ public final class EntityComponentBuildersTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
-  private final EntityComponentBuilders inputComponents = new EntityComponentBuilders(editModel.getEntityDefinition());
+  private final EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
 
   @Test
   void createCheckBox() {

@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +46,7 @@ public class TextInputPanelTest {
     final State enabledState = State.state();
     final TextInputPanel inputPanel = TextInputPanel.builder(new JTextField())
             .build();
-    Components.linkToEnabledState(enabledState, inputPanel);
+    Utilities.linkToEnabledState(enabledState, inputPanel);
     assertFalse(inputPanel.getTextField().isEnabled());
     assertFalse(inputPanel.getButton().isEnabled());
     enabledState.set(true);

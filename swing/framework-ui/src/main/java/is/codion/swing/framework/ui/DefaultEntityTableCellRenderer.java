@@ -24,7 +24,7 @@ import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.Components.darker;
+import static is.codion.swing.common.ui.Utilities.darker;
 import static java.util.Objects.requireNonNull;
 
 /**

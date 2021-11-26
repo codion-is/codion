@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static is.codion.swing.common.ui.Components.setClipboard;
+import static is.codion.swing.common.ui.Utilities.setClipboard;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 

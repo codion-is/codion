@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -66,6 +66,6 @@ final class DefaultForeignKeyComboBoxBuilder extends AbstractComponentBuilder<En
   @Override
   protected void setTransferFocusOnEnter(final EntityComboBox component) {
     component.setTransferFocusOnEnter(true);
-    Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
+    TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 }

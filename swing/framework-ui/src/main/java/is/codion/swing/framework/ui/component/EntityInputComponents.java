@@ -23,7 +23,7 @@ import java.time.OffsetDateTime;
  */
 public final class EntityInputComponents {
 
-  private final EntityComponentBuilders builders;
+  private final EntityComponents builders;
 
   /**
    * Instantiates a new EntityInputComponents, for creating input
@@ -31,13 +31,13 @@ public final class EntityInputComponents {
    * @param entityDefinition the definition of the entity
    */
   public EntityInputComponents(final EntityDefinition entityDefinition) {
-    this.builders = new EntityComponentBuilders(entityDefinition);
+    this.builders = new EntityComponents(entityDefinition);
   }
 
   /**
-   * @return the {@link EntityComponentBuilders} instance.
+   * @return the {@link EntityComponents} instance.
    */
-  public EntityComponentBuilders getComponentBuilders() {
+  public EntityComponents getComponentBuilders() {
     return builders;
   }
 

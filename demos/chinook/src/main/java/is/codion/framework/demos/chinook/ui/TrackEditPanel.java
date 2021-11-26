@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSecondsPanel;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -36,13 +36,13 @@ public final class TrackEditPanel extends EntityEditPanel {
     final Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
             .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
-    final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
+    final JPanel mediaTypePanel = Panels.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
     final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
             .build();
     final Action newGenreAction = EntityPanel.builder(Genre.TYPE)
             .editPanelClass(GenreEditPanel.class)
             .createEditPanelAction(genreBox);
-    final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
+    final JPanel genrePanel = Panels.createEastButtonPanel(genreBox, newGenreAction);
     createTextInputPanel(Track.COMPOSER)
             .buttonFocusable(false);
     createIntegerField(Track.MILLISECONDS)

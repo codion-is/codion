@@ -30,9 +30,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A factory for {@link ComponentBuilder}.
  */
-public final class ComponentBuilders {
+public final class Components {
 
-  private ComponentBuilders() {}
+  private Components() {}
 
   /**
    * @param <B> the builder type

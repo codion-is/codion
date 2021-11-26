@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -82,7 +82,7 @@ public final class ProgressDialog extends JDialog {
   private static JProgressBar initializeProgressBar(final boolean indeterminate, final boolean stringPainted) {
     final JProgressBar progressBar = new JProgressBar();
     progressBar.setStringPainted(stringPainted);
-    Components.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+    Utilities.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
     if (indeterminate) {
       progressBar.setIndeterminate(true);
     }

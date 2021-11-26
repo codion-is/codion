@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 
 import javax.swing.JSpinner;
@@ -93,6 +93,6 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   @Override
   protected final void setTransferFocusOnEnter(final JSpinner component) {
     super.setTransferFocusOnEnter(component);
-    Components.transferFocusOnEnter(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
+    TransferFocusOnEnter.enable(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
   }
 }

@@ -4,12 +4,13 @@
 package is.codion.swing.common.ui.table;
 
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
@@ -59,7 +60,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     this.basePanel = new JPanel(FlexibleGridLayout.builder()
             .rows(1)
             .build());
-    final Dimension fillerSize = new Dimension(Components.getPreferredScrollBarWidth(), 0);
+    final Dimension fillerSize = new Dimension(UIManager.getInt("ScrollBar.width"), 0);
     this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
     setLayout(new BorderLayout());
     add(basePanel, BorderLayout.WEST);
@@ -71,10 +72,10 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   public void updateUI() {
     super.updateUI();
     if (columnComponents != null) {
-      Components.updateUI(columnComponents.values());
+      Utilities.updateUI(columnComponents.values());
     }
     if (nullComponents != null) {
-      Components.updateUI(nullComponents.values());
+      Utilities.updateUI(nullComponents.values());
     }
   }
 

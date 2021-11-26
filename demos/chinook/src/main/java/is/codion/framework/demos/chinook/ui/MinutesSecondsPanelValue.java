@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 
@@ -39,12 +39,12 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
 
-    private final IntegerField minutesField = ComponentBuilders.integerField()
+    private final IntegerField minutesField = Components.integerField()
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(2)
             .build();
-    private final IntegerField secondsField = ComponentBuilders.integerField()
+    private final IntegerField secondsField = Components.integerField()
             .range(0, 59)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)

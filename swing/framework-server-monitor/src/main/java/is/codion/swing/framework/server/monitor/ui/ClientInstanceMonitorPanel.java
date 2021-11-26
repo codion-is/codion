@@ -6,7 +6,7 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -49,7 +49,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private final JTextArea logTextArea;
   private final SearchHighlighter searchHighlighter;
 
-  private final JTextField creationDateField = ComponentBuilders.textField()
+  private final JTextField creationDateField = Components.textField()
           .editable(false)
           .build();
 
@@ -77,10 +77,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     creationDatePanel.add(creationDateField);
 
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    ComponentBuilders.checkBox(model.getLoggingEnabledValue())
+    Components.checkBox(model.getLoggingEnabledValue())
             .caption("Logging enabled")
             .build(settingsPanel::add);
-    ComponentBuilders.button(control(this::updateView))
+    Components.button(control(this::updateView))
             .caption("Refresh log")
             .build(settingsPanel::add);
 

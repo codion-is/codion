@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -44,11 +44,11 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.NAME);
     addInputPanel(Item.DESCRIPTION);
     addInputPanel(Item.PRICE);
-    addInputPanel(Item.CONTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
+    addInputPanel(Item.CONTACT_INFO_FK, Panels.createEastButtonPanel(contactInfoBox,
             EntityPanel.builder(SellerContactInfo.TYPE)
                     .editPanelClass(ContactInfoEditPanel.class)
                     .createEditPanelAction(contactInfoBox)));
-    addInputPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,
+    addInputPanel(Item.ADDRESS_FK, Panels.createEastButtonPanel(addressBox,
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class)
                     .createEditPanelAction(addressBox)));

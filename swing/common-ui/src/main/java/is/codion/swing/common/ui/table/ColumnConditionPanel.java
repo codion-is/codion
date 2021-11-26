@@ -9,10 +9,9 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.component.ComponentBuilders;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -40,7 +39,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
@@ -124,13 +123,11 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
     this.operatorCombo = initializeOperatorComboBox(operators);
-    this.toggleEnabledButton = ComponentBuilders.toggleButton()
+    this.toggleEnabledButton = toggleButton(conditionModel.getEnabledState())
             .icon(icons().filter())
-            .linkedValue(conditionModel.getEnabledState())
             .build();
-    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? ComponentBuilders.toggleButton()
+    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedConditionState)
             .icon(icons().configure())
-            .linkedValue(advancedConditionState)
             .build() : null;
     conditionModel.setLocked(modelLocked);
     initializeUI();
@@ -140,7 +137,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   @Override
   public final void updateUI() {
     super.updateUI();
-    Components.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
+    Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
             equalField, lowerBoundField, upperBoundField, controlPanel, inputPanel);
   }
 
@@ -516,7 +513,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    Components.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
+    Utilities.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
     ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
     comboBox.setFont(comboBox.getFont().deriveFont(OPERATOR_FONT_SIZE));
@@ -525,7 +522,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
+    Utilities.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(new BorderLayout());
     if (toggleEnabledButton != null) {

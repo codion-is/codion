@@ -5,7 +5,7 @@ import is.codion.common.event.EventListener;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -43,7 +43,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
     this.searchControl = Control.builder(this::performSimpleSearch)
             .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .build();
-    this.simpleSearchTextField = ComponentBuilders.textField()
+    this.simpleSearchTextField = Components.textField()
             .columns(12)
             .linkedValue(tableConditionModel.getSimpleConditionStringValue())
             .action(searchControl)

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -66,7 +66,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   @Override
   protected void setTransferFocusOnEnter(final SteppedComboBox<T> component) {
     component.setTransferFocusOnEnter(true);
-    Components.transferFocusOnEnter((JComponent) component.getEditor().getEditorComponent());
+    TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override

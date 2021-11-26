@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
@@ -108,12 +108,12 @@ public final class TextInputPanel extends JPanel {
    */
   public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
-      Components.transferFocusOnEnter(textField);
-      Components.transferFocusOnEnter(button);
+      TransferFocusOnEnter.enable(textField);
+      TransferFocusOnEnter.enable(button);
     }
     else {
-      Components.removeTransferFocusOnEnter(textField);
-      Components.removeTransferFocusOnEnter(button);
+      TransferFocusOnEnter.disable(textField);
+      TransferFocusOnEnter.disable(button);
     }
   }
 
@@ -203,7 +203,7 @@ public final class TextInputPanel extends JPanel {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setEditable(textField.isEditable());
-    Components.transferFocusOnEnter(textArea);
+    TransferFocusOnEnter.enable(textArea);
     Dialogs.okCancelDialog(new JScrollPane(textArea))
             .owner(textField)
             .title(dialogTitle == null ? caption : dialogTitle)

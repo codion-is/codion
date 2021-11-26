@@ -4,7 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ServerMonitor;
 
@@ -113,7 +113,7 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
-    serverPanel.add(ComponentBuilders.integerSpinner()
+    serverPanel.add(Components.integerSpinner()
             .columns(SPINNER_COLUMNS)
             .linkedValue(model.getConnectionLimitValue())
             .build());
@@ -125,7 +125,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
     final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    shutdownBasePanel.add(ComponentBuilders.button(control(this::shutdownServer))
+    shutdownBasePanel.add(Components.button(control(this::shutdownServer))
             .caption("Shutdown")
             .build(), BorderLayout.EAST);
     northPanel.add(shutdownBasePanel, BorderLayout.EAST);
@@ -148,7 +148,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel intervalPanel = new JPanel(Layouts.borderLayout());
     intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
-    intervalPanel.add(ComponentBuilders.integerSpinner()
+    intervalPanel.add(Components.integerSpinner()
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
@@ -157,18 +157,17 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
-    chartsPanel.add(ComponentBuilders.button(control(model::clearStatistics))
+    chartsPanel.add(Components.button(control(model::clearStatistics))
             .caption("Clear")
             .build(), BorderLayout.EAST);
 
     controlPanel.add(chartsPanel);
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
-    zoomPanel.add(ComponentBuilders.checkBox()
+    zoomPanel.add(Components.checkBox(synchronizedZoomState)
             .caption("Synchronize zoom")
-            .linkedValue(synchronizedZoomState)
             .build(), BorderLayout.CENTER);
-    zoomPanel.add(ComponentBuilders.button(control(this::resetZoom))
+    zoomPanel.add(Components.button(control(this::resetZoom))
             .caption("Reset zoom")
             .build(), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
@@ -214,7 +213,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(ComponentBuilders.button(control(model::refreshDomainList))
+    refreshPanel.add(Components.button(control(model::refreshDomainList))
             .caption("Refresh")
             .build());
     panel.add(refreshPanel, BorderLayout.NORTH);
@@ -224,7 +223,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JScrollPane initializeEnvironmentInfoPanel() throws RemoteException {
-    return ComponentBuilders.textArea()
+    return Components.textArea()
             .autoscrolls(false)
             .editable(false)
             .lineWrap(true)
@@ -234,7 +233,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField initializeConnectionCountField() {
-    return ComponentBuilders.integerField()
+    return Components.integerField()
             .columns(4)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)
@@ -243,7 +242,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField initializeMemoryField() {
-    return ComponentBuilders.textField()
+    return Components.textField()
             .columns(8)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)
@@ -254,7 +253,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JComboBox<Object> initializeLogLevelField() {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
-    return ComponentBuilders.comboBox(Object.class, comboModel)
+    return Components.comboBox(Object.class, comboModel)
             .linkedValue(model.getLogLevelValue())
             .build();
   }

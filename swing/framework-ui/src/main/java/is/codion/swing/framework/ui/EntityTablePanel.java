@@ -27,9 +27,9 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.ComponentBuilders;
+import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -92,8 +92,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.Components.hideWaitCursor;
-import static is.codion.swing.common.ui.Components.showWaitCursor;
+import static is.codion.swing.common.ui.Utilities.hideWaitCursor;
+import static is.codion.swing.common.ui.Utilities.showWaitCursor;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
@@ -311,12 +311,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   @Override
   public void updateUI() {
     super.updateUI();
-    Components.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane);
+    Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane);
     if (refreshToolBar != null) {
-      Components.updateUI(refreshToolBar, (JComponent) refreshToolBar.getComponent(0));
+      Utilities.updateUI(refreshToolBar, (JComponent) refreshToolBar.getComponent(0));
     }
     if (tableScrollPane != null) {
-      Components.updateUI(tableScrollPane, tableScrollPane.getViewport(),
+      Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
     }
   }
@@ -1269,11 +1269,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void copySelectedCell() {
     final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-    Components.setClipboard(value == null ? "" : value.toString());
+    Utilities.setClipboard(value == null ? "" : value.toString());
   }
 
   private void copyTableAsDelimitedString() {
-    Components.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
+    Utilities.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {
@@ -1303,7 +1303,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final JButton button = ComponentBuilders.button(control(tableModel::refresh))
+    final JButton button = Components.button(control(tableModel::refresh))
             .enabledState(tableModel.getTableConditionModel().getConditionObserver())
             .toolTipText(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired())
@@ -1393,8 +1393,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getTableConditionModel().getConditionModels().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.addSortListener(table.getTableHeader()::repaint);
-    tableModel.addRefreshStartedListener(() -> Components.showWaitCursor(EntityTablePanel.this));
-    tableModel.addRefreshDoneListener(successful -> Components.hideWaitCursor(EntityTablePanel.this));
+    tableModel.addRefreshStartedListener(() -> Utilities.showWaitCursor(EntityTablePanel.this));
+    tableModel.addRefreshDoneListener(successful -> Utilities.hideWaitCursor(EntityTablePanel.this));
     if (tableModel.hasEditModel()) {
       tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     }
@@ -1550,7 +1550,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
     final JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    Components.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
+    Utilities.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
     scrollPane.setVisible(false);
 
     return scrollPane;
