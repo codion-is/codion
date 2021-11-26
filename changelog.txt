@@ -7409,3 +7409,4 @@
   EntityApplicationPanel.displayEntityPanel() added, uses the above to determine how to display the panel, used for support table panels
   Components.LookAndFeelProvider moved to laf package along with related methods and classes
   Unnecessary space around equals sign in property files removed
+  FileChooser messages added to UIManagerDefaults
