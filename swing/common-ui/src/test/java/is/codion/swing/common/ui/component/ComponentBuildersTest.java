@@ -455,6 +455,7 @@ public final class ComponentBuildersTest {
             .stepSize(10d)
             .columns(5)
             .mouseWheelScrolling(true)
+            .mouseWheelScrollingReversed(true)
             .transferFocusOnEnter(true)
             .linkedValue(value)
             .buildComponentValue();
