@@ -12,11 +12,11 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -33,6 +33,7 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -68,15 +69,15 @@ final class ExceptionDialog extends JDialog {
 
   //ui components
   private final Window parentWindow;
-  private JTextField exceptionField;
-  private JTextArea messageArea;
-  private JPanel detailPanel;
-  private JPanel centerPanel;
-  private JTextArea detailsArea;
-  private JLabel descriptionLabel;
-  private JButton printButton;
-  private JButton saveButton;
-  private JButton copyButton;
+  private final JTextField exceptionField;
+  private final JTextArea messageArea;
+  private final JTextArea detailsArea;
+  private final JLabel descriptionLabel;
+  private final JButton printButton;
+  private final JButton saveButton;
+  private final JButton copyButton;
+  private final JPanel detailPanel;
+  private final JPanel centerPanel;
 
   private final State showDetailsState = State.state();
 
@@ -87,6 +88,46 @@ final class ExceptionDialog extends JDialog {
   ExceptionDialog(final Window parentWindow) {
     super(parentWindow);
     this.parentWindow = parentWindow;
+    exceptionField = Components.textField()
+            .enabled(false)
+            .build();
+    messageArea = Components.textArea()
+            .enabled(false)
+            .lineWrap(true)
+            .wrapStyleWord(true)
+            .background(exceptionField.getBackground())
+            .border(exceptionField.getBorder())
+            .build();
+    detailsArea = Components.textArea()
+            .tabSize(TAB_SIZE)
+            .editable(false)
+            .lineWrap(true)
+            .wrapStyleWord(true)
+            .build();
+    descriptionLabel = Components.label(UIManager.getIcon("OptionPane.errorIcon"))
+            .preferredWidth(DESCRIPTION_LABEL_WIDTH)
+            .iconTextGap(ICON_TEXT_GAP)
+            .build();
+    printButton = Components.button(control(detailsArea::print))
+            .caption(Messages.get(Messages.PRINT))
+            .toolTipText(MESSAGES.getString("print_error_report"))
+            .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
+            .build();
+    saveButton = Components.button(control(this::saveDetails))
+            .caption(MESSAGES.getString("save"))
+            .toolTipText(MESSAGES.getString("save_error_log"))
+            .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
+            .build();
+    copyButton = Components.button(control(() -> Utilities.setClipboard(detailsArea.getText())))
+            .caption(Messages.get(Messages.COPY))
+            .toolTipText(MESSAGES.getString("copy_to_clipboard"))
+            .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
+            .build();
+    centerPanel = createCenterPanel();
+    detailPanel = new JPanel(FlexibleGridLayout.builder()
+            .rowsColumns(2, 2)
+            .fixedRowHeight(exceptionField.getPreferredSize().height)
+            .build());
     bindEvents();
     initializeUI();
   }
@@ -95,7 +136,6 @@ final class ExceptionDialog extends JDialog {
     final JPanel basePanel = new JPanel(borderLayout());
     basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
-    centerPanel = createCenterPanel();
     basePanel.add(centerPanel, BorderLayout.CENTER);
     basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
@@ -125,34 +165,17 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createNorthPanel() {
-    final FlexibleGridLayout layout = FlexibleGridLayout.builder()
-            .rowsColumns(2, 2)
-            .fixRowHeights(true)
-            .build();
-    layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
-    detailPanel = new JPanel(layout);
-    descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
-    descriptionLabel.setMaximumSize(new Dimension(DESCRIPTION_LABEL_WIDTH, descriptionLabel.getMaximumSize().height));
-    descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
-    final JLabel exceptionLabel = new JLabel(
-            Messages.get(Messages.EXCEPTION) + ": ", SwingConstants.LEFT);
-    exceptionField = new JTextField();
-    exceptionField.setEnabled(false);
-    final JLabel messageLabel = new JLabel(MESSAGES.getString("message") + ": ", SwingConstants.LEFT);
-    Utilities.setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
-    messageArea = new JTextArea();
-    messageArea.setEnabled(false);
-    messageArea.setLineWrap(true);
-    messageArea.setWrapStyleWord(true);
-    messageArea.setBackground(exceptionField.getBackground());
-    messageArea.setBorder(exceptionField.getBorder());
-    final JScrollPane messageScroller = new JScrollPane(messageArea,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    //detail
-    detailPanel.add(exceptionLabel);
+    detailPanel.add(Components.label(Messages.get(Messages.EXCEPTION) + ": ")
+            .horizontalAlignment(SwingConstants.LEFT)
+            .build());
     detailPanel.add(exceptionField);
-    detailPanel.add(messageLabel);
-    detailPanel.add(messageScroller);
+    detailPanel.add(Components.label(MESSAGES.getString("message") + ": ")
+            .horizontalAlignment(SwingConstants.LEFT)
+            .preferredWidth(MESSAGE_LABEL_WIDTH)
+            .build());
+    detailPanel.add(new JScrollPane(messageArea,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
 
     final JPanel northPanel = new JPanel(borderLayout());
     final JPanel northNorthPanel = new JPanel(flowLayout(FlowLayout.LEFT));
@@ -164,12 +187,6 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createCenterPanel() {
-    detailsArea = new JTextArea();
-    detailsArea.setTabSize(TAB_SIZE);
-    detailsArea.setEditable(false);
-    detailsArea.setLineWrap(true);
-    detailsArea.setWrapStyleWord(true);
-
     final JScrollPane scrollPane = new JScrollPane(detailsArea);
     scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
     final JPanel center = new JPanel(new BorderLayout());
@@ -179,56 +196,35 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final JCheckBox detailsCheckBox = Components.checkBox(showDetailsState)
-            .caption(MESSAGES.getString("details"))
-            .toolTipText(MESSAGES.getString("show_details"))
-            .build();
-    printButton = Components.button(control(() -> detailsArea.print()))
-            .caption(Messages.get(Messages.PRINT))
-            .toolTipText(MESSAGES.getString("print_error_report"))
-            .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
-            .build();
-    final JButton closeButton = Components.button(control(this::dispose))
-            .caption(MESSAGES.getString("close"))
-            .toolTipText(MESSAGES.getString("close_dialog"))
-            .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
-            .build();
-    saveButton = Components.button(control(() -> Files.write(new DefaultFileSelectionDialogBuilder()
-                            .owner(detailsArea)
-                            .selectFileToSave("error.txt")
-                            .toPath(),
-                    Arrays.asList(detailsArea.getText().split("\\r?\\n")))))
-            .caption(MESSAGES.getString("save"))
-            .toolTipText(MESSAGES.getString("save_error_log"))
-            .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
-            .build();
-    copyButton = Components.button(control(() -> Utilities.setClipboard(detailsArea.getText())))
-            .caption(Messages.get(Messages.COPY))
-            .toolTipText(MESSAGES.getString("copy_to_clipboard"))
-            .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
-            .build();
-
+    final Control closeControl = control(this::dispose);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
-            .action(closeButton.getAction())
+            .action(closeControl)
             .enable(getRootPane());
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
-            .action(closeButton.getAction())
+            .action(closeControl)
             .enable(getRootPane());
 
-    final JPanel baseButtonPanel = new JPanel(new BorderLayout());
     final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
     rightButtonPanel.add(copyButton);
     rightButtonPanel.add(printButton);
     rightButtonPanel.add(saveButton);
-    rightButtonPanel.add(closeButton);
-    leftButtonPanel.add(detailsCheckBox);
+    rightButtonPanel.add(Components.button(closeControl)
+            .caption(MESSAGES.getString("close"))
+            .toolTipText(MESSAGES.getString("close_dialog"))
+            .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
+            .build());
 
+    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    leftButtonPanel.add(Components.checkBox(showDetailsState)
+            .caption(MESSAGES.getString("details"))
+            .toolTipText(MESSAGES.getString("show_details"))
+            .build());
+
+    final JPanel baseButtonPanel = new JPanel(new BorderLayout());
     baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
     baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);
 
@@ -281,6 +277,14 @@ final class ExceptionDialog extends JDialog {
     setVisible(true);
 
     return this;
+  }
+
+  private void saveDetails() throws IOException {
+    Files.write(new DefaultFileSelectionDialogBuilder()
+                    .owner(detailsArea)
+                    .selectFileToSave("error.txt")
+                    .toPath(),
+            Arrays.asList(detailsArea.getText().split("\\r?\\n")));
   }
 
   private static String truncateMessage(final String message) {
