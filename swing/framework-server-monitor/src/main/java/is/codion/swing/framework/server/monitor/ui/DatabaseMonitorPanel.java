@@ -59,11 +59,10 @@ public final class DatabaseMonitorPanel extends JPanel {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(Components.integerSpinner()
+    chartConfig.add(Components.integerSpinner(model.getUpdateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
-            .linkedValue(model.getUpdateIntervalValue())
             .build());
     chartConfig.add(Components.button(control(model::clearStatistics))
             .caption("Clear")

@@ -352,59 +352,49 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     private JComponent createField(final Value<?> value) {
       final Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
-        return checkBox()
+        return checkBox((Value<Boolean>) value)
                 .nullable(true)
                 .horizontalAlignment(CENTER)
-                .linkedValue((Value<Boolean>) value)
                 .buildComponentValue().getComponent();
       }
       if (typeClass.equals(Integer.class)) {
-        return integerField()
+        return integerField((Value<Integer>) value)
                 .format(columnConditionModel.getFormat())
-                .linkedValue((Value<Integer>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(Double.class)) {
-        return doubleField()
+        return doubleField((Value<Double>) value)
                 .format(columnConditionModel.getFormat())
-                .linkedValue((Value<Double>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        return bigDecimalField()
+        return bigDecimalField((Value<BigDecimal>) value)
                 .format(columnConditionModel.getFormat())
-                .linkedValue((Value<BigDecimal>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(Long.class)) {
-        return longField()
+        return longField((Value<Long>) value)
                 .format(columnConditionModel.getFormat())
-                .linkedValue((Value<Long>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(LocalTime.class)) {
-        return localTimeField(columnConditionModel.getDateTimePattern())
-                .linkedValue((Value<LocalTime>) value)
+        return localTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalTime>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(LocalDate.class)) {
-        return localDateField(columnConditionModel.getDateTimePattern())
-                .linkedValue((Value<LocalDate>) value)
+        return localDateField(columnConditionModel.getDateTimePattern(), (Value<LocalDate>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(LocalDateTime.class)) {
-        return localDateTimeField(columnConditionModel.getDateTimePattern())
-                .linkedValue((Value<LocalDateTime>) value)
+        return localDateTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalDateTime>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(OffsetDateTime.class)) {
-        return offsetDateTimeField(columnConditionModel.getDateTimePattern())
-                .linkedValue((Value<OffsetDateTime>) value)
+        return offsetDateTimeField(columnConditionModel.getDateTimePattern(), (Value<OffsetDateTime>) value)
                 .buildComponentValue().getComponent();
       }
       else if (typeClass.equals(String.class)) {
-        return textField()
-                .linkedValue((Value<String>) value)
+        return textField((Value<String>) value)
                 .buildComponentValue().getComponent();
       }
 

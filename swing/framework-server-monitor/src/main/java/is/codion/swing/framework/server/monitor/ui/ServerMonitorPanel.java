@@ -113,9 +113,8 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
-    serverPanel.add(Components.integerSpinner()
+    serverPanel.add(Components.integerSpinner(model.getConnectionLimitValue())
             .columns(SPINNER_COLUMNS)
-            .linkedValue(model.getConnectionLimitValue())
             .build());
     serverPanel.add(new JLabel("Mem. usage", SwingConstants.RIGHT));
     serverPanel.add(initializeMemoryField());
@@ -148,11 +147,10 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel intervalPanel = new JPanel(Layouts.borderLayout());
     intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
-    intervalPanel.add(Components.integerSpinner()
+    intervalPanel.add(Components.integerSpinner(model.getUpdateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
-            .linkedValue(model.getUpdateIntervalValue())
             .build(), BorderLayout.CENTER);
 
     final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
@@ -253,8 +251,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JComboBox<Object> initializeLogLevelField() {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
-    return Components.comboBox(Object.class, comboModel)
-            .linkedValue(model.getLogLevelValue())
+    return Components.comboBox(Object.class, comboModel, model.getLogLevelValue())
             .build();
   }
 

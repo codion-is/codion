@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.NumberField;
 
 import java.text.NumberFormat;
@@ -15,8 +16,8 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   protected char groupingSeparator = 0;
   private boolean groupingUsed;
 
-  AbstractNumberFieldBuilder(final Class<T> type) {
-    super(type);
+  protected AbstractNumberFieldBuilder(final Class<T> type, final Value<T> linkedValue) {
+    super(type, linkedValue);
   }
 
   @Override

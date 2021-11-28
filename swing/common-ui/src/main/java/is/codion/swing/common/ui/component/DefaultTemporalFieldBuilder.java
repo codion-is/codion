@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -19,8 +20,8 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
 
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-  DefaultTemporalFieldBuilder(final Class<T> valueClass, final String dateTimePattern) {
-    super(valueClass);
+  DefaultTemporalFieldBuilder(final Class<T> valueClass, final String dateTimePattern, final Value<T> linkedValue) {
+    super(valueClass, linkedValue);
     this.dateTimePattern = requireNonNull(dateTimePattern);
   }
 

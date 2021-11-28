@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.text.JTextComponent;
@@ -20,6 +21,10 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   protected boolean lowerCase;
   protected int maximumLength = -1;
   protected Insets margin;
+
+  protected AbstractTextComponentBuilder(final Value<T> linkedValue) {
+    super(linkedValue);
+  }
 
   @Override
   public final B editable(final boolean editable) {

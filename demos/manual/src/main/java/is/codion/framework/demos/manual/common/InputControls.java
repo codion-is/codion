@@ -166,9 +166,8 @@ public final class InputControls {
     Value<Boolean> booleanValue = Value.value();
 
     ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
-            Components.booleanComboBox()
+            Components.booleanComboBox(booleanValue)
                     .toolTipText("Select a value")
-                    .linkedValue(booleanValue)
                     .buildComponentValue();
 
     SteppedComboBox<Item<Boolean>> comboBox = componentValue.getComponent();
@@ -180,10 +179,9 @@ public final class InputControls {
     Value<String> stringValue = Value.value();
 
     ComponentValue<String, JTextField> componentValue =
-            Components.textField()
+            Components.textField(stringValue)
                     .preferredWidth(120)
                     .transferFocusOnEnter(true)
-                    .linkedValue(stringValue)
                     .buildComponentValue();
 
     JTextField textField = componentValue.getComponent();
@@ -195,10 +193,9 @@ public final class InputControls {
     Value<String> stringValue = Value.value();
 
     ComponentValue<String, JTextArea> componentValue =
-            Components.textArea()
+            Components.textArea(stringValue)
                     .rowsColumns(10, 20)
                     .lineWrap(true)
-                    .linkedValue(stringValue)
                     .buildComponentValue();
 
     JTextArea textArea = componentValue.getComponent();
@@ -210,10 +207,9 @@ public final class InputControls {
     Value<Integer> integerValue = Value.value();
 
     ComponentValue<Integer, IntegerField> componentValue =
-            Components.integerField()
+            Components.integerField(integerValue)
                     .range(0, 10_000)
                     .groupingUsed(false)
-                    .linkedValue(integerValue)
                     .buildComponentValue();
 
     IntegerField integerField = componentValue.getComponent();
@@ -225,9 +221,8 @@ public final class InputControls {
     Value<Long> longValue = Value.value();
 
     ComponentValue<Long, LongField> componentValue =
-            Components.longField()
+            Components.longField(longValue)
                     .groupingUsed(true)
-                    .linkedValue(longValue)
                     .buildComponentValue();
 
     final LongField longField = componentValue.getComponent();
@@ -239,10 +234,9 @@ public final class InputControls {
     Value<Double> doubleValue = Value.value();
 
     ComponentValue<Double, DoubleField> componentValue =
-            Components.doubleField()
+            Components.doubleField(doubleValue)
                     .maximumFractionDigits(3)
                     .decimalSeparator('.')
-                    .linkedValue(doubleValue)
                     .buildComponentValue();
 
     DoubleField doubleField = componentValue.getComponent();
@@ -254,11 +248,10 @@ public final class InputControls {
     Value<BigDecimal> bigDecimalValue = Value.value();
 
     ComponentValue<BigDecimal, BigDecimalField> componentValue =
-            Components.bigDecimalField()
+            Components.bigDecimalField(bigDecimalValue)
                     .maximumFractionDigits(2)
                     .groupingSeparator('.')
                     .decimalSeparator(',')
-                    .linkedValue(bigDecimalValue)
                     .buildComponentValue();
 
     BigDecimalField decimalField = componentValue.getComponent();
@@ -270,8 +263,7 @@ public final class InputControls {
     Value<LocalTime> localTimeValue = Value.value();
 
     ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
-            Components.localTimeField("HH:mm:ss")
-                    .linkedValue(localTimeValue)
+            Components.localTimeField("HH:mm:ss", localTimeValue)
                     .buildComponentValue();
 
     TemporalField<LocalTime> temporalField = componentValue.getComponent();
@@ -283,8 +275,7 @@ public final class InputControls {
     Value<LocalDate> localDateValue = Value.value();
 
     ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
-            Components.localDateField("dd-MM-yyyy")
-                    .linkedValue(localDateValue)
+            Components.localDateField("dd-MM-yyyy", localDateValue)
                     .buildComponentValue();
 
     TemporalField<LocalDate> temporalField = componentValue.getComponent();
@@ -296,8 +287,7 @@ public final class InputControls {
     Value<LocalDateTime> localDateTimeValue = Value.value();
 
     ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
-            Components.localDateTimeField("dd-MM-yyyy HH:mm")
-                    .linkedValue(localDateTimeValue)
+            Components.localDateTimeField("dd-MM-yyyy HH:mm", localDateTimeValue)
                     .buildComponentValue();
 
     TemporalField<LocalDateTime> temporalField = componentValue.getComponent();
@@ -312,9 +302,8 @@ public final class InputControls {
             new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
     ComponentValue<String, SteppedComboBox<String>> componentValue =
-            Components.comboBox(String.class, comboBoxModel)
+            Components.comboBox(String.class, comboBoxModel, stringValue)
                     .preferredWidth(160)
-                    .linkedValue(stringValue)
                     .buildComponentValue();
 
     SteppedComboBox<String> comboBox = componentValue.getComponent();

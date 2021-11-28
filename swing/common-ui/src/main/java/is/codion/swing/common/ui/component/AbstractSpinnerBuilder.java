@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 
@@ -23,7 +24,8 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   private boolean mouseWheelScrollingReversed = false;
   private int horizontalAlignment = -1;
 
-  protected AbstractSpinnerBuilder(final SpinnerModel spinnerModel) {
+  protected AbstractSpinnerBuilder(final SpinnerModel spinnerModel, final Value<T> linkedValue) {
+    super(linkedValue);
     this.spinnerModel = requireNonNull(spinnerModel);
   }
 

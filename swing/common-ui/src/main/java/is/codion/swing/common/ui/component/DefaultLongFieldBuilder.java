@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -11,8 +12,8 @@ import java.text.NumberFormat;
 
 class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongField, LongFieldBuilder> implements LongFieldBuilder {
 
-  DefaultLongFieldBuilder() {
-    super(Long.class);
+  DefaultLongFieldBuilder(final Value<Long> linkedValue) {
+    super(Long.class, linkedValue);
   }
 
   @Override

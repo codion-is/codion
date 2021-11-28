@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -26,6 +27,10 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   private int maximumLength;
   private String caption;
   private String dialogTitle;
+
+  DefaultTextInputPanelBuilder(final Value<String> linkedValue) {
+    super(linkedValue);
+  }
 
   @Override
   public TextInputPanelBuilder updateOn(final UpdateOn updateOn) {
@@ -95,7 +100,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class)
+    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null)
             .selectAllOnFocusGained(selectAllOnFocusGained)
             .updateOn(updateOn)
             .columns(columns)

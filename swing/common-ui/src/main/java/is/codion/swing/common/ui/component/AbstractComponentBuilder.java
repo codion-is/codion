@@ -51,6 +51,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Value.Validator<T> validator;
   private T initialValue;
 
+  protected AbstractComponentBuilder() {
+    this(null);
+  }
+
+  /**
+   * @param linkedValue the linked value, may be null
+   */
+  protected AbstractComponentBuilder(final Value<T> linkedValue) {
+    this.linkedValue = linkedValue;
+  }
+
   @Override
   public final B focusable(final boolean focusable) {
     this.focusable = focusable;
@@ -155,11 +166,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B linkedValue(final Value<T> value) {
+  public final B linkedValue(final Value<T> linkedValue) {
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
     }
-    this.linkedValue = value;
+    this.linkedValue = linkedValue;
     return (B) this;
   }
 

@@ -95,9 +95,8 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    actionBase.add(Components.integerSpinner(new SpinnerNumberModel())
+    actionBase.add(Components.integerSpinner(new SpinnerNumberModel(), model.getConnectionTimeoutValue())
             .columns(7)
-            .linkedValue(model.getConnectionTimeoutValue())
             .build());
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
@@ -130,11 +129,10 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     configPanel.add(new JLabel("Update interval (s)"));
-    configPanel.add(Components.integerSpinner()
+    configPanel.add(Components.integerSpinner(model.getUpdateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
-            .linkedValue(model.getUpdateIntervalValue())
             .build());
 
     final JPanel configBase = new JPanel(Layouts.borderLayout());

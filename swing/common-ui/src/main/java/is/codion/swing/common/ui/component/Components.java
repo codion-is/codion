@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.Action;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -59,11 +61,11 @@ public final class Components {
   }
 
   /**
-   * @param value a value to link to the check box
+   * @param linkedValue the value to link to the check-box
    * @return a builder for a component
    */
-  public static CheckBoxBuilder checkBox(final Value<Boolean> value) {
-    return new DefaultCheckBoxBuilder(value);
+  public static CheckBoxBuilder checkBox(final Value<Boolean> linkedValue) {
+    return new DefaultCheckBoxBuilder(linkedValue);
   }
 
   /**
@@ -75,19 +77,27 @@ public final class Components {
   }
 
   /**
-   * @param value a value to link to the button
+   * @param linkedValue the value to link to the button
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Value<Boolean> value) {
-    return new DefaultToggleButtonBuilder<>(value);
+  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Value<Boolean> linkedValue) {
+    return new DefaultToggleButtonBuilder<>(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static BooleanComboBoxBuilder booleanComboBox() {
-    return booleanComboBox(ItemComboBoxModel.createBooleanModel());
+    return booleanComboBox((Value<Boolean>) null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static BooleanComboBoxBuilder booleanComboBox(final Value<Boolean> linkedValue) {
+    return booleanComboBox(ItemComboBoxModel.createBooleanModel(), linkedValue);
   }
 
   /**
@@ -95,7 +105,17 @@ public final class Components {
    * @return a builder for a component
    */
   public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel) {
-    return new DefaultBooleanComboBoxBuilder(comboBoxModel);
+    return booleanComboBox(comboBoxModel, null);
+  }
+
+  /**
+   * @param comboBoxModel the combo box model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel,
+                                                       final Value<Boolean> linkedValue) {
+    return new DefaultBooleanComboBoxBuilder(comboBoxModel, linkedValue);
   }
 
   /**
@@ -104,7 +124,18 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(final ItemComboBoxModel<T> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel);
+    return itemComboBox(comboBoxModel, null);
+  }
+
+  /**
+   * @param comboBoxModel the combo box model
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  public static <T> ItemComboBoxBuilder<T> itemComboBox(final ItemComboBoxModel<T> comboBoxModel,
+                                                        final Value<T> linkedValue) {
+    return new DefaultItemComboBoxBuilder<>(comboBoxModel, linkedValue);
   }
 
   /**
@@ -113,7 +144,17 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(final List<Item<T>> values) {
-    return new DefaultItemComboBoxBuilder<>(values);
+    return itemComboBox(values, null);
+  }
+
+  /**
+   * @param values the values
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  public static <T> ItemComboBoxBuilder<T> itemComboBox(final List<Item<T>> values, final Value<T> linkedValue) {
+    return new DefaultItemComboBoxBuilder<>(values, linkedValue);
   }
 
   /**
@@ -123,7 +164,19 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ComboBoxBuilder<T> comboBox(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
-    return new DefaultComboBoxBuilder<>(valueClass, comboBoxModel);
+    return comboBox(valueClass, comboBoxModel, null);
+  }
+
+  /**
+   * @param valueClass the value class
+   * @param comboBoxModel the combo box model
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  public static <T> ComboBoxBuilder<T> comboBox(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel,
+                                                final Value<T> linkedValue) {
+    return new DefaultComboBoxBuilder<>(valueClass, comboBoxModel, linkedValue);
   }
 
   /**
@@ -132,7 +185,18 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Class<T> valueClass) {
-    return new DefaultTemporalInputPanelBuiler<>(valueClass, null);
+    return temporalInputPanel(valueClass, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param valueClass the value class
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Class<T> valueClass,
+                                                                                     final Value<T> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(valueClass, null, linkedValue);
   }
 
   /**
@@ -140,7 +204,17 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(final String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, requireNonNull(dateTimePattern));
+    return localTimeInputPanel(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(final String dateTimePattern,
+                                                                         final Value<LocalTime> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, requireNonNull(dateTimePattern), linkedValue);
   }
 
   /**
@@ -148,7 +222,17 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(final String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, requireNonNull(dateTimePattern));
+    return localDateInputPanel(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(final String dateTimePattern,
+                                                                         final Value<LocalDate> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, requireNonNull(dateTimePattern), linkedValue);
   }
 
   /**
@@ -156,21 +240,47 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(final String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, requireNonNull(dateTimePattern));
+    return localDateTimeInputPanel(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(final String dateTimePattern,
+                                                                                 final Value<LocalDateTime> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, requireNonNull(dateTimePattern), linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static TextInputPanelBuilder textInputPanel() {
-    return new DefaultTextInputPanelBuilder();
+    return textInputPanel(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static TextInputPanelBuilder textInputPanel(final Value<String> linkedValue) {
+    return new DefaultTextInputPanelBuilder(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea() {
-    return new DefaultTextAreaBuilder();
+    return textArea(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static TextAreaBuilder textArea(final Value<String> linkedValue) {
+    return new DefaultTextAreaBuilder(linkedValue);
   }
 
   /**
@@ -178,7 +288,16 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> B textField() {
-    return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class);
+    return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class, null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends TextFieldBuilder<String, JTextField, B>> B textField(final Value<String> linkedValue) {
+    return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class, linkedValue);
   }
 
   /**
@@ -189,20 +308,33 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textField(final Class<T> valueClass) {
+    return textField(valueClass, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param <C> the text field type
+   * @param <B> the builder type
+   * @param valueClass the value class
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textField(final Class<T> valueClass,
+                                                                                           final Value<T> linkedValue) {
     if (valueClass.equals(Integer.class)) {
-      return (B) integerField();
+      return (B) integerField((Value<Integer>) linkedValue);
     }
     else if (valueClass.equals(Long.class)) {
-      return (B) longField();
+      return (B) longField((Value<Long>) linkedValue);
     }
     else if (valueClass.equals(Double.class)) {
-      return (B) doubleField();
+      return (B) doubleField((Value<Double>) linkedValue);
     }
     else if (valueClass.equals(BigDecimal.class)) {
-      return (B) bigDecimalField();
+      return (B) bigDecimalField((Value<BigDecimal>) linkedValue);
     }
 
-    return (B) new DefaultTextFieldBuilder<T, C, B>(valueClass);
+    return (B) new DefaultTextFieldBuilder<T, C, B>(valueClass, linkedValue);
   }
 
   /**
@@ -210,7 +342,16 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static LocalTimeFieldBuilder localTimeField(final String dateTimePattern) {
-    return new DefaultLocalTimeFieldBuilder(dateTimePattern);
+    return localTimeField(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static LocalTimeFieldBuilder localTimeField(final String dateTimePattern, final Value<LocalTime> linkedValue) {
+    return new DefaultLocalTimeFieldBuilder(dateTimePattern, linkedValue);
   }
 
   /**
@@ -218,7 +359,16 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static LocalDateFieldBuilder localDateField(final String dateTimePattern) {
-    return new DefaultLocalDateFieldBuilder(dateTimePattern);
+    return localDateField(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static LocalDateFieldBuilder localDateField(final String dateTimePattern, final Value<LocalDate> linkedValue) {
+    return new DefaultLocalDateFieldBuilder(dateTimePattern, linkedValue);
   }
 
   /**
@@ -226,7 +376,17 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static LocalDateTimeFieldBuilder localDateTimeField(final String dateTimePattern) {
-    return new DefaultLocalDateTimeFieldBuilder(dateTimePattern);
+    return localDateTimeField(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static LocalDateTimeFieldBuilder localDateTimeField(final String dateTimePattern,
+                                                             final Value<LocalDateTime> linkedValue) {
+    return new DefaultLocalDateTimeFieldBuilder(dateTimePattern, linkedValue);
   }
 
   /**
@@ -234,49 +394,107 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static OffsetDateTimeFieldBuilder offsetDateTimeField(final String dateTimePattern) {
-    return new DefaultOffsetDateTimeFieldBuilder(dateTimePattern);
+    return offsetDateTimeField(dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static OffsetDateTimeFieldBuilder offsetDateTimeField(final String dateTimePattern,
+                                                               final Value<OffsetDateTime> linkedValue) {
+    return new DefaultOffsetDateTimeFieldBuilder(dateTimePattern, linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static IntegerFieldBuilder integerField() {
-    return new DefaultIntegerFieldBuilder();
+    return integerField(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static IntegerFieldBuilder integerField(final Value<Integer> linkedValue) {
+    return new DefaultIntegerFieldBuilder(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static LongFieldBuilder longField() {
-    return new DefaultLongFieldBuilder();
+    return longField(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static LongFieldBuilder longField(final Value<Long> linkedValue) {
+    return new DefaultLongFieldBuilder(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static DoubleFieldBuilder doubleField() {
-    return new DefaultDoubleFieldBuilder();
+    return doubleField(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static DoubleFieldBuilder doubleField(final Value<Double> linkedValue) {
+    return new DefaultDoubleFieldBuilder(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static BigDecimalFieldBuilder bigDecimalField() {
-    return new DefaultBigDecimalFieldBuilder();
+    return bigDecimalField(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static BigDecimalFieldBuilder bigDecimalField(final Value<BigDecimal> linkedValue) {
+    return new DefaultBigDecimalFieldBuilder(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static FormattedTextFieldBuilder formattedTextField() {
-    return new DefaultFormattedTextFieldBuilder();
+    return formattedTextField(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static FormattedTextFieldBuilder formattedTextField(final Value<String> linkedValue) {
+    return new DefaultFormattedTextFieldBuilder(linkedValue);
   }
 
   /**
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner() {
-    return doubleSpinner(new SpinnerNumberModel());
+    return doubleSpinner((Value<Double>) null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a Double based JSpinner
+   */
+  public static NumberSpinnerBuilder<Double> doubleSpinner(final Value<Double> linkedValue) {
+    return doubleSpinner(new SpinnerNumberModel(), linkedValue);
   }
 
   /**
@@ -284,14 +502,32 @@ public final class Components {
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class);
+    return doubleSpinner(spinnerNumberModel, null);
+  }
+
+  /**
+   * @param spinnerNumberModel the spinner model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a Double based JSpinner
+   */
+  public static NumberSpinnerBuilder<Double> doubleSpinner(final SpinnerNumberModel spinnerNumberModel,
+                                                           final Value<Double> linkedValue) {
+    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class, linkedValue);
   }
 
   /**
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner() {
-    return integerSpinner(new SpinnerNumberModel());
+    return integerSpinner((Value<Integer>) null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a Integer based JSpinner
+   */
+  public static NumberSpinnerBuilder<Integer> integerSpinner(final Value<Integer> linkedValue) {
+    return integerSpinner(new SpinnerNumberModel(), linkedValue);
   }
 
   /**
@@ -299,7 +535,17 @@ public final class Components {
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class);
+    return integerSpinner(spinnerNumberModel, null);
+  }
+
+  /**
+   * @param spinnerNumberModel the spinner model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a Integer based JSpinner
+   */
+  public static NumberSpinnerBuilder<Integer> integerSpinner(final SpinnerNumberModel spinnerNumberModel,
+                                                             final Value<Integer> linkedValue) {
+    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class, linkedValue);
   }
 
   /**
@@ -308,7 +554,17 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(final SpinnerListModel spinnerModel) {
-    return new DefaultListSpinnerBuilder<>(spinnerModel);
+    return listSpinner(spinnerModel, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param spinnerModel the spinner model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a JSpinner
+   */
+  public static <T> ListSpinnerBuilder<T> listSpinner(final SpinnerListModel spinnerModel, final Value<T> linkedValue) {
+    return new DefaultListSpinnerBuilder<>(spinnerModel, linkedValue);
   }
 
   /**
@@ -317,7 +573,17 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(final SpinnerListModel spinnerModel) {
-    return new DefaultItemSpinnerBuilder<>(spinnerModel);
+    return itemSpinner(spinnerModel, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param spinnerModel the spinner model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a JSpinner
+   */
+  public static <T> ItemSpinnerBuilder<T> itemSpinner(final SpinnerListModel spinnerModel, final Value<T> linkedValue) {
+    return new DefaultItemSpinnerBuilder<>(spinnerModel, linkedValue);
   }
 
   /**
@@ -325,7 +591,16 @@ public final class Components {
    * @return a builder for a component
    */
   public static SliderBuilder slider(final BoundedRangeModel boundedRangeModel) {
-    return new DefaultSliderBuilder(boundedRangeModel);
+    return slider(boundedRangeModel, null);
+  }
+
+  /**
+   * @param boundedRangeModel the slider model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static SliderBuilder slider(final BoundedRangeModel boundedRangeModel, final Value<Integer> linkedValue) {
+    return new DefaultSliderBuilder(boundedRangeModel, linkedValue);
   }
 
   /**
@@ -335,7 +610,18 @@ public final class Components {
    * @return a builder for a JList
    */
   public static <T> ListBuilder<T> list(final ListModel<T> listModel) {
-    return new DefaultListBuilder<>(listModel);
+    return list(listModel, null);
+  }
+
+  /**
+   * A single selection JList builder.
+   * @param <T> the value type
+   * @param listModel the list model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a JList
+   */
+  public static <T> ListBuilder<T> list(final ListModel<T> listModel, final Value<T> linkedValue) {
+    return new DefaultListBuilder<>(listModel, linkedValue);
   }
 
   /**
@@ -343,6 +629,14 @@ public final class Components {
    */
   public static LabelBuilder label() {
     return label((String) null);
+  }
+
+  /**
+   * @param linkedValueObserver the value observer to link to the label text
+   * @return a label builder
+   */
+  public static LabelBuilder label(final ValueObserver<String> linkedValueObserver) {
+    return new DefaultLabelBuilder(null, linkedValueObserver);
   }
 
   /**
@@ -358,7 +652,7 @@ public final class Components {
    * @return a label builder
    */
   public static LabelBuilder label(final String text) {
-    return new DefaultLabelBuilder(text);
+    return new DefaultLabelBuilder(text, null);
   }
 
   /**

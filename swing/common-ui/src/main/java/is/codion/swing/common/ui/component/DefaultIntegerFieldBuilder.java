@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -12,8 +13,8 @@ import java.text.NumberFormat;
 final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer, IntegerField, IntegerFieldBuilder>
         implements IntegerFieldBuilder {
 
-  DefaultIntegerFieldBuilder() {
-    super(Integer.class);
+  DefaultIntegerFieldBuilder(final Value<Integer> linkedValue) {
+    super(Integer.class, linkedValue);
   }
 
   @Override

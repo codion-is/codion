@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -16,8 +17,8 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
 
-  DefaultDoubleFieldBuilder() {
-    super(Double.class);
+  DefaultDoubleFieldBuilder(final Value<Double> linkedValue) {
+    super(Double.class, linkedValue);
   }
 
   @Override

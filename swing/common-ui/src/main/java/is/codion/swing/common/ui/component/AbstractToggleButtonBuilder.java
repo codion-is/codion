@@ -12,10 +12,8 @@ import javax.swing.JToggleButton;
 abstract class AbstractToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
         extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
 
-  AbstractToggleButtonBuilder(final Value<Boolean> value) {
-    if (value != null) {
-      linkedValue(value);
-    }
+  protected AbstractToggleButtonBuilder(final Value<Boolean> linkedValue) {
+    super(linkedValue);
   }
 
   @Override

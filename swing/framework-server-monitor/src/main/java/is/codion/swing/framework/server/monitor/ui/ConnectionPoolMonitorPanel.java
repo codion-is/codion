@@ -141,31 +141,26 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
     configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
-    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner()
+    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.getMinimumPoolSizeValue())
             .columns(3)
             .editable(false)
-            .linkedValue(model.getMinimumPoolSizeValue())
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), Components.integerSpinner()
+    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), Components.integerSpinner(model.getMaximumPoolSizeValue())
             .columns(3)
             .editable(false)
-            .linkedValue(model.getMaximumPoolSizeValue())
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner()
+    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner(model.getMaximumCheckOutTimeValue())
             .stepSize(100)
             .columns(6)
             .editable(false)
-            .linkedValue(model.getMaximumCheckOutTimeValue())
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (s)"), Components.integerSpinner()
+    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (s)"), Components.integerSpinner(model.getPooledConnectionTimeoutValue())
             .columns(3)
             .editable(false)
-            .linkedValue(model.getPooledConnectionTimeoutValue())
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner()
+    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner(model.getPoolCleanupIntervalValue())
             .columns(3)
             .editable(false)
-            .linkedValue(model.getPoolCleanupIntervalValue())
             .build()));
 
     final JPanel configPanel = new JPanel(Layouts.flowLayout(RIGHT));
@@ -189,11 +184,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(Components.integerSpinner()
+    chartConfig.add(Components.integerSpinner(model.getUpdateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
-            .linkedValue(model.getUpdateIntervalValue())
             .build());
 
     chartConfig.add(Components.checkBox(model.getCollectSnapshotStatisticsState())

@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.textfield.StringLengthValidator;
@@ -23,6 +24,10 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private boolean autoscrolls = true;
 
   private JScrollPane scrollPane;
+
+  DefaultTextAreaBuilder(final Value<String> linkedValue) {
+    super(linkedValue);
+  }
 
   @Override
   public TextAreaBuilder rows(final int rows) {

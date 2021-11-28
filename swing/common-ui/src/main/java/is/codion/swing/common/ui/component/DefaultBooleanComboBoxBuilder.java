@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -21,7 +22,8 @@ final class DefaultBooleanComboBoxBuilder extends AbstractComponentBuilder<Boole
 
   private final ItemComboBoxModel<Boolean> comboBoxModel;
 
-  DefaultBooleanComboBoxBuilder(final ItemComboBoxModel<Boolean> comboBoxModel) {
+  DefaultBooleanComboBoxBuilder(final ItemComboBoxModel<Boolean> comboBoxModel, final Value<Boolean> linkedValue) {
+    super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(getPreferredTextFieldHeight());
   }
