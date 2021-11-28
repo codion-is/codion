@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -33,12 +34,14 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private boolean nullable;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 
-  DefaultItemComboBoxBuilder(final List<Item<T>> items) {
+  DefaultItemComboBoxBuilder(final List<Item<T>> items, final Value<T> linkedValue) {
+    super(linkedValue);
     this.items = requireNonNull(items);
     preferredHeight(getPreferredTextFieldHeight());
   }
 
-  DefaultItemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel) {
+  DefaultItemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+    super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     this.items = Collections.emptyList();
     preferredHeight(getPreferredTextFieldHeight());

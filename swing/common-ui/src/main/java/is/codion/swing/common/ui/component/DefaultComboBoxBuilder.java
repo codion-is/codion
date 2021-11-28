@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
@@ -24,7 +25,8 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   private boolean editable = false;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
 
-  DefaultComboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
+  DefaultComboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+    super(linkedValue);
     this.valueClass = valueClass;
     this.comboBoxModel = comboBoxModel;
     preferredHeight(getPreferredTextFieldHeight());

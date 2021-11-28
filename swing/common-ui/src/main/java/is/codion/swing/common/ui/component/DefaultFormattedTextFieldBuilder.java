@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -22,6 +23,10 @@ final class DefaultFormattedTextFieldBuilder
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private int columns;
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
+
+  DefaultFormattedTextFieldBuilder(final Value<String> linkedValue) {
+    super(linkedValue);
+  }
 
   @Override
   public FormattedTextFieldBuilder formatMask(final String formatMask) {

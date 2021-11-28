@@ -10,8 +10,8 @@ import javax.swing.JToggleButton;
 final class DefaultToggleButtonBuilder<B extends ToggleButtonBuilder<JToggleButton, B>>
         extends AbstractToggleButtonBuilder<JToggleButton, B> implements ToggleButtonBuilder<JToggleButton, B> {
 
-  DefaultToggleButtonBuilder(final Value<Boolean> value) {
-    super(value);
+  DefaultToggleButtonBuilder(final Value<Boolean> linkedValue) {
+    super(linkedValue);
   }
 
   @Override

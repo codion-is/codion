@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -20,8 +21,9 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   private T maximum;
   private T stepSize;
 
-  DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass) {
-    super(spinnerNumberModel);
+  DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass,
+                              final Value<T> linkedValue) {
+    super(spinnerNumberModel, linkedValue);
     this.valueClass = requireNonNull(valueClass);
     if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
       throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);

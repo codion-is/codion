@@ -207,11 +207,10 @@ public final class LoadTestPanel<T> extends JPanel {
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValueObserver(loadTestModel.applicationCountObserver())
             .build(), BorderLayout.CENTER);
-    applicationCountPanel.add(Components.integerSpinner()
+    applicationCountPanel.add(Components.integerSpinner(loadTestModel.getApplicationBatchSizeValue())
             .editable(false)
             .columns(SMALL_TEXT_FIELD_COLUMNS)
             .toolTipText("Application batch size")
-            .linkedValue(loadTestModel.getApplicationBatchSizeValue())
             .build(), BorderLayout.EAST);
 
     final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
@@ -336,16 +335,14 @@ public final class LoadTestPanel<T> extends JPanel {
             .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
             .build());
     thinkTimePanel.add(new JLabel("Max. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(Components.integerSpinner()
+    thinkTimePanel.add(Components.integerSpinner(loadTestModel.getMaximumThinkTimeValue())
             .stepSize(SPINNER_STEP_SIZE)
             .columns(SMALL_TEXT_FIELD_COLUMNS)
-            .linkedValue(loadTestModel.getMaximumThinkTimeValue())
             .build());
     thinkTimePanel.add(new JLabel("Min. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(Components.integerSpinner()
+    thinkTimePanel.add(Components.integerSpinner(loadTestModel.getMinimumThinkTimeValue())
             .stepSize(SPINNER_STEP_SIZE)
             .columns(SMALL_TEXT_FIELD_COLUMNS)
-            .linkedValue(loadTestModel.getMinimumThinkTimeValue())
             .build());
     thinkTimePanel.add(Components.toggleButton(loadTestModel.getPausedState())
             .caption("Pause")

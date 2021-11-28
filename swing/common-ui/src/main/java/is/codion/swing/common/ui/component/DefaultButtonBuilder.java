@@ -13,6 +13,7 @@ final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> exte
         implements ButtonBuilder<Void, JButton, B> {
 
   DefaultButtonBuilder(final Action action) {
+    super(null);
     action(action);
   }
 

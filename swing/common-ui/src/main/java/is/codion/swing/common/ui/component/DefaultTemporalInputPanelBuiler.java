@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.value.ComponentValue;
@@ -28,7 +29,8 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private String dateTimePattern;
   private boolean selectAllOnFocusGained;
 
-  DefaultTemporalInputPanelBuiler(final Class<T> valueClass, final String dateTimePattern) {
+  DefaultTemporalInputPanelBuiler(final Class<T> valueClass, final String dateTimePattern, final Value<T> linkedValue) {
+    super(linkedValue);
     this.valueClass = requireNonNull(valueClass);
     this.dateTimePattern = dateTimePattern;
   }
@@ -79,28 +81,28 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   private TemporalField<T> createTemporalField() {
     if (valueClass.equals(LocalTime.class)) {
-      return (TemporalField<T>) new DefaultLocalTimeFieldBuilder(dateTimePattern)
+      return (TemporalField<T>) new DefaultLocalTimeFieldBuilder(dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(LocalDate.class)) {
-      return (TemporalField<T>) new DefaultLocalDateFieldBuilder(dateTimePattern)
+      return (TemporalField<T>) new DefaultLocalDateFieldBuilder(dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(LocalDateTime.class)) {
-      return (TemporalField<T>) new DefaultLocalDateTimeFieldBuilder(dateTimePattern)
+      return (TemporalField<T>) new DefaultLocalDateTimeFieldBuilder(dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(OffsetDateTime.class)) {
-      return (TemporalField<T>) new DefaultOffsetDateTimeFieldBuilder(dateTimePattern)
+      return (TemporalField<T>) new DefaultOffsetDateTimeFieldBuilder(dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)

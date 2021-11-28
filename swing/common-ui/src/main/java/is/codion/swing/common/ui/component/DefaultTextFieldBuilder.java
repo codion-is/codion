@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -29,7 +30,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
 
-  DefaultTextFieldBuilder(final Class<T> valueClass) {
+  DefaultTextFieldBuilder(final Class<T> valueClass, final Value<T> linkedValue) {
+    super(linkedValue);
     this.valueClass = requireNonNull(valueClass);
     columns(DEFAULT_TEXT_FIELD_COLUMNS.get());
   }

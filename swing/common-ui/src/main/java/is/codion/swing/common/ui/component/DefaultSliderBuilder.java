@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -25,7 +26,8 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   private boolean inverted = false;
   private int orientation = SwingConstants.HORIZONTAL;
 
-  DefaultSliderBuilder(final BoundedRangeModel boundedRangeModel) {
+  DefaultSliderBuilder(final BoundedRangeModel boundedRangeModel, final Value<Integer> linkedValue) {
+    super(linkedValue);
     this.boundedRangeModel = requireNonNull(boundedRangeModel);
   }
 

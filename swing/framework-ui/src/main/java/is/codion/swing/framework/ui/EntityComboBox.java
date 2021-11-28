@@ -88,10 +88,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    */
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     requireNonNull(attribute);
-    return Components.integerField()
+    return Components.integerField(getModel().selectorValue(attribute))
             .columns(2)
             .selectAllOnFocusGained(true)
-            .linkedValue(getModel().selectorValue(attribute))
             .build();
   }
 
@@ -104,10 +103,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);
-    return Components.integerField()
+    return Components.integerField(getModel().selectorValue(attribute, finder))
             .columns(2)
             .selectAllOnFocusGained(true)
-            .linkedValue(getModel().selectorValue(attribute, finder))
             .build();
   }
 
@@ -118,10 +116,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    */
   public JTextField textFieldSelector(final Attribute<String> attribute) {
     requireNonNull(attribute);
-    return Components.textField()
+    return Components.textField(getModel().selectorValue(attribute))
             .columns(2)
             .selectAllOnFocusGained(true)
-            .linkedValue(getModel().selectorValue(attribute))
             .build();
   }
 
@@ -134,10 +131,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);
-    return Components.textField()
+    return Components.textField(getModel().selectorValue(attribute, finder))
             .columns(2)
             .selectAllOnFocusGained(true)
-            .linkedValue(getModel().selectorValue(attribute, finder))
             .build();
   }
 

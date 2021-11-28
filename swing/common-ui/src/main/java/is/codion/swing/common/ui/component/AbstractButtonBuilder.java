@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -15,6 +17,10 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private boolean includeCaption = true;
   private Icon icon;
   private Action action;
+
+  protected AbstractButtonBuilder(final Value<T> linkedValue) {
+    super(linkedValue);
+  }
 
   @Override
   public final B caption(final String caption) {

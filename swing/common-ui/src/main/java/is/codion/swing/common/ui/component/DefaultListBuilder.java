@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
 
@@ -25,7 +26,8 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
 
   private JScrollPane scrollPane;
 
-  DefaultListBuilder(final ListModel<T> listModel) {
+  DefaultListBuilder(final ListModel<T> listModel, final Value<T> linkedValue) {
+    super(linkedValue);
     this.listModel = requireNonNull(listModel);
   }
 

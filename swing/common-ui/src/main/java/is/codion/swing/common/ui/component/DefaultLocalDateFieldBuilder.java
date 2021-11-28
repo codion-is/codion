@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
 
 import java.time.LocalDate;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 final class DefaultLocalDateFieldBuilder extends DefaultTemporalFieldBuilder<LocalDate, TemporalField<LocalDate>, LocalDateFieldBuilder>
         implements LocalDateFieldBuilder {
 
-  DefaultLocalDateFieldBuilder(final String dateTimePattern) {
-    super(LocalDate.class, dateTimePattern);
+  DefaultLocalDateFieldBuilder(final String dateTimePattern, final Value<LocalDate> linkedValue) {
+    super(LocalDate.class, dateTimePattern, linkedValue);
   }
 }

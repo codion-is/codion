@@ -108,11 +108,10 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     panel.add(Components.label("Weight")
             .horizontalAlignment(SwingConstants.RIGHT)
             .build(), BorderLayout.CENTER);
-    panel.add(Components.integerSpinner()
+    panel.add(Components.integerSpinner(new WeightModelValue(item.getItem()))
             .minimum(0)
             .columns(SPINNER_COLUMNS)
             .toolTipText(item.getItem().toString())
-            .linkedValue(new WeightModelValue(item.getItem()))
             .build(), BorderLayout.EAST);
 
     return panel;

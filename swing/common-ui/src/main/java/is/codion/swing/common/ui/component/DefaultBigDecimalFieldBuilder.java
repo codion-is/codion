@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValues;
@@ -17,8 +18,8 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
 
-  DefaultBigDecimalFieldBuilder() {
-    super(BigDecimal.class);
+  DefaultBigDecimalFieldBuilder(final Value<BigDecimal> linkedValue) {
+    super(BigDecimal.class, linkedValue);
   }
 
   @Override

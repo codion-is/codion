@@ -416,10 +416,9 @@ public final class EntitySearchField extends JTextField {
 
       final JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
       valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
-      valueSeparatorPanel.add(Components.textField()
+      valueSeparatorPanel.add(Components.textField(searchModel.getMultipleItemSeparatorValue())
               .columns(1)
               .maximumLength(1)
-              .linkedValue(searchModel.getMultipleItemSeparatorValue())
               .build(), BorderLayout.WEST);
 
       generalSettingsPanel.add(valueSeparatorPanel);
