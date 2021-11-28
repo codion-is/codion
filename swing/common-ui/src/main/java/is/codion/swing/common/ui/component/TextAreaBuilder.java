@@ -44,6 +44,12 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
   TextAreaBuilder autoscrolls(boolean autoscrolls);
 
   /**
+   * @param tabSize the tab size
+   * @return this builder instance
+   */
+  TextAreaBuilder tabSize(int tabSize);
+
+  /**
    * Builds the text area and returns a scroll pane containing it, note that subsequent calls return the same scroll pane.
    * @return a scroll pane containing the text area
    */

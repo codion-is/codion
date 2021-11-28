@@ -47,4 +47,10 @@ public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuil
    * @return this builder instance
    */
   LabelBuilder icon(Icon icon);
+
+  /**
+   * @param iconTextGap the icon text gap
+   * @return this builder instance
+   */
+  LabelBuilder iconTextGap(int iconTextGap);
 }

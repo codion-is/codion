@@ -181,14 +181,18 @@ public final class FlexibleGridLayout extends GridLayout {
     Builder fixColumnWidths(boolean fixColumnWidths);
 
     /**
+     * Also enables the fixed row heights.
      * @param fixedRowHeight the fixed row height
      * @return this builder instance
+     * @see #fixRowHeights(boolean)
      */
     Builder fixedRowHeight(int fixedRowHeight);
 
     /**
+     * Also enables the fixed column widths.
      * @param fixedColumnWidth the fixed column width
      * @return this builder instance
+     * @see #fixColumnWidths(boolean)
      */
     Builder fixedColumnWidth(int fixedColumnWidth);
 
@@ -325,12 +329,14 @@ public final class FlexibleGridLayout extends GridLayout {
 
     @Override
     public Builder fixedRowHeight(final int fixedRowHeight) {
+      fixRowHeights(true);
       this.fixedRowHeight = fixedRowHeight;
       return this;
     }
 
     @Override
     public Builder fixedColumnWidth(final int fixedColumnWidth) {
+      fixColumnWidths(true);
       this.fixedColumnWidth = fixedColumnWidth;
       return this;
     }

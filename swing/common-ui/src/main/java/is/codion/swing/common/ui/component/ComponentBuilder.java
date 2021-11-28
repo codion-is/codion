@@ -96,6 +96,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B toolTipText(String toolTipText);
 
   /**
+   * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabledState(StateObserver)}.
+   * Overridden by {@link #enabledState(StateObserver)}.
+   * @param enabled the enabled state
+   * @return this builder instance
+   */
+  B enabled(boolean enabled);
+
+  /**
    * @param enabledState the state controlling the component enabled status
    * @return this builder instance
    */

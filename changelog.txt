@@ -7454,3 +7454,9 @@
   Components renamed Utilities
   ComponentBuilders renamed Components
   Components, methods overloaded with a linkedValue parameter, now consistent with toggleButton() and checkBox() methods
+  ExceptionDialog refactoring bug fixed, buttons not initialized
+  ComponentBuilder.enabled() added
+  LabelBuilder.iconTextGap() added
+  TextAreaBuilder.tabSize() added
+  FlexibleGridLayout.Builder, setting the fixed column width or fixed row height now enables the fixing of column widths or row heights respectively
+  ExceptionDialog refactored
