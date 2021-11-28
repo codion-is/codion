@@ -7421,3 +7421,4 @@
   Components renamed Utilities
   ComponentBuilders renamed Components
   Components, methods overloaded with a linkedValue parameter, now consistent with toggleButton() and checkBox() methods
+  ExceptionDialog refactoring bug fixed, buttons not initialized

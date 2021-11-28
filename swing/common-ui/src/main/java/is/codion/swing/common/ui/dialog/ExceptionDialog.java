@@ -183,7 +183,7 @@ final class ExceptionDialog extends JDialog {
             .caption(MESSAGES.getString("details"))
             .toolTipText(MESSAGES.getString("show_details"))
             .build();
-    final JButton printButton = Components.button(control(() -> detailsArea.print()))
+    printButton = Components.button(control(() -> detailsArea.print()))
             .caption(Messages.get(Messages.PRINT))
             .toolTipText(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
@@ -193,7 +193,7 @@ final class ExceptionDialog extends JDialog {
             .toolTipText(MESSAGES.getString("close_dialog"))
             .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
-    final JButton saveButton = Components.button(control(() -> Files.write(new DefaultFileSelectionDialogBuilder()
+    saveButton = Components.button(control(() -> Files.write(new DefaultFileSelectionDialogBuilder()
                             .owner(detailsArea)
                             .selectFileToSave("error.txt")
                             .toPath(),
@@ -202,7 +202,7 @@ final class ExceptionDialog extends JDialog {
             .toolTipText(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build();
-    final JButton copyButton = Components.button(control(() -> Utilities.setClipboard(detailsArea.getText())))
+    copyButton = Components.button(control(() -> Utilities.setClipboard(detailsArea.getText())))
             .caption(Messages.get(Messages.COPY))
             .toolTipText(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
