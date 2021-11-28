@@ -45,6 +45,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Color foreground;
   private Color background;
   private StateObserver enabledState;
+  private boolean enabled = true;
   private Controls popupMenuControls;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
@@ -109,6 +110,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   @Override
   public final B transferFocusOnEnter(final boolean transferFocusOnEnter) {
     this.transferFocusOnEnter = transferFocusOnEnter;
+    return (B) this;
+  }
+
+  @Override
+  public B enabled(final boolean enabled) {
+    this.enabled = enabled;
     return (B) this;
   }
 
@@ -212,6 +219,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     setSizes(component);
     if (border != null) {
       component.setBorder(border);
+    }
+    if (!enabled) {
+      component.setEnabled(false);
     }
     if (enabledState != null) {
       linkToEnabledState(enabledState, component);

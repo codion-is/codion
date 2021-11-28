@@ -19,6 +19,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
         implements TextAreaBuilder {
 
   private int rows;
+  private int tabSize;
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
   private boolean autoscrolls = true;
@@ -39,6 +40,12 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   public TextAreaBuilder rowsColumns(final int rows, final int columns) {
     this.rows = rows;
     return columns(columns);
+  }
+
+  @Override
+  public TextAreaBuilder tabSize(final int tabSize) {
+    this.tabSize = tabSize;
+    return this;
   }
 
   @Override
@@ -87,6 +94,9 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
     textArea.setEditable(editable);
+    if (tabSize > 0) {
+      textArea.setTabSize(tabSize);
+    }
     if (margin != null) {
       textArea.setMargin(margin);
     }

@@ -21,6 +21,7 @@ final class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel,
   private Icon icon;
   private int horizontalAlignment = LABEL_TEXT_ALIGNMENT.get();
   private int displayedMnemonic = 0;
+  private int iconTextGap = -1;
   private JComponent component;
 
   DefaultLabelBuilder(final Icon icon) {
@@ -60,6 +61,12 @@ final class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel,
   }
 
   @Override
+  public LabelBuilder iconTextGap(final int iconTextGap) {
+    this.iconTextGap = iconTextGap;
+    return this;
+  }
+
+  @Override
   protected JLabel buildComponent() {
     final JLabel label = new JLabel(text, icon, horizontalAlignment);
     if (displayedMnemonic != 0) {
@@ -67,6 +74,9 @@ final class DefaultLabelBuilder extends AbstractComponentBuilder<String, JLabel,
     }
     if (component != null) {
       label.setLabelFor(component);
+    }
+    if (iconTextGap >= 0) {
+      label.setIconTextGap(iconTextGap);
     }
 
     return label;
