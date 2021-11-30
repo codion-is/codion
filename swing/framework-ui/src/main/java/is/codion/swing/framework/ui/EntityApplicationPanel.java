@@ -31,6 +31,7 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -863,8 +864,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final void displayEntityPanelFrame(final EntityPanel.Builder panelBuilder) {
     requireNonNull(panelBuilder, "panelBuilder");
+    WaitCursor.show(this);
     try {
-      Utilities.showWaitCursor(this);
       final EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Windows.getParentWindow(entityPanel).toFront();
@@ -881,7 +882,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
     }
     finally {
-      Utilities.hideWaitCursor(this);
+      WaitCursor.hide(this);
     }
   }
 
@@ -900,8 +901,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final void displayEntityPanelDialog(final EntityPanel.Builder panelBuilder, final boolean modalDialog) {
     requireNonNull(panelBuilder, "panelBuilder");
+    WaitCursor.show(this);
     try {
-      Utilities.showWaitCursor(this);
       final EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Windows.getParentWindow(entityPanel).toFront();
@@ -920,7 +921,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
     }
     finally {
-      Utilities.hideWaitCursor(this);
+      WaitCursor.hide(this);
     }
   }
 

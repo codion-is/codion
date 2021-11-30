@@ -591,7 +591,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnCheckBoxes.size()), 0));
     final Collator columnCollator = Collator.getInstance();
     columnCheckBoxes.keySet().stream().sorted((column1, column2) ->
-                    Text.collateSansSpaces(columnCollator, column1.getIdentifier().toString(), column2.getIdentifier().toString()))
+                    Text.collateSansSpaces(columnCollator, column1.getHeaderValue().toString(), column2.getHeaderValue().toString()))
             .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
     final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
     Components.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true))))

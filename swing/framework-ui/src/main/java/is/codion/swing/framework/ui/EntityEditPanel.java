@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -42,8 +43,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static is.codion.swing.common.ui.Utilities.hideWaitCursor;
-import static is.codion.swing.common.ui.Utilities.showWaitCursor;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
@@ -443,8 +442,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final EntityEditPanel initializePanel() {
     if (!panelInitialized) {
+      WaitCursor.show(this);
       try {
-        showWaitCursor(this);
         setupControls();
         bindEventsInternal();
         initializeUI();
@@ -452,7 +451,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       }
       finally {
         panelInitialized = true;
-        hideWaitCursor(this);
+        WaitCursor.hide(this);
       }
     }
 
@@ -511,12 +510,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final boolean insertWithoutConfirmation() {
     try {
       validateData();
+      WaitCursor.show(this);
       try {
-        showWaitCursor(this);
         getEditModel().insert();
       }
       finally {
-        hideWaitCursor(this);
+        WaitCursor.hide(this);
       }
       if (clearAfterInsert) {
         getEditModel().setDefaultValues();
@@ -556,12 +555,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final boolean deleteWithoutConfirmation() {
     try {
+      WaitCursor.show(this);
       try {
-        showWaitCursor(this);
         getEditModel().delete();
       }
       finally {
-        hideWaitCursor(this);
+        WaitCursor.hide(this);
       }
       requestInitialFocus();
 
@@ -598,12 +597,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final boolean updateWithoutConfirmation() {
     try {
       validateData();
+      WaitCursor.show(this);
       try {
-        showWaitCursor(this);
         getEditModel().update();
       }
       finally {
-        hideWaitCursor(this);
+        WaitCursor.hide(this);
       }
       requestInitialFocus();
 
@@ -805,8 +804,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(this::showEntityMenu))
             .enable(this);
-    getEditModel().addBeforeRefreshListener(() -> showWaitCursor(EntityEditPanel.this));
-    getEditModel().addAfterRefreshListener(() -> hideWaitCursor(EntityEditPanel.this));
+    getEditModel().addBeforeRefreshListener(() -> WaitCursor.show(EntityEditPanel.this));
+    getEditModel().addAfterRefreshListener(() -> WaitCursor.hide(EntityEditPanel.this));
     getEditModel().addConfirmSetEntityObserver(confirmationState -> {
       final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),

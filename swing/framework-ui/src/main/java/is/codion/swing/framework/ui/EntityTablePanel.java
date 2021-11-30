@@ -29,6 +29,7 @@ import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -92,8 +93,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.Utilities.hideWaitCursor;
-import static is.codion.swing.common.ui.Utilities.showWaitCursor;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
@@ -665,8 +664,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final T newValue = componentFactory.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
             .showDialog(this, propertyToUpdate.getCaption());
     Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
+    WaitCursor.show(this);
     try {
-      showWaitCursor(this);
       tableModel.update(selectedEntities);
     }
     catch (final Exception e) {
@@ -674,7 +673,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       onException(e);
     }
     finally {
-      hideWaitCursor(this);
+      WaitCursor.hide(this);
     }
   }
 
@@ -686,8 +685,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
+    WaitCursor.show(this);
     try {
-      showWaitCursor(this);
       final Map<EntityType, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
@@ -699,7 +698,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       onException(e);
     }
     finally {
-      hideWaitCursor(this);
+      WaitCursor.hide(this);
     }
   }
 
@@ -710,12 +709,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void delete() {
     try {
       if (confirmDelete()) {
+        WaitCursor.show(this);
         try {
-          showWaitCursor(this);
           tableModel.deleteSelected();
         }
         finally {
-          hideWaitCursor(this);
+          WaitCursor.hide(this);
         }
       }
     }
@@ -746,8 +745,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   public void onReferentialIntegrityException(final ReferentialIntegrityException exception, final List<Entity> entities) {
+    WaitCursor.show(this);
     try {
-      showWaitCursor(this);
       if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
         final Map<EntityType, Collection<Entity>> dependencies =
                 tableModel.getConnectionProvider().getConnection().selectDependencies(entities);
@@ -763,7 +762,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       onException(e);
     }
     finally {
-      hideWaitCursor(this);
+      WaitCursor.hide(this);
     }
   }
 
@@ -960,8 +959,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final EntityTablePanel initializePanel() {
     if (!panelInitialized) {
+      WaitCursor.show(this);
       try {
-        showWaitCursor(this);
         setupControls();
         initializeTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
@@ -972,7 +971,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
       finally {
         panelInitialized = true;
-        hideWaitCursor(this);
+        WaitCursor.hide(this);
       }
     }
 
@@ -1393,8 +1392,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getTableConditionModel().getConditionModels().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.addSortListener(table.getTableHeader()::repaint);
-    tableModel.addRefreshStartedListener(() -> Utilities.showWaitCursor(EntityTablePanel.this));
-    tableModel.addRefreshDoneListener(successful -> Utilities.hideWaitCursor(EntityTablePanel.this));
+    tableModel.addRefreshStartedListener(() -> WaitCursor.show(EntityTablePanel.this));
+    tableModel.addRefreshDoneListener(successful -> WaitCursor.hide(EntityTablePanel.this));
     if (tableModel.hasEditModel()) {
       tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     }

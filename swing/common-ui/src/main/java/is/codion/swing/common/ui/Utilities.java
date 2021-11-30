@@ -22,11 +22,9 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -40,9 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import static java.util.Arrays.stream;
@@ -54,9 +50,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Utilities {
 
-  private static final Map<Window, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
-  private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
-  private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static final String COMPONENT = "component";
 
   private Utilities() {}
@@ -384,88 +377,6 @@ public final class Utilities {
    */
   public static <T> T getParentOfType(final Component component, final Class<T> clazz) {
     return (T) SwingUtilities.getAncestorOfClass(clazz, component);
-  }
-
-  /**
-   * Adds a wait cursor request for the parent root pane of the given component,
-   * the wait cursor is activated once a request is made, but only deactivated once all such
-   * requests have been retracted. Best used in try/finally block combinations.
-   * <pre>
-   try {
-     Components.showWaitCursor(component);
-     doSomething();
-   }
-   finally {
-     Components.hideWaitCursor(component);
-   }
-   * </pre>
-   * @param component the component
-   * @see #hideWaitCursor(JComponent)
-   */
-  public static void showWaitCursor(final JComponent component) {
-    showWaitCursor(Windows.getParentWindow(component));
-  }
-
-  /**
-   * Removes a wait cursor request for the parent root pane of the given component,
-   * the wait cursor is activated once a request is made, but only deactivated once all such
-   * requests have been retracted. Best used in try/finally block combinations.
-   * <pre>
-   try {
-     Components.showWaitCursor(component);
-     doSomething();
-   }
-   finally {
-     Components.hideWaitCursor(component);
-   }
-   * </pre>
-   * @param component the component
-   * @see #showWaitCursor(JComponent)
-   */
-  public static void hideWaitCursor(final JComponent component) {
-    hideWaitCursor(Windows.getParentWindow(component));
-  }
-
-  public static void showWaitCursor(final Window window) {
-    setWaitCursor(true, window);
-  }
-
-  /**
-   * Removes a wait cursor request for the given window
-   * @param window the window
-   */
-  public static void hideWaitCursor(final Window window) {
-    setWaitCursor(false, window);
-  }
-
-  /**
-   * Adds a wait cursor request for the given window
-   * @param window the window
-   */
-  private static void setWaitCursor(final boolean on, final Window window) {
-    if (window == null) {
-      return;
-    }
-
-    synchronized (WAIT_CURSOR_REQUESTS) {
-      int requests = WAIT_CURSOR_REQUESTS.computeIfAbsent(window, win -> 0);
-      if (on) {
-        requests++;
-      }
-      else {
-        requests--;
-      }
-
-      if ((requests == 1 && on) || (requests == 0 && !on)) {
-        window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
-      }
-      if (requests == 0) {
-        WAIT_CURSOR_REQUESTS.remove(window);
-      }
-      else {
-        WAIT_CURSOR_REQUESTS.put(window, requests);
-      }
-    }
   }
 
   private static final class FileTransferHandler extends TransferHandler {
