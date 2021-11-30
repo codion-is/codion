@@ -7433,3 +7433,4 @@
   EntityPanel.DISPLAY_PANELS_IN_FRAME configuration value added, related refactoring
   FilteredTable.initializeSelectColumnsPanel() bug fixed, now orders by header value instead of identifier
   WaitCursor split from Utilities, WaitCursor.show() usages moved outside of try block where applicable
+  AbstractComponentValue no longer depends on Dialogs for displaying a input dialog, reducing cyclical dependencies within the swing common ui module, some code duplication added, further refactoring in order

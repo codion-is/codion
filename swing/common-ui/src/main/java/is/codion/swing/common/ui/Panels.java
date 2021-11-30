@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui;
 
+import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -62,7 +63,7 @@ public final class Panels {
    * @see #createEastFocusableButtonPanel(JComponent, Action)
    */
   public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction) {
-    return createEastButtonPanelF(centerComponent, buttonAction, false);
+    return createEastButtonPanel(centerComponent, buttonAction, false);
   }
 
   /**
@@ -73,11 +74,33 @@ public final class Panels {
    * @return a panel
    */
   public static JPanel createEastFocusableButtonPanel(final JComponent centerComponent, final Action buttonAction) {
-    return createEastButtonPanelF(centerComponent, buttonAction, true);
+    return createEastButtonPanel(centerComponent, buttonAction, true);
   }
 
-  private static JPanel createEastButtonPanelF(final JComponent centerComponent, final Action buttonAction,
-                                               final boolean buttonFocusable) {
+  /**
+   * Creates a panel containing two buttons, based on the given actions
+   * @param okAction the ok action
+   * @param cancelAction the cancel action
+   * @return a new panel instance
+   */
+  public static JPanel createOkCancelButtonPanel(final Action okAction, final Action cancelAction) {
+    requireNonNull(okAction, "okAction");
+    requireNonNull(cancelAction, "cancelAction");
+    final JButton okButton = new JButton(okAction);
+    final JButton cancelButton = new JButton(cancelAction);
+    okButton.setText(Messages.get(Messages.OK));
+    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    cancelButton.setText(Messages.get(Messages.CANCEL));
+    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    final JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+
+    return buttonPanel;
+  }
+
+  private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
+                                              final boolean buttonFocusable) {
     requireNonNull(centerComponent, "centerComponent");
     requireNonNull(buttonAction, "buttonAction");
     final JPanel panel = new JPanel(new BorderLayout());
