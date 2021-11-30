@@ -15,6 +15,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -139,17 +140,22 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.
    * This default implementation returns a sorted {@link SwingEntityComboBoxModel} with the default nullValueItem
-   * if the underlying attribute is nullable
+   * if the underlying attribute is nullable.
+   * If the foreign key property has select attributes defined, those are set in the combo box model.
    * @param foreignKey the foreign key for which to create a {@link SwingEntityComboBoxModel}
    * @return a {@link SwingEntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_VALUE_ITEM
    * @see Property#isNullable()
+   * @see is.codion.framework.model.EntityComboBoxModel#setSelectAttributes(Collection)
+   * @see ForeignKeyProperty#getSelectAttributes()
    */
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
     final ForeignKeyProperty foreignKeyProperty = getEntityDefinition().getForeignKeyProperty(foreignKey);
     final SwingEntityComboBoxModel model =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
-    model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
+    if (foreignKeyProperty.getSelectAttributes() != null) {
+      model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
+    }
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
