@@ -50,23 +50,23 @@ public class TextFieldsTest {
 
   @Test
   void enableNullTextField() {
-    assertThrows(NullPointerException.class, () -> TextFields.hint(null, "test"));
+    assertThrows(NullPointerException.class, () -> TextFieldHint.create(null, "test"));
   }
 
   @Test
   void enableNullHintString() {
-    assertThrows(IllegalArgumentException.class, () -> TextFields.hint(new JTextField(), null));
+    assertThrows(IllegalArgumentException.class, () -> TextFieldHint.create(new JTextField(), null));
   }
 
   @Test
   void enableEmptyHintString() {
-    assertThrows(IllegalArgumentException.class, () -> TextFields.hint(new JTextField(), ""));
+    assertThrows(IllegalArgumentException.class, () -> TextFieldHint.create(new JTextField(), ""));
   }
 
   @Test
   void hint() {
     final JTextField textField = new JTextField();
-    final TextFields.Hint hint = TextFields.hint(textField, "search");
+    final TextFieldHint hint = TextFieldHint.create(textField, "search");
     assertEquals("search", hint.getHintText());
     assertEquals("search", textField.getText());
     textField.setText("he");

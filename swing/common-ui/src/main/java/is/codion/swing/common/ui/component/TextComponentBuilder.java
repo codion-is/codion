@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.value.UpdateOn;
-
 import javax.swing.text.JTextComponent;
 import java.awt.Insets;
 

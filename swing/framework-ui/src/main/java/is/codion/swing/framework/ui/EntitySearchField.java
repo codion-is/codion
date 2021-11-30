@@ -21,16 +21,16 @@ import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
+import is.codion.swing.common.ui.textfield.TextFieldHint;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -96,7 +96,7 @@ public final class EntitySearchField extends JTextField {
   private static final int BORDER_SIZE = 15;
 
   private final EntitySearchModel model;
-  private final TextFields.Hint searchHint;
+  private final TextFieldHint searchHint;
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction(this);
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction(this);
@@ -123,7 +123,7 @@ public final class EntitySearchField extends JTextField {
     addFocusListener(initializeFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
-    this.searchHint = TextFields.hint(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+    this.searchHint = TextFieldHint.create(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     configureColors();
     Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);

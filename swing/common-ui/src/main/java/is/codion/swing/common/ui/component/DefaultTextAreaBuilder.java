@@ -7,8 +7,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.textfield.StringLengthValidator;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;

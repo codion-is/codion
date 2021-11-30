@@ -10,7 +10,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import org.junit.jupiter.api.Test;
 

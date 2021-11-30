@@ -12,7 +12,6 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.border.Border;

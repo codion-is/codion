@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JComponent;
 import java.math.BigDecimal;

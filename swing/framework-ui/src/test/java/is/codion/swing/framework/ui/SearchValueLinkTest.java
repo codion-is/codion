@@ -10,7 +10,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityInputComponents;
 

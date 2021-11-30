@@ -17,7 +17,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextFieldHint implements TextFields.Hint {
+final class DefaultTextFieldHint implements TextFieldHint {
 
   private final JTextField textField;
   private final String hintText;

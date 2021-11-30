@@ -9,9 +9,9 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

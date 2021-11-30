@@ -8,8 +8,11 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.UpdateOn;
 
 import javax.swing.JFormattedTextField;
+import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -110,6 +113,23 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public DateTimeParser<T> getDateTimeParser() {
     return dateTimeParser;
+  }
+
+  /**
+   * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
+   * @return a Value bound to the given component
+   */
+  public ComponentValue<T, TemporalField<T>> componentValue() {
+    return componentValue(UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public ComponentValue<T, TemporalField<T>> componentValue(final UpdateOn updateOn) {
+    return new TemporalFieldValue<>(this, updateOn);
   }
 
   /**
@@ -289,12 +309,34 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
-  private static FieldFormatter initializeFormatter(final String dateTimePattern) {
+  private static MaskFormatter initializeFormatter(final String dateTimePattern) {
     try {
-      return new FieldFormatter(LocaleDateTimePattern.getMask(dateTimePattern), true);
+      return FieldFormatter.create(LocaleDateTimePattern.getMask(dateTimePattern), true);
     }
     catch (final ParseException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static final class TemporalFieldValue<T extends Temporal> extends FormattedTextComponentValue<T, TemporalField<T>> {
+
+    private TemporalFieldValue(final TemporalField<T> textComponent, final UpdateOn updateOn) {
+      super(textComponent, null, updateOn);
+    }
+
+    @Override
+    protected String formatTextFromValue(final T value) {
+      return getComponent().getDateTimeFormatter().format(value);
+    }
+
+    @Override
+    protected T parseValueFromText(final String text) {
+      try {
+        return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
+      }
+      catch (final DateTimeParseException e) {
+        return null;
+      }
     }
   }
 }

@@ -12,8 +12,8 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;

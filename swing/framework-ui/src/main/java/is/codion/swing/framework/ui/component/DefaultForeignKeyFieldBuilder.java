@@ -5,8 +5,8 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JTextField;
 

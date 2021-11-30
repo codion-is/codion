@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.textfield.TextInputPanel;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import java.awt.Dimension;
 

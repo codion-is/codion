@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
+import is.codion.swing.common.ui.textfield.TextFieldHint;
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
@@ -133,7 +134,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * The text field used for entering the search condition
    */
   private final JTextField searchField;
-  private final TextFields.Hint searchFieldHint;
+  private final TextFieldHint searchFieldHint;
 
   /**
    * Fired each time the table is double-clicked
@@ -520,8 +521,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     return field;
   }
 
-  private TextFields.Hint initializeSearchFieldHint() {
-    final TextFields.Hint textFieldHint = TextFields.hint(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
+  private TextFieldHint initializeSearchFieldHint() {
+    final TextFieldHint textFieldHint = TextFieldHint.create(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
     searchField.getDocument().addDocumentListener((DocumentAdapter) e -> {
       if (!textFieldHint.isHintVisible()) {
         performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :

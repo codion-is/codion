@@ -3,9 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
-
 import javax.swing.Action;
 import javax.swing.JButton;
 

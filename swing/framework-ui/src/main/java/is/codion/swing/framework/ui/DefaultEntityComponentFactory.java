@@ -7,8 +7,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityInputComponents;
@@ -16,7 +16,7 @@ import is.codion.swing.framework.ui.component.EntityInputComponents;
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.value.ComponentValues.fileInputPanel;
+import static is.codion.swing.common.ui.component.ComponentValues.fileInputPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
