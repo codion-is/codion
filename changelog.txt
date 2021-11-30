@@ -7431,3 +7431,4 @@
   EntityTableModel.setIncludeHiddenColumnsInQuery() added along with a protected getSelectAttributes() in SwingEntityTableModel and FXEntityListModel
   Windows.FrameBuilder.defaultCloseOperation() added
   EntityPanel.DISPLAY_PANELS_IN_FRAME configuration value added, related refactoring
+  FilteredTable.initializeSelectColumnsPanel() bug fixed, now orders by header value instead of identifier
