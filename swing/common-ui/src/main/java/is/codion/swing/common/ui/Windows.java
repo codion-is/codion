@@ -181,7 +181,7 @@ public final class Windows {
     FrameBuilder onClosed(Runnable onClosed);
 
     /**
-     * Default {@link WindowConstants.DISPOSE_ON_CLOSE}.
+     * Default {@link WindowConstants#DISPOSE_ON_CLOSE}.
      * @param defaultCloseOperation the default frame close operation
      * @return this builder instance
      */
