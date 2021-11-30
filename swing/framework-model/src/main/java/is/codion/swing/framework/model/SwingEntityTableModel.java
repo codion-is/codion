@@ -113,6 +113,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private int fetchCount = -1;
 
   /**
+   * Specifies whether the values of hidden columns are included in the underlying query
+   */
+  private boolean includeHiddenColumnsInQuery = EntityTableModel.INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
+
+  /**
    * If true then items deleted via the edit model are removed from this table model
    */
   private boolean removeEntitiesOnDelete = true;
@@ -252,6 +257,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final void setQueryRowCountLimit(final int queryRowCountLimit) {
     this.queryRowCountLimit = queryRowCountLimit;
+  }
+
+  @Override
+  public final boolean isIncludeHiddenColumnsInQuery() {
+    return includeHiddenColumnsInQuery;
+  }
+
+  @Override
+  public final void setIncludeHiddenColumnsInQuery(final boolean includeHiddenColumnsInQuery) {
+    this.includeHiddenColumnsInQuery = includeHiddenColumnsInQuery;
   }
 
   @Override
@@ -644,7 +659,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     checkQueryRowCount();
     try {
       return connectionProvider.getConnection().select(getTableConditionModel().getCondition()
-              .toSelectCondition().fetchCount(fetchCount).orderBy(getOrderBy()));
+              .toSelectCondition()
+              .selectAttributes(getSelectAttributes())
+              .fetchCount(fetchCount)
+              .orderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -698,6 +716,22 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();
+  }
+
+  /**
+   * Specifies the attributes to select when querying data. Return an empty list if all should be included.
+   * This method should take the {@link #isIncludeHiddenColumnsInQuery()} setting into account.
+   * @return the attributes to select when querying data, an empty list if all should be selected.
+   * @see #isIncludeHiddenColumnsInQuery()
+   */
+  protected Collection<Attribute<?>> getSelectAttributes() {
+    if (includeHiddenColumnsInQuery || getColumnModel().getHiddenColumns().isEmpty()) {
+      return emptyList();
+    }
+
+    return getEntityDefinition().getDefaultSelectAttributes().stream()
+            .filter(getColumnModel()::isColumnVisible)
+            .collect(Collectors.toList());
   }
 
   /**

@@ -3,12 +3,14 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
+import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
@@ -30,6 +32,13 @@ import java.util.List;
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
  */
 public interface EntityTableModel<E extends EntityEditModel> extends FilteredModel<Entity> {
+
+  /**
+   * Specifies whether the values of hidden columns are included in the underlying query<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> INCLUDE_HIDDEN_COLUMNS_IN_QUERY = Configuration.booleanValue("codion.client.includeHiddenColumnsInQuery", true);
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
@@ -248,6 +257,18 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param queryRowCountLimit the query row count limit
    */
   void setQueryRowCountLimit(int queryRowCountLimit);
+
+  /**
+   * Returns whether the values of hidden columns are included when querying data
+   * @return true if the values of hidden columns are included when querying data
+   */
+  boolean isIncludeHiddenColumnsInQuery();
+
+  /**
+   * @param includeHiddenColumnsInQuery true if the values of hidden columns should be included when querying data
+   * @see #INCLUDE_HIDDEN_COLUMNS_IN_QUERY
+   */
+  void setIncludeHiddenColumnsInQuery(boolean includeHiddenColumnsInQuery);
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty

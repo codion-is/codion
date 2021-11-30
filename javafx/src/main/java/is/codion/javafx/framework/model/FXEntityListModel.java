@@ -68,6 +68,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean refreshOnForeignKeyConditionValuesSet = true;
   private boolean editable = false;
   private int fetchCount = -1;
+  private boolean includeHiddenColumnsInQuery = EntityTableModel.INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
 
   /**
    * Instantiates a new {@link FXEntityListModel} based on the given entityType
@@ -291,6 +292,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
+  public final boolean isIncludeHiddenColumnsInQuery() {
+    return includeHiddenColumnsInQuery;
+  }
+
+  @Override
+  public final void setIncludeHiddenColumnsInQuery(final boolean includeHiddenColumnsInQuery) {
+    this.includeHiddenColumnsInQuery = includeHiddenColumnsInQuery;
+  }
+
+  @Override
   public final Color getBackgroundColor(final int row, final Attribute<?> attribute) {
     return (Color) getEntityDefinition().getColorProvider().getColor(get(row), attribute);
   }
@@ -432,7 +443,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     try {
       return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
-              .toSelectCondition().fetchCount(fetchCount).orderBy(getOrderBy()));
+              .toSelectCondition()
+              .selectAttributes(getSelectAttributes())
+              .fetchCount(fetchCount)
+              .orderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -464,6 +478,22 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   protected OrderBy getOrderBy() {
     return getEntityDefinition().getOrderBy();
+  }
+
+  /**
+   * Specifies the attributes to select when querying data. Return an empty list if all should be included.
+   * This method should take the {@link #isIncludeHiddenColumnsInQuery()} setting into account.
+   * @return the attributes to select when querying data, an empty list if all should be selected.
+   * @see #isIncludeHiddenColumnsInQuery()
+   */
+  protected Collection<Attribute<?>> getSelectAttributes() {
+    if (includeHiddenColumnsInQuery || initialColumns.size() == columns.size()) {
+      return emptyList();
+    }
+
+    return getEntityDefinition().getDefaultSelectAttributes().stream()
+            .filter(this::containsColumn)
+            .collect(Collectors.toList());
   }
 
   /**
@@ -518,6 +548,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     if (removeEntitiesOnDelete) {
       removeAll(deletedEntities);
     }
+  }
+
+  private boolean containsColumn(final Attribute<?> attribute) {
+    return columns.stream()
+            .map(EntityTableColumn.class::cast)
+            .anyMatch(column -> column.getAttribute().equals(attribute));
   }
 
   /**
