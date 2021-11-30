@@ -12,6 +12,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -438,8 +439,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final EntityPanel initializePanel() {
     if (!panelInitialized) {
+      WaitCursor.show(this);
       try {
-        Utilities.showWaitCursor(this);
         initializeAssociatedPanels();
         initializeControlPanels();
         bindEvents();
@@ -448,7 +449,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
       finally {
         panelInitialized = true;
-        Utilities.hideWaitCursor(this);
+        WaitCursor.hide(this);
       }
     }
 
@@ -1550,8 +1551,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(() -> Utilities.showWaitCursor(EntityPanel.this));
-    entityModel.addAfterRefreshListener(() -> Utilities.hideWaitCursor(EntityPanel.this));
+    entityModel.addBeforeRefreshListener(() -> WaitCursor.show(EntityPanel.this));
+    entityModel.addAfterRefreshListener(() -> WaitCursor.hide(EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
   }
 

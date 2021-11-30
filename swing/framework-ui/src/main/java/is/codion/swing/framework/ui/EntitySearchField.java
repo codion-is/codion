@@ -19,6 +19,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
@@ -304,12 +305,12 @@ public final class EntitySearchField extends JTextField {
         if (!model.searchStringRepresentsSelected()) {
           try {
             List<Entity> queryResult;
+            WaitCursor.show(this);
             try {
-              Utilities.showWaitCursor(this);
               queryResult = model.performQuery();
             }
             finally {
-              Utilities.hideWaitCursor(this);
+              WaitCursor.hide(this);
             }
             if (queryResult.size() == 1) {
               model.setSelectedEntities(queryResult);
