@@ -6,8 +6,8 @@ package is.codion.swing.framework.ui.component;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.ui.EntitySearchField;
 import is.codion.swing.framework.ui.EntitySearchField.SelectionProvider;
 

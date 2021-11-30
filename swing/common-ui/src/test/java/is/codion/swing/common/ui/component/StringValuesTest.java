@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
@@ -103,17 +103,17 @@ public class StringValuesTest {
     final TextInputPanel inputPanel = TextInputPanel.builder(new JTextField(document, value, 0))
             .dialogTitle("none").build();
 
-    ComponentValue<String, TextInputPanel> componentValue = ComponentValues.textInputPanel(inputPanel);
+    ComponentValue<String, TextInputPanel> componentValue = inputPanel.componentValue();
     assertEquals(value, componentValue.get());
 
     document.setMaximumLength(10);
 
-    componentValue = ComponentValues.textInputPanel(inputPanel);
+    componentValue = inputPanel.componentValue();
     assertEquals(value, componentValue.get());
 
     inputPanel.setText("");
 
-    componentValue = ComponentValues.textInputPanel(inputPanel);
+    componentValue = inputPanel.componentValue();
     assertNull(componentValue.get());
 
     componentValue.getComponent().setText("tester");
@@ -122,7 +122,7 @@ public class StringValuesTest {
     componentValue.getComponent().setText("");
     assertNull(componentValue.get());
 
-    assertThrows(IllegalArgumentException.class, () -> ComponentValues.textInputPanel(inputPanel)
+    assertThrows(IllegalArgumentException.class, () -> inputPanel.componentValue()
             .getComponent().setText("asdfasdfasdfasdfasdf"));
   }
 

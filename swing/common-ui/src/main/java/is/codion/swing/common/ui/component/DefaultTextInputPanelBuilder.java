@@ -5,9 +5,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import javax.swing.JTextField;
 import java.awt.Dimension;
@@ -118,7 +115,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected ComponentValue<String, TextInputPanel> buildComponentValue(final TextInputPanel component) {
-    return ComponentValues.textInputPanel(component);
+    return component.componentValue();
   }
 
   @Override

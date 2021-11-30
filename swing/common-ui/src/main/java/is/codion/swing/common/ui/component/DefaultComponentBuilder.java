@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.value.ComponentValue;
-
 import javax.swing.JComponent;
 
 final class DefaultComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B> {

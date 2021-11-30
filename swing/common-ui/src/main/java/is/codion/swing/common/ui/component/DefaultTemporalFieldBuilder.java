@@ -5,8 +5,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JFormattedTextField;
 import java.time.temporal.Temporal;
@@ -41,7 +39,7 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
 
   @Override
   protected final ComponentValue<T, C> buildComponentValue(final C component) {
-    return (ComponentValue<T, C>) ComponentValues.temporalField((TemporalField<Temporal>) component, updateOn);
+    return (ComponentValue<T, C>) component.componentValue(updateOn);
   }
 
   @Override

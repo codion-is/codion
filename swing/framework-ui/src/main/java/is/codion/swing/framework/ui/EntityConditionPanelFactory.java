@@ -8,10 +8,10 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
-import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.framework.ui.component.EntityInputComponents;
 
 import org.slf4j.Logger;

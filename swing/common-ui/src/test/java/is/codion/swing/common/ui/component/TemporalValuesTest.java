@@ -1,4 +1,7 @@
-package is.codion.swing.common.ui.value;
+/*
+ * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
@@ -7,10 +10,12 @@ import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComponent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -60,7 +65,7 @@ public class TemporalValuesTest {
     final TemporalField<LocalTime> textField = TemporalField.localTimeField(format);
     final Value<LocalTime> timePropertyValue = Value.propertyValue(this, "time",
             LocalTime.class, timeValueChangedEvent);
-    ComponentValues.temporalField(textField).link(timePropertyValue);
+    textField.componentValue().link(timePropertyValue);
     assertEquals("__:__", textField.getText());
 
     final LocalTime date = LocalTime.parse("22:42", formatter);
@@ -80,7 +85,7 @@ public class TemporalValuesTest {
     final TemporalField<LocalDate> textField = TemporalField.localDateField("dd.MM.yyyy");
     final Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
-    ComponentValues.temporalField(textField).link(datePropertyValue);
+    textField.componentValue().link(datePropertyValue);
     assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
@@ -100,7 +105,7 @@ public class TemporalValuesTest {
     final TemporalField<LocalDateTime> textField = TemporalField.localDateTimeField("dd-MM-yy HH:mm");
     final Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
-    ComponentValues.temporalField(textField).link(timestampPropertyValue);
+    textField.componentValue().link(timestampPropertyValue);
     assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);
@@ -118,7 +123,7 @@ public class TemporalValuesTest {
     final String format = "HH:mm";
 
     final TemporalField<LocalTime> textField = TemporalField.localTimeField(format);
-    final Value<LocalTime> value = ComponentValues.temporalField(textField);
+    final Value<LocalTime> value = textField.componentValue();
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
@@ -140,7 +145,7 @@ public class TemporalValuesTest {
   @Test
   void localDateUiValue() {
     final TemporalField<LocalDate> textField = TemporalField.localDateField("dd-MM-yyyy");
-    final Value<LocalDate> value = ComponentValues.temporalField(textField);
+    final Value<LocalDate> value = textField.componentValue();
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -161,7 +166,7 @@ public class TemporalValuesTest {
   @Test
   void localDateTimeUiValue() {
     final TemporalField<LocalDateTime> textField = TemporalField.localDateTimeField("dd-MM-yyyy HH:mm");
-    final Value<LocalDateTime> value = ComponentValues.temporalField(textField);
+    final Value<LocalDateTime> value = textField.componentValue();
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
@@ -185,15 +190,30 @@ public class TemporalValuesTest {
     final TemporalField<LocalDate> localDateField = TemporalField.localDateField("dd-MM-yyyy");
     localDateField.setTemporal(date);
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            ComponentValues.temporalInputPanel(new TemporalInputPanel<>(localDateField));
+            new TemporalInputPanel<>(localDateField, new DefaultCalendarProvider()).componentValue();
     assertEquals(date, componentValue.get());
 
     localDateField.setTemporal(null);
 
-    componentValue = new TemporalInputPanelValue<>(new TemporalInputPanel<>(localDateField));
+    componentValue = new TemporalInputPanel<>(localDateField, new DefaultCalendarProvider()).componentValue();
     assertNull(componentValue.get());
 
     componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
     assertEquals(date, componentValue.get());
+  }
+
+  private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
+
+    @Override
+    public Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
+                                            final LocalDate startDate) {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
+                                                    final LocalDateTime startDateTime) {
+      return Optional.empty();
+    }
   }
 }

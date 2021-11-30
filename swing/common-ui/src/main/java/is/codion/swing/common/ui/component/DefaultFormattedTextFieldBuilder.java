@@ -4,10 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.TextFields;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
-import is.codion.swing.common.ui.value.UpdateOn;
+import is.codion.swing.common.ui.textfield.FieldFormatter;
 
 import javax.swing.JFormattedTextField;
 import java.text.ParseException;
@@ -61,7 +58,7 @@ final class DefaultFormattedTextFieldBuilder
   @Override
   protected JFormattedTextField buildComponent() {
     try {
-      final JFormattedTextField textField = new JFormattedTextField(TextFields.fieldFormatter(formatMask, valueContainsLiterals));
+      final JFormattedTextField textField = new JFormattedTextField(FieldFormatter.create(formatMask, valueContainsLiterals));
       textField.setFocusLostBehavior(focusLostBehaviour);
       textField.setColumns(columns);
 

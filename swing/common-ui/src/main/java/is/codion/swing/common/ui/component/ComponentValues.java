@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
@@ -25,6 +25,8 @@ import javax.swing.text.JTextComponent;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.time.temporal.Temporal;
+
+import static is.codion.swing.common.ui.textfield.TextFields.formattedTextComponentValue;
 
 /**
  * A factory for {@link ComponentValue}.
@@ -74,7 +76,7 @@ public final class ComponentValues {
   public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
                                                                                    final Format format,
                                                                                    final UpdateOn updateOn) {
-    return new FormattedTextComponentValue<>(textComponent, format, updateOn);
+    return formattedTextComponentValue(textComponent, format, updateOn);
   }
 
   /**
@@ -100,7 +102,7 @@ public final class ComponentValues {
    * @return a String based ComponentValue
    */
   public static ComponentValue<String, TextInputPanel> textInputPanel(final TextInputPanel textInputPanel) {
-    return new TextInputPanelValue(textInputPanel);
+    return textInputPanel.componentValue();
   }
 
   /**
@@ -110,7 +112,7 @@ public final class ComponentValues {
    * @return a Value bound to the given component
    */
   public static <T extends Temporal> ComponentValue<T, TemporalInputPanel<T>> temporalInputPanel(final TemporalInputPanel<T> inputPanel) {
-    return new TemporalInputPanelValue<>(inputPanel);
+    return inputPanel.componentValue();
   }
 
   /**
@@ -132,7 +134,7 @@ public final class ComponentValues {
    */
   public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(final TemporalField<T> temporalField,
                                                                                        final UpdateOn updateOn) {
-    return new TemporalFieldValue<>(temporalField, updateOn);
+    return temporalField.componentValue(updateOn);
   }
 
   /**

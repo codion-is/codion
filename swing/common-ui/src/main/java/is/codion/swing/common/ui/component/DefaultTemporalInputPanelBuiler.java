@@ -4,17 +4,17 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.calendar.CalendarPanel;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
-import is.codion.swing.common.ui.value.UpdateOn;
 
+import javax.swing.JComponent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -61,12 +61,12 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected TemporalInputPanel<T> buildComponent() {
-    return new TemporalInputPanel<>(createTemporalField());
+    return new TemporalInputPanel<>(createTemporalField(), calendarProvider());
   }
 
   @Override
   protected ComponentValue<T, TemporalInputPanel<T>> buildComponentValue(final TemporalInputPanel<T> component) {
-    return ComponentValues.temporalInputPanel(component);
+    return component.componentValue();
   }
 
   @Override
@@ -110,5 +110,21 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
     }
 
     throw new IllegalStateException("Unsopported temporal type: " + valueClass);
+  }
+
+  private static TemporalInputPanel.CalendarProvider calendarProvider() {
+    return new TemporalInputPanel.CalendarProvider() {
+      @Override
+      public Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
+                                              final LocalDate startDate) {
+        return CalendarPanel.getLocalDate(dialogTitle, dialogOwner, startDate);
+      }
+
+      @Override
+      public Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
+                                                      final LocalDateTime startDateTime) {
+        return CalendarPanel.getLocalDateTime(dialogTitle, dialogOwner, startDateTime);
+      }
+    };
   }
 }

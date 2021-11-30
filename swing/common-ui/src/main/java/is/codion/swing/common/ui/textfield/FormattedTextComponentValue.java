@@ -1,9 +1,11 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.formats.Formats;
+import is.codion.swing.common.ui.component.AbstractTextComponentValue;
+import is.codion.swing.common.ui.component.UpdateOn;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.JTextComponent;

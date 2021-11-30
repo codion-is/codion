@@ -7,8 +7,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 

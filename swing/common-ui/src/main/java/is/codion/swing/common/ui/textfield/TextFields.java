@@ -3,17 +3,18 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.UpdateOn;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
 
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.MaskFormatter;
 import javax.swing.text.PlainDocument;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.text.ParseException;
+import java.text.Format;
 
 import static java.util.Objects.requireNonNull;
 
@@ -71,16 +72,6 @@ public final class TextFields {
     }
 
     return textComponent;
-  }
-
-  /**
-   * Enables the hint text for the given field
-   * @param textField the text field
-   * @param hintText the hint text
-   * @return the {@link Hint} instance
-   */
-  public static Hint hint(final JTextField textField, final String hintText) {
-    return new DefaultTextFieldHint(textField, hintText);
   }
 
   /**
@@ -170,41 +161,16 @@ public final class TextFields {
   }
 
   /**
-   * Somewhat of a hacky way to keep the current field selection and caret position when
-   * the field gains focus, in case the content length has not changed
-   * http://stackoverflow.com/a/2202073/317760
-   * @param mask the format mask
-   * @param valueContainsLiterals true if the value should contain literals
-   * @return a new MaskFormatter
-   * @throws ParseException in case of an exception while parsing the mask
+   * @param textComponent the text component
+   * @param format the format
+   * @param updateOn the updateOn policy
+   * @param <C> the component type
+   * @return a text component value
    */
-  public static MaskFormatter fieldFormatter(final String mask, final boolean valueContainsLiterals) throws ParseException {
-    return new FieldFormatter(mask, valueContainsLiterals);
-  }
-
-  /**
-   * A hint text for text fields, that is, text that is shown
-   * when the field contains no data, is empty and unfocused.
-   * @see TextFields#hint(JTextField, String)
-   */
-  public interface Hint {
-
-    /**
-     * @return the search hint string
-     */
-    String getHintText();
-
-    /**
-     * @return true if the field does not have focus and is displayint the hint text
-     */
-    boolean isHintVisible();
-
-    /**
-     * Updates the hint state for the component, showing the hint text if the component
-     * contains no text and is not focused. This is done automatically on focus gained/lost events,
-     * but sometimes it may be necessary to update manually.
-     */
-    void updateHint();
+  public static <C extends JTextComponent> ComponentValue<String, C> formattedTextComponentValue(final C textComponent,
+                                                                                                 final Format format,
+                                                                                                 final UpdateOn updateOn) {
+    return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
   private static final class SelectAllListener extends FocusAdapter {

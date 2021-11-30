@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.EntitySearchField;

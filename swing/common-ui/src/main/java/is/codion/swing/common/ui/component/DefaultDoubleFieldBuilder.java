@@ -5,8 +5,6 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

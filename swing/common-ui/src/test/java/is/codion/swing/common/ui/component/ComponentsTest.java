@@ -18,8 +18,6 @@ import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
-import is.codion.swing.common.ui.value.ComponentValue;
-import is.codion.swing.common.ui.value.UpdateOn;
 
 import org.junit.jupiter.api.Test;
 

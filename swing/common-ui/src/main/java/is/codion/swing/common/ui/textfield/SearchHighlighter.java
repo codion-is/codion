@@ -8,9 +8,9 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.value.ComponentValues;
 
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
@@ -88,7 +88,7 @@ public final class SearchHighlighter {
   public JTextField createSearchField() {
     final JTextField searchField = new JTextField(12);
     ComponentValues.textComponent(searchField).link(searchStringValue);
-    TextFields.hint(searchField, "Search");
+    TextFieldHint.create(searchField, "Search");
     searchField.setComponentPopupMenu(Controls.builder()
             .control(ToggleControl.builder(caseSensitiveState)
                     .caption("Case-sensitive"))

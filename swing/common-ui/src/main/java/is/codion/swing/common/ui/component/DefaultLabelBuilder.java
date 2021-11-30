@@ -4,8 +4,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.value.AbstractComponentValue;
-import is.codion.swing.common.ui.value.ComponentValue;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
