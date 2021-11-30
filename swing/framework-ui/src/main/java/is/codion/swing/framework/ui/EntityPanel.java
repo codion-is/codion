@@ -26,7 +26,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -144,10 +143,18 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           "is.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**
-   * The possible states of a detail panel.
+   * Specifies if detail and edit panels should be displayed in a frame instead of the default dialog<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> DISPLAY_PANELS_IN_FRAME = Configuration.booleanValue(
+          "is.codion.swing.framework.ui.EntityPanel.displayPanelsInFrame", false);
+
+  /**
+   * The possible states of a detail or edit panel.
    */
   public enum PanelState {
-    DIALOG, EMBEDDED, HIDDEN
+    WINDOW, EMBEDDED, HIDDEN
   }
 
   /**
@@ -159,9 +166,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final int RESIZE_AMOUNT = 30;
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
-  private static final int DETAIL_DIALOG_OFFSET = 29;
-  private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;
-  private static final int DETAIL_DIALOG_HEIGHT_OFFSET = 54;
+  private static final int DETAIL_WINDOW_OFFSET = 29;
+  private static final double DETAIL_WINDOW_SIZE_RATIO = 1.5;
+  private static final int DETAIL_WINDOW_HEIGHT_OFFSET = 54;
 
   /**
    * The EntityModel instance used by this EntityPanel
@@ -216,14 +223,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private JTabbedPane detailPanelTabbedPane;
 
   /**
-   * The dialog used when detail panels are undocked
+   * The window used when detail panels are undocked
    */
-  private JDialog detailPanelDialog;
+  private Window detailPanelWindow;
 
   /**
-   * The dialog used when the edit panel is undocked
+   * The window used when the edit panel is undocked
    */
-  private JDialog editPanelDialog;
+  private Window editPanelWindow;
 
   /**
    * indicates where the control panel should be placed in a BorderLayout
@@ -231,12 +238,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private String controlPanelConstraints = TOOLBAR_BUTTONS.get() ? BorderLayout.WEST : BorderLayout.EAST;
 
   /**
-   * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
+   * Holds the current state of the edit panel (HIDDEN, EMBEDDED or WINDOW)
    */
   private PanelState editPanelState = EMBEDDED;
 
   /**
-   * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
+   * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
    */
   private PanelState detailPanelState = EMBEDDED;
 
@@ -561,6 +568,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             parentPanel.setSelectedChildPanel(this));
     initializePanel();
     requestInitialFocus();
+    if (editPanelWindow != null) {
+      editPanelWindow.toFront();
+    }
   }
 
   @Override
@@ -784,14 +794,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Toggles the detail panel state between DIALOG, HIDDEN and EMBEDDED
+   * Toggles the detail panel state between WINDOW, HIDDEN and EMBEDDED
    */
   public final void toggleDetailPanelState() {
-    if (detailPanelState == DIALOG) {
+    if (detailPanelState == WINDOW) {
       setDetailPanelState(HIDDEN);
     }
     else if (detailPanelState == EMBEDDED) {
-      setDetailPanelState(DIALOG);
+      setDetailPanelState(WINDOW);
     }
     else {
       setDetailPanelState(EMBEDDED);
@@ -799,14 +809,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Toggles the edit panel state between DIALOG, HIDDEN and EMBEDDED
+   * Toggles the edit panel state between WINDOW, HIDDEN and EMBEDDED
    */
   public final void toggleEditPanelState() {
-    if (editPanelState == DIALOG) {
+    if (editPanelState == WINDOW) {
       setEditPanelState(HIDDEN);
     }
     else if (editPanelState == EMBEDDED) {
-      setEditPanelState(DIALOG);
+      setEditPanelState(WINDOW);
     }
     else {
       setEditPanelState(EMBEDDED);
@@ -814,21 +824,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * @return the detail panel state, either HIDDEN, EMBEDDED or DIALOG
+   * @return the detail panel state, either HIDDEN, EMBEDDED or WINDOW
    */
   public final PanelState getDetailPanelState() {
     return detailPanelState;
   }
 
   /**
-   * @return the edit panel state, either HIDDEN, EMBEDDED or DIALOG
+   * @return the edit panel state, either HIDDEN, EMBEDDED or WINDOW
    */
   public final PanelState getEditPanelState() {
     return editPanelState;
   }
 
   /**
-   * @param state the detail panel state (HIDDEN or EMBEDDED, DIALOG)
+   * @param state the detail panel state (HIDDEN, EMBEDDED or WINDOW)
    */
   public final void setDetailPanelState(final PanelState state) {
     if (detailPanelTabbedPane == null) {
@@ -840,9 +850,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       getTabbedDetailPanel().initializePanel();
     }
 
-    if (detailPanelState == DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
+    if (detailPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
       for (final EntityPanel detailPanel : detailEntityPanels) {
-        if (detailPanel.detailPanelState == DIALOG) {
+        if (detailPanel.detailPanelState == WINDOW) {
           detailPanel.setDetailPanelState(HIDDEN);
         }
       }
@@ -856,8 +866,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     detailPanelState = state;
-    if (state != DIALOG) {
-      disposeDetailDialog();
+    if (state != WINDOW) {
+      disposeDetailWindow();
     }
 
     if (state == EMBEDDED) {
@@ -867,7 +877,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       horizontalSplitPane.setRightComponent(null);
     }
     else {
-      showDetailDialog();
+      showDetailWindow();
     }
 
     revalidate();
@@ -915,7 +925,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         break;
       case DOWN:
         if (editPanelState == EMBEDDED) {
-          setEditPanelState(DIALOG);
+          setEditPanelState(WINDOW);
         }
         else {
           setEditPanelState(EMBEDDED);
@@ -1337,7 +1347,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         @Override
         public void mouseReleased(final MouseEvent e) {
           if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-            setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
+            setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
           }
           else if (e.getButton() == MouseEvent.BUTTON2) {
             setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
@@ -1351,18 +1361,18 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Initialize the Control to trigger when a double click is performed on the table, if a table is present.
-   * The default implementation shows the edit panel in a dialog if one is available and hidden, if that is
-   * not the case and the detail panels are hidden those are shown in a dialog.
+   * The default implementation shows the edit panel in a window if one is available and hidden, if that is
+   * not the case and the detail panels are hidden those are shown in a window.
    * @return the Control to trigger when a double click is performed on the table
    */
   private Control initializeTableDoubleClickAction() {
     return Control.control(() -> {
       if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
         if (containsEditPanel() && getEditPanelState() == HIDDEN) {
-          setEditPanelState(DIALOG);
+          setEditPanelState(WINDOW);
         }
         else if (getDetailPanelState() == HIDDEN) {
-          setDetailPanelState(DIALOG);
+          setDetailPanelState(WINDOW);
         }
       }
     });
@@ -1407,8 +1417,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void updateEditPanelState() {
-    if (editPanelState != DIALOG) {
-      disposeEditDialog();
+    if (editPanelState != WINDOW) {
+      disposeEditWindow();
     }
 
     if (editPanelState == EMBEDDED) {
@@ -1418,7 +1428,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       editControlTablePanel.remove(editControlPanel);
     }
     else {
-      showEditDialog();
+      showEditWindow();
     }
     requestInitialFocus();
 
@@ -1426,52 +1436,36 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Shows the detail panels in a non-modal dialog
+   * Shows the detail panels in a window
    */
-  private void showDetailDialog() {
+  private void showDetailWindow() {
     final Window parent = Windows.getParentWindow(this);
     final Dimension parentSize = parent.getSize();
-    final Dimension size = getDetailDialogSize(parentSize);
+    final Dimension size = getDetailWindowSize(parentSize);
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
-            parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
-    detailPanelDialog = Dialogs.componentDialog(detailPanelTabbedPane)
-            .owner(this)
-            .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
-            .modal(false)
-            .onClosedAction(Control.control(() -> {
-              //the dialog can be closed when embedding the panel, don't hide if that's the case
-              if (getDetailPanelState() != EMBEDDED) {
-                setDetailPanelState(HIDDEN);
-              }
-            }))
-            .build();
-    detailPanelDialog.setSize(size);
-    detailPanelDialog.setLocation(location);
-    detailPanelDialog.setVisible(true);
+            parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET);
+    detailPanelWindow = createDetailPanelWindow();
+    detailPanelWindow.setSize(size);
+    detailPanelWindow.setLocation(location);
+    detailPanelWindow.setVisible(true);
   }
 
   /**
    * @param parentSize the size of the parent window
-   * @return the size to use when showing the detail dialog
+   * @return the size to use when showing the detail window
    */
-  private Dimension getDetailDialogSize(final Dimension parentSize) {
-    return new Dimension((int) (parentSize.width / DETAIL_DIALOG_SIZE_RATIO), containsEditPanel() ?
-            (int) (parentSize.height / DETAIL_DIALOG_SIZE_RATIO) : parentSize.height - DETAIL_DIALOG_HEIGHT_OFFSET);
+  private Dimension getDetailWindowSize(final Dimension parentSize) {
+    return new Dimension((int) (parentSize.width / DETAIL_WINDOW_SIZE_RATIO), containsEditPanel() ?
+            (int) (parentSize.height / DETAIL_WINDOW_SIZE_RATIO) : parentSize.height - DETAIL_WINDOW_HEIGHT_OFFSET);
   }
 
   /**
-   * Shows the edit panel in a non-modal dialog
+   * Shows the edit panel in a window
    */
-  private void showEditDialog() {
-    editPanelDialog = Dialogs.componentDialog(editControlPanel)
-            .owner(this)
-            .title(caption)
-            .modal(false)
-            .disposeOnEscape(disposeEditDialogOnEscape)
-            .onClosedAction(Control.control(() -> setEditPanelState(HIDDEN)))
-            .build();
-    editPanelDialog.setVisible(true);
+  private void showEditWindow() {
+    editPanelWindow = createEditWindow();
+    editPanelWindow.setVisible(true);
   }
 
   /**
@@ -1486,19 +1480,65 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
   }
 
-  private void disposeEditDialog() {
-    if (editPanelDialog != null) {
-      editPanelDialog.setVisible(false);
-      editPanelDialog.dispose();
-      editPanelDialog = null;
+  private Window createEditWindow() {
+    if (DISPLAY_PANELS_IN_FRAME.get()) {
+      return Windows.frameBuilder(editControlPanel)
+              .relativeTo(this)
+              .title(caption)
+              .onClosed(() -> setEditPanelState(HIDDEN))
+              .build();
+    }
+    else {
+      return Dialogs.componentDialog(editControlPanel)
+              .owner(this)
+              .title(caption)
+              .modal(false)
+              .disposeOnEscape(disposeEditDialogOnEscape)
+              .onClosedAction(Control.control(() -> setEditPanelState(HIDDEN)))
+              .build();
     }
   }
 
-  private void disposeDetailDialog() {
-    if (detailPanelDialog != null) {
-      detailPanelDialog.setVisible(false);
-      detailPanelDialog.dispose();
-      detailPanelDialog = null;
+  private Window createDetailPanelWindow() {
+    if (DISPLAY_PANELS_IN_FRAME.get()) {
+      return Windows.frameBuilder(detailPanelTabbedPane)
+              .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+              .onClosed(() -> {
+                //the frame can be closed when embedding the panel, don't hide if that's the case
+                if (getDetailPanelState() != EMBEDDED) {
+                  setDetailPanelState(HIDDEN);
+                }
+              })
+              .build();
+    }
+    else {
+      return Dialogs.componentDialog(detailPanelTabbedPane)
+              .owner(this)
+              .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+              .modal(false)
+              .onClosedAction(Control.control(() -> {
+                //the dialog can be closed when embedding the panel, don't hide if that's the case
+                if (getDetailPanelState() != EMBEDDED) {
+                  setDetailPanelState(HIDDEN);
+                }
+              }))
+              .build();
+    }
+  }
+
+  private void disposeEditWindow() {
+    if (editPanelWindow != null) {
+      editPanelWindow.setVisible(false);
+      editPanelWindow.dispose();
+      editPanelWindow = null;
+    }
+  }
+
+  private void disposeDetailWindow() {
+    if (detailPanelWindow != null) {
+      detailPanelWindow.setVisible(false);
+      detailPanelWindow.dispose();
+      detailPanelWindow = null;
     }
   }
 

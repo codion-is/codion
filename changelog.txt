@@ -7461,3 +7461,6 @@
   FlexibleGridLayout.Builder, setting the fixed column width or fixed row height now enables the fixing of column widths or row heights respectively
   ExceptionDialog refactored
   SwingEntityEditModel.createForeignKeyComboBoxModel() now guards against a null selectAttributes instance in DefaultForeignKeyProperty, for backwards compatability, since deserialized DefaultForeignKeyProperty instances from version 0.17.13 contain a null selectAttributes value, which otherwise is an empty list
+  EntityTableModel.setIncludeHiddenColumnsInQuery() added along with a protected getSelectAttributes() in SwingEntityTableModel and FXEntityListModel
+  Windows.FrameBuilder.defaultCloseOperation() added
+  EntityPanel.DISPLAY_PANELS_IN_FRAME configuration value added, related refactoring

@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -180,6 +181,13 @@ public final class Windows {
     FrameBuilder onClosed(Runnable onClosed);
 
     /**
+     * Default {@link WindowConstants.DISPOSE_ON_CLOSE}.
+     * @param defaultCloseOperation the default frame close operation
+     * @return this builder instance
+     */
+    FrameBuilder defaultCloseOperation(int defaultCloseOperation);
+
+    /**
      * @return a JFrame based on this builder
      */
     JFrame build();
@@ -200,6 +208,7 @@ public final class Windows {
     private Dimension preferredSize;
     private boolean resizable = true;
     private JComponent relativeTo;
+    private int defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE;
 
     private DefaultFrameBuilder(final JComponent component) {
       this.component = requireNonNull(component);
@@ -236,6 +245,12 @@ public final class Windows {
     }
 
     @Override
+    public FrameBuilder defaultCloseOperation(final int defaultCloseOperation) {
+      this.defaultCloseOperation = defaultCloseOperation;
+      return this;
+    }
+
+    @Override
     public FrameBuilder onClosed(final Runnable onClosed) {
       this.onClosed = onClosed;
       return this;
@@ -244,6 +259,7 @@ public final class Windows {
     @Override
     public JFrame build() {
       final JFrame frame = new JFrame();
+      frame.setDefaultCloseOperation(defaultCloseOperation);
       frame.setLayout(Layouts.borderLayout());
       frame.add(component, BorderLayout.CENTER);
       if (title != null) {
