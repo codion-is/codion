@@ -102,7 +102,7 @@ public final class TransferFocusOnEnter {
      * @param backward if true the focus is transferred backward
      */
     private TransferFocusAction(final JComponent component, final boolean backward) {
-      super(backward ? "KeyEvents.transferFocusBackward" : "KeyEvents.transferFocusForward");
+      super(backward ? "TransferFocusOnEnter.transferFocusBackward" : "KeyTransferFocusOnEnter.transferFocusForward");
       this.component = Objects.requireNonNull(component, "component");
       this.backward = backward;
     }

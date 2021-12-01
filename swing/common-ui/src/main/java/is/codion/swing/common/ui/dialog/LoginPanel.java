@@ -17,7 +17,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -30,10 +29,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Window;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
@@ -108,11 +110,11 @@ final class LoginPanel extends JPanel {
   private void initializeUI(final User defaultUser, final JComponent southComponent) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
-    TextFields.selectAllOnFocusGained(usernameField);
+    usernameField.addFocusListener(new SelectAllListener(usernameField));
     Utilities.linkToEnabledState(validatingState.getReversedObserver(), usernameField);
     passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
-    TextFields.selectAllOnFocusGained(passwordField);
+    passwordField.addFocusListener(new SelectAllListener(passwordField));
     KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
@@ -216,5 +218,24 @@ final class LoginPanel extends JPanel {
 
   private static boolean isWindows() {
     return System.getProperty("os.name").toLowerCase().contains("win");
+  }
+
+  private static final class SelectAllListener extends FocusAdapter {
+
+    private final JTextComponent textComponent;
+
+    private SelectAllListener(final JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public void focusGained(final FocusEvent e) {
+      textComponent.selectAll();
+    }
+
+    @Override
+    public void focusLost(final FocusEvent e) {
+      textComponent.select(0, 0);
+    }
   }
 }
