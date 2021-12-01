@@ -7436,3 +7436,4 @@
   AbstractComponentValue no longer depends on Dialogs for displaying a input dialog, reducing cyclical dependencies within the swing common ui module, some code duplication added, further refactoring in order
   ExceptionDialog no longer depends on Components, reducing cyclical dependencies
   Major refactoring of swing.common.ui module, value package merged with component, related refactorings, substantially reducing cyclical dependencies within the module
+  LoginPanel no longer depends on TextFields, minor code duplication replacing a cyclical dependency
