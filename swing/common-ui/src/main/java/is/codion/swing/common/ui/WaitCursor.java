@@ -21,14 +21,14 @@ public final class WaitCursor {
   /**
    * Adds a wait cursor request for the parent root pane of the given component,
    * the wait cursor is activated once a request is made, but only deactivated once all such
-   * requests have been retracted. Best used in try/finally block combinations.
+   * requests have been retracted. Best used with a try/finally block.
    * <pre>
-   Components.showWaitCursor(component);
+   WaitCursor.show(component);
    try {
      doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+     WaitCursor.hide(component);
    }
    * </pre>
    * @param component the component
@@ -41,14 +41,14 @@ public final class WaitCursor {
   /**
    * Removes a wait cursor request for the parent root pane of the given component,
    * the wait cursor is activated once a request is made, but only deactivated once all such
-   * requests have been retracted. Best used in try/finally block combinations.
+   * requests have been retracted. Best used with a try/finally block.
    * <pre>
-   Components.showWaitCursor(component);
+   WaitCursor.show(component);
    try {
      doSomething();
    }
    finally {
-     Components.hideWaitCursor(component);
+     WaitCursor.hide(component);
    }
    * </pre>
    * @param component the component
