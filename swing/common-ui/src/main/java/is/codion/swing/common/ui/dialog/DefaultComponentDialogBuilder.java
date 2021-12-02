@@ -28,12 +28,13 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   private boolean modal = true;
   private boolean resizable = true;
-  private Dimension preferredSize;
+  private Dimension size;
   private Action enterAction;
   private Action onClosedAction;
   private EventObserver<?> closeEvent;
   private EventDataListener<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
+  private JComponent locationRelativeTo;
 
   DefaultComponentDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
@@ -52,8 +53,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
-  public ComponentDialogBuilder preferredSize(final Dimension preferredSize) {
-    this.preferredSize = requireNonNull(preferredSize);
+  public ComponentDialogBuilder size(final Dimension size) {
+    this.size = requireNonNull(size);
     return this;
   }
 
@@ -88,6 +89,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
+  public ComponentDialogBuilder locationRelativeTo(final JComponent locationRelativeTo) {
+    this.locationRelativeTo = requireNonNull(locationRelativeTo);
+    return this;
+  }
+
+  @Override
   public JDialog show() {
     final JDialog dialog = build();
     dialog.setVisible(true);
@@ -101,13 +108,20 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
     }
-    if (preferredSize != null) {
-      component.setPreferredSize(preferredSize);
-    }
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
-    dialog.pack();
-    dialog.setLocationRelativeTo(owner);
+    if (size != null) {
+      dialog.setSize(size);
+    }
+    else {
+      dialog.pack();
+    }
+    if (locationRelativeTo != null) {
+      dialog.setLocationRelativeTo(locationRelativeTo);
+    }
+    else {
+      dialog.setLocationRelativeTo(owner);
+    }
     dialog.setModal(modal);
     dialog.setResizable(resizable);
 

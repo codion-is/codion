@@ -42,7 +42,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     Dialogs.componentDialog(new JRViewer(employeeReport))
             .owner(this)
             .modal(false)
-            .preferredSize(new Dimension(800, 600))
+            .size(new Dimension(800, 600))
             .show();
   }
   // end::viewEmployeeReport[]

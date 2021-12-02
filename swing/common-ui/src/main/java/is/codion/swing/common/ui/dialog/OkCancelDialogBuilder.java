@@ -6,7 +6,9 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
+import java.awt.Dimension;
 
 
 /**
@@ -15,6 +17,18 @@ import javax.swing.JDialog;
  * An OK action must be provided and the default Cancel action simply disposes the dialog.
  */
 public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuilder> {
+
+  /**
+   * @param resizable true if the dialog should be resizable
+   * @return this OkCancelDialogBuilder instance
+   */
+  OkCancelDialogBuilder resizable(boolean resizable);
+
+  /**
+   * @param size the size of the dialog
+   * @return this OkCancelDialogBuilder instance
+   */
+  OkCancelDialogBuilder size(Dimension size);
 
   /**
    * @param command calloed on ok pressed, before the dialog has been disposed
@@ -39,6 +53,12 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
    * @return this builder instance
    */
   OkCancelDialogBuilder cancelAction(Action cancelAction);
+
+  /**
+   * @param component the component for the relative location
+   * @return this builder instance
+   */
+  OkCancelDialogBuilder locationRelativeTo(JComponent component);
 
   /**
    * Builds and shows the dialog.

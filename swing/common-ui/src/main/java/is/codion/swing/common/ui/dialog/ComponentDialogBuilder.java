@@ -8,6 +8,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
 
@@ -29,10 +30,10 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
   ComponentDialogBuilder resizable(boolean resizable);
 
   /**
-   * @param preferredSize the preferred size of the component
+   * @param size the size of the dialog
    * @return this DialogBuilder instance
    */
-  ComponentDialogBuilder preferredSize(Dimension preferredSize);
+  ComponentDialogBuilder size(Dimension size);
 
   /**
    * @param enterAction the action to associate with the ENTER key
@@ -68,6 +69,12 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this DialogBuilder instance
    */
   ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape);
+
+  /**
+   * @param component the component for the relative location
+   * @return this builder instance
+   */
+  ComponentDialogBuilder locationRelativeTo(JComponent component);
 
   /**
    * @return a new JDialog instance based on this builder.
