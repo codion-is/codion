@@ -61,7 +61,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
             .owner(this)
             .modal(false)
             .title(BUNDLE.getString("customer_report"))
-            .preferredSize(new Dimension(800, 600))
+            .size(new Dimension(800, 600))
             .show();
   }
 }

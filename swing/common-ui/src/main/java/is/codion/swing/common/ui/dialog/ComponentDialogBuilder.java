@@ -29,10 +29,10 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
   ComponentDialogBuilder resizable(boolean resizable);
 
   /**
-   * @param preferredSize the preferred size of the component
+   * @param size the size of the dialog
    * @return this DialogBuilder instance
    */
-  ComponentDialogBuilder preferredSize(Dimension preferredSize);
+  ComponentDialogBuilder size(Dimension size);
 
   /**
    * @param enterAction the action to associate with the ENTER key

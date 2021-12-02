@@ -61,7 +61,7 @@ public final class CountryTablePanel extends EntityTablePanel {
             .owner(this)
             .modal(false)
             .title(COUNTRY_REPORT)
-            .preferredSize(new Dimension(800, 600))
+            .size(new Dimension(800, 600))
             .show();
   }
 

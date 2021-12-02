@@ -58,7 +58,7 @@ public class CustomerTablePanel extends EntityTablePanel {
             .owner(this)
             .modal(false)
             .title("Customer Report")
-            .preferredSize(new Dimension(800, 600))
+            .size(new Dimension(800, 600))
             .show();
   }
 }

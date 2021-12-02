@@ -28,7 +28,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   private boolean modal = true;
   private boolean resizable = true;
-  private Dimension preferredSize;
+  private Dimension size;
   private Action enterAction;
   private Action onClosedAction;
   private EventObserver<?> closeEvent;
@@ -52,8 +52,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
-  public ComponentDialogBuilder preferredSize(final Dimension preferredSize) {
-    this.preferredSize = requireNonNull(preferredSize);
+  public ComponentDialogBuilder size(final Dimension size) {
+    this.size = requireNonNull(size);
     return this;
   }
 
@@ -101,12 +101,14 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
     }
-    if (preferredSize != null) {
-      component.setPreferredSize(preferredSize);
-    }
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
-    dialog.pack();
+    if (size != null) {
+      dialog.setSize(size);
+    }
+    else {
+      dialog.pack();
+    }
     dialog.setLocationRelativeTo(owner);
     dialog.setModal(modal);
     dialog.setResizable(resizable);

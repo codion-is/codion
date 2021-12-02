@@ -7438,3 +7438,5 @@
   Major refactoring of swing.common.ui module, value package merged with component, related refactorings, substantially reducing cyclical dependencies within the module
   LoginPanel no longer depends on TextFields, minor code duplication replacing a cyclical dependency
   AbstractComponentValue, Dialogs dependency reintroduced, code duplication removed, no cycles introduced
+  ComponentDialogBuilder.preferredSize renamed size
+  OkCancelDialogBuilder.size and resizable added, related refactoring
