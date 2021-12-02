@@ -22,7 +22,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -125,34 +124,6 @@ public final class Utilities {
     component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
 
     return event.getObserver();
-  }
-
-  /**
-   * Sets the preferred size of the given component to its current height and the given {@code preferredWidth}
-   * @param component the component
-   * @param preferredWidth the preferred width
-   * @param <T> the component type
-   * @return the component
-   */
-  public static <T extends JComponent> T setPreferredWidth(final T component, final int preferredWidth) {
-    requireNonNull(component, COMPONENT);
-    component.setPreferredSize(new Dimension(preferredWidth, component.getPreferredSize().height));
-
-    return component;
-  }
-
-  /**
-   * Sets the preferred size of the given component to its current width and the given {@code preferredHeight}
-   * @param component the component
-   * @param preferredHeight the preferred height
-   * @param <T> the component type
-   * @return the component
-   */
-  public static <T extends JComponent> T setPreferredHeight(final T component, final int preferredHeight) {
-    requireNonNull(component, COMPONENT);
-    component.setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
-
-    return component;
   }
 
   /**

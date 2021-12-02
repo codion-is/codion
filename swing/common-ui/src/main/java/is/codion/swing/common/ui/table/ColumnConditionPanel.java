@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
@@ -503,7 +504,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    Utilities.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
+    Sizes.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
     ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
     comboBox.setRenderer(new OperatorComboBoxRenderer());
     comboBox.setFont(comboBox.getFont().deriveFont(OPERATOR_FONT_SIZE));

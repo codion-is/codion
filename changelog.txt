@@ -7442,3 +7442,5 @@
   OkCancelDialogBuilder.size and resizable added, related refactoring
   OkCancelDialogBuilder and ComponentDialogBuilder.locationRelativeTo added
   AbstractFilteredTableModel, minor refactoring, StringSearchCondition added
+  Sizes split from Utilities, methods for minimum and maximum sizes added, for completeness
+  ComponentBuilder.minimum/maximum height/width methods added, for completeness

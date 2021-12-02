@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static is.codion.swing.common.ui.Utilities.setPreferredHeight;
+import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static org.jfree.chart.ChartFactory.createBarChart;

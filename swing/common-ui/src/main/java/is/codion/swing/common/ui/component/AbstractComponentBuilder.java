@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.Sizes.*;
+import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
@@ -35,8 +36,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private boolean focusable = true;
   private int preferredHeight;
   private int preferredWidth;
-  private Dimension maximumSize;
-  private Dimension minimumSize;
+  private int minimumHeight;
+  private int minimumWidth;
+  private int maximumHeight;
+  private int maximumWidth;
   private Border border;
   private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
   private String toolTipText;
@@ -89,14 +92,42 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B maximumHeight(final int maximumHeight) {
+    this.maximumHeight = maximumHeight;
+    return (B) this;
+  }
+
+  @Override
+  public final B maximumWidth(final int maximumWidth) {
+    this.maximumWidth = maximumWidth;
+    return (B) this;
+  }
+
+  @Override
   public final B maximumSize(final Dimension maximumSize) {
-    this.maximumSize = maximumSize;
+    requireNonNull(maximumSize);
+    this.maximumHeight = maximumSize.height;
+    this.maximumWidth = maximumSize.width;
+    return (B) this;
+  }
+
+  @Override
+  public final B minimumHeight(final int minimumHeight) {
+    this.minimumHeight = minimumHeight;
+    return (B) this;
+  }
+
+  @Override
+  public final B minimumWidth(final int minimumWidth) {
+    this.minimumWidth = minimumWidth;
     return (B) this;
   }
 
   @Override
   public final B minimumSize(final Dimension minimumSize) {
-    this.minimumSize = minimumSize;
+    requireNonNull(minimumSize);
+    this.minimumHeight = minimumSize.height;
+    this.minimumWidth = minimumSize.width;
     return (B) this;
   }
 
@@ -310,11 +341,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   private void setSizes(final C component) {
-    if (minimumSize != null) {
-      component.setMinimumSize(minimumSize);
+    if (minimumHeight > 0) {
+      setMinimumHeight(component, minimumHeight);
     }
-    if (maximumSize != null) {
-      component.setMaximumSize(maximumSize);
+    if (minimumWidth > 0) {
+      setMinimumWidth(component, minimumWidth);
+    }
+    if (maximumHeight > 0) {
+      setMaximumHeight(component, maximumHeight);
+    }
+    if (maximumWidth > 0) {
+      setMaximumWidth(component, maximumWidth);
     }
     if (preferredHeight > 0) {
       setPreferredHeight(component, preferredHeight);

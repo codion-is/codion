@@ -13,8 +13,8 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -91,7 +91,7 @@ public final class ClientUI {
     EntityComboBox artistComboBox = new EntityComboBox(artistComboBoxModel);
 
     // limit the combo box width, due to long artist names
-    Utilities.setPreferredWidth(artistComboBox, 240);
+    Sizes.setPreferredWidth(artistComboBox, 240);
 
     // move focus with Enter key
     TransferFocusOnEnter.enable(artistComboBox);
