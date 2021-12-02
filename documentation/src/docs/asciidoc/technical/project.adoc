@@ -74,4 +74,4 @@ NOTE: The client handles server restarts gracefully, you can try shutting down t
 
 == Code quality
 
-http://darri.myftp.org:9001/dashboard?id=is.codion[SonarQube]
+http://sonar.codion.is:9001/dashboard?id=is.codion[SonarQube]
