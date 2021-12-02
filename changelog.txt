@@ -7441,3 +7441,4 @@
   ComponentDialogBuilder.preferredSize renamed size
   OkCancelDialogBuilder.size and resizable added, related refactoring
   OkCancelDialogBuilder and ComponentDialogBuilder.locationRelativeTo added
+  AbstractFilteredTableModel, minor refactoring, StringSearchCondition added

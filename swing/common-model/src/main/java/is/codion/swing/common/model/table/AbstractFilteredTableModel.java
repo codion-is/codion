@@ -656,8 +656,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       return new RegexSearchCondition(searchText);
     }
 
-    return item -> !(item == null || searchText == null) && (caseSensitiveSearch ? item : item.toLowerCase())
-                    .contains((caseSensitiveSearch ? searchText : searchText.toLowerCase()));
+    return new StringSearchCondition(searchText, caseSensitiveSearch);
   }
 
   private void bindEventsInternal() {
@@ -726,22 +725,30 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     private final Pattern pattern;
 
-    /**
-     * Instantiates a new RegexSearchCondition.
-     * @param patternString the regex pattern
-     */
     private RegexSearchCondition(final String patternString) {
       this.pattern = Pattern.compile(patternString);
     }
 
-    /**
-     * Returns true if the regex pattern is valid and the given item passes the condition.
-     * @param item the item
-     * @return true if the item should be included
-     */
     @Override
     public boolean test(final String item) {
       return item != null && pattern.matcher(item).find();
+    }
+  }
+
+  private static final class StringSearchCondition implements Predicate<String> {
+
+    private final String searchText;
+    private final boolean caseSensitiveSearch;
+
+    private StringSearchCondition(final String searchText, final boolean caseSensitiveSearch) {
+      this.searchText = searchText;
+      this.caseSensitiveSearch = caseSensitiveSearch;
+    }
+
+    @Override
+    public boolean test(final String item) {
+      return !(item == null || searchText == null) && (caseSensitiveSearch ? item : item.toLowerCase())
+              .contains((caseSensitiveSearch ? searchText : searchText.toLowerCase()));
     }
   }
 
