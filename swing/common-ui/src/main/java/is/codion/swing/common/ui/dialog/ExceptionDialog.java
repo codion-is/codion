@@ -9,6 +9,7 @@ import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
 import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
@@ -101,7 +102,7 @@ final class ExceptionDialog extends JDialog {
     detailsArea.setLineWrap(true);
     detailsArea.setWrapStyleWord(true);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
-    Utilities.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
+    Sizes.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
     descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
     printButton = Control.builder(detailsArea::print)
             .caption(Messages.get(Messages.PRINT))
@@ -166,7 +167,7 @@ final class ExceptionDialog extends JDialog {
     detailPanel.add(exceptionField);
     final JLabel message = new JLabel(MESSAGES.getString("message") + ": ");
     message.setHorizontalAlignment(SwingConstants.LEFT);
-    Utilities.setPreferredWidth(message, MESSAGE_LABEL_WIDTH);
+    Sizes.setPreferredWidth(message, MESSAGE_LABEL_WIDTH);
     detailPanel.add(message);
     detailPanel.add(new JScrollPane(messageArea,
             ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,

@@ -111,6 +111,8 @@ public final class ComponentsTest {
     final ComponentValue<Integer, IntegerField> componentValue = Components.integerField()
             .range(0, 100)
             .font(Font.getFont("arial"))
+            .minimumHeight(10)
+            .minimumWidth(10)
             .foreground(Color.WHITE)
             .background(Color.BLACK)
             .linkedValue(value)
@@ -124,6 +126,8 @@ public final class ComponentsTest {
     final ComponentValue<Long, LongField> componentValue = Components.longField()
             .range(0, 100)
             .groupingSeparator('.')
+            .maximumHeight(10)
+            .maximumWidth(10)
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(componentValue.getComponent().getText(), "42");
@@ -137,6 +141,8 @@ public final class ComponentsTest {
             .maximumFractionDigits(2)
             .groupingSeparator('.')
             .decimalSeparator(',')
+            .minimumSize(new Dimension(10, 10))
+            .maximumSize(new Dimension(10, 10))
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(componentValue.getComponent().getNumber(), value.get());
@@ -149,6 +155,7 @@ public final class ComponentsTest {
             .maximumFractionDigits(2)
             .groupingSeparator('.')
             .decimalSeparator(',')
+            .maximumSize(new Dimension(10, 10))
             .linkedValue(value)
             .buildComponentValue();
     assertEquals(componentValue.getComponent().getNumber(), value.get());
@@ -216,6 +223,7 @@ public final class ComponentsTest {
   void button() {
     Components.button()
             .action(Control.control(() -> {}))
+            .preferredSize(new Dimension(10, 10))
             .build();
   }
 

@@ -10,11 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,25 +50,6 @@ public class UtilitiesTest {
       assertFalse(comp.isEnabled());
     }
     catch (final InterruptedException e) {/*ignored*/}
-  }
-
-  @Test
-  void setPreferredWidth() {
-    final JTextField textField = new JTextField();
-    Utilities.setPreferredWidth(textField, 42);
-    assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
-    final JComboBox<String> box = new JComboBox<>();
-    box.setPreferredSize(new Dimension(10, 10));
-    Utilities.setPreferredWidth(box, 42);
-    assertEquals(10, box.getPreferredSize().height);
-    assertEquals(42, box.getPreferredSize().width);
-  }
-
-  @Test
-  void setPreferredHeight() {
-    final JTextField textField = new JTextField();
-    Utilities.setPreferredHeight(textField, 42);
-    assertEquals(new Dimension(textField.getPreferredSize().width, 42), textField.getPreferredSize());
   }
 
   @Test

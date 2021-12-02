@@ -64,10 +64,34 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B preferredSize(Dimension preferredSize);
 
   /**
+   * @param maximumHeight the maximum component height
+   * @return this builder instance
+   */
+  B maximumHeight(int maximumHeight);
+
+  /**
+   * @param maximumWidth the maximum component width
+   * @return this builder instance
+   */
+  B maximumWidth(int maximumWidth);
+
+  /**
    * @param maximumSize the maximum component size
    * @return this builder instance
    */
   B maximumSize(Dimension maximumSize);
+
+  /**
+   * @param minimumHeight the minimum component height
+   * @return this builder instance
+   */
+  B minimumHeight(int minimumHeight);
+
+  /**
+   * @param minimumWidth the minimum component width
+   * @return this builder instance
+   */
+  B minimumWidth(int minimumWidth);
 
   /**
    * @param minimumSize the minimum component size
