@@ -38,7 +38,7 @@ import static java.util.Arrays.asList;
 
 /*
 // tag::demoPanelImport[]
-import static is.codion.swing.common.ui.component.ComponentBuilders.*;
+import static is.codion.swing.common.ui.component.Components.*;
 // end::demoPanelImport[]
  */
 // tag::demoPanel[]
