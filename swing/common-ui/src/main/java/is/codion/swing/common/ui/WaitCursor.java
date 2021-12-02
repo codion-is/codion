@@ -18,6 +18,8 @@ public final class WaitCursor {
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
+  private WaitCursor() {}
+
   /**
    * Adds a wait cursor request for the parent root pane of the given component,
    * the wait cursor is activated once a request is made, but only deactivated once all such
