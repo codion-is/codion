@@ -7440,3 +7440,4 @@
   AbstractComponentValue, Dialogs dependency reintroduced, code duplication removed, no cycles introduced
   ComponentDialogBuilder.preferredSize renamed size
   OkCancelDialogBuilder.size and resizable added, related refactoring
+  OkCancelDialogBuilder and ComponentDialogBuilder.locationRelativeTo added

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
 
@@ -52,6 +53,12 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
    * @return this builder instance
    */
   OkCancelDialogBuilder cancelAction(Action cancelAction);
+
+  /**
+   * @param component the component for the relative location
+   * @return this builder instance
+   */
+  OkCancelDialogBuilder locationRelativeTo(JComponent component);
 
   /**
    * Builds and shows the dialog.

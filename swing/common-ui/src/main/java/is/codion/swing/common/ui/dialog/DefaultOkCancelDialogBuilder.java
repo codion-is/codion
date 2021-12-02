@@ -32,6 +32,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private Dimension size;
   private Action okAction;
   private Action cancelAction;
+  private JComponent locationRelativeTo;
 
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
@@ -86,6 +87,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   @Override
+  public OkCancelDialogBuilder locationRelativeTo(final JComponent locationRelativeTo) {
+    this.locationRelativeTo = requireNonNull(locationRelativeTo);
+    return this;
+  }
+
+  @Override
   public JDialog show() {
     final JDialog dialog = build();
     dialog.setVisible(true);
@@ -108,7 +115,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     else {
       dialog.pack();
     }
-    dialog.setLocationRelativeTo(owner);
+    if (locationRelativeTo != null) {
+      dialog.setLocationRelativeTo(locationRelativeTo);
+    }
+    else {
+      dialog.setLocationRelativeTo(owner);
+    }
     dialog.setModal(true);
     dialog.setResizable(resizable);
 

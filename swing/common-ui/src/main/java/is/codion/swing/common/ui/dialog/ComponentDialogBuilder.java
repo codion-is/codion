@@ -8,6 +8,7 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
 
@@ -68,6 +69,12 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this DialogBuilder instance
    */
   ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape);
+
+  /**
+   * @param component the component for the relative location
+   * @return this builder instance
+   */
+  ComponentDialogBuilder locationRelativeTo(JComponent component);
 
   /**
    * @return a new JDialog instance based on this builder.

@@ -234,6 +234,7 @@ public final class CalendarPanel extends JPanel {
     final State okPressed = State.state();
     Dialogs.okCancelDialog(calendarPanel)
             .owner(dialogOwner)
+            .locationRelativeTo(dialogOwner)
             .title(dialogTitle)
             .onOk(() -> okPressed.set(true))
             .show();
@@ -267,6 +268,7 @@ public final class CalendarPanel extends JPanel {
     final State okPressed = State.state();
     Dialogs.okCancelDialog(calendarPanel)
             .owner(dialogOwner)
+            .locationRelativeTo(dialogOwner)
             .title(dialogTitle)
             .onOk(() -> okPressed.set(true))
             .show();

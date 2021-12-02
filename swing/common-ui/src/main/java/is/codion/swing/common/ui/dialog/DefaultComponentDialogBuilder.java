@@ -34,6 +34,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   private EventObserver<?> closeEvent;
   private EventDataListener<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
+  private JComponent locationRelativeTo;
 
   DefaultComponentDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
@@ -88,6 +89,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
+  public ComponentDialogBuilder locationRelativeTo(final JComponent locationRelativeTo) {
+    this.locationRelativeTo = requireNonNull(locationRelativeTo);
+    return this;
+  }
+
+  @Override
   public JDialog show() {
     final JDialog dialog = build();
     dialog.setVisible(true);
@@ -109,7 +116,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     else {
       dialog.pack();
     }
-    dialog.setLocationRelativeTo(owner);
+    if (locationRelativeTo != null) {
+      dialog.setLocationRelativeTo(locationRelativeTo);
+    }
+    else {
+      dialog.setLocationRelativeTo(owner);
+    }
     dialog.setModal(modal);
     dialog.setResizable(resizable);
 
