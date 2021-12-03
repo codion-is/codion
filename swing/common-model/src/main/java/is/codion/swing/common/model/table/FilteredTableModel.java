@@ -10,6 +10,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SelectionModel;
+import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -33,15 +34,26 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   void removeRefreshStartedListener(EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time a refresh has finished, indicating whether the refresh was successful or not
+   * @param listener a listener to be notified each time a refresh has successfully finished
    * @see #refresh()
    */
-  void addRefreshDoneListener(EventDataListener<Boolean> listener);
+  void addRefreshSuccessfulListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshDoneListener(EventDataListener<Boolean> listener);
+  void removeRefreshSuccessfulListener(EventListener listener);
+
+  /**
+   * @param listener a listener to be notified each time a refresh has failed
+   * @see #refresh()
+   */
+  void addRefreshFailedListener(EventDataListener<Throwable> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeRefreshFailedListener(EventDataListener<Throwable> listener);
 
   /**
    * @param listener a listener to be notified each time the model has been sorted
@@ -83,6 +95,11 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * @param listener the listener to remove
    */
   void removeRowsRemovedListener(EventDataListener<Removal> listener);
+
+  /**
+   * @return an observer active while a refresh is in progress
+   */
+  StateObserver getRefreshingObserver();
 
   /**
    * @return true if an impending selection change should be allowed

@@ -7444,3 +7444,6 @@
   AbstractFilteredTableModel, minor refactoring, StringSearchCondition added
   Sizes split from Utilities, methods for minimum and maximum sizes added, for completeness
   ComponentBuilder.minimum/maximum height/width methods added, for completeness
+  FilteredTableModel, AbstractFilteredTableModel, refresh event model improved, refreshSuccessful and refreshFailed events added along with refreshingObserver
+  EntityTableModel.add/removeRefreshListener() removed
+  EntityEditPanel, EntityTablePanel.onException(), EntityPanel.displayException(), exception parameter now Throwable instead of Exception

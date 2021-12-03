@@ -175,10 +175,12 @@ public final class AbstractFilteredTableModelTest {
     final AtomicInteger done = new AtomicInteger();
     final AtomicInteger cleared = new AtomicInteger();
     final EventListener startListener = started::incrementAndGet;
-    final EventDataListener<Boolean> doneListener = successful -> done.incrementAndGet();
+    final EventListener successfulListener = done::incrementAndGet;
+    final EventDataListener<Throwable> failedListener = exception -> {};
     final EventListener clearedListener = cleared::incrementAndGet;
     tableModel.addRefreshStartedListener(startListener);
-    tableModel.addRefreshDoneListener(doneListener);
+    tableModel.addRefreshSuccessfulListener(successfulListener);
+    tableModel.addRefreshFailedListener(failedListener);
     tableModel.addTableModelClearedListener(clearedListener);
     tableModel.refresh();
     assertTrue(tableModel.getRowCount() > 0);
@@ -196,7 +198,8 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(0, cleared.get());
 
     tableModel.removeRefreshStartedListener(startListener);
-    tableModel.removeRefreshDoneListener(doneListener);
+    tableModel.removeRefreshSuccessfulListener(successfulListener);
+    tableModel.removeRefreshFailedListener(failedListener);
     tableModel.removeTableModelClearedListener(clearedListener);
   }
 
