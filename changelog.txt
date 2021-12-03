@@ -7448,3 +7448,4 @@
   EntityTableModel.add/removeRefreshListener() removed
   EntityEditPanel, EntityTablePanel.onException(), EntityPanel.displayException(), exception parameter now Throwable instead of Exception
   ComboBoxBuilder.renderer() added
+  ColumnConditionPanel.initializeOperatorComboBox() now uses Components.comboBox()

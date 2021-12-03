@@ -9,11 +9,11 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.component.ComponentValues;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.DefaultComboBoxModel;
@@ -23,6 +23,8 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -501,15 +503,13 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private SteppedComboBox<Operator> initializeOperatorComboBox(final List<Operator> operators) {
-    final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
-    Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
-    final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    Sizes.setPreferredHeight(comboBox, TextFields.getPreferredTextFieldHeight());
-    ComponentValues.comboBox(comboBox).link(conditionModel.getOperatorValue());
-    comboBox.setRenderer(new OperatorComboBoxRenderer());
-    comboBox.setFont(comboBox.getFont().deriveFont(OPERATOR_FONT_SIZE));
-
-    return comboBox;
+    return Components.comboBox(Operator.class, new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
+                    conditionModel.getOperatorValue())
+            .completionMode(Completion.Mode.NONE)
+            .preferredHeight(TextFields.getPreferredTextFieldHeight())
+            .renderer(createRenderer())
+            .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
+            .build();
   }
 
   private void initializeUI() {
@@ -557,6 +557,10 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     panel.add(upperBoundField);
     inputPanel.removeAll();
     inputPanel.add(panel, BorderLayout.CENTER);
+  }
+
+  private static ListCellRenderer<Operator> createRenderer() {
+    return (ListCellRenderer<Operator>) new OperatorComboBoxRenderer();
   }
 
   private static final class OperatorComboBoxRenderer extends BasicComboBoxRenderer {
