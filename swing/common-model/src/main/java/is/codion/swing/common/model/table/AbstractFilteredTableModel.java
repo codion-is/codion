@@ -43,7 +43,6 @@ import static java.util.stream.Collectors.toList;
  * JTable table = new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
  * </pre><br>
  * User: Björn Darri<br>
- * Sorting functionality originally based on TableSorter by Philip Milne, Brendon McLean, Dan van Enckevort and Parwinder Sekhon<br>
  * Date: 18.4.2010<br>
  * Time: 09:48:07<br>
  * @param <R> the type representing the rows in this table model
@@ -526,14 +525,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Returns the items this table model should contain.
    * By default, this simply returns the items already in the model.
    * Override to fetch data from a datasource of some kind.
-   * @return the items this table model should contain.
+   * @return the items this table model should contain, an empty Collection in case of no items.
    */
   protected Collection<R> refreshItems() {
     return getItems();
   }
 
   /**
-   * Creates a ColumnValueProvider for the given column, null if the column type is not numerical
+   * Creates a ColumnValueProvider for the given column
    * @param columnIdentifier the column identifier
    * @param <T> the value type
    * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, an empty Optional if not applicable
@@ -637,24 +636,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return value == null ? "" : value.toString();
   }
 
-  private void merge(final Collection<R> items) {
-    final Set<R> itemSet = new HashSet<>(items);
-    getItems().forEach(item -> {
-      if (!itemSet.contains(item)) {
-        removeItem(item);
-      }
-    });
-    items.forEach(item -> {
-      final int index = indexOf(item);
-      if (index == -1) {
-        addItemSorted(item);
-      }
-      else {
-        setItemAt(index, item);
-      }
-    });
-  }
-
   /**
    * @param searchText the search text
    * @return a Predicate based on the given search text
@@ -745,13 +726,35 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       merge(items);
     }
     else {
-      final Collection<R> selectedItems = selectionModel.getSelectedItems();
-      clear();
-      addItemsSorted(items);
-      selectionModel.setSelectedItems(selectedItems);
+      clearAndAdd(items);
     }
     refreshingState.set(false);
     refreshSuccessfulEvent.onEvent();
+  }
+
+  private void merge(final Collection<R> items) {
+    final Set<R> itemSet = new HashSet<>(items);
+    getItems().forEach(item -> {
+      if (!itemSet.contains(item)) {
+        removeItem(item);
+      }
+    });
+    items.forEach(item -> {
+      final int index = indexOf(item);
+      if (index == -1) {
+        addItemSorted(item);
+      }
+      else {
+        setItemAt(index, item);
+      }
+    });
+  }
+
+  private void clearAndAdd(final Collection<R> items) {
+    final Collection<R> selectedItems = selectionModel.getSelectedItems();
+    clear();
+    addItemsSorted(items);
+    selectionModel.setSelectedItems(selectedItems);
   }
 
   private static final class RegexSearchCondition implements Predicate<String> {
