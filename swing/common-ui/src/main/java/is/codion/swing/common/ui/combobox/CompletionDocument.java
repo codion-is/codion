@@ -33,6 +33,7 @@ class CompletionDocument extends PlainDocument {
 
   protected CompletionDocument(final JComboBox<?> comboBox, final boolean normalize) {
     this.comboBox = requireNonNull(comboBox);
+    this.comboBox.setEditable(true);
     this.normalize = normalize;
     this.model = comboBox.getModel();
     setEditorComponent((JTextComponent) comboBox.getEditor().getEditorComponent());

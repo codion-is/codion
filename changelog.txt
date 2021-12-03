@@ -7447,3 +7447,4 @@
   FilteredTableModel, AbstractFilteredTableModel, refresh event model improved, refreshSuccessful and refreshFailed events added along with refreshingObserver
   EntityTableModel.add/removeRefreshListener() removed
   EntityEditPanel, EntityTablePanel.onException(), EntityPanel.displayException(), exception parameter now Throwable instead of Exception
+  ComboBoxBuilder.renderer() added

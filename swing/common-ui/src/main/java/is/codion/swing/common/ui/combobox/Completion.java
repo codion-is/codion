@@ -65,7 +65,6 @@ public final class Completion {
    */
   public static <C extends JComboBox<T>, T> C maximumMatch(final C comboBox, final Normalize normalize) {
     new MaximumMatchDocument(comboBox, normalize);
-    comboBox.setEditable(true);
 
     return comboBox;
   }
@@ -91,7 +90,6 @@ public final class Completion {
    */
   public static <C extends JComboBox<T>, T> C autoComplete(final C comboBox, final Normalize normalize) {
     new AutoCompletionDocument(comboBox, normalize);
-    comboBox.setEditable(true);
 
     return comboBox;
   }
