@@ -93,11 +93,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private final EntityTableConditionModel tableConditionModel;
 
   /**
-   * Fired each time this model is refreshed
-   */
-  private final Event<?> refreshEvent = Event.event();
-
-  /**
    * If true then querying should be disabled if no condition is specified
    */
   private final State queryConditionRequiredState = State.state();
@@ -595,16 +590,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     getSelectionModel().addSelectionChangedListener(listener);
   }
 
-  @Override
-  public final void addRefreshListener(final EventListener listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(final EventListener listener) {
-    refreshEvent.removeListener(listener);
-  }
-
   /**
    * Initializes default {@link TableColumn}s for all visible properties in the given entity type.
    * @param definition the entity definition
@@ -758,7 +743,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
-    addRefreshDoneListener(this::onRefreshDone);
+    addRefreshSuccessfulListener(tableConditionModel::rememberCondition);
   }
 
   private void bindEditModelEvents() {
@@ -809,13 +794,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private void onEntitySet(final Entity entity) {
     if (entity == null && !getSelectionModel().isSelectionEmpty()) {
       getSelectionModel().clearSelection();
-    }
-  }
-
-  private void onRefreshDone(final boolean successful) {
-    if (successful) {
-      tableConditionModel.rememberCondition();
-      refreshEvent.onEvent();
     }
   }
 

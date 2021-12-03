@@ -10,6 +10,8 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -54,10 +56,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event<?> filterEvent = Event.event();
   private final Event<?> sortEvent = Event.event();
   private final Event<?> refreshStartedEvent = Event.event();
-  private final Event<Boolean> refreshDoneEvent = Event.event();
+  private final Event<Throwable> refreshFailedEvent = Event.event();
+  private final Event<?> refreshSuccessfulEvent = Event.event();
   private final Event<?> tableDataChangedEvent = Event.event();
   private final Event<?> tableModelClearedEvent = Event.event();
   private final Event<Removal> rowsRemovedEvent = Event.event();
+  private final State refreshingState = State.state();
 
   /**
    * Holds visible items
@@ -238,28 +242,23 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
-    refreshStartedEvent.onEvent();
+    onRefreshStarted();
     try {
-      final Collection<R> items = refreshItems();
-      if (mergeOnRefresh && !items.isEmpty()) {
-        merge(items);
-      }
-      else {
-        final Collection<R> selectedItems = selectionModel.getSelectedItems();
-        clear();
-        addItemsSorted(items);
-        selectionModel.setSelectedItems(selectedItems);
-      }
-      refreshDoneEvent.onEvent(true);
+      onRefreshResult(refreshItems());
     }
     catch (final RuntimeException e) {
-      refreshDoneEvent.onEvent(false);
+      onRefreshFailed(e);
       throw e;
     }
     catch (final Exception e) {
-      refreshDoneEvent.onEvent(false);
+      onRefreshFailed(e);
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public final StateObserver getRefreshingObserver() {
+    return refreshingState.getObserver();
   }
 
   @Override
@@ -464,13 +463,23 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final void addRefreshDoneListener(final EventDataListener<Boolean> listener) {
-    refreshDoneEvent.addDataListener(listener);
+  public final void addRefreshSuccessfulListener(final EventListener listener) {
+    refreshSuccessfulEvent.addListener(listener);
   }
 
   @Override
-  public final void removeRefreshDoneListener(final EventDataListener<Boolean> listener) {
-    refreshDoneEvent.removeDataListener(listener);
+  public final void removeRefreshSuccessfulListener(final EventListener listener) {
+    refreshSuccessfulEvent.removeListener(listener);
+  }
+
+  @Override
+  public final void addRefreshFailedListener(final EventDataListener<Throwable> listener) {
+    refreshFailedEvent.addDataListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshFailedListener(final EventDataListener<Throwable> listener) {
+    refreshFailedEvent.removeDataListener(listener);
   }
 
   @Override
@@ -719,6 +728,30 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private boolean include(final R item) {
     return includeCondition == null || includeCondition.test(item);
+  }
+
+  private void onRefreshStarted() {
+    refreshingState.set(true);
+    refreshStartedEvent.onEvent();
+  }
+
+  private void onRefreshFailed(final Throwable throwable) {
+    refreshingState.set(false);
+    refreshFailedEvent.onEvent(throwable);
+  }
+
+  private void onRefreshResult(final Collection<R> items) {
+    if (mergeOnRefresh && !items.isEmpty()) {
+      merge(items);
+    }
+    else {
+      final Collection<R> selectedItems = selectionModel.getSelectedItems();
+      clear();
+      addItemsSorted(items);
+      selectionModel.setSelectedItems(selectedItems);
+    }
+    refreshingState.set(false);
+    refreshSuccessfulEvent.onEvent();
   }
 
   private static final class RegexSearchCondition implements Predicate<String> {

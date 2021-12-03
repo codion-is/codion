@@ -351,7 +351,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   /**
    * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
-   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Exception)} is called.
+   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
    * @param entity the entity causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
@@ -383,7 +383,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @param exception the exception to handle
    * @see #displayException(Throwable, Window)
    */
-  public void onException(final Exception exception) {
+  public void onException(final Throwable exception) {
     displayException(exception, Windows.getParentWindow(this));
   }
 

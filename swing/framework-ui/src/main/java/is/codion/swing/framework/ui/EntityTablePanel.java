@@ -739,7 +739,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
-   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Exception)} is called.
+   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
    * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
@@ -771,7 +771,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param exception the exception to handle
    * @see #displayException(Throwable, Window)
    */
-  public void onException(final Exception exception) {
+  public void onException(final Throwable exception) {
     displayException(exception, getParentWindow(this));
   }
 
@@ -1393,7 +1393,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.addSortListener(table.getTableHeader()::repaint);
     tableModel.addRefreshStartedListener(() -> WaitCursor.show(EntityTablePanel.this));
-    tableModel.addRefreshDoneListener(successful -> WaitCursor.hide(EntityTablePanel.this));
+    tableModel.addRefreshSuccessfulListener(() -> WaitCursor.hide(EntityTablePanel.this));
+    tableModel.addRefreshFailedListener(throwable -> WaitCursor.hide(EntityTablePanel.this));
     if (tableModel.hasEditModel()) {
       tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     }
