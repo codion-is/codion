@@ -17,6 +17,7 @@ import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -143,11 +144,12 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(titleField,
                     "Inserted: " + insertedEntities.get(0)));
 
-    JPanel albumPanel = new JPanel(gridLayout(4, 1));
-    albumPanel.add(new JLabel("Artist"));
-    albumPanel.add(artistComboBox);
-    albumPanel.add(new JLabel("Title"));
-    albumPanel.add(titleField);
+    JPanel albumPanel = Panels.builder(gridLayout(4, 1))
+            .add(new JLabel("Artist"))
+            .add(artistComboBox)
+            .add(new JLabel("Title"))
+            .add(titleField)
+            .build();
 
     // uncomment the below line to display the panel
 //    Dialogs.displayInDialog(null, albumPanel, "Album");

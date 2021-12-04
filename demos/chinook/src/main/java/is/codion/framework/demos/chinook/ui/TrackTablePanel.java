@@ -6,6 +6,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
+import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSecondsPanel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
@@ -27,7 +28,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
     super(tableModel);
-    setComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory());
+    setUpdateSelectedComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false));
+    setTableCellEditorComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true));
   }
 
   @Override
@@ -52,13 +54,19 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private static final class MinutesSecondsComponentFactory
-          extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanelValue.MinutesSecondsPanel> {
+          extends DefaultEntityComponentFactory<Integer, Attribute<Integer>, MinutesSecondsPanel> {
+
+    private final boolean horizontal;
+
+    private MinutesSecondsComponentFactory(final boolean horizontal) {
+      this.horizontal = horizontal;
+    }
 
     @Override
-    public ComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> createComponentValue(final Attribute<Integer> attribute,
-                                                                                                      final SwingEntityEditModel editModel,
-                                                                                                      final Integer initialValue) {
-      final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue();
+    public ComponentValue<Integer, MinutesSecondsPanel> createComponentValue(final Attribute<Integer> attribute,
+                                                                             final SwingEntityEditModel editModel,
+                                                                             final Integer initialValue) {
+      final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(horizontal);
       minutesSecondsPanelValue.set(initialValue);
 
       return minutesSecondsPanelValue;

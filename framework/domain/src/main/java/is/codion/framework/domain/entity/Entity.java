@@ -399,7 +399,7 @@ public interface Entity extends Comparable<Entity> {
    * Retrieves the values of the given keys, assuming they are single column keys.
    * @param <T> the value type
    * @param keys the keys
-   * @return the actual property values of the given keys
+   * @return the attribute values of the given keys
    */
   static <T> List<T> getValues(final List<Key> keys) {
     requireNonNull(keys, "keys");
@@ -412,54 +412,67 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the values associated with the given property from the given entities.
+   * Returns the non-null values associated with the given attribute from the given entities.
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
-   * @param entities the entities from which to retrieve the property value
-   * @return a List containing the non-null values of the property with the given id from the given entities
+   * @param entities the entities from which to retrieve the attribute value
+   * @return the non-null values of the given attribute from the given entities.
    */
-  static <T> List<T> get(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> get(final Attribute<T> attribute, final Collection<Entity> entities) {
+    requireNonNull(attribute, "attribute");
+    requireNonNull(entities, "entities");
+    return entities.stream().map(entity -> entity.get(attribute)).filter(Objects::nonNull).collect(toList());
+  }
+
+  /**
+   * Returns the values associated with the given attribute from the given entities.
+   * @param <T> the value type
+   * @param attribute the attribute for which to retrieve the values
+   * @param entities the entities from which to retrieve the attribute value
+   * @return the values of the given attributes from the given entities, including null values.
+   */
+  static <T> Collection<T> getIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).collect(toList());
   }
 
   /**
-   * Returns a Collection containing the distinct non-null values of {@code attribute} from the given entities.
+   * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @return a List containing the distinct non-null property values
+   * @return the distinct non-null values of the given attribute from the given entities.
    */
-  static <T> List<T> getDistinct(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> getDistinct(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
   }
 
   /**
-   * Returns a Collection containing the distinct values of {@code attribute} from the given entities.
+   * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @return a List containing the distinct property values
+   * @return the distinct values of the given attribute from the given entities, may contain null.
    */
-  static <T> List<T> getDistinctIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> getDistinctIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).distinct().collect(toList());
   }
 
   /**
-   * Sets the value of the property with id {@code attribute} to {@code value}
-   * in the given entities
+   * Sets the value of the given attribute to the given value in the given entities
    * @param attribute the attribute for which to set the value
    * @param value the value
    * @param entities the entities for which to set the value
    * @param <T> the value type
-   * @return the previous property values mapped to the primary key of the entity
+   * @return the previous attribute values mapped to the primary key of the entity
    */
   static <T> Map<Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {
+    requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     final Map<Key, T> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
@@ -470,7 +483,7 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Puts all the values from 'source' into 'destination'.
+   * Puts all the values from the source entity into the destination entity.
    * @param destination the destination
    * @param source the source
    * @throws IllegalArgumentException in case the entities are not of the same type
@@ -533,8 +546,8 @@ public interface Entity extends Comparable<Entity> {
    * respecting the iteration order of the given collection
    * @param <T> the key type
    * @param attribute the attribute which value should be used for mapping
-   * @param entities the entities to map by property value
-   * @return a Map of entities mapped to property value
+   * @param entities the entities to map by attribute value
+   * @return a Map of entities mapped to attribute value
    */
   static <T> LinkedHashMap<T, List<Entity>> mapToValue(final Attribute<T> attribute, final Collection<Entity> entities) {
     return map(entities, entity -> entity.get(attribute));

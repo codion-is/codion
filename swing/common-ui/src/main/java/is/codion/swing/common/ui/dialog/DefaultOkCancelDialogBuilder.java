@@ -5,10 +5,10 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.panel.Panels;
 
 import javax.swing.Action;
 import javax.swing.JComponent;

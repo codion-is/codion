@@ -36,6 +36,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -259,7 +260,7 @@ public class EntityTableView extends TableView<Entity> {
   private <T> void updateSelectedEntities(final Property<T> property) {
     final List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
 
-    final List<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
+    final Collection<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
     final T defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());

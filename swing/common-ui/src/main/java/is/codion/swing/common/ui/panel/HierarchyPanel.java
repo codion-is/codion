@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.panel;
 
 import java.util.List;
 import java.util.Optional;

@@ -36,9 +36,11 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -67,7 +69,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
           "is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
 
   /**
-   * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button<br>
+   * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button.<br>
+   * Note that the SAVE button is overridden if the edit model does not allow updates, then an INSERT button is added.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
@@ -137,8 +140,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final SwingEntityEditModel editModel) {
-    this(editModel, (USE_SAVE_CONTROL.get() ? ControlCode.SAVE : ControlCode.INSERT), ControlCode.UPDATE, ControlCode.DELETE,
-            ControlCode.CLEAR, ControlCode.REFRESH);
+    this(editModel, getDefaultControlCodes(editModel));
   }
 
   /**
@@ -752,7 +754,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @see is.codion.swing.common.ui.control.Control
    * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)
-   * todo updateEnabled(false) þá vantar Insert control nema það sé tiltekið í smið
    */
   private void setupControls() {
     if (!getEditModel().isReadOnly()) {
@@ -821,5 +822,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   private boolean shouldInsertOnSave() {
     //no entity selected, selected entity is unmodified or update is not enabled, can only insert
     return getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateEnabled();
+  }
+
+  private static ControlCode[] getDefaultControlCodes(final SwingEntityEditModel editModel) {
+    final List<ControlCode> codes = new ArrayList<>();
+    if (USE_SAVE_CONTROL.get()) {
+      codes.add(editModel.isUpdateEnabled() ? ControlCode.SAVE : ControlCode.INSERT);
+    }
+    codes.add(ControlCode.UPDATE);
+    codes.add(ControlCode.DELETE);
+    codes.add(ControlCode.CLEAR);
+    codes.add(ControlCode.REFRESH);
+
+    return codes.toArray(new ControlCode[0]);
   }
 }

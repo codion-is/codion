@@ -4,10 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.framework.ui.component.EntityInputComponents;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;
@@ -18,23 +15,20 @@ import javax.swing.table.TableCellEditor;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
-
-import static java.util.Objects.requireNonNull;
+import java.util.function.Supplier;
 
 /**
  * A {@link TableCellEditor} implementation for {@link EntityTablePanel}.
  */
 class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
 
-  private final EntityInputComponents inputComponents;
-  private final Attribute<T> attribute;
+  private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier;
   private final Value<T> cellValue = Value.value();
 
   private JComponent component;
 
-  EntityTableCellEditor(final EntityDefinition entityDefinition, final Attribute<T> attribute) {
-    this.inputComponents = new EntityInputComponents(entityDefinition);
-    this.attribute = requireNonNull(attribute, "attribute");
+  EntityTableCellEditor(final Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier) {
+    this.inputComponentSupplier = inputComponentSupplier;
   }
 
   @Override
@@ -62,20 +56,8 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
     return false;
   }
 
-  protected final EntityInputComponents getInputComponents() {
-    return inputComponents;
-  }
-
-  protected final Attribute<T> getAttribute() {
-    return attribute;
-  }
-
-  protected final Value<T> getCellValue() {
-    return cellValue;
-  }
-
-  protected JComponent initializeEditorComponent() {
-    final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
+  private JComponent initializeEditorComponent() {
+    final ComponentValue<T, ? extends JComponent> componentValue = inputComponentSupplier.get();
     componentValue.link(cellValue);
     final JComponent editorComponent = componentValue.getComponent();
     if (editorComponent instanceof JCheckBox) {

@@ -18,9 +18,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -30,6 +28,7 @@ import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -214,7 +213,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> componentFactories = new HashMap<>();
+  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> updateSelectedComponentFactories = new HashMap<>();
+  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> tableCellEditorComponentFactories = new HashMap<>();
 
   private final SwingEntityTableModel tableModel;
 
@@ -437,17 +437,31 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Sets the component factory for the given attribute.
+   * Sets the component factory for the given attribute, used when updating entities via {@link #updateSelectedEntities(Property)}.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
    * @param <A> the attribute type
    * @param <C> the component type
    */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setComponentFactory(final A attribute,
-                                                                                          final EntityComponentFactory<T, A, C> componentFactory) {
+  public final <T, A extends Attribute<T>, C extends JComponent> void setUpdateSelectedComponentFactory(final A attribute,
+                                                                                                        final EntityComponentFactory<T, A, C> componentFactory) {
     getTableModel().getEntityDefinition().getProperty(attribute);
-    componentFactories.put(attribute, requireNonNull(componentFactory));
+    updateSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
+  }
+
+  /**
+   * Sets the table cell editor component factory for the given attribute.
+   * @param attribute the attribute
+   * @param componentFactory the component factory
+   * @param <T> the value type
+   * @param <A> the attribute type
+   * @param <C> the component type
+   */
+  public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorComponentFactory(final A attribute,
+                                                                                                         final EntityComponentFactory<T, A, C> componentFactory) {
+    getTableModel().getEntityDefinition().getProperty(attribute);
+    tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -647,7 +661,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
    * @param <T> the property type
-   * @see #setComponentFactory(Attribute, EntityComponentFactory)
+   * @see #setUpdateSelectedComponentFactory(Attribute, EntityComponentFactory)
    */
   public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
     requireNonNull(propertyToUpdate);
@@ -658,10 +672,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final EntityComponentFactory<T, Attribute<T>, ?> componentFactory =
-            (EntityComponentFactory<T, Attribute<T>, ?>) componentFactories.computeIfAbsent(propertyToUpdate.getAttribute(),
-                    attribute -> new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>());
-    final T newValue = componentFactory.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
+    final T newValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue)
             .showDialog(this, propertyToUpdate.getCaption());
     Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
     WaitCursor.show(this);
@@ -1184,20 +1195,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Creates a TableCellEditor for the given property, returns null if no editor is available
+   * @param <T> the property type
    * @param property the property
    * @return a TableCellEditor for the given property
    */
-  protected TableCellEditor initializeTableCellEditor(final Property<?> property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
+  protected <T> TableCellEditor initializeTableCellEditor(final Property<T> property) {
+    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
       return null;
     }
-
-    if (property instanceof ForeignKeyProperty) {
-      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(),
-              getTableModel().getEntityDefinition(), (ForeignKey) property.getAttribute());
-    }
-
-    return new EntityTableCellEditor<>(getTableModel().getEntityDefinition(), property.getAttribute());
+    //TODO handle Enter key correctly for foreign key input fields
+    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(property.getAttribute(), null));
   }
 
   /**
@@ -1294,6 +1301,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     filteredTable.setAutoStartsEdit(false);
 
     return filteredTable;
+  }
+
+  private <T> ComponentValue<T, ? extends JComponent> createUpdateSelectedComponentValue(final Attribute<T> attribute, final T initialValue) {
+    return ((EntityComponentFactory<T, Attribute<T>, ?>) updateSelectedComponentFactories.computeIfAbsent(attribute, a ->
+            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
+  }
+
+  private <T> ComponentValue<T, ? extends JComponent> createCellEditorComponentValue(final Attribute<T> attribute, final T initialValue) {
+    return ((EntityComponentFactory<T, Attribute<T>, ?>) tableCellEditorComponentFactories.computeIfAbsent(attribute, a ->
+            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
   }
 
   /**
