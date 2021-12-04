@@ -7456,3 +7456,5 @@
   Entity.get() now returns only non-null values, Entity.getIncludingNull() added, javadoc fixes
   Entity.get(), getIncludingNull(), getDistinct() and getDistinctIncludingNull() now return Collection instead of List
   EntityEditPanel now correctly overrides the SAVE control with INSERT in case the edit model does not allow updates
+  EntityTablePanel.createComponentValue() split from updateSelectedEntities()
+  EntityTableCellEditor simplified quite a bit, uses the above, ForeignKeyTableCellEditor removed

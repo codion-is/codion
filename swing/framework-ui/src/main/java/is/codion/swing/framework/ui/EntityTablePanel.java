@@ -18,9 +18,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -30,6 +28,7 @@ import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -437,7 +436,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   /**
-   * Sets the component factory for the given attribute.
+   * Sets the component factory for the given attribute. The component is used when updating entities
+   * via {@link #updateSelectedEntities(Property)} and for creating table cell editor components.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
@@ -658,10 +658,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     final T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final EntityComponentFactory<T, Attribute<T>, ?> componentFactory =
-            (EntityComponentFactory<T, Attribute<T>, ?>) componentFactories.computeIfAbsent(propertyToUpdate.getAttribute(),
-                    attribute -> new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>());
-    final T newValue = componentFactory.createComponentValue(propertyToUpdate.getAttribute(), tableModel.getEditModel(), initialValue)
+    final T newValue = createComponentValue(propertyToUpdate.getAttribute(), initialValue)
             .showDialog(this, propertyToUpdate.getCaption());
     Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
     WaitCursor.show(this);
@@ -1184,20 +1181,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Creates a TableCellEditor for the given property, returns null if no editor is available
+   * @param <T> the property type
    * @param property the property
    * @return a TableCellEditor for the given property
    */
-  protected TableCellEditor initializeTableCellEditor(final Property<?> property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
+  protected <T> TableCellEditor initializeTableCellEditor(final Property<T> property) {
+    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
       return null;
     }
 
-    if (property instanceof ForeignKeyProperty) {
-      return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(),
-              getTableModel().getEntityDefinition(), (ForeignKey) property.getAttribute());
-    }
-
-    return new EntityTableCellEditor<>(getTableModel().getEntityDefinition(), property.getAttribute());
+    //TODO handle Enter key correctly for foreign key input fields
+    return new EntityTableCellEditor<>(() -> createComponentValue(property.getAttribute(), null));
   }
 
   /**
@@ -1294,6 +1288,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     filteredTable.setAutoStartsEdit(false);
 
     return filteredTable;
+  }
+
+  private <T> ComponentValue<T, ? extends JComponent> createComponentValue(final Attribute<T> attribute, final T initialValue) {
+    final EntityComponentFactory<T, Attribute<T>, ?> componentFactory =
+            (EntityComponentFactory<T, Attribute<T>, ?>) componentFactories.computeIfAbsent(attribute,
+                    a -> new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>());
+
+    return componentFactory.createComponentValue(attribute, tableModel.getEditModel(), initialValue);
   }
 
   /**
