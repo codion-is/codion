@@ -194,15 +194,19 @@ public final class EntityTest {
     final List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       entityList.add(entities.builder(Department.TYPE)
-              .with(Department.NO, i)
+              .with(Department.NO, i == 5 ? null : i)
               .build());
-      values.add(i);
+      if (i != 5) {
+        values.add(i);
+      }
     }
-    Collection<Integer> propertyValues = Entity.get(Department.NO, entityList);
-    assertTrue(propertyValues.containsAll(values));
-    propertyValues = Entity.get(Department.NO, entityList);
-    assertTrue(propertyValues.containsAll(values));
+    Collection<Integer> attributeValues = Entity.get(Department.NO, entityList);
+    assertTrue(attributeValues.containsAll(values));
     assertTrue(Entity.get(Department.NO, emptyList()).isEmpty());
+
+    values.add(null);
+    attributeValues = Entity.getIncludingNull(Department.NO, entityList);
+    assertTrue(attributeValues.containsAll(values));
   }
 
   @Test
