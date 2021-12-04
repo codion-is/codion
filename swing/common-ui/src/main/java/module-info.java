@@ -12,6 +12,7 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui.icons;
   exports is.codion.swing.common.ui.laf;
   exports is.codion.swing.common.ui.layout;
+  exports is.codion.swing.common.ui.panel;
   exports is.codion.swing.common.ui.slider;
   exports is.codion.swing.common.ui.spinner;
   exports is.codion.swing.common.ui.table;
