@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.slider.SliderMouseWheelListener;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
@@ -23,6 +24,8 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   private boolean paintLabels = false;
   private boolean inverted = false;
   private int orientation = SwingConstants.HORIZONTAL;
+  private boolean mouseWheelScrolling = false;
+  private boolean mouseWheelScrollingReversed = false;
 
   DefaultSliderBuilder(final BoundedRangeModel boundedRangeModel, final Value<Integer> linkedValue) {
     super(linkedValue);
@@ -78,6 +81,18 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   }
 
   @Override
+  public SliderBuilder mouseWheelScrolling(final boolean mouseWheelScrolling) {
+    this.mouseWheelScrolling  = mouseWheelScrolling;
+    return this;
+  }
+
+  @Override
+  public SliderBuilder mouseWheelScrollingReversed(final boolean reversed) {
+    this.mouseWheelScrollingReversed = reversed;
+    return this;
+  }
+
+  @Override
   protected JSlider buildComponent() {
     final JSlider slider = new JSlider(boundedRangeModel);
     if (minorTickSpacing > 0) {
@@ -92,6 +107,9 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
     slider.setPaintLabels(paintLabels);
     slider.setInverted(inverted);
     slider.setOrientation(orientation);
+    if (mouseWheelScrolling) {
+      slider.addMouseWheelListener(new SliderMouseWheelListener(boundedRangeModel, mouseWheelScrollingReversed));
+    }
 
     return slider;
   }

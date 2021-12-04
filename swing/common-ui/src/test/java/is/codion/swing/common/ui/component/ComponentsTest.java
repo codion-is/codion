@@ -510,6 +510,8 @@ public final class ComponentsTest {
             .inverted(false)
             .minorTickSpacing(1)
             .majorTickSpacing(10)
+            .mouseWheelScrolling(true)
+            .mouseWheelScrollingReversed(true)
             .linkedValue(value)
             .orientation(SwingConstants.VERTICAL)
             .buildComponentValue();

@@ -176,6 +176,9 @@ public final class ApplicationPanel extends JPanel {
     slider(createSliderModel(), model.getIntegerSlideValue())
             .paintTicks(true)
             .paintTrack(true)
+            .minorTickSpacing(5)
+            .majorTickSpacing(20)
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
