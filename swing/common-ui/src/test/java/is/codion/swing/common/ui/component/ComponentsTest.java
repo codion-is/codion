@@ -340,7 +340,7 @@ public final class ComponentsTest {
   void comboBox() {
     final DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
     final Value<String> value = Value.value();
-    final ComponentValue<String, SteppedComboBox<String>> componentValue = Components.comboBox(String.class, boxModel)
+    final ComponentValue<String, SteppedComboBox<String>> componentValue = Components.comboBox(boxModel)
             .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
             .editable(true)
             .linkedValue(value)

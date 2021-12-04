@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
@@ -19,24 +20,20 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
         implements ComboBoxBuilder<T> {
 
   private final ComboBoxModel<T> comboBoxModel;
-  private final Class<T> valueClass;
 
   private boolean editable = false;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
   private ListCellRenderer<T> renderer;
+  private ComboBoxEditor editor;
 
-  DefaultComboBoxBuilder(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+  DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
-    this.valueClass = valueClass;
     this.comboBoxModel = comboBoxModel;
     preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override
   public ComboBoxBuilder<T> editable(final boolean editable) {
-    if (editable && !valueClass.equals(String.class)) {
-      throw new IllegalArgumentException("Editable ComboBox is only supported for String values");
-    }
     this.editable = editable;
     return this;
   }
@@ -54,16 +51,25 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   }
 
   @Override
+  public ComboBoxBuilder<T> editor(final ComboBoxEditor editor) {
+    this.editor = requireNonNull(editor);
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<T> buildComponent() {
     final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
+    if (renderer != null) {
+      comboBox.setRenderer(renderer);
+    }
+    if (editor != null) {
+      comboBox.setEditor(editor);
+    }
     if (editable) {
       comboBox.setEditable(true);
     }
-    else {
+    if (!editable && editor == null) {
       Completion.enable(comboBox, completionMode);
-    }
-    if (renderer != null) {
-      comboBox.setRenderer(renderer);
     }
 
     return comboBox;

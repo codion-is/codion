@@ -503,7 +503,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private SteppedComboBox<Operator> initializeOperatorComboBox(final List<Operator> operators) {
-    return Components.comboBox(Operator.class, new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
+    return Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
                     conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .preferredHeight(TextFields.getPreferredTextFieldHeight())

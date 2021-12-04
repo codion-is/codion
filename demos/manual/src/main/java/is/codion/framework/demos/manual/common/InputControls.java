@@ -302,7 +302,7 @@ public final class InputControls {
             new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
     ComponentValue<String, SteppedComboBox<String>> componentValue =
-            Components.comboBox(String.class, comboBoxModel, stringValue)
+            Components.comboBox(comboBoxModel, stringValue)
                     .preferredWidth(160)
                     .buildComponentValue();
 
