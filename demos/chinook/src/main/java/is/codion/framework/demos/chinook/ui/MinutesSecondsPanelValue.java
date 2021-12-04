@@ -19,7 +19,11 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 
   MinutesSecondsPanelValue() {
-    super(new MinutesSecondsPanel());
+    this(false);
+  }
+
+  MinutesSecondsPanelValue(final boolean horizontal) {
+    super(new MinutesSecondsPanel(horizontal));
     getComponent().minutesField.addValueListener(minutes -> notifyValueChange());
     getComponent().secondsField.addValueListener(seconds -> notifyValueChange());
   }
@@ -51,16 +55,26 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
             .columns(2)
             .build();
 
-    private MinutesSecondsPanel() {
+    private MinutesSecondsPanel(final boolean horizontal) {
       super(borderLayout());
-      final JPanel northPanel = new JPanel(gridLayout(1, 2));
-      northPanel.add(new JLabel(BUNDLE.getString("min")));
-      northPanel.add(new JLabel(BUNDLE.getString("sec")));
-      final JPanel centerPanel = new JPanel(gridLayout(1, 2));
-      centerPanel.add(minutesField);
-      centerPanel.add(secondsField);
-      add(northPanel, BorderLayout.NORTH);
-      add(centerPanel, BorderLayout.CENTER);
+      if (horizontal) {
+        final JPanel centerPanel = new JPanel(gridLayout(1, 4));
+        centerPanel.add(new JLabel(BUNDLE.getString("min")));
+        centerPanel.add(minutesField);
+        centerPanel.add(new JLabel(BUNDLE.getString("sec")));
+        centerPanel.add(secondsField);
+        add(centerPanel, BorderLayout.CENTER);
+      }
+      else {
+        final JPanel northPanel = new JPanel(gridLayout(1, 2));
+        northPanel.add(new JLabel(BUNDLE.getString("min")));
+        northPanel.add(new JLabel(BUNDLE.getString("sec")));
+        final JPanel centerPanel = new JPanel(gridLayout(1, 2));
+        centerPanel.add(minutesField);
+        centerPanel.add(secondsField);
+        add(northPanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
+      }
     }
   }
 }
