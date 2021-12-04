@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -58,22 +59,22 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
     private MinutesSecondsPanel(final boolean horizontal) {
       super(borderLayout());
       if (horizontal) {
-        final JPanel centerPanel = new JPanel(gridLayout(1, 4));
-        centerPanel.add(new JLabel(BUNDLE.getString("min")));
-        centerPanel.add(minutesField);
-        centerPanel.add(new JLabel(BUNDLE.getString("sec")));
-        centerPanel.add(secondsField);
-        add(centerPanel, BorderLayout.CENTER);
+        Panels.builder(gridLayout(1, 4))
+                .add(new JLabel(BUNDLE.getString("min")))
+                .add(minutesField)
+                .add(new JLabel(BUNDLE.getString("sec")))
+                .add(secondsField)
+                .build(panel -> add(panel, BorderLayout.CENTER));
       }
       else {
-        final JPanel northPanel = new JPanel(gridLayout(1, 2));
-        northPanel.add(new JLabel(BUNDLE.getString("min")));
-        northPanel.add(new JLabel(BUNDLE.getString("sec")));
-        final JPanel centerPanel = new JPanel(gridLayout(1, 2));
-        centerPanel.add(minutesField);
-        centerPanel.add(secondsField);
-        add(northPanel, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
+        Panels.builder(gridLayout(1, 2))
+                .add(new JLabel(BUNDLE.getString("min")))
+                .add(new JLabel(BUNDLE.getString("sec")))
+                .build(panel -> add(panel, BorderLayout.NORTH));
+        Panels.builder(gridLayout(1, 2))
+                .add(minutesField)
+                .add(secondsField)
+                .build(panel -> add(panel, BorderLayout.CENTER));
       }
     }
   }

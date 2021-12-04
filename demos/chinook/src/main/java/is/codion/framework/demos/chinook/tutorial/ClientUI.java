@@ -13,6 +13,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.ComponentValues;
@@ -143,11 +144,12 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(titleField,
                     "Inserted: " + insertedEntities.get(0)));
 
-    JPanel albumPanel = new JPanel(gridLayout(4, 1));
-    albumPanel.add(new JLabel("Artist"));
-    albumPanel.add(artistComboBox);
-    albumPanel.add(new JLabel("Title"));
-    albumPanel.add(titleField);
+    JPanel albumPanel = Panels.builder(gridLayout(4, 1))
+            .add(new JLabel("Artist"))
+            .add(artistComboBox)
+            .add(new JLabel("Title"))
+            .add(titleField)
+            .build();
 
     // uncomment the below line to display the panel
 //    Dialogs.displayInDialog(null, albumPanel, "Album");

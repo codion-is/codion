@@ -12,6 +12,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,11 +35,11 @@ public final class Panels {
   public static JPanel createNorthCenterPanel(final JComponent northComponent, final JComponent centerComponent) {
     requireNonNull(northComponent, "northComponent");
     requireNonNull(centerComponent, "centerComponent");
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(northComponent, BorderLayout.NORTH);
-    panel.add(centerComponent, BorderLayout.CENTER);
 
-    return panel;
+    return builder(Layouts.borderLayout())
+            .add(northComponent, BorderLayout.NORTH)
+            .add(centerComponent, BorderLayout.CENTER)
+            .build();
   }
 
   /**
@@ -47,11 +51,11 @@ public final class Panels {
   public static JPanel createWestCenterPanel(final JComponent westComponent, final JComponent centerComponent) {
     requireNonNull(westComponent, "westComponent");
     requireNonNull(centerComponent, "centerComponent");
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(westComponent, BorderLayout.WEST);
-    panel.add(centerComponent, BorderLayout.CENTER);
 
-    return panel;
+    return builder(Layouts.borderLayout())
+            .add(westComponent, BorderLayout.WEST)
+            .add(centerComponent, BorderLayout.CENTER)
+            .build();
   }
 
   /**
@@ -92,24 +96,118 @@ public final class Panels {
     okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
     cancelButton.setText(Messages.get(Messages.CANCEL));
     cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-    final JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelButton);
 
-    return buttonPanel;
+    return builder(Layouts.gridLayout(1, 2))
+            .add(okButton)
+            .add(cancelButton)
+            .build();
+  }
+
+  public static PanelBuilder builder(final LayoutManager layoutManager) {
+    return new DefaultPanelBuilder(layoutManager);
   }
 
   private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
                                               final boolean buttonFocusable) {
     requireNonNull(centerComponent, "centerComponent");
     requireNonNull(buttonAction, "buttonAction");
-    final JPanel panel = new JPanel(new BorderLayout());
     final JButton button = new JButton(buttonAction);
     button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
     button.setFocusable(buttonFocusable);
-    panel.add(centerComponent, BorderLayout.CENTER);
-    panel.add(button, BorderLayout.EAST);
 
-    return panel;
+    return builder(new BorderLayout())
+            .add(centerComponent, BorderLayout.CENTER)
+            .add(button, BorderLayout.EAST)
+            .build();
+  }
+
+  /**
+   * Builds a JPanel instance.
+   */
+  public interface PanelBuilder {
+
+    /**
+     * @param component the component to add
+     * @return this builder instance
+     */
+    PanelBuilder add(JComponent component);
+
+    /**
+     * @param component the component to add
+     * @param constraints the layout constraints
+     * @return this builder instance
+     */
+    PanelBuilder add(JComponent component, Object constraints);
+
+    /**
+     * @return a JPanel based on this builder
+     */
+    JPanel build();
+
+    /**
+     * @param onBuild called after the panel has been built
+     * @return a JPanel based on this builder
+     */
+    JPanel build(Consumer<JPanel> onBuild);
+  }
+
+  private static final class DefaultPanelBuilder implements PanelBuilder {
+
+    private final LayoutManager layoutManager;
+    private final List<ComponentConstraints> componentConstraints = new ArrayList<>();
+
+    private DefaultPanelBuilder(final LayoutManager layoutManager) {
+      this.layoutManager = requireNonNull(layoutManager);
+    }
+
+    @Override
+    public PanelBuilder add(final JComponent component) {
+      componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
+      return this;
+    }
+
+    @Override
+    public PanelBuilder add(final JComponent component, final Object constraints) {
+      componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
+      return this;
+    }
+
+    @Override
+    public JPanel build() {
+      return build(null);
+    }
+
+    @Override
+    public JPanel build(final Consumer<JPanel> onBuild) {
+      final JPanel panel = new JPanel(layoutManager);
+      componentConstraints.forEach(componentConstraint -> {
+        if (componentConstraint.constraints != null) {
+          panel.add(componentConstraint.component, componentConstraint.constraints);
+        }
+        else {
+          panel.add(componentConstraint.component);
+        }
+      });
+      if (onBuild != null) {
+        onBuild.accept(panel);
+      }
+
+      return panel;
+    }
+  }
+
+  private static final class ComponentConstraints {
+
+    private final JComponent component;
+    private final Object constraints;
+
+    private ComponentConstraints(final JComponent component) {
+      this(component, null);
+    }
+
+    private ComponentConstraints(final JComponent component, final Object constraints) {
+      this.component = component;
+      this.constraints = constraints;
+    }
   }
 }

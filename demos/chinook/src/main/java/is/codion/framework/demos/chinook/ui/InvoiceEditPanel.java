@@ -5,6 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.Panels;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -52,17 +53,14 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     createTextField(Invoice.BILLINGPOSTALCODE)
             .selectAllOnFocusGained(true);
 
-    final JPanel centerPanel = new JPanel(gridLayout(4, 2));
-    centerPanel.add(createInputPanel(Invoice.CUSTOMER_FK));
-    centerPanel.add(createInputPanel(Invoice.DATE));
-    centerPanel.add(createInputPanel(Invoice.BILLINGADDRESS));
-    centerPanel.add(createInputPanel(Invoice.BILLINGCITY));
-    centerPanel.add(createInputPanel(Invoice.BILLINGSTATE));
-    centerPanel.add(createInputPanel(Invoice.BILLINGCOUNTRY));
-    centerPanel.add(createInputPanel(Invoice.BILLINGPOSTALCODE));
-
-    final JPanel centerBasePanel = new JPanel(borderLayout());
-    centerBasePanel.add(centerPanel, BorderLayout.CENTER);
+    final JPanel centerBasePanel = Panels.builder(borderLayout())
+            .add(Panels.builder(gridLayout(4, 2))
+                    .add(createInputPanel(Invoice.CUSTOMER_FK)).add(createInputPanel(Invoice.DATE))
+                    .add(createInputPanel(Invoice.BILLINGADDRESS)).add(createInputPanel(Invoice.BILLINGCITY))
+                    .add(createInputPanel(Invoice.BILLINGSTATE)).add(createInputPanel(Invoice.BILLINGCOUNTRY))
+                    .add(createInputPanel(Invoice.BILLINGPOSTALCODE))
+                    .build(), BorderLayout.CENTER)
+            .build();
 
     invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(getEditModel().getEntities().getDefinition(InvoiceLine.TYPE).getCaption()));
 
