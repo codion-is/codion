@@ -7454,3 +7454,4 @@
   SliderBuilder.mouseWheelScrolling() added along with SliderMouseWheelListener
   ColumnConditionPanel.OperatorComboBoxRenderer implemented properly
   Entity.get() now returns only non-null values, Entity.getIncludingNull() added, javadoc fixes
+  Entity.get(), getIncludingNull(), getDistinct() and getDistinctIncludingNull() now return Collection instead of List

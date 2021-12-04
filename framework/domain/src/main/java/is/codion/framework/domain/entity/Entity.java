@@ -416,9 +416,9 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the attribute value
-   * @return a List containing the non-null values of the given attribute from the given entities.
+   * @return the non-null values of the given attribute from the given entities.
    */
-  static <T> List<T> get(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> get(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).filter(Objects::nonNull).collect(toList());
@@ -429,35 +429,35 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the attribute value
-   * @return a List containing the values of the given attributes from the given entities, may contain null values.
+   * @return the values of the given attributes from the given entities, including null values.
    */
-  static <T> List<T> getIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> getIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).collect(toList());
   }
 
   /**
-   * Returns a List containing the distinct non-null values of {@code attribute} from the given entities.
+   * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @return a List containing the discting non-null values of the given attribute from the given entities.
+   * @return the distinct non-null values of the given attribute from the given entities.
    */
-  static <T> List<T> getDistinct(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> getDistinct(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
   }
 
   /**
-   * Returns a List containing the distinct non-null values of {@code attribute} from the given entities.
+   * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @return a List containing the discting values of the given attribute from the given entities, may contain null.
+   * @return the distinct values of the given attribute from the given entities, may contain null.
    */
-  static <T> List<T> getDistinctIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
+  static <T> Collection<T> getDistinctIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> entity.get(attribute)).distinct().collect(toList());
