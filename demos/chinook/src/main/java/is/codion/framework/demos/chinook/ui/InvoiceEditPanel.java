@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.Panels;
+import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;

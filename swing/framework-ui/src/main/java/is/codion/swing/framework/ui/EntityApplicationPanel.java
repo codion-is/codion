@@ -28,7 +28,6 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
@@ -42,6 +41,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.panel.HierarchyPanel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 

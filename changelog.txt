@@ -7460,3 +7460,4 @@
   EntityTableCellEditor simplified quite a bit, uses the above, ForeignKeyTableCellEditor removed
   EntityTablePanel.setComponentFactory() split into setUpdateSelectedComponentFactory() and setTableCellEditorComponentFactory()
   Panels.PanelBuilder added
+  Panels and HierarchyPanel moved to panel package

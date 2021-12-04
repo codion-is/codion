@@ -3,9 +3,9 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.swing.common.ui.Panels;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.common.ui.textfield.IntegerField;
 
 import javax.swing.JLabel;
