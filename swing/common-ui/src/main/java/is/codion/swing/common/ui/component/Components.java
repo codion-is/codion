@@ -158,25 +158,22 @@ public final class Components {
   }
 
   /**
-   * @param valueClass the value class
-   * @param comboBoxModel the combo box model
    * @param <T> the value type
+   * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBox(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel) {
-    return comboBox(valueClass, comboBoxModel, null);
+  public static <T> ComboBoxBuilder<T> comboBox(final ComboBoxModel<T> comboBoxModel) {
+    return comboBox(comboBoxModel, null);
   }
 
   /**
-   * @param valueClass the value class
    * @param comboBoxModel the combo box model
    * @param linkedValue the value to link to the component
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBox(final Class<T> valueClass, final ComboBoxModel<T> comboBoxModel,
-                                                final Value<T> linkedValue) {
-    return new DefaultComboBoxBuilder<>(valueClass, comboBoxModel, linkedValue);
+  public static <T> ComboBoxBuilder<T> comboBox(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+    return new DefaultComboBoxBuilder<>(comboBoxModel, linkedValue);
   }
 
   /**

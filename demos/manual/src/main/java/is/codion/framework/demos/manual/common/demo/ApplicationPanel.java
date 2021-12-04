@@ -110,7 +110,7 @@ public final class ApplicationPanel extends JPanel {
 
     label("String Selection")
             .build(inputPanel::add);
-    comboBox(String.class, createStringComboBoxModel(), model.getStringSelectionValue())
+    comboBox(createStringComboBoxModel(), model.getStringSelectionValue())
             .editable(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
@@ -176,6 +176,9 @@ public final class ApplicationPanel extends JPanel {
     slider(createSliderModel(), model.getIntegerSlideValue())
             .paintTicks(true)
             .paintTrack(true)
+            .minorTickSpacing(5)
+            .majorTickSpacing(20)
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
@@ -185,6 +188,14 @@ public final class ApplicationPanel extends JPanel {
     integerSpinner(createSpinnerModel(), model.getIntegerSpinValue())
             .columns(4)
             .mouseWheelScrolling(true)
+            .transferFocusOnEnter(true)
+            .enabledState(inputEnabledState)
+            .build(inputPanel::add);
+
+    label("Integer Selection")
+            .build(inputPanel::add);
+    comboBox(createIntegerComboBoxModel(), model.getIntegerSelectionValue())
+            .editable(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
@@ -298,6 +309,10 @@ public final class ApplicationPanel extends JPanel {
             Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
     ));
+  }
+
+  private static ComboBoxModel<Integer> createIntegerComboBoxModel() {
+    return new DefaultComboBoxModel<>(new Integer[] {101, 202, 303, 404});
   }
 
   private static Control createSelectRandomItemControl(final ItemComboBoxModel<Integer> integerItemComboBoxModel) {

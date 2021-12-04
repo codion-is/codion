@@ -251,7 +251,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JComboBox<Object> initializeLogLevelField() {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
-    return Components.comboBox(Object.class, comboModel, model.getLogLevelValue())
+    return Components.comboBox(comboModel, model.getLogLevelValue())
             .build();
   }
 

@@ -42,6 +42,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    * holds the column sorting states
    */
   private final Map<C, SortingState> sortingStates = new HashMap<>();
+  private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
   @Override
   public final void sort(final List<R> items) {
@@ -101,8 +102,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return LEXICAL_COMPARATOR;
   }
 
-  private void setSortOrder(final C columnIdentifier, final SortOrder sortOrder,
-                            final boolean addColumnToSort) {
+  private void setSortOrder(final C columnIdentifier, final SortOrder sortOrder, final boolean addColumnToSort) {
     requireNonNull(columnIdentifier, "columnIdentifier");
     requireNonNull(sortOrder, "sortOrder");
     if (!addColumnToSort) {
@@ -114,8 +114,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     else {
       final SortingState state = getSortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
-        final int priority = getNextSortPriority();
-        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, priority));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, getNextSortPriority()));
       }
       else {
         sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.getPriority()));
@@ -125,12 +124,9 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
-    return sortingStates.entrySet().stream().sorted((o1, o2) -> {
-      final Integer priorityOne = o1.getValue().getPriority();
-      final Integer priorityTwo = o2.getValue().getPriority();
-
-      return priorityOne.compareTo(priorityTwo);
-    }).collect(Collectors.toList());
+    return sortingStates.entrySet().stream()
+            .sorted(sortingStatesComparator)
+            .collect(Collectors.toList());
   }
 
   private int getNextSortPriority() {
@@ -188,13 +184,19 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
   }
 
+  private final class SortingStatesComparator implements Comparator<Map.Entry<C, SortingState>> {
+    @Override
+    public int compare(final Map.Entry<C, SortingState> state1, final Map.Entry<C, SortingState> state2) {
+      return Integer.compare(state1.getValue().getPriority(), state2.getValue().getPriority());
+    }
+  }
+
   private static final class DefaultSortingState implements SortingState {
 
     private final SortOrder sortOrder;
     private final int priority;
 
     private DefaultSortingState(final SortOrder sortOrder, final int priority) {
-      requireNonNull(sortOrder, "sortOrder");
       this.sortOrder = sortOrder;
       this.priority = priority;
     }

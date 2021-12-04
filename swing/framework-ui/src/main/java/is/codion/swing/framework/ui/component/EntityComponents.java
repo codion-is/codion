@@ -172,7 +172,7 @@ public class EntityComponents {
   public final <T> ComboBoxBuilder<T> comboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return Components.comboBox(attribute.getTypeClass(), comboBoxModel)
+    return Components.comboBox(comboBoxModel)
             .toolTipText(property.getDescription());
   }
 

@@ -6,6 +6,9 @@ package is.codion.swing.common.ui.component;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
+import javax.swing.ComboBoxEditor;
+import javax.swing.ListCellRenderer;
+
 public interface ComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<T>, ComboBoxBuilder<T>> {
 
   /**
@@ -19,4 +22,16 @@ public interface ComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<
    * @return this builder instance
    */
   ComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
+
+  /**
+   * @param renderer the renderer for the combo box
+   * @return this builder instance
+   */
+  ComboBoxBuilder<T> renderer(ListCellRenderer<T> renderer);
+
+  /**
+   * @param editor the editor for the combo box
+   * @return this builder instance
+   */
+  ComboBoxBuilder<T> editor(ComboBoxEditor editor);
 }

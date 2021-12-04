@@ -7480,3 +7480,8 @@
   FilteredTableModel, AbstractFilteredTableModel, refresh event model improved, refreshSuccessful and refreshFailed events added along with refreshingObserver
   EntityTableModel.add/removeRefreshListener() removed
   EntityEditPanel, EntityTablePanel.onException(), EntityPanel.displayException(), exception parameter now Throwable instead of Exception
+  ComboBoxBuilder.renderer() added
+  ColumnConditionPanel.initializeOperatorComboBox() now uses Components.comboBox()
+  ComboBoxBuilder.editor() added
+  DefaultComboBoxBuilder valueClass constructor parameter removed, quite unnecessary
+  SliderBuilder.mouseWheelScrolling() added along with SliderMouseWheelListener
