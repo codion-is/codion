@@ -16,16 +16,17 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.TextFields;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -507,7 +508,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
                     conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .preferredHeight(TextFields.getPreferredTextFieldHeight())
-            .renderer(createRenderer())
+            .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .build();
   }
@@ -559,21 +560,26 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     inputPanel.add(panel, BorderLayout.CENTER);
   }
 
-  private static ListCellRenderer<Operator> createRenderer() {
-    return (ListCellRenderer<Operator>) new OperatorComboBoxRenderer();
-  }
-
-  private static final class OperatorComboBoxRenderer extends BasicComboBoxRenderer {
+  private static final class OperatorComboBoxRenderer extends JLabel implements ListCellRenderer<Operator> {
 
     private OperatorComboBoxRenderer() {
-      setHorizontalAlignment(CENTER);
+      super("", CENTER);
+      setOpaque(true);
+      setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
     }
 
     @Override
-    public Component getListCellRendererComponent(final JList list, final Object value, final int index,
-                                                  final boolean isSelected, final boolean cellHasFocus) {
-      super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      setToolTipText(((Operator) value).getDescription());
+    public Component getListCellRendererComponent(final JList<? extends Operator> list, final Operator value,
+                                                  final int index, final boolean isSelected, final boolean cellHasFocus) {
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+        setForeground(list.getSelectionForeground());
+      }
+      else {
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
+      }
+      setText((value == null) ? "" : value.toString());
 
       return this;
     }

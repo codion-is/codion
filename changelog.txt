@@ -7485,3 +7485,4 @@
   ComboBoxBuilder.editor() added
   DefaultComboBoxBuilder valueClass constructor parameter removed, quite unnecessary
   SliderBuilder.mouseWheelScrolling() added along with SliderMouseWheelListener
+  ColumnConditionPanel.OperatorComboBoxRenderer implemented properly
