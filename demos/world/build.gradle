@@ -92,6 +92,8 @@ task buildReports(dependsOn: 'compileJava') {
 }
 classes.finalizedBy buildReports
 
+compileTestJava.dependsOn buildReports
+
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
     mainClass = execMainClass
