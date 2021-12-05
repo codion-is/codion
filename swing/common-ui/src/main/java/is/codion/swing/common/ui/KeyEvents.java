@@ -29,11 +29,20 @@ public final class KeyEvents {
 
   /**
    * Instantiates a new {@link KeyEvents.Builder} instance.
+   * @return a {@link Builder} instance.
+   */
+  public static Builder builder() {
+    return new DefaultBuilder();
+  }
+
+  /**
+   * Instantiates a new {@link KeyEvents.Builder} instance.
    * @param keyEvent the key event
    * @return a {@link Builder} instance.
    */
   public static Builder builder(final int keyEvent) {
-    return new DefaultBuilder(keyEvent);
+    return new DefaultBuilder()
+            .keyEvent(keyEvent);
   }
 
   /**
@@ -42,6 +51,12 @@ public final class KeyEvents {
    * @see KeyEvents#builder(int)
    */
   public interface Builder {
+
+    /**
+     * @param keyEvent the key event code
+     * @return this builder instance
+     */
+    Builder keyEvent(int keyEvent);
 
     /**
      * @param modifiers the modifiers
@@ -81,27 +96,30 @@ public final class KeyEvents {
     /**
      * Builds the key event and enables it on the given component
      * @param component the component
+     * @return this builder instance
      */
-    void enable(JComponent component);
+    Builder enable(JComponent component);
 
     /**
      * Disables this key event on the given component
      * @param component the component
+     * @return this builder instance
      */
-    void disable(JComponent component);
+    Builder disable(JComponent component);
   }
 
   private static final class DefaultBuilder implements Builder {
 
-    private final int keyEvent;
-
+    private int keyEvent;
     private int modifiers;
     private int condition = JComponent.WHEN_FOCUSED;
     private boolean onKeyRelease = true;
     private Action action;
 
-    private DefaultBuilder(final int keyEvent) {
+    @Override
+    public Builder keyEvent(final int keyEvent) {
       this.keyEvent = keyEvent;
+      return this;
     }
 
     @Override
@@ -140,7 +158,7 @@ public final class KeyEvents {
     }
 
     @Override
-    public void enable(final JComponent component) {
+    public Builder enable(final JComponent component) {
       requireNonNull(component, "component");
       if (action == null) {
         throw new IllegalStateException("Can not enable a key event without an action");
@@ -151,10 +169,12 @@ public final class KeyEvents {
       }
       component.getActionMap().put(actionName, action);
       component.getInputMap(condition).put(getKeyStroke(), actionName);
+
+      return this;
     }
 
     @Override
-    public void disable(final JComponent component) {
+    public Builder disable(final JComponent component) {
       requireNonNull(component, "component");
       if (action == null) {
         throw new IllegalStateException("Can not disable a key event without an action");
@@ -165,6 +185,8 @@ public final class KeyEvents {
       }
       component.getActionMap().put(actionName, null);
       component.getInputMap(condition).put(getKeyStroke(), null);
+
+      return this;
     }
 
     private String createDefaultActionName(final JComponent component) {
