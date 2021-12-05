@@ -41,9 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -62,12 +60,12 @@ import static java.util.Objects.requireNonNull;
  * For a {@link CalendarPanel} without time fields use the {@link #dateCalendarPanel()} factory method.<br>
  * For a {@link CalendarPanel} with time fields use the {@link #dateTimeCalendarPanel()} factory method.<br><br>
  * Keyboard navigation:<br><br>
- * Previous/next year: CTRL + left/right arrow.<br>
- * Previous/next month: SHIFT + left/right arrow.<br>
+ * Previous/next year: CTRL + left/right arrow or down/up arrow.<br>
+ * Previous/next month: SHIFT + left/right arrow or down/up arrow.<br>
  * Previous/next week: ALT + up/down arrow.<br>
  * Previous/next day: ALT + left/right arrow.<br>
- * Previous/next hour: SHIFT-ALT + left/right arrow.<br>
- * Previous/next minute: CTRL-ALT + left/right arrow.
+ * Previous/next hour: SHIFT-ALT + left/right arrow or down/up arrow.<br>
+ * Previous/next minute: CTRL-ALT + left/right arrow or down/up arrow.
  */
 public final class CalendarPanel extends JPanel {
 
@@ -76,7 +74,6 @@ public final class CalendarPanel extends JPanel {
   private static final int YEAR_COLUMNS = 4;
   private static final int TIME_COLUMNS = 2;
   private static final int DAYS_IN_WEEK = 7;
-  private static final int MONTHS_IN_YEAR = 12;
   private static final int MAX_DAYS_IN_MONTH = 31;
   private static final int MAX_DAY_FILLERS = 14;
 
@@ -537,78 +534,66 @@ public final class CalendarPanel extends JPanel {
   }
 
   private void addKeyEvents() {
-    KeyEvents.builder(KeyEvent.VK_LEFT)
+    final KeyEvents.Builder keyEvent = KeyEvents.builder()
+            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .onKeyPressed();
+    keyEvent.modifiers(InputEvent.CTRL_DOWN_MASK)
+            .keyEvent(KeyEvent.VK_LEFT)
             .action(control(this::previousYear))
-            .onKeyPressed()
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_RIGHT)
+    keyEvent.keyEvent(KeyEvent.VK_DOWN)
+            .enable(this);
+    keyEvent.keyEvent(KeyEvent.VK_RIGHT)
             .action(control(this::nextYear))
-            .onKeyPressed()
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_LEFT)
+    keyEvent.keyEvent(KeyEvent.VK_UP)
+            .enable(this);
+    keyEvent.modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .keyEvent(KeyEvent.VK_LEFT)
             .action(control(this::previousMonth))
-            .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_RIGHT)
+    keyEvent.keyEvent(KeyEvent.VK_DOWN)
+            .enable(this);
+    keyEvent.keyEvent(KeyEvent.VK_RIGHT)
             .action(control(this::nextMonth))
-            .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_UP)
+    keyEvent.keyEvent(KeyEvent.VK_UP)
+            .enable(this);
+    keyEvent.modifiers(InputEvent.ALT_DOWN_MASK)
+            .keyEvent(KeyEvent.VK_UP)
             .action(control(this::previousWeek))
-            .onKeyPressed()
-            .modifiers(InputEvent.ALT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_DOWN)
+    keyEvent.keyEvent(KeyEvent.VK_DOWN)
             .action(control(this::nextWeek))
-            .onKeyPressed()
-            .modifiers(InputEvent.ALT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_LEFT)
+    keyEvent.keyEvent(KeyEvent.VK_LEFT)
             .action(control(this::previousDay))
-            .onKeyPressed()
-            .modifiers(InputEvent.ALT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_RIGHT)
+    keyEvent.keyEvent(KeyEvent.VK_RIGHT)
             .action(control(this::nextDay))
-            .onKeyPressed()
-            .modifiers(InputEvent.ALT_DOWN_MASK)
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
     if (calendarView.includesTime()) {
-      KeyEvents.builder(KeyEvent.VK_LEFT)
+      keyEvent.modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .keyEvent(KeyEvent.VK_LEFT)
               .action(control(this::previousHour))
-              .onKeyPressed()
-              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
-      KeyEvents.builder(KeyEvent.VK_RIGHT)
+      keyEvent.keyEvent(KeyEvent.VK_DOWN)
+              .enable(this);
+      keyEvent.keyEvent(KeyEvent.VK_RIGHT)
               .action(control(this::nextHour))
-              .onKeyPressed()
-              .modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
-      KeyEvents.builder(KeyEvent.VK_LEFT)
+      keyEvent.keyEvent(KeyEvent.VK_UP)
+              .enable(this);
+      keyEvent.modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .keyEvent(KeyEvent.VK_LEFT)
               .action(control(this::previousMinute))
-              .onKeyPressed()
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .enable(this);
-      KeyEvents.builder(KeyEvent.VK_RIGHT)
+      keyEvent.keyEvent(KeyEvent.VK_DOWN)
+              .enable(this);
+      keyEvent.keyEvent(KeyEvent.VK_RIGHT)
               .action(control(this::nextMinute))
-              .onKeyPressed()
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .enable(this);
+      keyEvent.keyEvent(KeyEvent.VK_UP)
               .enable(this);
     }
   }
@@ -714,12 +699,9 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static List<Item<Month>> createMonthItems() {
-    final List<Item<Month>> months = new ArrayList<>(MONTHS_IN_YEAR);
-    Arrays.stream(Month.values()).forEach(month ->
-            months.add(Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault()))));
-    Collections.reverse(months);
-
-    return months;
+    return Arrays.stream(Month.values())
+            .map(month -> Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault())))
+            .collect(Collectors.toList());
   }
 
   private enum CalendarView {

@@ -7461,3 +7461,5 @@
   EntityTablePanel.setComponentFactory() split into setUpdateSelectedComponentFactory() and setTableCellEditorComponentFactory()
   Panels.PanelBuilder added
   Panels and HierarchyPanel moved to panel package
+  KeyEvents.builder() overloaded with no keyEvent parameter, increasing reusability
+  CalendarPanel, key events improved
