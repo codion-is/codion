@@ -1247,30 +1247,30 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void setupControls() {
     if (includeDeleteSelectedControl()) {
-      setControl(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
+      setControlIfNotAlreadySet(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
     }
     if (includeUpdateSelectedControls()) {
-      setControl(ControlCode.UPDATE_SELECTED, createUpdateSelectedControls());
+      setControlIfNotAlreadySet(ControlCode.UPDATE_SELECTED, createUpdateSelectedControls());
     }
     if (includeClearControl) {
-      setControl(ControlCode.CLEAR, createClearControl());
+      setControlIfNotAlreadySet(ControlCode.CLEAR, createClearControl());
     }
-    setControl(ControlCode.REFRESH, createRefreshControl());
-    setControl(ControlCode.SELECT_COLUMNS, table.createSelectColumnsControl());
-    setControl(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
+    setControlIfNotAlreadySet(ControlCode.REFRESH, createRefreshControl());
+    setControlIfNotAlreadySet(ControlCode.SELECT_COLUMNS, table.createSelectColumnsControl());
+    setControlIfNotAlreadySet(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
     if (summaryScrollPane != null) {
-      setControl(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
+      setControlIfNotAlreadySet(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
     }
     if (includeConditionPanel && conditionPanel != null) {
-      setControl(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
-      setControl(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
+      setControlIfNotAlreadySet(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
+      setControlIfNotAlreadySet(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
     }
-    setControl(ControlCode.PRINT_TABLE, createPrintTableControl());
-    setControl(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
-    setControl(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
-    setControl(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
-    setControl(ControlCode.COPY_TABLE_DATA, createCopyControls());
-    setControl(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+    setControlIfNotAlreadySet(ControlCode.PRINT_TABLE, createPrintTableControl());
+    setControlIfNotAlreadySet(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
+    setControlIfNotAlreadySet(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
+    setControlIfNotAlreadySet(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
+    setControlIfNotAlreadySet(ControlCode.COPY_TABLE_DATA, createCopyControls());
+    setControlIfNotAlreadySet(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
   }
 
   private void copySelectedCell() {
@@ -1526,6 +1526,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void onConditionChanged() {
     table.getTableHeader().repaint();
     table.repaint();
+  }
+
+  private void setControlIfNotAlreadySet(final ControlCode controlCode, final Control control) {
+    if (!controls.containsKey(controlCode)) {
+      controls.put(controlCode, control);
+    }
   }
 
   private static void addAdditionalControls(final Controls popupControls, final List<Controls> additionalPopupControls) {
