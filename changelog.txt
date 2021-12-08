@@ -7464,3 +7464,4 @@
   KeyEvents.builder() overloaded with no keyEvent parameter, increasing reusability
   CalendarPanel, key events improved
   EntityEditPanel bug fixed, did not include INSERT control when save control was not enabled
+  EntityTablePanel and EntityEditPanel bug fixed, doesn't set the default control if it has already been set, by a subclass for example, prevented custom controls from being set

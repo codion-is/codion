@@ -22,6 +22,10 @@ public final class LookupTablePanel extends EntityTablePanel {
   public LookupTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setConditionPanelVisible(true);
+    setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
+            .caption("Clear")
+            .mnemonic('C')
+            .build());
   }
 
   @Override
@@ -44,5 +48,9 @@ public final class LookupTablePanel extends EntityTablePanel {
             .successMessage("Export successful")
             .failTitle("Export failed")
             .execute();
+  }
+  private void clearTableAndConditions() {
+    getTableModel().clear();
+    getTableModel().getTableConditionModel().clearConditions();
   }
 }
