@@ -7463,3 +7463,4 @@
   Panels and HierarchyPanel moved to panel package
   KeyEvents.builder() overloaded with no keyEvent parameter, increasing reusability
   CalendarPanel, key events improved
+  EntityEditPanel bug fixed, did not include INSERT control when save control was not enabled

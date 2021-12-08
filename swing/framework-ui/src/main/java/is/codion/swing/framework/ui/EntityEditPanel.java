@@ -829,6 +829,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (USE_SAVE_CONTROL.get()) {
       codes.add(editModel.isUpdateEnabled() ? ControlCode.SAVE : ControlCode.INSERT);
     }
+    else {
+      codes.add(ControlCode.INSERT);
+    }
     codes.add(ControlCode.UPDATE);
     codes.add(ControlCode.DELETE);
     codes.add(ControlCode.CLEAR);
