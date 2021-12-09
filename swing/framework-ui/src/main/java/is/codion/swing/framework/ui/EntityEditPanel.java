@@ -692,9 +692,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   /**
    * Associates {@code control} with {@code controlCode}
    * @param controlCode the control code
-   * @param control the control to associate with {@code controlCode}
+   * @param control the control to associate with {@code controlCode}, null for none
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   protected final void setControl(final ControlCode controlCode, final Control control) {
+    if (panelInitialized) {
+      throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
     requireNonNull(controlCode);
     if (control == null) {
       controls.remove(controlCode);
