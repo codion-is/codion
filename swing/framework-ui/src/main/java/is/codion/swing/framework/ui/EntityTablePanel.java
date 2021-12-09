@@ -1015,9 +1015,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Associates {@code control} with {@code controlCode}
    * @param controlCode the control code
-   * @param control the control to associate with {@code controlCode}
+   * @param control the control to associate with {@code controlCode}, null for none
+   * @throws IllegalStateException in case the panel has already been initialized
    */
   protected final void setControl(final ControlCode controlCode, final Control control) {
+    checkIfInitialized();
     requireNonNull(controlCode);
     if (control == null) {
       controls.remove(controlCode);
