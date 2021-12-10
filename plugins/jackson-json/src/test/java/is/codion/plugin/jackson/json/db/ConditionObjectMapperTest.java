@@ -52,7 +52,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(entityCondition.getValues(), readCondition.getValues());
 
     assertEquals("(deptno not in (?, ?) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
-            entityCondition.getWhereClause(entities.getDefinition(TestDomain.T_EMP)));
+            entityCondition.getConditionString(entities.getDefinition(TestDomain.T_EMP)));
   }
 
   @Test

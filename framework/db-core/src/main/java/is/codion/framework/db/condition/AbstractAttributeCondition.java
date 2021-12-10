@@ -40,11 +40,11 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   }
 
   @Override
-  public final String getWhereClause(final EntityDefinition definition) {
-    return getWhereClause(getColumnExpression(definition));
+  public final String getConditionString(final EntityDefinition definition) {
+    return getConditionString(getColumnExpression(definition));
   }
 
-  protected abstract String getWhereClause(String columnIdentifier);
+  protected abstract String getConditionString(String columnExpression);
 
   @Override
   public final String toString() {

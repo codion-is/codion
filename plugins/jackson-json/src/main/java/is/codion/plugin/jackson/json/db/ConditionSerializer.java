@@ -55,7 +55,7 @@ final class ConditionSerializer extends StdSerializer<Condition> {
       final CustomCondition customCondition = (CustomCondition) condition;
       customConditionSerializer.serialize(customCondition, generator);
     }
-    else if (condition.getWhereClause(entities.getDefinition(condition.getEntityType())).isEmpty()) {
+    else if (condition.getConditionString(entities.getDefinition(condition.getEntityType())).isEmpty()) {
       generator.writeStartObject();
       generator.writeStringField("type", "empty");
       generator.writeEndObject();

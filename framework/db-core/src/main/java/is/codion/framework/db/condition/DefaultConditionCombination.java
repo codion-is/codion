@@ -119,16 +119,16 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public String getWhereClause(final EntityDefinition definition) {
+  public String getConditionString(final EntityDefinition definition) {
     if (conditions.isEmpty()) {
       return "";
     }
     if (conditions.size() == 1) {
-      return conditions.get(0).getWhereClause(definition);
+      return conditions.get(0).getConditionString(definition);
     }
 
     return conditions.stream()
-            .map(condition -> condition.getWhereClause(definition))
+            .map(condition -> condition.getConditionString(definition))
             .filter(string -> !string.isEmpty())
             .collect(joining(toString(conjunction), "(", ")"));
   }

@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Specifies objects serving as where conditions in database queries
+ * Specifies a query condition.
  * @see Conditions for factory and builder methods
  */
 public interface Condition {
@@ -50,11 +50,11 @@ public interface Condition {
   Combination or(Condition... conditions);
 
   /**
-   * Returns a where clause element representing this condition, without the WHERE keyword.
+   * Returns a string representing this condition, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
    * @param definition the entity definition
-   * @return a where clause element
+   * @return a condition string
    */
-  String getWhereClause(EntityDefinition definition);
+  String getConditionString(EntityDefinition definition);
 
   /**
    * @return a {@link SelectCondition} based on this condition
