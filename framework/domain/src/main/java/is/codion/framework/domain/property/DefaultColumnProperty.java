@@ -7,7 +7,6 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.math.BigDecimal;
-import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -201,12 +200,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final Blob blob = resultSet.getBlob(columnIndex);
-    if (blob == null) {
-      return null;
-    }
-
-    return (T) blob.getBytes(1, (int) blob.length());
+    return (T) resultSet.getBytes(columnIndex);
   }
 
   private static <T> T getObject(final ResultSet resultSet, final int columnIndex, final Class<T> typeClass) throws SQLException {

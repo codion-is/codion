@@ -7467,3 +7467,4 @@
   EntityTablePanel and EntityEditPanel bug fixed, doesn't set the default control if it has already been set, by a subclass for example, prevented custom controls from being set
   ForeignKeyConditionPanel removed, EntityConditionPanel.createDefaultConditionPanel() refactored accordingly
   EntityTablePanel.setControl() and EntityEditPanel.setControl() now throw IllegalStateException if the panel has been initialized
+  DefaultColumnProperty, DefaultLocalEntityConnection, load BLOB values using resultSet.getBytes() directly, instead of reading via a Blob instance
