@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -82,7 +81,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String ENTITIES_PARAM_NAME = "entities";
   private static final String EXECUTE_STATEMENT = "executeStatement";
 
-  private static final ResultPacker<Blob> BLOB_RESULT_PACKER = resultSet -> resultSet.getBlob(1);
+  private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
 
   private final Domain domain;
@@ -785,12 +784,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         setParameterValues(statement, entityDefinition.getColumnProperties(condition.getAttributes()), condition.getValues());
 
         resultSet = statement.executeQuery();
-        final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
+        final List<byte[]> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
         if (result.isEmpty()) {
           return null;
         }
-        final Blob blob = result.get(0);
-        final byte[] byteResult = blob.getBytes(1, (int) blob.length());
+        final byte[] byteResult = result.get(0);
         commitIfTransactionIsNotOpen();
 
         return byteResult;
