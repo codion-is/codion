@@ -143,7 +143,7 @@ final class Queries {
       final ColumnProperty<?> property = columnProperties.get(i);
       final String columnName = property.getColumnName();
       if (property instanceof SubqueryProperty) {
-        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubQuery()).append(") as ").append(columnName);
+        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubquery()).append(") as ").append(columnName);
       }
       else {
         final String columnExpression = property.getColumnExpression();

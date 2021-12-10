@@ -7470,3 +7470,4 @@
   DefaultColumnProperty, DefaultLocalEntityConnection, load BLOB values using resultSet.getBytes() directly, instead of reading via a Blob instance
   ColumnProperty.columnExpression added
   Condition.getWhereClause() renamed getConditionString()
+  SubqueryProperty.getSubQuery() renamed to getSubquery()

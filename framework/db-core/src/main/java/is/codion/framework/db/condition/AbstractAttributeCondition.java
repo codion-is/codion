@@ -54,7 +54,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   private String getColumnExpression(final EntityDefinition definition) {
     final ColumnProperty<T> property = definition.getColumnProperty(attribute);
     if (property instanceof SubqueryProperty) {
-      return "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
+      return "(" + ((SubqueryProperty<?>) property).getSubquery() + ")";
     }
 
     return property.getColumnExpression();

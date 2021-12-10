@@ -12,5 +12,5 @@ public interface SubqueryProperty<T> extends ColumnProperty<T> {
   /**
    * @return the subquery string
    */
-  String getSubQuery();
+  String getSubquery();
 }
