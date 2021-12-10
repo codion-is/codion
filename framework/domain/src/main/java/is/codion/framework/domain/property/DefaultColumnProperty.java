@@ -35,6 +35,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   private final transient ResultPacker<T> resultPacker = new PropertyResultPacker();
   private transient String columnName;
+  private transient String columnExpression;
   private transient ValueFetcher<T> valueFetcher;
   private transient ValueConverter<T, Object> valueConverter;
   private transient boolean groupingColumn;
@@ -48,6 +49,11 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   @Override
   public final String getColumnName() {
     return columnName;
+  }
+
+  @Override
+  public final String getColumnExpression() {
+    return columnExpression == null ? columnName : columnExpression;
   }
 
   @Override
@@ -301,6 +307,12 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final B columnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
+      return (B) this;
+    }
+
+    @Override
+    public final B columnExpression(final String columnExpression) {
+      columnProperty.columnExpression = requireNonNull(columnExpression, "columnExpression");
       return (B) this;
     }
 

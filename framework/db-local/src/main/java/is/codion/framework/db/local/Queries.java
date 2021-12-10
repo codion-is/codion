@@ -141,12 +141,16 @@ final class Queries {
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < columnProperties.size(); i++) {
       final ColumnProperty<?> property = columnProperties.get(i);
+      final String columnName = property.getColumnName();
       if (property instanceof SubqueryProperty) {
-        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubQuery())
-                .append(") as ").append(property.getColumnName());
+        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubQuery()).append(") as ").append(columnName);
       }
       else {
-        stringBuilder.append(property.getColumnName());
+        final String columnExpression = property.getColumnExpression();
+        stringBuilder.append(columnExpression);
+        if (!columnName.equals(columnExpression)) {
+          stringBuilder.append(" as ").append(columnName);
+        }
       }
 
       if (i < columnProperties.size() - 1) {
@@ -184,7 +188,7 @@ final class Queries {
   }
 
   private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
-    return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnName() + (orderByAttribute.isAscending() ? "" : " desc");
+    return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
   }
 
   private static void addGroupHavingOrderByAndLimitClauses(final StringBuilder queryBuilder, final Condition condition,

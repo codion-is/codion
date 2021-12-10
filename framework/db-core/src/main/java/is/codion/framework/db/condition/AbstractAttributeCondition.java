@@ -41,7 +41,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
 
   @Override
   public final String getWhereClause(final EntityDefinition definition) {
-    return getWhereClause(getColumnIdentifier(definition));
+    return getWhereClause(getColumnExpression(definition));
   }
 
   protected abstract String getWhereClause(String columnIdentifier);
@@ -51,12 +51,12 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
     return super.toString() + ": " + attribute;
   }
 
-  private String getColumnIdentifier(final EntityDefinition definition) {
+  private String getColumnExpression(final EntityDefinition definition) {
     final ColumnProperty<T> property = definition.getColumnProperty(attribute);
     if (property instanceof SubqueryProperty) {
       return "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
     }
 
-    return property.getColumnName();
+    return property.getColumnExpression();
   }
 }

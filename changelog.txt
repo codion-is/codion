@@ -7468,3 +7468,4 @@
   ForeignKeyConditionPanel removed, EntityConditionPanel.createDefaultConditionPanel() refactored accordingly
   EntityTablePanel.setControl() and EntityEditPanel.setControl() now throw IllegalStateException if the panel has been initialized
   DefaultColumnProperty, DefaultLocalEntityConnection, load BLOB values using resultSet.getBytes() directly, instead of reading via a Blob instance
+  ColumnProperty.columnExpression added

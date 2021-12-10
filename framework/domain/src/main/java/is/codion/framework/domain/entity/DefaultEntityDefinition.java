@@ -682,7 +682,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private String initializeGroupByClause() {
     final List<String> groupingColumnNames = entityProperties.columnProperties.stream()
             .filter(ColumnProperty::isGroupingColumn)
-            .map(ColumnProperty::getColumnName)
+            .map(ColumnProperty::getColumnExpression)
             .collect(toList());
     if (groupingColumnNames.isEmpty()) {
       return null;

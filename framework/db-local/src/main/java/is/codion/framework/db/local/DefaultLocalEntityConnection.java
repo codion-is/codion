@@ -556,9 +556,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       combinedCondition = combinedCondition.and(condition);
     }
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
-    final String columnName = propertyToSelect.getColumnName();
+    final String columnExpression = propertyToSelect.getColumnExpression();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
-            "distinct " + columnName, combinedCondition.getWhereClause(entityDefinition), columnName);
+            "distinct " + columnExpression, combinedCondition.getWhereClause(entityDefinition), columnExpression);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
@@ -775,7 +775,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     final Condition condition = condition(primaryKey);
-    final String selectQuery = "select " + blobProperty.getColumnName() + " from " +
+    final String selectQuery = "select " + blobProperty.getColumnExpression() + " from " +
             entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + condition.getWhereClause(entityDefinition);
     synchronized (connection) {
       try {

@@ -52,6 +52,7 @@ public interface World {
     Attribute<String> REGION = TYPE.stringAttribute("region");
     Attribute<Double> SURFACEAREA = TYPE.doubleAttribute("surfacearea");
     Attribute<Integer> INDEPYEAR = TYPE.integerAttribute("indepyear");
+    Attribute<String> INDEPYEAR_SEARCHABLE = TYPE.stringAttribute("indepyear_searchable");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
     Attribute<Double> LIFE_EXPECTANCY = TYPE.doubleAttribute("lifeexpectancy");
     Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
@@ -90,13 +91,13 @@ public interface World {
     EntityType TYPE = DOMAIN.entityType("continent", Continent.class);
 
     Attribute<String> NAME = TYPE.stringAttribute("continent");
-    Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");
-    Attribute<Long> POPULATION = TYPE.longAttribute("sum(population)");
-    Attribute<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleAttribute("min(lifeexpectancy)");
-    Attribute<Double> MAX_LIFE_EXPECTANCY = TYPE.doubleAttribute("max(lifeexpectancy)");
-    Attribute<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerAttribute("min(indepyear)");
-    Attribute<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerAttribute("max(indepyear)");
-    Attribute<Double> GNP = TYPE.doubleAttribute("sum(gnp)");
+    Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("surface_area");
+    Attribute<Long> POPULATION = TYPE.longAttribute("population");
+    Attribute<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleAttribute("min_life_expectancy");
+    Attribute<Double> MAX_LIFE_EXPECTANCY = TYPE.doubleAttribute("max_life_expectancy");
+    Attribute<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerAttribute("min_indep_year");
+    Attribute<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerAttribute("max_indep_year");
+    Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
 
     String name();
     Integer surfaceArea();

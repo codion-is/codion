@@ -21,6 +21,11 @@ public interface ColumnProperty<T> extends Property<T> {
   String getColumnName();
 
   /**
+   * @return the column expression to use when selecting or the column name if no expression has been set
+   */
+  String getColumnExpression();
+
+  /**
    * @return the sql data type of the underlying column ({@link java.sql.Types}.
    */
   int getColumnType();
@@ -188,6 +193,12 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return this instance
      */
     B columnName(String columnName);
+
+    /**
+     * @param columnExpression the column expression to use when selecting
+     * @return this instance
+     */
+    B columnExpression(String columnExpression);
 
     /**
      * Specifies that this property should not be included during insert and update operations
