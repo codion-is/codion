@@ -25,14 +25,14 @@ public final class DefaultAttributeEqualConditionTest {
     final List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
     DefaultAttributeEqualCondition<Integer> condition = new DefaultAttributeEqualCondition<>(TestDomain.EMP_ID, ids);
-    String conditionString = condition.getWhereClause(definition);
+    String conditionString = condition.getConditionString(definition);
     assertTrue(conditionString.startsWith("empno in (?"));
     assertTrue(conditionString.endsWith("?, ?)"));
 
     ids.clear();
     IntStream.range(0, 105).forEach(ids::add);
     condition = new DefaultAttributeEqualCondition<>(TestDomain.EMP_ID, ids);
-    conditionString = condition.getWhereClause(definition);
+    conditionString = condition.getConditionString(definition);
     assertTrue(conditionString.startsWith("(empno in (?"));
     assertTrue(conditionString.endsWith("?, ?))"));
   }

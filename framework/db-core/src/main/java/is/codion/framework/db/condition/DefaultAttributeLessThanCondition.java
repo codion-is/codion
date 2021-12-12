@@ -33,7 +33,7 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
   }
 
   @Override
-  protected String getWhereClause(final String columnIdentifier) {
-    return columnIdentifier + (getOperator() == Operator.LESS_THAN_OR_EQUAL ? " <= ?" : " < ?");
+  protected String getConditionString(final String columnExpression) {
+    return columnExpression + (getOperator() == Operator.LESS_THAN_OR_EQUAL ? " <= ?" : " < ?");
   }
 }

@@ -44,7 +44,7 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   }
 
   @Override
-  public String getWhereClause(final EntityDefinition definition) {
+  public String getConditionString(final EntityDefinition definition) {
     return definition.getConditionProvider(conditionType).getConditionString(attributes, values);
   }
 }

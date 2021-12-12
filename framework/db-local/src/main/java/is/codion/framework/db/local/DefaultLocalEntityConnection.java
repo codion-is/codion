@@ -292,7 +292,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
 
             final Condition condition = condition(entity.getOriginalPrimaryKey());
-            updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, condition.getWhereClause(entityDefinition));
+            updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, condition.getConditionString(entityDefinition));
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(entityDefinition.getColumnProperties(condition.getAttributes()));
             statementValues.addAll(condition.getValues());
@@ -359,7 +359,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           statementProperties.add(columnProperty);
           statementValues.add(columnProperty.getAttribute().validateType(propertyValue.getValue()));
         }
-        updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, condition.getWhereClause(entityDefinition));
+        updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, condition.getConditionString(entityDefinition));
         statement = prepareStatement(updateQuery);
         statementProperties.addAll(entityDefinition.getColumnProperties(condition.getAttributes()));
         statementValues.addAll(condition.getValues());
@@ -388,7 +388,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteQuery = null;
     synchronized (connection) {
       try {
-        deleteQuery = deleteQuery(entityDefinition.getTableName(), condition.getWhereClause(entityDefinition));
+        deleteQuery = deleteQuery(entityDefinition.getTableName(), condition.getConditionString(entityDefinition));
         statement = prepareStatement(deleteQuery);
         final int deleteCount = executeStatement(statement, deleteQuery,
                 entityDefinition.getColumnProperties(condition.getAttributes()), condition.getValues());
@@ -429,7 +429,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (final Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
           final EntityDefinition entityDefinition = domainEntities.getDefinition(entityTypeKeys.getKey());
           condition = condition(entityTypeKeys.getValue());
-          deleteQuery = deleteQuery(entityDefinition.getTableName(), condition.getWhereClause(entityDefinition));
+          deleteQuery = deleteQuery(entityDefinition.getTableName(), condition.getConditionString(entityDefinition));
           statement = prepareStatement(deleteQuery);
           deleteCount += executeStatement(statement, deleteQuery,
                   entityDefinition.getColumnProperties(condition.getAttributes()), condition.getValues());
@@ -556,9 +556,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       combinedCondition = combinedCondition.and(condition);
     }
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
-    final String columnName = propertyToSelect.getColumnName();
+    final String columnExpression = propertyToSelect.getColumnExpression();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
-            "distinct " + columnName, combinedCondition.getWhereClause(entityDefinition), columnName);
+            "distinct " + columnExpression, combinedCondition.getConditionString(entityDefinition), columnExpression);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
@@ -727,7 +727,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     final Condition condition = condition(primaryKey);
     final String updateQuery = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
-            WHERE_SPACE_PREFIX_POSTFIX + condition.getWhereClause(entityDefinition);
+            WHERE_SPACE_PREFIX_POSTFIX + condition.getConditionString(entityDefinition);
     final List<Object> statementValues = new ArrayList<>();
     statementValues.add(null);//the blob value, binary stream set explicitly later
     statementValues.addAll(condition.getValues());
@@ -775,8 +775,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     final Condition condition = condition(primaryKey);
-    final String selectQuery = "select " + blobProperty.getColumnName() + " from " +
-            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + condition.getWhereClause(entityDefinition);
+    final String selectQuery = "select " + blobProperty.getColumnExpression() + " from " +
+            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + condition.getConditionString(entityDefinition);
     synchronized (connection) {
       try {
         logAccess("readBlob", selectQuery);

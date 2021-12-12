@@ -36,9 +36,9 @@ final class DefaultAttributeNotBetweenCondition<T> extends AbstractAttributeCond
   }
 
   @Override
-  protected String getWhereClause(final String columnIdentifier) {
+  protected String getConditionString(final String columnExpression) {
     return getOperator() == Operator.NOT_BETWEEN ?
-            "(" + columnIdentifier + " <= ? or " + columnIdentifier + " >= ?)" :
-            "(" + columnIdentifier + " < ? or " + columnIdentifier + " > ?)";
+            "(" + columnExpression + " <= ? or " + columnExpression + " >= ?)" :
+            "(" + columnExpression + " < ? or " + columnExpression + " > ?)";
   }
 }

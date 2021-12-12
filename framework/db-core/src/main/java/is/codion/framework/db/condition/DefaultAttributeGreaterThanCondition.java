@@ -33,7 +33,7 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
   }
 
   @Override
-  protected String getWhereClause(final String columnIdentifier) {
-    return columnIdentifier + (getOperator() == Operator.GREATER_THAN_OR_EQUAL ? " >= ?" : " > ?");
+  protected String getConditionString(final String columnExpression) {
+    return columnExpression + (getOperator() == Operator.GREATER_THAN_OR_EQUAL ? " >= ?" : " > ?");
   }
 }

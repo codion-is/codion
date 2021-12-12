@@ -7,8 +7,8 @@ import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ColumnConstraint;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Constraint;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.swing.common.ui.Windows;
@@ -35,7 +35,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     final SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
     final SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
     final SwingEntityModel constraintModel = tableModel.getDetailModel(Constraint.TYPE);
-    final SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ColumnConstraint.TYPE);
+    final SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ConstraintColumn.TYPE);
 
     final EntityPanel schemaPanel = new EntityPanel(schemaModel);
     final EntityPanel tablePanel = new EntityPanel(tableModel);
@@ -82,11 +82,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
       final SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
       final SwingEntityModel columnModel = new SwingEntityModel(Column.TYPE, connectionProvider);
       final SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
-      final SwingEntityModel columnConstraintModel = new SwingEntityModel(ColumnConstraint.TYPE, connectionProvider);
+      final SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
 
       schemaModel.addDetailModel(tableModel);
       tableModel.addDetailModels(columnModel, constraintModel);
-      constraintModel.addDetailModels(columnConstraintModel);
+      constraintModel.addDetailModels(constraintColumnModel);
 
       addEntityModel(schemaModel);
     }

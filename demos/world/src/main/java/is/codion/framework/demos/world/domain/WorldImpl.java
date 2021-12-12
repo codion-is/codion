@@ -111,6 +111,10 @@ public final class WorldImpl extends DefaultDomain {
                     .maximumFractionDigits(2),
             columnProperty(Country.INDEPYEAR, "Indep. year")
                     .minimumValue(-2000).maximumValue(2500),
+            columnProperty(Country.INDEPYEAR_SEARCHABLE)
+                    .columnExpression("to_char(indepyear)")
+                    .searchProperty()
+                    .readOnly(),
             columnProperty(Country.POPULATION, "Population")
                     .nullable(false)
                     .numberFormatGrouping(true),
@@ -229,27 +233,29 @@ public final class WorldImpl extends DefaultDomain {
                     .groupingColumn()
                     .beanProperty("name"),
             columnProperty(Continent.SURFACE_AREA, "Surface area")
+                    .columnExpression("sum(surfacearea)")
                     .aggregateColumn()
-                    .numberFormatGrouping(true)
-                    .beanProperty("surfaceArea"),
+                    .numberFormatGrouping(true),
             columnProperty(Continent.POPULATION, "Population")
+                    .columnExpression("sum(population)")
                     .aggregateColumn()
-                    .numberFormatGrouping(true)
-                    .beanProperty("population"),
+                    .numberFormatGrouping(true),
             columnProperty(Continent.MIN_LIFE_EXPECTANCY, "Min. life expectancy")
-                    .aggregateColumn()
-                    .beanProperty("minLifeExpectancy"),
+                    .columnExpression("min(lifeexpectancy)")
+                    .aggregateColumn(),
             columnProperty(Continent.MAX_LIFE_EXPECTANCY, "Max. life expectancy")
-                    .aggregateColumn()
-                    .beanProperty("maxLifeExpectancy"),
+                    .columnExpression("max(lifeexpectancy)")
+                    .aggregateColumn(),
             columnProperty(Continent.MIN_INDEPENDENCE_YEAR, "Min. ind. year")
+                    .columnExpression("min(indepyear)")
                     .aggregateColumn(),
             columnProperty(Continent.MAX_INDEPENDENCE_YEAR, "Max. ind. year")
+                    .columnExpression("max(indepyear)")
                     .aggregateColumn(),
             columnProperty(Continent.GNP, "GNP")
+                    .columnExpression("sum(gnp)")
                     .aggregateColumn()
-                    .numberFormatGrouping(true)
-                    .beanProperty("gnp"))
+                    .numberFormatGrouping(true))
             .readOnly()
             .caption("Continent");
   }

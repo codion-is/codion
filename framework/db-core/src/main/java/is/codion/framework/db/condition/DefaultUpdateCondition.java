@@ -41,8 +41,8 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   }
 
   @Override
-  public String getWhereClause(final EntityDefinition definition) {
-    return condition.getWhereClause(definition);
+  public String getConditionString(final EntityDefinition definition) {
+    return condition.getConditionString(definition);
   }
 
   @Override

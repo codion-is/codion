@@ -46,11 +46,11 @@ final class Queries {
   /**
    * @param tableName the table name
    * @param updateProperties the properties being updated
-   * @param whereClause the where clause, without the WHERE keyword
+   * @param conditionString the condition string, without the WHERE keyword
    * @return a query for updating
    */
   static String updateQuery(final String tableName, final List<ColumnProperty<?>> updateProperties,
-                            final String whereClause) {
+                            final String conditionString) {
     final StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
       queryBuilder.append(updateProperties.get(i).getColumnName()).append(" = ?");
@@ -59,16 +59,16 @@ final class Queries {
       }
     }
 
-    return queryBuilder.append(WHERE_SPACE_PREFIX_POSTFIX).append(whereClause).toString();
+    return queryBuilder.append(WHERE_SPACE_PREFIX_POSTFIX).append(conditionString).toString();
   }
 
   /**
    * @param tableName the table name
-   * @param whereClause the where clause
+   * @param conditionString the condition string
    * @return a query for deleting the entities specified by the given condition
    */
-  static String deleteQuery(final String tableName, final String whereClause) {
-    return "delete from " + tableName + (whereClause.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + whereClause);
+  static String deleteQuery(final String tableName, final String conditionString) {
+    return "delete from " + tableName + (conditionString.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + conditionString);
   }
 
   /**
@@ -85,16 +85,16 @@ final class Queries {
    * Generates a sql select query with the given parameters
    * @param tableName the name of the table from which to select
    * @param columnsClause the columns to select, example: "col1, col2"
-   * @param whereClause the where condition without the WHERE keyword
+   * @param conditionString the condition string without the WHERE keyword
    * @param orderByClause a string specifying the columns 'ORDER BY' clause,
    * "col1, col2" as input results in the following order by clause "order by col1, col2"
    * @return the generated sql query
    */
-  static String selectQuery(final String tableName, final String columnsClause, final String whereClause,
+  static String selectQuery(final String tableName, final String columnsClause, final String conditionString,
                             final String orderByClause) {
     final StringBuilder queryBuilder = new StringBuilder("select ").append(columnsClause).append(" from ").append(tableName);
-    if (!nullOrEmpty(whereClause)) {
-      queryBuilder.append(WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
+    if (!nullOrEmpty(conditionString)) {
+      queryBuilder.append(WHERE_SPACE_PREFIX_POSTFIX).append(conditionString);
     }
     if (!nullOrEmpty(orderByClause)) {
       queryBuilder.append(" order by ").append(orderByClause);
@@ -120,9 +120,9 @@ final class Queries {
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectQueryString);
-    final String whereClause = condition.getWhereClause(entityDefinition);
-    if (whereClause.length() > 0) {
-      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
+    final String conditionString = condition.getConditionString(entityDefinition);
+    if (conditionString.length() > 0) {
+      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(conditionString);
     }
     if (isForUpdate) {
       final String forUpdateClause = database.getSelectForUpdateClause();
@@ -141,12 +141,16 @@ final class Queries {
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < columnProperties.size(); i++) {
       final ColumnProperty<?> property = columnProperties.get(i);
+      final String columnName = property.getColumnName();
       if (property instanceof SubqueryProperty) {
-        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubQuery())
-                .append(") as ").append(property.getColumnName());
+        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubquery()).append(") as ").append(columnName);
       }
       else {
-        stringBuilder.append(property.getColumnName());
+        final String columnExpression = property.getColumnExpression();
+        stringBuilder.append(columnExpression);
+        if (!columnName.equals(columnExpression)) {
+          stringBuilder.append(" as ").append(columnName);
+        }
       }
 
       if (i < columnProperties.size() - 1) {
@@ -184,7 +188,7 @@ final class Queries {
   }
 
   private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
-    return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnName() + (orderByAttribute.isAscending() ? "" : " desc");
+    return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
   }
 
   private static void addGroupHavingOrderByAndLimitClauses(final StringBuilder queryBuilder, final Condition condition,

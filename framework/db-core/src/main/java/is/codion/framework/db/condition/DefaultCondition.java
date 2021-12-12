@@ -33,7 +33,7 @@ final class DefaultCondition extends AbstractCondition {
   }
 
   @Override
-  public String getWhereClause(final EntityDefinition definition) {
+  public String getConditionString(final EntityDefinition definition) {
     return "";
   }
 }

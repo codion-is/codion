@@ -36,9 +36,9 @@ final class DefaultAttributeBetweenCondition<T> extends AbstractAttributeConditi
   }
 
   @Override
-  protected String getWhereClause(final String columnIdentifier) {
+  protected String getConditionString(final String columnExpression) {
     return getOperator() == Operator.BETWEEN ?
-            "(" + columnIdentifier + " >= ? and " + columnIdentifier + " <= ?)" :
-            "(" + columnIdentifier + " > ? and " + columnIdentifier + " < ?)";
+            "(" + columnExpression + " >= ? and " + columnExpression + " <= ?)" :
+            "(" + columnExpression + " > ? and " + columnExpression + " < ?)";
   }
 }

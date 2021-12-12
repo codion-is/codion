@@ -23,7 +23,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
   }
 
   @Override
-  public String getSubQuery() {
+  public String getSubquery() {
     return subquery;
   }
 

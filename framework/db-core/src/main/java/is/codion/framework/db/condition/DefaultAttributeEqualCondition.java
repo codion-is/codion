@@ -66,8 +66,8 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   @Override
-  protected String getWhereClause(final String columnIdentifier) {
-    String identifier = columnIdentifier;
+  protected String getConditionString(final String columnExpression) {
+    String identifier = columnExpression;
     if (values.isEmpty()) {
       return identifier + (negated ? " is not null" : " is null");
     }
