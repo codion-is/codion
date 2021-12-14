@@ -7471,3 +7471,4 @@
   ColumnProperty.columnExpression added
   Condition.getWhereClause() renamed getConditionString()
   SubqueryProperty.getSubQuery() renamed to getSubquery()
+  Log4j upgraded to 2.16.0
