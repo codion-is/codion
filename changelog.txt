@@ -7505,3 +7505,4 @@
   Condition.getWhereClause() renamed getConditionString()
   SubqueryProperty.getSubQuery() renamed to getSubquery()
   Log4j upgraded to 2.16.0
+  Logback upgraded to 1.2.8 and slf4j to 1.7.32
