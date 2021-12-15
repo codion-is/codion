@@ -83,6 +83,7 @@ public final class DialogsTest {
     Dialogs.okCancelDialog(new JLabel())
             .owner(new JLabel())
             .title("title")
+            .modal(false)
             .icon(Icons.icons().filter())
             .onOk(() -> {})
             .onCancel(() -> {})
