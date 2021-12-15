@@ -19,6 +19,12 @@ import java.awt.Dimension;
 public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuilder> {
 
   /**
+   * @param modal true if the dialog should be modal
+   * @return this OkCancelDialogBuilder instance
+   */
+  OkCancelDialogBuilder modal(boolean modal);
+
+  /**
    * @param resizable true if the dialog should be resizable
    * @return this OkCancelDialogBuilder instance
    */

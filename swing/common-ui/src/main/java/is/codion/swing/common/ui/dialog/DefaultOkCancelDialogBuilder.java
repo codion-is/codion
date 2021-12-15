@@ -29,6 +29,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private final JComponent component;
 
   private boolean resizable = true;
+  private boolean modal = true;
   private Dimension size;
   private Action okAction;
   private Action cancelAction;
@@ -44,6 +45,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
             .caption(Messages.get(Messages.CANCEL))
             .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
             .build();
+  }
+
+  @Override
+  public OkCancelDialogBuilder modal(final boolean modal) {
+    this.modal = modal;
+    return this;
   }
 
   @Override
@@ -121,7 +128,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     else {
       dialog.setLocationRelativeTo(owner);
     }
-    dialog.setModal(true);
+    dialog.setModal(modal);
     dialog.setResizable(resizable);
 
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
