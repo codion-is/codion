@@ -180,7 +180,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
    */
-  private final Map<Attribute<?>, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
+  private final Map<Attribute<?>, EntityDefinition> referencedEntityDefinitions = new HashMap<>();
 
   /**
    * The properties associated with this entity.
@@ -547,11 +547,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityDefinition getForeignDefinition(final ForeignKey foreignKey) {
+  public EntityDefinition getReferencedEntityDefinition(final ForeignKey foreignKey) {
     requireNonNull(foreignKey, FOREIGN_KEY);
-    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKey);
+    final EntityDefinition definition = referencedEntityDefinitions.get(foreignKey);
     if (definition == null) {
-      throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKey);
+      throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);
     }
 
     return definition;
@@ -625,8 +625,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @param foreignKey the foreign key
    * @return true if the referenced entity definition has been set for the given foreign key
    */
-  boolean hasForeignDefinition(final ForeignKey foreignKey) {
-    return foreignEntityDefinitions.containsKey(foreignKey);
+  boolean hasReferencedEntityDefinition(final ForeignKey foreignKey) {
+    return referencedEntityDefinitions.containsKey(foreignKey);
   }
 
   /**
@@ -636,18 +636,18 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @throws IllegalStateException in case the foreign definition has already been set
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
-  void setForeignDefinition(final ForeignKey foreignKey, final EntityDefinition definition) {
+  void setReferencedEntityDefinition(final ForeignKey foreignKey, final EntityDefinition definition) {
     requireNonNull(foreignKey, FOREIGN_KEY);
     requireNonNull(definition, "definition");
     final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKey);
-    if (foreignEntityDefinitions.containsKey(foreignKey)) {
+    if (referencedEntityDefinitions.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
     if (!foreignKeyProperty.getReferencedEntityType().equals(definition.getEntityType())) {
       throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getReferencedEntityType() +
               " expected for " + foreignKey);
     }
-    foreignEntityDefinitions.put(foreignKey, definition);
+    referencedEntityDefinitions.put(foreignKey, definition);
   }
 
   /**

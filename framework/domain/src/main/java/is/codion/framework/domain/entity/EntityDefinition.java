@@ -212,7 +212,7 @@ public interface EntityDefinition {
    * @param foreignKey the foreign key
    * @return the definition of the referenced entity
    */
-  EntityDefinition getForeignDefinition(ForeignKey foreignKey);
+  EntityDefinition getReferencedEntityDefinition(ForeignKey foreignKey);
 
   /**
    * @return true if this entity type has any denormalized properties
