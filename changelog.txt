@@ -7477,3 +7477,4 @@
   Entity, List parameter replaced with Collection in most utility methods, stream used instead of index based iteration, related refactoring
   Conditions.condition(List<Key>) parameter now Collection<Key>
   EntityDefinition.getForeignDefinition() renamed getReferencedEntityDefinition()
+  DefaultEntityDefinition.referencedEntityDefinitions renamed back to foreignEntityDefinitions, for backwards compatibility (serialization)
