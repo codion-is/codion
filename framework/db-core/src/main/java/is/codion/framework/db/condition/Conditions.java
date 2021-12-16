@@ -64,11 +64,11 @@ public final class Conditions {
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
    */
-  public static Condition condition(final List<Key> keys) {
+  public static Condition condition(final Collection<Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
-    final Key firstKey = keys.get(0);
+    final Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.getAttributes().size() > 1) {
       return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL,
               keys.stream().map(Conditions::valueMap).collect(toList()));

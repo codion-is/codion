@@ -189,8 +189,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKey foreignKey : definition.getForeignKeys()) {
         final EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
-        if (referencedDefinition != null && !definition.hasForeignDefinition(foreignKey)) {
-          definition.setForeignDefinition(foreignKey, referencedDefinition);
+        if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
+          definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
         }
       }
     }

@@ -7507,3 +7507,6 @@
   Log4j upgraded to 2.16.0
   Logback upgraded to 1.2.8 and slf4j to 1.7.32
   OkCancelDialogBuilder.modal() added
+  Entity, List parameter replaced with Collection in most utility methods, stream used instead of index based iteration, related refactoring
+  Conditions.condition(List<Key>) parameter now Collection<Key>
+  EntityDefinition.getForeignDefinition() renamed getReferencedEntityDefinition()

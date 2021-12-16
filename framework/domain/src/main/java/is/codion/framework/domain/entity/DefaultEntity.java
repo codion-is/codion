@@ -169,7 +169,7 @@ final class DefaultEntity implements Entity, Serializable {
     if (value == null) {//possibly not loaded
       final Key referencedKey = getReferencedKey(foreignKey);
       if (referencedKey != null) {
-        return new DefaultEntity(definition.getForeignDefinition(foreignKey), referencedKey);
+        return new DefaultEntity(definition.getReferencedEntityDefinition(foreignKey), referencedKey);
       }
     }
 
@@ -426,10 +426,10 @@ final class DefaultEntity implements Entity, Serializable {
     if (references.size() == 1) {
       return isNull(references.get(0).getAttribute());
     }
-    final EntityDefinition foreignDefinition = definition.getForeignDefinition(foreignKey);
+    final EntityDefinition referencedDefinition = definition.getReferencedEntityDefinition(foreignKey);
     for (int i = 0; i < references.size(); i++) {
       final ForeignKey.Reference<?> reference = references.get(i);
-      final ColumnProperty<?> referencedProperty = foreignDefinition.getColumnProperty(reference.getReferencedAttribute());
+      final ColumnProperty<?> referencedProperty = referencedDefinition.getColumnProperty(reference.getReferencedAttribute());
       if (!referencedProperty.isNullable() && isNull(reference.getAttribute())) {
         return true;
       }
@@ -610,22 +610,22 @@ final class DefaultEntity implements Entity, Serializable {
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key initializeAndCacheReferencedKey(final ForeignKey foreignKey) {
-    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKey);
+    final EntityDefinition referencedEntityDefinition = definition.getReferencedEntityDefinition(foreignKey);
     final List<ForeignKey.Reference<?>> references = foreignKey.getReferences();
     if (references.size() > 1) {
-      return initializeAndCacheCompositeReferenceKey(foreignKey, references, foreignEntityDefinition);
+      return initializeAndCacheCompositeReferenceKey(foreignKey, references, referencedEntityDefinition);
     }
 
-    return initializeAndCacheSingleReferenceKey(foreignKey, references.get(0), foreignEntityDefinition);
+    return initializeAndCacheSingleReferenceKey(foreignKey, references.get(0), referencedEntityDefinition);
   }
 
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKey foreignKey,
                                                       final List<ForeignKey.Reference<?>> references,
-                                                      final EntityDefinition foreignEntityDefinition) {
+                                                      final EntityDefinition referencedEntityDefinition) {
     final Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
       final ForeignKey.Reference<?> reference = references.get(i);
-      final ColumnProperty<?> referencedProperty = foreignEntityDefinition.getColumnProperty(reference.getReferencedAttribute());
+      final ColumnProperty<?> referencedProperty = referencedEntityDefinition.getColumnProperty(reference.getReferencedAttribute());
       final Object value = values.get(reference.getAttribute());
       if (value == null && !referencedProperty.isNullable()) {
         return null;
@@ -633,24 +633,24 @@ final class DefaultEntity implements Entity, Serializable {
       keyValues.put(reference.getReferencedAttribute(), value);
     }
     final Set<Attribute<?>> referencedAttributes = keyValues.keySet();
-    final List<Attribute<?>> primaryKeyAttributes = foreignEntityDefinition.getPrimaryKeyAttributes();
+    final List<Attribute<?>> primaryKeyAttributes = referencedEntityDefinition.getPrimaryKeyAttributes();
     final boolean isPrimaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
 
-    return cacheReferencedKey(foreignKey, new DefaultKey(foreignEntityDefinition, keyValues, isPrimaryKey));
+    return cacheReferencedKey(foreignKey, new DefaultKey(referencedEntityDefinition, keyValues, isPrimaryKey));
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKey foreignKey,
                                                    final ForeignKey.Reference<?> reference,
-                                                   final EntityDefinition foreignEntityDefinition) {
+                                                   final EntityDefinition referencedEntityDefinition) {
     final Object value = values.get(reference.getAttribute());
     if (value == null) {
       return null;
     }
 
-    final boolean isPrimaryKey = reference.getReferencedAttribute().equals(foreignEntityDefinition.getPrimaryKeyAttributes().get(0));
+    final boolean isPrimaryKey = reference.getReferencedAttribute().equals(referencedEntityDefinition.getPrimaryKeyAttributes().get(0));
 
     return cacheReferencedKey(foreignKey,
-            new DefaultKey(definition.getForeignDefinition(foreignKey),
+            new DefaultKey(definition.getReferencedEntityDefinition(foreignKey),
                     reference.getReferencedAttribute(), value, isPrimaryKey));
   }
 
