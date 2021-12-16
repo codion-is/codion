@@ -49,6 +49,7 @@ public final class LookupTablePanel extends EntityTablePanel {
             .failTitle("Export failed")
             .execute();
   }
+
   private void clearTableAndConditions() {
     getTableModel().clear();
     getTableModel().getTableConditionModel().clearConditions();

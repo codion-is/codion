@@ -7478,3 +7478,4 @@
   Conditions.condition(List<Key>) parameter now Collection<Key>
   EntityDefinition.getForeignDefinition() renamed getReferencedEntityDefinition()
   DefaultEntityDefinition.referencedEntityDefinitions renamed back to foreignEntityDefinitions, for backwards compatibility (serialization)
+  EntityEditPanel, EntityTablePanel, setControlIfNotAlreadySet() replaced with controls.putIfAbsent()
