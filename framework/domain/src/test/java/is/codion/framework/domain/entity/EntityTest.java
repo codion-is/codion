@@ -434,7 +434,7 @@ public final class EntityTest {
             Employee.DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.getEntityType()));
-    final List<Integer> values = Entity.getValues(new ArrayList<>(referencedKeys));
+    final Collection<Integer> values = Entity.getValues(new ArrayList<>(referencedKeys));
     assertTrue(values.contains(1));
     assertTrue(values.contains(2));
     assertFalse(values.contains(3));
@@ -447,7 +447,7 @@ public final class EntityTest {
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    final List<Key> keys = Entity.getPrimaryKeys(singletonList(noPk));
-    assertTrue(keys.get(0).isNull());
+    final Collection<Key> keys = Entity.getPrimaryKeys(singletonList(noPk));
+    assertTrue(keys.iterator().next().isNull());
   }
 }

@@ -7,11 +7,9 @@ import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +19,7 @@ import java.util.Set;
 
 import static is.codion.common.Util.map;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * Represents a row in a database table.
@@ -309,8 +307,9 @@ public interface Entity extends Comparable<Entity> {
    * @return true if any of the given entities has a modified primary key
    */
   static boolean isKeyModified(final Collection<Entity> entities) {
-    return requireNonNull(entities).stream().anyMatch(entity ->
-            entity.getPrimaryKey().getAttributes().stream().anyMatch(entity::isModified));
+    return requireNonNull(entities).stream()
+            .anyMatch(entity -> entity.getPrimaryKey().getAttributes().stream()
+                    .anyMatch(entity::isModified));
   }
 
   /**
@@ -321,7 +320,9 @@ public interface Entity extends Comparable<Entity> {
    * @see Entity#isModified()
    */
   static <T extends Entity> List<T> getModified(final Collection<T> entities) {
-    return requireNonNull(entities, "entities").stream().filter(Entity::isModified).collect(toList());
+    return requireNonNull(entities).stream()
+            .filter(Entity::isModified)
+            .collect(toList());
   }
 
   /**
@@ -352,14 +353,10 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Key> getPrimaryKeys(final List<? extends Entity> entities) {
-    requireNonNull(entities, "entities");
-    final List<Key> keys = new ArrayList<>(entities.size());
-    for (int i = 0; i < entities.size(); i++) {
-      keys.add(entities.get(i).getPrimaryKey());
-    }
-
-    return keys;
+  static List<Key> getPrimaryKeys(final Collection<? extends Entity> entities) {
+    return requireNonNull(entities).stream()
+            .map(Entity::getPrimaryKey)
+            .collect(toList());
   }
 
   /**
@@ -368,31 +365,22 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the foreign key
    * @return the keys referenced by the given foreign key
    */
-  static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final ForeignKey foreignKey) {
-    final Set<Key> keySet = new HashSet<>();
-    for (int i = 0; i < entities.size(); i++) {
-      final Key key = entities.get(i).getReferencedKey(foreignKey);
-      if (key != null) {
-        keySet.add(key);
-      }
-    }
-
-    return keySet;
+  static Set<Key> getReferencedKeys(final Collection<? extends Entity> entities, final ForeignKey foreignKey) {
+    return requireNonNull(entities).stream()
+            .map(entity -> entity.getReferencedKey(foreignKey))
+            .filter(Objects::nonNull)
+            .collect(toSet());
   }
 
   /**
    * Returns the primary keys of the given entities with their original values.
    * @param entities the entities
-   * @return a List containing the primary keys of the given entities with their original values
+   * @return a Collection containing the primary keys of the given entities with their original values
    */
-  static List<Key> getOriginalPrimaryKeys(final List<? extends Entity> entities) {
-    requireNonNull(entities, "entities");
-    final List<Key> keys = new ArrayList<>(entities.size());
-    for (int i = 0; i < entities.size(); i++) {
-      keys.add(entities.get(i).getOriginalPrimaryKey());
-    }
-
-    return keys;
+  static Collection<Key> getOriginalPrimaryKeys(final Collection<? extends Entity> entities) {
+    return requireNonNull(entities).stream()
+            .map(Entity::getOriginalPrimaryKey)
+            .collect(toList());
   }
 
   /**
@@ -401,14 +389,10 @@ public interface Entity extends Comparable<Entity> {
    * @param keys the keys
    * @return the attribute values of the given keys
    */
-  static <T> List<T> getValues(final List<Key> keys) {
-    requireNonNull(keys, "keys");
-    final List<T> list = new ArrayList<>(keys.size());
-    for (int i = 0; i < keys.size(); i++) {
-      list.add(keys.get(i).get());
-    }
-
-    return list;
+  static <T> Collection<T> getValues(final Collection<Key> keys) {
+    return requireNonNull(keys).stream()
+            .map(key -> (T) key.get())
+            .collect(toList());
   }
 
   /**
@@ -420,8 +404,10 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> Collection<T> get(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
-    requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> entity.get(attribute)).filter(Objects::nonNull).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(entity -> entity.get(attribute))
+            .filter(Objects::nonNull)
+            .collect(toList());
   }
 
   /**
@@ -433,8 +419,9 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> Collection<T> getIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
-    requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> entity.get(attribute)).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(entity -> entity.get(attribute))
+            .collect(toList());
   }
 
   /**
@@ -446,8 +433,11 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> Collection<T> getDistinct(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
-    requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(entity -> entity.get(attribute))
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(toList());
   }
 
   /**
@@ -459,8 +449,10 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> Collection<T> getDistinctIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
-    requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> entity.get(attribute)).distinct().collect(toList());
+    return requireNonNull(entities).stream()
+            .map(entity -> entity.get(attribute))
+            .distinct()
+            .collect(toList());
   }
 
   /**
@@ -473,8 +465,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> Map<Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
-    requireNonNull(entities, "entities");
-    final Map<Key, T> previousValues = new HashMap<>(entities.size());
+    final Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
     for (final Entity entity : entities) {
       previousValues.put(entity.getPrimaryKey(), entity.put(attribute, value));
     }
@@ -501,7 +492,9 @@ public interface Entity extends Comparable<Entity> {
    * @return a deep copy of the given entities
    */
   static List<Entity> deepCopy(final List<? extends Entity> entities) {
-    return requireNonNull(entities, "entities").stream().map(Entity::deepCopy).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(Entity::deepCopy)
+            .collect(toList());
   }
 
   /**
@@ -510,7 +503,9 @@ public interface Entity extends Comparable<Entity> {
    * @return copies of the given entities, in the same order as they are received
    */
   static List<Entity> copy(final List<? extends Entity> entities) {
-    return requireNonNull(entities, "entities").stream().map(Entity::copy).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(Entity::copy)
+            .collect(toList());
   }
 
   /**
@@ -522,7 +517,9 @@ public interface Entity extends Comparable<Entity> {
    * @throws IllegalArgumentException in case any of the entities is not of the given entity type
    */
   static <T extends Entity> List<T> castTo(final Class<T> entityClass, final List<Entity> entities) {
-    return requireNonNull(entities, "entities").stream().map(entity -> entity.castTo(entityClass)).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(entity -> entity.castTo(entityClass))
+            .collect(toList());
   }
 
   /**
@@ -530,15 +527,9 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Key, Entity> mapToPrimaryKey(final List<Entity> entities) {
-    requireNonNull(entities, "entities");
-    final Map<Key, Entity> entityMap = new HashMap<>();
-    for (int i = 0; i < entities.size(); i++) {
-      final Entity entity = entities.get(i);
-      entityMap.put(entity.getPrimaryKey(), entity);
-    }
-
-    return entityMap;
+  static Map<Key, Entity> mapToPrimaryKey(final Collection<Entity> entities) {
+    return requireNonNull(entities).stream()
+            .collect(toMap(Entity::getPrimaryKey, entity -> entity));
   }
 
   /**
@@ -581,8 +572,11 @@ public interface Entity extends Comparable<Entity> {
    */
   static List<List<String>> getStringValueList(final List<Attribute<?>> attributes, final List<Entity> entities) {
     requireNonNull(attributes);
-    return requireNonNull(entities).stream().map(entity ->
-            attributes.stream().map(entity::getAsString).collect(toList())).collect(toList());
+    return requireNonNull(entities).stream()
+            .map(entity -> attributes.stream()
+                    .map(entity::getAsString)
+                    .collect(toList()))
+            .collect(toList());
   }
 
   /**
@@ -591,11 +585,12 @@ public interface Entity extends Comparable<Entity> {
    * @param values the attribute values to use as condition mapped to their respective attributes
    * @return the entities having the exact same attribute values as in the given value map
    */
-  static List<Entity> getByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
+  static Collection<Entity> getByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
     requireNonNull(values);
-    return requireNonNull(entities).stream().filter(entity ->
-            values.entrySet().stream().allMatch(entry ->
-                    Objects.equals(entity.get(entry.getKey()), entry.getValue()))).collect(toList());
+    return requireNonNull(entities).stream()
+            .filter(entity -> values.entrySet().stream()
+                    .allMatch(entry -> Objects.equals(entity.get(entry.getKey()), entry.getValue())))
+            .collect(toList());
   }
 
   /**
@@ -605,11 +600,13 @@ public interface Entity extends Comparable<Entity> {
    * @return true if the values of the given attributes are equal in the given entities
    */
   static boolean valuesEqual(final Entity entityOne, final Entity entityTwo) {
-    if (entityOne.entrySet().size() != entityTwo.entrySet().size()) {
+    if (requireNonNull(entityOne).entrySet().size() != requireNonNull(entityTwo).entrySet().size()) {
       return false;
     }
 
-    return valuesEqual(entityOne, entityTwo, entityOne.entrySet().stream().map(Map.Entry::getKey).toArray(Attribute[]::new));
+    return valuesEqual(entityOne, entityTwo, entityOne.entrySet().stream()
+            .map(Map.Entry::getKey)
+            .toArray(Attribute[]::new));
   }
 
   /**
