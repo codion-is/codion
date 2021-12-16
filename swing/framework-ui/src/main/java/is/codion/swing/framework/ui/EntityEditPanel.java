@@ -764,31 +764,25 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       setupEditControls();
     }
     if (controlCodes.contains(ControlCode.CLEAR)) {
-      setControlIfNotAlreadySet(ControlCode.CLEAR, createClearControl());
+      controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
     }
     if (controlCodes.contains(ControlCode.REFRESH)) {
-      setControlIfNotAlreadySet(ControlCode.REFRESH, createRefreshControl());
+      controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
     }
   }
 
   private void setupEditControls() {
     if (getEditModel().isInsertEnabled() && getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
-      setControlIfNotAlreadySet(ControlCode.SAVE, createSaveControl());
+      controls.putIfAbsent(ControlCode.SAVE, createSaveControl());
     }
     if (getEditModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
-      setControlIfNotAlreadySet(ControlCode.INSERT, createInsertControl());
+      controls.putIfAbsent(ControlCode.INSERT, createInsertControl());
     }
     if (getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
-      setControlIfNotAlreadySet(ControlCode.UPDATE, createUpdateControl());
+      controls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
     }
     if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
-      setControlIfNotAlreadySet(ControlCode.DELETE, createDeleteControl());
-    }
-  }
-
-  private void setControlIfNotAlreadySet(final ControlCode controlCode, final Control control) {
-    if (!controls.containsKey(controlCode)) {
-      controls.put(controlCode, control);
+      controls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
     }
   }
 

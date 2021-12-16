@@ -50,10 +50,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -139,23 +138,27 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return the attributes that have been associated with components.
+   * @return the attributes that have associated components.
    */
-  public final List<Attribute<?>> getComponentAttributes() {
-    return new ArrayList<>(components.keySet());
+  public final Collection<Attribute<?>> getComponentAttributes() {
+    final Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
+    attributes.addAll(componentBuilders.keySet());
+
+    return attributes;
   }
 
   /**
    * @param attribute the attribute
-   * @return the component associated with the given attribute, null if no component
-   * or component builder has been associated with the given attribute
+   * @return the component associated with the given attribute
+   * @throws IllegalStateException in case no component or builder has been associated with the given attribute
    */
   public final JComponent getComponent(final Attribute<?> attribute) {
-    if (componentBuilders.containsKey(attribute)) {
-      components.putIfAbsent(attribute, componentBuilders.remove(attribute).build());
+    final JComponent component = getComponentInternal(attribute);
+    if (component == null) {
+      throw new IllegalStateException("No component associated with attribute: " + attribute);
     }
 
-    return components.get(attribute);
+    return component;
   }
 
   /**
@@ -236,7 +239,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute of the component to select
    */
   public final void requestComponentFocus(final Attribute<?> attribute) {
-    final JComponent component = getComponent(attribute);
+    final JComponent component = getComponentInternal(attribute);
     if (component != null) {
       component.requestFocus();
     }
@@ -249,9 +252,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
-    final List<Property<?>> properties =
+    final Collection<Property<?>> properties =
             Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
-    final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.get(0)) :
+    final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
                     .title(Messages.get(Messages.SELECT_INPUT_FIELD))
@@ -260,17 +263,17 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return a list of attributes to use when selecting an input component in this panel,
+   * @return a collection of attributes to use when selecting an input component in this panel,
    * this returns all attributes that have an associated component in this panel
    * that is enabled, displayable, visible and focusable.
    * @see #excludeComponentFromSelection(Attribute)
    * @see #setComponent(Attribute, JComponent)
    */
-  public final List<Attribute<?>> getSelectComponentAttributes() {
-    final List<Attribute<?>> attributes = getComponentAttributes();
+  public final Collection<Attribute<?>> getSelectComponentAttributes() {
+    final Collection<Attribute<?>> attributes = getComponentAttributes();
     attributes.removeIf(attribute ->
             excludeFromSelection.contains(attribute) ||
-                    !isComponentSelectable(getComponent(attribute)));
+                    !isComponentSelectable(getComponentInternal(attribute)));
 
     return attributes;
   }
@@ -367,12 +370,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
   protected final JPanel createInputPanel(final Attribute<?> attribute) {
-    final JComponent component = getComponent(attribute);
-    if (component == null) {
-      throw new IllegalArgumentException("No component associated with attribute: " + attribute);
-    }
-
-    return createInputPanel(attribute, component);
+    return createInputPanel(attribute, getComponent(attribute));
   }
 
   /**
@@ -683,7 +681,7 @@ public class EntityEditComponentPanel extends JPanel {
     final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     return Components.label(property.getCaption())
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
-            .labelFor(getComponent(attribute));
+            .labelFor(getComponentInternal(attribute));
   }
 
   /**
@@ -695,7 +693,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     if (initialFocusAttribute != null) {
-      return getComponent(initialFocusAttribute);
+      return getComponentInternal(initialFocusAttribute);
     }
 
     return null;
@@ -710,7 +708,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     if (afterInsertFocusAttribute != null) {
-      return getComponent(afterInsertFocusAttribute);
+      return getComponentInternal(afterInsertFocusAttribute);
     }
 
     return getInitialFocusComponent();
@@ -738,6 +736,14 @@ public class EntityEditComponentPanel extends JPanel {
     else {
       requestFocus();
     }
+  }
+
+  private JComponent getComponentInternal(final Attribute<?> attribute) {
+    if (componentBuilders.containsKey(attribute)) {
+      components.putIfAbsent(attribute, componentBuilders.remove(attribute).build());
+    }
+
+    return components.get(attribute);
   }
 
   /**
