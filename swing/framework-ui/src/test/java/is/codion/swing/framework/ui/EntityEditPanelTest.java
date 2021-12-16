@@ -29,6 +29,7 @@ public final class EntityEditPanelTest {
   void test() throws DatabaseException {
     final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final TestEditPanel editPanel = new TestEditPanel(editModel);
+    assertEquals(7, editPanel.getComponentAttributes().size());
     editPanel.createHorizontalControlPanel();
     editPanel.createVerticalControlPanel();
     editPanel.createControlToolBar(HORIZONTAL);
@@ -65,10 +66,6 @@ public final class EntityEditPanelTest {
 
     public TestEditPanel(final SwingEntityEditModel editModel) {
       super(editModel);
-    }
-
-    @Override
-    protected void initializeUI() {
       createTextField(TestDomain.EMP_NAME);
       createItemComboBox(TestDomain.EMP_JOB);
       createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
@@ -76,7 +73,10 @@ public final class EntityEditPanelTest {
       createTextField(TestDomain.EMP_SALARY);
       createTextField(TestDomain.EMP_COMMISSION);
       createTemporalInputPanel(TestDomain.EMP_HIREDATE);
+    }
 
+    @Override
+    protected void initializeUI() {
       setInitialFocusAttribute(TestDomain.EMP_NAME);
 
       setLayout(FlexibleGridLayout.builder().rowsColumns(3, 3).fixRowHeights(true).build());

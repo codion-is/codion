@@ -50,7 +50,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -142,7 +141,10 @@ public class EntityEditComponentPanel extends JPanel {
    * @return the attributes that have associated components.
    */
   public final Collection<Attribute<?>> getComponentAttributes() {
-    return new ArrayList<>(components.keySet());
+    final Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
+    attributes.addAll(componentBuilders.keySet());
+
+    return attributes;
   }
 
   /**
