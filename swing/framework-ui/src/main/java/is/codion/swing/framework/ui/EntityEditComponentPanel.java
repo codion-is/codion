@@ -51,9 +51,9 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -139,9 +139,9 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return the attributes that have been associated with components.
+   * @return the attributes that have associated components.
    */
-  public final List<Attribute<?>> getComponentAttributes() {
+  public final Collection<Attribute<?>> getComponentAttributes() {
     return new ArrayList<>(components.keySet());
   }
 
@@ -249,9 +249,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
-    final List<Property<?>> properties =
+    final Collection<Property<?>> properties =
             Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
-    final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.get(0)) :
+    final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
                     .title(Messages.get(Messages.SELECT_INPUT_FIELD))
@@ -260,14 +260,14 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return a list of attributes to use when selecting an input component in this panel,
+   * @return a collection of attributes to use when selecting an input component in this panel,
    * this returns all attributes that have an associated component in this panel
    * that is enabled, displayable, visible and focusable.
    * @see #excludeComponentFromSelection(Attribute)
    * @see #setComponent(Attribute, JComponent)
    */
-  public final List<Attribute<?>> getSelectComponentAttributes() {
-    final List<Attribute<?>> attributes = getComponentAttributes();
+  public final Collection<Attribute<?>> getSelectComponentAttributes() {
+    final Collection<Attribute<?>> attributes = getComponentAttributes();
     attributes.removeIf(attribute ->
             excludeFromSelection.contains(attribute) ||
                     !isComponentSelectable(getComponent(attribute)));
