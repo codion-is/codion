@@ -7480,3 +7480,4 @@
   DefaultEntityDefinition.referencedEntityDefinitions renamed back to foreignEntityDefinitions, for backwards compatibility (serialization)
   EntityEditPanel, EntityTablePanel, setControlIfNotAlreadySet() replaced with controls.putIfAbsent()
   EntityEditComponentPanel.getSelectComponentAttributes() and getComponentAttributes() now return Collection instead of List
+  EntityEditComponentPanel.getComponent(Attribute) now throws IllegalStateException if no component exists, instead of returning null
