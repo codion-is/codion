@@ -180,7 +180,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
    */
-  private final Map<Attribute<?>, EntityDefinition> referencedEntityDefinitions = new HashMap<>();
+  private final Map<Attribute<?>, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
 
   /**
    * The properties associated with this entity.
@@ -549,7 +549,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public EntityDefinition getReferencedEntityDefinition(final ForeignKey foreignKey) {
     requireNonNull(foreignKey, FOREIGN_KEY);
-    final EntityDefinition definition = referencedEntityDefinitions.get(foreignKey);
+    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKey);
     if (definition == null) {
       throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);
     }
@@ -626,7 +626,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @return true if the referenced entity definition has been set for the given foreign key
    */
   boolean hasReferencedEntityDefinition(final ForeignKey foreignKey) {
-    return referencedEntityDefinitions.containsKey(foreignKey);
+    return foreignEntityDefinitions.containsKey(foreignKey);
   }
 
   /**
@@ -640,14 +640,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     requireNonNull(foreignKey, FOREIGN_KEY);
     requireNonNull(definition, "definition");
     final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKey);
-    if (referencedEntityDefinitions.containsKey(foreignKey)) {
+    if (foreignEntityDefinitions.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
     if (!foreignKeyProperty.getReferencedEntityType().equals(definition.getEntityType())) {
       throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getReferencedEntityType() +
               " expected for " + foreignKey);
     }
-    referencedEntityDefinitions.put(foreignKey, definition);
+    foreignEntityDefinitions.put(foreignKey, definition);
   }
 
   /**

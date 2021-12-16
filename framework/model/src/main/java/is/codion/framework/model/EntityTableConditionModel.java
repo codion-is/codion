@@ -121,7 +121,6 @@ public interface EntityTableConditionModel {
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
-   * @throws IllegalArgumentException in case filter model exists for the given attribute
    * @throws IllegalArgumentException in case no condition model exists for the given attribute
    */
   <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
