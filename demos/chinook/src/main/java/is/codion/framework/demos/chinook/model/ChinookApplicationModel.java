@@ -40,7 +40,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   }
 
   private static SwingEntityModel initializePlaylistModel(final EntityConnectionProvider connectionProvider) {
-    final SwingEntityModel playlistModel = new SwingEntityModel(Playlist.TYPE, connectionProvider);
+    final SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
     final SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
 
     playlistModel.addDetailModel(playlistTrackModel);

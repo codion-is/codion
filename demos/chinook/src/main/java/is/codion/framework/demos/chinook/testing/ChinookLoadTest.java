@@ -6,10 +6,13 @@ package is.codion.framework.demos.chinook.testing;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
+import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.testing.scenarios.InsertDeleteAlbum;
 import is.codion.framework.demos.chinook.testing.scenarios.LogoutLogin;
 import is.codion.framework.demos.chinook.testing.scenarios.RaisePrices;
+import is.codion.framework.demos.chinook.testing.scenarios.RandomPlaylist;
 import is.codion.framework.demos.chinook.testing.scenarios.UpdateTotalsPrices;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewAlbum;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewCustomerReport;
@@ -33,7 +36,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
 
   public ChinookLoadTest() {
     super(UNIT_TEST_USER, asList(new ViewGenre(), new ViewCustomerReport(), new ViewInvoice(), new ViewAlbum(),
-            new UpdateTotalsPrices(), new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices()));
+            new UpdateTotalsPrices(), new InsertDeleteAlbum(), new LogoutLogin(), new RaisePrices(), new RandomPlaylist()));
   }
 
   @Override
@@ -49,6 +52,9 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
     genreModel.addLinkedDetailModel(genreTrackModel);
 
     applicationModel.addEntityModel(genreModel);
+
+    final SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
+    playlistModel.addLinkedDetailModel(playlistModel.getDetailModel(PlaylistTrack.TYPE));
 
     return applicationModel;
   }

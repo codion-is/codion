@@ -10,11 +10,15 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.condition;
@@ -322,6 +326,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Playlist.NAME))
             .stringFactory(stringFactory(Playlist.NAME));
+
+    defineFunction(Playlist.CREATE_RANDOM_PLAYLIST, new CreateRandomPlaylistFunction());
   }
 
   void playlistTrack() {
@@ -360,6 +366,65 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)
               .collect(Collectors.toList()));
+    }
+  }
+
+  private static final class CreateRandomPlaylistFunction implements DatabaseFunction<EntityConnection, Object, Entity> {
+
+    private final Random random = new Random();
+
+    @Override
+    public Entity execute(final EntityConnection connection,
+                          final List<Object> arguments) throws DatabaseException {
+      String playlistName = (String) arguments.get(0);
+      Integer noOfTracks = (Integer) arguments.get(1);
+
+      List<Long> playlistTrackIds = new ArrayList<>(noOfTracks);
+      List<Long> allTrackIds = new ArrayList<>(connection.select(Track.ID, condition(Track.TYPE)));
+      while (playlistTrackIds.size() < noOfTracks && !allTrackIds.isEmpty()) {
+        playlistTrackIds.add(allTrackIds.remove(random.nextInt(allTrackIds.size())));
+      }
+
+      connection.beginTransaction();
+      try {
+        Key playlistKey = insertPlaylistTracks(connection, playlistName, playlistTrackIds);
+
+        connection.commitTransaction();
+
+        return connection.selectSingle(playlistKey);
+      }
+      catch (DatabaseException e) {
+        connection.rollbackTransaction();
+        throw e;
+      }
+    }
+
+    private static Key insertPlaylistTracks(final EntityConnection connection, final String playlistName,
+                                             final List<Long> playlistTrackIds) throws DatabaseException {
+      Entities entities = connection.getEntities();
+
+      Key playlistKey = connection.insert(createPlaylist(entities, playlistName));
+
+      long playlistId = playlistKey.get();
+
+      connection.insert(playlistTrackIds.stream()
+              .map(trackId -> createPlaylistTrack(entities, playlistId, trackId))
+              .collect(Collectors.toList()));
+
+      return playlistKey;
+    }
+
+    private static Entity createPlaylist(final Entities entities, final String playlistName) {
+      return entities.builder(Playlist.TYPE)
+                .with(Playlist.NAME, playlistName)
+                .build();
+    }
+
+    private static Entity createPlaylistTrack(final Entities entities, final long playlistId, final long trackId) {
+      return entities.builder(PlaylistTrack.TYPE)
+                        .with(PlaylistTrack.PLAYLIST_ID, playlistId)
+                        .with(PlaylistTrack.TRACK_ID, trackId)
+                        .build();
     }
   }
 
