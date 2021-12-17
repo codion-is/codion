@@ -10,7 +10,9 @@ import is.codion.swing.framework.ui.EntityPanel;
 public final class PlaylistPanel extends EntityPanel {
 
   public PlaylistPanel(final SwingEntityModel playlistModel) {
-    super(playlistModel, new PlaylistEditPanel(playlistModel.getEditModel()));
+    super(playlistModel,
+            new PlaylistEditPanel(playlistModel.getEditModel()),
+            new PlaylistTablePanel(playlistModel.getTableModel()));
     setDetailSplitPanelResizeWeight(0.25);
 
     final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);

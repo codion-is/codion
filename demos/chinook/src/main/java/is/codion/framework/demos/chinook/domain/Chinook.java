@@ -184,6 +184,8 @@ public interface Chinook {
 
     Attribute<Long> ID = TYPE.longAttribute("playlistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
+
+    FunctionType<EntityConnection, Object, Entity> CREATE_RANDOM_PLAYLIST = functionType("chinook.create_random_playlist");
   }
 
   interface PlaylistTrack {
