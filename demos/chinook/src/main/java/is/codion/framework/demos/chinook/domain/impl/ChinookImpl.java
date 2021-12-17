@@ -400,31 +400,30 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     }
 
     private static Key insertPlaylistTracks(final EntityConnection connection, final String playlistName,
-                                             final List<Long> playlistTrackIds) throws DatabaseException {
+                                            final List<Long> trackIds) throws DatabaseException {
       Entities entities = connection.getEntities();
 
       Key playlistKey = connection.insert(createPlaylist(entities, playlistName));
 
-      long playlistId = playlistKey.get();
-
-      connection.insert(playlistTrackIds.stream()
-              .map(trackId -> createPlaylistTrack(entities, playlistId, trackId))
-              .collect(Collectors.toList()));
+      connection.insert(createPlaylistTracks(entities, playlistKey.get(), trackIds));
 
       return playlistKey;
     }
 
     private static Entity createPlaylist(final Entities entities, final String playlistName) {
       return entities.builder(Playlist.TYPE)
-                .with(Playlist.NAME, playlistName)
-                .build();
+              .with(Playlist.NAME, playlistName)
+              .build();
     }
 
-    private static Entity createPlaylistTrack(final Entities entities, final long playlistId, final long trackId) {
-      return entities.builder(PlaylistTrack.TYPE)
-                        .with(PlaylistTrack.PLAYLIST_ID, playlistId)
-                        .with(PlaylistTrack.TRACK_ID, trackId)
-                        .build();
+    private static List<Entity> createPlaylistTracks(final Entities entities, final long playlistId,
+                                                     final List<Long> trackIds) {
+      return trackIds.stream()
+              .map(trackId -> entities.builder(PlaylistTrack.TYPE)
+                      .with(PlaylistTrack.PLAYLIST_ID, playlistId)
+                      .with(PlaylistTrack.TRACK_ID, trackId)
+                      .build())
+              .collect(Collectors.toList());
     }
   }
 
