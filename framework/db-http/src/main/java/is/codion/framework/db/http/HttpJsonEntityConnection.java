@@ -51,7 +51,6 @@ import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory.entityObjectMapperFactory;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -135,14 +134,14 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, emptyList());
+    return executeFunction(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final List<T> arguments) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
-      return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, arguments)))));
+      return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -154,14 +153,14 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, emptyList());
+    executeProcedure(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final List<T> arguments) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
-      onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, arguments)))));
+      onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
     }
     catch (final DatabaseException e) {
       throw e;

@@ -5,8 +5,6 @@ package is.codion.common.db.operation;
 
 import is.codion.common.db.exception.DatabaseException;
 
-import java.util.List;
-
 /**
  * @param <C> the connection type
  * @param <T> the function argument type
@@ -23,11 +21,11 @@ public interface FunctionType<C, T, R> {
    * Executes the given function.
    * @param connection the connection being used
    * @param function the function to execute
-   * @param arguments the function arguments, if any
+   * @param argument the function argument, if any
    * @return the function result
    * @throws DatabaseException in case of an exception
    */
-  R execute(C connection, DatabaseFunction<C, T, R> function, List<T>  arguments) throws DatabaseException;
+  R execute(C connection, DatabaseFunction<C, T, R> function, T argument) throws DatabaseException;
 
   /**
    * Creates a {@link FunctionType} with the given name and types.

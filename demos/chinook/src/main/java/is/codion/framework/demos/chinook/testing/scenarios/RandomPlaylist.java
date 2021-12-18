@@ -6,6 +6,7 @@ package is.codion.framework.demos.chinook.testing.scenarios;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
+import is.codion.framework.demos.chinook.domain.Chinook.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
@@ -24,7 +25,7 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
       final SwingEntityModel playlistModel = application.getEntityModel(Playlist.TYPE);
       final PlaylistTableModel playlistTableModel = (PlaylistTableModel) playlistModel.getTableModel();
       playlistTableModel.refresh();
-      playlistTableModel.createRandomPlaylist(PLAYLIST_NAME + " " + System.currentTimeMillis(), NO_OF_TRACKS);
+      playlistTableModel.createRandomPlaylist(new RandomPlaylistParameters(PLAYLIST_NAME + " " + System.currentTimeMillis(), NO_OF_TRACKS));
       final SwingEntityTableModel playlistTrackTableModel = playlistModel.getDetailModel(PlaylistTrack.TYPE).getTableModel();
       playlistTrackTableModel.getSelectionModel().selectAll();
       playlistTrackTableModel.deleteSelected();

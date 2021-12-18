@@ -639,23 +639,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, emptyList());
+    return executeFunction(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final List<T> arguments) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T argument) throws DatabaseException {
     requireNonNull(functionType, "functionType");
-    requireNonNull(arguments, "arguments");
     DatabaseException exception = null;
     try {
-      logAccess("executeFunction: " + functionType, arguments);
+      logAccess("executeFunction: " + functionType, argument);
       synchronized (connection) {
-        return functionType.execute((C) this, domain.getFunction(functionType), arguments);
+        return functionType.execute((C) this, domain.getFunction(functionType), argument);
       }
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(functionType.getName(), arguments, e), e);
+      LOG.error(createLogMessage(functionType.getName(), argument instanceof List ? (List<?>) argument : singletonList(argument), e), e);
       throw e;
     }
     finally {
@@ -665,23 +664,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, emptyList());
+    executeProcedure(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final List<T> arguments) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T argument) throws DatabaseException {
     requireNonNull(procedureType, "procedureType");
-    requireNonNull(arguments, "arguments");
     DatabaseException exception = null;
     try {
-      logAccess("executeProcedure: " + procedureType, arguments);
+      logAccess("executeProcedure: " + procedureType, argument);
       synchronized (connection) {
-        procedureType.execute((C) this, domain.getProcedure(procedureType), arguments);
+        procedureType.execute((C) this, domain.getProcedure(procedureType), argument);
       }
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(procedureType.getName(), arguments, e), e);
+      LOG.error(createLogMessage(procedureType.getName(), argument instanceof List ? (List<?>) argument : singletonList(argument), e), e);
       throw e;
     }
     finally {

@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory.entityObjectMapperFactory;
-import static java.util.Collections.emptyList;
 
 /**
  * A service for dealing with entities in JSON format.
@@ -195,9 +194,9 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
-      final List<Object> arguments = parameters.size() > 1 ? (List<Object>) parameters.get(1) : emptyList();
+      final Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 
-      connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), arguments);
+      connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
 
       return Response.ok().build();
     }
@@ -219,10 +218,10 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
-      final List<Object> arguments = parameters.size() > 1 ? (List<Object>) parameters.get(1) : emptyList();
+      final Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 
       return Response.ok(Serializer.serialize(connection.executeFunction(
-              (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0), arguments))).build();
+              (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0), argument))).build();
     }
     catch (final Exception e) {
       return logAndGetExceptionResponse(e);

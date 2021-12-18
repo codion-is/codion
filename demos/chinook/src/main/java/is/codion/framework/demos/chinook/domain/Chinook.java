@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.framework.domain.DomainType.domainType;
+import static java.util.Objects.requireNonNull;
 
 public interface Chinook {
 
@@ -131,7 +132,7 @@ public interface Chinook {
     ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
     ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", Track.GENRE_ID, Genre.ID);
 
-    FunctionType<EntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
+    FunctionType<EntityConnection, List<Object>, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
 
     default Track raisePrice(final BigDecimal priceIncrease) {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
@@ -155,7 +156,7 @@ public interface Chinook {
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
 
-    FunctionType<EntityConnection, Object, List<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
+    FunctionType<EntityConnection, Void, List<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
 
     Property.ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 
@@ -185,7 +186,7 @@ public interface Chinook {
     Attribute<Long> ID = TYPE.longAttribute("playlistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
 
-    FunctionType<EntityConnection, Object, Entity> CREATE_RANDOM_PLAYLIST = functionType("chinook.create_random_playlist");
+    FunctionType<EntityConnection, RandomPlaylistParameters, Entity> RANDOM_PLAYLIST = functionType("chinook.random_playlist");
   }
 
   interface PlaylistTrack {
@@ -298,6 +299,27 @@ public interface Chinook {
       }
 
       return builder.toString();
+    }
+  }
+
+  final class RandomPlaylistParameters implements Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final String playlistName;
+    private final int noOfTracks;
+
+    public RandomPlaylistParameters(final String playlistName, final int noOfTracks) {
+      this.playlistName = requireNonNull(playlistName);
+      this.noOfTracks = noOfTracks;
+    }
+
+    public String getPlaylistName() {
+      return playlistName;
+    }
+
+    public int getNoOfTracks() {
+      return noOfTracks;
     }
   }
 }

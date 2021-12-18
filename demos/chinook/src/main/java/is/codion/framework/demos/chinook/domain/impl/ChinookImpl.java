@@ -327,7 +327,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(orderBy().ascending(Playlist.NAME))
             .stringFactory(stringFactory(Playlist.NAME));
 
-    defineFunction(Playlist.CREATE_RANDOM_PLAYLIST, new CreateRandomPlaylistFunction());
+    defineFunction(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction());
   }
 
   void playlistTrack() {
@@ -353,14 +353,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .text(" - ").value(PlaylistTrack.TRACK_FK));
   }
 
-  private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Object, List<Entity>> {
+  private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Void, List<Entity>> {
 
     private static final SelectCondition ALL_INVOICES = condition(Invoice.TYPE)
             .toSelectCondition().forUpdate().fetchDepth(0);
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
-                                final List<Object> arguments) throws DatabaseException {
+                                final Void argument) throws DatabaseException {
       return entityConnection.update(Entity.castTo(Invoice.class,
                       entityConnection.select(ALL_INVOICES)).stream()
               .map(Invoice::updateTotal)
@@ -369,25 +369,22 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     }
   }
 
-  private static final class CreateRandomPlaylistFunction implements DatabaseFunction<EntityConnection, Object, Entity> {
+  private static final class CreateRandomPlaylistFunction implements DatabaseFunction<EntityConnection, RandomPlaylistParameters, Entity> {
 
     private final Random random = new Random();
 
     @Override
     public Entity execute(final EntityConnection connection,
-                          final List<Object> arguments) throws DatabaseException {
-      String playlistName = (String) arguments.get(0);
-      Integer noOfTracks = (Integer) arguments.get(1);
-
-      List<Long> playlistTrackIds = new ArrayList<>(noOfTracks);
+                          final RandomPlaylistParameters parameters) throws DatabaseException {
+      List<Long> playlistTrackIds = new ArrayList<>(parameters.getNoOfTracks());
       List<Long> allTrackIds = new ArrayList<>(connection.select(Track.ID, condition(Track.TYPE)));
-      while (playlistTrackIds.size() < noOfTracks && !allTrackIds.isEmpty()) {
+      while (playlistTrackIds.size() < parameters.getNoOfTracks() && !allTrackIds.isEmpty()) {
         playlistTrackIds.add(allTrackIds.remove(random.nextInt(allTrackIds.size())));
       }
 
       connection.beginTransaction();
       try {
-        Key playlistKey = insertPlaylistTracks(connection, playlistName, playlistTrackIds);
+        Key playlistKey = insertPlaylistTracks(connection, parameters.getPlaylistName(), playlistTrackIds);
 
         connection.commitTransaction();
 
@@ -400,35 +397,34 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     }
 
     private static Key insertPlaylistTracks(final EntityConnection connection, final String playlistName,
-                                             final List<Long> playlistTrackIds) throws DatabaseException {
+                                            final List<Long> trackIds) throws DatabaseException {
       Entities entities = connection.getEntities();
 
       Key playlistKey = connection.insert(createPlaylist(entities, playlistName));
 
-      long playlistId = playlistKey.get();
-
-      connection.insert(playlistTrackIds.stream()
-              .map(trackId -> createPlaylistTrack(entities, playlistId, trackId))
-              .collect(Collectors.toList()));
+      connection.insert(createPlaylistTracks(entities, playlistKey.get(), trackIds));
 
       return playlistKey;
     }
 
     private static Entity createPlaylist(final Entities entities, final String playlistName) {
       return entities.builder(Playlist.TYPE)
-                .with(Playlist.NAME, playlistName)
-                .build();
+              .with(Playlist.NAME, playlistName)
+              .build();
     }
 
-    private static Entity createPlaylistTrack(final Entities entities, final long playlistId, final long trackId) {
-      return entities.builder(PlaylistTrack.TYPE)
-                        .with(PlaylistTrack.PLAYLIST_ID, playlistId)
-                        .with(PlaylistTrack.TRACK_ID, trackId)
-                        .build();
+    private static List<Entity> createPlaylistTracks(final Entities entities, final long playlistId,
+                                                     final List<Long> trackIds) {
+      return trackIds.stream()
+              .map(trackId -> entities.builder(PlaylistTrack.TYPE)
+                      .with(PlaylistTrack.PLAYLIST_ID, playlistId)
+                      .with(PlaylistTrack.TRACK_ID, trackId)
+                      .build())
+              .collect(Collectors.toList());
     }
   }
 
-  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, Object, List<Entity>> {
+  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, List<Object>, List<Entity>> {
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
