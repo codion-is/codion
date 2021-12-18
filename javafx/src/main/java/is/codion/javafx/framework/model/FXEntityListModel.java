@@ -221,28 +221,28 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public void addEntities(final List<Entity> entities) {
+  public void addEntities(final Collection<Entity> entities) {
     addEntitiesAt(getSize(), entities);
   }
 
   @Override
-  public void addEntitiesSorted(final List<Entity> entities) {
+  public void addEntitiesSorted(final Collection<Entity> entities) {
     addEntitiesAtSorted(getSize(), entities);
   }
 
   @Override
-  public void addEntitiesAt(final int index, final List<Entity> entities) {
+  public void addEntitiesAt(final int index, final Collection<Entity> entities) {
     addAll(index, entities);
   }
 
   @Override
-  public void addEntitiesAtSorted(final int index, final List<Entity> entities) {
+  public void addEntitiesAtSorted(final int index, final Collection<Entity> entities) {
     addAll(index, entities);
     sort(getSortedList().getComparator());
   }
 
   @Override
-  public final void replaceEntities(final List<Entity> entities) {
+  public final void replaceEntities(final Collection<Entity> entities) {
     replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
