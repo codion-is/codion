@@ -138,7 +138,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
    */
-  void addEntities(List<Entity> entities);
+  void addEntities(Collection<Entity> entities);
 
   /**
    * Adds the given entities to the bottom of this table model and then, if sorting is enabled, sorts this table model.
@@ -146,7 +146,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
    */
-  void addEntitiesSorted(List<Entity> entities);
+  void addEntitiesSorted(Collection<Entity> entities);
 
   /**
    * Adds the given entities to the top of this table model.
@@ -155,7 +155,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param index the index at which to add
    * @param entities the entities to add
    */
-  void addEntitiesAt(int index, List<Entity> entities);
+  void addEntitiesAt(int index, Collection<Entity> entities);
 
   /**
    * Adds the given entities to the top of this table model and then, if sorting is enabled, sorts this table model.
@@ -164,13 +164,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param index the index at which to add
    * @param entities the entities to add
    */
-  void addEntitiesAtSorted(int index, List<Entity> entities);
+  void addEntitiesAtSorted(int index, Collection<Entity> entities);
 
   /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  void replaceEntities(List<Entity> entities);
+  void replaceEntities(Collection<Entity> entities);
 
   /**
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.

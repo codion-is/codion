@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Key;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -275,12 +276,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Invoice.BILLINGPOSTALCODE)
                     .maximumLength(10),
             columnProperty(Invoice.TOTAL)
-                    .maximumFractionDigits(2)
-                    .hidden(),
+                    .maximumFractionDigits(2),
             subqueryProperty(Invoice.TOTAL_SUBQUERY,
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
-                    .maximumFractionDigits(2))
+                    .maximumFractionDigits(2)
+                    .hidden())
             // tag::identity[]
             .keyGenerator(identity())
             // end::identity[]
@@ -353,16 +354,18 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .text(" - ").value(PlaylistTrack.TRACK_FK));
   }
 
-  private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Void, List<Entity>> {
-
-    private static final SelectCondition ALL_INVOICES = condition(Invoice.TYPE)
-            .toSelectCondition().forUpdate().fetchDepth(0);
+  private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Collection<Long>, Collection<Entity>> {
 
     @Override
-    public List<Entity> execute(final EntityConnection entityConnection,
-                                final Void argument) throws DatabaseException {
-      return entityConnection.update(Entity.castTo(Invoice.class,
-                      entityConnection.select(ALL_INVOICES)).stream()
+    public Collection<Entity> execute(final EntityConnection connection,
+                                      final Collection<Long> invoiceIds) throws DatabaseException {
+      return connection.update(Entity.castTo(Invoice.class,
+                      connection.select(where(Invoice.ID)
+                              .equalTo(invoiceIds)
+                              .toSelectCondition()
+                              .forUpdate()
+                              .fetchDepth(0)))
+              .stream()
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)
               .collect(Collectors.toList()));

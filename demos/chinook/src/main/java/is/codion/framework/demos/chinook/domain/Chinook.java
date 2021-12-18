@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -156,12 +157,12 @@ public interface Chinook {
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
 
-    FunctionType<EntityConnection, Void, List<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
+    FunctionType<EntityConnection, Collection<Long>, Collection<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
 
     Property.ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 
     default Invoice updateTotal() {
-      put(TOTAL, get(TOTAL_SUBQUERY));
+      put(TOTAL, getOptional(TOTAL_SUBQUERY).orElse(BigDecimal.ZERO));
       return this;
     }
   }

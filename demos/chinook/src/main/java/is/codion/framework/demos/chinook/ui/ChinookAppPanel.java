@@ -11,12 +11,10 @@ import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -57,10 +55,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   private static final String LANGUAGE_EN = "en";
 
   private static final String SELECT_LANGUAGE = "select_language";
-  private static final String UPDATE_TOTALS = "update_totals";
-  private static final String UPDATING_TOTALS = "updating_totals";
-  private static final String UPDATING_TOTALS_FAILED = "updating_totals_failed";
-  private static final String TOTALS_UPDATED = "totals_updated";
 
   /* Non-static so this is not initialized before main(), which sets the locale */
   private final ResourceBundle bundle = ResourceBundle.getBundle(ChinookAppPanel.class.getName());
@@ -132,37 +126,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
             .addAt(4, Control.builder(this::selectLanguage)
                     .caption(bundle.getString(SELECT_LANGUAGE))
                     .build());
-  }
-
-  @Override
-  protected Controls getToolsControls() {
-    return super.getToolsControls()
-            .addSeparator()
-            .add(Control.builder(this::updateInvoiceTotals)
-                    .caption(bundle.getString(UPDATE_TOTALS))
-                    .build());
-  }
-
-  private void updateInvoiceTotals() {
-    Dialogs.progressWorkerDialog(getModel()::updateInvoiceTotals)
-            .owner(this)
-            .title(bundle.getString(UPDATING_TOTALS))
-            .onSuccess(this::handleUpdateTotalsSuccess)
-            .onException(this::handleUpdateTotalsException)
-            .execute();
-  }
-
-  private void handleUpdateTotalsSuccess(final List<Entity> updatedInvoices) {
-    getModel().getEntityModel(Customer.TYPE).getDetailModel(Invoice.TYPE)
-            .getTableModel().replaceEntities(updatedInvoices);
-    showMessageDialog(this, bundle.getString(TOTALS_UPDATED));
-  }
-
-  private void handleUpdateTotalsException(final Throwable exception) {
-    Dialogs.exceptionDialog()
-            .owner(this)
-            .title(bundle.getString(UPDATING_TOTALS_FAILED))
-            .show(exception);
   }
 
   private void selectLanguage() {

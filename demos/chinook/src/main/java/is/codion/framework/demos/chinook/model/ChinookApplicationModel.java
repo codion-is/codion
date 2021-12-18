@@ -3,13 +3,9 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-
-import java.util.List;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 
@@ -20,10 +16,6 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     addEntityModel(initializeArtistModel(connectionProvider));
     addEntityModel(initializePlaylistModel(connectionProvider));
     addEntityModel(initializeCustomerModel(connectionProvider));
-  }
-
-  public List<Entity> updateInvoiceTotals() throws DatabaseException {
-    return getConnectionProvider().getConnection().executeFunction(Invoice.UPDATE_TOTALS);
   }
 
   private static SwingEntityModel initializeArtistModel(final EntityConnectionProvider connectionProvider) {
@@ -52,12 +44,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   private static SwingEntityModel initializeCustomerModel(final EntityConnectionProvider connectionProvider) {
     final SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-    final SwingEntityModel invoiceModel = new SwingEntityModel(new InvoiceEditModel(connectionProvider));
-    final SwingEntityModel invoiceLineModel = new SwingEntityModel(InvoiceLine.TYPE, connectionProvider);
-    invoiceLineModel.getEditModel().setInitializeForeignKeyToNull(true);
-
-    invoiceModel.addDetailModel(invoiceLineModel);
-    invoiceModel.addLinkedDetailModel(invoiceLineModel);
+    final SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
     customerModel.addDetailModel(invoiceModel);
 
     customerModel.refresh();

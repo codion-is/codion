@@ -2,7 +2,7 @@
 
 == Branches
 
-=== master
+=== main
 
 JDK 11 compatible, built with JDK 11, fully modular.
 
@@ -12,7 +12,7 @@ Maven/Gradle groupId *is.codion.jdk11*.
 
 *Main development branch*, JDK 8 compatible, built with JDK 8.
 
-Requires a JDK with JavaFX, for example the https://www.azul.com/downloads/zulu-community/?version=java-8-lts&architecture=x86-64-bit&package=jdk-fx[Zulu JDK FX].
+Requires a JDK with JavaFX, for example the https://www.azul.com/downloads/?version=java-8-lts&package=jdk-fx[Zulu JDK FX].
 
 Maven/Gradle groupId *is.codion.jdk8*.
 
