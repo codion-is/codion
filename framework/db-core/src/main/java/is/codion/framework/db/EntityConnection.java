@@ -102,14 +102,14 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * Executes the function with the given type
    * @param functionType the function type
-   * @param arguments the arguments
+   * @param argument the function argument
    * @param <C> the connection type
    * @param <T> the argument type
    * @param <R> the return type
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, List<T> arguments) throws DatabaseException;
+  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
 
   /**
    * Executes the procedure with the given type with no arguments
@@ -123,12 +123,12 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * Executes the procedure with the given type
    * @param procedureType the procedure type
-   * @param arguments the arguments
+   * @param argument the procedure argument
    * @param <C> the connection type
    * @param <T> the argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, List<T> arguments) throws DatabaseException;
+  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key.

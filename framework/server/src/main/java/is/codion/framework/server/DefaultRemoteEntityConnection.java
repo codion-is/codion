@@ -28,8 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
-
 /**
  * A default RemoteEntityConnection implementation.
  */
@@ -94,25 +92,25 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   @Override
   public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, emptyList());
+    executeProcedure(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final List<T> arguments) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T argument) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.executeProcedure(procedureType, arguments);
+      connectionProxy.executeProcedure(procedureType, argument);
     }
   }
 
   @Override
   public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, emptyList());
+    return executeFunction(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final List<T> arguments) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T argument) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.executeFunction(functionType, arguments);
+      return connectionProxy.executeFunction(functionType, argument);
     }
   }
 

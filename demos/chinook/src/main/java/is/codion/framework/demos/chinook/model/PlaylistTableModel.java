@@ -6,10 +6,10 @@ package is.codion.framework.demos.chinook.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
+import is.codion.framework.demos.chinook.domain.Chinook.RandomPlaylistParameters;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public final class PlaylistTableModel extends SwingEntityTableModel {
@@ -18,9 +18,9 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
     super(Playlist.TYPE, connectionProvider);
   }
 
-  public void createRandomPlaylist(final String playlistName, final int noOfTracks) throws DatabaseException {
+  public void createRandomPlaylist(final RandomPlaylistParameters parameters) throws DatabaseException {
     final Entity randomPlaylist = getConnectionProvider().getConnection()
-            .executeFunction(Playlist.CREATE_RANDOM_PLAYLIST, Arrays.asList(playlistName, noOfTracks));
+            .executeFunction(Playlist.RANDOM_PLAYLIST, parameters);
     addEntitiesAt(0, Collections.singletonList(randomPlaylist));
     getSelectionModel().setSelectedItem(randomPlaylist);
   }

@@ -4,6 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.demos.chinook.domain.Chinook.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
@@ -44,60 +45,50 @@ public final class PlaylistTablePanel extends EntityTablePanel {
   }
 
   private void createRandomPlaylist() throws DatabaseException {
-    final RandomPlaylistParameters randomPlaylistParameters = new RandomPlaylistParameterValue()
+    final RandomPlaylistParameters randomPlaylistParameters = new RandomPlaylistParametersValue()
             .showDialog(this, BUNDLE.getString("create_random_playlist"));
-    if (randomPlaylistParameters.playlistName != null && randomPlaylistParameters.noOfTracks != null) {
-      ((PlaylistTableModel) getTableModel()).createRandomPlaylist(randomPlaylistParameters.playlistName, randomPlaylistParameters.noOfTracks);
+    if (randomPlaylistParameters.getPlaylistName() != null) {
+      ((PlaylistTableModel) getTableModel()).createRandomPlaylist(randomPlaylistParameters);
     }
   }
 
-  private static class RandomPlaylistParameters {
+  private static final class RandomPlaylistParametersValue
+          extends AbstractComponentValue<RandomPlaylistParameters, RandomPlaylistParametersPanel> {
 
-    private final String playlistName;
-    private final Integer noOfTracks;
-
-    private RandomPlaylistParameters(final String playlistName, final Integer noOfTracks) {
-      this.playlistName = playlistName;
-      this.noOfTracks = noOfTracks;
-    }
-  }
-
-  private static final class RandomPlaylistParameterValue
-          extends AbstractComponentValue<RandomPlaylistParameters, RandomPlaylistParameterPanel> {
-
-    private RandomPlaylistParameterValue() {
-      super(new RandomPlaylistParameterPanel());
+    private RandomPlaylistParametersValue() {
+      super(new RandomPlaylistParametersPanel());
     }
 
     @Override
-    protected RandomPlaylistParameters getComponentValue(final RandomPlaylistParameterPanel component) {
-      return new RandomPlaylistParameters(component.playlistNameField.getText(), component.noOfTracks.getInteger());
+    protected RandomPlaylistParameters getComponentValue(final RandomPlaylistParametersPanel component) {
+      return new RandomPlaylistParameters(component.playlistNameField.getText(), component.noOfTracksField.getInteger());
     }
 
     @Override
-    protected void setComponentValue(final RandomPlaylistParameterPanel component,
-                                     final RandomPlaylistParameters playlistParameters) {
-      component.playlistNameField.setText(playlistParameters.playlistName);
-      component.noOfTracks.setInteger(playlistParameters.noOfTracks);
+    protected void setComponentValue(final RandomPlaylistParametersPanel component,
+                                     final RandomPlaylistParameters parameters) {
+      component.playlistNameField.setText(parameters.getPlaylistName());
+      component.noOfTracksField.setInteger(parameters.getNoOfTracks());
     }
   }
 
-  private static final class RandomPlaylistParameterPanel extends JPanel {
+  private static final class RandomPlaylistParametersPanel extends JPanel {
 
-    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(RandomPlaylistParameterPanel.class.getName());
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(RandomPlaylistParametersPanel.class.getName());
 
     private final JTextField playlistNameField = Components.textField()
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(10)
             .build();
-    private final IntegerField noOfTracks = Components.integerField()
+    private final IntegerField noOfTracksField = Components.integerField()
+            .range(1, 5000)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(3)
             .build();
 
-    private RandomPlaylistParameterPanel() {
+    private RandomPlaylistParametersPanel() {
       super(borderLayout());
       Panels.builder(gridLayout(1, 2))
               .add(new JLabel(BUNDLE.getString("playlist_name")))
@@ -105,7 +96,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
               .build(panel -> add(panel, BorderLayout.NORTH));
       Panels.builder(gridLayout(1, 2))
               .add(playlistNameField)
-              .add(noOfTracks)
+              .add(noOfTracksField)
               .build(panel -> add(panel, BorderLayout.CENTER));
     }
   }
