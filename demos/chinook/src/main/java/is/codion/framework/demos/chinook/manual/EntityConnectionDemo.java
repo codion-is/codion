@@ -24,6 +24,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -307,8 +308,8 @@ public final class EntityConnectionDemo {
             connection.executeFunction(Track.RAISE_PRICE,
                     asList(trackIds, priceIncrease));
 
-    List<Entity> modifiedInvoices =
-            connection.executeFunction(Invoice.UPDATE_TOTALS);
+    Collection<Entity> updatedInvoices =
+            connection.executeFunction(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
     // end::function[]
   }
 
