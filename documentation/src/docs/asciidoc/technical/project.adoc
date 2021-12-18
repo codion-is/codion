@@ -2,7 +2,7 @@
 
 == Branches
 
-=== master
+=== main
 
 JDK 11 compatible, built with JDK 11, fully modular.
 
