@@ -17,7 +17,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -331,7 +330,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(orderBy().ascending(Playlist.NAME))
             .stringFactory(stringFactory(Playlist.NAME));
 
-    defineFunction(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction());
+    defineFunction(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
   }
 
   void playlistTrack() {
@@ -380,6 +379,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     private static final ResultPacker<Long> TRACK_ID_PACKER = resultSet -> resultSet.getLong(1);
     private static final String TRACK_ID_QUERY = "select trackid from chinook.track order by random() limit";
 
+    private final Entities entities;
+
+    private CreateRandomPlaylistFunction(final Entities entities) {
+      this.entities = entities;
+    }
+
     @Override
     public Entity execute(final EntityConnection connection,
                           final RandomPlaylistParameters parameters) throws DatabaseException {
@@ -398,43 +403,43 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       }
     }
 
+    private Key insertPlaylistTracks(final EntityConnection connection, final String playlistName,
+                                     final List<Long> trackIds) throws DatabaseException {
+      Key playlistKey = connection.insert(createPlaylist(playlistName));
+
+      connection.insert(createPlaylistTracks(playlistKey.get(), trackIds));
+
+      return playlistKey;
+    }
+
+    private Entity createPlaylist(final String playlistName) {
+      return entities.builder(Playlist.TYPE)
+              .with(Playlist.NAME, playlistName)
+              .build();
+    }
+
+    private List<Entity> createPlaylistTracks(final Long playlistId, final List<Long> trackIds) {
+      return trackIds.stream()
+              .map(trackId -> createPlaylistTrack(playlistId, trackId))
+              .collect(Collectors.toList());
+    }
+
+    private Entity createPlaylistTrack(final Long playlistId, final Long trackId) {
+      return entities.builder(PlaylistTrack.TYPE)
+              .with(PlaylistTrack.PLAYLIST_ID, playlistId)
+              .with(PlaylistTrack.TRACK_ID, trackId)
+              .build();
+    }
+
     private static List<Long> getRandomTrackIds(final LocalEntityConnection connection,
                                                 final int noOfTracks) throws DatabaseException {
-      Connection jdbcConnection = connection.getDatabaseConnection().getConnection();
-      try (Statement statement = jdbcConnection.createStatement();
+      try (Statement statement = connection.getDatabaseConnection().getConnection().createStatement();
            ResultSet resultSet = statement.executeQuery(TRACK_ID_QUERY + " " + noOfTracks)) {
         return TRACK_ID_PACKER.pack(resultSet);
       }
       catch (SQLException e) {
         throw new DatabaseException(e);
       }
-    }
-
-    private static Key insertPlaylistTracks(final EntityConnection connection, final String playlistName,
-                                            final List<Long> trackIds) throws DatabaseException {
-      Entities entities = connection.getEntities();
-
-      Key playlistKey = connection.insert(createPlaylist(entities, playlistName));
-
-      connection.insert(createPlaylistTracks(entities, playlistKey.get(), trackIds));
-
-      return playlistKey;
-    }
-
-    private static Entity createPlaylist(final Entities entities, final String playlistName) {
-      return entities.builder(Playlist.TYPE)
-              .with(Playlist.NAME, playlistName)
-              .build();
-    }
-
-    private static List<Entity> createPlaylistTracks(final Entities entities, final long playlistId,
-                                                     final List<Long> trackIds) {
-      return trackIds.stream()
-              .map(trackId -> entities.builder(PlaylistTrack.TYPE)
-                      .with(PlaylistTrack.PLAYLIST_ID, playlistId)
-                      .with(PlaylistTrack.TRACK_ID, trackId)
-                      .build())
-              .collect(Collectors.toList());
     }
   }
 
