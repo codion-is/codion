@@ -28,7 +28,7 @@ dependencies {
     implementation project(':codion-framework-db-http')
     implementation project(':codion-framework-db-rmi')
 
-    implementation 'com.formdev:flatlaf:1.6.4'
+    implementation 'com.formdev:flatlaf:1.6.5'
 
     testImplementation project(':codion-framework-domain-test')
 

@@ -133,7 +133,7 @@ public interface Chinook {
     ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
     ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", Track.GENRE_ID, Genre.ID);
 
-    FunctionType<EntityConnection, List<Object>, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
+    FunctionType<EntityConnection, List<Object>, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
 
     default Track raisePrice(final BigDecimal priceIncrease) {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
@@ -157,7 +157,7 @@ public interface Chinook {
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
 
-    FunctionType<EntityConnection, Collection<Long>, Collection<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals_function");
+    FunctionType<EntityConnection, Collection<Long>, Collection<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals");
 
     Property.ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 
