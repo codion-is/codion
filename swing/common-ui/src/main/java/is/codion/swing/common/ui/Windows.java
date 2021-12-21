@@ -9,10 +9,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
@@ -157,10 +159,10 @@ public final class Windows {
     FrameBuilder icon(ImageIcon icon);
 
     /**
-     * @param preferredSize the preferred size
+     * @param size the size
      * @return this builder instance
      */
-    FrameBuilder preferredSize(Dimension preferredSize);
+    FrameBuilder size(Dimension size);
 
     /**
      * @param resizable true if the frame should be resizable
@@ -188,6 +190,26 @@ public final class Windows {
     FrameBuilder defaultCloseOperation(int defaultCloseOperation);
 
     /**
+     * @param menuBar the main menu bar
+     * @return this builder instance
+     */
+    FrameBuilder menuBar(JMenuBar menuBar);
+
+    /**
+     * @param extendedState the extends state
+     * @return this builder instance
+     * @see JFrame#setExtendedState(int)
+     */
+    FrameBuilder extendedState(int extendedState);
+
+    /**
+     * This is overridden by setting the {@link #relativeTo(JComponent)} component.
+     * @param centerFrame true if the frame should be centered in on the screen
+     * @return this builder instance
+     */
+    FrameBuilder centerFrame(boolean centerFrame);
+
+    /**
      * @return a JFrame based on this builder
      */
     JFrame build();
@@ -195,7 +217,7 @@ public final class Windows {
     /**
      * Builds and shows a JFrame based on this builder
      */
-    void show();
+    JFrame show();
   }
 
   private static final class DefaultFrameBuilder implements FrameBuilder {
@@ -205,10 +227,13 @@ public final class Windows {
     private ImageIcon icon;
     private String title;
     private Runnable onClosed;
-    private Dimension preferredSize;
+    private Dimension size;
     private boolean resizable = true;
     private JComponent relativeTo;
     private int defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE;
+    private JMenuBar menuBar;
+    private int extendedState = Frame.NORMAL;
+    private boolean centerFrame;
 
     private DefaultFrameBuilder(final JComponent component) {
       this.component = requireNonNull(component);
@@ -227,8 +252,8 @@ public final class Windows {
     }
 
     @Override
-    public FrameBuilder preferredSize(final Dimension preferredSize) {
-      this.preferredSize = preferredSize;
+    public FrameBuilder size(final Dimension size) {
+      this.size = size;
       return this;
     }
 
@@ -257,6 +282,24 @@ public final class Windows {
     }
 
     @Override
+    public FrameBuilder menuBar(final JMenuBar menuBar) {
+      this.menuBar = menuBar;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder extendedState(final int extendedState) {
+      this.extendedState = extendedState;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder centerFrame(final boolean centerFrame) {
+      this.centerFrame = centerFrame;
+      return this;
+    }
+
+    @Override
     public JFrame build() {
       final JFrame frame = new JFrame();
       frame.setDefaultCloseOperation(defaultCloseOperation);
@@ -268,14 +311,24 @@ public final class Windows {
       if (icon != null) {
         frame.setIconImage(icon.getImage());
       }
-      if (preferredSize != null) {
-        frame.setPreferredSize(preferredSize);
+      if (size != null) {
+        frame.setSize(size);
       }
       else {
         frame.pack();
+        setSizeWithinScreenBounds(frame);
+      }
+      if (menuBar != null) {
+        frame.setJMenuBar(menuBar);
       }
       frame.setResizable(resizable);
-      frame.setLocationRelativeTo(relativeTo);
+      if (relativeTo != null) {
+        frame.setLocationRelativeTo(relativeTo);
+      }
+      else if (centerFrame) {
+        centerWindow(frame);
+      }
+      frame.setExtendedState(extendedState);
       if (onClosed != null) {
         frame.addWindowListener(new WindowAdapter() {
           @Override
@@ -289,8 +342,11 @@ public final class Windows {
     }
 
     @Override
-    public void show() {
-      build().setVisible(true);
+    public JFrame show() {
+      final JFrame frame = build();
+      frame.setVisible(true);
+
+      return frame;
     }
   }
 }

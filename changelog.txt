@@ -7516,3 +7516,6 @@
   EntityEditComponentPanel.getComponent(Attribute) now throws IllegalStateException if no component exists, instead of returning null
   EntityEditComponentPanel.getComponentAttributes() bug fixed, no longer only returns the attributes for which the component has been initialized
   EntityTableModel.addEntities(), addEntitiesSorted(), addEntitiesAt(), addEntitiesAtSorted() and replaceEntities() entities parameter now Collection instead of List
+  FrameBuilder.show() now returns the frame
+  FrameBuilder.preferredSize() renamed size
+  FrameBuilder.menuBar(), centerFrame() and extendedState() added
