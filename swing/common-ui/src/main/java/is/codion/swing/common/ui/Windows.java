@@ -177,6 +177,12 @@ public final class Windows {
     FrameBuilder relativeTo(JComponent relativeTo);
 
     /**
+     * @param onOpened called when the frame has been opened
+     * @return this builder instance
+     */
+    FrameBuilder onOpened(Runnable onOpened);
+
+    /**
      * @param onClosed called when the frame has been closed
      * @return this builder instance
      */
@@ -227,6 +233,7 @@ public final class Windows {
     private ImageIcon icon;
     private String title;
     private Runnable onClosed;
+    private Runnable onOpened;
     private Dimension size;
     private boolean resizable = true;
     private JComponent relativeTo;
@@ -272,6 +279,12 @@ public final class Windows {
     @Override
     public FrameBuilder defaultCloseOperation(final int defaultCloseOperation) {
       this.defaultCloseOperation = defaultCloseOperation;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder onOpened(final Runnable onOpened) {
+      this.onOpened = onOpened;
       return this;
     }
 
@@ -334,6 +347,14 @@ public final class Windows {
           @Override
           public void windowClosed(final WindowEvent e) {
             onClosed.run();
+          }
+        });
+      }
+      if (onOpened != null) {
+        frame.addWindowListener(new WindowAdapter() {
+          @Override
+          public void windowOpened(final WindowEvent e) {
+            onOpened.run();
           }
         });
       }
