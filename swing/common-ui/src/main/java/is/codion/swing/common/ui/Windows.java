@@ -195,7 +195,7 @@ public final class Windows {
     /**
      * Builds and shows a JFrame based on this builder
      */
-    void show();
+    JFrame show();
   }
 
   private static final class DefaultFrameBuilder implements FrameBuilder {
@@ -289,8 +289,11 @@ public final class Windows {
     }
 
     @Override
-    public void show() {
-      build().setVisible(true);
+    public JFrame show() {
+      final JFrame frame = build();
+      frame.setVisible(true);
+
+      return frame;
     }
   }
 }
