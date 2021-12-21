@@ -7485,3 +7485,4 @@
   EntityTableModel.addEntities(), addEntitiesSorted(), addEntitiesAt(), addEntitiesAtSorted() and replaceEntities() entities parameter now Collection instead of List
   FrameBuilder.show() now returns the frame
   FrameBuilder.preferredSize() renamed size
+  FrameBuilder.menuBar(), centerFrame() and extendedState() added

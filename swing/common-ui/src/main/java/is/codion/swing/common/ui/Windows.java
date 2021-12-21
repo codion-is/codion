@@ -9,10 +9,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
@@ -188,6 +190,26 @@ public final class Windows {
     FrameBuilder defaultCloseOperation(int defaultCloseOperation);
 
     /**
+     * @param menuBar the main menu bar
+     * @return this builder instance
+     */
+    FrameBuilder menuBar(JMenuBar menuBar);
+
+    /**
+     * @param extendedState the extends state
+     * @return this builder instance
+     * @see JFrame#setExtendedState(int)
+     */
+    FrameBuilder extendedState(int extendedState);
+
+    /**
+     * This is overridden by setting the {@link #relativeTo(JComponent)} component.
+     * @param centerFrame true if the frame should be centered in on the screen
+     * @return this builder instance
+     */
+    FrameBuilder centerFrame(boolean centerFrame);
+
+    /**
      * @return a JFrame based on this builder
      */
     JFrame build();
@@ -209,6 +231,9 @@ public final class Windows {
     private boolean resizable = true;
     private JComponent relativeTo;
     private int defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE;
+    private JMenuBar menuBar;
+    private int extendedState = Frame.NORMAL;
+    private boolean centerFrame;
 
     private DefaultFrameBuilder(final JComponent component) {
       this.component = requireNonNull(component);
@@ -257,6 +282,24 @@ public final class Windows {
     }
 
     @Override
+    public FrameBuilder menuBar(final JMenuBar menuBar) {
+      this.menuBar = menuBar;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder extendedState(final int extendedState) {
+      this.extendedState = extendedState;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder centerFrame(final boolean centerFrame) {
+      this.centerFrame = centerFrame;
+      return this;
+    }
+
+    @Override
     public JFrame build() {
       final JFrame frame = new JFrame();
       frame.setDefaultCloseOperation(defaultCloseOperation);
@@ -273,9 +316,19 @@ public final class Windows {
       }
       else {
         frame.pack();
+        setSizeWithinScreenBounds(frame);
+      }
+      if (menuBar != null) {
+        frame.setJMenuBar(menuBar);
       }
       frame.setResizable(resizable);
-      frame.setLocationRelativeTo(relativeTo);
+      if (relativeTo != null) {
+        frame.setLocationRelativeTo(relativeTo);
+      }
+      else if (centerFrame) {
+        centerWindow(frame);
+      }
+      frame.setExtendedState(extendedState);
       if (onClosed != null) {
         frame.addWindowListener(new WindowAdapter() {
           @Override
