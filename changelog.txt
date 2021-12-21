@@ -7486,3 +7486,4 @@
   FrameBuilder.show() now returns the frame
   FrameBuilder.preferredSize() renamed size
   FrameBuilder.menuBar(), centerFrame() and extendedState() added
+  FrameBuilder.onOpened() added
