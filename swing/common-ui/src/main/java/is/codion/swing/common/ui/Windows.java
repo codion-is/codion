@@ -157,10 +157,10 @@ public final class Windows {
     FrameBuilder icon(ImageIcon icon);
 
     /**
-     * @param preferredSize the preferred size
+     * @param size the size
      * @return this builder instance
      */
-    FrameBuilder preferredSize(Dimension preferredSize);
+    FrameBuilder size(Dimension size);
 
     /**
      * @param resizable true if the frame should be resizable
@@ -205,7 +205,7 @@ public final class Windows {
     private ImageIcon icon;
     private String title;
     private Runnable onClosed;
-    private Dimension preferredSize;
+    private Dimension size;
     private boolean resizable = true;
     private JComponent relativeTo;
     private int defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE;
@@ -227,8 +227,8 @@ public final class Windows {
     }
 
     @Override
-    public FrameBuilder preferredSize(final Dimension preferredSize) {
-      this.preferredSize = preferredSize;
+    public FrameBuilder size(final Dimension size) {
+      this.size = size;
       return this;
     }
 
@@ -268,8 +268,8 @@ public final class Windows {
       if (icon != null) {
         frame.setIconImage(icon.getImage());
       }
-      if (preferredSize != null) {
-        frame.setPreferredSize(preferredSize);
+      if (size != null) {
+        frame.setSize(size);
       }
       else {
         frame.pack();
