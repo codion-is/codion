@@ -222,6 +222,7 @@ public final class Windows {
 
     /**
      * Builds and shows a JFrame based on this builder
+     * @return a JFrame based on this builder
      */
     JFrame show();
   }
