@@ -56,7 +56,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
   @Override
   public final <T> Optional<ColumnConditionPanel<?, T>> createConditionPanel(final TableColumn column) {
-    return Optional.ofNullable(tableConditionModel.getCondition((Attribute<T>) column.getIdentifier())
+    return Optional.ofNullable(tableConditionModel.getConditionModelOptional((Attribute<T>) column.getIdentifier())
             .map(this::createConditionPanel)
             .orElse(null));
   }

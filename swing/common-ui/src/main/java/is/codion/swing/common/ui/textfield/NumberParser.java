@@ -93,7 +93,7 @@ class NumberParser<T extends Number> implements Parser<T> {
       return toBigDecimal(number);
     }
 
-    throw new IllegalStateException("Unsupported type class: " + clazz);
+    throw new IllegalArgumentException("Unsupported type class: " + clazz);
   }
 
   private T toInteger(final T number) {

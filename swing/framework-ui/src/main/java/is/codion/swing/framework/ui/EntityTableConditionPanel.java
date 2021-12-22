@@ -102,7 +102,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
               .owner(this)
               .title(Messages.get(Messages.SELECT_INPUT_FIELD))
               .selectSingle()
-              .flatMap(property -> getPanel(property.getAttribute()))
+              .flatMap(property -> getConditionPanelOptional(property.getAttribute()))
               .ifPresent(ColumnConditionPanel::requestInputFocus);
     }
   }
@@ -139,7 +139,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param <T> the value type
    * @return the condition panel associated with the given property, an empty Optional if none is specified
    */
-  public <T> Optional<ColumnConditionPanel<Attribute<T>, T>> getPanel(final Attribute<T> attribute) {
+  public <T> Optional<ColumnConditionPanel<Attribute<T>, T>> getConditionPanelOptional(final Attribute<T> attribute) {
     for (final TableColumn column : getTableColumns()) {
       if (column.getIdentifier().equals(attribute)) {
         return Optional.ofNullable((ColumnConditionPanel<Attribute<T>, T>) conditionPanel.getColumnComponents().get(column));
@@ -156,7 +156,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
   public <T> ColumnConditionPanel<Attribute<T>, T> getConditionPanel(final Attribute<T> attribute) {
-    return getPanel(attribute).orElseThrow(() ->
+    return getConditionPanelOptional(attribute).orElseThrow(() ->
             new IllegalArgumentException("No condition panel available for attribute: " + attribute));
   }
 

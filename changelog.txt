@@ -7521,3 +7521,6 @@
   FrameBuilder.menuBar(), centerFrame() and extendedState() added
   FrameBuilder.onOpened() added
   EntityTablePanel, status message numbers now formatted
+  EntityTableConditionModel.getCondition() and getFilter() renamed getConditionModelOptional() and getFilterModelOptional() respectively
+  EntityTableConditionPanel.getPanel() renamed getConditionPanelOptional()
+  A few IllegalStateExceptions replaced with IllegalArgumentException, javadoc fixes

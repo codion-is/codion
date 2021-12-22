@@ -831,7 +831,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void onColumnHidden(final Attribute<?> attribute) {
     //disable the condition model for the column to be hidden, to prevent confusion
-    tableConditionModel.getCondition(attribute).ifPresent(conditionModel -> {
+    tableConditionModel.getConditionModelOptional(attribute).ifPresent(conditionModel -> {
       if (!conditionModel.isLocked()) {
         conditionModel.setEnabled(false);
       }

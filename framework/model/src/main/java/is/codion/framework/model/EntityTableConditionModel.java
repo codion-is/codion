@@ -131,7 +131,7 @@ public interface EntityTableConditionModel {
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}, an empty Optional if none is found
    */
-  <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getCondition(Attribute<T> attribute);
+  <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getConditionModelOptional(Attribute<T> attribute);
 
   /**
    * Clears the search state of all the condition models, disables them and
@@ -161,7 +161,7 @@ public interface EntityTableConditionModel {
    * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
    * @return the {@link ColumnFilterModel} for the {@code attribute}, an empty Optional if none is found
    */
-  <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilter(Attribute<T> attribute);
+  <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilterModelOptional(Attribute<T> attribute);
 
   /**
    * Clears the search state of all the filter models, disables them and
