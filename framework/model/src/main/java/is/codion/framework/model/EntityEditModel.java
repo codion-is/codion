@@ -353,8 +353,9 @@ public interface EntityEditModel {
    * Performs an insert on the active entity, sets the primary key values of the active entity
    * according to the primary key of the inserted entity
    * @return the inserted entity
-   * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
+   * @throws IllegalStateException in case inserting is not enabled
    * @see EntityValidator#validate(Collection, EntityDefinition)
    */
   Entity insert() throws DatabaseException, ValidationException;
@@ -363,8 +364,9 @@ public interface EntityEditModel {
    * Performs an insert on the given entities, returns silently on receiving an empty list.
    * @param entities the entities to insert
    * @return a list containing the inserted entities
-   * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
+   * @throws IllegalStateException in case inserting is not enabled
    * @see #addBeforeInsertListener(EventDataListener)
    * @see #addAfterInsertListener(EventDataListener)
    * @see EntityValidator#validate(Collection, EntityDefinition)
@@ -374,9 +376,10 @@ public interface EntityEditModel {
   /**
    * Performs an update on the active entity
    * @return the updated entity
-   * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
+   * @throws IllegalStateException in case updating is not enabled
    * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
    * @see EntityValidator#validate(Collection, EntityDefinition)
    */
@@ -386,9 +389,10 @@ public interface EntityEditModel {
    * Updates the given entities. If the entities are unmodified or the list is empty this method returns silently.
    * @param entities the entities to update
    * @return the updated entities
-   * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
+   * @throws IllegalStateException in case updating is not enabled
    * @see #addBeforeUpdateListener(EventDataListener)
    * @see #addAfterUpdateListener(EventDataListener)
    * @see EntityValidator#validate(Collection, EntityDefinition)
@@ -398,7 +402,8 @@ public interface EntityEditModel {
   /**
    * Deletes the active entity
    * @return the deleted entity
-   * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
+   * @throws IllegalStateException in case deleting is not enabled
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
@@ -408,7 +413,8 @@ public interface EntityEditModel {
    * Deletes the given entities, returns silently on receiving an empty list
    * @param entities the entities to delete
    * @return the deleted entities
-   * @throws is.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
+   * @throws IllegalStateException in case deleting is not enabled
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
