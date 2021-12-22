@@ -7520,3 +7520,4 @@
   FrameBuilder.preferredSize() renamed size
   FrameBuilder.menuBar(), centerFrame() and extendedState() added
   FrameBuilder.onOpened() added
+  EntityTablePanel, status message numbers now formatted

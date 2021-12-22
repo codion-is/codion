@@ -78,6 +78,7 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -203,6 +204,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static final Dimension TOOLBAR_BUTTON_SIZE = TextFields.DIMENSION_TEXT_FIELD_SQUARE;
+  private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
@@ -1385,9 +1387,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private String getStatusMessage() {
     final int filteredItemCount = tableModel.getFilteredItemCount();
 
-    return tableModel.getRowCount() + " (" + tableModel.getSelectionModel().getSelectionCount() + " " +
-            MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
-            filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
+    return STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getRowCount()) + " (" +
+            STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getSelectionModel().getSelectionCount()) + " " +
+            MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
+            STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   private void bindEvents() {
