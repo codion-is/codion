@@ -269,7 +269,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     editModel.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final Entity inserted = editModel.insert();
     final Collection<Entity> equalsValues = employeeModel.getTableModel().getTableConditionModel()
-            .getCondition(TestDomain.EMP_DEPARTMENT_FK)
+            .getConditionModelOptional(TestDomain.EMP_DEPARTMENT_FK)
             .map(ColumnConditionModel::getEqualValues)
             .orElse(emptyList());
     assertEquals(inserted, equalsValues.iterator().next());

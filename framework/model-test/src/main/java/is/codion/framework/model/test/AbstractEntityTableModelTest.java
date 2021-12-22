@@ -327,7 +327,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.setQueryRowCountLimit(6);
     assertThrows(IllegalStateException.class, tableModel::refresh);
     final Optional<ColumnConditionModel<? extends Attribute<Double>, Double>> optional =
-            tableModel.getTableConditionModel().getCondition(TestDomain.EMP_COMMISSION);
+            tableModel.getTableConditionModel().getConditionModelOptional(TestDomain.EMP_COMMISSION);
     assertTrue(optional.isPresent());
     final ColumnConditionModel<?, Double> commissionConditionModel = optional.get();
     commissionConditionModel.setOperator(Operator.EQUAL);

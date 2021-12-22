@@ -66,23 +66,23 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void getPropertyFilterModel() {
-    assertTrue(conditionModel.getFilter(TestDomain.EMP_COMMISSION).isPresent());
+    assertTrue(conditionModel.getFilterModelOptional(TestDomain.EMP_COMMISSION).isPresent());
   }
 
   @Test
   void getPropertyConditionModel() {
-    assertTrue(conditionModel.getCondition(TestDomain.EMP_COMMISSION).isPresent());
+    assertTrue(conditionModel.getConditionModelOptional(TestDomain.EMP_COMMISSION).isPresent());
   }
 
   @Test
   void getPropertyConditionModelNonExisting() {
-    assertFalse(conditionModel.getCondition(TestDomain.DEPARTMENT_ID).isPresent());
+    assertFalse(conditionModel.getConditionModelOptional(TestDomain.DEPARTMENT_ID).isPresent());
     assertThrows(IllegalArgumentException.class, () -> conditionModel.getConditionModel(TestDomain.DEPARTMENT_ID));
   }
 
   @Test
   void getPropertyFilterModelNonExisting() {
-    assertFalse(conditionModel.getFilter(TestDomain.EMP_DEPARTMENT_FK).isPresent());
+    assertFalse(conditionModel.getFilterModelOptional(TestDomain.EMP_DEPARTMENT_FK).isPresent());
     assertThrows(IllegalArgumentException.class, () -> conditionModel.getFilterModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
