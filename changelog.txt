@@ -7492,3 +7492,5 @@
   EntityTableConditionPanel.getPanel() renamed getConditionPanelOptional()
   A few IllegalStateExceptions replaced with IllegalArgumentException, javadoc fixes
   ConditionPanelFactory.createConditionPanel no longer returns Optional
+  EntityTableConditionPanel.getConditionPanelOptional() removed
+  EntityTableConditionModel.getConditionModelOptional() and getFilterModelOptional() removed, related refactoring

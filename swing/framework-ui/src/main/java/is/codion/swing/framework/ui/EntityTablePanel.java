@@ -11,6 +11,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
@@ -1410,7 +1411,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilterListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
-    tableModel.getTableConditionModel().getConditionModels().forEach(conditionModel ->
+    tableModel.getTableConditionModel().getConditionModels().values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.addSortListener(table.getTableHeader()::repaint);
     tableModel.addRefreshStartedListener(() -> WaitCursor.show(EntityTablePanel.this));
@@ -1647,9 +1648,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     @Override
     public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
-      return tableModel.getTableConditionModel().getFilterModelOptional((Attribute<Object>) column.getIdentifier())
-              .map(filterModel -> new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel)))
-              .orElse(null);
+      final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = tableModel.getTableConditionModel().getFilterModels().get((Attribute<?>) column.getIdentifier());
+      if (filterModel == null) {
+        return null;
+      }
+
+      return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel));
     }
 
     private static <C extends Attribute<?>> List<Operator> getOperators(final ColumnConditionModel<C, ?> model) {

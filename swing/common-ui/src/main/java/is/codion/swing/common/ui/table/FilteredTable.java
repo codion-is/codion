@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
@@ -610,7 +611,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    getModel().getColumnFilterModel((C) column.getIdentifier()).ifPresent(model -> {
+    final ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().getColumnFilterModels().get(column.getIdentifier());
+    if (model != null) {
       model.addConditionChangedListener(() -> SwingUtilities.invokeLater(() -> {
         if (model.isEnabled()) {
           addFilterIndicator(column);
@@ -624,7 +626,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       if (model.isEnabled()) {
         SwingUtilities.invokeLater(() -> addFilterIndicator(column));
       }
-    });
+    }
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
@@ -723,10 +725,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     @Override
-    public <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
-      return tableModel.getColumnFilterModel((C) column.getIdentifier())
-              .map(filterModel -> new ColumnConditionPanel<>((ColumnConditionModel<?, T>) filterModel, ToggleAdvancedButton.YES))
-              .orElse(null);
+    public <T> ColumnConditionPanel<C, T> createConditionPanel(final TableColumn column) {
+      final ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.getColumnFilterModels().get(column.getIdentifier());
+      if (filterModel == null) {
+        return null;
+      }
+
+      return new ColumnConditionPanel<>((ColumnConditionModel<C, T>) filterModel, ToggleAdvancedButton.YES);
     }
   }
 

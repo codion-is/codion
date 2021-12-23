@@ -19,7 +19,7 @@ import java.util.Collection;
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
- * @param <C> the type of objects used to identify columns
+ * @param <C> the type used to identify columns
  * @param <T> the column value type
  */
 public interface ColumnConditionModel<C, T> {

@@ -13,6 +13,7 @@ import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -163,12 +164,18 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   Optional<ColumnSummaryModel> getColumnSummaryModel(C columnIdentifier);
 
   /**
+   * @return the column filter models, mapped to their respective column identifier
+   */
+  Map<C, ColumnFilterModel<R, C, ?>> getColumnFilterModels();
+
+  /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
    * @param <T> the column value type
    * @param columnIdentifier the column identifier
-   * @return the ColumnConditionModel for the column with the given identifier, an empty Optional if none exists.
+   * @return the ColumnConditionModel for the column with the given identifier.
+   * @throws IllegalArgumentException in case no filter model exists for the given column
    */
-  <T> Optional<ColumnFilterModel<R, C, T>> getColumnFilterModel(C columnIdentifier);
+  <T> ColumnFilterModel<R, C, T> getColumnFilterModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values

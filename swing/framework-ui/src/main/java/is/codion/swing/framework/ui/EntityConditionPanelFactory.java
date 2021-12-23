@@ -55,9 +55,10 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
   @Override
   public final <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
-    return tableConditionModel.getConditionModelOptional((Attribute<T>) column.getIdentifier())
-            .map(this::createConditionPanel)
-            .orElse(null);
+    final ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>)
+            tableConditionModel.getConditionModels().get((Attribute<?>) column.getIdentifier());
+
+    return conditionModel == null ? null : createConditionPanel(conditionModel);
   }
 
   /**

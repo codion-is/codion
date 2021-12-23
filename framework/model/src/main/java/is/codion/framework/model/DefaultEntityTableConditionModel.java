@@ -31,10 +31,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -93,14 +92,13 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(final Attribute<T> attribute) {
-    return (ColumnFilterModel<Entity, C, T>) getFilterModelOptional(attribute).orElseThrow(() ->
-            new IllegalArgumentException("No filter model available for attribute: " + attribute));
-  }
+  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(final C attribute) {
+    final ColumnFilterModel<Entity, C, T> filterModel = (ColumnFilterModel<Entity, C, T>) filterModels.get(attribute);
+    if (filterModel == null) {
+      throw new IllegalArgumentException("No filter model available for attribute: " + attribute);
+    }
 
-  @Override
-  public <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilterModelOptional(final Attribute<T> attribute) {
-    return Optional.ofNullable((ColumnFilterModel<Entity, C, T>) filterModels.get(attribute));
+    return filterModel;
   }
 
   @Override
@@ -109,8 +107,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public Collection<ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels() {
-    return unmodifiableCollection(filterModels.values());
+  public Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels() {
+    return unmodifiableMap(filterModels);
   }
 
   @Override
@@ -128,19 +126,18 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public Collection<ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels() {
-    return unmodifiableCollection(conditionModels.values());
+  public Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels() {
+    return unmodifiableMap(conditionModels);
   }
 
   @Override
-  public <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(final Attribute<T> attribute) {
-    return getConditionModelOptional(attribute).orElseThrow(() ->
-            new IllegalArgumentException("No condition model available for attribute: " + attribute));
-  }
+  public <C extends Attribute<T>, T> ColumnConditionModel<C, T> getConditionModel(final C attribute) {
+    final ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(attribute);
+    if (conditionModel == null) {
+      throw new IllegalArgumentException("No condition model available for attribute: " + attribute);
+    }
 
-  @Override
-  public <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getConditionModelOptional(final Attribute<T> attribute) {
-    return Optional.ofNullable((ColumnConditionModel<? extends Attribute<T>, T>) conditionModels.get(attribute));
+    return conditionModel;
   }
 
   @Override
@@ -150,7 +147,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public boolean isConditionEnabled(final Attribute<?> attribute) {
-    return getConditionModelOptional(attribute).map(ColumnConditionModel::isEnabled).orElse(false);
+    return conditionModels.containsKey(attribute) && conditionModels.get(attribute).isEnabled();
   }
 
   @Override
@@ -160,28 +157,30 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public boolean isFilterEnabled(final Attribute<?> attribute) {
-    return getFilterModelOptional(attribute).map(ColumnConditionModel::isEnabled).orElse(false);
+    return filterModels.containsKey(attribute) && filterModels.get(attribute).isEnabled();
   }
 
   @Override
   public <T> boolean setEqualConditionValues(final Attribute<T> attribute, final Collection<T> values) {
     final String conditionsString = getConditionsString();
-    getConditionModelOptional(attribute).ifPresent(conditionModel -> {
+    final ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModels.get(attribute);
+    if (conditionModel != null) {
       conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
       conditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
       conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
-    });
+    }
     return !conditionsString.equals(getConditionsString());
   }
 
   @Override
   public <T> void setEqualFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
-    getFilterModelOptional(attribute).ifPresent(filterModel -> {
+    final ColumnFilterModel<Entity, Attribute<?>, T> filterModel = (ColumnFilterModel<Entity, Attribute<?>, T>) filterModels.get(attribute);
+    if (filterModel != null) {
       filterModel.setOperator(Operator.EQUAL);
       filterModel.setEqualValue((T) value);
       filterModel.setEnabled(value != null);
-    });
+    }
   }
 
   @Override
@@ -260,7 +259,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void setConditionString(final String searchString) {
     final Collection<Attribute<String>> searchAttributes =
             connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes();
-    getConditionModels().stream()
+    conditionModels.values().stream()
             .filter(conditionModel -> searchAttributes.contains(conditionModel.getColumnIdentifier()))
             .map(conditionModel -> (ColumnConditionModel<Attribute<String>, String>) conditionModel)
             .forEach(conditionModel -> {

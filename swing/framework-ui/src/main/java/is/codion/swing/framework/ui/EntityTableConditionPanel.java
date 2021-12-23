@@ -22,11 +22,10 @@ import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
@@ -38,7 +37,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
-  private final TableColumnComponentPanel<ColumnConditionPanel<?, ?>> conditionPanel;
+  private final TableColumnComponentPanel<ColumnConditionPanel<Attribute<?>, ?>> conditionPanel;
   private final SwingFilteredTableColumnModel<Attribute<?>> columnModel;
 
   /**
@@ -90,20 +89,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public void selectConditionPanel() {
-    final List<Property<?>> conditionProperties = new ArrayList<>();
-    conditionPanel.getColumnComponents().forEach((column, panel) -> {
-      if (panel instanceof ColumnConditionPanel && columnModel.isColumnVisible((Attribute<?>) column.getIdentifier())) {
-        conditionProperties.add(getTableConditionModel().getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier()));
-      }
-    });
+    final List<Property<?>> conditionProperties = getConditionProperties();
     if (!conditionProperties.isEmpty()) {
       Properties.sort(conditionProperties);
       Dialogs.selectionDialog(conditionProperties)
               .owner(this)
               .title(Messages.get(Messages.SELECT_INPUT_FIELD))
               .selectSingle()
-              .flatMap(property -> getConditionPanelOptional(property.getAttribute()))
-              .ifPresent(ColumnConditionPanel::requestInputFocus);
+              .ifPresent(property -> getConditionPanel(property.getAttribute()).requestInputFocus());
     }
   }
 
@@ -137,27 +130,17 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   /**
    * @param attribute the attribute
    * @param <T> the value type
-   * @return the condition panel associated with the given property, an empty Optional if none is specified
-   */
-  public <T> Optional<ColumnConditionPanel<Attribute<T>, T>> getConditionPanelOptional(final Attribute<T> attribute) {
-    for (final TableColumn column : getTableColumns()) {
-      if (column.getIdentifier().equals(attribute)) {
-        return Optional.ofNullable((ColumnConditionPanel<Attribute<T>, T>) conditionPanel.getColumnComponents().get(column));
-      }
-    }
-
-    return Optional.empty();
-  }
-
-  /**
-   * @param attribute the attribute
-   * @param <T> the value type
    * @return the condition panel associated with the given property
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
-  public <T> ColumnConditionPanel<Attribute<T>, T> getConditionPanel(final Attribute<T> attribute) {
-    return getConditionPanelOptional(attribute).orElseThrow(() ->
-            new IllegalArgumentException("No condition panel available for attribute: " + attribute));
+  public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> getConditionPanel(final Attribute<T> attribute) {
+    for (final TableColumn column : getTableColumns()) {
+      if (column.getIdentifier().equals(attribute)) {
+        return (ColumnConditionPanel<C, T>) conditionPanel.getColumnComponents().get(column);
+      }
+    }
+
+    throw new IllegalArgumentException("No condition panel available for attribute: " + attribute);
   }
 
   @Override
@@ -165,11 +148,18 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     conditionPanel.getColumnComponents().forEach((column, panel) -> panel.setAdvanced(advanced));
   }
 
-  private static Map<TableColumn, ColumnConditionPanel<?, ?>> createConditionPanels(
+  private List<Property<?>> getConditionProperties() {
+    return conditionPanel.getColumnComponents().values().stream()
+            .filter(conditionPanel -> columnModel.isColumnVisible(conditionPanel.getModel().getColumnIdentifier()))
+            .map(conditionPanel -> getTableConditionModel().getEntityDefinition().getProperty(conditionPanel.getModel().getColumnIdentifier()))
+            .collect(Collectors.toList());
+  }
+
+  private static Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(
           final SwingFilteredTableColumnModel<Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
-    final Map<TableColumn, ColumnConditionPanel<?, ?>> conditionPanels = new HashMap<>();
+    final Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> {
-      final ColumnConditionPanel<?, Object> conditionPanel = conditionPanelFactory.createConditionPanel(column);
+      final ColumnConditionPanel<Attribute<?>, Object> conditionPanel = (ColumnConditionPanel<Attribute<?>, Object>) conditionPanelFactory.createConditionPanel(column);
       if (conditionPanel != null) {
         conditionPanels.put(column, conditionPanel);
       }

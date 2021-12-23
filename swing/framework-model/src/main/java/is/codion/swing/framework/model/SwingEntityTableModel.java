@@ -9,6 +9,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -158,7 +159,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel) {
     this(entityType, connectionProvider, sortModel, new DefaultEntityTableConditionModel(entityType, connectionProvider,
-                    new DefaultFilterModelFactory(), new SwingConditionModelFactory(connectionProvider)));
+            new DefaultFilterModelFactory(), new SwingConditionModelFactory(connectionProvider)));
   }
 
   /**
@@ -187,7 +188,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
                                final TableSortModel<Entity, Attribute<?>> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
     super(new SwingFilteredTableColumnModel<>(createColumns(connectionProvider.getEntities().getDefinition(entityType))),
-            sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
+            sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(requireNonNull(entityType, "entityType"))) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);
@@ -576,7 +577,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
 
     return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
-            getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
+                    getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }
 
@@ -830,12 +831,15 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   private void onColumnHidden(final Attribute<?> attribute) {
-    //disable the condition model for the column to be hidden, to prevent confusion
-    tableConditionModel.getConditionModelOptional(attribute).ifPresent(conditionModel -> {
-      if (!conditionModel.isLocked()) {
-        conditionModel.setEnabled(false);
-      }
-    });
+    //disable the condition and filter model for the column to be hidden, to prevent confusion
+    final ColumnConditionModel<?, ?> conditionModel = tableConditionModel.getConditionModels().get(attribute);
+    if (conditionModel != null && !conditionModel.isLocked()) {
+      conditionModel.setEnabled(false);
+    }
+    final ColumnConditionModel<?, ?> filterModel = tableConditionModel.getFilterModels().get(attribute);
+    if (filterModel != null && !filterModel.isLocked()) {
+      filterModel.setEnabled(false);
+    }
   }
 
   private org.json.JSONObject createPreferences() throws Exception {
