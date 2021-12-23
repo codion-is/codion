@@ -1458,7 +1458,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void initializeTable() {
     tableModel.getColumnModel().getAllColumns().forEach(this::configureColumn);
     final JTableHeader header = table.getTableHeader();
-    header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer(), table.getFont()));
+    header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer()));
     header.setFocusable(false);
     if (includePopupMenu) {
       addTablePopupMenu();
@@ -1612,27 +1612,23 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final class HeaderRenderer implements TableCellRenderer {
 
     private final TableCellRenderer defaultHeaderRenderer;
-    private final Font defaultFont;
-    private final Font searchFont;
 
-    public HeaderRenderer(final TableCellRenderer defaultHeaderRenderer, final Font defaultFont) {
+    public HeaderRenderer(final TableCellRenderer defaultHeaderRenderer) {
       this.defaultHeaderRenderer = defaultHeaderRenderer;
-      this.defaultFont = defaultFont;
-      this.searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
     }
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
-      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
-              hasFocus, row, column);
+      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       final boolean displayConditionStatus = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isDisplayConditionStatus()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      label.setFont(displayConditionStatus ? searchFont : defaultFont);
+      final Font defaultFont = label.getFont();
+      label.setFont(displayConditionStatus ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return label;
     }
