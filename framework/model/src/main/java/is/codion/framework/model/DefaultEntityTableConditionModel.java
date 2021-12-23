@@ -282,8 +282,10 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     if (filterModelProvider != null) {
       for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
         if (!property.isHidden()) {
-          filterModelProvider.createFilterModel(property)
-                  .ifPresent(filterModel -> filterModels.put(filterModel.getColumnIdentifier(), filterModel));
+          final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
+          if (filterModel != null) {
+            filterModels.put(filterModel.getColumnIdentifier(), filterModel);
+          }
         }
       }
     }
@@ -292,13 +294,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void initializeConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelFactory) {
     final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
     for (final ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
-      conditionModelFactory.createConditionModel(columnProperty.getAttribute())
-              .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
+      final ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.getAttribute());
+      if (conditionModel != null) {
+        conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
+      }
     }
     for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute())
-              .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
+      final ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute());
+      if (conditionModel != null) {
+        conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
+      }
     }
   }
 
