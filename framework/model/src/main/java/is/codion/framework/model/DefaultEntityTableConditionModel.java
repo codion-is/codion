@@ -8,6 +8,7 @@ import is.codion.common.Operator;
 import is.codion.common.Util;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -259,15 +260,16 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void setConditionString(final String searchString) {
     final Collection<Attribute<String>> searchAttributes =
             connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes();
-    for (final Attribute<String> searchAttribute : searchAttributes) {
-      getConditionModelOptional(searchAttribute).ifPresent(conditionModel -> {
-        conditionModel.setCaseSensitive(false);
-        conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
-        conditionModel.setEqualValue(searchString);
-        conditionModel.setOperator(Operator.EQUAL);
-        conditionModel.setEnabled(true);
-      });
-    }
+    getConditionModels().stream()
+            .filter(conditionModel -> searchAttributes.contains(conditionModel.getColumnIdentifier()))
+            .map(conditionModel -> (ColumnConditionModel<Attribute<String>, String>) conditionModel)
+            .forEach(conditionModel -> {
+              conditionModel.setCaseSensitive(false);
+              conditionModel.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
+              conditionModel.setEqualValue(searchString);
+              conditionModel.setOperator(Operator.EQUAL);
+              conditionModel.setEnabled(true);
+            });
   }
 
   /**
