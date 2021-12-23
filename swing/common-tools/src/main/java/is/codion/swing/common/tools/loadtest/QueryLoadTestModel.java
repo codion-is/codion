@@ -106,10 +106,10 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /**
      * @param application the connection pool providing connections
-     * @throws ScenarioException in case of an exception during the scenario run
+     * @throws Exception in case of an exception during the scenario run
      */
     @Override
-    protected final void perform(final QueryApplication application) throws ScenarioException {
+    protected final void perform(final QueryApplication application) throws Exception {
       Connection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;
@@ -130,7 +130,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
           }
           catch (final SQLException ignored) {/*ignored*/}
         }
-        throw new ScenarioException(e);
+        throw e;
       }
       finally {
         Database.closeSilently(connection);

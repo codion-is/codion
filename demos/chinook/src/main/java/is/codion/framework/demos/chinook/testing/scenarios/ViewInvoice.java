@@ -6,7 +6,6 @@ package is.codion.framework.demos.chinook.testing.scenarios;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
-import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
@@ -15,17 +14,12 @@ import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selec
 public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookApplicationModel> {
 
   @Override
-  protected void perform(final ChinookApplicationModel application) throws ScenarioException {
-    try {
-      final SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
-      customerModel.getTableModel().refresh();
-      selectRandomRow(customerModel.getTableModel());
-      final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-      selectRandomRow(invoiceModel.getTableModel());
-    }
-    catch (final Exception e) {
-      throw new ScenarioException(e);
-    }
+  protected void perform(final ChinookApplicationModel application) throws Exception {
+    final SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
+    customerModel.getTableModel().refresh();
+    selectRandomRow(customerModel.getTableModel());
+    final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    selectRandomRow(invoiceModel.getTableModel());
   }
 
   @Override

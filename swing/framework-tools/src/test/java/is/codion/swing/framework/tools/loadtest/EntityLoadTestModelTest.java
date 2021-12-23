@@ -12,7 +12,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.AfterAll;
@@ -58,10 +57,10 @@ public class EntityLoadTestModelTest {
     public TestLoadTestModel() {
       super(UNIT_TEST_USER, asList(new AbstractEntityUsageScenario<SwingEntityApplicationModel>("1") {
         @Override
-        protected void perform(final SwingEntityApplicationModel application) throws ScenarioException {}
+        protected void perform(final SwingEntityApplicationModel application) throws Exception {}
       }, new AbstractEntityUsageScenario<SwingEntityApplicationModel>("2") {
         @Override
-        protected void perform(final SwingEntityApplicationModel application) throws ScenarioException {}
+        protected void perform(final SwingEntityApplicationModel application) throws Exception {}
       }));
     }
 
