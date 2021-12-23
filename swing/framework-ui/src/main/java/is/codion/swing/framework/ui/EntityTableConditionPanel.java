@@ -89,14 +89,19 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public void selectConditionPanel() {
-    final List<Property<?>> conditionProperties = getConditionProperties();
+    final List<Property<?>> conditionProperties = getConditionPanelProperties();
     if (!conditionProperties.isEmpty()) {
-      Properties.sort(conditionProperties);
-      Dialogs.selectionDialog(conditionProperties)
-              .owner(this)
-              .title(Messages.get(Messages.SELECT_INPUT_FIELD))
-              .selectSingle()
-              .ifPresent(property -> getConditionPanel(property.getAttribute()).requestInputFocus());
+      if (conditionProperties.size() == 1) {
+        getConditionPanel(conditionProperties.get(0).getAttribute()).requestInputFocus();
+      }
+      else {
+        Properties.sort(conditionProperties);
+        Dialogs.selectionDialog(conditionProperties)
+                .owner(this)
+                .title(Messages.get(Messages.SELECT_INPUT_FIELD))
+                .selectSingle()
+                .ifPresent(property -> getConditionPanel(property.getAttribute()).requestInputFocus());
+      }
     }
   }
 
@@ -149,7 +154,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     conditionPanel.getColumnComponents().forEach((column, panel) -> panel.setAdvanced(advanced));
   }
 
-  private List<Property<?>> getConditionProperties() {
+  private List<Property<?>> getConditionPanelProperties() {
     return conditionPanel.getColumnComponents().values().stream()
             .filter(panel -> columnModel.isColumnVisible(panel.getModel().getColumnIdentifier()))
             .map(panel -> getTableConditionModel().getEntityDefinition().getProperty(panel.getModel().getColumnIdentifier()))
