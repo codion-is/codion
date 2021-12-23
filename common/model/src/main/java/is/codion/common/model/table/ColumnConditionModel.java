@@ -69,7 +69,7 @@ public interface ColumnConditionModel<C, T> {
   C getColumnIdentifier();
 
   /**
-   * @return true if this filter is be case-sensitive
+   * @return true if this condition is case-sensitive
    */
   boolean isCaseSensitive();
 
