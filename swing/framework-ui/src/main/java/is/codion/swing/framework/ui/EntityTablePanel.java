@@ -88,7 +88,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -1647,10 +1646,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     @Override
-    public Optional<ColumnConditionPanel<?, ?>> createConditionPanel(final TableColumn column) {
-      return Optional.ofNullable(tableModel.getTableConditionModel().getFilterModelOptional((Attribute<Object>) column.getIdentifier())
+    public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
+      return tableModel.getTableConditionModel().getFilterModelOptional((Attribute<Object>) column.getIdentifier())
               .map(filterModel -> new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel)))
-              .orElse(null));
+              .orElse(null);
     }
 
     private static <C extends Attribute<?>> List<Operator> getOperators(final ColumnConditionModel<C, ?> model) {

@@ -63,7 +63,6 @@ import java.text.Collator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -632,7 +631,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
     final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
     toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
-                    (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column).orElse(null)),
+                    (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
             this, column.getHeaderValue().toString(), event.getLocationOnScreen());
   }
 
@@ -724,9 +723,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     @Override
-    public <T> Optional<ColumnConditionPanel<?, T>> createConditionPanel(final TableColumn column) {
+    public <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
       return tableModel.getColumnFilterModel((C) column.getIdentifier())
-              .map(filterModel -> new ColumnConditionPanel<>((ColumnConditionModel<?, T>) filterModel, ToggleAdvancedButton.YES));
+              .map(filterModel -> new ColumnConditionPanel<>((ColumnConditionModel<?, T>) filterModel, ToggleAdvancedButton.YES))
+              .orElse(null);
     }
   }
 
