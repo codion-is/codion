@@ -6,6 +6,7 @@ package is.codion.common.model.table;
 import is.codion.common.Operator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,16 +56,16 @@ public class DefaultColumnConditionModelTest {
     assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
-    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals("%hello%", model.getUpperBound());
     assertEquals("%hello%", model.getLowerBound());
-    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.NONE);
+    model.setAutomaticWildcard(AutomaticWildcard.NONE);
 
     model.setEqualValue("test");
     assertEquals(1, equalToCounter.get());
     assertEquals("test", model.getEqualValue());
 
-    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals("%test%", model.getEqualValues().iterator().next());
 
     model.clearCondition();
@@ -83,7 +84,7 @@ public class DefaultColumnConditionModelTest {
     assertEquals("test", model.getColumnIdentifier());
 
     model.setOperator(Operator.EQUAL);
-    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
     model.setEqualValue("upper");
     assertEquals("%upper%", model.getEqualValue());
   }
@@ -121,8 +122,8 @@ public class DefaultColumnConditionModelTest {
     model.setWildcard("#");
     assertEquals("#", model.getWildcard());
 
-    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
-    assertEquals(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX, model.getAutomaticWildcard());
+    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.getAutomaticWildcard());
 
     model.addEnabledListener(enabledListener);
     model.setEnabled(false);
