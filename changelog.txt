@@ -7524,3 +7524,7 @@
   EntityTableConditionModel.getCondition() and getFilter() renamed getConditionModelOptional() and getFilterModelOptional() respectively
   EntityTableConditionPanel.getPanel() renamed getConditionPanelOptional()
   A few IllegalStateExceptions replaced with IllegalArgumentException, javadoc fixes
+  ConditionPanelFactory.createConditionPanel no longer returns Optional
+  EntityTableConditionPanel.getConditionPanelOptional() removed
+  EntityTableConditionModel.getConditionModelOptional() and getFilterModelOptional() removed, related refactoring
+  FilteredTable, filter indicator is now a italic header value

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.table;
 
 import javax.swing.table.TableColumn;
-import java.util.Optional;
 
 /**
  * Responsible for creating {@link ColumnConditionPanel}s
@@ -15,7 +14,7 @@ public interface ConditionPanelFactory {
    * Creates a ColumnConditionPanel for the given column, returns null if none is available
    * @param <T> the column value type
    * @param column the column
-   * @return a ColumnConditionPanel or an empty Optional if none is available for the given column
+   * @return a ColumnConditionPanel or null if none is available for the given column
    */
-   <T> Optional<ColumnConditionPanel<?, T>> createConditionPanel(TableColumn column);
+   <T> ColumnConditionPanel<?, T> createConditionPanel(TableColumn column);
 }

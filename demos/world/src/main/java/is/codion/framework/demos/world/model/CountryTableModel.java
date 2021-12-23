@@ -14,7 +14,7 @@ public class CountryTableModel extends SwingEntityTableModel {
   }
 
   private void configureConditionModels() {
-    getTableConditionModel().getConditionModels().stream()
+    getTableConditionModel().getConditionModels().values().stream()
             .filter(model -> model.getColumnIdentifier().isString())
             .forEach(CountryTableModel::configureConditionModel);
   }

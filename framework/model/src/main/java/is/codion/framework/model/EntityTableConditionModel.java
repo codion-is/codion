@@ -17,7 +17,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -112,26 +112,19 @@ public interface EntityTableConditionModel {
   void setConjunction(Conjunction conjunction);
 
   /**
-   * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
+   * @return a Map containing the {@link ColumnConditionModel}s available in this table condition model, mapped to their respective attributes
    */
-  Collection<ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels();
+  Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
+   * @param <C> the attribute type
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model exists for the given attribute
    */
-  <T> ColumnConditionModel<? extends Attribute<T>, T> getConditionModel(Attribute<T> attribute);
-
-  /**
-   * Returns the {@link ColumnConditionModel} associated with the given attribute.
-   * @param <T> the column value type
-   * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
-   * @return the {@link ColumnConditionModel} associated with {@code attribute}, an empty Optional if none is found
-   */
-  <T> Optional<ColumnConditionModel<? extends Attribute<T>, T>> getConditionModelOptional(Attribute<T> attribute);
+  <C extends Attribute<T>, T> ColumnConditionModel<C, T> getConditionModel(C attribute);
 
   /**
    * Clears the search state of all the condition models, disables them and
@@ -140,28 +133,19 @@ public interface EntityTableConditionModel {
   void clearConditions();
 
   /**
-   * @return a Collection containing the filter models available in this table condition model
+   * @return a Map containing the filter models available in this table condition model, mapped to their respective attributes
    */
-  Collection<ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels();
+  Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels();
 
   /**
    * The filter model associated with {@code attribute}
-   * @param <C> the property type
+   * @param <C> the attribute type
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
    * @return the {@link ColumnFilterModel} for the {@code attribute}
    * @throws IllegalArgumentException in case no filter model exists for the given attribute
    */
-  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
-
-  /**
-   * The filter model associated with {@code attribute}
-   * @param <C> the property type
-   * @param <T> the column value type
-   * @param attribute the attribute for which to retrieve the {@link ColumnFilterModel}
-   * @return the {@link ColumnFilterModel} for the {@code attribute}, an empty Optional if none is found
-   */
-  <C extends Attribute<T>, T> Optional<ColumnFilterModel<Entity, C, T>> getFilterModelOptional(Attribute<T> attribute);
+  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(C attribute);
 
   /**
    * Clears the search state of all the filter models, disables them and

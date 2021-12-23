@@ -33,6 +33,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -290,8 +291,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final <T> Optional<ColumnFilterModel<R, C, T>> getColumnFilterModel(final C columnIdentifier) {
-    return Optional.ofNullable((ColumnFilterModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER)));
+  public final Map<C, ColumnFilterModel<R, C, ?>> getColumnFilterModels() {
+    return unmodifiableMap(columnFilterModels);
+  }
+
+  @Override
+  public final <T> ColumnFilterModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
+    final ColumnFilterModel<R, C, T> filterModel = (ColumnFilterModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    if (filterModel == null) {
+      throw new IllegalArgumentException("No filter model exists for column: " + columnIdentifier);
+    }
+
+    return filterModel;
   }
 
   @Override

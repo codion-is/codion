@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
@@ -48,6 +49,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -63,7 +65,6 @@ import java.text.Collator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -610,29 +611,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     return base;
   }
 
-  private void bindFilterIndicatorEvents(final TableColumn column) {
-    getModel().getColumnFilterModel((C) column.getIdentifier()).ifPresent(model -> {
-      model.addConditionChangedListener(() -> SwingUtilities.invokeLater(() -> {
-        if (model.isEnabled()) {
-          addFilterIndicator(column);
-        }
-        else {
-          removeFilterIndicator(column);
-        }
-
-        getTableHeader().repaint();
-      }));
-      if (model.isEnabled()) {
-        SwingUtilities.invokeLater(() -> addFilterIndicator(column));
-      }
-    });
-  }
-
   private void toggleColumnFilterPanel(final MouseEvent event) {
     final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
     final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
     toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
-                    (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column).orElse(null)),
+                    (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
             this, column.getHeaderValue().toString(), event.getLocationOnScreen());
   }
 
@@ -649,24 +632,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         columnFilterPanel.showDialog(position);
       }
     }
-  }
-
-  private static void addFilterIndicator(final TableColumn column) {
-    String val = (String) column.getHeaderValue();
-    if (val.length() != 0 && val.charAt(0) != FILTER_INDICATOR) {
-      val = FILTER_INDICATOR + val;
-    }
-
-    column.setHeaderValue(val);
-  }
-
-  private static void removeFilterIndicator(final TableColumn column) {
-    String val = (String) column.getHeaderValue();
-    if (val.length() != 0 && val.charAt(0) == FILTER_INDICATOR) {
-      val = val.substring(1);
-    }
-
-    column.setHeaderValue(val);
   }
 
   private void initializeTableHeader() {
@@ -692,6 +657,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
     addKeyListener(new MoveResizeColumnKeyListener());
+  }
+
+  private void bindFilterIndicatorEvents(final TableColumn column) {
+    final ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().getColumnFilterModels().get(column.getIdentifier());
+    if (model != null) {
+      model.addEnabledListener(() -> getTableHeader().repaint());
+    }
   }
 
   /**
@@ -724,9 +696,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     @Override
-    public <T> Optional<ColumnConditionPanel<?, T>> createConditionPanel(final TableColumn column) {
-      return tableModel.getColumnFilterModel((C) column.getIdentifier())
-              .map(filterModel -> new ColumnConditionPanel<>((ColumnConditionModel<?, T>) filterModel, ToggleAdvancedButton.YES));
+    public <T> ColumnConditionPanel<C, T> createConditionPanel(final TableColumn column) {
+      final ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.getColumnFilterModels().get(column.getIdentifier());
+      if (filterModel == null) {
+        return null;
+      }
+
+      return new ColumnConditionPanel<>((ColumnConditionModel<C, T>) filterModel, ToggleAdvancedButton.YES);
     }
   }
 
@@ -742,9 +718,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      final Font defaultFont = component.getFont();
       if (component instanceof JLabel) {
         final JLabel label = (JLabel) component;
         final TableColumn tableColumn = table.getColumnModel().getColumn(column);
+        final ColumnFilterModel<R, C, ?> filterModel = tableModel.getColumnFilterModels().get(tableColumn.getIdentifier());
+        label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }

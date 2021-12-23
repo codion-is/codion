@@ -19,7 +19,7 @@ import java.util.Collection;
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
- * @param <C> the type of objects used to identify columns
+ * @param <C> the type used to identify columns
  * @param <T> the column value type
  */
 public interface ColumnConditionModel<C, T> {
@@ -69,7 +69,7 @@ public interface ColumnConditionModel<C, T> {
   C getColumnIdentifier();
 
   /**
-   * @return true if this filter is be case-sensitive
+   * @return true if this condition is case-sensitive
    */
   boolean isCaseSensitive();
 

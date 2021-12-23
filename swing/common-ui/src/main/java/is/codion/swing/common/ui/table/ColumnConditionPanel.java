@@ -113,10 +113,12 @@ public class ColumnConditionPanel<C, T> extends JPanel {
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param boundFieldFactory the input field factory
    * @param operators the search operators available to this condition panel
+   * @throws IllegalArgumentException in case operators is empty
    */
   public ColumnConditionPanel(final ColumnConditionModel<C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final BoundFieldFactory boundFieldFactory, final List<Operator> operators) {
     requireNonNull(conditionModel, "conditionModel");
+    requireNonNull(boundFieldFactory, "boundFieldFactory");
     if (requireNonNull(operators, "operators").isEmpty()) {
       throw new IllegalArgumentException("One or more operators must be specified");
     }

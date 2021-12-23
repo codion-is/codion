@@ -11,6 +11,7 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
@@ -88,7 +89,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -1411,7 +1411,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilterListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
-    tableModel.getTableConditionModel().getConditionModels().forEach(conditionModel ->
+    tableModel.getTableConditionModel().getConditionModels().values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.addSortListener(table.getTableHeader()::repaint);
     tableModel.addRefreshStartedListener(() -> WaitCursor.show(EntityTablePanel.this));
@@ -1458,7 +1458,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void initializeTable() {
     tableModel.getColumnModel().getAllColumns().forEach(this::configureColumn);
     final JTableHeader header = table.getTableHeader();
-    header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer(), table.getFont()));
+    header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer()));
     header.setFocusable(false);
     if (includePopupMenu) {
       addTablePopupMenu();
@@ -1612,27 +1612,23 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final class HeaderRenderer implements TableCellRenderer {
 
     private final TableCellRenderer defaultHeaderRenderer;
-    private final Font defaultFont;
-    private final Font searchFont;
 
-    public HeaderRenderer(final TableCellRenderer defaultHeaderRenderer, final Font defaultFont) {
+    public HeaderRenderer(final TableCellRenderer defaultHeaderRenderer) {
       this.defaultHeaderRenderer = defaultHeaderRenderer;
-      this.defaultFont = defaultFont;
-      this.searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
     }
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
-      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
-              hasFocus, row, column);
+      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       final boolean displayConditionStatus = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isDisplayConditionStatus()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      label.setFont(displayConditionStatus ? searchFont : defaultFont);
+      final Font defaultFont = label.getFont();
+      label.setFont(displayConditionStatus ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return label;
     }
@@ -1647,10 +1643,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     @Override
-    public Optional<ColumnConditionPanel<?, ?>> createConditionPanel(final TableColumn column) {
-      return Optional.ofNullable(tableModel.getTableConditionModel().getFilterModelOptional((Attribute<Object>) column.getIdentifier())
-              .map(filterModel -> new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel)))
-              .orElse(null));
+    public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
+      final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = tableModel.getTableConditionModel().getFilterModels().get((Attribute<?>) column.getIdentifier());
+      if (filterModel == null) {
+        return null;
+      }
+
+      return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel));
     }
 
     private static <C extends Attribute<?>> List<Operator> getOperators(final ColumnConditionModel<C, ?> model) {

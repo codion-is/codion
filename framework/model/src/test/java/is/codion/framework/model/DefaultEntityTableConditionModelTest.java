@@ -66,23 +66,22 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void getPropertyFilterModel() {
-    assertTrue(conditionModel.getFilterModelOptional(TestDomain.EMP_COMMISSION).isPresent());
+    assertNotNull(conditionModel.getFilterModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
   void getPropertyConditionModel() {
-    assertTrue(conditionModel.getConditionModelOptional(TestDomain.EMP_COMMISSION).isPresent());
+    assertNotNull(conditionModel.getConditionModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
   void getPropertyConditionModelNonExisting() {
-    assertFalse(conditionModel.getConditionModelOptional(TestDomain.DEPARTMENT_ID).isPresent());
     assertThrows(IllegalArgumentException.class, () -> conditionModel.getConditionModel(TestDomain.DEPARTMENT_ID));
   }
 
   @Test
   void getPropertyFilterModelNonExisting() {
-    assertFalse(conditionModel.getFilterModelOptional(TestDomain.EMP_DEPARTMENT_FK).isPresent());
+    assertThrows(IllegalArgumentException.class, () -> conditionModel.getFilterModel(TestDomain.EMP_DEPARTMENT_FK));
     assertThrows(IllegalArgumentException.class, () -> conditionModel.getFilterModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
@@ -183,14 +182,14 @@ public class DefaultEntityTableConditionModelTest {
     final String value = "test";
     final String wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.getSimpleConditionStringValue().set(value);
-    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels()) {
+    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
       if (model.getTypeClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
     conditionModel.getSimpleConditionStringValue().set(null);
-    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels()) {
+    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
       if (model.getTypeClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());

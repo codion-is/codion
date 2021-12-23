@@ -256,7 +256,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("a"));
+    tableModel.getColumnFilterModel(0).setEqualValue("a");
     tableModel.removeItem(B);
     assertEquals(3, events.get());
     assertFalse(tableModel.isVisible(B));
@@ -703,8 +703,8 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("d"));
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEnabled(false));
+    tableModel.getColumnFilterModel(0).setEqualValue("d");
+    tableModel.getColumnFilterModel(0).setEnabled(false);
 
     selectionModel.setSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
@@ -731,10 +731,10 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, tableModel.getSelectionModel().getMinSelectionIndex());
 
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("d"));
+    tableModel.getColumnFilterModel(0).setEqualValue("d");
     assertEquals(0, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals(singletonList(0), tableModel.getSelectionModel().getSelectedIndexes());
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEnabled(false));
+    tableModel.getColumnFilterModel(0).setEnabled(false);
     assertEquals(0, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals(ITEMS.get(3), tableModel.getSelectionModel().getSelectedItem());
   }
@@ -754,7 +754,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   void filterAndRemove() {
     tableModel.refresh();
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("a"));
+    tableModel.getColumnFilterModel(0).setEqualValue("a");
     assertTrue(tableModel.containsItem(B));
     tableModel.removeItem(B);
     assertFalse(tableModel.containsItem(B));
@@ -774,14 +774,14 @@ public final class AbstractFilteredTableModelTest {
 
     //test filters
     assertTrue(tableModel.isVisible(B));
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("a"));
+    tableModel.getColumnFilterModel(0).setEqualValue("a");
     assertEquals(2, done.get());
     assertTrue(tableModel.isVisible(A));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.isFiltered(D));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.containsItem(B));
-    assertTrue(tableModel.getColumnFilterModel(0).orElseThrow(IllegalStateException::new).isEnabled());
+    assertTrue(tableModel.getColumnFilterModel(0).isEnabled());
     assertEquals(4, tableModel.getFilteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
@@ -790,22 +790,22 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModel.getFilteredItems().size() > 0);
     assertTrue(tableModel.getItems().size() > 0);
 
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEnabled(false));
+    tableModel.getColumnFilterModel(0).setEnabled(false);
     assertEquals(3, done.get());
-    assertFalse(tableModel.getColumnFilterModel(0).orElseThrow(IllegalStateException::new).isEnabled());
+    assertFalse(tableModel.getColumnFilterModel(0).isEnabled());
 
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("t")); // ekki til
-    assertTrue(tableModel.getColumnFilterModel(0).orElseThrow(IllegalStateException::new).isEnabled());
+    tableModel.getColumnFilterModel(0).setEqualValue("t"); // ekki til
+    assertTrue(tableModel.getColumnFilterModel(0).isEnabled());
     assertEquals(5, tableModel.getFilteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEnabled(false));
+    tableModel.getColumnFilterModel(0).setEnabled(false);
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-    assertFalse(tableModel.getColumnFilterModel(0).orElseThrow(IllegalStateException::new).isEnabled());
+    assertFalse(tableModel.getColumnFilterModel(0).isEnabled());
 
-    tableModel.getColumnFilterModel(0).ifPresent(model -> model.setEqualValue("b"));
+    tableModel.getColumnFilterModel(0).setEqualValue("b");
     final int rowCount = tableModel.getRowCount();
     tableModel.addItemsAt(0, singletonList(singletonList("x")));
     assertEquals(rowCount, tableModel.getRowCount());

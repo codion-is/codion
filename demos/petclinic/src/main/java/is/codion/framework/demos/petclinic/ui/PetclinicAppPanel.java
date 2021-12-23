@@ -5,6 +5,7 @@ package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petclinic.domain.api.Owner;
@@ -97,7 +98,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityEditPanel.USE_SAVE_CONTROL.set(false);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
-    ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
+    ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     SwingUtilities.invokeLater(() -> new PetclinicAppPanel().starter()
