@@ -106,7 +106,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public void addFocusGainedListener(final EventDataListener<Attribute<?>> listener) {
-    conditionPanel.getColumnComponents().values().forEach(panel -> ((ColumnConditionPanel<Attribute<?>, ?>) panel).addFocusGainedListener(listener));
+    conditionPanel.getColumnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
   }
 
   /**
@@ -151,8 +151,8 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   private List<Property<?>> getConditionProperties() {
     return conditionPanel.getColumnComponents().values().stream()
-            .filter(conditionPanel -> columnModel.isColumnVisible(conditionPanel.getModel().getColumnIdentifier()))
-            .map(conditionPanel -> getTableConditionModel().getEntityDefinition().getProperty(conditionPanel.getModel().getColumnIdentifier()))
+            .filter(panel -> columnModel.isColumnVisible(panel.getModel().getColumnIdentifier()))
+            .map(panel -> getTableConditionModel().getEntityDefinition().getProperty(panel.getModel().getColumnIdentifier()))
             .collect(Collectors.toList());
   }
 

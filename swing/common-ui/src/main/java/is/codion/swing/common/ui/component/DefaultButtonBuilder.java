@@ -28,10 +28,10 @@ final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> exte
       }
 
       @Override
-      protected void setComponentValue(final JButton component, final Void value) {}
+      protected void setComponentValue(final JButton component, final Void value) {/*Not applicable*/}
     };
   }
 
   @Override
-  protected void setInitialValue(final JButton component, final Void initialValue) {}
+  protected void setInitialValue(final JButton component, final Void initialValue) {/*Not applicable*/}
 }
