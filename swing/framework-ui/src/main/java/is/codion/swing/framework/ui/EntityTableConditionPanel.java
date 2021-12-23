@@ -128,12 +128,13 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   /**
-   * @param attribute the attribute
+   * @param <C> the attribute type
    * @param <T> the value type
+   * @param attribute the attribute
    * @return the condition panel associated with the given property
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
-  public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> getConditionPanel(final Attribute<T> attribute) {
+  public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> getConditionPanel(final C attribute) {
     for (final TableColumn column : getTableColumns()) {
       if (column.getIdentifier().equals(attribute)) {
         return (ColumnConditionPanel<C, T>) conditionPanel.getColumnComponents().get(column);
