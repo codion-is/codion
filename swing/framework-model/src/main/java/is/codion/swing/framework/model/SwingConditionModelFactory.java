@@ -11,8 +11,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.ConditionModelFactory;
 import is.codion.framework.model.DefaultConditionModelFactory;
 
-import java.util.Optional;
-
 /**
  * A Swing {@link ConditionModelFactory} implementation
  * using ComboBoxModel for foreign key properties with small datasets
@@ -24,11 +22,11 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
   }
 
   @Override
-  public <T, A extends Attribute<T>> Optional<ColumnConditionModel<A, T>> createConditionModel(final A attribute) {
+  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
     if (attribute instanceof ForeignKey) {
       final ForeignKey foreignKey = (ForeignKey) attribute;
       if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-        return Optional.of((ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, createComboBoxModel(foreignKey)));
+        return (ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, createComboBoxModel(foreignKey));
       }
     }
 

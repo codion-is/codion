@@ -7495,3 +7495,4 @@
   EntityTableConditionPanel.getConditionPanelOptional() removed
   EntityTableConditionModel.getConditionModelOptional() and getFilterModelOptional() removed, related refactoring
   FilteredTable, filter indicator is now a italic header value
+  ConditionModelFactory.createConditionModel() no longer returns Optional

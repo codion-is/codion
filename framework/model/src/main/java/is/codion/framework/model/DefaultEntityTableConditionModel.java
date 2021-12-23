@@ -292,13 +292,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void initializeConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelFactory) {
     final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
     for (final ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
-      conditionModelFactory.createConditionModel(columnProperty.getAttribute())
-              .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
+      final ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.getAttribute());
+      if (conditionModel != null) {
+        conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
+      }
     }
     for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute())
-              .ifPresent(conditionModel -> conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel));
+      final ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute());
+      if (conditionModel != null) {
+        conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
+      }
     }
   }
 

@@ -14,8 +14,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
-import java.util.Optional;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -30,22 +28,22 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   }
 
   @Override
-  public <T, A extends Attribute<T>> Optional<ColumnConditionModel<A, T>> createConditionModel(final A attribute) {
+  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
     if (attribute instanceof ForeignKey) {
       final ForeignKey foreignKey = (ForeignKey) attribute;
       final EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
       searchModel.getMultipleSelectionEnabledValue().set(true);
 
-      return Optional.of((ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey, searchModel));
+      return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey, searchModel);
     }
 
     final ColumnProperty<T> property = getColumnProperty(attribute);
     if (property.isAggregateColumn()) {
-      return Optional.empty();
+      return null;
     }
 
-    return Optional.of(new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(),
-            Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern()));
+    return new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(),
+            Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
   }
 
   /**
