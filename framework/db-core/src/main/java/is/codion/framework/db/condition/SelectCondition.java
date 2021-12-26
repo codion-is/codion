@@ -33,7 +33,7 @@ public interface SelectCondition extends Condition {
   SelectCondition orderBy(OrderBy orderBy);
 
   /**
-   * @return the limit to use for the given condition
+   * @return the limit to use for the given condition, -1 for no limit
    */
   int getLimit();
 
@@ -44,7 +44,7 @@ public interface SelectCondition extends Condition {
   SelectCondition limit(int limit);
 
   /**
-   * @return the offset to use for the given condition
+   * @return the offset to use for the given condition, -1 for no offset
    */
   int getOffset();
 
@@ -68,7 +68,7 @@ public interface SelectCondition extends Condition {
   SelectCondition forUpdate();
 
   /**
-   * @return the maximum number of records to fetch from the result
+   * @return the maximum number of records to fetch from the result, -1 for no maximum
    */
   int getFetchCount();
 

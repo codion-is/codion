@@ -207,9 +207,9 @@ final class Queries {
       if (orderBy != null) {
         queryBuilder.append(" ").append(getOrderByClause(orderBy, entityDefinition));
       }
-      if (selectCondition.getLimit() > 0) {
+      if (selectCondition.getLimit() >= 0) {
         queryBuilder.append(" limit ").append(selectCondition.getLimit());
-        if (selectCondition.getOffset() > 0) {
+        if (selectCondition.getOffset() >= 0) {
           queryBuilder.append(" offset ").append(selectCondition.getOffset());
         }
       }
