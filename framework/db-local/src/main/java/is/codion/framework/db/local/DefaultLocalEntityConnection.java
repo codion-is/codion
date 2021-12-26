@@ -565,7 +565,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition);
-        final List<T> result = propertyToSelect.<T>getResultPacker().pack(resultSet);
+        final List<T> result = propertyToSelect.getResultPacker().pack(resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;

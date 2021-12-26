@@ -127,8 +127,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public final <T> ResultPacker<T> getResultPacker() {
-    return (ResultPacker<T>) resultPacker;
+  public final ResultPacker<T> getResultPacker() {
+    return resultPacker;
   }
 
   /**

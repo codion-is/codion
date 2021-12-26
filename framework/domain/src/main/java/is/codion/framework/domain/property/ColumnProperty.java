@@ -110,10 +110,9 @@ public interface ColumnProperty<T> extends Property<T> {
   T fetchValue(ResultSet resultSet, int index) throws SQLException;
 
   /**
-   * @param <T> the result type
    * @return a ResultPacker responsible for packing this property
    */
-  <T> ResultPacker<T> getResultPacker();
+  ResultPacker<T> getResultPacker();
 
   /**
    * Fetches a single value from a result set.
