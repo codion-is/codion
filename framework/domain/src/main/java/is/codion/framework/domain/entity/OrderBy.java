@@ -14,6 +14,7 @@ public interface OrderBy {
    * Adds an 'ascending' order by for the given attributes
    * @param attributes the attributes
    * @return this OrderBy instance
+   * @throws IllegalArgumentException in case {@code attributes} is empty
    */
   OrderBy ascending(Attribute<?>... attributes);
 
@@ -21,6 +22,7 @@ public interface OrderBy {
    * Adds a 'descending' order by for the given attributes
    * @param attributes the attributes
    * @return this OrderBy instance
+   * @throws IllegalArgumentException in case {@code attributes} is empty
    */
   OrderBy descending(Attribute<?>... attributes);
 
