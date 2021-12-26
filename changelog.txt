@@ -7532,3 +7532,6 @@
   FilterModelFactory.createFilterModel() no longer returns Optional
   ScenarioException removed, quite unnecessary
   EntityTableConditionPanel.selectConditionPanel() bug fixed, did not automatically select a single property
+  DefaultSelectCondition, limit and offset initialized to -1, now supports 0 for both
+  ColumnProperty.getResultPacker() unnecessary type parameter removed
+  OrderBy.ascending() and descending() now throw IllegalArgumentException in case attributes is empty, getOrderByAttributes() now returns an unmodifiable list

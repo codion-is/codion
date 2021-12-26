@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultOrderBy implements OrderBy, Serializable {
@@ -17,23 +18,25 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
   @Override
   public OrderBy ascending(final Attribute<?>... attributes) {
-    add(true, attributes);
+    add(true, requireNonNull(attributes));
     return this;
   }
 
   @Override
   public OrderBy descending(final Attribute<?>... attributes) {
-    add(false, attributes);
+    add(false, requireNonNull(attributes));
     return this;
   }
 
   @Override
   public List<OrderByAttribute> getOrderByAttributes() {
-    return orderByAttributes;
+    return unmodifiableList(orderByAttributes);
   }
 
   private void add(final boolean ascending, final Attribute<?>... attributes) {
-    requireNonNull(attributes, "attributes");
+    if (attributes.length == 0) {
+      throw new IllegalArgumentException("One or more attributes required for order by");
+    }
     for (final Attribute<?> attribute : attributes) {
       final DefaultOrderByAttribute orderByAttribute = new DefaultOrderByAttribute(attribute, ascending);
       if (orderByAttributes.contains(orderByAttribute)) {

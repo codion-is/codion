@@ -31,8 +31,8 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private Integer fetchDepth;
   private int fetchCount = -1;
   private boolean forUpdate;
-  private int limit;
-  private int offset;
+  private int limit = -1;
+  private int offset = -1;
 
   /**
    * Instantiates a new {@link DefaultSelectCondition}
