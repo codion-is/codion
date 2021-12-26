@@ -1644,7 +1644,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     @Override
     public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
-      final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = tableModel.getTableConditionModel().getFilterModels().get((Attribute<?>) column.getIdentifier());
+      final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel =
+              tableModel.getTableConditionModel().getFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
