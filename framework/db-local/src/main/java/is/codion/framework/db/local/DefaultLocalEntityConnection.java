@@ -557,10 +557,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnExpression = propertyToSelect.getColumnExpression();
-    final String selectQuery = new SelectQueryBuilder()
+    final String selectQuery = new SelectQueryBuilder(entityDefinition, connection.getDatabase())
             .columns("distinct " + columnExpression)
-            .from(entityDefinition.getSelectTableName())
-            .where(combinedCondition.getConditionString(entityDefinition))
+            .where(combinedCondition)
             .orderBy(columnExpression)
             .build();
     PreparedStatement statement = null;
@@ -593,7 +592,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Database database = connection.getDatabase();
     final String subquery = selectQuery(columnsClause(entityDefinition.getPrimaryKeyProperties()), condition, entityDefinition, database);
     final String subqueryAlias = database.subqueryRequiresAlias() ? " as row_count" : "";
-    final String selectQuery = new SelectQueryBuilder()
+    final String selectQuery = new SelectQueryBuilder(entityDefinition, database)
             .columns("count(*)")
             .from("(" + subquery + ")" + subqueryAlias)
             .build();
@@ -780,10 +779,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     final Condition condition = condition(primaryKey);
-    final String selectQuery = new SelectQueryBuilder()
+    final String selectQuery = new SelectQueryBuilder(entityDefinition, connection.getDatabase())
             .columns(blobProperty.getColumnExpression())
-            .from(entityDefinition.getTableName())
-            .where(condition.getConditionString(entityDefinition))
+            .where(condition)
             .build();
     synchronized (connection) {
       try {
