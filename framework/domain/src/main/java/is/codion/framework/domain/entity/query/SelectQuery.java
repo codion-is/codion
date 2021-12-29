@@ -7,7 +7,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a select query, either a full query or a from clause with an optional where clause.
- * For full queries use {@link #selectQuery(String)} or {@link #selectQueryContainingWhereClause(String)}.
+ * For full queries use {@link #query(String)} or {@link #queryContainingWhereClause(String)}.
  * For partial queries (without a columns clause), based on a from clause
  * and/or where clause use the {@link Builder} provided by {@link #builder()}.
  */
@@ -19,31 +19,36 @@ public interface SelectQuery {
   String getQuery();
 
   /**
-   * @return true if the query string contains a columns clause
+   * @return the FROM clause
    */
-  boolean containsColumnsClause();
+  String getFromClause();
 
   /**
-   * @return true if the query string contains a WHERE clause
+   * @return the WHERE clause
+   */
+  String getWhereClause();
+
+  /**
+   * @return true if this query contains a WHERE clause
    */
   boolean containsWhereClause();
 
   /**
    * A convenience method for creating a SelectQuery based on a full query, without a WHERE clause.
-   * @param selectQuery the query, may not contain a WHERE clause
+   * @param query the query, may not contain a WHERE clause
    * @return a SelectQuery based on the given query
    */
-  static SelectQuery selectQuery(final String selectQuery) {
-    return new DefaultSelectQuery(requireNonNull(selectQuery, "selectQuery"), true, false);
+  static SelectQuery query(final String query) {
+    return new DefaultSelectQuery(requireNonNull(query, "query"), false);
   }
 
   /**
    * A convenience method for creating a SelectQuery based on a full query, containing a WHERE clause.
-   * @param selectQueryContainingWhereClause the query, must contain a WHERE clause
+   * @param queryContainingWhereClause the query, must contain a WHERE clause
    * @return a SelectQuery based on the given query
    */
-  static SelectQuery selectQueryContainingWhereClause(final String selectQueryContainingWhereClause) {
-    return new DefaultSelectQuery(requireNonNull(selectQueryContainingWhereClause, "selectQueryContainingWhereClause"), true, true);
+  static SelectQuery queryContainingWhereClause(final String queryContainingWhereClause) {
+    return new DefaultSelectQuery(requireNonNull(queryContainingWhereClause, "queryContainingWhereClause"), true);
   }
 
   /**
@@ -59,29 +64,14 @@ public interface SelectQuery {
   interface Builder {
 
     /**
-     * Specifies a full select query, without a WHERE clause.
-     * @param query the query
-     * @return this Builder instance
-     * @see #queryContainingWhereClause(String)
-     */
-    Builder query(String query);
-
-    /**
-     * Specifies a full select query, including a WHERE clause.
-     * @param queryContainingWhereClause the query, including a WHERE clause
-     * @return this Builder instance
-     */
-    Builder queryContainingWhereClause(String queryContainingWhereClause);
-
-    /**
-     * Specifies the from clause to use.
+     * Specifies the from clause to use, without the FROM keyword.
      * @param fromClause the from clause
      * @return this Builder instance
      */
     Builder fromClause(String fromClause);
 
     /**
-     * Specifies the where clause to use.
+     * Specifies the where clause to use, without the WHERE keyword.
      * @param whereClause the where clause
      * @return this Builder instance
      */

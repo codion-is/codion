@@ -557,8 +557,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnExpression = propertyToSelect.getColumnExpression();
-    final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
-            "distinct " + columnExpression, combinedCondition.getConditionString(entityDefinition), columnExpression);
+    final String selectQuery = new SelectQueryBuilder()
+            .columns("distinct " + columnExpression)
+            .from(entityDefinition.getSelectTableName())
+            .where(combinedCondition.getConditionString(entityDefinition))
+            .orderBy(columnExpression)
+            .build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
@@ -589,7 +593,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Database database = connection.getDatabase();
     final String subquery = selectQuery(columnsClause(entityDefinition.getPrimaryKeyProperties()), condition, entityDefinition, database);
     final String subqueryAlias = database.subqueryRequiresAlias() ? " as row_count" : "";
-    final String selectQuery = selectQuery("(" + subquery + ")" + subqueryAlias, "count(*)");
+    final String selectQuery = new SelectQueryBuilder()
+            .columns("count(*)")
+            .from("(" + subquery + ")" + subqueryAlias)
+            .build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
@@ -773,8 +780,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     final Condition condition = condition(primaryKey);
-    final String selectQuery = "select " + blobProperty.getColumnExpression() + " from " +
-            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + condition.getConditionString(entityDefinition);
+    final String selectQuery = new SelectQueryBuilder()
+            .columns(blobProperty.getColumnExpression())
+            .from(entityDefinition.getTableName())
+            .where(condition.getConditionString(entityDefinition))
+            .build();
     synchronized (connection) {
       try {
         logAccess("readBlob", selectQuery);

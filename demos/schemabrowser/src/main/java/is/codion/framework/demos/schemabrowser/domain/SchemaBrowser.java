@@ -84,9 +84,7 @@ public final class SchemaBrowser extends DefaultDomain {
             .caption("Tables");
     final String tableQuery = bundle.getString("t_table_query");
     if (!tableQuery.isEmpty()) {
-      tableBuilder.selectQuery(SelectQuery.builder()
-              .queryContainingWhereClause(tableQuery)
-              .build());
+      tableBuilder.selectQuery(SelectQuery.queryContainingWhereClause(tableQuery));
     }
   }
 

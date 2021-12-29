@@ -19,10 +19,10 @@ public final class QueriesTest {
     final EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.Department.TYPE);
     OrderBy orderBy = OrderBy.orderBy().ascending(TestDomain.Department.LOC)
             .descending(TestDomain.Department.DNAME);
-    assertEquals("order by loc, dname desc", Queries.getOrderByClause(orderBy, definition));
+    assertEquals("loc, dname desc", Queries.getOrderByClause(orderBy, definition));
     orderBy = OrderBy.orderBy().ascending(TestDomain.Department.LOC)
             .descending(TestDomain.Department.DNAME).ascending(TestDomain.Department.DEPTNO);
-    assertEquals("order by loc, dname desc, deptno", Queries.getOrderByClause(orderBy, definition));
+    assertEquals("loc, dname desc, deptno", Queries.getOrderByClause(orderBy, definition));
 
     final OrderBy emptyOrderBy = OrderBy.orderBy();
     assertThrows(IllegalArgumentException.class, () -> Queries.getOrderByClause(emptyOrderBy, definition));

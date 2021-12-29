@@ -7502,3 +7502,4 @@
   DefaultSelectCondition, limit and offset initialized to -1, now supports 0 for both
   ColumnProperty.getResultPacker() unnecessary type parameter removed
   OrderBy.ascending() and descending() now throw IllegalArgumentException in case attributes is empty, getOrderByAttributes() now returns an unmodifiable list
+  Queries refactored along with related classes

@@ -12,8 +12,8 @@ import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static is.codion.common.Util.nullOrEmpty;
 
@@ -71,70 +71,29 @@ final class Queries {
     return "delete from " + tableName + (conditionString.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + conditionString);
   }
 
-  /**
-   * Generates a sql select query with the given parameters
-   * @param tableName the name of the table from which to select
-   * @param columnsClause the columns to select, example: "col1, col2"
-   * @return the generated sql query
-   */
-  static String selectQuery(final String tableName, final String columnsClause) {
-    return selectQuery(tableName, columnsClause, null, null);
-  }
-
-  /**
-   * Generates a sql select query with the given parameters
-   * @param tableName the name of the table from which to select
-   * @param columnsClause the columns to select, example: "col1, col2"
-   * @param conditionString the condition string without the WHERE keyword
-   * @param orderByClause a string specifying the columns 'ORDER BY' clause,
-   * "col1, col2" as input results in the following order by clause "order by col1, col2"
-   * @return the generated sql query
-   */
-  static String selectQuery(final String tableName, final String columnsClause, final String conditionString,
-                            final String orderByClause) {
-    final StringBuilder queryBuilder = new StringBuilder("select ").append(columnsClause).append(" from ").append(tableName);
-    if (!nullOrEmpty(conditionString)) {
-      queryBuilder.append(WHERE_SPACE_PREFIX_POSTFIX).append(conditionString);
-    }
-    if (!nullOrEmpty(orderByClause)) {
-      queryBuilder.append(" order by ").append(orderByClause);
-    }
-
-    return queryBuilder.toString();
-  }
-
   static String selectQuery(final String columnsClause, final Condition condition,
                             final EntityDefinition entityDefinition, final Database database) {
-    final boolean isForUpdate = condition instanceof SelectCondition && ((SelectCondition) condition).isForUpdate();
     final SelectQuery selectQuery = entityDefinition.getSelectQuery();
-    boolean containsWhereClause = false;
-    String selectQueryString = selectQuery == null ? null : selectQuery.getQuery();
-    if (selectQuery == null) {
-      selectQueryString = selectQuery(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName(), columnsClause);
-    }
-    else {
-      if (!selectQuery.containsColumnsClause()) {
-        selectQueryString = "select " + columnsClause + "\n" + selectQuery.getQuery();
-      }
-      containsWhereClause = selectQuery.containsWhereClause();
-    }
-
-    final StringBuilder queryBuilder = new StringBuilder(selectQueryString);
+    final boolean containsWhereClause = selectQuery != null && selectQuery.containsWhereClause();
+    final boolean isForUpdate = condition instanceof SelectCondition && ((SelectCondition) condition).isForUpdate();
+    final SelectQueryBuilder queryBuilder = selectQueryBuilder(entityDefinition, selectQuery, columnsClause, isForUpdate);
     final String conditionString = condition.getConditionString(entityDefinition);
-    if (conditionString.length() > 0) {
-      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(conditionString);
+    if (!conditionString.isEmpty()) {
+      if (containsWhereClause) {
+        queryBuilder.additionalWhere(conditionString);
+      }
+      else {
+        queryBuilder.where(conditionString);
+      }
     }
     if (isForUpdate) {
-      final String forUpdateClause = database.getSelectForUpdateClause();
-      if (!nullOrEmpty(forUpdateClause)) {
-        queryBuilder.append(" ").append(forUpdateClause);
-      }
+      addSelectForUpdateClause(queryBuilder, database);
     }
     else {
       addGroupHavingOrderByAndLimitClauses(queryBuilder, condition, entityDefinition);
     }
 
-    return queryBuilder.toString();
+    return queryBuilder.build();
   }
 
   static String columnsClause(final List<ColumnProperty<?>> columnProperties) {
@@ -167,52 +126,188 @@ final class Queries {
    * @return a order by string
    */
   static String getOrderByClause(final OrderBy orderBy, final EntityDefinition entityDefinition) {
+    if (orderBy == null) {
+      return null;
+    }
     final List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
     if (orderByAttributes.isEmpty()) {
       throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
     }
-    final String columnsClause;
     if (orderByAttributes.size() == 1) {
-      final OrderBy.OrderByAttribute orderByAttribute = orderByAttributes.get(0);
-      columnsClause = getColumnOrderByClause(entityDefinition, orderByAttribute);
-    }
-    else {
-      final List<String> orderByColumnClauses = new ArrayList<>(orderByAttributes.size());
-      for (final OrderBy.OrderByAttribute property : orderByAttributes) {
-        orderByColumnClauses.add(getColumnOrderByClause(entityDefinition, property));
-      }
-      columnsClause = String.join(", ", orderByColumnClauses);
+      return getColumnOrderByClause(entityDefinition, orderByAttributes.get(0));
     }
 
-    return "order by " + columnsClause;
+    return orderByAttributes.stream()
+            .map(orderByAttribute -> getColumnOrderByClause(entityDefinition, orderByAttribute))
+            .collect(Collectors.joining(", "));
   }
 
   private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
     return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
   }
 
-  private static void addGroupHavingOrderByAndLimitClauses(final StringBuilder queryBuilder, final Condition condition,
+  private static SelectQueryBuilder selectQueryBuilder(final EntityDefinition entityDefinition, final SelectQuery selectQuery,
+                                                       final String columnsClause, final boolean isForUpdate) {
+    if (selectQuery != null && selectQuery.getQuery() != null) {
+      return new SelectQueryBuilder().query(selectQuery.getQuery());
+    }
+
+    final SelectQueryBuilder queryBuilder = new SelectQueryBuilder()
+            .columns(columnsClause);
+    if (selectQuery == null) {
+      queryBuilder.from(isForUpdate ? entityDefinition.getTableName() : entityDefinition.getSelectTableName());
+    }
+    else {
+      queryBuilder.from(selectQuery.getFromClause())
+              .where(selectQuery.getWhereClause());
+    }
+
+    return queryBuilder;
+  }
+
+  private static void addSelectForUpdateClause(final SelectQueryBuilder queryBuilder, final Database database) {
+    final String forUpdateClause = database.getSelectForUpdateClause();
+    if (!nullOrEmpty(forUpdateClause)) {
+      queryBuilder.forUpdate(forUpdateClause);
+    }
+  }
+
+  private static void addGroupHavingOrderByAndLimitClauses(final SelectQueryBuilder queryBuilder, final Condition condition,
                                                            final EntityDefinition entityDefinition) {
-    final String groupByClause = entityDefinition.getGroupByClause();
-    if (groupByClause != null) {
-      queryBuilder.append(" group by ").append(groupByClause);
-    }
-    final String havingClause = entityDefinition.getHavingClause();
-    if (havingClause != null) {
-      queryBuilder.append(" having ").append(havingClause);
-    }
+    queryBuilder.groupBy(entityDefinition.getGroupByClause());
+    queryBuilder.having(entityDefinition.getHavingClause());
     if (condition instanceof SelectCondition) {
       final SelectCondition selectCondition = (SelectCondition) condition;
-      final OrderBy orderBy = selectCondition.getOrderBy();
-      if (orderBy != null) {
-        queryBuilder.append(" ").append(getOrderByClause(orderBy, entityDefinition));
-      }
+      queryBuilder.orderBy(getOrderByClause(selectCondition.getOrderBy(), entityDefinition));
       if (selectCondition.getLimit() >= 0) {
-        queryBuilder.append(" limit ").append(selectCondition.getLimit());
+        queryBuilder.limit(selectCondition.getLimit());
         if (selectCondition.getOffset() >= 0) {
-          queryBuilder.append(" offset ").append(selectCondition.getOffset());
+          queryBuilder.offset(selectCondition.getOffset());
         }
       }
+    }
+  }
+
+  static final class SelectQueryBuilder {
+
+    private static final String SELECT = "select ";
+    private static final String FROM = "from ";
+    private static final String WHERE = "where ";
+    private static final String AND = "and ";
+    private static final String GROUP_BY = "group by ";
+    private static final String HAVING = "having ";
+    private static final String ORDER_BY = "order by ";
+    private static final String LIMIT = "limit ";
+    private static final String OFFSET = "offset ";
+    private static final String NEWLINE = "\n";
+
+    private String query;
+    private String columns;
+    private String from;
+    private String where;
+    private String additionalWhere;
+    private String orderBy;
+    private String forUpdate;
+    private String groupBy;
+    private String having;
+    private Integer limit;
+    private Integer offset;
+
+    SelectQueryBuilder query(final String query) {
+      this.query = query;
+      return this;
+    }
+
+    SelectQueryBuilder columns(final String columns) {
+      this.columns = columns;
+      return this;
+    }
+
+    SelectQueryBuilder from(final String from) {
+      this.from = from;
+      return this;
+    }
+
+    SelectQueryBuilder where(final String where) {
+      this.where = where;
+      return this;
+    }
+
+    SelectQueryBuilder additionalWhere(final String additionalWhere) {
+      this.additionalWhere = additionalWhere;
+      return this;
+    }
+
+    SelectQueryBuilder orderBy(final String orderBy) {
+      this.orderBy = orderBy;
+      return this;
+    }
+
+    SelectQueryBuilder forUpdate(final String forUpdate) {
+      this.forUpdate = forUpdate;
+      return this;
+    }
+
+    SelectQueryBuilder groupBy(final String groupBy) {
+      this.groupBy = groupBy;
+      return this;
+    }
+
+    SelectQueryBuilder having(final String having) {
+      this.having = having;
+      return this;
+    }
+
+    SelectQueryBuilder limit(final int limit) {
+      this.limit = limit;
+      return this;
+    }
+
+    SelectQueryBuilder offset(final int offset) {
+      this.offset = offset;
+      return this;
+    }
+
+    String build() {
+      if (query != null) {
+        if (columns != null) {
+          return new StringBuilder()
+                  .append(SELECT).append(columns).append(NEWLINE)
+                  .append(FROM).append(query)
+                  .toString();
+        }
+
+        return query;
+      }
+      final StringBuilder builder = new StringBuilder()
+              .append(SELECT).append(columns).append(NEWLINE)
+              .append(FROM).append(from);
+      if (where != null) {
+        builder.append(NEWLINE).append(WHERE).append(where);
+      }
+      if (additionalWhere != null) {
+        builder.append(NEWLINE).append(AND).append(additionalWhere);
+      }
+      if (forUpdate != null) {
+        builder.append(NEWLINE).append(forUpdate);
+      }
+      if (groupBy != null) {
+        builder.append(NEWLINE).append(GROUP_BY).append(groupBy);
+      }
+      if (having != null) {
+        builder.append(NEWLINE).append(HAVING).append(having);
+      }
+      if (orderBy != null) {
+        builder.append(NEWLINE).append(ORDER_BY).append(orderBy);
+      }
+      if (limit != null) {
+        builder.append(NEWLINE).append(LIMIT).append(limit);
+      }
+      if (offset != null) {
+        builder.append(NEWLINE).append(OFFSET).append(offset);
+      }
+
+      return builder.toString();
     }
   }
 }
