@@ -19,22 +19,22 @@ final class DefaultSelectQuery implements SelectQuery {
   }
 
   @Override
-  public String getColumnsClause() {
+  public String getColumns() {
     return columnsClause;
   }
 
   @Override
-  public String getFromClause() {
+  public String getFrom() {
     return fromClause;
   }
 
   @Override
-  public String getWhereClause() {
+  public String getWhere() {
     return whereClause;
   }
 
   @Override
-  public String getOrderByClause() {
+  public String getOrderBy() {
     return orderByClause;
   }
 }

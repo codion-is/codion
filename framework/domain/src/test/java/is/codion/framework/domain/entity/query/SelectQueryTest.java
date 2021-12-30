@@ -11,54 +11,47 @@ public class SelectQueryTest {
 
   @Test
   void test() {
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder()
-            .fromClause("from dual")
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("from dual")
             .build());
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder()
-            .fromClause("dual")
-            .whereClause("WHERE 1 = 1")
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("dual")
+            .where("WHERE 1 = 1")
             .build());
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder()
-            .fromClause("\n from dual")
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("\n from dual")
             .build());
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder()
-            .fromClause("dual")
-            .whereClause("   wheRE 1 = 1")
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("dual")
+            .where("   wheRE 1 = 1")
             .build());
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder()
-            .fromClause("dual")
-            .whereClause("1 = 1")
-            .orderByClause(" order BY 1")
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("dual")
+            .where("1 = 1")
+            .orderBy(" order BY 1")
             .build());
 
-    SelectQuery selectQuery = SelectQuery.builder().columnsClause("1").fromClause("dual").build();
-    assertEquals("1", selectQuery.getColumnsClause());
-    assertEquals("dual", selectQuery.getFromClause());
-    assertNull(selectQuery.getWhereClause());
+    SelectQuery selectQuery = SelectQuery.builder("dual").columns("1").build();
+    assertEquals("1", selectQuery.getColumns());
+    assertEquals("dual", selectQuery.getFrom());
+    assertNull(selectQuery.getWhere());
 
-    selectQuery = SelectQuery.builder().columnsClause("1").fromClause("dual").whereClause("1 = 1").build();
-    assertEquals("1", selectQuery.getColumnsClause());
-    assertEquals("dual", selectQuery.getFromClause());
-    assertEquals("1 = 1", selectQuery.getWhereClause());
-    assertNotNull(selectQuery.getWhereClause());
+    selectQuery = SelectQuery.builder("dual").columns("1").where("1 = 1").build();
+    assertEquals("1", selectQuery.getColumns());
+    assertEquals("dual", selectQuery.getFrom());
+    assertEquals("1 = 1", selectQuery.getWhere());
+    assertNotNull(selectQuery.getWhere());
 
-    selectQuery = SelectQuery.builder()
-            .fromClause("dual")
+    selectQuery = SelectQuery.builder("dual")
             .build();
-    assertEquals("dual", selectQuery.getFromClause());
-    assertNull(selectQuery.getWhereClause());
+    assertEquals("dual", selectQuery.getFrom());
+    assertNull(selectQuery.getWhere());
 
-    selectQuery = SelectQuery.builder()
-            .fromClause("dual")
-            .whereClause("1 = 1")
+    selectQuery = SelectQuery.builder("dual")
+            .where("1 = 1")
             .build();
-    assertEquals("dual", selectQuery.getFromClause());
-    assertEquals("1 = 1", selectQuery.getWhereClause());
-    assertNotNull(selectQuery.getWhereClause());
+    assertEquals("dual", selectQuery.getFrom());
+    assertEquals("1 = 1", selectQuery.getWhere());
+    assertNotNull(selectQuery.getWhere());
 
-    assertThrows(IllegalStateException.class, () -> SelectQuery.builder().build());
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder().whereClause("where 1 = 1"));
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder().fromClause("From dual"));
-    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder().orderByClause("order By 1"));
+    assertThrows(NullPointerException.class, () -> SelectQuery.builder(null).build());
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("dual").where("where 1 = 1"));
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("From dual"));
+    assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder("dual").orderBy("order By 1"));
   }
 }

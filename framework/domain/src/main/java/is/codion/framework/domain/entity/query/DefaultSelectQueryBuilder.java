@@ -7,56 +7,49 @@ import static java.util.Objects.requireNonNull;
 
 class DefaultSelectQueryBuilder implements SelectQuery.Builder {
 
-  private String columnsClause;
-  private String fromClause;
-  private String whereClause;
-  private String orderByClause;
+  private final String from;
+  private String columns;
+  private String where;
+  private String orderBy;
+
+  DefaultSelectQueryBuilder(final String from) {
+    if (requireNonNull(from, "from").trim().toLowerCase().startsWith("from")) {
+      throw new IllegalArgumentException("from clause should not include the 'FROM' keyword");
+    }
+    this.from = from;
+  }
 
   @Override
-  public SelectQuery.Builder columnsClause(final String columnsClause) {
-    if (requireNonNull(columnsClause, "columnsClause").trim().toLowerCase().startsWith("select")) {
-      throw new IllegalArgumentException("columnsClause should not include the 'SELECT' keyword");
+  public SelectQuery.Builder columns(final String columns) {
+    if (requireNonNull(columns, "columns").trim().toLowerCase().startsWith("select")) {
+      throw new IllegalArgumentException("columns clause should not include the 'SELECT' keyword");
     }
-    this.columnsClause = columnsClause;
+    this.columns = columns;
     return this;
   }
 
   @Override
-  public SelectQuery.Builder fromClause(final String fromClause) {
-    if (requireNonNull(fromClause, "fromClause").trim().toLowerCase().startsWith("from")) {
-      throw new IllegalArgumentException("fromClause should not include the 'FROM' keyword");
+  public SelectQuery.Builder where(final String where) {
+    if (requireNonNull(where, "where").trim().toLowerCase().startsWith("where")) {
+      throw new IllegalArgumentException("where clause should not include the 'WHERE' keyword");
     }
-    this.fromClause = fromClause;
+    this.where = where;
 
     return this;
   }
 
   @Override
-  public SelectQuery.Builder whereClause(final String whereClause) {
-    if (requireNonNull(whereClause, "whereClause").trim().toLowerCase().startsWith("where")) {
-      throw new IllegalArgumentException("whereClause should not include the 'WHERE' keyword");
+  public SelectQuery.Builder orderBy(final String orderBy) {
+    if (requireNonNull(orderBy, "orderBy").trim().toLowerCase().startsWith("order by")) {
+      throw new IllegalArgumentException("orderBy clause should not include the 'ORDER BY' keywords");
     }
-    this.whereClause = whereClause;
-
-    return this;
-  }
-
-  @Override
-  public SelectQuery.Builder orderByClause(final String orderByClause) {
-    if (requireNonNull(orderByClause, "orderByClause").trim().toLowerCase().startsWith("order by")) {
-      throw new IllegalArgumentException("orderByClause should not include the 'ORDER BY' keywords");
-    }
-    this.orderByClause = orderByClause;
+    this.orderBy = orderBy;
 
     return this;
   }
 
   @Override
   public SelectQuery build() {
-    if (fromClause == null) {
-      throw new IllegalStateException("A fromClause must be specified to build a SelectQuery");
-    }
-
-    return new DefaultSelectQuery(columnsClause, fromClause, whereClause, orderByClause);
+    return new DefaultSelectQuery(columns, from, where, orderBy);
   }
 }

@@ -4,38 +4,38 @@
 package is.codion.framework.domain.entity.query;
 
 /**
- * Specifies a select query, either a full query or a from clause with an optional where clause.
- * For full queries use {@link #query(String)} or {@link #queryContainingWhereClause(String)}.
- * For partial queries (without a columns clause), based on a from clause
- * and/or where clause use the {@link Builder} provided by {@link #builder()}.
+ * Defines a select query, by specifying a from clause with optional columns, where and orderBy clauses.
+ * {@link Builder} provided by {@link #builder(String)}.
  */
 public interface SelectQuery {
 
   /**
    * @return the COLUMNS clause string
    */
-  String getColumnsClause();
+  String getColumns();
 
   /**
    * @return the FROM clause
    */
-  String getFromClause();
+  String getFrom();
 
   /**
    * @return the WHERE clause
    */
-  String getWhereClause();
+  String getWhere();
 
   /**
    * @return the order by clause
    */
-  String getOrderByClause();
+  String getOrderBy();
 
   /**
+   * Creates a {@link Builder} with the given from clause
+   * @param from the from clause, without the FROM keyword.
    * @return a new {@link SelectQuery.Builder} instance.
    */
-  static Builder builder() {
-    return new DefaultSelectQueryBuilder();
+  static Builder builder(final String from) {
+    return new DefaultSelectQueryBuilder(from);
   }
 
   /**
@@ -45,31 +45,24 @@ public interface SelectQuery {
 
     /**
      * Specifies the columns clause to use, without the SELECT keyword.
-     * @param columnsClause the columns clause
+     * @param columns the columns clause
      * @return this Builder instance
      */
-    Builder columnsClause(String columnsClause);
-
-    /**
-     * Specifies the from clause to use, without the FROM keyword.
-     * @param fromClause the from clause
-     * @return this Builder instance
-     */
-    Builder fromClause(String fromClause);
+    Builder columns(String columns);
 
     /**
      * Specifies the where clause to use, without the WHERE keyword.
-     * @param whereClause the where clause
+     * @param where the where clause
      * @return this Builder instance
      */
-    Builder whereClause(String whereClause);
+    Builder where(String where);
 
     /**
      * Specifies the order by clause to use, without the ORDER BY keywords.
-     * @param orderByClause the order by clause
+     * @param orderBy the order by clause
      * @return this Builder instance
      */
-    Builder orderByClause(String orderByClause);
+    Builder orderBy(String orderBy);
 
     /**
      * @return a new SelectQuery instance

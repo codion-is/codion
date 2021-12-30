@@ -320,10 +320,9 @@ public final class TestDomain extends DefaultDomain {
     define(JOINED_QUERY_ENTITY_TYPE,
             columnProperty(JOINED_DEPTNO),
             primaryKeyProperty(JOINED_EMPNO))
-            .selectQuery(SelectQuery.builder()
-                    .fromClause("scott.emp e, scott.dept d")
-                    .whereClause("e.deptno = d.deptno")
-                    .orderByClause("e.deptno, e.ename")
+            .selectQuery(SelectQuery.builder("scott.emp e, scott.dept d")
+                    .where("e.deptno = d.deptno")
+                    .orderBy("e.deptno, e.ename")
                     .build())
             .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");
   }
@@ -340,10 +339,9 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Query.EMPNO),
             columnProperty(Query.ENAME))
             .orderBy(OrderBy.orderBy().descending(Query.ENAME))
-            .selectQuery(SelectQuery.builder()
-                    .columnsClause("empno, ename")
-                    .fromClause("scott.emp")
-                    .orderByClause("ename")
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .columns("empno, ename")
+                    .orderBy("ename")
                     .build());
   }
 
@@ -359,11 +357,10 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(QueryWhereClause.EMPNO),
             columnProperty(QueryWhereClause.ENAME))
             .orderBy(OrderBy.orderBy().descending(QueryWhereClause.ENAME))
-            .selectQuery(SelectQuery.builder()
-                    .columnsClause("empno, ename")
-                    .fromClause("scott.emp")
-                    .whereClause("deptno > 10")
-                    .orderByClause("empno")
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .columns("empno, ename")
+                    .where("deptno > 10")
+                    .orderBy("empno")
                     .build());
   }
 
@@ -379,9 +376,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(QueryFromClause.EMPNO),
             columnProperty(QueryFromClause.ENAME))
             .orderBy(OrderBy.orderBy().descending(QueryFromClause.ENAME))
-            .selectQuery(SelectQuery.builder()
-                    .fromClause("scott.emp")
-                    .orderByClause("ename")
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .orderBy("ename")
                     .build());
   }
 
@@ -397,10 +393,9 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(QueryFromWhereClause.EMPNO),
             columnProperty(QueryFromWhereClause.ENAME))
             .orderBy(OrderBy.orderBy().descending(QueryFromWhereClause.ENAME))
-            .selectQuery(SelectQuery.builder()
-                    .fromClause("scott.emp")
-                    .whereClause("deptno > 10")
-                    .orderByClause("deptno")
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .where("deptno > 10")
+                    .orderBy("deptno")
                     .build());
   }
 }

@@ -73,23 +73,23 @@ final class Queries {
     return "delete from " + tableName + (conditionString.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + conditionString);
   }
 
-  static String selectQuery(final String columnsClause, final Condition condition,
+  static String selectQuery(final String columns, final Condition condition,
                             final EntityDefinition entityDefinition, final Database database) {
     final SelectQueryBuilder queryBuilder = new SelectQueryBuilder(entityDefinition, database);
     final SelectQuery selectQuery = entityDefinition.getSelectQuery();
     if (selectQuery != null) {
-      final String selectQueryColumnsClause = selectQuery.getColumnsClause();
-      queryBuilder.columns(selectQueryColumnsClause == null ? columnsClause : selectQueryColumnsClause);
-      queryBuilder.from(selectQuery.getFromClause());
-      queryBuilder.where(selectQuery.getWhereClause());
-      queryBuilder.orderBy(selectQuery.getOrderByClause());
+      final String selectQueryColumns = selectQuery.getColumns();
+      queryBuilder.columns(selectQueryColumns == null ? columns : selectQueryColumns);
+      queryBuilder.from(selectQuery.getFrom());
+      queryBuilder.where(selectQuery.getWhere());
+      queryBuilder.orderBy(selectQuery.getOrderBy());
     }
     else {
-      queryBuilder.columns(columnsClause);
+      queryBuilder.columns(columns);
     }
     queryBuilder.where(condition);
-    queryBuilder.groupBy(entityDefinition.getGroupByClause())
-            .having(entityDefinition.getHavingClause());
+    queryBuilder.groupBy(entityDefinition.getGroupByClause());
+    queryBuilder.having(entityDefinition.getHavingClause());
     if (condition instanceof SelectCondition) {
       final SelectCondition selectCondition = (SelectCondition) condition;
       queryBuilder.forUpdate(selectCondition.isForUpdate());

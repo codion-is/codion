@@ -47,7 +47,7 @@ public class DefaultEntityDefinitionTest {
         define(entityType, "tableName",
                 primaryKeyProperty(id),
                 Properties.columnProperty(name))
-                .selectQuery(SelectQuery.builder().columnsClause("*").fromClause("dual").build())
+                .selectQuery(SelectQuery.builder("dual").columns("*").build())
                 .orderBy(orderBy().descending(name))
                 .readOnly().selectTableName("selectTableName").groupByClause("name")
                 .stringFactory(stringFactory).comparator(comparator);
@@ -60,8 +60,8 @@ public class DefaultEntityDefinitionTest {
     assertEquals("tableName", definition.getTableName());
     assertNotNull(definition.getKeyGenerator());
     assertFalse(definition.isKeyGenerated());
-    assertEquals("*", definition.getSelectQuery().getColumnsClause());
-    assertEquals("dual", definition.getSelectQuery().getFromClause());
+    assertEquals("*", definition.getSelectQuery().getColumns());
+    assertEquals("dual", definition.getSelectQuery().getFrom());
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());

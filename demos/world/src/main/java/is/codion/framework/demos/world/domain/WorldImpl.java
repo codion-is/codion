@@ -219,8 +219,7 @@ public final class WorldImpl extends DefaultDomain {
             columnProperty(Lookup.CITY_DISTRICT, "District"),
             columnProperty(Lookup.CITY_POPULATION, "City population")
                     .numberFormatGrouping(true))
-            .selectQuery(SelectQuery.builder()
-                    .fromClause("world.country join world.city on city.countrycode = country.code")
+            .selectQuery(SelectQuery.builder("world.country join world.city on city.countrycode = country.code")
                     .build())
             .orderBy(orderBy().ascending(Lookup.COUNTRY_NAME).descending(Lookup.CITY_POPULATION))
             .readOnly()
