@@ -3,54 +3,39 @@
  */
 package is.codion.framework.domain.entity.query;
 
-import static java.util.Objects.requireNonNull;
-
 /**
- * Specifies a select query, either a full query or a from clause with an optional where clause.
- * For full queries use {@link #selectQuery(String)} or {@link #selectQueryContainingWhereClause(String)}.
- * For partial queries (without a columns clause), based on a from clause
- * and/or where clause use the {@link Builder} provided by {@link #builder()}.
+ * Defines a select query, by specifying a from clause with optional columns, where and orderBy clauses.
+ * {@link Builder} provided by {@link #builder(String)}.
  */
 public interface SelectQuery {
 
   /**
-   * @return the query string
+   * @return the COLUMNS clause string
    */
-  String getQuery();
+  String getColumns();
 
   /**
-   * @return true if the query string contains a columns clause
+   * @return the FROM clause
    */
-  boolean containsColumnsClause();
+  String getFrom();
 
   /**
-   * @return true if the query string contains a WHERE clause
+   * @return the WHERE clause
    */
-  boolean containsWhereClause();
+  String getWhere();
 
   /**
-   * A convenience method for creating a SelectQuery based on a full query, without a WHERE clause.
-   * @param selectQuery the query, may not contain a WHERE clause
-   * @return a SelectQuery based on the given query
+   * @return the order by clause
    */
-  static SelectQuery selectQuery(final String selectQuery) {
-    return new DefaultSelectQuery(requireNonNull(selectQuery, "selectQuery"), true, false);
-  }
+  String getOrderBy();
 
   /**
-   * A convenience method for creating a SelectQuery based on a full query, containing a WHERE clause.
-   * @param selectQueryContainingWhereClause the query, must contain a WHERE clause
-   * @return a SelectQuery based on the given query
-   */
-  static SelectQuery selectQueryContainingWhereClause(final String selectQueryContainingWhereClause) {
-    return new DefaultSelectQuery(requireNonNull(selectQueryContainingWhereClause, "selectQueryContainingWhereClause"), true, true);
-  }
-
-  /**
+   * Creates a {@link Builder} with the given from clause
+   * @param from the from clause, without the FROM keyword.
    * @return a new {@link SelectQuery.Builder} instance.
    */
-  static Builder builder() {
-    return new DefaultSelectQueryBuilder();
+  static Builder builder(final String from) {
+    return new DefaultSelectQueryBuilder(from);
   }
 
   /**
@@ -59,33 +44,25 @@ public interface SelectQuery {
   interface Builder {
 
     /**
-     * Specifies a full select query, without a WHERE clause.
-     * @param query the query
+     * Specifies the columns clause to use, without the SELECT keyword.
+     * @param columns the columns clause
      * @return this Builder instance
-     * @see #queryContainingWhereClause(String)
      */
-    Builder query(String query);
+    Builder columns(String columns);
 
     /**
-     * Specifies a full select query, including a WHERE clause.
-     * @param queryContainingWhereClause the query, including a WHERE clause
+     * Specifies the where clause to use, without the WHERE keyword.
+     * @param where the where clause
      * @return this Builder instance
      */
-    Builder queryContainingWhereClause(String queryContainingWhereClause);
+    Builder where(String where);
 
     /**
-     * Specifies the from clause to use.
-     * @param fromClause the from clause
+     * Specifies the order by clause to use, without the ORDER BY keywords.
+     * @param orderBy the order by clause
      * @return this Builder instance
      */
-    Builder fromClause(String fromClause);
-
-    /**
-     * Specifies the where clause to use.
-     * @param whereClause the where clause
-     * @return this Builder instance
-     */
-    Builder whereClause(String whereClause);
+    Builder orderBy(String orderBy);
 
     /**
      * @return a new SelectQuery instance

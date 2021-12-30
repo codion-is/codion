@@ -5,32 +5,36 @@ package is.codion.framework.domain.entity.query;
 
 final class DefaultSelectQuery implements SelectQuery {
 
-  private final String query;
-  private final boolean containsWhereClause;
-  private final boolean containsColumnsClause;
+  private final String columnsClause;
+  private final String fromClause;
+  private final String whereClause;
+  private final String orderByClause;
 
-  DefaultSelectQuery(final String fromClause, final String whereClause) {
-    this("from " + fromClause + (whereClause == null ? "" : "\nwhere " + whereClause), false, whereClause != null);
-  }
-
-  DefaultSelectQuery(final String query, final boolean containsColumnsClause, final boolean containsWhereClause) {
-    this.query = query;
-    this.containsColumnsClause = containsColumnsClause;
-    this.containsWhereClause = containsWhereClause;
-  }
-
-  @Override
-  public String getQuery() {
-    return query;
+  DefaultSelectQuery(final String columnsClause, final String fromClause, final String whereClause,
+                     final String orderByClause) {
+    this.columnsClause = columnsClause;
+    this.fromClause = fromClause;
+    this.whereClause = whereClause;
+    this.orderByClause = orderByClause;
   }
 
   @Override
-  public boolean containsColumnsClause() {
-    return containsColumnsClause;
+  public String getColumns() {
+    return columnsClause;
   }
 
   @Override
-  public boolean containsWhereClause() {
-    return containsWhereClause;
+  public String getFrom() {
+    return fromClause;
+  }
+
+  @Override
+  public String getWhere() {
+    return whereClause;
+  }
+
+  @Override
+  public String getOrderBy() {
+    return orderByClause;
   }
 }

@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -71,6 +72,10 @@ public final class TestDomain extends DefaultDomain {
         return null;
       }
     });
+    query();
+    queryWhereClause();
+    queryFromClause();
+    queryFromWhereClause();
   }
 
   public interface Department extends Entity {
@@ -257,7 +262,7 @@ public final class TestDomain extends DefaultDomain {
 
   public interface UUIDTestNoDefault {
     EntityType TYPE = DOMAIN.entityType("scott.uuid_test_no_default");
-    
+
     Attribute<UUID> ID = TYPE.attribute("id", UUID.class);
     Attribute<String> DATA = TYPE.stringAttribute("data");
   }
@@ -315,10 +320,82 @@ public final class TestDomain extends DefaultDomain {
     define(JOINED_QUERY_ENTITY_TYPE,
             columnProperty(JOINED_DEPTNO),
             primaryKeyProperty(JOINED_EMPNO))
-            .selectQuery(SelectQuery.builder()
-                    .fromClause("scott.emp e, scott.dept d")
-                    .whereClause("e.deptno = d.deptno")
+            .selectQuery(SelectQuery.builder("scott.emp e, scott.dept d")
+                    .where("e.deptno = d.deptno")
+                    .orderBy("e.deptno, e.ename")
                     .build())
             .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");
+  }
+
+  public interface Query {
+    EntityType TYPE = DOMAIN.entityType("query");
+
+    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
+    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+  }
+
+  private void query() {
+    define(Query.TYPE,
+            columnProperty(Query.EMPNO),
+            columnProperty(Query.ENAME))
+            .orderBy(OrderBy.orderBy().descending(Query.ENAME))
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .columns("empno, ename")
+                    .orderBy("ename")
+                    .build());
+  }
+
+  public interface QueryWhereClause {
+    EntityType TYPE = DOMAIN.entityType("query_where");
+
+    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
+    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+  }
+
+  private void queryWhereClause() {
+    define(QueryWhereClause.TYPE,
+            columnProperty(QueryWhereClause.EMPNO),
+            columnProperty(QueryWhereClause.ENAME))
+            .orderBy(OrderBy.orderBy().descending(QueryWhereClause.ENAME))
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .columns("empno, ename")
+                    .where("deptno > 10")
+                    .orderBy("empno")
+                    .build());
+  }
+
+  public interface QueryFromClause {
+    EntityType TYPE = DOMAIN.entityType("query_from");
+
+    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
+    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+  }
+
+  private void queryFromClause() {
+    define(QueryFromClause.TYPE,
+            columnProperty(QueryFromClause.EMPNO),
+            columnProperty(QueryFromClause.ENAME))
+            .orderBy(OrderBy.orderBy().descending(QueryFromClause.ENAME))
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .orderBy("ename")
+                    .build());
+  }
+
+  public interface QueryFromWhereClause {
+    EntityType TYPE = DOMAIN.entityType("query_from_where");
+
+    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
+    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+  }
+
+  private void queryFromWhereClause() {
+    define(QueryFromWhereClause.TYPE,
+            columnProperty(QueryFromWhereClause.EMPNO),
+            columnProperty(QueryFromWhereClause.ENAME))
+            .orderBy(OrderBy.orderBy().descending(QueryFromWhereClause.ENAME))
+            .selectQuery(SelectQuery.builder("scott.emp")
+                    .where("deptno > 10")
+                    .orderBy("deptno")
+                    .build());
   }
 }

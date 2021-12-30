@@ -946,6 +946,18 @@ public class DefaultLocalEntityConnectionTest {
     }
   }
 
+  @Test
+  void selectQuery() throws DatabaseException {
+    connection.select(condition(Query.TYPE));
+    connection.select(condition(Query.TYPE).toSelectCondition().forUpdate());
+    connection.select(condition(QueryWhereClause.TYPE));
+    connection.select(condition(QueryWhereClause.TYPE).toSelectCondition().forUpdate());
+    connection.select(condition(QueryFromClause.TYPE));
+    connection.select(condition(QueryFromClause.TYPE).toSelectCondition().forUpdate());
+    connection.select(condition(QueryFromWhereClause.TYPE));
+    connection.select(condition(QueryFromWhereClause.TYPE).toSelectCondition().forUpdate());
+  }
+
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
     return new DefaultLocalEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), UNIT_TEST_USER);
   }

@@ -31,7 +31,7 @@ import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Store extends DefaultDomain {
-  
+
   static final DomainType STORE = domainType(Store.class);
 
   public interface Address {

@@ -7535,3 +7535,7 @@
   DefaultSelectCondition, limit and offset initialized to -1, now supports 0 for both
   ColumnProperty.getResultPacker() unnecessary type parameter removed
   OrderBy.ascending() and descending() now throw IllegalArgumentException in case attributes is empty, getOrderByAttributes() now returns an unmodifiable list
+  Queries refactored along with related classes
+  SelectQuery, must now be split up into columns, from and where clauses, orderByClause added
+  SelectQuery, clause suffix removed from method names, from clause added as builder constructor parameter, since it's required
+  SelectQueries split from Queries, Queries refactoring making a somewhat clumsy landing

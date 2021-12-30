@@ -87,12 +87,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Domain domain;
   private final Entities domainEntities;
   private final DatabaseConnection connection;
-  private final Map<EntityType, List<ColumnProperty<?>>> selectablePropertiesCache = new HashMap<>();
+  private final SelectQueries selectQueries;
   private final Map<EntityType, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
   private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
-  private final Map<EntityType, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get();
   private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
@@ -110,6 +109,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
     this.connection = databaseConnection(database, user);
+    this.selectQueries = new SelectQueries(database);
     this.domain.configureConnection(this.connection);
   }
 
@@ -126,6 +126,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
     this.connection = databaseConnection(database, connection);
+    this.selectQueries = new SelectQueries(database);
     this.domain.configureConnection(this.connection);
   }
 
@@ -557,8 +558,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnExpression = propertyToSelect.getColumnExpression();
-    final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
-            "distinct " + columnExpression, combinedCondition.getConditionString(entityDefinition), columnExpression);
+    final String selectQuery = selectQueries.builder(entityDefinition)
+            .columns("distinct " + columnExpression)
+            .where(combinedCondition)
+            .orderBy(columnExpression)
+            .build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
@@ -586,10 +590,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int rowCount(final Condition condition) throws DatabaseException {
     final EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(condition, CONDITION_PARAM_NAME).getEntityType());
-    final Database database = connection.getDatabase();
-    final String subquery = selectQuery(columnsClause(entityDefinition.getPrimaryKeyProperties()), condition, entityDefinition, database);
-    final String subqueryAlias = database.subqueryRequiresAlias() ? " as row_count" : "";
-    final String selectQuery = selectQuery("(" + subquery + ")" + subqueryAlias, "count(*)");
+    final String selectQuery = selectQueries.builder(entityDefinition)
+            .columns("count(*)")
+            .subquery(selectQueries.builder(entityDefinition, condition.toSelectCondition()
+                            .selectAttributes(entityDefinition.getPrimaryKeyAttributes()))
+                    .build())
+            .build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
@@ -773,8 +779,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     final Condition condition = condition(primaryKey);
-    final String selectQuery = "select " + blobProperty.getColumnExpression() + " from " +
-            entityDefinition.getTableName() + WHERE_SPACE_PREFIX_POSTFIX + condition.getConditionString(entityDefinition);
+    final String selectQuery = selectQueries.builder(entityDefinition)
+            .columns(blobProperty.getColumnExpression())
+            .where(condition)
+            .build();
     synchronized (connection) {
       try {
         logAccess("readBlob", selectQuery);
@@ -1004,16 +1012,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ResultSet resultSet = null;
     String selectQuery = null;
     final EntityDefinition entityDefinition = domainEntities.getDefinition(selectCondition.getEntityType());
-    final List<ColumnProperty<?>> propertiesToSelect = getPropertiesToSelect(selectCondition.getSelectAttributes(), entityDefinition);
+    final SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition, selectCondition);
     try {
-      selectQuery = selectQuery(getColumnsClause(entityDefinition.getEntityType(),
-                      selectCondition.getSelectAttributes(), propertiesToSelect),
-              selectCondition, entityDefinition, connection.getDatabase());
+      selectQuery = selectQueryBuilder.build();
       statement = prepareStatement(selectQuery);
       resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
 
       return new EntityResultIterator(statement, resultSet,
-              new EntityResultPacker(entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
+              new EntityResultPacker(entityDefinition, selectQueryBuilder.getSelectedProperties()), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
       closeSilently(resultSet);
@@ -1021,27 +1027,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       LOG.error(createLogMessage(selectQuery, selectCondition.getValues(), e), e);
       throw e;
     }
-  }
-
-  private List<ColumnProperty<?>> getPropertiesToSelect(final List<Attribute<?>> selectAttributes,
-                                                        final EntityDefinition entityDefinition) {
-    if (selectAttributes.isEmpty()) {
-      return getSelectableProperties(entityDefinition);
-    }
-
-    final Set<Attribute<?>> attributesToSelect = new HashSet<>(entityDefinition.getPrimaryKeyAttributes());
-    selectAttributes.forEach(attribute -> {
-      if (attribute instanceof ForeignKey) {
-        ((ForeignKey) attribute).getReferences().forEach(reference -> attributesToSelect.add(reference.getAttribute()));
-      }
-      else {
-        attributesToSelect.add(attribute);
-      }
-    });
-
-    return attributesToSelect.stream()
-            .map(entityDefinition::getColumnProperty)
-            .collect(toList());
   }
 
   private int executeStatement(final PreparedStatement statement, final String query,
@@ -1148,14 +1133,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ColumnProperty<?>> getSelectableProperties(final EntityDefinition entityDefinition) {
-    return selectablePropertiesCache.computeIfAbsent(entityDefinition.getEntityType(), entityType ->
-            entityDefinition.getColumnProperties().stream()
-                    .filter(property -> !entityDefinition.getLazyLoadedBlobProperties().contains(property))
-                    .filter(ColumnProperty::isSelectable)
-                    .collect(toList()));
-  }
-
   private List<ColumnProperty<?>> getInsertableProperties(final EntityDefinition entityDefinition,
                                                           final boolean includePrimaryKeyProperties) {
     return insertablePropertiesCache.computeIfAbsent(entityDefinition.getEntityType(), entityType ->
@@ -1180,15 +1157,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
       return writableAndPrimaryKeyProperties.stream().map(ColumnProperty::getAttribute).toArray(Attribute<?>[]::new);
     });
-  }
-
-  private String getColumnsClause(final EntityType entityType, final List<Attribute<?>> selectAttributes,
-                                  final List<ColumnProperty<?>> propertiesToSelect) {
-    if (selectAttributes.isEmpty()) {
-      return allColumnsClauseCache.computeIfAbsent(entityType, type -> columnsClause(propertiesToSelect));
-    }
-
-    return columnsClause(propertiesToSelect);
   }
 
   private DatabaseException translateSQLException(final SQLException exception) {
