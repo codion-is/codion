@@ -5,28 +5,22 @@ package is.codion.framework.domain.entity.query;
 
 final class DefaultSelectQuery implements SelectQuery {
 
-  private final String query;
+  private final String columnsClause;
   private final String fromClause;
   private final String whereClause;
-  private final boolean containsWhereClause;
+  private final String orderByClause;
 
-  DefaultSelectQuery(final String fromClause, final String whereClause) {
-    this.query = null;
+  DefaultSelectQuery(final String columnsClause, final String fromClause, final String whereClause,
+                     final String orderByClause) {
+    this.columnsClause = columnsClause;
     this.fromClause = fromClause;
     this.whereClause = whereClause;
-    this.containsWhereClause = whereClause != null;
-  }
-
-  DefaultSelectQuery(final String query, final boolean containsWhereClause) {
-    this.query = query;
-    this.fromClause = null;
-    this.whereClause = null;
-    this.containsWhereClause = containsWhereClause;
+    this.orderByClause = orderByClause;
   }
 
   @Override
-  public String getQuery() {
-    return query;
+  public String getColumnsClause() {
+    return columnsClause;
   }
 
   @Override
@@ -40,7 +34,7 @@ final class DefaultSelectQuery implements SelectQuery {
   }
 
   @Override
-  public boolean containsWhereClause() {
-    return containsWhereClause;
+  public String getOrderByClause() {
+    return orderByClause;
   }
 }

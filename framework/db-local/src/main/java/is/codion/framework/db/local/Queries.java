@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db.local;
 
+import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
@@ -12,6 +13,7 @@ import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,31 +78,24 @@ final class Queries {
     final SelectQueryBuilder queryBuilder = new SelectQueryBuilder(entityDefinition, database);
     final SelectQuery selectQuery = entityDefinition.getSelectQuery();
     if (selectQuery != null) {
-      if (selectQuery.getQuery() != null) {
-        queryBuilder.query(selectQuery.getQuery());
-      }
-      else {
-        queryBuilder.columns(columnsClause)
-                .from(selectQuery.getFromClause())
-                .where(selectQuery.getWhereClause());
-      }
-      if (selectQuery.containsWhereClause()) {
-        queryBuilder.additionalWhere(condition);
-      }
-      else {
-        queryBuilder.where(condition);
-      }
+      final String selectQueryColumnsClause = selectQuery.getColumnsClause();
+      queryBuilder.columns(selectQueryColumnsClause == null ? columnsClause : selectQueryColumnsClause);
+      queryBuilder.from(selectQuery.getFromClause());
+      queryBuilder.where(selectQuery.getWhereClause());
+      queryBuilder.orderBy(selectQuery.getOrderByClause());
     }
     else {
-      queryBuilder.columns(columnsClause)
-              .where(condition);
+      queryBuilder.columns(columnsClause);
     }
+    queryBuilder.where(condition);
     queryBuilder.groupBy(entityDefinition.getGroupByClause())
             .having(entityDefinition.getHavingClause());
     if (condition instanceof SelectCondition) {
       final SelectCondition selectCondition = (SelectCondition) condition;
       queryBuilder.forUpdate(selectCondition.isForUpdate());
-      queryBuilder.orderBy(getOrderByClause(selectCondition.getOrderBy(), entityDefinition));
+      if (queryBuilder.orderBy == null) {
+        queryBuilder.orderBy(getOrderByClause(selectCondition.getOrderBy(), entityDefinition));
+      }
       if (selectCondition.getLimit() >= 0) {
         queryBuilder.limit(selectCondition.getLimit());
         if (selectCondition.getOffset() >= 0) {
@@ -178,11 +173,10 @@ final class Queries {
     private final EntityDefinition definition;
     private final Database database;
 
-    private String query;
+    private final List<String> where = new ArrayList<>(1);
+
     private String columns;
     private String from;
-    private String where;
-    private String additionalWhere;
     private String orderBy;
     private boolean forUpdate;
     private String groupBy;
@@ -193,11 +187,6 @@ final class Queries {
     SelectQueryBuilder(final EntityDefinition definition, final Database database) {
       this.definition = definition;
       this.database = database;
-    }
-
-    SelectQueryBuilder query(final String query) {
-      this.query = query;
-      return this;
     }
 
     SelectQueryBuilder columns(final String columns) {
@@ -218,21 +207,10 @@ final class Queries {
       return this;
     }
 
-    SelectQueryBuilder additionalWhere(final Condition condition) {
-      final String conditionString = condition.getConditionString(definition);
-      if (!conditionString.isEmpty()) {
-        additionalWhere(conditionString);
-      }
-      return this;
-    }
-
     SelectQueryBuilder where(final String where) {
-      this.where = where;
-      return this;
-    }
-
-    SelectQueryBuilder additionalWhere(final String additionalWhere) {
-      this.additionalWhere = additionalWhere;
+      if (!Util.nullOrEmpty(where)) {
+        this.where.add(where);
+      }
       return this;
     }
 
@@ -267,29 +245,15 @@ final class Queries {
     }
 
     String build() {
-      if (query != null) {
-        if (columns != null) {
-          return new StringBuilder()
-                  .append(SELECT).append(columns).append(NEWLINE)
-                  .append(FROM).append(query)
-                  .toString();
-        }
-
-        return query;
-      }
       final StringBuilder builder = new StringBuilder()
               .append(SELECT).append(columns).append(NEWLINE)
               .append(FROM).append(getFrom());
-      if (where != null) {
-        builder.append(NEWLINE).append(WHERE).append(where);
-      }
-      if (additionalWhere != null) {
-        builder.append(NEWLINE).append(AND).append(additionalWhere);
-      }
-      if (forUpdate) {
-        final String forUpdateClause = database.getSelectForUpdateClause();
-        if (!nullOrEmpty(forUpdateClause)) {
-          builder.append(NEWLINE).append(forUpdateClause);
+      if (!where.isEmpty()) {
+        builder.append(NEWLINE).append(WHERE).append(where.get(0));
+        if (where.size() > 1) {
+          for (int i = 1; i < where.size(); i++) {
+            builder.append(NEWLINE).append(AND).append(where.get(i));
+          }
         }
       }
       if (groupBy != null) {
@@ -306,6 +270,12 @@ final class Queries {
       }
       if (offset != null) {
         builder.append(NEWLINE).append(OFFSET).append(offset);
+      }
+      if (forUpdate) {
+        final String forUpdateClause = database.getSelectForUpdateClause();
+        if (!nullOrEmpty(forUpdateClause)) {
+          builder.append(NEWLINE).append(forUpdateClause);
+        }
       }
 
       return builder.toString();

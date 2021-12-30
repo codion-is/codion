@@ -7,8 +7,19 @@ import static java.util.Objects.requireNonNull;
 
 class DefaultSelectQueryBuilder implements SelectQuery.Builder {
 
+  private String columnsClause;
   private String fromClause;
   private String whereClause;
+  private String orderByClause;
+
+  @Override
+  public SelectQuery.Builder columnsClause(final String columnsClause) {
+    if (requireNonNull(columnsClause, "columnsClause").trim().toLowerCase().startsWith("select")) {
+      throw new IllegalArgumentException("columnsClause should not include the 'SELECT' keyword");
+    }
+    this.columnsClause = columnsClause;
+    return this;
+  }
 
   @Override
   public SelectQuery.Builder fromClause(final String fromClause) {
@@ -31,11 +42,21 @@ class DefaultSelectQueryBuilder implements SelectQuery.Builder {
   }
 
   @Override
+  public SelectQuery.Builder orderByClause(final String orderByClause) {
+    if (requireNonNull(orderByClause, "orderByClause").trim().toLowerCase().startsWith("order by")) {
+      throw new IllegalArgumentException("orderByClause should not include the 'ORDER BY' keywords");
+    }
+    this.orderByClause = orderByClause;
+
+    return this;
+  }
+
+  @Override
   public SelectQuery build() {
     if (fromClause == null) {
       throw new IllegalStateException("A fromClause must be specified to build a SelectQuery");
     }
 
-    return new DefaultSelectQuery(fromClause, whereClause);
+    return new DefaultSelectQuery(columnsClause, fromClause, whereClause, orderByClause);
   }
 }

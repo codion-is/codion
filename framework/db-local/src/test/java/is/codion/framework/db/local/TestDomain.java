@@ -262,7 +262,7 @@ public final class TestDomain extends DefaultDomain {
 
   public interface UUIDTestNoDefault {
     EntityType TYPE = DOMAIN.entityType("scott.uuid_test_no_default");
-    
+
     Attribute<UUID> ID = TYPE.attribute("id", UUID.class);
     Attribute<String> DATA = TYPE.stringAttribute("data");
   }
@@ -323,6 +323,7 @@ public final class TestDomain extends DefaultDomain {
             .selectQuery(SelectQuery.builder()
                     .fromClause("scott.emp e, scott.dept d")
                     .whereClause("e.deptno = d.deptno")
+                    .orderByClause("e.deptno, e.ename")
                     .build())
             .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");
   }
@@ -339,7 +340,11 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Query.EMPNO),
             columnProperty(Query.ENAME))
             .orderBy(OrderBy.orderBy().descending(Query.ENAME))
-            .selectQuery(SelectQuery.query("select empno, ename from scott.emp"));
+            .selectQuery(SelectQuery.builder()
+                    .columnsClause("empno, ename")
+                    .fromClause("scott.emp")
+                    .orderByClause("ename")
+                    .build());
   }
 
   public interface QueryWhereClause {
@@ -354,9 +359,12 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(QueryWhereClause.EMPNO),
             columnProperty(QueryWhereClause.ENAME))
             .orderBy(OrderBy.orderBy().descending(QueryWhereClause.ENAME))
-            .selectQuery(SelectQuery.queryContainingWhereClause("select empno, ename\n" +
-                    "from scott.emp\n" +
-                    "where deptno > 10"));
+            .selectQuery(SelectQuery.builder()
+                    .columnsClause("empno, ename")
+                    .fromClause("scott.emp")
+                    .whereClause("deptno > 10")
+                    .orderByClause("empno")
+                    .build());
   }
 
   public interface QueryFromClause {
@@ -373,6 +381,7 @@ public final class TestDomain extends DefaultDomain {
             .orderBy(OrderBy.orderBy().descending(QueryFromClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .fromClause("scott.emp")
+                    .orderByClause("ename")
                     .build());
   }
 
@@ -391,6 +400,7 @@ public final class TestDomain extends DefaultDomain {
             .selectQuery(SelectQuery.builder()
                     .fromClause("scott.emp")
                     .whereClause("deptno > 10")
+                    .orderByClause("deptno")
                     .build());
   }
 }

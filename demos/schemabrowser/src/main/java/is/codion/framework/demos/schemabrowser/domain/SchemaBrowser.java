@@ -82,9 +82,15 @@ public final class SchemaBrowser extends DefaultDomain {
             .readOnly()
             .stringFactory(stringFactory(Table.SCHEMA_FK).text(".").value(Table.NAME))
             .caption("Tables");
-    final String tableQuery = bundle.getString("t_table_query");
-    if (!tableQuery.isEmpty()) {
-      tableBuilder.selectQuery(SelectQuery.queryContainingWhereClause(tableQuery));
+    final String tableQueryFrom = bundle.getString("t_table_query_from");
+    if (!tableQueryFrom.isEmpty()) {
+      final String tableQueryColumns = bundle.getString("t_table_query_columns");
+      final String tableQueryWhere = bundle.getString("t_table_query_where");
+      tableBuilder.selectQuery(SelectQuery.builder()
+              .columnsClause(tableQueryColumns)
+              .fromClause(tableQueryFrom)
+              .whereClause(tableQueryWhere)
+              .build());
     }
   }
 
