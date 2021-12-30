@@ -73,17 +73,41 @@ final class Queries {
 
   static String selectQuery(final String columnsClause, final Condition condition,
                             final EntityDefinition entityDefinition, final Database database) {
+    final SelectQueryBuilder queryBuilder = new SelectQueryBuilder(entityDefinition, database);
     final SelectQuery selectQuery = entityDefinition.getSelectQuery();
-    final boolean containsWhereClause = selectQuery != null && selectQuery.containsWhereClause();
-    final SelectQueryBuilder queryBuilder = selectQueryBuilder(entityDefinition, selectQuery, columnsClause, database);
-    queryBuilder.forUpdate(condition instanceof SelectCondition && ((SelectCondition) condition).isForUpdate());
-    if (containsWhereClause) {
-      queryBuilder.additionalWhere(condition);
+    if (selectQuery != null) {
+      if (selectQuery.getQuery() != null) {
+        queryBuilder.query(selectQuery.getQuery());
+      }
+      else {
+        queryBuilder.columns(columnsClause)
+                .from(selectQuery.getFromClause())
+                .where(selectQuery.getWhereClause());
+      }
+      if (selectQuery.containsWhereClause()) {
+        queryBuilder.additionalWhere(condition);
+      }
+      else {
+        queryBuilder.where(condition);
+      }
     }
     else {
-      queryBuilder.where(condition);
+      queryBuilder.columns(columnsClause)
+              .where(condition);
     }
-    addGroupHavingOrderByAndLimitClauses(queryBuilder, condition, entityDefinition);
+    queryBuilder.groupBy(entityDefinition.getGroupByClause())
+            .having(entityDefinition.getHavingClause());
+    if (condition instanceof SelectCondition) {
+      final SelectCondition selectCondition = (SelectCondition) condition;
+      queryBuilder.forUpdate(selectCondition.isForUpdate());
+      queryBuilder.orderBy(getOrderByClause(selectCondition.getOrderBy(), entityDefinition));
+      if (selectCondition.getLimit() >= 0) {
+        queryBuilder.limit(selectCondition.getLimit());
+        if (selectCondition.getOffset() >= 0) {
+          queryBuilder.offset(selectCondition.getOffset());
+        }
+      }
+    }
 
     return queryBuilder.build();
   }
@@ -136,38 +160,6 @@ final class Queries {
 
   private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
     return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
-  }
-
-  private static SelectQueryBuilder selectQueryBuilder(final EntityDefinition entityDefinition, final SelectQuery selectQuery,
-                                                       final String columnsClause, final Database database) {
-    if (selectQuery != null && selectQuery.getQuery() != null) {
-      return new SelectQueryBuilder(entityDefinition, database).query(selectQuery.getQuery());
-    }
-
-    final SelectQueryBuilder queryBuilder = new SelectQueryBuilder(entityDefinition, database)
-            .columns(columnsClause);
-    if (selectQuery != null) {
-      queryBuilder.from(selectQuery.getFromClause())
-              .where(selectQuery.getWhereClause());
-    }
-
-    return queryBuilder;
-  }
-
-  private static void addGroupHavingOrderByAndLimitClauses(final SelectQueryBuilder queryBuilder, final Condition condition,
-                                                           final EntityDefinition entityDefinition) {
-    queryBuilder.groupBy(entityDefinition.getGroupByClause());
-    queryBuilder.having(entityDefinition.getHavingClause());
-    if (condition instanceof SelectCondition) {
-      final SelectCondition selectCondition = (SelectCondition) condition;
-      queryBuilder.orderBy(getOrderByClause(selectCondition.getOrderBy(), entityDefinition));
-      if (selectCondition.getLimit() >= 0) {
-        queryBuilder.limit(selectCondition.getLimit());
-        if (selectCondition.getOffset() >= 0) {
-          queryBuilder.offset(selectCondition.getOffset());
-        }
-      }
-    }
   }
 
   static final class SelectQueryBuilder {
