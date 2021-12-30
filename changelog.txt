@@ -7505,3 +7505,4 @@
   Queries refactored along with related classes
   SelectQuery, must now be split up into columns, from and where clauses, orderByClause added
   SelectQuery, clause suffix removed from method names, from clause added as builder constructor parameter, since it's required
+  SelectQueries split from Queries, Queries refactoring making a somewhat clumsy landing
