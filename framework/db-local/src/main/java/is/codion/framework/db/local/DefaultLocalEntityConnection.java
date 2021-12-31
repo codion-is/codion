@@ -592,7 +592,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(condition, CONDITION_PARAM_NAME).getEntityType());
     final String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
-            .subquery(selectQueries.builder(entityDefinition, condition.toSelectCondition()
+            .subquery(selectQueries.builder(entityDefinition)
+                    .selectCondition(condition.toSelectCondition()
                             .selectAttributes(entityDefinition.getPrimaryKeyAttributes()))
                     .build())
             .build();
@@ -1012,7 +1013,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ResultSet resultSet = null;
     String selectQuery = null;
     final EntityDefinition entityDefinition = domainEntities.getDefinition(selectCondition.getEntityType());
-    final SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition, selectCondition);
+    final SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
+            .selectCondition(selectCondition);
     try {
       selectQuery = selectQueryBuilder.build();
       statement = prepareStatement(selectQuery);
