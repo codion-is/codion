@@ -42,10 +42,6 @@ final class SelectQueries {
     return new Builder(definition);
   }
 
-  Builder builder(final EntityDefinition definition, final SelectCondition condition) {
-    return new Builder(definition, condition);
-  }
-
   final class Builder {
 
     private static final String SELECT = "select ";
@@ -78,22 +74,19 @@ final class SelectQueries {
       this.definition = definition;
     }
 
-    Builder(final EntityDefinition definition, final SelectCondition condition) {
-      this(definition);
-      this.selectedProperties = getPropertiesToSelect(condition.getSelectAttributes(), definition);
-      final SelectQuery selectQuery = definition.getSelectQuery();
-      if (selectQuery != null) {
-        from(selectQuery.getFrom());
-        where(selectQuery.getWhere());
-        orderBy(selectQuery.getOrderBy());
-      }
-      columns(getColumnsClause(condition.getEntityType(), condition.getSelectAttributes(), selectedProperties));
+    List<ColumnProperty<?>> getSelectedProperties() {
+      return selectedProperties;
+    }
+
+    Builder selectCondition(final SelectCondition condition) {
+      entitySelectQuery();
+      setColumns(condition);
       where(condition);
       groupBy(definition.getGroupByClause());
       having(definition.getHavingClause());
       forUpdate(condition.isForUpdate());
-      if (orderBy == null) {
-        orderBy(getOrderByClause(condition.getOrderBy(), definition));
+      if (condition.getOrderBy() != null) {
+        orderBy(getOrderByClause(condition.getOrderBy()));
       }
       if (condition.getLimit() >= 0) {
         limit(condition.getLimit());
@@ -101,10 +94,20 @@ final class SelectQueries {
           offset(condition.getOffset());
         }
       }
+
+      return this;
     }
 
-    List<ColumnProperty<?>> getSelectedProperties() {
-      return selectedProperties;
+    Builder entitySelectQuery() {
+      final SelectQuery selectQuery = definition.getSelectQuery();
+      if (selectQuery != null) {
+        columns(selectQuery.getColumns() == null ? getAllColumnsClause() : selectQuery.getColumns());
+        from(selectQuery.getFrom());
+        where(selectQuery.getWhere());
+        orderBy(selectQuery.getOrderBy() == null ? getOrderByClause(definition.getOrderBy()) : selectQuery.getOrderBy());
+      }
+
+      return this;
     }
 
     Builder columns(final String columns) {
@@ -203,17 +206,24 @@ final class SelectQueries {
       return builder.toString();
     }
 
+    private void setColumns(final SelectCondition condition) {
+      final List<Attribute<?>> selectAttributes = condition.getSelectAttributes();
+      if (selectAttributes.isEmpty()) {
+        this.selectedProperties = getSelectableProperties();
+        columns(getAllColumnsClause());
+      }
+      else {
+        this.selectedProperties = getPropertiesToSelect(selectAttributes);
+        columns(getColumnsClause(selectedProperties));
+      }
+    }
+
     private String getFrom() {
       return from == null ? forUpdate ? definition.getTableName() : definition.getSelectTableName() : from;
     }
 
-    private List<ColumnProperty<?>> getPropertiesToSelect(final List<Attribute<?>> selectAttributes,
-                                                          final EntityDefinition entityDefinition) {
-      if (selectAttributes.isEmpty()) {
-        return getSelectableProperties(entityDefinition);
-      }
-
-      final Set<Attribute<?>> attributesToSelect = new HashSet<>(entityDefinition.getPrimaryKeyAttributes());
+    private List<ColumnProperty<?>> getPropertiesToSelect(final List<Attribute<?>> selectAttributes) {
+      final Set<Attribute<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyAttributes());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).getReferences().forEach(reference -> attributesToSelect.add(reference.getAttribute()));
@@ -224,25 +234,20 @@ final class SelectQueries {
       });
 
       return attributesToSelect.stream()
-              .map(entityDefinition::getColumnProperty)
+              .map(definition::getColumnProperty)
               .collect(toList());
     }
 
-    private List<ColumnProperty<?>> getSelectableProperties(final EntityDefinition entityDefinition) {
-      return selectablePropertiesCache.computeIfAbsent(entityDefinition.getEntityType(), entityType ->
-              entityDefinition.getColumnProperties().stream()
-                      .filter(property -> !entityDefinition.getLazyLoadedBlobProperties().contains(property))
+    private List<ColumnProperty<?>> getSelectableProperties() {
+      return selectablePropertiesCache.computeIfAbsent(definition.getEntityType(), entityType ->
+              definition.getColumnProperties().stream()
+                      .filter(property -> !definition.getLazyLoadedBlobProperties().contains(property))
                       .filter(ColumnProperty::isSelectable)
                       .collect(toList()));
     }
 
-    private String getColumnsClause(final EntityType entityType, final List<Attribute<?>> selectAttributes,
-                                    final List<ColumnProperty<?>> propertiesToSelect) {
-      if (selectAttributes.isEmpty()) {
-        return allColumnsClauseCache.computeIfAbsent(entityType, type -> getColumnsClause(propertiesToSelect));
-      }
-
-      return getColumnsClause(propertiesToSelect);
+    private String getAllColumnsClause() {
+      return allColumnsClauseCache.computeIfAbsent(definition.getEntityType(), type -> getColumnsClause(getSelectableProperties()));
     }
 
     private String getColumnsClause(final List<ColumnProperty<?>> columnProperties) {
@@ -269,7 +274,7 @@ final class SelectQueries {
       return stringBuilder.toString();
     }
 
-    private String getOrderByClause(final OrderBy orderBy, final EntityDefinition entityDefinition) {
+    private String getOrderByClause(final OrderBy orderBy) {
       if (orderBy == null) {
         return null;
       }
@@ -278,11 +283,11 @@ final class SelectQueries {
         throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
       }
       if (orderByAttributes.size() == 1) {
-        return getColumnOrderByClause(entityDefinition, orderByAttributes.get(0));
+        return getColumnOrderByClause(definition, orderByAttributes.get(0));
       }
 
       return orderByAttributes.stream()
-              .map(orderByAttribute -> getColumnOrderByClause(entityDefinition, orderByAttribute))
+              .map(orderByAttribute -> getColumnOrderByClause(definition, orderByAttribute))
               .collect(Collectors.joining(", "));
     }
 

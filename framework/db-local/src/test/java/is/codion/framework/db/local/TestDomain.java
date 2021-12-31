@@ -360,7 +360,6 @@ public final class TestDomain extends DefaultDomain {
             .selectQuery(SelectQuery.builder("scott.emp")
                     .columns("empno, ename")
                     .where("deptno > 10")
-                    .orderBy("empno")
                     .build());
   }
 
