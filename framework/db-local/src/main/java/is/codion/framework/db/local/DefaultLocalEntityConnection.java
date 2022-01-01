@@ -977,7 +977,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private List<ForeignKeyProperty> getForeignKeyPropertiesToSet(final EntityType entityType,
-                                                                final List<Attribute<?>> conditionSelectAttributes) {
+                                                                final Collection<Attribute<?>> conditionSelectAttributes) {
     if (conditionSelectAttributes.isEmpty()) {
       return domainEntities.getDefinition(entityType).getForeignKeyProperties();
     }

@@ -17,6 +17,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -207,7 +208,7 @@ final class SelectQueries {
     }
 
     private void setColumns(final SelectCondition condition) {
-      final List<Attribute<?>> selectAttributes = condition.getSelectAttributes();
+      final Collection<Attribute<?>> selectAttributes = condition.getSelectAttributes();
       if (selectAttributes.isEmpty()) {
         this.selectedProperties = getSelectableProperties();
         columns(getAllColumnsClause());
@@ -222,7 +223,7 @@ final class SelectQueries {
       return from == null ? forUpdate ? definition.getTableName() : definition.getSelectTableName() : from;
     }
 
-    private List<ColumnProperty<?>> getPropertiesToSelect(final List<Attribute<?>> selectAttributes) {
+    private List<ColumnProperty<?>> getPropertiesToSelect(final Collection<Attribute<?>> selectAttributes) {
       final Set<Attribute<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyAttributes());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {

@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A class encapsulating select query parameters.
@@ -126,7 +125,7 @@ public interface SelectCondition extends Condition {
 
   /**
    * @return the attributes to include in the query result,
-   * an empty list if all should be included
+   * an empty Collection if all should be included
    */
-  List<Attribute<?>> getSelectAttributes();
+  Collection<Attribute<?>> getSelectAttributes();
 }

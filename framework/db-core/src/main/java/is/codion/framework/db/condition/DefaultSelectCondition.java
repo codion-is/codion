@@ -25,7 +25,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   private final Condition condition;
   private Map<ForeignKey, Integer> foreignKeyFetchDepths;
-  private List<Attribute<?>> selectAttributes = emptyList();
+  private Collection<Attribute<?>> selectAttributes = emptyList();
 
   private OrderBy orderBy;
   private Integer fetchDepth;
@@ -149,7 +149,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public List<Attribute<?>> getSelectAttributes() {
+  public Collection<Attribute<?>> getSelectAttributes() {
     return selectAttributes;
   }
 

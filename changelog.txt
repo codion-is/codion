@@ -7509,3 +7509,4 @@
   SelectQueries bug fixed, did not always set the columns, some refactoring and a basic unit test added
   Condition.Combination.add() removed, DefaultConditionCombination now immutable
   Condition.Combination.getConditions() now returns Collection
+  SelectCondition.getSelectAttributes() now returns Collection
