@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.framework.db.local;
 
@@ -70,7 +70,7 @@ final class SelectQueries {
     private Integer limit;
     private Integer offset;
 
-    Builder(final EntityDefinition definition) {
+    private Builder(final EntityDefinition definition) {
       this.definition = definition;
     }
 
