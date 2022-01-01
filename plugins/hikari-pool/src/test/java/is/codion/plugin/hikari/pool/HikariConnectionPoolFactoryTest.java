@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.plugin.hikari.pool;
 
