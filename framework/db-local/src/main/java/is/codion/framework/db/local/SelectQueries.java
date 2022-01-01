@@ -70,7 +70,7 @@ final class SelectQueries {
     private Integer limit;
     private Integer offset;
 
-    Builder(final EntityDefinition definition) {
+    private Builder(final EntityDefinition definition) {
       this.definition = definition;
     }
 
