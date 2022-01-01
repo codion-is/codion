@@ -7507,3 +7507,5 @@
   SelectQuery, clause suffix removed from method names, from clause added as builder constructor parameter, since it's required
   SelectQueries split from Queries, Queries refactoring making a somewhat clumsy landing
   SelectQueries bug fixed, did not always set the columns, some refactoring and a basic unit test added
+  Condition.Combination.add() removed, DefaultConditionCombination now immutable
+  Condition.Combination.getConditions() now returns Collection

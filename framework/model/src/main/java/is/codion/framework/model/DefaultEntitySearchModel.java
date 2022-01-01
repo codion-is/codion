@@ -11,7 +11,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
@@ -277,18 +276,18 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
-    final Condition.Combination conditionCombination = combination(Conjunction.OR);
+    final Collection<Condition> conditions = new ArrayList<>();
     final String[] searchTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Attribute<String> searchAttribute : searchAttributes) {
       final SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (final String rawSearchText : searchTexts) {
-        final String searchText = prepareSearchText(rawSearchText, searchSettings);
-        final AttributeCondition<String> condition = where(searchAttribute)
-                .equalTo(searchText).caseSensitive(searchSettings.getCaseSensitiveValue().get());
-        conditionCombination.add(condition);
+        conditions.add(where(searchAttribute)
+                .equalTo(prepareSearchText(rawSearchText, searchSettings))
+                .caseSensitive(searchSettings.getCaseSensitiveValue().get()));
       }
     }
+    final Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);
 
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
