@@ -57,8 +57,8 @@ public final class TestDomain extends DefaultDomain {
     uuidTestDefaultValue();
     uuidTestNoDefaultValue();
     operations();
-    joinedQuery();
-    groupByQuery();
+    empnoDeptno();
+    job();
     noPkEntity();
     Report.REPORT_PATH.set("path/to/reports");
     defineReport(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
@@ -80,6 +80,7 @@ public final class TestDomain extends DefaultDomain {
 
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
+
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
@@ -132,11 +133,12 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
-    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
-    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
     Attribute<byte[]> DATA_LAZY = TYPE.byteArrayAttribute("data_lazy");
     Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
+
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
     ConditionType NAME_IS_BLAKE_CONDITION_ID = TYPE.conditionType("condition1Id");
     ConditionType MGR_GREATER_THAN_CONDITION_ID = TYPE.conditionType("condition2Id");
@@ -177,6 +179,7 @@ public final class TestDomain extends DefaultDomain {
 
   public interface DepartmentFk extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.deptfk");
+
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
@@ -286,45 +289,71 @@ public final class TestDomain extends DefaultDomain {
     defineFunction(FUNCTION_ID, (connection, arguments) -> null);
   }
 
-  public static final EntityType GROUP_BY_QUERY_ENTITY_TYPE = DOMAIN.entityType("groupByQueryEntityType");
+  public interface Job {
+    EntityType TYPE = DOMAIN.entityType("job");
 
-  private void groupByQuery() {
-    define(GROUP_BY_QUERY_ENTITY_TYPE, "scott.emp",
-            columnProperty(GROUP_BY_QUERY_ENTITY_TYPE.stringAttribute("job"))
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Double> MAX_SALARY = TYPE.doubleAttribute("max_salary");
+    Attribute<Double> MIN_SALARY = TYPE.doubleAttribute("min_salary");
+    Attribute<Double> MAX_COMMISSION = TYPE.doubleAttribute("max_commission");
+    Attribute<Double> MIN_COMMISSION = TYPE.doubleAttribute("min_commission");
+  }
+
+  private void job() {
+    define(Job.TYPE, "scott.emp",
+            columnProperty(Job.JOB)
                     .primaryKeyIndex(0)
-                    .groupingColumn())
+                    .groupingColumn(),
+            columnProperty(Job.MAX_SALARY)
+                    .columnExpression("max(sal)")
+                    .aggregateColumn(),
+            columnProperty(Job.MIN_SALARY)
+                    .columnExpression("min(sal)")
+                    .aggregateColumn(),
+            columnProperty(Job.MAX_COMMISSION)
+                    .columnExpression("max(comm)")
+                    .aggregateColumn(),
+            columnProperty(Job.MIN_COMMISSION)
+                    .columnExpression("min(comm)")
+                    .aggregateColumn())
             .havingClause("job <> 'PRESIDENT'");
   }
 
-  public static final EntityType T_NO_PK = DOMAIN.entityType("scott.no_pk_table");
-  public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
-  public static final Attribute<String> NO_PK_COL2 = T_NO_PK.stringAttribute("col2");
-  public static final Attribute<String> NO_PK_COL3 = T_NO_PK.stringAttribute("col3");
-  public static final Attribute<Integer> NO_PK_COL4 = T_NO_PK.integerAttribute("col4");
+  public interface NoPrimaryKey {
+    EntityType TYPE = DOMAIN.entityType("scott.no_pk_table");
 
-  private void noPkEntity() {
-    define(T_NO_PK,
-            columnProperty(NO_PK_COL1),
-            columnProperty(NO_PK_COL2),
-            columnProperty(NO_PK_COL3),
-            columnProperty(NO_PK_COL4));
+    Attribute<Integer> COL_4 = TYPE.integerAttribute("col4");
+    Attribute<String> COL_3 = TYPE.stringAttribute("col3");
+    Attribute<String> COL_2 = TYPE.stringAttribute("col2");
+    Attribute<Integer> COL_1 = TYPE.integerAttribute("col1");
   }
 
-  public static final EntityType JOINED_QUERY_ENTITY_TYPE = DOMAIN.entityType("joinedQueryEntityType");
-  public static final Attribute<Integer> JOINED_EMPNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("e.empno");
-  public static final Attribute<Integer> JOINED_DEPTNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("d.deptno");
+  private void noPkEntity() {
+    define(NoPrimaryKey.TYPE,
+            columnProperty(NoPrimaryKey.COL_1),
+            columnProperty(NoPrimaryKey.COL_2),
+            columnProperty(NoPrimaryKey.COL_3),
+            columnProperty(NoPrimaryKey.COL_4));
+  }
 
-  public static final ConditionType JOINED_QUERY_CONDITION_TYPE = JOINED_QUERY_ENTITY_TYPE.conditionType("conditionId");
+  public interface EmpnoDeptno {
+    EntityType TYPE = DOMAIN.entityType("joinedQueryEntityType");
 
-  private void joinedQuery() {
-    define(JOINED_QUERY_ENTITY_TYPE,
-            columnProperty(JOINED_DEPTNO),
-            primaryKeyProperty(JOINED_EMPNO))
+    Attribute<Integer> DEPTNO = TYPE.integerAttribute("d.deptno");
+    Attribute<Integer> EMPNO = TYPE.integerAttribute("e.empno");
+
+    ConditionType CONDITION = EmpnoDeptno.TYPE.conditionType("condition");
+  }
+
+  private void empnoDeptno() {
+    define(EmpnoDeptno.TYPE,
+            columnProperty(EmpnoDeptno.DEPTNO),
+            primaryKeyProperty(EmpnoDeptno.EMPNO))
             .selectQuery(SelectQuery.builder("scott.emp e, scott.dept d")
                     .where("e.deptno = d.deptno")
                     .orderBy("e.deptno, e.ename")
                     .build())
-            .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");
+            .conditionProvider(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10");
   }
 
   public interface Query {
