@@ -208,12 +208,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectLimitOffset() throws Exception {
-    final SelectCondition condition = condition(Employee.TYPE).toSelectCondition()
+    SelectCondition condition = condition(Employee.TYPE).toSelectCondition()
             .orderBy(orderBy().ascending(Employee.NAME)).limit(2);
     List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
-    condition.limit(3);
-    condition.offset(3);
+    condition  = condition.limit(3).offset(3);
     result = connection.select(condition);
     assertEquals(3, result.size());
     assertEquals("BLAKE", result.get(0).get(Employee.NAME));
@@ -242,7 +241,7 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(Conditions.customCondition(EmpnoDeptno.CONDITION));
     assertEquals(7, result.size());
 
-    final SelectCondition condition = Conditions.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).toSelectCondition();
+    SelectCondition condition = Conditions.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).toSelectCondition();
     result = connection.select(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -250,19 +249,22 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(Employee.MGR_FK);
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.DEPARTMENT_FK, 0));
+    condition = condition.fetchDepth(Employee.DEPARTMENT_FK, 0);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.MGR_FK, 0));
+    condition = condition.fetchDepth(Employee.MGR_FK, 0);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.MGR_FK, 2));
+    condition = condition.fetchDepth(Employee.MGR_FK, 2);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -270,7 +272,8 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.MGR_FK, -1));
+    condition = condition.fetchDepth(Employee.MGR_FK, -1);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));

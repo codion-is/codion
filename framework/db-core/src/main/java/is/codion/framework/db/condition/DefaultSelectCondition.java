@@ -43,6 +43,19 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     this.condition = condition;
   }
 
+  private DefaultSelectCondition(final DefaultSelectCondition selectCondition) {
+    super(selectCondition.getEntityType());
+    this.condition = selectCondition.condition;
+    this.foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
+    this.selectAttributes = selectCondition.selectAttributes;
+    this.orderBy = selectCondition.orderBy;
+    this.fetchDepth = selectCondition.fetchDepth;
+    this.fetchCount = selectCondition.fetchCount;
+    this.forUpdate = selectCondition.forUpdate;
+    this.limit = selectCondition.limit;
+    this.offset = selectCondition.offset;
+  }
+
   @Override
   public Condition getCondition() {
     return condition;
@@ -70,8 +83,10 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition fetchCount(final int fetchCount) {
-    this.fetchCount = fetchCount;
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.fetchCount = fetchCount;
+
+    return selectCondition;
   }
 
   @Override
@@ -81,8 +96,10 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition orderBy(final OrderBy orderBy) {
-    this.orderBy = orderBy;
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.orderBy = orderBy;
+
+    return selectCondition;
   }
 
   @Override
@@ -92,8 +109,10 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition limit(final int limit) {
-    this.limit = limit;
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.limit = limit;
+
+    return selectCondition;
   }
 
   @Override
@@ -103,17 +122,21 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition offset(final int offset) {
-    this.offset = offset;
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.offset = offset;
+
+    return selectCondition;
   }
 
   @Override
   public SelectCondition fetchDepth(final ForeignKey foreignKey, final int fetchDepth) {
-    if (foreignKeyFetchDepths == null) {
-      foreignKeyFetchDepths = new HashMap<>();
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    if (selectCondition.foreignKeyFetchDepths == null) {
+      selectCondition.foreignKeyFetchDepths = new HashMap<>();
     }
-    this.foreignKeyFetchDepths.put(foreignKey, fetchDepth);
-    return this;
+    selectCondition.foreignKeyFetchDepths.put(foreignKey, fetchDepth);
+
+    return selectCondition;
   }
 
   @Override
@@ -127,8 +150,10 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition fetchDepth(final int fetchDepth) {
-    this.fetchDepth = fetchDepth;
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.fetchDepth = fetchDepth;
+
+    return selectCondition;
   }
 
   @Override
@@ -138,14 +163,18 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition selectAttributes(final Attribute<?>... attributes) {
-    this.selectAttributes = unmodifiableList(asList(requireNonNull(attributes)));
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.selectAttributes = unmodifiableList(asList(requireNonNull(attributes)));
+
+    return selectCondition;
   }
 
   @Override
   public SelectCondition selectAttributes(final Collection<Attribute<?>> attributes) {
-    this.selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
+
+    return selectCondition;
   }
 
   @Override
@@ -160,7 +189,9 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition forUpdate() {
-    this.forUpdate = true;
-    return this;
+    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.forUpdate = true;
+
+    return selectCondition;
   }
 }

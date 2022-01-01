@@ -7510,3 +7510,4 @@
   Condition.Combination.add() removed, DefaultConditionCombination now immutable
   Condition.Combination.getConditions() now returns Collection
   SelectCondition.getSelectAttributes() now returns Collection
+  SelectCondition and UpdateCondition now immutable

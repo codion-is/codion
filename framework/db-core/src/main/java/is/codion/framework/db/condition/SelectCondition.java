@@ -27,7 +27,7 @@ public interface SelectCondition extends Condition {
   /**
    * Sets the OrderBy for this condition
    * @param orderBy the OrderBy to use when applying this condition
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given order by
    */
   SelectCondition orderBy(OrderBy orderBy);
 
@@ -38,7 +38,7 @@ public interface SelectCondition extends Condition {
 
   /**
    * @param limit the limit to use for this condition
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given limit
    */
   SelectCondition limit(int limit);
 
@@ -49,7 +49,7 @@ public interface SelectCondition extends Condition {
 
   /**
    * @param offset the offset to use for this condition
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given offset
    */
   SelectCondition offset(int offset);
 
@@ -62,7 +62,7 @@ public interface SelectCondition extends Condition {
    * Marks this condition as a select for update query, this means the resulting records
    * will be locked by the given connection until unlocked by running another (non - select for update)
    * query on the same connection or performing an update
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with for update enabled
    */
   SelectCondition forUpdate();
 
@@ -73,7 +73,7 @@ public interface SelectCondition extends Condition {
 
   /**
    * @param fetchCount the maximum number of records to fetch from the result
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given fetchCount
    */
   SelectCondition fetchCount(int fetchCount);
 
@@ -101,7 +101,7 @@ public interface SelectCondition extends Condition {
   /**
    * Limit the levels of foreign keys to fetch
    * @param fetchDepth the foreign key fetch depth limit
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given fetch depth
    */
   SelectCondition fetchDepth(int fetchDepth);
 
@@ -110,7 +110,7 @@ public interface SelectCondition extends Condition {
    * Note that primary key attribute values are always included.
    * Note that these must be ColumnProperty attributes
    * @param attributes the attributes to include
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given select attributes
    */
   SelectCondition selectAttributes(Attribute<?>... attributes);
 
@@ -119,7 +119,7 @@ public interface SelectCondition extends Condition {
    * Note that primary key attribute values are always included.
    * Note that primary key attribute values are always included.
    * @param attributes the attributes to include
-   * @return this SelectCondition instance
+   * @return a new SelectCondition instance with the given select attributes
    */
   SelectCondition selectAttributes(Collection<Attribute<?>> attributes);
 
