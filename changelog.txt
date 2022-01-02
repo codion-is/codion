@@ -7511,3 +7511,4 @@
   Condition.Combination.getConditions() now returns Collection
   SelectCondition.getSelectAttributes() now returns Collection
   SelectCondition and UpdateCondition now immutable
+  SelectCondition, DefaultSelectCondition, some minor refactoring

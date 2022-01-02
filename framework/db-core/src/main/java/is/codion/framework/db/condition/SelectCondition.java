@@ -25,22 +25,9 @@ public interface SelectCondition extends Condition {
   OrderBy getOrderBy();
 
   /**
-   * Sets the OrderBy for this condition
-   * @param orderBy the OrderBy to use when applying this condition
-   * @return a new SelectCondition instance with the given order by
-   */
-  SelectCondition orderBy(OrderBy orderBy);
-
-  /**
    * @return the limit to use for the given condition, -1 for no limit
    */
   int getLimit();
-
-  /**
-   * @param limit the limit to use for this condition
-   * @return a new SelectCondition instance with the given limit
-   */
-  SelectCondition limit(int limit);
 
   /**
    * @return the offset to use for the given condition, -1 for no offset
@@ -48,23 +35,9 @@ public interface SelectCondition extends Condition {
   int getOffset();
 
   /**
-   * @param offset the offset to use for this condition
-   * @return a new SelectCondition instance with the given offset
-   */
-  SelectCondition offset(int offset);
-
-  /**
    * @return true if this select should lock the result for update
    */
   boolean isForUpdate();
-
-  /**
-   * Marks this condition as a select for update query, this means the resulting records
-   * will be locked by the given connection until unlocked by running another (non - select for update)
-   * query on the same connection or performing an update
-   * @return a new SelectCondition instance with for update enabled
-   */
-  SelectCondition forUpdate();
 
   /**
    * @return the maximum number of records to fetch from the result, -1 for no maximum
@@ -72,10 +45,9 @@ public interface SelectCondition extends Condition {
   int getFetchCount();
 
   /**
-   * @param fetchCount the maximum number of records to fetch from the result
-   * @return a new SelectCondition instance with the given fetchCount
+   * @return the global fetch depth limit for this condition, null if none has been specified
    */
-  SelectCondition fetchCount(int fetchCount);
+  Integer getFetchDepth();
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
@@ -86,17 +58,43 @@ public interface SelectCondition extends Condition {
   Integer getFetchDepth(ForeignKey foreignKey);
 
   /**
-   * Limit the levels of foreign keys to fetch via the given foreign key
-   * @param foreignKey the foreign key
-   * @param fetchDepth the foreign key fetch depth limit
-   * @return this SelectCondition instance
+   * @return the attributes to include in the query result,
+   * an empty Collection if all should be included
    */
-  SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth);
+  Collection<Attribute<?>> getSelectAttributes();
 
   /**
-   * @return the global fetch depth limit for this condition, null if none has been specified
+   * Sets the OrderBy for this condition
+   * @param orderBy the OrderBy to use when applying this condition
+   * @return a new SelectCondition instance with the given order by
    */
-  Integer getFetchDepth();
+  SelectCondition orderBy(OrderBy orderBy);
+
+  /**
+   * @param limit the limit to use for this condition
+   * @return a new SelectCondition instance with the given limit
+   */
+  SelectCondition limit(int limit);
+
+  /**
+   * @param offset the offset to use for this condition
+   * @return a new SelectCondition instance with the given offset
+   */
+  SelectCondition offset(int offset);
+
+  /**
+   * Marks this condition as a select for update query, this means the resulting records
+   * will be locked by the given connection until unlocked by running another (non - select for update)
+   * query on the same connection or performing an update
+   * @return a new SelectCondition instance with for update enabled
+   */
+  SelectCondition forUpdate();
+
+  /**
+   * @param fetchCount the maximum number of records to fetch from the result
+   * @return a new SelectCondition instance with the given fetchCount
+   */
+  SelectCondition fetchCount(int fetchCount);
 
   /**
    * Limit the levels of foreign keys to fetch
@@ -104,6 +102,14 @@ public interface SelectCondition extends Condition {
    * @return a new SelectCondition instance with the given fetch depth
    */
   SelectCondition fetchDepth(int fetchDepth);
+
+  /**
+   * Limit the levels of foreign keys to fetch via the given foreign key
+   * @param foreignKey the foreign key
+   * @param fetchDepth the foreign key fetch depth limit
+   * @return this SelectCondition instance
+   */
+  SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth);
 
   /**
    * Sets the attributes to include in the resulting Entities.
@@ -122,10 +128,4 @@ public interface SelectCondition extends Condition {
    * @return a new SelectCondition instance with the given select attributes
    */
   SelectCondition selectAttributes(Collection<Attribute<?>> attributes);
-
-  /**
-   * @return the attributes to include in the query result,
-   * an empty Collection if all should be included
-   */
-  Collection<Attribute<?>> getSelectAttributes();
 }
