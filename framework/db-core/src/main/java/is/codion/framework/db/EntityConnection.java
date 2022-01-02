@@ -93,8 +93,8 @@ public interface EntityConnection extends AutoCloseable {
    * @param functionType the function type
    * @param <C> the connection type
    * @param <T> the argument type
-   * @param <R> the return type
-   * @return the function return arguments
+   * @param <R> the return value type
+   * @return the function return value
    * @throws DatabaseException in case anything goes wrong during the execution
    */
   <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException;
@@ -105,8 +105,8 @@ public interface EntityConnection extends AutoCloseable {
    * @param argument the function argument
    * @param <C> the connection type
    * @param <T> the argument type
-   * @param <R> the return type
-   * @return the function return arguments
+   * @param <R> the return value type
+   * @return the function return value
    * @throws DatabaseException in case anything goes wrong during the execution
    */
   <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
@@ -115,7 +115,7 @@ public interface EntityConnection extends AutoCloseable {
    * Executes the procedure with the given type with no arguments
    * @param procedureType the procedure type
    * @param <C> the connection type
-   * @param <T> the argument type
+   * @param <T> the procedure argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
   <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException;
@@ -284,7 +284,7 @@ public interface EntityConnection extends AutoCloseable {
   List<Entity> select(Condition condition) throws DatabaseException;
 
   /**
-   * Selects entities based on a single attribute condition, using {@code values} OR'ed together
+   * Selects entities based on a single attribute condition
    * @param attribute the condition attribute
    * @param value the value to use as condition
    * @param <T> the value type
