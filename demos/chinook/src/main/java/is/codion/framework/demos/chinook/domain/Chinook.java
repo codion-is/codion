@@ -139,6 +139,27 @@ public interface Chinook {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
       return this;
     }
+
+    final class RaisePriceParameters implements Serializable {
+
+      private static final long serialVersionUID = 1;
+
+      private final Collection<Long> trackIds;
+      private final BigDecimal priceIncrease;
+
+      public RaisePriceParameters(final Collection<Long> trackIds, final BigDecimal priceIncrease) {
+        this.trackIds = requireNonNull(trackIds);
+        this.priceIncrease = requireNonNull(priceIncrease);
+      }
+
+      public Collection<Long> getTrackIds() {
+        return trackIds;
+      }
+
+      public BigDecimal getPriceIncrease() {
+        return priceIncrease;
+      }
+    }
   }
 
   interface Invoice extends Entity {
@@ -188,6 +209,27 @@ public interface Chinook {
     Attribute<String> NAME = TYPE.stringAttribute("name");
 
     FunctionType<EntityConnection, RandomPlaylistParameters, Entity> RANDOM_PLAYLIST = functionType("chinook.random_playlist");
+
+    final class RandomPlaylistParameters implements Serializable {
+
+      private static final long serialVersionUID = 1;
+
+      private final String playlistName;
+      private final int noOfTracks;
+
+      public RandomPlaylistParameters(final String playlistName, final int noOfTracks) {
+        this.playlistName = requireNonNull(playlistName);
+        this.noOfTracks = noOfTracks;
+      }
+
+      public String getPlaylistName() {
+        return playlistName;
+      }
+
+      public int getNoOfTracks() {
+        return noOfTracks;
+      }
+    }
   }
 
   interface PlaylistTrack {
@@ -300,48 +342,6 @@ public interface Chinook {
       }
 
       return builder.toString();
-    }
-  }
-
-  final class RandomPlaylistParameters implements Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    private final String playlistName;
-    private final int noOfTracks;
-
-    public RandomPlaylistParameters(final String playlistName, final int noOfTracks) {
-      this.playlistName = requireNonNull(playlistName);
-      this.noOfTracks = noOfTracks;
-    }
-
-    public String getPlaylistName() {
-      return playlistName;
-    }
-
-    public int getNoOfTracks() {
-      return noOfTracks;
-    }
-  }
-
-  final class RaisePriceParameters implements Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    private final Collection<Long> trackIds;
-    private final BigDecimal priceIncrease;
-
-    public RaisePriceParameters(final Collection<Long> trackIds, final BigDecimal priceIncrease) {
-      this.trackIds = requireNonNull(trackIds);
-      this.priceIncrease = requireNonNull(priceIncrease);
-    }
-
-    public Collection<Long> getTrackIds() {
-      return trackIds;
-    }
-
-    public BigDecimal getPriceIncrease() {
-      return priceIncrease;
     }
   }
 }

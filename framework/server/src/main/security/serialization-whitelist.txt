@@ -120,8 +120,8 @@ is.codion.framework.domain.entity.DefaultForeignKey$DefaultReference
 is.codion.framework.domain.entity.Entity
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.chinook.domain.Chinook$Invoice
-is.codion.framework.demos.chinook.domain.Chinook$RandomPlaylistParameters
-is.codion.framework.demos.chinook.domain.Chinook$Track
+is.codion.framework.demos.chinook.domain.Chinook$Playlist$RandomPlaylistParameters
+is.codion.framework.demos.chinook.domain.Chinook$Track$RaisePriceParameters
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.framework.demos.world.domain.api.*
 is.codion.framework.demos.empdept.domain.*
