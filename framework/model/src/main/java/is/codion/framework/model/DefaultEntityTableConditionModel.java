@@ -143,7 +143,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public boolean isConditionEnabled() {
-    return conditionModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
+    return conditionModels.values().stream()
+            .anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
@@ -153,7 +154,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public boolean isFilterEnabled() {
-    return filterModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
+    return filterModels.values().stream()
+            .anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
@@ -277,7 +279,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @return a String representing the current state of the condition models
    */
   private String getConditionsString() {
-    return conditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
+    return conditionModels.values().stream()
+            .map(DefaultEntityTableConditionModel::toString)
+            .collect(joining());
   }
 
   private void initializeFilterModels(final EntityType entityType, final FilterModelFactory filterModelProvider) {

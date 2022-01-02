@@ -12,10 +12,10 @@ import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRow, Integer> {
 
@@ -55,8 +55,9 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   private static Collection<DefinitionRow> createDomainDefinitions(final Schema schema) {
     final DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
 
-    return domain.getEntities().getDefinitions().stream().map(definition ->
-            new DefinitionRow(domain, definition)).collect(Collectors.toList());
+    return domain.getEntities().getDefinitions().stream()
+            .map(definition -> new DefinitionRow(domain, definition))
+            .collect(toList());
   }
 
   private static List<TableColumn> createDefinitionColumns() {

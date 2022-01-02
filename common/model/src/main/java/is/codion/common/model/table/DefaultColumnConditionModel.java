@@ -16,9 +16,9 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default ColumnConditionModel model implementation.
@@ -153,7 +153,9 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final Collection<T> getEqualValues() {
-    return equalValues.get().stream().map(this::getBoundValue).collect(Collectors.toList());
+    return equalValues.get().stream()
+            .map(this::getBoundValue)
+            .collect(toList());
   }
 
   @Override

@@ -168,8 +168,11 @@ public class EntityEditComponentPanel extends JPanel {
    * associated with an attribute
    */
   public final <T> Attribute<T> getAttribute(final JComponent component) {
-    return (Attribute<T>) components.entrySet().stream().filter(entry -> entry.getValue() == component)
-            .findFirst().map(Map.Entry::getKey).orElse(null);
+    return (Attribute<T>) components.entrySet().stream()
+            .filter(entry -> entry.getValue() == component)
+            .findFirst()
+            .map(Map.Entry::getKey)
+            .orElse(null);
   }
 
   /**

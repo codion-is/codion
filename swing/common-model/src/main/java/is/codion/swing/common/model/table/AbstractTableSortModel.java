@@ -12,9 +12,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default TableSortModel implementation
@@ -68,7 +68,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   @Override
   public final boolean isSortingEnabled() {
-    return sortingStates.values().stream().anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
+    return sortingStates.values().stream()
+            .anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
   }
 
   @Override
@@ -126,7 +127,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
     return sortingStates.entrySet().stream()
             .sorted(sortingStatesComparator)
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   private int getNextSortPriority() {

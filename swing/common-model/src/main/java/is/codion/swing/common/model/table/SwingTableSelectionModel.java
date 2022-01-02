@@ -162,8 +162,9 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   @Override
   public List<R> getSelectedItems() {
-    return getSelectedIndexes().stream().mapToInt(modelIndex ->
-            modelIndex).mapToObj(tableModel::getItemAt).collect(toList());
+    return getSelectedIndexes().stream()
+            .mapToInt(modelIndex ->modelIndex).mapToObj(tableModel::getItemAt)
+            .collect(toList());
   }
 
   @Override
@@ -187,8 +188,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void addSelectedItems(final Collection<R> items) {
     requireNonNull(items, "items");
-    addSelectedIndexes(items.stream().mapToInt(tableModel::indexOf)
-            .filter(index -> index >= 0).boxed().collect(toList()));
+    addSelectedIndexes(items.stream()
+            .mapToInt(tableModel::indexOf)
+            .filter(index -> index >= 0)
+            .boxed()
+            .collect(toList()));
   }
 
   @Override
@@ -245,7 +249,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       }
       else {
         setSelectedIndexes(getSelectedIndexes().stream()
-                .map(index -> index == 0 ? lastIndex : index - 1).collect(toList()));
+                .map(index -> index == 0 ? lastIndex : index - 1)
+                .collect(toList()));
       }
     }
   }
@@ -258,7 +263,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       }
       else {
         setSelectedIndexes(getSelectedIndexes().stream()
-                .map(index -> index == tableModel.getRowCount() - 1 ? 0 : index + 1).collect(toList()));
+                .map(index -> index == tableModel.getRowCount() - 1 ? 0 : index + 1)
+                .collect(toList()));
       }
     }
   }
@@ -285,8 +291,10 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       selectionChangedEvent.onEvent();
       selectedIndexesChangedEvent.onEvent(selectedIndexes);
       //we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
-      selectedItemsChangedEvent.onEvent(selectedIndexes.stream().mapToInt(modelIndex ->
-            modelIndex).mapToObj(tableModel::getItemAt).collect(toList()));
+      selectedItemsChangedEvent.onEvent(selectedIndexes.stream()
+              .mapToInt(modelIndex -> modelIndex)
+              .mapToObj(tableModel::getItemAt)
+              .collect(toList()));
     }
   }
 

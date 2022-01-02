@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
 import static is.codion.framework.domain.property.Properties.*;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DatabaseDomain extends DefaultDomain {
@@ -41,7 +41,8 @@ final class DatabaseDomain extends DefaultDomain {
     if (!tableEntityTypes.containsKey(table)) {
       final EntityType entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
-      table.getForeignKeys().stream().map(ForeignKeyConstraint::getReferencedTable)
+      table.getForeignKeys().stream()
+              .map(ForeignKeyConstraint::getReferencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
       define(entityType, getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
@@ -60,10 +61,13 @@ final class DatabaseDomain extends DefaultDomain {
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
-        foreignKeyConstraints.stream().filter(key -> isLastKeyColumn(key, column)).findFirst().ifPresent(foreignKeyConstraint -> {
-          foreignKeyConstraints.remove(foreignKeyConstraint);
-          builders.add(getForeignKeyPropertyBuilder(foreignKeyConstraint, entityType));
-        });
+        foreignKeyConstraints.stream()
+                .filter(key -> isLastKeyColumn(key, column))
+                .findFirst()
+                .ifPresent(foreignKeyConstraint -> {
+                  foreignKeyConstraints.remove(foreignKeyConstraint);
+                  builders.add(getForeignKeyPropertyBuilder(foreignKeyConstraint, entityType));
+                });
       }
     });
 
@@ -74,8 +78,8 @@ final class DatabaseDomain extends DefaultDomain {
     final Table referencedTable = foreignKeyConstraint.getReferencedTable();
     final EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     final ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
-            foreignKeyConstraint.getReferences().entrySet().stream().map(entry ->
-                            reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
+            foreignKeyConstraint.getReferences().entrySet().stream()
+                    .map(entry -> reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
@@ -125,7 +129,8 @@ final class DatabaseDomain extends DefaultDomain {
 
   private static boolean isLastKeyColumn(final ForeignKeyConstraint foreignKeyConstraint, final Column column) {
     final OptionalInt lastColumnPosition = foreignKeyConstraint.getReferences().keySet().stream()
-            .mapToInt(Column::getPosition).max();
+            .mapToInt(Column::getPosition)
+            .max();
 
     return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();
   }
@@ -134,6 +139,6 @@ final class DatabaseDomain extends DefaultDomain {
     return foreignKeyConstraint.getReferences().keySet().stream()
             .map(Column::getColumnName)
             .map(String::toUpperCase)
-            .collect(Collectors.joining("_"));
+            .collect(joining("_"));
   }
 }

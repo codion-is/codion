@@ -20,10 +20,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultPropertyStore implements PropertyStore {
 
@@ -92,8 +93,12 @@ final class DefaultPropertyStore implements PropertyStore {
 
     final DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
             stringValue -> stringValue == null ? emptyList() :
-                    Arrays.stream(stringValue.split(VALUE_SEPARATOR)).map(decoder).collect(Collectors.toList()),
-            valueList -> valueList.stream().map(encoder).collect(Collectors.joining(VALUE_SEPARATOR)));
+                    Arrays.stream(stringValue.split(VALUE_SEPARATOR))
+                            .map(decoder)
+                            .collect(toList()),
+            valueList -> valueList.stream()
+                    .map(encoder)
+                    .collect(joining(VALUE_SEPARATOR)));
     propertyValues.put(propertyName, value);
 
     return value;
@@ -119,14 +124,17 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public List<String> getProperties(final String prefix) {
-    return properties.stringPropertyNames().stream().filter(propertyName ->
-            propertyName.startsWith(prefix)).map(properties::getProperty).collect(Collectors.toList());
+    return properties.stringPropertyNames().stream()
+            .filter(propertyName -> propertyName.startsWith(prefix))
+            .map(properties::getProperty)
+            .collect(toList());
   }
 
   @Override
   public List<String> getPropertyNames(final String prefix) {
-    return properties.stringPropertyNames().stream().filter(propertyName ->
-            propertyName.startsWith(prefix)).collect(Collectors.toList());
+    return properties.stringPropertyNames().stream()
+            .filter(propertyName -> propertyName.startsWith(prefix))
+            .collect(toList());
   }
 
   @Override

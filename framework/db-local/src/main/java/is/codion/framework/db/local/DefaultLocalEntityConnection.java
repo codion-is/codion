@@ -56,7 +56,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static is.codion.common.db.database.Database.closeSilently;
@@ -66,6 +65,7 @@ import static is.codion.framework.db.local.Queries.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -1112,7 +1112,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return domainEntities.getDefinitions().stream()
             .flatMap(entityDefinition -> entityDefinition.getForeignKeyProperties().stream())
             .filter(foreignKeyProperty -> foreignKeyProperty.getReferencedEntityType().equals(entityType))
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {
@@ -1157,7 +1157,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
       });
 
-      return writableAndPrimaryKeyProperties.stream().map(ColumnProperty::getAttribute).toArray(Attribute<?>[]::new);
+      return writableAndPrimaryKeyProperties.stream()
+              .map(ColumnProperty::getAttribute).toArray(Attribute<?>[]::new);
     });
   }
 
@@ -1316,7 +1317,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                                        final Collection<Attribute<?>> modifiedAttributes) {
     return modifiedAttributes.stream()
             .map(attribute -> " \n" + attribute + ": " + entity.getOriginal(attribute) + " -> " + modified.get(attribute))
-            .collect(Collectors.joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.getEntityType(), ""));
+            .collect(joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.getEntityType(), ""));
   }
 
   private static boolean containsReferenceAttributes(final Entity entity, final List<ForeignKey.Reference<?>> references) {

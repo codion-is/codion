@@ -14,9 +14,9 @@ import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.stream.Collectors.toList;
 
 final class DomainToString {
 
@@ -28,11 +28,13 @@ final class DomainToString {
     builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
     builder.append("  ").append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
-    final List<Property<?>> columnProperties =
-            definition.getProperties().stream().filter(ColumnProperty.class::isInstance).collect(Collectors.toList());
+    final List<Property<?>> columnProperties = definition.getProperties().stream()
+            .filter(ColumnProperty.class::isInstance)
+            .collect(toList());
     columnProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
-    final List<Property<?>> foreignKeyProperties =
-            definition.getProperties().stream().filter(ForeignKeyProperty.class::isInstance).collect(Collectors.toList());
+    final List<Property<?>> foreignKeyProperties = definition.getProperties().stream()
+            .filter(ForeignKeyProperty.class::isInstance)
+            .collect(toList());
     if (!foreignKeyProperties.isEmpty()) {
       builder.append(Util.LINE_SEPARATOR);
       foreignKeyProperties.forEach(property -> appendAttribute(builder, property, interfaceName));

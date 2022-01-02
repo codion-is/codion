@@ -96,7 +96,9 @@ public final class SerializationWhitelist {
         final File file = new File(whitelistFile);
         file.createNewFile();
         Files.write(file.toPath(), deserializedClasses.stream()
-                .map(Class::getName).sorted().collect(toList()));
+                .map(Class::getName)
+                .sorted()
+                .collect(toList()));
         LOG.debug("Serialization whitelist written: " + whitelistFile);
       }
       catch (final Exception e) {

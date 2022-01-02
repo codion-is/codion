@@ -24,9 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class SelectQueries {
@@ -289,7 +289,7 @@ final class SelectQueries {
 
       return orderByAttributes.stream()
               .map(orderByAttribute -> getColumnOrderByClause(definition, orderByAttribute))
-              .collect(Collectors.joining(", "));
+              .collect(joining(", "));
     }
 
     private String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {

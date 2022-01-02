@@ -116,12 +116,14 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final boolean containsEntityModel(final Class<? extends M> modelClass) {
-    return entityModels.stream().anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
+    return entityModels.stream()
+            .anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
   }
 
   @Override
   public final boolean containsEntityModel(final EntityType entityType) {
-    return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityType().equals(entityType));
+    return entityModels.stream()
+            .anyMatch(entityModel -> entityModel.getEntityType().equals(entityType));
   }
 
   @Override

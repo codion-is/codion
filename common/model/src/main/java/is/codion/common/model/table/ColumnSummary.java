@@ -32,7 +32,8 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       final Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        return addSubsetIndicator(valueProvider.format(values.stream().filter(Objects::nonNull)
+        return addSubsetIndicator(valueProvider.format(values.stream()
+                .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue).sum()), valueProvider);
       }
 
@@ -48,10 +49,11 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       final Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble average = values.stream().mapToDouble(value -> value == null ? 0d : value.doubleValue()).average();
+        final OptionalDouble average = values.stream()
+                .mapToDouble(value -> value == null ? 0d : value.doubleValue())
+                .average();
         if (average.isPresent()) {
-          final Double asDouble = average.getAsDouble();
-          return addSubsetIndicator(valueProvider.format(asDouble), valueProvider);
+          return addSubsetIndicator(valueProvider.format(average.getAsDouble()), valueProvider);
         }
       }
 
@@ -67,7 +69,10 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       final Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble min = values.stream().filter(Objects::nonNull).mapToDouble(Number::doubleValue).min();
+        final OptionalDouble min = values.stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(Number::doubleValue)
+                .min();
         if (min.isPresent()) {
           return addSubsetIndicator(valueProvider.format(min.getAsDouble()), valueProvider);
         }
@@ -85,7 +90,10 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       final Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble max = values.stream().filter(Objects::nonNull).mapToDouble(Number::doubleValue).max();
+        final OptionalDouble max = values.stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(Number::doubleValue)
+                .max();
         if (max.isPresent()) {
           return addSubsetIndicator(valueProvider.format(max.getAsDouble()), valueProvider);
         }
@@ -103,8 +111,14 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       final Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble min = values.stream().filter(Objects::nonNull).mapToDouble(Number::doubleValue).min();
-        final OptionalDouble max = values.stream().filter(Objects::nonNull).mapToDouble(Number::doubleValue).max();
+        final OptionalDouble min = values.stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(Number::doubleValue)
+                .min();
+        final OptionalDouble max = values.stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(Number::doubleValue)
+                .max();
         if (min.isPresent() && max.isPresent()) {
           return addSubsetIndicator(valueProvider.format(min.getAsDouble()) + "/" + valueProvider.format(max.getAsDouble()), valueProvider);
         }

@@ -422,9 +422,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   public List<ColumnProperty<?>> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
                                                              final boolean includeNonUpdatable) {
     return entityProperties.columnProperties.stream()
-            .filter(property -> property.isInsertable() &&
-                    (includeNonUpdatable || property.isUpdatable()) &&
-                    (includePrimaryKeyProperties || !property.isPrimaryKeyColumn()))
+            .filter(property -> isWritable(property, includePrimaryKeyProperties, includeNonUpdatable))
             .collect(toList());
   }
 
@@ -767,6 +765,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     return typeClass;
   }
 
+  private static boolean isWritable(final ColumnProperty<?> property, final boolean includePrimaryKeyProperties,
+                                    final boolean includeNonUpdatable) {
+    return property.isInsertable() && (includeNonUpdatable || property.isUpdatable())
+            && (includePrimaryKeyProperties || !property.isPrimaryKeyColumn());
+  }
+
   private static final class EntityProperties implements Serializable {
 
     private static final long serialVersionUID = 1;
@@ -807,7 +811,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties();
       initializeForeignKeyColumnProperties(propertyBuilders.stream()
               .filter(ForeignKeyProperty.Builder.class::isInstance)
-              .map(ForeignKeyProperty.Builder.class::cast).collect(toList()));
+              .map(ForeignKeyProperty.Builder.class::cast)
+              .collect(toList()));
       this.derivedAttributes = initializeDerivedAttributes();
       this.transientProperties = unmodifiableList(getTransientProperties());
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
@@ -892,15 +897,19 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private List<ColumnProperty<?>> getForeignKeyColumnProperties(final ForeignKey foreignKey) {
-      return foreignKey.getReferences().stream().map(reference -> {
-        final ColumnProperty<?> columnProperty = (ColumnProperty<?>) propertyMap.get(reference.getAttribute());
-        if (columnProperty == null) {
-          throw new IllegalArgumentException("ColumnProperty based on attribute: " + reference.getAttribute()
-                  + " not found when initializing foreign key");
-        }
+      return foreignKey.getReferences().stream()
+              .map(this::getForeignKeyColumnProperty)
+              .collect(toList());
+    }
 
-        return columnProperty;
-      }).collect(toList());
+    private ColumnProperty<?> getForeignKeyColumnProperty(final ForeignKey.Reference<?> reference) {
+      final ColumnProperty<?> columnProperty = (ColumnProperty<?>) propertyMap.get(reference.getAttribute());
+      if (columnProperty == null) {
+        throw new IllegalArgumentException("ColumnProperty based on attribute: " + reference.getAttribute()
+                + " not found when initializing foreign key");
+      }
+
+      return columnProperty;
     }
 
     private Map<Attribute<?>, ColumnProperty<?>> initializePrimaryKeyPropertyMap() {

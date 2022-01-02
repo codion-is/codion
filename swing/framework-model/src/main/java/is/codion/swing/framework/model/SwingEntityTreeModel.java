@@ -90,7 +90,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    */
   public void nodesUpdated(final Collection<Entity> entities) {
     refreshRoot();
-    setSelectedEntities(entities.stream().filter(entity -> entity.isNotNull(parentForeignKey)).collect(toList()));
+    setSelectedEntities(entities.stream()
+            .filter(entity -> entity.isNotNull(parentForeignKey))
+            .collect(toList()));
   }
 
   /**
@@ -98,7 +100,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * @param entities the entities to remove
    */
   public void nodesDeleted(final Collection<Entity> entities) {
-    for (final Entity deleted : entities.stream().filter(entity -> entity.isNotNull(parentForeignKey)).collect(toList())) {
+    for (final Entity deleted : entities.stream()
+            .filter(entity -> entity.isNotNull(parentForeignKey))
+            .collect(toList())) {
       final TreePath treePath = find(getRoot(), deleted);
       if (treePath != null) {
         removeNodeFromParent((EntityTreeNode) treePath.getLastPathComponent());
@@ -183,11 +187,12 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     }
 
     private List<EntityTreeNode> loadChildren() {
-      return tableModel.getItems().stream().filter(entity ->
-              Objects.equals(this.entity, entity.getForeignKey(parentForeignKey)))
+      return tableModel.getItems().stream()
+              .filter(entity -> Objects.equals(this.entity, entity.getForeignKey(parentForeignKey)))
               .map(entity -> new EntityTreeNode(tableModel, entity, stringFunction, parentForeignKey, nodeComparator))
               .map(EntityTreeNode::refresh)
-              .sorted(nodeComparator).collect(toList());
+              .sorted(nodeComparator)
+              .collect(toList());
     }
   }
 

@@ -9,11 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Represents a database table
@@ -49,7 +49,8 @@ public final class Table {
   public Collection<String> getReferencedSchemaNames() {
     return foreignKeyColumns.stream()
             .filter(this::referencesExternalSchema)
-            .map(ForeignKeyColumn::getPkSchemaName).collect(Collectors.toSet());
+            .map(ForeignKeyColumn::getPkSchemaName)
+            .collect(toSet());
   }
 
   public Collection<ForeignKeyConstraint> getForeignKeys() {

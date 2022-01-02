@@ -119,7 +119,9 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   private int getTotalWeights() {
-    return items.stream().mapToInt(RandomItem::getWeight).sum();
+    return items.stream()
+            .mapToInt(RandomItem::getWeight)
+            .sum();
   }
 
   /**

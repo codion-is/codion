@@ -12,10 +12,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 public final class MetaDataModel {
 
@@ -47,10 +47,12 @@ public final class MetaDataModel {
   private static Map<String, Schema> discoverSchemas(final DatabaseMetaData metaData) throws SQLException {
     final Map<String, Schema> schemas = new HashMap<>();
     try (final ResultSet resultSet = metaData.getCatalogs()) {
-      schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream().collect(Collectors.toMap(Schema::getName, schema -> schema)));
+      schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
+              .collect(toMap(Schema::getName, schema -> schema)));
     }
     try (final ResultSet resultSet = metaData.getSchemas()) {
-      schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream().collect(Collectors.toMap(Schema::getName, schema -> schema)));
+      schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream()
+              .collect(toMap(Schema::getName, schema -> schema)));
     }
 
     return schemas;

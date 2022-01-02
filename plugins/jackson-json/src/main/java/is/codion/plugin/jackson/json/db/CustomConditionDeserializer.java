@@ -19,7 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 final class CustomConditionDeserializer implements Serializable {
 
@@ -35,7 +36,9 @@ final class CustomConditionDeserializer implements Serializable {
     final String conditionTypeName = conditionNode.get("conditionTypeName").asText();
     final JsonNode attributesNode = conditionNode.get("attributes");
     final List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
-    final List<Attribute<?>> attributes = attributeNames.stream().map(definition::getAttribute).collect(Collectors.toList());
+    final List<Attribute<?>> attributes = attributeNames.stream()
+            .map(definition::getAttribute)
+            .collect(toList());
     final JsonNode valuesNode = conditionNode.get("values");
     final List<Object> values = new ArrayList<>();
     int attributeIndex = 0;

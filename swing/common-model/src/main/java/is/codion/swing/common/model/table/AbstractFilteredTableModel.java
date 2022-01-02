@@ -809,7 +809,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public boolean test(final R item) {
-      return columnFilters == null || columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
+      return columnFilters == null || columnFilters.stream()
+              .allMatch(columnFilter -> columnFilter.include(item));
     }
   }
 

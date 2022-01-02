@@ -41,11 +41,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -153,7 +153,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final <T> EntityTableColumn<T> getTableColumn(final Attribute<T> attribute) {
     final Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
-                    ((EntityTableColumn<?>) entityTableColumn).getAttribute().equals(attribute)).findFirst();
+                    ((EntityTableColumn<?>) entityTableColumn).getAttribute().equals(attribute))
+            .findFirst();
 
     if (tableColumn.isPresent()) {
       return (EntityTableColumn<T>) tableColumn.get();
@@ -350,8 +351,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
-    return getItems().stream().filter(entity -> keys.stream()
-            .anyMatch(key -> entity.getPrimaryKey().equals(key))).collect(Collectors.toList());
+    return getItems().stream()
+            .filter(entity -> keys.stream()
+                    .anyMatch(key -> entity.getPrimaryKey().equals(key)))
+            .collect(toList());
   }
 
   @Override
@@ -367,7 +370,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final Entity getEntityByKey(final Key primaryKey) {
-    return getFilteredList().stream().filter(entity -> entity.getPrimaryKey().equals(primaryKey)).findFirst().orElse(null);
+    return getFilteredList().stream()
+            .filter(entity -> entity.getPrimaryKey().equals(primaryKey))
+            .findFirst()
+            .orElse(null);
   }
 
   @Override
@@ -493,7 +499,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     return getEntityDefinition().getDefaultSelectAttributes().stream()
             .filter(this::containsColumn)
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   /**
@@ -524,8 +530,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private void onInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
-              entity.getEntityType().equals(getEntityType())).collect(Collectors.toList());
+      final List<Entity> entitiesToAdd = insertedEntities.stream()
+              .filter(entity -> entity.getEntityType().equals(getEntityType()))
+              .collect(toList());
       switch (insertAction) {
         case ADD_TOP:
           addEntitiesAt(0, entitiesToAdd);

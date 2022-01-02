@@ -209,8 +209,9 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             .connectionLimit(SERVER_CONNECTION_LIMIT.get())
             .database(DatabaseFactory.getDatabase())
             .domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
-            .startupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get())
-                    .stream().map(User::parseUser).collect(toList()))
+            .startupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get()).stream()
+                    .map(User::parseUser)
+                    .collect(toList()))
             .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
             .connectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
     final Map<String, Integer> timeoutMap = new HashMap<>();

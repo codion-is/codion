@@ -10,10 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 public final class Schema {
 
@@ -40,9 +40,10 @@ public final class Schema {
       schemaNotifier.onEvent(name);
       try (final ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
-                .collect(Collectors.toMap(Table::getTableName, table -> table)));
+                .collect(toMap(Table::getTableName, table -> table)));
         tables.values().stream()
-                .flatMap(table -> table.getReferencedSchemaNames().stream()).map(schemas::get)
+                .flatMap(table -> table.getReferencedSchemaNames().stream())
+                .map(schemas::get)
                 .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier));
         tables.values().forEach(table -> table.resolveForeignKeys(schemas));
         populated = true;

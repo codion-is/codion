@@ -70,8 +70,9 @@ public final class Conditions {
     }
     final Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.getAttributes().size() > 1) {
-      return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL,
-              keys.stream().map(Conditions::valueMap).collect(toList()));
+      return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL, keys.stream()
+              .map(Conditions::valueMap)
+              .collect(toList()));
     }
 
     return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));

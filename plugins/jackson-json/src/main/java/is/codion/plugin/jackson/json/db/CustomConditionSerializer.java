@@ -29,7 +29,9 @@ final class CustomConditionSerializer implements Serializable {
     generator.writeStringField("type", "custom");
     generator.writeStringField("conditionTypeName", condition.getConditionType().getName());
     generator.writeFieldName("attributes");
-    entityObjectMapper.writeValue(generator, condition.getAttributes().stream().map(Attribute::getName).collect(toList()));
+    entityObjectMapper.writeValue(generator, condition.getAttributes().stream()
+            .map(Attribute::getName)
+            .collect(toList()));
     generator.writeFieldName("values");
     entityObjectMapper.writeValue(generator, condition.getValues());
     generator.writeEndObject();

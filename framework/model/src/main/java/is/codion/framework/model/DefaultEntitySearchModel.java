@@ -311,11 +311,15 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private String createDescription() {
     final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
 
-    return searchAttributes.stream().map(attribute -> definition.getProperty(attribute).getCaption()).collect(joining(", "));
+    return searchAttributes.stream()
+            .map(attribute -> definition.getProperty(attribute).getCaption())
+            .collect(joining(", "));
   }
 
   private String toString(final List<Entity> entities) {
-    return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
+    return entities.stream()
+            .map(toStringProvider)
+            .collect(joining(multipleItemSeparatorValue.get()));
   }
 
   private void validateType(final Entity entity) {

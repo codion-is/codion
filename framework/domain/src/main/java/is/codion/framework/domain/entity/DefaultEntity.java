@@ -336,17 +336,8 @@ final class DefaultEntity implements Entity, Serializable {
               " expected, got: " + entity.getEntityType());
     }
 
-    return definition.getColumnProperties().stream().allMatch(property -> {
-      final Attribute<?> attribute = property.getAttribute();
-      if (contains(attribute) != entity.contains(attribute)) {
-        return false;
-      }
-      if (attribute.isByteArray()) {
-        return Arrays.equals((byte[]) get(property), (byte[]) entity.get(attribute));
-      }
-
-      return Objects.equals(get(property), entity.get(attribute));
-    });
+    return definition.getColumnProperties().stream()
+            .allMatch(property -> valueEqual(entity, property));
   }
 
   /**
@@ -771,6 +762,18 @@ final class DefaultEntity implements Entity, Serializable {
     else if (!modified) {//only the first original value is kept
       setOriginalValue(attribute, previousValue);
     }
+  }
+
+  private boolean valueEqual(final Entity entity, final ColumnProperty<?> property) {
+    final Attribute<?> attribute = property.getAttribute();
+    if (contains(attribute) != entity.contains(attribute)) {
+      return false;
+    }
+    if (attribute.isByteArray()) {
+      return Arrays.equals((byte[]) get(property), (byte[]) entity.get(attribute));
+    }
+
+    return Objects.equals(get(property), entity.get(attribute));
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

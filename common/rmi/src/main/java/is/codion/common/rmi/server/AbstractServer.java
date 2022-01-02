@@ -268,7 +268,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return info on all connected users
    */
   final Collection<User> getUsers() {
-    return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(toSet());
+    return getConnections().keySet().stream()
+            .map(ConnectionRequest::getUser)
+            .collect(toSet());
   }
 
   /**
@@ -283,8 +285,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return all clients connected with the given user
    */
   final Collection<RemoteClient> getClients(final User user) {
-    return getConnections().keySet().stream().filter(remoteClient ->
-            user == null || remoteClient.getUser().equals(user)).collect(toList());
+    return getConnections().keySet().stream()
+            .filter(remoteClient -> user == null || remoteClient.getUser().equals(user))
+            .collect(toList());
   }
 
   protected final void setAdmin(final A admin) {
@@ -337,7 +340,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return all clients of the given type
    */
   protected Collection<RemoteClient> getClients(final String clientTypeId) {
-    return getConnections().keySet().stream().filter(client -> Objects.equals(client.getClientTypeId(), clientTypeId)).collect(toList());
+    return getConnections().keySet().stream()
+            .filter(client -> Objects.equals(client.getClientTypeId(), clientTypeId))
+            .collect(toList());
   }
 
   protected final Registry getRegistry() throws RemoteException {

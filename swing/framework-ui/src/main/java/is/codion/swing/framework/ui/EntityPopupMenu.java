@@ -142,7 +142,9 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static String getForeignKeyAttributeNames(final ForeignKey foreignKey) {
-    return foreignKey.getReferences().stream().map(reference -> reference.getAttribute().getName()).collect(joining(", "));
+    return foreignKey.getReferences().stream()
+            .map(reference -> reference.getAttribute().getName())
+            .collect(joining(", "));
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property<?>> properties,

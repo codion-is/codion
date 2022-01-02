@@ -26,6 +26,7 @@ import java.util.stream.IntStream;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 /**
  * A utility class for working with text, such as sorting and reading from files
@@ -71,7 +72,7 @@ public final class Text {
 
     return IntStream.range(0, length).mapToObj(i ->
             String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
-            .collect(Collectors.joining());
+            .collect(joining());
   }
 
   /**
@@ -172,7 +173,7 @@ public final class Text {
     final StringBuilder contents = new StringBuilder();
     contents.append(String.join(columnDelimiter, header)).append(Util.LINE_SEPARATOR)
             .append(lines.stream().map(line -> String.join(columnDelimiter, line))
-                    .collect(Collectors.joining(Util.LINE_SEPARATOR)));
+                    .collect(joining(Util.LINE_SEPARATOR)));
 
     return contents.toString();
   }

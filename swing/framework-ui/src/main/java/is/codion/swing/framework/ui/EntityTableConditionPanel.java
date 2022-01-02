@@ -25,10 +25,10 @@ import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A UI component based on the EntityTableConditionModel
@@ -158,7 +158,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     return conditionPanel.getColumnComponents().values().stream()
             .filter(panel -> columnModel.isColumnVisible(panel.getModel().getColumnIdentifier()))
             .map(panel -> getTableConditionModel().getEntityDefinition().getProperty(panel.getModel().getColumnIdentifier()))
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   private static Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(

@@ -283,8 +283,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final <T> Value<T> selectorValue(final Attribute<T> attribute) {
-    return selectorValue(attribute, (entities, theAttribute, value) -> entities.stream().filter(entity ->
-            Objects.equals(value, entity.get(theAttribute))).findFirst().orElse(null));
+    return selectorValue(attribute, (entities, theAttribute, value) -> entities.stream()
+            .filter(entity -> Objects.equals(value, entity.get(theAttribute)))
+            .findFirst()
+            .orElse(null));
   }
 
   @Override
@@ -309,8 +311,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     final String itemToString = item.toString();
 
     //item not found, select null value
-    return getVisibleItems().stream().filter(visibleItem ->
-            visibleItem != null && itemToString.equals(visibleItem.toString())).findFirst().orElse(null);
+    return getVisibleItems().stream().filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
+            .findFirst()
+            .orElse(null);
   }
 
   @Override

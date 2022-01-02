@@ -245,8 +245,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the first entity panel found based on the given entity type, null if none is found
    */
   public final EntityPanel getEntityPanel(final EntityType entityType) {
-    return entityPanels.stream().filter(entityPanel ->
-            entityPanel.getModel().getEntityType().equals(entityType)).findFirst().orElse(null);
+    return entityPanels.stream()
+            .filter(entityPanel -> entityPanel.getModel().getEntityType().equals(entityType))
+            .findFirst()
+            .orElse(null);
   }
 
   /**

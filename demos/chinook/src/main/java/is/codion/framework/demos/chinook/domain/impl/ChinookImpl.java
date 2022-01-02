@@ -23,7 +23,6 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
@@ -31,6 +30,7 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static java.util.stream.Collectors.toList;
 
 public final class ChinookImpl extends DefaultDomain implements Chinook {
 
@@ -370,7 +370,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               .stream()
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)
-              .collect(Collectors.toList()));
+              .collect(toList()));
     }
   }
 
@@ -421,7 +421,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     private List<Entity> createPlaylistTracks(final Long playlistId, final List<Long> trackIds) {
       return trackIds.stream()
               .map(trackId -> createPlaylistTrack(playlistId, trackId))
-              .collect(Collectors.toList());
+              .collect(toList());
     }
 
     private Entity createPlaylistTrack(final Long playlistId, final Long trackId) {
@@ -457,7 +457,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       return entityConnection.update(Entity.castTo(Track.class,
                       entityConnection.select(selectCondition)).stream()
               .map(track -> track.raisePrice(priceIncrease))
-              .collect(Collectors.toList()));
+              .collect(toList()));
     }
   }
 }

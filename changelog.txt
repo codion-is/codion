@@ -7512,3 +7512,4 @@
   SelectCondition.getSelectAttributes() now returns Collection
   SelectCondition and UpdateCondition now immutable
   SelectCondition, DefaultSelectCondition, some minor refactoring
+  Stream usage code structure made a bit more consistent
