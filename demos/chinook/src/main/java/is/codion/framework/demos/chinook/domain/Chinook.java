@@ -133,7 +133,7 @@ public interface Chinook {
     ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
     ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", Track.GENRE_ID, Genre.ID);
 
-    FunctionType<EntityConnection, List<Object>, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
+    FunctionType<EntityConnection, RaisePriceParameters, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
 
     default Track raisePrice(final BigDecimal priceIncrease) {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
@@ -321,6 +321,27 @@ public interface Chinook {
 
     public int getNoOfTracks() {
       return noOfTracks;
+    }
+  }
+
+  final class RaisePriceParameters implements Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final Collection<Long> trackIds;
+    private final BigDecimal priceIncrease;
+
+    public RaisePriceParameters(final Collection<Long> trackIds, final BigDecimal priceIncrease) {
+      this.trackIds = requireNonNull(trackIds);
+      this.priceIncrease = requireNonNull(priceIncrease);
+    }
+
+    public Collection<Long> getTrackIds() {
+      return trackIds;
+    }
+
+    public BigDecimal getPriceIncrease() {
+      return priceIncrease;
     }
   }
 }

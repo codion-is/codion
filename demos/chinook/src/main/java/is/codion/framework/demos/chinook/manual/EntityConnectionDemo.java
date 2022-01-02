@@ -306,7 +306,7 @@ public final class EntityConnectionDemo {
 
     List<Entity> modifiedTracks =
             connection.executeFunction(Track.RAISE_PRICE,
-                    asList(trackIds, priceIncrease));
+                    new RaisePriceParameters(trackIds, priceIncrease));
 
     Collection<Entity> updatedInvoices =
             connection.executeFunction(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));

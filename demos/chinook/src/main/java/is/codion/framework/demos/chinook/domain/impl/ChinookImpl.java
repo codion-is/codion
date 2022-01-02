@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -443,20 +442,17 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, List<Object>, List<Entity>> {
+  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, RaisePriceParameters, List<Entity>> {
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
-                                final List<Object> arguments) throws DatabaseException {
-      List<Long> trackIds = (List<Long>) arguments.get(0);
-      BigDecimal priceIncrease = (BigDecimal) arguments.get(1);
-
-      SelectCondition selectCondition = where(Track.ID).equalTo(trackIds)
+                                final RaisePriceParameters parameters) throws DatabaseException {
+      SelectCondition selectCondition = where(Track.ID).equalTo(parameters.getTrackIds())
               .toSelectCondition().forUpdate();
 
       return entityConnection.update(Entity.castTo(Track.class,
                       entityConnection.select(selectCondition)).stream()
-              .map(track -> track.raisePrice(priceIncrease))
+              .map(track -> track.raisePrice(parameters.getPriceIncrease()))
               .collect(toList()));
     }
   }
