@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
 
 final class ConditionCombinationSerializer implements Serializable {
 
@@ -27,8 +26,7 @@ final class ConditionCombinationSerializer implements Serializable {
     generator.writeStringField("type", "combination");
     generator.writeStringField("conjunction", combination.getConjunction().name());
     generator.writeArrayFieldStart("conditions");
-    final List<Condition> conditions = combination.getConditions();
-    for (final Condition condition : conditions) {
+    for (final Condition condition : combination.getConditions()) {
       if (condition instanceof Condition.Combination) {
         serialize((Condition.Combination) condition, generator);
       }

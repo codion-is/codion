@@ -154,11 +154,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void insertNoPk() throws DatabaseException {
-    final Entity noPk = ENTITIES.builder(T_NO_PK)
-            .with(NO_PK_COL1, 10)
-            .with(NO_PK_COL2, "10")
-            .with(NO_PK_COL3, "10")
-            .with(NO_PK_COL4, 10)
+    final Entity noPk = ENTITIES.builder(NoPrimaryKey.TYPE)
+            .with(NoPrimaryKey.COL_1, 10)
+            .with(NoPrimaryKey.COL_2, "10")
+            .with(NoPrimaryKey.COL_3, "10")
+            .with(NoPrimaryKey.COL_4, 10)
             .build();
 
     final Key key = connection.insert(noPk);
@@ -208,12 +208,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectLimitOffset() throws Exception {
-    final SelectCondition condition = condition(Employee.TYPE).toSelectCondition()
+    SelectCondition condition = condition(Employee.TYPE).toSelectCondition()
             .orderBy(orderBy().ascending(Employee.NAME)).limit(2);
     List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
-    condition.limit(3);
-    condition.offset(3);
+    condition  = condition.limit(3).offset(3);
     result = connection.select(condition);
     assertEquals(3, result.size());
     assertEquals("BLAKE", result.get(0).get(Employee.NAME));
@@ -239,10 +238,10 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
                     asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
     assertEquals(2, result.size());
-    result = connection.select(Conditions.customCondition(JOINED_QUERY_CONDITION_TYPE));
+    result = connection.select(Conditions.customCondition(EmpnoDeptno.CONDITION));
     assertEquals(7, result.size());
 
-    final SelectCondition condition = Conditions.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).toSelectCondition();
+    SelectCondition condition = Conditions.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).toSelectCondition();
     result = connection.select(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -250,19 +249,22 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(Employee.MGR_FK);
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.DEPARTMENT_FK, 0));
+    condition = condition.fetchDepth(Employee.DEPARTMENT_FK, 0);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.MGR_FK, 0));
+    condition = condition.fetchDepth(Employee.MGR_FK, 0);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.MGR_FK, 2));
+    condition = condition.fetchDepth(Employee.MGR_FK, 2);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -270,7 +272,8 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    result = connection.select(condition.fetchDepth(Employee.MGR_FK, -1));
+    condition = condition.fetchDepth(Employee.MGR_FK, -1);
+    result = connection.select(condition);
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -369,13 +372,13 @@ public class DefaultLocalEntityConnectionTest {
     rowCount = connection.rowCount(deptNoCondition);
     assertEquals(2, rowCount);
 
-    rowCount = connection.rowCount(condition(JOINED_QUERY_ENTITY_TYPE));
+    rowCount = connection.rowCount(condition(EmpnoDeptno.TYPE));
     assertEquals(16, rowCount);
-    deptNoCondition = where(JOINED_DEPTNO).greaterThanOrEqualTo(30);
+    deptNoCondition = where(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30);
     rowCount = connection.rowCount(deptNoCondition);
     assertEquals(4, rowCount);
 
-    rowCount = connection.rowCount(condition(GROUP_BY_QUERY_ENTITY_TYPE));
+    rowCount = connection.rowCount(condition(Job.TYPE));
     assertEquals(4, rowCount);
   }
 
@@ -902,10 +905,10 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void entityWithoutPrimaryKey() throws DatabaseException {
-    List<Entity> entities = connection.select(condition(T_NO_PK));
+    List<Entity> entities = connection.select(condition(NoPrimaryKey.TYPE));
     assertEquals(6, entities.size());
-    entities = connection.select(where(NO_PK_COL1).equalTo(2)
-                    .or(where(NO_PK_COL3).equalTo("5")));
+    entities = connection.select(where(NoPrimaryKey.COL_1).equalTo(2)
+                    .or(where(NoPrimaryKey.COL_3).equalTo("5")));
     assertEquals(4, entities.size());
   }
 

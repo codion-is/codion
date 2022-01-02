@@ -15,9 +15,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Provides configuration values which sync with a central configuration store as well as system properties,
@@ -237,8 +237,9 @@ public interface PropertyStore {
 
     Collections.sort(propertyNames);
 
-    return propertyNames.stream().map(key -> key + ": " +
-            propertyFormatter.formatValue(key, props.getProperty(key))).collect(Collectors.joining("\n"));
+    return propertyNames.stream()
+            .map(key -> key + ": " + propertyFormatter.formatValue(key, props.getProperty(key)))
+            .collect(joining("\n"));
   }
 
   /**

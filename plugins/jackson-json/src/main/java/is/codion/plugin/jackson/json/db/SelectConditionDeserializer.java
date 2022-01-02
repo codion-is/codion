@@ -44,43 +44,43 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     final JsonNode conditionNode = jsonNode.get("condition");
     final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
-    final SelectCondition selectCondition = condition.toSelectCondition();
+    SelectCondition selectCondition = condition.toSelectCondition();
     final JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
-      selectCondition.orderBy(deserializeOrderBy(definition, orderBy));
+      selectCondition = selectCondition.orderBy(deserializeOrderBy(definition, orderBy));
     }
     final JsonNode limit = jsonNode.get("limit");
     if (limit != null && !limit.isNull()) {
-      selectCondition.limit(limit.asInt());
+      selectCondition = selectCondition.limit(limit.asInt());
     }
     final JsonNode offset = jsonNode.get("offset");
     if (offset != null && !offset.isNull()) {
-      selectCondition.offset(offset.asInt());
+      selectCondition = selectCondition.offset(offset.asInt());
     }
     final JsonNode fetchCount = jsonNode.get("fetchCount");
     if (fetchCount != null && !fetchCount.isNull()) {
-      selectCondition.fetchCount(fetchCount.asInt());
+      selectCondition = selectCondition.fetchCount(fetchCount.asInt());
     }
     final JsonNode fetchDepth = jsonNode.get("fetchDepth");
     if (fetchDepth != null && !fetchDepth.isNull()) {
-      selectCondition.fetchDepth(fetchDepth.asInt());
+      selectCondition = selectCondition.fetchDepth(fetchDepth.asInt());
     }
     final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
       for (final ForeignKey foreignKey : definition.getForeignKeys()) {
         final JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
         if (fetchDepthNode != null) {
-          selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
+          selectCondition = selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
         }
       }
     }
     final JsonNode forUpdate = jsonNode.get("forUpdate");
     if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
-      selectCondition.forUpdate();
+      selectCondition = selectCondition.forUpdate();
     }
     final JsonNode selectAttributes = jsonNode.get("selectAttributes");
     if (selectAttributes != null && !selectAttributes.isNull()) {
-      selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
+      selectCondition = selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
     }
 
     return selectCondition;

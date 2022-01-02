@@ -9,8 +9,9 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * A connection pool statistics collector.
@@ -145,7 +146,8 @@ final class DefaultConnectionPoolCounter {
     if (collectSnapshotStatistics && since >= 0) {
       synchronized (snapshotStatistics) {
         statistics.setSnapshot(snapshotStatistics.stream()
-                .filter(state -> state.getTimestamp() >= since).collect(Collectors.toList()));
+                .filter(state -> state.getTimestamp() >= since)
+                .collect(toList()));
       }
     }
 

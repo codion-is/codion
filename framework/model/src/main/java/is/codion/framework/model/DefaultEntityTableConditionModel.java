@@ -27,6 +27,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -142,7 +143,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public boolean isConditionEnabled() {
-    return conditionModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
+    return conditionModels.values().stream()
+            .anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
@@ -152,7 +154,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public boolean isFilterEnabled() {
-    return filterModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
+    return filterModels.values().stream()
+            .anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
@@ -185,20 +188,21 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public Condition getCondition() {
-    final Condition.Combination conditionCombination = Conditions.combination(conjunction);
+    final Collection<Condition> conditions = new ArrayList<>();
     for (final ColumnConditionModel<? extends Attribute<?>, ?> conditionModel : conditionModels.values()) {
       if (conditionModel.isEnabled()) {
         if (conditionModel instanceof ForeignKeyConditionModel) {
-          conditionCombination.add(getForeignKeyCondition((ForeignKeyConditionModel) conditionModel));
+          conditions.add(getForeignKeyCondition((ForeignKeyConditionModel) conditionModel));
         }
         else {
-          conditionCombination.add(getCondition(conditionModel));
+          conditions.add(getCondition(conditionModel));
         }
       }
     }
     if (additionalConditionSupplier != null) {
-      conditionCombination.add(additionalConditionSupplier.get());
+      conditions.add(additionalConditionSupplier.get());
     }
+    final Condition.Combination conditionCombination = Conditions.combination(conjunction, conditions);
 
     return conditionCombination.getConditions().isEmpty() ? Conditions.condition(entityType) : conditionCombination;
   }
@@ -275,7 +279,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @return a String representing the current state of the condition models
    */
   private String getConditionsString() {
-    return conditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
+    return conditionModels.values().stream()
+            .map(DefaultEntityTableConditionModel::toString)
+            .collect(joining());
   }
 
   private void initializeFilterModels(final EntityType entityType, final FilterModelFactory filterModelProvider) {

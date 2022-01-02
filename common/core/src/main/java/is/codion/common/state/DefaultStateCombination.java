@@ -100,7 +100,9 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   private Optional<StateCombinationListener> findListener(final StateObserver state) {
-    return stateListeners.stream().filter(listener -> listener.getState().equals(state)).findFirst();
+    return stateListeners.stream()
+            .filter(listener -> listener.getState().equals(state))
+            .findFirst();
   }
 
   private final class StateCombinationListener implements EventDataListener<Boolean> {

@@ -70,8 +70,9 @@ public final class Conditions {
     }
     final Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.getAttributes().size() > 1) {
-      return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL,
-              keys.stream().map(Conditions::valueMap).collect(toList()));
+      return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL, keys.stream()
+              .map(Conditions::valueMap)
+              .collect(toList()));
     }
 
     return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));
@@ -105,10 +106,21 @@ public final class Conditions {
   /**
    * Initializes a new {@link Condition.Combination} instance
    * @param conjunction the Conjunction to use
+   * @param conditions the conditions to combine
    * @return a new {@link Condition.Combination} instance
    */
-  public static Condition.Combination combination(final Conjunction conjunction) {
-    return new DefaultConditionCombination(conjunction);
+  public static Condition.Combination combination(final Conjunction conjunction, final Condition... conditions) {
+    return new DefaultConditionCombination(conjunction, conditions);
+  }
+
+  /**
+   * Initializes a new {@link Condition.Combination} instance
+   * @param conjunction the Conjunction to use
+   * @param conditions the conditions to combine
+   * @return a new {@link Condition.Combination} instance
+   */
+  public static Condition.Combination combination(final Conjunction conjunction, final Collection<Condition> conditions) {
+    return new DefaultConditionCombination(conjunction, conditions);
   }
 
   /**
@@ -142,14 +154,14 @@ public final class Conditions {
       return compositeCondition(attributes, operator, valueMaps.get(0));
     }
 
-    return combination(OR).add(valueMaps.stream()
+    return combination(OR, valueMaps.stream()
             .map(valueMap -> compositeCondition(attributes, operator, valueMap))
             .collect(toList()));
   }
 
   private static Condition compositeCondition(final Map<Attribute<?>, Attribute<?>> attributes,
                                               final Operator operator, final Map<Attribute<?>, Object> valueMap) {
-    return combination(AND).add(attributes.entrySet().stream()
+    return combination(AND, attributes.entrySet().stream()
             .map(entry -> condition(entry.getKey(), operator, valueMap.get(entry.getValue())))
             .collect(toList()));
   }

@@ -314,8 +314,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void selectColumns() {
     final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
-    final Map<TableColumn, JCheckBox> columnCheckBoxes =
-            columnModel.getAllColumns().stream().collect(Collectors.toMap(column -> column, column ->
+    final Map<TableColumn, JCheckBox> columnCheckBoxes = columnModel.getAllColumns().stream()
+            .collect(Collectors.toMap(column -> column, column ->
                     new JCheckBox(column.getHeaderValue().toString(),
                             tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()))));
     Dialogs.okCancelDialog(initializeSelectColumnsPanel(columnCheckBoxes))
@@ -592,7 +592,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private static JPanel initializeSelectColumnsPanel(final Map<TableColumn, JCheckBox> columnCheckBoxes) {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnCheckBoxes.size()), 0));
     final Collator columnCollator = Collator.getInstance();
-    columnCheckBoxes.keySet().stream().sorted((column1, column2) ->
+    columnCheckBoxes.keySet().stream()
+            .sorted((column1, column2) ->
                     Text.collateSansSpaces(columnCollator, column1.getHeaderValue().toString(), column2.getHeaderValue().toString()))
             .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
     final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));

@@ -49,11 +49,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -425,7 +425,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   public final Entity getEntityByKey(final Key primaryKey) {
-    return getVisibleItems().stream().filter(entity -> entity.getPrimaryKey().equals(primaryKey)).findFirst().orElse(null);
+    return getVisibleItems().stream()
+            .filter(entity -> entity.getPrimaryKey().equals(primaryKey))
+            .findFirst()
+            .orElse(null);
   }
 
   @Override
@@ -520,7 +523,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
     requireNonNull(keys, "keys");
-    return getItems().stream().filter(entity -> keys.contains(entity.getPrimaryKey())).collect(Collectors.toList());
+    return getItems().stream()
+            .filter(entity -> keys.contains(entity.getPrimaryKey()))
+            .collect(toList());
   }
 
   @Override
@@ -717,7 +722,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
     return getEntityDefinition().getDefaultSelectAttributes().stream()
             .filter(getColumnModel()::isColumnVisible)
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   /**
@@ -766,8 +771,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private void onInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
-              entity.getEntityType().equals(getEntityType())).collect(Collectors.toList());
+      final List<Entity> entitiesToAdd = insertedEntities.stream()
+              .filter(entity -> entity.getEntityType().equals(getEntityType()))
+              .collect(toList());
       switch (insertAction) {
         case ADD_TOP:
           addEntitiesAt(0, entitiesToAdd);

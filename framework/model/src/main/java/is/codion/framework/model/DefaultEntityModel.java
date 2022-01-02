@@ -188,13 +188,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final boolean containsDetailModel(final Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
-    return detailModels.stream().anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
+    return detailModels.stream()
+            .anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
   }
 
   @Override
   public final boolean containsDetailModel(final EntityType entityType) {
     requireNonNull(entityType, "entityType");
-    return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
+    return detailModels.stream()
+            .anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
   }
 
   @Override

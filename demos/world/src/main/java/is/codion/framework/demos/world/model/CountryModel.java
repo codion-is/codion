@@ -10,7 +10,8 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public final class CountryModel extends SwingEntityModel {
 
@@ -34,7 +35,7 @@ public final class CountryModel extends SwingEntityModel {
 
       List<City> cities = Entity.castTo(City.class, cityTableModel.getItems()).stream()
               .filter(city -> city.isInCountry(country))
-              .collect(Collectors.toList());
+              .collect(toList());
 
       OptionalDouble averageCityPopulation = cities.stream()
               .map(city -> city.getOptional(City.POPULATION))

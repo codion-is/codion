@@ -123,7 +123,8 @@ public final class HostMonitor {
   }
 
   private boolean containsServerMonitor(final UUID serverId) {
-    return serverMonitors.stream().anyMatch(serverMonitor -> serverMonitor.getServerInformation().getServerId().equals(serverId));
+    return serverMonitors.stream()
+            .anyMatch(serverMonitor -> serverMonitor.getServerInformation().getServerId().equals(serverId));
   }
 
   private void removeUnreachableServers() {

@@ -25,6 +25,12 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
     this.condition = condition;
   }
 
+  private DefaultUpdateCondition(final DefaultUpdateCondition updateCondition) {
+    super(updateCondition.getEntityType());
+    this.condition = updateCondition.condition;
+    this.propertyValues.putAll(updateCondition.propertyValues);
+  }
+
   @Override
   public Condition getCondition() {
     return condition;
@@ -51,9 +57,10 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
     if (propertyValues.containsKey(attribute)) {
       throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
     }
-    propertyValues.put(attribute, value);
+    final DefaultUpdateCondition updateCondition = new DefaultUpdateCondition(this);
+    updateCondition.propertyValues.put(attribute, value);
 
-    return this;
+    return updateCondition;
   }
 
   @Override

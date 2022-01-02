@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
@@ -62,6 +61,7 @@ import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A panel representing an Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -506,8 +506,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final Collection<EntityPanel> getLinkedDetailPanels() {
     final Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
 
-    return detailEntityPanels.stream().filter(detailPanel ->
-            linkedDetailModels.contains(detailPanel.entityModel)).collect(Collectors.toList());
+    return detailEntityPanels.stream()
+            .filter(detailPanel -> linkedDetailModels.contains(detailPanel.entityModel))
+            .collect(toList());
   }
 
   /**
@@ -540,7 +541,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return true if a detail panel for the given entityType is found
    */
   public final boolean containsDetailPanel(final EntityType entityType) {
-    return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
+    return detailEntityPanels.stream()
+            .anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
   }
 
   @Override

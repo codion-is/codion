@@ -191,7 +191,9 @@ public interface MethodLogger {
         return toString(arguments.get(0));
       }
 
-      return arguments.stream().map(this::toString).collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+      return arguments.stream()
+              .map(this::toString)
+              .collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
     }
 
     private String toString(final Collection<?> arguments) {
@@ -199,7 +201,9 @@ public interface MethodLogger {
         return "";
       }
 
-      return arguments.stream().map(this::toString).collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+      return arguments.stream()
+              .map(this::toString)
+              .collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
     }
 
     private String toString(final Object[] arguments) {
@@ -210,7 +214,9 @@ public interface MethodLogger {
         return toString(arguments[0]);
       }
 
-      return stream(arguments).map(this::toString).collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+      return stream(arguments)
+              .map(this::toString)
+              .collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
     }
   }
 }

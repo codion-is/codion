@@ -284,7 +284,9 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     initializePanel();
     final TabPane parent = FXUiUtil.getParentOfType(this, TabPane.class);
     if (parent != null) {
-      parent.getTabs().stream().filter(tab -> tab.getContent().equals(this)).forEach(tab -> parent.getSelectionModel().select(tab));
+      parent.getTabs().stream()
+              .filter(tab -> tab.getContent().equals(this))
+              .forEach(tab -> parent.getSelectionModel().select(tab));
     }
     requestInputFocus();
   }

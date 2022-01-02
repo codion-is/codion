@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,18 +22,32 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   private static final long serialVersionUID = 1;
 
-  private final ArrayList<Condition> conditions = new ArrayList<>();
+  private final ArrayList<Condition> conditions;
   private final Conjunction conjunction;
+  private final EntityType entityType;
 
-  private EntityType entityType;
-
-  DefaultConditionCombination(final Conjunction conjunction) {
-    this.conjunction = requireNonNull(conjunction, "conjunction");
+  DefaultConditionCombination(final Conjunction conjunction, final Condition... conditions) {
+    this(conjunction, Arrays.asList(requireNonNull(conditions, "conditions")));
   }
 
-  DefaultConditionCombination(final Conjunction conjunction, final Condition condition) {
-    this(conjunction);
-    add(condition);
+  DefaultConditionCombination(final Conjunction conjunction, final Condition condition, final Condition... conditions) {
+    this(conjunction, combine(condition, conditions));
+  }
+
+  DefaultConditionCombination(final Conjunction conjunction, final Collection<Condition> conditions) {
+    this(conjunction, new ArrayList<>(requireNonNull(conditions, "conditions")));
+  }
+
+  DefaultConditionCombination(final Conjunction conjunction, final List<Condition> conditions) {
+    this.conjunction = requireNonNull(conjunction, "conjunction");
+    this.conditions = new ArrayList<>(requireNonNull(conditions, "conditions"));
+    this.entityType = this.conditions.isEmpty() ? null : this.conditions.get(0).getEntityType();
+    for (int i = 1; i < this.conditions.size(); i++) {
+      final EntityType conditionEntityType = this.conditions.get(i).getEntityType();
+      if (!conditionEntityType.equals(this.entityType)) {
+        throw new IllegalArgumentException("EntityType " + this.entityType + " expected, got: " + conditionEntityType);
+      }
+    }
   }
 
   @Override
@@ -45,42 +60,8 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public Combination add(final Condition... conditions) {
-    requireNonNull(conditions);
-    for (final Condition condition : conditions) {
-      add(condition);
-    }
-
-    return this;
-  }
-
-  @Override
-  public Combination add(final Collection<Condition> conditions) {
-    requireNonNull(conditions);
-    for (final Condition condition : conditions) {
-      add(condition);
-    }
-
-    return this;
-  }
-
-  @Override
-  public Combination add(final Condition condition) {
-    requireNonNull(condition);
-    if (entityType == null) {
-      entityType = condition.getEntityType();
-    }
-    else if (!entityType.equals(condition.getEntityType())) {
-      throw new IllegalArgumentException("EntityType " + entityType + " expected, got: " + condition.getEntityType());
-    }
-    conditions.add(condition);
-
-    return this;
-  }
-
-  @Override
-  public List<Condition> getConditions() {
-    return conditions;
+  public Collection<Condition> getConditions() {
+    return unmodifiableList(conditions);
   }
 
   @Override
@@ -110,12 +91,20 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public Condition.Combination and(final Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.AND, this).add(conditions);
+    if (this.conditions.isEmpty()) {
+      return new DefaultConditionCombination(Conjunction.AND, combine(null, conditions));
+    }
+
+    return new DefaultConditionCombination(Conjunction.AND, combine(this, conditions));
   }
 
   @Override
   public Condition.Combination or(final Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.OR, this).add(conditions);
+    if (this.conditions.isEmpty()) {
+      return new DefaultConditionCombination(Conjunction.OR, combine(null, conditions));
+    }
+
+    return new DefaultConditionCombination(Conjunction.OR, combine(this, conditions));
   }
 
   @Override
@@ -146,6 +135,16 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   @Override
   public String toString() {
     return getClass().getSimpleName() + ": " + getEntityType();
+  }
+
+  private static List<Condition> combine(final Condition condition, final Condition... conditions) {
+    final List<Condition> list = new ArrayList<>(requireNonNull(conditions, "conditions").length + (condition != null ? 1 : 0));
+    if (condition != null) {
+      list.add(condition);
+    }
+    list.addAll(Arrays.asList(conditions));
+
+    return list;
   }
 
   private static String toString(final Conjunction conjunction) {

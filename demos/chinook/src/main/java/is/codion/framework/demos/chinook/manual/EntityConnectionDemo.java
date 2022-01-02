@@ -13,6 +13,8 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
+import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -306,10 +308,16 @@ public final class EntityConnectionDemo {
 
     List<Entity> modifiedTracks =
             connection.executeFunction(Track.RAISE_PRICE,
-                    asList(trackIds, priceIncrease));
+                    new RaisePriceParameters(trackIds, priceIncrease));
 
     Collection<Entity> updatedInvoices =
             connection.executeFunction(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
+
+    String playlistName = "Random playlist";
+    int numberOfTracks = 100;
+
+    Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
+            new RandomPlaylistParameters(playlistName, numberOfTracks));
     // end::function[]
   }
 

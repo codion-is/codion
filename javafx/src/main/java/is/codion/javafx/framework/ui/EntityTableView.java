@@ -224,15 +224,18 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
-    Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream().filter(
-            this::includeUpdateSelectedProperty).forEach(property -> {
-      final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-      final MenuItem updateProperty = new MenuItem(caption);
-      updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
-      updateSelected.getItems().add(updateProperty);
-    });
+    Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream()
+            .filter(this::includeUpdateSelectedProperty)
+            .forEach(property -> addUpdateSelectedMenuItem(updateSelected, property));
 
     return updateSelected;
+  }
+
+  private void addUpdateSelectedMenuItem(final Menu updateSelected, final Property<?> property) {
+    final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
+    final MenuItem updateProperty = new MenuItem(caption);
+    updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
+    updateSelected.getItems().add(updateProperty);
   }
 
   private MenuItem createDeleteSelectionItem() {
@@ -319,7 +322,8 @@ public class EntityTableView extends TableView<Entity> {
         listModel.setIncludeCondition(null);
       }
       else {
-        listModel.setIncludeCondition(item -> getColumns().stream().map(column -> column.getCellObservableValue(item).getValue())
+        listModel.setIncludeCondition(item -> getColumns().stream()
+                .map(column -> column.getCellObservableValue(item).getValue())
                 .anyMatch(value -> value != null && value.toString().toLowerCase().contains(newValue.toLowerCase())));
       }
     });

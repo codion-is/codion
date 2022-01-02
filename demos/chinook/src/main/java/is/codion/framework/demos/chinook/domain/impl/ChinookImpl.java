@@ -11,19 +11,19 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
+import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
@@ -31,6 +31,7 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static java.util.stream.Collectors.toList;
 
 public final class ChinookImpl extends DefaultDomain implements Chinook {
 
@@ -370,7 +371,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               .stream()
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)
-              .collect(Collectors.toList()));
+              .collect(toList()));
     }
   }
 
@@ -421,7 +422,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     private List<Entity> createPlaylistTracks(final Long playlistId, final List<Long> trackIds) {
       return trackIds.stream()
               .map(trackId -> createPlaylistTrack(playlistId, trackId))
-              .collect(Collectors.toList());
+              .collect(toList());
     }
 
     private Entity createPlaylistTrack(final Long playlistId, final Long trackId) {
@@ -443,21 +444,18 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, List<Object>, List<Entity>> {
+  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, RaisePriceParameters, List<Entity>> {
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
-                                final List<Object> arguments) throws DatabaseException {
-      List<Long> trackIds = (List<Long>) arguments.get(0);
-      BigDecimal priceIncrease = (BigDecimal) arguments.get(1);
-
-      SelectCondition selectCondition = where(Track.ID).equalTo(trackIds)
+                                final RaisePriceParameters parameters) throws DatabaseException {
+      SelectCondition selectCondition = where(Track.ID).equalTo(parameters.getTrackIds())
               .toSelectCondition().forUpdate();
 
       return entityConnection.update(Entity.castTo(Track.class,
                       entityConnection.select(selectCondition)).stream()
-              .map(track -> track.raisePrice(priceIncrease))
-              .collect(Collectors.toList()));
+              .map(track -> track.raisePrice(parameters.getPriceIncrease()))
+              .collect(toList()));
     }
   }
 }

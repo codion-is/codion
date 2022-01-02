@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.framework.demos.chinook.domain.Chinook.RandomPlaylistParameters;
+import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;

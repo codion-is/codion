@@ -127,7 +127,9 @@ public final class StringFactory {
         return valueProviders.get(0).apply(entity);
       }
 
-      return valueProviders.stream().map(valueProvider -> valueProvider.apply(entity)).collect(joining());
+      return valueProviders.stream()
+              .map(valueProvider -> valueProvider.apply(entity))
+              .collect(joining());
     }
 
     private DefaultStringFactory addValue(final Attribute<?> attribute) {

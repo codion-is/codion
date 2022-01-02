@@ -52,11 +52,13 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   public Condition equalTo(final Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    final List<Attribute<?>> attributes =
-            foreignKey.getReferences().stream().map(ForeignKey.Reference::getReferencedAttribute).collect(toList());
+    final List<Attribute<?>> attributes = foreignKey.getReferences().stream()
+            .map(ForeignKey.Reference::getReferencedAttribute)
+            .collect(toList());
 
-    return foreignKeyCondition(foreignKey, EQUAL,
-            values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
+    return foreignKeyCondition(foreignKey, EQUAL, values.stream()
+            .map(entity -> valueMap(entity, attributes))
+            .collect(toList()));
   }
 
   @Override
@@ -79,11 +81,13 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   public Condition notEqualTo(final Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    final List<Attribute<?>> attributes =
-            foreignKey.getReferences().stream().map(ForeignKey.Reference::getReferencedAttribute).collect(toList());
+    final List<Attribute<?>> attributes = foreignKey.getReferences().stream()
+            .map(ForeignKey.Reference::getReferencedAttribute)
+            .collect(toList());
 
-    return foreignKeyCondition(foreignKey, NOT_EQUAL,
-            values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
+    return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream()
+            .map(entity -> valueMap(entity, attributes))
+            .collect(toList()));
   }
 
   @Override
@@ -104,7 +108,8 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
 
     final ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
     final List<Object> values = valueMaps.stream()
-            .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
+            .map(map -> map.get(reference.getReferencedAttribute()))
+            .collect(toList());
     if (operator == EQUAL) {
       return Conditions.where((Attribute<Object>) reference.getAttribute()).equalTo(values);
     }

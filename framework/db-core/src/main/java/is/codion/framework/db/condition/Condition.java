@@ -36,16 +36,16 @@ public interface Condition {
   List<Attribute<?>> getAttributes();
 
   /**
-   * Combines this condition with the given one, AND'ing together.
+   * Returns a new Combination instance, combining this condition with the given one, AND'ing together.
    * @param conditions the conditions to combine with this one
-   * @return a condition combination
+   * @return a new condition combination
    */
   Combination and(Condition... conditions);
 
   /**
-   * Combines this condition with the given one, OR'ing together.
+   * Returns a new Combination instance, combining this condition with the given one, OR'ing together.
    * @param conditions the conditions to combine with this one
-   * @return a condition combination
+   * @return a new condition combination
    */
   Combination or(Condition... conditions);
 
@@ -73,30 +73,9 @@ public interface Condition {
   interface Combination extends Condition {
 
     /**
-     * Adds new Condition objects to this combination
-     * @param conditions the Conditions to add
-     * @return this combination instance
-     */
-    Combination add(Condition... conditions);
-
-    /**
-     * Adds new Condition objects to this combination
-     * @param conditions the Conditions to add
-     * @return this combination instance
-     */
-    Combination add(Collection<Condition> conditions);
-
-    /**
-     * Adds a new Condition object to this combination
-     * @param condition the Condition to add
-     * @return this combination instance
-     */
-    Combination add(Condition condition);
-
-    /**
      * @return the Conditions comprising this Combination
      */
-    List<Condition> getConditions();
+    Collection<Condition> getConditions();
 
     /**
      * @return the conjunction

@@ -45,13 +45,16 @@ final class ColumnPacker implements ResultPacker<Column> {
   }
 
   private int getPrimaryKeyColumnIndex(final String columnName) {
-    return primaryKeyColumns.stream().filter(primaryKeyColumn ->
-            columnName.equals(primaryKeyColumn.getColumnName())).findFirst().map(PrimaryKeyColumn::getIndex).orElse(-1);
+    return primaryKeyColumns.stream()
+            .filter(primaryKeyColumn -> columnName.equals(primaryKeyColumn.getColumnName()))
+            .findFirst()
+            .map(PrimaryKeyColumn::getIndex)
+            .orElse(-1);
   }
 
   private boolean isForeignKeyColumn(final String columnName) {
-    return foreignKeyColumns.stream().anyMatch(foreignKeyColumn ->
-            foreignKeyColumn.getFkColumnName().equals(columnName));
+    return foreignKeyColumns.stream()
+            .anyMatch(foreignKeyColumn -> foreignKeyColumn.getFkColumnName().equals(columnName));
   }
 
   private static Class<?> translateTypeName(final int sqlType, final int decimalDigits) {
