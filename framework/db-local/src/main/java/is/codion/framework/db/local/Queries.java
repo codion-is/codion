@@ -11,6 +11,8 @@ final class Queries {
 
   static final String WHERE_SPACE_PREFIX_POSTFIX = " where ";
 
+  private Queries() {}
+
   /**
    * @param tableName the table name
    * @param insertProperties the properties used to insert the given entity type

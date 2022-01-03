@@ -128,7 +128,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     final Enumeration<TreeNode> enumeration = root.depthFirstEnumeration();
     while (enumeration.hasMoreElements()) {
       final EntityTreeNode node = (EntityTreeNode) enumeration.nextElement();
-      if (Objects.equals(node.entity, entity)) {
+      if (Objects.equals(node.nodeEntity, entity)) {
         return new TreePath(node.getPath());
       }
     }
@@ -142,21 +142,21 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
   public static final class EntityTreeNode extends DefaultMutableTreeNode {
 
     private final SwingEntityTableModel tableModel;
-    private final Entity entity;
+    private final Entity nodeEntity;
     private final Comparator<EntityTreeNode> nodeComparator;
     private final Function<Entity, String> stringFunction;
     private final ForeignKey parentForeignKey;
 
-    private EntityTreeNode(final SwingEntityTableModel tableModel, final Entity entity,
+    private EntityTreeNode(final SwingEntityTableModel tableModel, final Entity nodeEntity,
                            final Function<Entity, String> stringFunction, final ForeignKey parentForeignKey,
                            final Comparator<EntityTreeNode> nodeComparator) {
-      super(entity);
-      if (entity != null && !entity.getEntityType().equals(tableModel.getEntityType())) {
+      super(nodeEntity);
+      if (nodeEntity != null && !nodeEntity.getEntityType().equals(tableModel.getEntityType())) {
         throw new IllegalArgumentException("Entity of type " +
-                tableModel.getEntityType() + " expected, got: " + entity.getEntityType());
+                tableModel.getEntityType() + " expected, got: " + nodeEntity.getEntityType());
       }
       this.tableModel = tableModel;
-      this.entity = entity;
+      this.nodeEntity = nodeEntity;
       this.stringFunction = stringFunction;
       this.parentForeignKey = parentForeignKey;
       this.nodeComparator = nodeComparator;
@@ -178,17 +178,17 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
      * @return the entity, null in case of the root node
      */
     public Entity getEntity() {
-      return entity;
+      return nodeEntity;
     }
 
     @Override
     public String toString() {
-      return entity == null ? "" : stringFunction.apply(entity);
+      return nodeEntity == null ? "" : stringFunction.apply(nodeEntity);
     }
 
     private List<EntityTreeNode> loadChildren() {
       return tableModel.getItems().stream()
-              .filter(entity -> Objects.equals(this.entity, entity.getForeignKey(parentForeignKey)))
+              .filter(entity -> Objects.equals(this.nodeEntity, entity.getForeignKey(parentForeignKey)))
               .map(entity -> new EntityTreeNode(tableModel, entity, stringFunction, parentForeignKey, nodeComparator))
               .map(EntityTreeNode::refresh)
               .sorted(nodeComparator)
@@ -213,7 +213,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
         return 1;
       }
 
-      return entityComparator.compare(node1.entity, node2.entity);
+      return entityComparator.compare(node1.nodeEntity, node2.nodeEntity);
     }
   }
 
