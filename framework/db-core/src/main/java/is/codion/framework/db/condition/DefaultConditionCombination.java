@@ -22,12 +22,14 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   private static final long serialVersionUID = 1;
 
+  private static final String CONDITIONS = "conditions";
+
   private final ArrayList<Condition> conditions;
   private final Conjunction conjunction;
   private final EntityType entityType;
 
   DefaultConditionCombination(final Conjunction conjunction, final Condition... conditions) {
-    this(conjunction, Arrays.asList(requireNonNull(conditions, "conditions")));
+    this(conjunction, Arrays.asList(requireNonNull(conditions, CONDITIONS)));
   }
 
   DefaultConditionCombination(final Conjunction conjunction, final Condition condition, final Condition... conditions) {
@@ -35,12 +37,12 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   DefaultConditionCombination(final Conjunction conjunction, final Collection<Condition> conditions) {
-    this(conjunction, new ArrayList<>(requireNonNull(conditions, "conditions")));
+    this(conjunction, new ArrayList<>(requireNonNull(conditions, CONDITIONS)));
   }
 
   DefaultConditionCombination(final Conjunction conjunction, final List<Condition> conditions) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
-    this.conditions = new ArrayList<>(requireNonNull(conditions, "conditions"));
+    this.conditions = new ArrayList<>(requireNonNull(conditions, CONDITIONS));
     this.entityType = this.conditions.isEmpty() ? null : this.conditions.get(0).getEntityType();
     for (int i = 1; i < this.conditions.size(); i++) {
       final EntityType conditionEntityType = this.conditions.get(i).getEntityType();
@@ -138,7 +140,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   private static List<Condition> combine(final Condition condition, final Condition... conditions) {
-    final List<Condition> list = new ArrayList<>(requireNonNull(conditions, "conditions").length + (condition != null ? 1 : 0));
+    final List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + (condition != null ? 1 : 0));
     if (condition != null) {
       list.add(condition);
     }

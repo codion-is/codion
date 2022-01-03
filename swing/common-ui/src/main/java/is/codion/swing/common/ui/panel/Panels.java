@@ -24,6 +24,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Panels {
 
+  private static final String CENTER_COMPONENT = "centerComponent";
+
   private Panels() {}
 
   /**
@@ -34,7 +36,7 @@ public final class Panels {
    */
   public static JPanel createNorthCenterPanel(final JComponent northComponent, final JComponent centerComponent) {
     requireNonNull(northComponent, "northComponent");
-    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(centerComponent, CENTER_COMPONENT);
 
     return builder(Layouts.borderLayout())
             .add(northComponent, BorderLayout.NORTH)
@@ -50,7 +52,7 @@ public final class Panels {
    */
   public static JPanel createWestCenterPanel(final JComponent westComponent, final JComponent centerComponent) {
     requireNonNull(westComponent, "westComponent");
-    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(centerComponent, CENTER_COMPONENT);
 
     return builder(Layouts.borderLayout())
             .add(westComponent, BorderLayout.WEST)
@@ -109,7 +111,7 @@ public final class Panels {
 
   private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
                                               final boolean buttonFocusable) {
-    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(centerComponent, CENTER_COMPONENT);
     requireNonNull(buttonAction, "buttonAction");
     final JButton button = new JButton(buttonAction);
     button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
