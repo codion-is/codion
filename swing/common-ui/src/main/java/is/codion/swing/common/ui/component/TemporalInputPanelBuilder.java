@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel.CalendarProvider;
 
 import java.time.temporal.Temporal;
 
@@ -36,4 +37,10 @@ public interface TemporalInputPanelBuilder<T extends Temporal> extends Component
    * @return this builder instance
    */
   TemporalInputPanelBuilder<T> dateTimePattern(String dateTimePattern);
+
+  /**
+   * @param calendarProvider the calendar provider to use for calendar input
+   * @return this builder instance
+   */
+  TemporalInputPanelBuilder<T> calendarProvider(CalendarProvider calendarProvider);
 }

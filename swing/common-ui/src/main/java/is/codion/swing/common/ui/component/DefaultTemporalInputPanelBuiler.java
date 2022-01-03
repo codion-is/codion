@@ -7,6 +7,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.calendar.CalendarPanel;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.textfield.TemporalInputPanel.CalendarProvider;
 
 import javax.swing.JComponent;
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private String dateTimePattern;
   private boolean selectAllOnFocusGained;
+  private CalendarProvider calendarProvider = calendarProvider();
 
   DefaultTemporalInputPanelBuiler(final Class<T> valueClass, final String dateTimePattern, final Value<T> linkedValue) {
     super(linkedValue);
@@ -60,8 +62,14 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
+  public TemporalInputPanelBuilder<T> calendarProvider(final CalendarProvider calendarProvider) {
+    this.calendarProvider = requireNonNull(calendarProvider);
+    return this;
+  }
+
+  @Override
   protected TemporalInputPanel<T> buildComponent() {
-    return new TemporalInputPanel<>(createTemporalField(), calendarProvider());
+    return new TemporalInputPanel<>(createTemporalField(), calendarProvider);
   }
 
   @Override
@@ -112,8 +120,8 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
     throw new IllegalStateException("Unsopported temporal type: " + valueClass);
   }
 
-  private static TemporalInputPanel.CalendarProvider calendarProvider() {
-    return new TemporalInputPanel.CalendarProvider() {
+  private static CalendarProvider calendarProvider() {
+    return new CalendarProvider() {
       @Override
       public Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
                                               final LocalDate startDate) {
