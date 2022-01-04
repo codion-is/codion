@@ -43,8 +43,6 @@ final class DefaultConnectionPoolCounter {
   private final AtomicInteger connectionRequestsFailed = new AtomicInteger();
   private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger();
 
-  private long checkOutTimerStart;
-
   DefaultConnectionPoolCounter(final AbstractConnectionPoolWrapper<?> connectionPool) {
     this.connectionPool = connectionPool;
   }
@@ -80,16 +78,14 @@ final class DefaultConnectionPoolCounter {
     }
   }
 
-  void startCheckOutTimer() {
+  void addCheckOutTime(final int time) {
     if (collectCheckOutTimes) {
-      checkOutTimerStart = System.nanoTime();
-    }
-  }
-
-  void stopCheckOutTimer() {
-    if (collectCheckOutTimes && checkOutTimerStart > 0L) {
-      addCheckOutTime((int) (System.nanoTime() - checkOutTimerStart) / 1_000_000);
-      checkOutTimerStart = 0L;
+      synchronized (checkOutTimes) {
+        checkOutTimes.add(time);
+        if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
+          checkOutTimes.removeFirst();
+        }
+      }
     }
   }
 
@@ -152,17 +148,6 @@ final class DefaultConnectionPoolCounter {
     }
 
     return statistics;
-  }
-
-  private void addCheckOutTime(final int time) {
-    if (collectCheckOutTimes) {
-      synchronized (checkOutTimes) {
-        checkOutTimes.add(time);
-        if (checkOutTimes.size() > CHECK_OUT_TIMES_MAX_SIZE) {
-          checkOutTimes.removeFirst();
-        }
-      }
-    }
   }
 
   private void populateCheckOutTime(final DefaultConnectionPoolStatistics statistics) {

@@ -60,7 +60,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   public final Connection getConnection(final User user) throws DatabaseException {
     requireNonNull(user, "user");
     checkConnectionPoolCredentials(user);
-    counter.startCheckOutTimer();
+    final long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
     try {
       counter.incrementRequestCounter();
 
@@ -71,7 +71,9 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
       throw new DatabaseException(e);
     }
     finally {
-      counter.stopCheckOutTimer();
+      if (counter.isCollectCheckOutTimes() && startTime > 0L) {
+        counter.addCheckOutTime((int) (System.nanoTime() - startTime) / 1_000_000);
+      }
     }
   }
 
