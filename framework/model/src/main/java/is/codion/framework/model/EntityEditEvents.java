@@ -213,7 +213,7 @@ public final class EntityEditEvents {
             return;
           }
         }
-        listenerReferences.add(new WeakReference<>(requireNonNull(listener)));
+        listenerReferences.add(new WeakReference<>(listener));
       }
 
       private synchronized void removeDataListener(final EventDataListener<T> listener) {
