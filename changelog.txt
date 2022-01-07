@@ -7516,3 +7516,4 @@
   TemporalInputPanelBuilder.calendarProvider added
   AbstractConnectionPoolWrapper silly bug fixed, connection check out timer not multi-threaded
 0.17.15
+  DefaultEntityDefinition.foreignEntityDefinitions renamed to referencedEntityDefinitions
