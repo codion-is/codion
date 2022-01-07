@@ -7520,3 +7520,4 @@
   Entity.getAsString() renamed toString()
   DefaultConditionCombination.conditions now List instead of ArrayList
   EntityDefinition.getStringProvider() renamed getStringFactory()
+  SwingEntityEditModel.createForeignKeyComboBoxModel() backwards compatability null check removed
