@@ -72,7 +72,7 @@ public interface Entity extends Comparable<Entity> {
    * @param attribute the attribute for which to retrieve the value
    * @return a String representation of the value associated with {@code attribute}
    */
-  String getAsString(Attribute<?> attribute);
+  String toString(Attribute<?> attribute);
 
   /**
    * This method returns a String representation of the value associated with the given property,
@@ -80,7 +80,7 @@ public interface Entity extends Comparable<Entity> {
    * @param property the property for which to retrieve the value
    * @return a String representation of the value associated with {@code property}
    */
-  String getAsString(Property<?> property);
+  String toString(Property<?> property);
 
   /**
    * Reverts the value associated with the given attribute to its original value.
@@ -588,7 +588,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(attributes);
     return requireNonNull(entities).stream()
             .map(entity -> attributes.stream()
-                    .map(entity::getAsString)
+                    .map(entity::toString)
                     .collect(toList()))
             .collect(toList());
   }

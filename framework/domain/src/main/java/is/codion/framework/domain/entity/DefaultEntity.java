@@ -183,12 +183,12 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public String getAsString(final Attribute<?> attribute) {
-    return getAsString(definition.getProperty(attribute));
+  public String toString(final Attribute<?> attribute) {
+    return toString(definition.getProperty(attribute));
   }
 
   @Override
-  public String getAsString(final Property<?> property) {
+  public String toString(final Property<?> property) {
     if (!getEntityType().equals(property.getEntityType())) {
       throw new IllegalArgumentException("Property " + property + " is not part of entity " + getEntityType());
     }
