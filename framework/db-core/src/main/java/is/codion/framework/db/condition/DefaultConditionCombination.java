@@ -24,7 +24,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   private static final String CONDITIONS = "conditions";
 
-  private final ArrayList<Condition> conditions;
+  private final List<Condition> conditions;
   private final Conjunction conjunction;
   private final EntityType entityType;
 

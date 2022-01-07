@@ -7518,3 +7518,4 @@
 0.17.15
   DefaultEntityDefinition.foreignEntityDefinitions renamed to referencedEntityDefinitions
   Entity.getAsString() renamed toString()
+  DefaultConditionCombination.conditions now List instead of ArrayList
