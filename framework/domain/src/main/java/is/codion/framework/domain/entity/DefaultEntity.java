@@ -370,12 +370,12 @@ final class DefaultEntity implements Entity, Serializable {
   /**
    * @return a string representation of this entity
    * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)
-   * @see EntityDefinition#getStringProvider()
+   * @see EntityDefinition#getStringFactory()
    */
   @Override
   public String toString() {
     if (toString == null) {
-      toString = definition.getStringProvider().apply(this);
+      toString = definition.getStringFactory().apply(this);
     }
 
     return toString;

@@ -66,7 +66,7 @@ public class DefaultEntityDefinitionTest {
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("name", definition.getGroupByClause());
-    assertEquals(stringFactory, definition.getStringProvider());
+    assertEquals(stringFactory, definition.getStringFactory());
     assertEquals(comparator, definition.getComparator());
   }
 

@@ -401,8 +401,8 @@ public class DomainTest {
   }
 
   @Test
-  void getStringProvider() {
-    assertNotNull(entities.getDefinition(Department.TYPE).getStringProvider());
+  void getStringFactory() {
+    assertNotNull(entities.getDefinition(Department.TYPE).getStringFactory());
   }
 
   @Test

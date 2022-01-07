@@ -7519,3 +7519,4 @@
   DefaultEntityDefinition.foreignEntityDefinitions renamed to referencedEntityDefinitions
   Entity.getAsString() renamed toString()
   DefaultConditionCombination.conditions now List instead of ArrayList
+  EntityDefinition.getStringProvider() renamed getStringFactory()
