@@ -7515,3 +7515,4 @@
   Stream usage code structure made a bit more consistent
   TemporalInputPanelBuilder.calendarProvider added
   AbstractConnectionPoolWrapper silly bug fixed, connection check out timer not multi-threaded
+0.17.15
