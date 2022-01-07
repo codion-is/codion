@@ -333,13 +333,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected Collection<Entity> performQuery() {
     try {
-      final Condition condition;
-      if (selectConditionSupplier == null) {
-        condition = condition(entityType);
-      }
-      else {
-        condition = selectConditionSupplier.get();
-      }
+      final Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();
 
       return connectionProvider.getConnection().select(condition.toSelectCondition()
               .selectAttributes(selectAttributes)
