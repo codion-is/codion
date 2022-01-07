@@ -282,6 +282,16 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * A builder for {@link Entity} instances.
+   * <pre>
+   * Store domain = new Store();
+   *
+   * Entities entities = domain.getEntities();
+   *
+   * Entity customer = entities.builder(Customer.TYPE)
+   *     .with(Customer.FIRST_NAME, "John")
+   *     .with(Customer.LAST_NAME, "Doe")
+   *     .build();
+   * </pre>
    */
   interface Builder {
 
