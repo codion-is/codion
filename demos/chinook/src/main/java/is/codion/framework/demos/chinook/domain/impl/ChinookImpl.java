@@ -245,8 +245,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .format(NumberFormat.getIntegerInstance()),
             columnProperty(Track.UNITPRICE)
                     .nullable(false)
-                    .maximumFractionDigits(2)
-                    .beanProperty("unitPrice"))
+                    .maximumFractionDigits(2))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Track.NAME))
             .stringFactory(stringFactory(Track.NAME));
