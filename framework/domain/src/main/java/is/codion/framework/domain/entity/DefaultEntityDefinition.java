@@ -124,7 +124,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * The {@link Function} to use when toString() is called for this entity type
    */
-  private Function<Entity, String> stringProvider = new DefaultStringProvider();
+  private Function<Entity, String> stringFactory = new DefaultStringProvider();
 
   /**
    * Provides the color
@@ -329,8 +329,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Function<Entity, String> getStringProvider() {
-    return stringProvider;
+  public Function<Entity, String> getStringFactory() {
+    return stringFactory;
   }
 
   @Override
@@ -1144,7 +1144,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public Builder stringFactory(final Function<Entity, String> stringFactory) {
-      definition.stringProvider = requireNonNull(stringFactory, "stringProvider");
+      definition.stringFactory = requireNonNull(stringFactory, "stringFactory");
       return this;
     }
 

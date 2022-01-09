@@ -688,7 +688,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     requireNonNull(attribute, "attribute");
     final Property<?> property = entityDefinition.getProperty(attribute);
     if (property instanceof ItemProperty) {
-      return entity.getAsString(property);
+      return entity.toString(property);
     }
 
     return entity.get(attribute);
@@ -696,7 +696,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   protected final String getSearchValueAt(final int rowIndex, final Attribute<?> columnIdentifier) {
-    return getItemAt(rowIndex).getAsString(columnIdentifier);
+    return getItemAt(rowIndex).toString(columnIdentifier);
   }
 
   /**

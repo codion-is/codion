@@ -400,7 +400,7 @@ final class LocalConnectionHandler implements InvocationHandler {
           if (modified) {
             valueString.append(entity.getOriginal(property.getAttribute())).append("->");
           }
-          valueString.append(entity.getAsString(property.getAttribute()));
+          valueString.append(entity.toString(property.getAttribute()));
           builder.append(property.getAttribute()).append(":").append(valueString).append(",");
         }
       }

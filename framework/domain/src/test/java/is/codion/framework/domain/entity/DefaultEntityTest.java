@@ -580,7 +580,7 @@ public class DefaultEntityTest {
     final Entity detail = ENTITIES.builder(Detail.TYPE)
             .with(Detail.INT, 42)
             .build();
-    assertEquals("420", detail.getAsString(Detail.INT_DERIVED));
+    assertEquals("420", detail.toString(Detail.INT_DERIVED));
   }
 
   @Test

@@ -7548,3 +7548,9 @@
   Stream usage code structure made a bit more consistent
   TemporalInputPanelBuilder.calendarProvider added
   AbstractConnectionPoolWrapper silly bug fixed, connection check out timer not multi-threaded
+0.17.15
+  DefaultEntityDefinition.foreignEntityDefinitions renamed to referencedEntityDefinitions
+  Entity.getAsString() renamed toString()
+  DefaultConditionCombination.conditions now List instead of ArrayList
+  EntityDefinition.getStringProvider() renamed getStringFactory()
+  SwingEntityEditModel.createForeignKeyComboBoxModel() backwards compatability null check removed

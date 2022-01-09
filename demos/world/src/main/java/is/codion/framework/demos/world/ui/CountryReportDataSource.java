@@ -62,9 +62,9 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
         case NAME: return entity.get(Country.NAME);
         case CONTINENT: return entity.get(Country.CONTINENT);
         case REGION: return entity.get(Country.REGION);
-        case SURFACEAREA: return entity.getAsString(Country.SURFACEAREA);
-        case INDEPYEAR: return entity.getAsString(Country.INDEPYEAR);
-        case POPULATION: return entity.getAsString(Country.POPULATION);
+        case SURFACEAREA: return entity.toString(Country.SURFACEAREA);
+        case INDEPYEAR: return entity.toString(Country.INDEPYEAR);
+        case POPULATION: return entity.toString(Country.POPULATION);
         default: return "";
       }
     }
@@ -76,7 +76,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     public Object apply(final Entity entity, final JRField field) {
       switch (field.getName()) {
         case "name": return entity.get(City.NAME);
-        case "population": return entity.getAsString(City.POPULATION);
+        case "population": return entity.toString(City.POPULATION);
         default: return "";
       }
     }

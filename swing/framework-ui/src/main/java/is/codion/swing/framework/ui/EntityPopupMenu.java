@@ -71,7 +71,7 @@ final class EntityPopupMenu extends JPopupMenu {
     Text.collate(primaryKeyProperties);
     for (final ColumnProperty<?> property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getAttribute());
-      final String value = entity.getAsString(property.getAttribute());
+      final String value = entity.toString(property.getAttribute());
       final StringBuilder builder = new StringBuilder("[PK] ")
               .append(property.getAttribute()).append(": ").append(value);
       if (modified) {
@@ -162,7 +162,7 @@ final class EntityPopupMenu extends JPopupMenu {
         final String prefix = "[" + property.getAttribute().getTypeClass().getSimpleName().charAt(0)
                 + (property instanceof DerivedProperty ? "*" : "")
                 + (property instanceof DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isNull(property.getAttribute()) ? "<null>" : entity.getAsString(property.getAttribute());
+        final String value = entity.isNull(property.getAttribute()) ? "<null>" : entity.toString(property.getAttribute());
         final boolean longValue = value != null && value.length() > maxValueLength;
         final StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
         if (longValue) {

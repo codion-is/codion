@@ -124,7 +124,7 @@ public interface EntityDefinition {
   /**
    * @return the object responsible for providing toString values for this entity type
    */
-  Function<Entity, String> getStringProvider();
+  Function<Entity, String> getStringFactory();
 
   /**
    * @return the comparator used when comparing this entity type to other entities

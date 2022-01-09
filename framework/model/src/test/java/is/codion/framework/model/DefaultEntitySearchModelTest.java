@@ -89,7 +89,7 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void setToStringProvider() {
     final Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
-    searchModel.setToStringProvider(entity -> entity.getAsString(job.getAttribute()));
+    searchModel.setToStringProvider(entity -> entity.toString(job.getAttribute()));
     final Entity employee = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_NAME, "Darri")
             .with(TestDomain.EMP_JOB, "CLERK")
