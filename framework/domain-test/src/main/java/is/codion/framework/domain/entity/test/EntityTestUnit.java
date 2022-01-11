@@ -155,7 +155,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities foreign key entities already created
    * @param connection the connection to use
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
-   * @see #initializeReferenceEntity(String, Map)
+   * @see #initializeReferenceEntity(EntityType, Map)
    * @return the Entities to reference mapped to their respective entityTypes
    */
   private Map<EntityType, Entity> initializeReferencedEntities(final EntityType entityType,
