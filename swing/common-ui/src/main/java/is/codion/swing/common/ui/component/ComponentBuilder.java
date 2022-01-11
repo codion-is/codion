@@ -178,6 +178,15 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B keyEvent(KeyEvents.Builder keyEventBuilder);
 
   /**
+   * Adds an arbitrary key/value "client property" to the component
+   * @param key the key
+   * @param value the value
+   * @return this builder instance
+   * @see JComponent#putClientProperty(Object, Object)
+   */
+  B clientProperty(Object key, Object value);
+
+  /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.
    * @param linkedValue a value to link to the component value
    * @return this builder instance
