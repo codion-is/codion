@@ -557,8 +557,11 @@ public final class ComponentsTest {
 
   @Test
   void builder() {
-    final ComponentBuilder<Object, JButton, ?> builder = Components.builder(new JButton());
+    final JButton component = new JButton();
+    final ComponentBuilder<Object, JButton, ?> builder = Components.builder(component)
+            .clientProperty("Key", "Value");
     assertThrows(UnsupportedOperationException.class, builder::buildComponentValue);
     builder.initialValue(1);
+    assertEquals("Value", component.getClientProperty("Key"));
   }
 }

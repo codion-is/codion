@@ -18,7 +18,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.Sizes.*;
@@ -29,6 +31,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   private final Event<C> buildEvent = Event.event();
   private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
+  private final Map<Object, Object> clientProperties = new HashMap<>();
 
   private C component;
   private ComponentValue<T, C> componentValue;
@@ -203,6 +206,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B clientProperty(final Object key, final Object value) {
+    this.clientProperties.put(key, value);
+    return (B) this;
+  }
+
+  @Override
   public final B linkedValue(final Value<T> linkedValue) {
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
@@ -271,6 +280,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (background != null) {
       component.setBackground(background);
     }
+    clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
