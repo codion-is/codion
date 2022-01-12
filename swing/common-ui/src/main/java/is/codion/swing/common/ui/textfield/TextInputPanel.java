@@ -37,31 +37,17 @@ public final class TextInputPanel extends JPanel {
   private final String dialogTitle;
   private final String caption;
   private final Dimension textAreaSize;
-  private int maximumLength = -1;
+  private final int maximumLength;
 
   private TextInputPanel(final JTextField textField, final String dialogTitle, final String caption,
-                         final Dimension textAreaSize, final boolean buttonFocusable) {
+                         final Dimension textAreaSize, final boolean buttonFocusable, final int maximumLength) {
     this.dialogTitle = dialogTitle;
     this.textField = textField;
     this.textAreaSize = textAreaSize;
     this.button = createButton(buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     this.caption = caption;
-    initializeUI();
-  }
-
-  /**
-   * Sets the maximum length of the string allowed in the text area
-   * @param maximumLength the maximum length
-   */
-  public void setMaximumLength(final int maximumLength) {
     this.maximumLength = maximumLength;
-  }
-
-  /**
-   * @return the maximum length allowed for this text input panel
-   */
-  public int getMaximumLength() {
-    return maximumLength;
+    initializeUI();
   }
 
   /**
@@ -167,6 +153,12 @@ public final class TextInputPanel extends JPanel {
     Builder buttonFocusable(boolean buttonFocusable);
 
     /**
+     * @param maximumLength the maximum text length
+     * @return this builder instance
+     */
+    Builder maximumLength(int maximumLength);
+
+    /**
      * @return a new TextInputPanel
      */
     TextInputPanel build();
@@ -206,7 +198,7 @@ public final class TextInputPanel extends JPanel {
     final JTextArea textArea = new JTextArea(textField.getText()) {
       @Override
       protected Document createDefaultModel() {
-        return new SizedDocument(getMaximumLength());
+        return new SizedDocument(maximumLength);
       }
     };
     textArea.setCaretPosition(textArea.getText().length());
@@ -233,6 +225,7 @@ public final class TextInputPanel extends JPanel {
     private String caption;
     private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
     private boolean buttonFocusable;
+    private int maximumLength = -1;
 
     private DefaultBuilder(final JTextField textField) {
       this.textField = textField;
@@ -263,8 +256,14 @@ public final class TextInputPanel extends JPanel {
     }
 
     @Override
+    public Builder maximumLength(final int maximumLength) {
+      this.maximumLength = maximumLength;
+      return this;
+    }
+
+    @Override
     public TextInputPanel build() {
-      return new TextInputPanel(textField, dialogTitle, caption, textAreaSize, buttonFocusable);
+      return new TextInputPanel(textField, dialogTitle, caption, textAreaSize, buttonFocusable, maximumLength);
     }
   }
 

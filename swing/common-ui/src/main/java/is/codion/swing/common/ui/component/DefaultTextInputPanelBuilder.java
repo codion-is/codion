@@ -107,6 +107,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
     return TextInputPanel.builder(textFieldBuilder.build())
             .caption(caption)
+            .maximumLength(maximumLength)
             .dialogTitle(dialogTitle)
             .textAreaSize(textAreaSize)
             .buttonFocusable(buttonFocusable)

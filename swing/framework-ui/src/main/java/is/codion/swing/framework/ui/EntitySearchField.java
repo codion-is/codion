@@ -650,7 +650,7 @@ public final class EntitySearchField extends JTextField {
   private final class EnterKeyListener extends KeyAdapter {
     @Override
     public void keyPressed(final KeyEvent e) {
-      if (!model.searchStringRepresentsSelected() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+      if (e.getKeyCode() == KeyEvent.VK_ENTER && !model.searchStringRepresentsSelected()) {
         e.consume();
         performSearch(true);
       }
@@ -660,7 +660,7 @@ public final class EntitySearchField extends JTextField {
   private final class EscapeKeyListener extends KeyAdapter {
     @Override
     public void keyPressed(final KeyEvent e) {
-      if (!model.searchStringRepresentsSelected() && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+      if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !model.searchStringRepresentsSelected()) {
         e.consume();
         model.refreshSearchText();
         selectAll();
