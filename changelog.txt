@@ -7522,3 +7522,5 @@
   EntityDefinition.getStringProvider() renamed getStringFactory()
   SwingEntityEditModel.createForeignKeyComboBoxModel() backwards compatability null check removed
   ComponentBuilder.clientProperty() added
+  TextInputPanel.Builder.maximumLength() added, TextInputPanel.maximumLength now final, setter/getter removed
+  DefaultTextInputPanelBuilder now sets the TextInputPanel maximum length
