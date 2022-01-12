@@ -53,7 +53,6 @@ public final class TextInputPanel extends JPanel {
   /**
    * @param text the text to set
    * @throws IllegalArgumentException in case the text length exceeds maximum length
-   * @see #getMaximumLength()
    */
   public void setText(final String text) {
     if (maximumLength > 0 && text.length() > maximumLength) {
