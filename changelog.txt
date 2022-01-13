@@ -7566,3 +7566,5 @@
   EntityTableCellRenderer.Builder.toolTipData() added, EntityTableCellRenderer.setTooltipData() removed
   EntityTableCellRenderer.Builder.displayConditionState() added, EntityTableCellRenderer.setDisplayConditionStatus() removed
   DefaultEntityTableCellRenderer no longer public
+  EntityTableCellRenderer.Builder.leftPadding() and righPadding() added along with TABLE_CELL_LEFT_PADDING and TABLE_CELL_RIGHT_PADDING configuration values
+  EntityTableCellRenderer.NUMERICAL_COLUMN_HORIZONTAL_ALIGNMENT, TEMPORAL_COLUMN_HORIZONTAL_ALIGNMENT, BOOLEAN_HORIZONTAL_ALIGNMENT and HORIZONTAL_ALIGNMENT configuration values added

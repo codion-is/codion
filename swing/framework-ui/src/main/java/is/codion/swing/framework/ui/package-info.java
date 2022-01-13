@@ -13,6 +13,8 @@
  * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_DETAIL_PANEL_CONTROLS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#SPLIT_PANE_DIVIDER_SIZE}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#TOOLBAR_BUTTONS}<br>
+ * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#TABLE_CELL_LEFT_PADDING}<br>
+ * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#TABLE_CELL_RIGHT_PADDING}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#ALLOW_COLUMN_REORDERING}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_AUTO_RESIZE_MODE}<br>
