@@ -111,10 +111,10 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
     Builder toolTipData(boolean toolTipData);
 
     /**
-     * @param displayConditionStatus true if true then cells/columns involved in a condition have different background color
+     * @param displayConditionState true if true then cells/columns involved in a condition have different background color
      * @return this builder instance
      */
-    Builder displayConditionStatus(boolean displayConditionStatus);
+    Builder displayConditionState(boolean displayConditionState);
 
     /**
      * @param leftPadding the left cell padding

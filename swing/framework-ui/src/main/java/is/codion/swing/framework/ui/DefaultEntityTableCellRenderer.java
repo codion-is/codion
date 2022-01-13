@@ -253,7 +253,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private DateTimeFormatter dateTimeFormatter;
     private int horizontalAlignment;
     private boolean toolTipData;
-    private boolean displayConditionStatus = true;
+    private boolean displayConditionState = true;
     private int leftPadding = EntityTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
     private int rightPadding = EntityTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
 
@@ -291,8 +291,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
-    public Builder displayConditionStatus(final boolean displayConditionStatus) {
-      this.displayConditionStatus = displayConditionStatus;
+    public Builder displayConditionState(final boolean displayConditionState) {
+      this.displayConditionState = displayConditionState;
       return this;
     }
 
@@ -313,11 +313,11 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       final Border border = leftPadding > 0 || rightPadding > 0 ? BorderFactory.createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
         return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment,
-                displayConditionStatus, border);
+                displayConditionState, border);
       }
 
       return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment,
-              toolTipData, displayConditionStatus, border);
+              toolTipData, displayConditionState, border);
     }
 
     private static int getHorizontalAlignment(final Property<?> property) {
