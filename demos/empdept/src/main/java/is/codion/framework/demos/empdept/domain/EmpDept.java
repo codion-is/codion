@@ -183,9 +183,16 @@ public final class EmpDept extends DefaultDomain {
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(stringFactory(Employee.NAME))
             .caption("Employee")
-            .colorProvider((entity, attribute) -> {
+            .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
                 return Color.CYAN;
+              }
+
+              return null;
+            })
+            .foregroundColorProvider((entity, attribute) -> {
+              if (attribute.equals(Employee.SALARY) && entity.get(Employee.SALARY).doubleValue() < 1300) {
+                return Color.RED;
               }
 
               return null;

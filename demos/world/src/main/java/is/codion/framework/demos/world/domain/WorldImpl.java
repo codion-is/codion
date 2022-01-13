@@ -78,7 +78,7 @@ public final class WorldImpl extends DefaultDomain {
             .validator(new CityValidator())
             .orderBy(orderBy().ascending(City.NAME))
             .stringFactory(stringFactory(City.NAME))
-            .colorProvider(new CityColorProvider())
+            .backgroundColorProvider(new CityColorProvider())
             .caption("City");
   }
   // end::defineCity[]

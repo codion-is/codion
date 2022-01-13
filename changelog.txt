@@ -7559,3 +7559,10 @@
   DefaultTextInputPanelBuilder now sets the TextInputPanel maximum length
   EntityConnection.batchInsert() and copyEntities() refactored, batchInsert() renamed insertEntities()
   EntityTableCellRenderer.getForeground() row parameter added
+  EntityDefinition.foregroundColor added
+  DefaultEntityTableCellRenderer refactored, UISettings added
+  TextInputPanel bug fixed, NullPointerException in setText()
+  EntityTableCellRenderer.Builder added, EntityTableCellRenderer.builder() replaces two static factory methods
+  EntityTableCellRenderer.Builder.toolTipData() added, EntityTableCellRenderer.setTooltipData() removed
+  EntityTableCellRenderer.Builder.displayConditionState() added, EntityTableCellRenderer.setDisplayConditionStatus() removed
+  DefaultEntityTableCellRenderer no longer public

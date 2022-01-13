@@ -178,7 +178,7 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .caption("Employee")
-            .colorProvider((entity, attribute) -> {
+            .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
                 return CYAN;
               }

@@ -420,7 +420,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   public Color getBackgroundColor(final int row, final Attribute<?> attribute) {
-    return (Color) getEntityDefinition().getColorProvider().getColor(getItemAt(row), attribute);
+    return (Color) getEntityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
+  }
+
+  @Override
+  public Color getForegroundColor(final int row, final Attribute<?> attribute) {
+    return (Color) getEntityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
   }
 
   @Override

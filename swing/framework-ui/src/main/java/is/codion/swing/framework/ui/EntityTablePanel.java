@@ -95,7 +95,6 @@ import java.util.Set;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 
@@ -1194,7 +1193,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the TableCellRenderer for the given property
    */
   protected TableCellRenderer initializeTableCellRenderer(final Property<?> property) {
-    return entityTableCellRenderer(tableModel, property);
+    return EntityTableCellRenderer.builder(tableModel, property).build();
   }
 
   /**
@@ -1624,11 +1623,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
-      final boolean displayConditionStatus = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isDisplayConditionStatus()
+      final boolean displayConditionState = renderer instanceof EntityTableCellRenderer
+              && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
       final Font defaultFont = label.getFont();
-      label.setFont(displayConditionStatus ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
+      label.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return label;
     }

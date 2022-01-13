@@ -55,7 +55,7 @@ public final class TextInputPanel extends JPanel {
    * @throws IllegalArgumentException in case the text length exceeds maximum length
    */
   public void setText(final String text) {
-    if (maximumLength > 0 && text.length() > maximumLength) {
+    if (text != null && maximumLength > 0 && text.length() > maximumLength) {
       throw new IllegalArgumentException("Maximum allowed text length exceeded");
     }
     textField.setText(text == null ? "" : text);

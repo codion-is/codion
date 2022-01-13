@@ -355,10 +355,16 @@ public interface EntityDefinition {
   <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute);
 
   /**
-   * Returns the color provider, never null
-   * @return the color provider
+   * Returns the background color provider, never null
+   * @return the background color provider
    */
-  ColorProvider getColorProvider();
+  ColorProvider getBackgroundColorProvider();
+
+  /**
+   * Returns the foreground color provider, never null
+   * @return the foreground color provider
+   */
+  ColorProvider getForegroundColorProvider();
 
   /**
    * Creates a new {@link Entity} instance based on this definition
@@ -465,10 +471,16 @@ public interface EntityDefinition {
     Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider);
 
     /**
-     * @param colorProvider the background color provider
+     * @param backgroundColorProvider the background color provider
      * @return this {@link Builder} instance
      */
-    Builder colorProvider(ColorProvider colorProvider);
+    Builder backgroundColorProvider(ColorProvider backgroundColorProvider);
+
+    /**
+     * @param foregroundColorProvider the foreground color provider
+     * @return this {@link Builder} instance
+     */
+    Builder foregroundColorProvider(final ColorProvider foregroundColorProvider);
 
     /**
      * Sets the caption for this entity type

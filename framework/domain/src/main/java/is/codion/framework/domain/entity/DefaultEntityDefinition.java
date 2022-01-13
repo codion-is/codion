@@ -127,9 +127,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private Function<Entity, String> stringFactory = new DefaultStringProvider();
 
   /**
+   * Provides the background color
+   */
+  private ColorProvider backgroundColorProvider = new NullColorProvider();
+
+  /**
    * Provides the color
    */
-  private ColorProvider colorProvider = new NullColorProvider();
+  private ColorProvider foregroundColorProvider = new NullColorProvider();
 
   /**
    * The comparator
@@ -581,8 +586,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public ColorProvider getColorProvider() {
-    return colorProvider;
+  public ColorProvider getBackgroundColorProvider() {
+    return backgroundColorProvider;
+  }
+
+  @Override
+  public ColorProvider getForegroundColorProvider() {
+    return foregroundColorProvider;
   }
 
   @Override
@@ -1149,8 +1159,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder colorProvider(final ColorProvider colorProvider) {
-      definition.colorProvider = requireNonNull(colorProvider, "colorProvider");
+    public Builder backgroundColorProvider(final ColorProvider backgroundColorProvider) {
+      definition.backgroundColorProvider = requireNonNull(backgroundColorProvider, "backgroundColorProvider");
+      return this;
+    }
+
+    @Override
+    public Builder foregroundColorProvider(final ColorProvider foregroundColorProvider) {
+      definition.foregroundColorProvider = requireNonNull(foregroundColorProvider, "foregroundColorProvider");
       return this;
     }
 
