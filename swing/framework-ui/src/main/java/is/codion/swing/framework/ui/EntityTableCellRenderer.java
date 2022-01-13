@@ -86,7 +86,8 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param <T> the value type
    * @return a new EntityTableCellRenderer
    * @see ColorProvider
-   * @see EntityDefinition.Builder#colorProvider(ColorProvider)
+   * @see EntityDefinition.Builder#backgroundColorProvider(ColorProvider)
+   * @see EntityDefinition.Builder#foregroundColorProvider(ColorProvider)
    */
   static <T> EntityTableCellRenderer entityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<T> property) {
     return entityTableCellRenderer(tableModel, requireNonNull(property), property.getFormat(), property.getDateTimeFormatter(),

@@ -332,20 +332,23 @@ public class DefaultEntityDefinitionTest {
   @Test
   void getColor() {
     final String colorBlue = "blue";
+    final String colorYellow = "blue";
     final EntityType entityType = DOMAIN_TYPE.entityType("getColor");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
         define(entityType,
                 primaryKeyProperty(entityType.integerAttribute("attribute")))
-                .colorProvider((entity1, attribute) -> colorBlue);
+                .backgroundColorProvider((entity1, attribute) -> colorBlue)
+                .foregroundColorProvider((entity1, attribute) -> colorYellow);
       }
     }
     final Entities entities = new TestDomain().getEntities();
 
     final Entity entity = entities.entity(entityType);
     final EntityDefinition definition = entities.getDefinition(entityType);
-    assertEquals(colorBlue, definition.getColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
+    assertEquals(colorBlue, definition.getBackgroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
+    assertEquals(colorYellow, definition.getForegroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
   }
 
   @Test

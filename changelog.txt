@@ -7526,3 +7526,4 @@
   DefaultTextInputPanelBuilder now sets the TextInputPanel maximum length
   EntityConnection.batchInsert() and copyEntities() refactored, batchInsert() renamed insertEntities()
   EntityTableCellRenderer.getForeground() row parameter added
+  EntityDefinition.foregroundColor added

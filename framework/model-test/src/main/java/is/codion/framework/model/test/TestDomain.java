@@ -177,7 +177,7 @@ public final class TestDomain extends DefaultDomain {
             .conditionProvider(EMP_CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
             .conditionProvider(EMP_CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
-            .colorProvider((entity, attribute) -> {
+            .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
                 return CYAN;
               }
