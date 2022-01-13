@@ -52,10 +52,11 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
   /**
    * Provides the foreground to use for cells in the given table.
    * @param table the table
+   * @param row the row
    * @param selected true if the cell is selected
    * @return the foreground color
    */
-  default Color getForeground(final JTable table, final boolean selected) {
+  default Color getForeground(final JTable table, final int row, final boolean selected) {
     if (selected) {
       return table.getSelectionForeground();
     }
