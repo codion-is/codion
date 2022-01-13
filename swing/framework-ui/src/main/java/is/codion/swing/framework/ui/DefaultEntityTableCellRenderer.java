@@ -106,7 +106,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
   public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                  final boolean hasFocus, final int row, final int column) {
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    setForeground(getForeground(table, isSelected));
+    setForeground(getForeground(table, row, isSelected));
     setBackground(getBackground(table, row, isSelected));
     setBorder(hasFocus ? focusedCellBorder : null);
     if (isTooltipData()) {
@@ -207,7 +207,7 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       getNullableModel().setState((Boolean) value);
-      setForeground(getForeground(table, isSelected));
+      setForeground(getForeground(table, row, isSelected));
       setBackground(getBackground(table, row, isSelected));
       setBorder(hasFocus ? focusedCellBorder : null);
 
