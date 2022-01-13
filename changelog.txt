@@ -7527,3 +7527,4 @@
   EntityConnection.batchInsert() and copyEntities() refactored, batchInsert() renamed insertEntities()
   EntityTableCellRenderer.getForeground() row parameter added
   EntityDefinition.foregroundColor added
+  DefaultEntityTableCellRenderer refactored, UISettings added
