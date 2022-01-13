@@ -39,17 +39,18 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   private final Format format;
   private final DateTimeFormatter dateTimeFormatter;
   private final boolean toolTipData;
-
-  private boolean displayConditionStatus = true;
+  private final boolean displayConditionState;
 
   protected DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
                                            final Format format, final DateTimeFormatter dateTimeFormatter,
-                                           final int horizontalAlignment, final boolean toolTipData) {
+                                           final int horizontalAlignment, final boolean toolTipData,
+                                           final boolean displayConditionState) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.property = requireNonNull(property, "property");
     this.format = format == null ? property.getFormat() : format;
     this.dateTimeFormatter = dateTimeFormatter;
     this.toolTipData = toolTipData;
+    this.displayConditionState = displayConditionState;
     setHorizontalAlignment(horizontalAlignment);
   }
 
@@ -62,13 +63,8 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   }
 
   @Override
-  public final boolean isDisplayConditionStatus() {
-    return displayConditionStatus;
-  }
-
-  @Override
-  public final void setDisplayConditionStatus(final boolean displayConditionStatus) {
-    this.displayConditionStatus = displayConditionStatus;
+  public final boolean isDisplayConditionState() {
+    return displayConditionState;
   }
 
   @Override
@@ -97,7 +93,7 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
       return table.getSelectionBackground();
     }
 
-    return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionStatus);
+    return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
   }
 
   @Override
@@ -131,13 +127,14 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     private final UISettings settings = new UISettings();
     private final SwingEntityTableModel tableModel;
     private final Property<?> property;
+    private final boolean displayConditionState;
 
-    private boolean displayConditionStatus = true;
-
-    BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment) {
+    BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment,
+                    final boolean displayConditionState) {
       super(new NullableToggleButtonModel());
       this.tableModel = tableModel;
       this.property = property;
+      this.displayConditionState = displayConditionState;
       setHorizontalAlignment(horizontalAlignment);
       setBorderPainted(true);
     }
@@ -148,6 +145,11 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
       if (settings != null) {
         settings.configure();
       }
+    }
+
+    @Override
+    public boolean isDisplayConditionState() {
+      return displayConditionState;
     }
 
     @Override
@@ -167,22 +169,12 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
         return table.getSelectionBackground();
       }
 
-      return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionStatus);
+      return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
     }
 
     @Override
     public Color getForeground(final JTable table, final int row, final boolean selected) {
       return settings.getForegroundColor(tableModel, property.getAttribute(), row);
-    }
-
-    @Override
-    public boolean isDisplayConditionStatus() {
-      return displayConditionStatus;
-    }
-
-    @Override
-    public void setDisplayConditionStatus(final boolean displayConditionStatus) {
-      this.displayConditionStatus = displayConditionStatus;
     }
   }
 
@@ -262,6 +254,7 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     private DateTimeFormatter dateTimeFormatter;
     private int horizontalAlignment;
     private boolean toolTipData;
+    private boolean displayConditionStatus = true;
 
     DefaultBuilder(final SwingEntityTableModel tableModel, final Property<?> property) {
       this.tableModel = requireNonNull(tableModel);
@@ -297,12 +290,19 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     }
 
     @Override
+    public Builder displayConditionStatus(final boolean displayConditionStatus) {
+      this.displayConditionStatus = displayConditionStatus;
+      return this;
+    }
+
+    @Override
     public EntityTableCellRenderer build() {
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment);
+        return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment, displayConditionStatus);
       }
 
-      return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment, toolTipData);
+      return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment,
+              toolTipData, displayConditionStatus);
     }
 
     private static int getHorizontalAlignment(final Property<?> property) {

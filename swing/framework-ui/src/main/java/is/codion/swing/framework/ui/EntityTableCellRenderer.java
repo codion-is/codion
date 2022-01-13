@@ -21,15 +21,9 @@ import java.time.format.DateTimeFormatter;
 public interface EntityTableCellRenderer extends TableCellRenderer {
 
   /**
-   * @return true if the condition state should be represented visually
+   * @return true if the column condition state should be represented visually
    */
-  boolean isDisplayConditionStatus();
-
-  /**
-   * If true then columns involved in a condition have different background color
-   * @param displayConditionStatus the value
-   */
-  void setDisplayConditionStatus(boolean displayConditionStatus);
+  boolean isDisplayConditionState();
 
   /**
    * Provides the foreground to use for cells in the given table.
@@ -99,6 +93,12 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
      * @return this builder instance
      */
     Builder toolTipData(boolean toolTipData);
+
+    /**
+     * @param displayConditionStatus true if true then cells/columns involved in a condition have different background color
+     * @return this builder instance
+     */
+    Builder displayConditionStatus(boolean displayConditionStatus);
 
     /**
      * @return a new {@link EntityTableCellRenderer} instance based on this builder
