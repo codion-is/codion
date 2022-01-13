@@ -11,6 +11,7 @@ import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
+import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
@@ -40,17 +41,19 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final DateTimeFormatter dateTimeFormatter;
   private final boolean toolTipData;
   private final boolean displayConditionState;
+  private final Border border;
 
   private DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
                                          final Format format, final DateTimeFormatter dateTimeFormatter,
                                          final int horizontalAlignment, final boolean toolTipData,
-                                         final boolean displayConditionState) {
+                                         final boolean displayConditionState, final Border border) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.property = requireNonNull(property, "property");
     this.format = format == null ? property.getFormat() : format;
     this.dateTimeFormatter = dateTimeFormatter;
     this.toolTipData = toolTipData;
     this.displayConditionState = displayConditionState;
+    this.border = border;
     setHorizontalAlignment(horizontalAlignment);
   }
 
@@ -73,7 +76,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     setForeground(getForeground(table, row, isSelected));
     setBackground(getBackground(table, row, isSelected));
-    setBorder(hasFocus ? settings.focusedCellBorder : null);
+    setBorder(hasFocus ? settings.focusedCellBorder : border);
     if (toolTipData) {
       setToolTipText(value == null ? "" : value.toString());
     }
@@ -122,13 +125,15 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private final SwingEntityTableModel tableModel;
     private final Property<?> property;
     private final boolean displayConditionState;
+    private final Border border;
 
     private BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment,
-                            final boolean displayConditionState) {
+                            final boolean displayConditionState, final Border border) {
       super(new NullableToggleButtonModel());
       this.tableModel = tableModel;
       this.property = property;
       this.displayConditionState = displayConditionState;
+      this.border = border;
       setHorizontalAlignment(horizontalAlignment);
       setBorderPainted(true);
     }
@@ -152,7 +157,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       getNullableModel().setState((Boolean) value);
       setForeground(getForeground(table, row, isSelected));
       setBackground(getBackground(table, row, isSelected));
-      setBorder(hasFocus ? settings.focusedCellBorder : null);
+      setBorder(hasFocus ? settings.focusedCellBorder : border);
 
       return this;
     }
@@ -249,6 +254,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private int horizontalAlignment;
     private boolean toolTipData;
     private boolean displayConditionStatus = true;
+    private int leftPadding = EntityTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
+    private int rightPadding = EntityTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
 
     DefaultBuilder(final SwingEntityTableModel tableModel, final Property<?> property) {
       this.tableModel = requireNonNull(tableModel);
@@ -290,13 +297,27 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
+    public Builder leftPadding(final int leftPadding) {
+      this.leftPadding = leftPadding;
+      return null;
+    }
+
+    @Override
+    public Builder rightPadding(final int rightPadding) {
+      this.rightPadding = rightPadding;
+      return this;
+    }
+
+    @Override
     public EntityTableCellRenderer build() {
+      final Border border = leftPadding > 0 || rightPadding > 0 ? BorderFactory.createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment, displayConditionStatus);
+        return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment,
+                displayConditionStatus, border);
       }
 
       return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment,
-              toolTipData, displayConditionStatus);
+              toolTipData, displayConditionStatus, border);
     }
 
     private static int getHorizontalAlignment(final Property<?> property) {

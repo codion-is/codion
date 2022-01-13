@@ -3,6 +3,8 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -19,6 +21,20 @@ import java.time.format.DateTimeFormatter;
  * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Property)}.
  */
 public interface EntityTableCellRenderer extends TableCellRenderer {
+
+  /**
+   * The default left padding for table cells.<br>
+   * Value type: Integer<br>
+   * Default value: 0
+   */
+  PropertyValue<Integer> TABLE_CELL_LEFT_PADDING = Configuration.integerValue("codion.client.tableCellLeftPadding", 0);
+
+  /**
+   * The default right padding for table cells.<br>
+   * Value type: Integer<br>
+   * Default value: 5
+   */
+  PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING = Configuration.integerValue("codion.client.tableCellRightPadding", 5);
 
   /**
    * @return true if the column condition state should be represented visually
@@ -99,6 +115,18 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
      * @return this builder instance
      */
     Builder displayConditionStatus(boolean displayConditionStatus);
+
+    /**
+     * @param leftPadding the left cell padding
+     * @return this builder instance
+     */
+    Builder leftPadding(int leftPadding);
+
+    /**
+     * @param rightPadding the right cell padding
+     * @return this builder instance
+     */
+    Builder rightPadding(int rightPadding);
 
     /**
      * @return a new {@link EntityTableCellRenderer} instance based on this builder
