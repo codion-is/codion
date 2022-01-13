@@ -14,7 +14,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.LookAndFeel;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -263,7 +262,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       this.tableModel.getEntityDefinition().getProperty(property.getAttribute());
       this.format = property.getFormat();
       this.dateTimeFormatter = property.getDateTimeFormatter();
-      this.horizontalAlignment = getHorizontalAlignment(property);
+      this.horizontalAlignment = getDefaultHorizontalAlignment(property);
     }
 
     @Override
@@ -320,12 +319,18 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
               toolTipData, displayConditionState, border);
     }
 
-    private static int getHorizontalAlignment(final Property<?> property) {
+    private static int getDefaultHorizontalAlignment(final Property<?> property) {
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return SwingConstants.CENTER;
+        return EntityTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
+      }
+      if (property.getAttribute().isNumerical()) {
+        return EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.get();
+      }
+      if (property.getAttribute().isTemporal()) {
+        return EntityTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.get();
       }
 
-      return property.getAttribute().isNumerical() || property.getAttribute().isTemporal() ? RIGHT : LEFT;
+      return EntityTableCellRenderer.HORIZONTAL_ALIGNMENT.get();
     }
   }
 }
