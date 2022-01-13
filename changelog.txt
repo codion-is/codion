@@ -7532,3 +7532,4 @@
   EntityTableCellRenderer.Builder added, EntityTableCellRenderer.builder() replaces two static factory methods
   EntityTableCellRenderer.Builder.toolTipData() added, EntityTableCellRenderer.setTooltipData() removed
   EntityTableCellRenderer.Builder.displayConditionState() added, EntityTableCellRenderer.setDisplayConditionStatus() removed
+  DefaultEntityTableCellRenderer no longer public

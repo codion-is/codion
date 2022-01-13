@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
  * The default table cell renderer for a {@link EntityTablePanel}
  * @see EntityTableCellRenderer#builder(SwingEntityTableModel, Property)
  */
-public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
+final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
   private final UISettings settings = new UISettings();
   private final SwingEntityTableModel tableModel;
@@ -41,10 +41,10 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   private final boolean toolTipData;
   private final boolean displayConditionState;
 
-  protected DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
-                                           final Format format, final DateTimeFormatter dateTimeFormatter,
-                                           final int horizontalAlignment, final boolean toolTipData,
-                                           final boolean displayConditionState) {
+  private DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
+                                         final Format format, final DateTimeFormatter dateTimeFormatter,
+                                         final int horizontalAlignment, final boolean toolTipData,
+                                         final boolean displayConditionState) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.property = requireNonNull(property, "property");
     this.format = format == null ? property.getFormat() : format;
@@ -55,7 +55,7 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   }
 
   @Override
-  public final void updateUI() {
+  public void updateUI() {
     super.updateUI();
     if (settings != null) {
       settings.configure();
@@ -63,12 +63,12 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   }
 
   @Override
-  public final boolean isDisplayConditionState() {
+  public boolean isDisplayConditionState() {
     return displayConditionState;
   }
 
   @Override
-  public final void setHorizontalAlignment(final int alignment) {
+  public void setHorizontalAlignment(final int alignment) {
     //called in constructor, make final
     super.setHorizontalAlignment(alignment);
   }
@@ -121,7 +121,7 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     }
   }
 
-  static final class BooleanRenderer extends NullableCheckBox
+  private static final class BooleanRenderer extends NullableCheckBox
           implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer {
 
     private final UISettings settings = new UISettings();
@@ -129,8 +129,8 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     private final Property<?> property;
     private final boolean displayConditionState;
 
-    BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment,
-                    final boolean displayConditionState) {
+    private BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment,
+                            final boolean displayConditionState) {
       super(new NullableToggleButtonModel());
       this.tableModel = tableModel;
       this.property = property;
