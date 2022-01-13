@@ -7529,3 +7529,4 @@
   EntityDefinition.foregroundColor added
   DefaultEntityTableCellRenderer refactored, UISettings added
   TextInputPanel bug fixed, NullPointerException in setText()
+  EntityTableCellRenderer.Builder added, EntityTableCellRenderer.builder() replaces two static factory methods

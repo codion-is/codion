@@ -29,22 +29,20 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * The default table cell renderer for a {@link EntityTablePanel}
- * @param <T> the column value type
- * @see EntityTableCellRenderer#entityTableCellRenderer(SwingEntityTableModel, Property)
- * @see EntityTableCellRenderer#entityTableCellRenderer(SwingEntityTableModel, Property, Format, DateTimeFormatter, int)
+ * @see EntityTableCellRenderer#builder(SwingEntityTableModel, Property)
  */
-public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
+public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
   private final UISettings settings = new UISettings();
   private final SwingEntityTableModel tableModel;
-  private final Property<T> property;
+  private final Property<?> property;
   private final Format format;
   private final DateTimeFormatter dateTimeFormatter;
 
   private boolean displayConditionStatus = true;
   private boolean tooltipData = false;
 
-  protected DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<T> property,
+  protected DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
                                            final Format format, final DateTimeFormatter dateTimeFormatter,
                                            final int horizontalAlignment) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
@@ -141,15 +139,15 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
 
     private final UISettings settings = new UISettings();
     private final SwingEntityTableModel tableModel;
-    private final Property<Boolean> property;
+    private final Property<?> property;
 
     private boolean displayConditionStatus = true;
 
-    BooleanRenderer(final SwingEntityTableModel tableModel, final Property<Boolean> property) {
+    BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment) {
       super(new NullableToggleButtonModel());
       this.tableModel = tableModel;
       this.property = property;
-      setHorizontalAlignment(SwingConstants.CENTER);
+      setHorizontalAlignment(horizontalAlignment);
       setBorderPainted(true);
     }
 
@@ -279,6 +277,60 @@ public class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer 
                 (doubleSearch ? backgroundColorDoubleSearch : backgroundColorSearch) :
                 (doubleSearch ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
       }
+    }
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private final SwingEntityTableModel tableModel;
+    private final Property<?> property;
+
+    private Format format;
+    private DateTimeFormatter dateTimeFormatter;
+    private int horizontalAlignment;
+
+    DefaultBuilder(final SwingEntityTableModel tableModel, final Property<?> property) {
+      this.tableModel = requireNonNull(tableModel);
+      this.property = requireNonNull(property);
+      this.tableModel.getEntityDefinition().getProperty(property.getAttribute());
+      this.format = property.getFormat();
+      this.dateTimeFormatter = property.getDateTimeFormatter();
+      this.horizontalAlignment = getHorizontalAlignment(property);
+    }
+
+    @Override
+    public Builder format(final Format format) {
+      this.format = format;
+      return this;
+    }
+
+    @Override
+    public Builder dateTimeFormatter(final DateTimeFormatter dateTimeFormatter) {
+      this.dateTimeFormatter = dateTimeFormatter;
+      return this;
+    }
+
+    @Override
+    public Builder horizontalAlignment(final int horizontalAlignment) {
+      this.horizontalAlignment = horizontalAlignment;
+      return this;
+    }
+
+    @Override
+    public EntityTableCellRenderer build() {
+      if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
+        return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment);
+      }
+
+      return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment);
+    }
+
+    private static int getHorizontalAlignment(final Property<?> property) {
+      if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
+        return SwingConstants.CENTER;
+      }
+
+      return property.getAttribute().isNumerical() || property.getAttribute().isTemporal() ? RIGHT : LEFT;
     }
   }
 }

@@ -95,7 +95,6 @@ import java.util.Set;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.framework.ui.EntityTableCellRenderer.entityTableCellRenderer;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 
@@ -1194,7 +1193,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the TableCellRenderer for the given property
    */
   protected TableCellRenderer initializeTableCellRenderer(final Property<?> property) {
-    return entityTableCellRenderer(tableModel, property);
+    return EntityTableCellRenderer.builder(tableModel, property).build();
   }
 
   /**
