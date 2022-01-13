@@ -38,17 +38,18 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   private final Property<?> property;
   private final Format format;
   private final DateTimeFormatter dateTimeFormatter;
+  private final boolean toolTipData;
 
   private boolean displayConditionStatus = true;
-  private boolean tooltipData = false;
 
   protected DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
                                            final Format format, final DateTimeFormatter dateTimeFormatter,
-                                           final int horizontalAlignment) {
+                                           final int horizontalAlignment, final boolean toolTipData) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.property = requireNonNull(property, "property");
     this.format = format == null ? property.getFormat() : format;
     this.dateTimeFormatter = dateTimeFormatter;
+    this.toolTipData = toolTipData;
     setHorizontalAlignment(horizontalAlignment);
   }
 
@@ -71,16 +72,6 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
   }
 
   @Override
-  public final boolean isTooltipData() {
-    return tooltipData;
-  }
-
-  @Override
-  public final void setTooltipData(final boolean tooltipData) {
-    this.tooltipData = tooltipData;
-  }
-
-  @Override
   public final void setHorizontalAlignment(final int alignment) {
     //called in constructor, make final
     super.setHorizontalAlignment(alignment);
@@ -93,7 +84,7 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     setForeground(getForeground(table, row, isSelected));
     setBackground(getBackground(table, row, isSelected));
     setBorder(hasFocus ? settings.focusedCellBorder : null);
-    if (isTooltipData()) {
+    if (toolTipData) {
       setToolTipText(value == null ? "" : value.toString());
     }
 
@@ -193,24 +184,6 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     public void setDisplayConditionStatus(final boolean displayConditionStatus) {
       this.displayConditionStatus = displayConditionStatus;
     }
-
-    /**
-     * @return false
-     */
-    @Override
-    public boolean isTooltipData() {
-      return false;
-    }
-
-    /**
-     * Disabled
-     * @param tooltipData the value
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public void setTooltipData(final boolean tooltipData) {
-      throw new UnsupportedOperationException("Tooltip data is not available for boolean properties");
-    }
   }
 
   private static final class UISettings {
@@ -288,6 +261,7 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     private Format format;
     private DateTimeFormatter dateTimeFormatter;
     private int horizontalAlignment;
+    private boolean toolTipData;
 
     DefaultBuilder(final SwingEntityTableModel tableModel, final Property<?> property) {
       this.tableModel = requireNonNull(tableModel);
@@ -317,12 +291,18 @@ public class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer imp
     }
 
     @Override
+    public Builder toolTipData(final boolean toolTipData) {
+      this.toolTipData = toolTipData;
+      return this;
+    }
+
+    @Override
     public EntityTableCellRenderer build() {
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
         return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment);
       }
 
-      return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment);
+      return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment, toolTipData);
     }
 
     private static int getHorizontalAlignment(final Property<?> property) {

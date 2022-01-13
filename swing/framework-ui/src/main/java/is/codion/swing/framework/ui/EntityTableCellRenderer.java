@@ -32,16 +32,6 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
   void setDisplayConditionStatus(boolean displayConditionStatus);
 
   /**
-   * @return if true then the cell data is added as a tool tip for the cell
-   */
-  boolean isTooltipData();
-
-  /**
-   * @param tooltipData if true then the cell data is added as a tool tip for the cell
-   */
-  void setTooltipData(boolean tooltipData);
-
-  /**
    * Provides the foreground to use for cells in the given table.
    * @param table the table
    * @param row the row
@@ -82,7 +72,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
   }
 
   /**
-   * Builds a {@link  EntityTableCellRenderer}
+   * Builds a {@link EntityTableCellRenderer}
    */
   interface Builder {
 
@@ -103,6 +93,12 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
      * @return this builder instance
      */
     Builder horizontalAlignment(int horizontalAlignment);
+
+    /**
+     * @param toolTipData true if the cell should display its contents in a tool tip
+     * @return this builder instance
+     */
+    Builder toolTipData(boolean toolTipData);
 
     /**
      * @return a new {@link EntityTableCellRenderer} instance based on this builder
