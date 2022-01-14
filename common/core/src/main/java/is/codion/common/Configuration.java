@@ -38,7 +38,7 @@ public final class Configuration {
   private static final PropertyStore STORE;
 
   static {
-    final String configurationFile = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + "/codion.config");
+    final String configurationFile = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
     try {
       final File file = new File(configurationFile);
       final boolean configurationFileRequired =
