@@ -136,8 +136,12 @@ public final class Configuration {
   static PropertyStore loadPropertiesFromClasspath(final String configurationFilePath, final boolean configurationFileRequired) throws IOException {
     final String filepath = configurationFilePath.substring(CLASSPATH_PREFIX.length());
     try (final InputStream configurationFileStream = Configuration.class.getResourceAsStream(filepath)) {
-      if (configurationFileStream == null && configurationFileRequired) {
-        throw new FileNotFoundException(configurationFilePath);
+      if (configurationFileStream == null) {
+        if (configurationFileRequired) {
+          throw new FileNotFoundException(configurationFilePath);
+        }
+
+        return PropertyStore.propertyStore();
       }
 
       return PropertyStore.propertyStore(configurationFileStream);
