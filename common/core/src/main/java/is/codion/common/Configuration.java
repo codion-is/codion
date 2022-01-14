@@ -9,6 +9,7 @@ import is.codion.common.value.PropertyValue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -21,6 +22,7 @@ public final class Configuration {
 
   /**
    * Specifies the main configuration file.<br>
+   * Prefix with 'classpath:' to indicate that the configuration file is on the classpath.
    * Value type: String<br>
    * Default value: null
    */
@@ -37,19 +39,21 @@ public final class Configuration {
 
   private static final PropertyStore STORE;
 
+  private static final String CLASSPATH_PREFIX = "classpath:";
+
   static {
-    final String configurationFile = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + "/codion.config");
+    final String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
+    final boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
     try {
-      final File file = new File(configurationFile);
-      final boolean configurationFileRequired =
-              System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
-      if (configurationFileRequired && !file.exists()) {
-        throw new FileNotFoundException(configurationFile);
+      if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+        STORE = loadPropertiesFromClasspath(configurationFilePath, configurationFileRequired);
       }
-      STORE = PropertyStore.propertyStore(file);
+      else {
+        STORE = loadPropertiesFromFile(configurationFilePath, configurationFileRequired);
+      }
     }
     catch (final IOException e) {
-      throw new RuntimeException("Unable to read configuration file: " + configurationFile, e);
+      throw new RuntimeException("Unable to read configuration file: " + configurationFilePath, e);
     }
   }
 
@@ -127,5 +131,29 @@ public final class Configuration {
    */
   public static <T> PropertyValue<T> value(final String key, final T defaultValue, final Function<String, T> parser) {
     return STORE.propertyValue(key, defaultValue, null, parser, Objects::toString);
+  }
+
+  static PropertyStore loadPropertiesFromClasspath(final String configurationFilePath, final boolean configurationFileRequired) throws IOException {
+    final String filepath = configurationFilePath.substring(CLASSPATH_PREFIX.length());
+    try (final InputStream configurationFileStream = Configuration.class.getResourceAsStream(filepath)) {
+      if (configurationFileStream == null && configurationFileRequired) {
+        throw new FileNotFoundException(configurationFilePath);
+      }
+
+      return PropertyStore.propertyStore(configurationFileStream);
+    }
+  }
+
+  static PropertyStore loadPropertiesFromFile(final String configurationFilePath, final boolean configurationFileRequired) throws IOException {
+    final File file = new File(configurationFilePath);
+    if (!file.exists()) {
+      if (configurationFileRequired) {
+        throw new FileNotFoundException(configurationFilePath);
+      }
+
+      return PropertyStore.propertyStore();
+    }
+
+    return PropertyStore.propertyStore(file);
   }
 }

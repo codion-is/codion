@@ -7,8 +7,11 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +48,14 @@ final class DefaultPropertyStore implements PropertyStore {
       return Collections.enumeration(keys);
     }
   };
+
+  DefaultPropertyStore(final File propertiesFile) throws IOException {
+    this(loadProperties(propertiesFile));
+  }
+
+  DefaultPropertyStore(final InputStream inputStream) throws IOException {
+    this(loadProperties(inputStream));
+  }
 
   DefaultPropertyStore(final Properties properties) {
     this.properties.putAll(requireNonNull(properties, "properties"));
@@ -161,6 +172,37 @@ final class DefaultPropertyStore implements PropertyStore {
       properties.store(output, null);
     }
   }
+
+  /**
+   * Reads all properties from the given properties file.
+   * @param propertiesFile the properties file to read from
+   * @return the properties read from the given file
+   * @throws IOException in case the file exists but can not be read
+   * @throws FileNotFoundException in case the file does not exist
+   */
+  private static Properties loadProperties(final File propertiesFile) throws IOException {
+    if (!requireNonNull(propertiesFile).exists()) {
+      throw new FileNotFoundException(propertiesFile.toString());
+    }
+    try (final InputStream input = new FileInputStream(propertiesFile)) {
+      return loadProperties(input);
+    }
+  }
+
+  /**
+   * Reads all properties from the given input stream.
+   * @param inputStream the input stream to read from
+   * @return the properties read from the given input stream
+   * @throws IOException in case the file exists but can not be read
+   */
+  private static Properties loadProperties(final InputStream inputStream) throws IOException {
+    requireNonNull(inputStream);
+    final Properties propertiesFromFile = new Properties();
+    propertiesFromFile.load(inputStream);
+
+    return propertiesFromFile;
+  }
+
 
   private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 

@@ -6,7 +6,7 @@ package is.codion.common.properties;
 import is.codion.common.value.PropertyValue;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -168,13 +168,32 @@ public interface PropertyStore {
   void writeToFile(File propertiesFile) throws IOException;
 
   /**
+   * Instantiates a new empy PropertyStore.
+   * @return a new empty PropertyStore instance
+   */
+  static PropertyStore propertyStore() {
+    return propertyStore(new Properties());
+  }
+
+  /**
+   * Instantiates a new PropertyStore initialized with the properties found in the given file.
+   * @param inputStream the input stream to read from
+   * @return a new PropertyStore
+   * @throws IOException in case the given input stream could not be read
+   */
+  static PropertyStore propertyStore(final InputStream inputStream) throws IOException {
+    return new DefaultPropertyStore(inputStream);
+  }
+
+  /**
    * Instantiates a new PropertyStore initialized with the properties found in the given file.
    * @param propertiesFile the file to read from initially
    * @return a new PropertyStore
    * @throws IOException in case the given properties file exists but reading it failed
+   * @throws FileNotFoundException in case the file does not exist
    */
   static PropertyStore propertyStore(final File propertiesFile) throws IOException {
-    return propertyStore(readFromFile(requireNonNull(propertiesFile)));
+    return new DefaultPropertyStore(propertiesFile);
   }
 
   /**
@@ -184,24 +203,6 @@ public interface PropertyStore {
    */
   static PropertyStore propertyStore(final Properties properties) {
     return new DefaultPropertyStore(properties);
-  }
-
-  /**
-   * Reads all properties from the given properties file if it exists,
-   * if it does not an empty {@link Properties} instance is returned.
-   * @param propertiesFile the properties file to read from
-   * @return the properties read from the given file
-   * @throws IOException in case the file exists but can not be read
-   */
-  static Properties readFromFile(final File propertiesFile) throws IOException {
-    final Properties propertiesFromFile = new Properties();
-    if (propertiesFile.exists()) {
-      try (final InputStream input = new FileInputStream(propertiesFile)) {
-        propertiesFromFile.load(input);
-      }
-    }
-
-    return propertiesFromFile;
   }
 
   /**
