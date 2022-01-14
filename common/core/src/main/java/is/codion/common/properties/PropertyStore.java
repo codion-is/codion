@@ -6,7 +6,6 @@ package is.codion.common.properties;
 import is.codion.common.value.PropertyValue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -173,7 +172,7 @@ public interface PropertyStore {
    * @return a new empty PropertyStore instance
    */
   static PropertyStore propertyStore() {
-    return new DefaultPropertyStore(new Properties());
+    return propertyStore(new Properties());
   }
 
   /**
@@ -183,7 +182,7 @@ public interface PropertyStore {
    * @throws IOException in case the given input stream could not be read
    */
   static PropertyStore propertyStore(final InputStream inputStream) throws IOException {
-    return propertyStore(readFromInputStream(inputStream));
+    return new DefaultPropertyStore(inputStream);
   }
 
   /**
@@ -194,7 +193,7 @@ public interface PropertyStore {
    * @throws FileNotFoundException in case the file does not exist
    */
   static PropertyStore propertyStore(final File propertiesFile) throws IOException {
-    return propertyStore(readFromFile(propertiesFile));
+    return new DefaultPropertyStore(propertiesFile);
   }
 
   /**
@@ -204,36 +203,6 @@ public interface PropertyStore {
    */
   static PropertyStore propertyStore(final Properties properties) {
     return new DefaultPropertyStore(properties);
-  }
-
-  /**
-   * Reads all properties from the given properties file.
-   * @param propertiesFile the properties file to read from
-   * @return the properties read from the given file
-   * @throws IOException in case the file exists but can not be read
-   * @throws FileNotFoundException in case the file does not exist
-   */
-  static Properties readFromFile(final File propertiesFile) throws IOException {
-    if (!requireNonNull(propertiesFile).exists()) {
-      throw new FileNotFoundException(propertiesFile.toString());
-    }
-    try (final InputStream input = new FileInputStream(propertiesFile)) {
-      return readFromInputStream(input);
-    }
-  }
-
-  /**
-   * Reads all properties from the given input stream.
-   * @param inputStream the input stream to read from
-   * @return the properties read from the given input stream
-   * @throws IOException in case the file exists but can not be read
-   */
-  static Properties readFromInputStream(final InputStream inputStream) throws IOException {
-    requireNonNull(inputStream);
-    final Properties propertiesFromFile = new Properties();
-    propertiesFromFile.load(inputStream);
-
-    return propertiesFromFile;
   }
 
   /**

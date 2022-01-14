@@ -36,7 +36,7 @@ public final class DefaultPropertyStoreTest {
             .append("double.property=3.14").append(Util.LINE_SEPARATOR)
             .append("boolean.property=true");
     Files.write(configFile.toPath(), singletonList(configBuilder.toString()));
-    final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(configFile));
+    final DefaultPropertyStore store = new DefaultPropertyStore(configFile);
 
     final AtomicInteger counter = new AtomicInteger();
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
@@ -125,7 +125,7 @@ public final class DefaultPropertyStoreTest {
   void testDefaultValues() throws IOException {
     final File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
     configFile.deleteOnExit();
-    final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(configFile));
+    final DefaultPropertyStore store = new DefaultPropertyStore(configFile);
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertEquals("value", stringValue.get());
     stringValue.set(null);
@@ -154,7 +154,7 @@ public final class DefaultPropertyStoreTest {
 
   @Test
   void exceptions() throws IOException {
-    assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(PropertyStore.readFromFile(new File("test.file"))));
+    assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(new File("test.file")));
 
     final PropertyStore store = PropertyStore.propertyStore();
     store.propertyValue("test", "test");
