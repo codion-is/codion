@@ -169,6 +169,16 @@ public interface PropertyStore {
 
   /**
    * Instantiates a new PropertyStore initialized with the properties found in the given file.
+   * @param inputStream the input stream to read from
+   * @return a new PropertyStore
+   * @throws IOException in case the given input stream could not be read
+   */
+  static PropertyStore propertyStore(final InputStream inputStream) throws IOException {
+    return propertyStore(readFromInputStream(inputStream));
+  }
+
+  /**
+   * Instantiates a new PropertyStore initialized with the properties found in the given file.
    * @param propertiesFile the file to read from initially
    * @return a new PropertyStore
    * @throws IOException in case the given properties file exists but reading it failed
@@ -197,9 +207,23 @@ public interface PropertyStore {
     final Properties propertiesFromFile = new Properties();
     if (propertiesFile.exists()) {
       try (final InputStream input = new FileInputStream(propertiesFile)) {
-        propertiesFromFile.load(input);
+        return readFromInputStream(input);
       }
     }
+
+    return propertiesFromFile;
+  }
+
+  /**
+   * Reads all properties from the given input stream.
+   * @param inputStream the input stream to read from
+   * @return the properties read from the given input stream
+   * @throws IOException in case the file exists but can not be read
+   */
+  static Properties readFromInputStream(final InputStream inputStream) throws IOException {
+    requireNonNull(inputStream);
+    final Properties propertiesFromFile = new Properties();
+    propertiesFromFile.load(inputStream);
 
     return propertiesFromFile;
   }
