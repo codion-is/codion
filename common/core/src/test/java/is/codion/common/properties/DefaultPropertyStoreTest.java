@@ -9,6 +9,7 @@ import is.codion.common.value.PropertyValue;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -153,8 +154,9 @@ public final class DefaultPropertyStoreTest {
 
   @Test
   void exceptions() throws IOException {
-    final DefaultPropertyStore store = new DefaultPropertyStore(PropertyStore.readFromFile(new File("test.file")));
+    assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(PropertyStore.readFromFile(new File("test.file"))));
 
+    final PropertyStore store = PropertyStore.propertyStore();
     store.propertyValue("test", "test");
     assertThrows(IllegalArgumentException.class, () -> store.propertyValue("test", "test"));
     store.propertyListValue("testList", emptyList(), Objects::toString, Objects::toString);

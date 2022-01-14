@@ -7538,3 +7538,4 @@
   Configuration bug fixed, fallback configuration file path did not use OS specific file separator
   PropertyStore.readFromInputStream() added
   Configuration, codion.configurationFile system property can now be prefixed with 'classpath:' for loading configuration files from the classpath
+  PropertyStore.readFromFile() and PropertyStore.propertyStore(file) now throw FileNotFoundException if the file doesn't exist, instead of silently returning an empty PropertyStore

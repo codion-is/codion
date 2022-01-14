@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class ConfigurationTest {
 
@@ -40,6 +39,14 @@ public final class ConfigurationTest {
     store = Configuration.loadPropertiesFromFile("src/test/resources/is/codion/common/item/item_config_test.config", false);
     assertTrue(store.containsProperty("item.property"));
     assertTrue(store.containsProperty("item.property2"));
+
+    store = Configuration.loadPropertiesFromFile("src/test/resources/config_test_non_existing.config", false);
+    assertFalse(store.containsProperty("test.property"));
+    assertFalse(store.containsProperty("test.property2"));
+
+    store = Configuration.loadPropertiesFromFile("src/test/resources/is/codion/common/item/item_config_test_non_existing.config", false);
+    assertFalse(store.containsProperty("item.property"));
+    assertFalse(store.containsProperty("item.property2"));
 
     assertThrows(FileNotFoundException.class, () ->
             Configuration.loadPropertiesFromFile("src/test/resources/is/codion/common/item/item_config_test_non_existing.config", true));

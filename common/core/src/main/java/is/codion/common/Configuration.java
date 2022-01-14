@@ -146,8 +146,12 @@ public final class Configuration {
 
   static PropertyStore loadPropertiesFromFile(final String configurationFilePath, final boolean configurationFileRequired) throws IOException {
     final File file = new File(configurationFilePath);
-    if (configurationFileRequired && !file.exists()) {
-      throw new FileNotFoundException(configurationFilePath);
+    if (!file.exists()) {
+      if (configurationFileRequired) {
+        throw new FileNotFoundException(configurationFilePath);
+      }
+
+      return PropertyStore.propertyStore();
     }
 
     return PropertyStore.propertyStore(file);
