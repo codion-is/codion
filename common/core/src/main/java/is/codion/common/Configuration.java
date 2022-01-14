@@ -7,10 +7,11 @@ import is.codion.common.properties.PropertyStore;
 import is.codion.common.value.PropertyValue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 
 /**
@@ -42,19 +43,7 @@ public final class Configuration {
   private static final String CLASSPATH_PREFIX = "classpath:";
 
   static {
-    final String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
-    final boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
-    try {
-      if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
-        STORE = loadPropertiesFromClasspath(configurationFilePath, configurationFileRequired);
-      }
-      else {
-        STORE = loadPropertiesFromFile(configurationFilePath, configurationFileRequired);
-      }
-    }
-    catch (final IOException e) {
-      throw new RuntimeException("Unable to read configuration file: " + configurationFilePath, e);
-    }
+    STORE = loadConfiguration();
   }
 
   private Configuration() {}
@@ -133,12 +122,60 @@ public final class Configuration {
     return STORE.propertyValue(key, defaultValue, null, parser, Objects::toString);
   }
 
-  static PropertyStore loadPropertiesFromClasspath(final String configurationFilePath, final boolean configurationFileRequired) throws IOException {
-    final String filepath = configurationFilePath.substring(CLASSPATH_PREFIX.length());
+  /**
+   * A Service loader interface for providing a configuration file.
+   */
+  public interface ClasspathResource {
+
+    /**
+     * This stream must be closed by the calling method.
+     * @return the configuration file input stream
+     */
+    InputStream inputStream();
+  }
+
+  private static PropertyStore loadConfiguration() {
+    final boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
+
+    final ServiceLoader<ClasspathResource> serviceLoader = ServiceLoader.load(ClasspathResource.class);
+    final Iterator<ClasspathResource> configurationFileIterator = serviceLoader.iterator();
+    if (configurationFileIterator.hasNext()) {
+      return loadFromClasspathResource(configurationFileIterator.next(), configurationFileRequired);
+    }
+
+    final String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
+    if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+      return loadFromClasspath(configurationFilePath, configurationFileRequired);
+    }
+
+    return loadFromFile(configurationFilePath, configurationFileRequired);
+  }
+
+  static PropertyStore loadFromClasspathResource(final ClasspathResource resource, final boolean configurationRequired) {
+    try {
+      try (final InputStream fileStream = resource.inputStream()) {
+        if (fileStream == null) {
+          if (configurationRequired) {
+            throw new RuntimeException("Required ClasspathResource input stream was null: " + resource.getClass().getName());
+          }
+
+          return PropertyStore.propertyStore();
+        }
+
+        return PropertyStore.propertyStore(fileStream);
+      }
+    }
+    catch (final IOException e) {
+      throw new RuntimeException("Unable to load configuration file", e);
+    }
+  }
+
+  static PropertyStore loadFromClasspath(final String filePath, final boolean configurationRequired) {
+    final String filepath = filePath.substring(CLASSPATH_PREFIX.length());
     try (final InputStream configurationFileStream = Configuration.class.getResourceAsStream(filepath)) {
       if (configurationFileStream == null) {
-        if (configurationFileRequired) {
-          throw new FileNotFoundException(configurationFilePath);
+        if (configurationRequired) {
+          throw new RuntimeException("Required configuration file not found on classpath: " + filePath);
         }
 
         return PropertyStore.propertyStore();
@@ -146,18 +183,26 @@ public final class Configuration {
 
       return PropertyStore.propertyStore(configurationFileStream);
     }
+    catch (final IOException e) {
+      throw new RuntimeException("Unable to load configuration from classpath: " + filePath, e);
+    }
   }
 
-  static PropertyStore loadPropertiesFromFile(final String configurationFilePath, final boolean configurationFileRequired) throws IOException {
-    final File file = new File(configurationFilePath);
-    if (!file.exists()) {
-      if (configurationFileRequired) {
-        throw new FileNotFoundException(configurationFilePath);
+  static PropertyStore loadFromFile(final String filePath, final boolean configurationRequired) {
+    try {
+      final File file = new File(filePath);
+      if (!file.exists()) {
+        if (configurationRequired) {
+          throw new RuntimeException("Required configuration file not found: " + filePath);
+        }
+
+        return PropertyStore.propertyStore();
       }
 
-      return PropertyStore.propertyStore();
+      return PropertyStore.propertyStore(file);
     }
-
-    return PropertyStore.propertyStore(file);
+    catch (final IOException e) {
+      throw new RuntimeException("Unable to load configuration from file: " + filePath);
+    }
   }
 }
