@@ -172,7 +172,7 @@ public final class Configuration {
 
   static PropertyStore loadFromClasspath(final String filePath, final boolean configurationRequired) {
     final String filepath = filePath.substring(CLASSPATH_PREFIX.length());
-    try (final InputStream configurationFileStream = Configuration.class.getResourceAsStream(filepath)) {
+    try (final InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
       if (configurationFileStream == null) {
         if (configurationRequired) {
           throw new RuntimeException("Required configuration file not found on classpath: " + filePath);
