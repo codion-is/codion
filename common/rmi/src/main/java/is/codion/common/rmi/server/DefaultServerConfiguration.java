@@ -3,35 +3,20 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Util;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Supplier;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Configuration values for a {@link AbstractServer}.
  */
 final class DefaultServerConfiguration implements ServerConfiguration {
-
-  private static final Logger LOG = LoggerFactory.getLogger(ServerConfiguration.class);
-
-  private static final String CLASSPATH_PREFIX = "classpath:";
 
   private final int serverPort;
   private final int registryPort;
@@ -111,12 +96,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   static final class DefaultBuilder implements Builder<DefaultBuilder> {
-
-    private static final int INPUT_BUFFER_SIZE = 8192;
-
-    static {
-      resolveKeyStoreFromClasspath();
-    }
 
     private final int serverPort;
     private final int registryPort;
@@ -219,42 +198,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
       configuration.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
 
       return configuration;
-    }
-
-    static synchronized void resolveKeyStoreFromClasspath() {
-      final String value = ServerConfiguration.KEYSTORE.get();
-      if (nullOrEmpty(value) || !value.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
-        LOG.debug("No key store on classpath specified via {}", JAVAX_NET_KEYSTORE);
-        return;
-      }
-      final String keystore = value.substring(CLASSPATH_PREFIX.length());
-      try (final InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(keystore)) {
-        if (inputStream == null) {
-          LOG.debug("Specified key store not found on classpath: {}", keystore);
-          return;
-        }
-        final File file = File.createTempFile("serverKeyStore", "tmp");
-        Files.write(file.toPath(), getBytes(inputStream));
-        file.deleteOnExit();
-        LOG.debug("Classpath key store written to file: {} -> {}", JAVAX_NET_KEYSTORE, file);
-
-        ServerConfiguration.KEYSTORE.set(file.getPath());
-      }
-      catch (final IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    private static byte[] getBytes(final InputStream stream) throws IOException {
-      final ByteArrayOutputStream os = new ByteArrayOutputStream();
-      final byte[] buffer = new byte[INPUT_BUFFER_SIZE];
-      int line;
-      while ((line = stream.read(buffer)) != -1) {
-        os.write(buffer, 0, line);
-      }
-      os.flush();
-
-      return os.toByteArray();
     }
   }
 }

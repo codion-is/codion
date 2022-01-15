@@ -50,24 +50,4 @@ public final class ConfigurationTest {
     assertThrows(RuntimeException.class, () ->
             Configuration.loadFromFile("src/test/resources/config_test_non_existing.config", true));
   }
-
-  @Test
-  void classpathResource() {
-    PropertyStore store = Configuration.loadFromClasspathResource(() ->
-            ConfigurationTest.class.getResourceAsStream("/config_test.config"), false);
-    assertTrue(store.containsProperty("test.property"));
-    assertTrue(store.containsProperty("test.property2"));
-
-    store = Configuration.loadFromClasspathResource(() ->
-            ConfigurationTest.class.getResourceAsStream("/is/codion/common/item/item_config_test.config"), false);
-    assertTrue(store.containsProperty("item.property"));
-    assertTrue(store.containsProperty("item.property2"));
-
-    assertThrows(RuntimeException.class, () ->
-            Configuration.loadFromClasspathResource(() ->
-                    ConfigurationTest.class.getResourceAsStream("/is/codion/common/item/item_config_test_non_existing.config"), true));
-    assertThrows(RuntimeException.class, () ->
-            Configuration.loadFromClasspathResource(() ->
-                    ConfigurationTest.class.getResourceAsStream("config_test_non_existing.config"), true));
-  }
 }
