@@ -5,7 +5,6 @@
  * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
  * @uses is.codion.common.logging.LoggerProxy
  * @uses is.codion.common.credentials.CredentialsProvider
- * @uses is.codion.common.Configuration.ClasspathResource
  */
 module is.codion.common.core {
   exports is.codion.common;
@@ -24,5 +23,4 @@ module is.codion.common.core {
 
   uses is.codion.common.logging.LoggerProxy;
   uses is.codion.common.credentials.CredentialsProvider;
-  uses is.codion.common.Configuration.ClasspathResource;
 }
