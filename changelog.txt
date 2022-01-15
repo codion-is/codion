@@ -7542,3 +7542,4 @@
   PropertyStore.readFromFile() and readFromInputStream() moved to DefaultPropertyStore, renamed loadProperties() and privatized
   Configuration.loadPropertiesFromClasspath() bug fixed, now behaves like loadPropertiesFromFile()
   Configuration.ClasspathResource added, a tentative solution to the pain of loading configuration files from the classpath in a modular application
+  DefaultServerConfiguration now supports keystores on the classpath, javax.net.ssl.keyStore with 'classpath:' prefix
