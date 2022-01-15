@@ -9,9 +9,7 @@ import is.codion.common.value.PropertyValue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.ServiceLoader;
 import java.util.function.Function;
 
 /**
@@ -122,52 +120,14 @@ public final class Configuration {
     return STORE.propertyValue(key, defaultValue, null, parser, Objects::toString);
   }
 
-  /**
-   * A Service loader interface for providing a configuration file.
-   */
-  public interface ClasspathResource {
-
-    /**
-     * This stream must be closed by the calling method.
-     * @return the configuration file input stream
-     */
-    InputStream inputStream();
-  }
-
   private static PropertyStore loadConfiguration() {
     final boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
-
-    final ServiceLoader<ClasspathResource> serviceLoader = ServiceLoader.load(ClasspathResource.class);
-    final Iterator<ClasspathResource> configurationFileIterator = serviceLoader.iterator();
-    if (configurationFileIterator.hasNext()) {
-      return loadFromClasspathResource(configurationFileIterator.next(), configurationFileRequired);
-    }
-
     final String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
     if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
       return loadFromClasspath(configurationFilePath, configurationFileRequired);
     }
 
     return loadFromFile(configurationFilePath, configurationFileRequired);
-  }
-
-  static PropertyStore loadFromClasspathResource(final ClasspathResource resource, final boolean configurationRequired) {
-    try {
-      try (final InputStream fileStream = resource.inputStream()) {
-        if (fileStream == null) {
-          if (configurationRequired) {
-            throw new RuntimeException("Required ClasspathResource input stream was null: " + resource.getClass().getName());
-          }
-
-          return PropertyStore.propertyStore();
-        }
-
-        return PropertyStore.propertyStore(fileStream);
-      }
-    }
-    catch (final IOException e) {
-      throw new RuntimeException("Unable to load configuration file", e);
-    }
   }
 
   static PropertyStore loadFromClasspath(final String filePath, final boolean configurationRequired) {
