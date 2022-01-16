@@ -6,9 +6,13 @@ package is.codion.common.rmi.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputFilter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -110,6 +114,7 @@ public final class SerializationWhitelist {
 
   static final class SerializationFilter implements ObjectInputFilter {
 
+    private static final String CLASSPATH_PREFIX = "classpath:";
     private static final String COMMENT = "#";
     private static final String WILDCARD = "*";
 
@@ -117,13 +122,7 @@ public final class SerializationWhitelist {
     private final List<String> allowedWildcardClassnames = new ArrayList<>();
 
     SerializationFilter(final String whitelistFile) {
-      try (final Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
-        addWhitelistItems(stream.collect(toSet()));
-      }
-      catch (final IOException e) {
-        LOG.error("Unable to read serialization whitelist: " + whitelistFile);
-        throw new RuntimeException(e);
-      }
+      this(getWhitelistItems(whitelistFile));
     }
 
     SerializationFilter(final Collection<String> whitelistItems) {
@@ -150,7 +149,7 @@ public final class SerializationWhitelist {
     }
 
     private void addWhitelistItems(final Collection<String> whitelistItems) {
-      whitelistItems.forEach(whitelistItem -> {
+      requireNonNull(whitelistItems).forEach(whitelistItem -> {
         if (!whitelistItem.startsWith(COMMENT)) {
           if (whitelistItem.endsWith(WILDCARD)) {
             allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
@@ -174,6 +173,52 @@ public final class SerializationWhitelist {
       }
 
       return false;
+    }
+
+    private static Collection<String> getWhitelistItems(final String whitelistFile) {
+      if (requireNonNull(whitelistFile).startsWith(CLASSPATH_PREFIX)) {
+        return getClasspathWhitelistItems(whitelistFile);
+      }
+      else {
+        return getFileWhitelistItems(whitelistFile);
+      }
+    }
+
+    private static Collection<String> getClasspathWhitelistItems(final String whitelistFile) {
+      final String path = getClasspathFilepath(whitelistFile);
+      try (final InputStream whitelistFileStream = SerializationWhitelist.class.getClassLoader().getResourceAsStream(path)) {
+        if (whitelistFileStream == null) {
+          throw new RuntimeException("Whitelist file not found on classpath: " + path);
+        }
+        return new BufferedReader(new InputStreamReader(whitelistFileStream, StandardCharsets.UTF_8))
+                .lines()
+                .collect(toSet());
+      }
+      catch (final IOException e) {
+        throw new RuntimeException("Unable to load whitelist from classpath: " + whitelistFile, e);
+      }
+    }
+
+    private static Collection<String> getFileWhitelistItems(final String whitelistFile) {
+      try (final Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
+        return stream.collect(toSet());
+      }
+      catch (final IOException e) {
+        LOG.error("Unable to read serialization whitelist: " + whitelistFile);
+        throw new RuntimeException(e);
+      }
+    }
+
+    private static String getClasspathFilepath(final String whitelistFile) {
+      String path = whitelistFile.substring(CLASSPATH_PREFIX.length());
+      if (path.startsWith("/")) {
+        path = path.substring(1);
+      }
+      if (path.contains("/")) {
+        throw new IllegalArgumentException("Whitelist file must be in the classpath root");
+      }
+
+      return path;
     }
   }
 }
