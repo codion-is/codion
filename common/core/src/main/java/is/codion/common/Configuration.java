@@ -131,7 +131,7 @@ public final class Configuration {
   }
 
   static PropertyStore loadFromClasspath(final String filePath, final boolean configurationRequired) {
-    final String filepath = filePath.substring(CLASSPATH_PREFIX.length());
+    final String filepath = getClasspathFilepath(filePath);
     try (final InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
       if (configurationFileStream == null) {
         if (configurationRequired) {
@@ -164,5 +164,17 @@ public final class Configuration {
     catch (final IOException e) {
       throw new RuntimeException("Unable to load configuration from file: " + filePath);
     }
+  }
+
+  private static String getClasspathFilepath(final String filePath) {
+    String path = filePath.substring(CLASSPATH_PREFIX.length());
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+    if (path.contains("/")) {
+      throw new IllegalArgumentException("Configuration files must be in the classpath root");
+    }
+
+    return path;
   }
 }

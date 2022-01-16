@@ -7579,3 +7579,4 @@
   Configuration, now uses Configuration.class.getClassLoader().getResourceAsStream() when loading configuration files from the classpath
   DefaultServerConfiguration classpath keystore functionality removed, can't change javax.net.ssl.keyStore after startup without jumping through hoops
   Configuration.ClasspathResource removed, loading files from root seems to work getClassLoader().getResourceAsStream()
+  Configuration, configuration files on classpath must in the classpath root, anything else is a hassle in the modular world
