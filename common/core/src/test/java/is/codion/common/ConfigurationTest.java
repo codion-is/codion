@@ -13,16 +13,16 @@ public final class ConfigurationTest {
 
   @Test
   void classpath() {
-    PropertyStore store = Configuration.loadFromClasspath("classpath:/config_test.config", false);
+    PropertyStore store = Configuration.loadFromClasspath("classpath:config_test.config", false);
     assertTrue(store.containsProperty("test.property"));
     assertTrue(store.containsProperty("test.property2"));
 
-    store = Configuration.loadFromClasspath("classpath:/is/codion/common/item/item_config_test.config", false);
+    store = Configuration.loadFromClasspath("classpath:is/codion/common/item/item_config_test.config", false);
     assertTrue(store.containsProperty("item.property"));
     assertTrue(store.containsProperty("item.property2"));
 
     assertThrows(RuntimeException.class, () ->
-            Configuration.loadFromClasspath("classpath:/is/codion/common/item/item_config_test_non_existing.config", true));
+            Configuration.loadFromClasspath("classpath:is/codion/common/item/item_config_test_non_existing.config", true));
     assertThrows(RuntimeException.class, () ->
             Configuration.loadFromClasspath("classpath:config_test_non_existing.config", true));
   }
