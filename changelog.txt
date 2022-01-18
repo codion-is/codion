@@ -7550,3 +7550,4 @@
   SerializationWhitelist now supports whitelists in classpath root with 'classpath:' prefix, refactored
   SelectCondition.fetchCount removed, use limit instead
   SwingEntityTableModel.setOrderBySortOrder() added along with TableSortModel.getColumnSortOrder()
+  SerializationWhitelist, some java doc improvements and dry run test added
