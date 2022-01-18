@@ -34,10 +34,13 @@ public final class SerializationWhitelist {
 
   private static final Logger LOG = LoggerFactory.getLogger(SerializationWhitelist.class);
 
+  private static final String CLASSPATH_PREFIX = "classpath:";
+
   private SerializationWhitelist() {}
 
   /**
    * Configures a serialization whitelist, does nothing if {@code whitelist} is null or empty.
+   * Supports 'classpath:' prefix for a whitelist in the classpath root.
    * @param whitelistFile the path to the file containing the whitelisted class names
    */
   public static void configure(final String whitelistFile) {
@@ -49,7 +52,9 @@ public final class SerializationWhitelist {
 
   /**
    * Configures a serialization whitelist for a dry run, does nothing if {@code dryRunFile} is null or empty.
-   * @param dryRunFile the dry-run results file to write to
+   * Note that this will append to an existing file.
+   * @param dryRunFile the dry-run results file to write to, appended to if it exists
+   * @throws IllegalArgumentException in case of a classpath dry run file
    */
   public static void configureDryRun(final String dryRunFile) {
     if (!nullOrEmpty(dryRunFile)) {
@@ -82,7 +87,10 @@ public final class SerializationWhitelist {
     private final String whitelistFile;
     private final Set<Class<?>> deserializedClasses = new HashSet<>();
 
-    public SerializationFilterDryRun(final String whitelistFile) {
+    private SerializationFilterDryRun(final String whitelistFile) {
+      if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
+        throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
+      }
       this.whitelistFile = requireNonNull(whitelistFile, "whitelistFile");
     }
 
@@ -114,7 +122,6 @@ public final class SerializationWhitelist {
 
   static final class SerializationFilter implements ObjectInputFilter {
 
-    private static final String CLASSPATH_PREFIX = "classpath:";
     private static final String COMMENT = "#";
     private static final String WILDCARD = "*";
 
@@ -179,9 +186,8 @@ public final class SerializationWhitelist {
       if (requireNonNull(whitelistFile).startsWith(CLASSPATH_PREFIX)) {
         return getClasspathWhitelistItems(whitelistFile);
       }
-      else {
-        return getFileWhitelistItems(whitelistFile);
-      }
+
+      return getFileWhitelistItems(whitelistFile);
     }
 
     private static Collection<String> getClasspathWhitelistItems(final String whitelistFile) {
