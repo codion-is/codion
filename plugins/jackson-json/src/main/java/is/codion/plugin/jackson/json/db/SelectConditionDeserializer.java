@@ -57,10 +57,6 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     if (offset != null && !offset.isNull()) {
       selectCondition = selectCondition.offset(offset.asInt());
     }
-    final JsonNode fetchCount = jsonNode.get("fetchCount");
-    if (fetchCount != null && !fetchCount.isNull()) {
-      selectCondition = selectCondition.fetchCount(fetchCount.asInt());
-    }
     final JsonNode fetchDepth = jsonNode.get("fetchDepth");
     if (fetchDepth != null && !fetchDepth.isNull()) {
       selectCondition = selectCondition.fetchDepth(fetchDepth.asInt());

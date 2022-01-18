@@ -7548,3 +7548,4 @@
   Configuration.ClasspathResource removed, loading files from root seems to work getClassLoader().getResourceAsStream()
   Configuration, configuration files on classpath must in the classpath root, anything else is a hassle in the modular world
   SerializationWhitelist now supports whitelists in classpath root with 'classpath:' prefix, refactored
+  SelectCondition.fetchCount removed, use limit instead

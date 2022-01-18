@@ -106,7 +106,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
    */
-  private int fetchCount = -1;
+  private int limit = -1;
 
   /**
    * Specifies whether the values of hidden columns are included in the underlying query
@@ -236,13 +236,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final int getFetchCount() {
-    return fetchCount;
+  public final int getLimit() {
+    return limit;
   }
 
   @Override
-  public final void setFetchCount(final int fetchCount) {
-    this.fetchCount = fetchCount;
+  public final void setLimit(final int limit) {
+    this.limit = limit;
   }
 
   @Override
@@ -657,7 +657,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
       return connectionProvider.getConnection().select(getTableConditionModel().getCondition()
               .toSelectCondition()
               .selectAttributes(getSelectAttributes())
-              .fetchCount(fetchCount)
+              .limit(limit)
               .orderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {

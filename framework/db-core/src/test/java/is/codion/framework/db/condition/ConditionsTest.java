@@ -34,10 +34,10 @@ public final class ConditionsTest {
   void selectCondition() {
     SelectCondition condition = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
             .toSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
-    assertEquals(-1, condition.getFetchCount());
+    assertEquals(-1, condition.getLimit());
 
-    condition = Conditions.condition(TestDomain.T_DEPARTMENT).toSelectCondition().fetchCount(10);
-    assertEquals(10, condition.getFetchCount());
+    condition = Conditions.condition(TestDomain.T_DEPARTMENT).toSelectCondition().limit(10);
+    assertEquals(10, condition.getLimit());
   }
 
   @Test

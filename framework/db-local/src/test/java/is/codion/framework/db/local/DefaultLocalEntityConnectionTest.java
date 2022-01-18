@@ -289,16 +289,16 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectFetchCount() throws DatabaseException {
+  void selectLimit() throws DatabaseException {
     List<Entity> departments = connection.select(condition(Department.TYPE));
     assertEquals(4, departments.size());
-    departments = connection.select(condition(Department.TYPE).toSelectCondition().fetchCount(0));
+    departments = connection.select(condition(Department.TYPE).toSelectCondition().limit(0));
     assertTrue(departments.isEmpty());
-    departments = connection.select(condition(Department.TYPE).toSelectCondition().fetchCount(2));
+    departments = connection.select(condition(Department.TYPE).toSelectCondition().limit(2));
     assertEquals(2, departments.size());
-    departments = connection.select(condition(Department.TYPE).toSelectCondition().fetchCount(3));
+    departments = connection.select(condition(Department.TYPE).toSelectCondition().limit(3));
     assertEquals(3, departments.size());
-    departments = connection.select(condition(Department.TYPE).toSelectCondition().fetchCount(-1));
+    departments = connection.select(condition(Department.TYPE).toSelectCondition().limit(-1));
     assertEquals(4, departments.size());
   }
 

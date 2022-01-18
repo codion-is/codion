@@ -29,7 +29,6 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   private OrderBy orderBy;
   private Integer fetchDepth;
-  private int fetchCount = -1;
   private boolean forUpdate;
   private int limit = -1;
   private int offset = -1;
@@ -50,7 +49,6 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     this.selectAttributes = selectCondition.selectAttributes;
     this.orderBy = selectCondition.orderBy;
     this.fetchDepth = selectCondition.fetchDepth;
-    this.fetchCount = selectCondition.fetchCount;
     this.forUpdate = selectCondition.forUpdate;
     this.limit = selectCondition.limit;
     this.offset = selectCondition.offset;
@@ -94,11 +92,6 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   @Override
   public boolean isForUpdate() {
     return forUpdate;
-  }
-
-  @Override
-  public int getFetchCount() {
-    return fetchCount;
   }
 
   @Override
@@ -148,14 +141,6 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   public SelectCondition forUpdate() {
     final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
     selectCondition.forUpdate = true;
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition fetchCount(final int fetchCount) {
-    final DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.fetchCount = fetchCount;
 
     return selectCondition;
   }

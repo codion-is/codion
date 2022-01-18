@@ -93,7 +93,6 @@ public final class ConditionObjectMapperTest {
             .orderBy(OrderBy.orderBy().ascending(TestDomain.EMP_ID).descending(TestDomain.EMP_NAME))
             .limit(2)
             .offset(1)
-            .fetchCount(3)
             .forUpdate()
             .fetchDepth(2)
             .fetchDepth(TestDomain.EMP_DEPARTMENT_FK, 0)
@@ -106,7 +105,6 @@ public final class ConditionObjectMapperTest {
     assertEquals(selectCondition.getOrderBy().getOrderByAttributes(), readCondition.getOrderBy().getOrderByAttributes());
     assertEquals(selectCondition.getLimit(), readCondition.getLimit());
     assertEquals(selectCondition.getOffset(), readCondition.getOffset());
-    assertEquals(selectCondition.getFetchCount(), readCondition.getFetchCount());
     assertEquals(selectCondition.getFetchDepth(), readCondition.getFetchDepth());
     for (final ForeignKey foreignKey : entities.getDefinition(selectCondition.getEntityType()).getForeignKeys()) {
       assertEquals(selectCondition.getFetchDepth(foreignKey), readCondition.getFetchDepth(foreignKey));
