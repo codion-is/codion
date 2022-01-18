@@ -37,6 +37,7 @@ import is.codion.swing.common.model.table.TableSortModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
@@ -139,6 +140,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @see #setValueAt(Object, int, int)
    */
   private boolean editable = false;
+
+  /**
+   * Specifies whether to use the current sort order as the query order by clause
+   */
+  private boolean orderBySortOrder = false;
 
   /**
    * Instantiates a new SwingEntityTableModel with default column and condition models.
@@ -356,6 +362,24 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
+  }
+
+  /**
+   * Specifies whether to the current sort order is used as a basis for the query order by clause.
+   * Note that this only applies to column properties.
+   * @return true if the current sort order should be used as a basis for the query order by clause
+   */
+  public final boolean isOrderBySortOrder() {
+    return orderBySortOrder;
+  }
+
+  /**
+   * Specifies whether to the current sort order is used as a basis for the query order by clause.
+   * Note that this only applies to column properties.
+   * @param orderBySortOrder true if the current sort order should be used as a basis for the query order by clause
+   */
+  public final void setOrderBySortOrder(final boolean orderBySortOrder) {
+    this.orderBySortOrder = orderBySortOrder;
   }
 
   /**
@@ -711,6 +735,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @see EntityDefinition#getOrderBy()
    */
   protected OrderBy getOrderBy() {
+    if (orderBySortOrder && getSortModel().isSortingEnabled()) {
+      final OrderBy orderBy = getOrderByFromSortModel();
+      if (!orderBy.getOrderByAttributes().isEmpty()) {
+        return orderBy;
+      }
+    }
+
     return getEntityDefinition().getOrderBy();
   }
 
@@ -851,6 +882,29 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     if (filterModel != null && !filterModel.isLocked()) {
       filterModel.setEnabled(false);
     }
+  }
+
+  private OrderBy getOrderByFromSortModel() {
+    final EntityDefinition definition = getEntityDefinition();
+    final OrderBy orderBy = OrderBy.orderBy();
+    getSortModel().getColumnSortOrder().entrySet().stream()
+            .filter(entry -> isColumnProperty(entry.getKey()))
+            .forEach(entry -> {
+              if (entry.getValue() == SortOrder.ASCENDING) {
+                orderBy.ascending(entry.getKey());
+              }
+              else {
+                orderBy.descending(entry.getKey());
+              }
+            });
+
+    return orderBy;
+  }
+
+  private boolean isColumnProperty(final Attribute<?> attribute) {
+    final Property<?> property = getEntityDefinition().getProperty(attribute);
+
+    return property instanceof ColumnProperty;
   }
 
   private org.json.JSONObject createPreferences() throws Exception {

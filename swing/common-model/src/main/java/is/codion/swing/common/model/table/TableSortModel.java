@@ -6,6 +6,7 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.EventDataListener;
 
 import javax.swing.SortOrder;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -51,6 +52,12 @@ public interface TableSortModel<R, C> {
    * @return true if sorting is enabled for one or more columns
    */
   boolean isSortingEnabled();
+
+  /**
+   * Returns the current column sort order, in order of priority
+   * @return the current column sort orderk, in order of priority
+   */
+  LinkedHashMap<C, SortOrder> getColumnSortOrder();
 
   /**
    * Returns the class of the column with the given identifier
