@@ -18,27 +18,22 @@ final class EntityResultIterator implements ResultIterator<Entity> {
   private final Statement statement;
   private final ResultSet resultSet;
   private final ResultPacker<Entity> resultPacker;
-  private final int fetchCount;
-  private int counter = 0;
 
   /**
    * @param statement the Statement, closed on exception or exhaustion
    * @param resultSet the ResultSet, closed on exception or exhaustion
    * @param resultPacker the ResultPacker
-   * @param fetchCount the maximum number of records to fetch from the result set
    */
-  EntityResultIterator(final Statement statement, final ResultSet resultSet,
-                       final ResultPacker<Entity> resultPacker, final int fetchCount) {
+  EntityResultIterator(final Statement statement, final ResultSet resultSet, final ResultPacker<Entity> resultPacker) {
     this.statement = statement;
     this.resultSet = resultSet;
     this.resultPacker = resultPacker;
-    this.fetchCount = fetchCount;
   }
 
   @Override
   public boolean hasNext() throws SQLException {
     try {
-      if ((fetchCount < 0 || counter < fetchCount) && resultSet.next()) {
+      if (resultSet.next()) {
         return true;
       }
       close();
@@ -53,7 +48,6 @@ final class EntityResultIterator implements ResultIterator<Entity> {
 
   @Override
   public Entity next() throws SQLException {
-    counter++;
     try {
       return resultPacker.fetch(resultSet);
     }

@@ -40,11 +40,6 @@ public interface SelectCondition extends Condition {
   boolean isForUpdate();
 
   /**
-   * @return the maximum number of records to fetch from the result, -1 for no maximum
-   */
-  int getFetchCount();
-
-  /**
    * @return the global fetch depth limit for this condition, null if none has been specified
    */
   Integer getFetchDepth();
@@ -89,12 +84,6 @@ public interface SelectCondition extends Condition {
    * @return a new SelectCondition instance with for update enabled
    */
   SelectCondition forUpdate();
-
-  /**
-   * @param fetchCount the maximum number of records to fetch from the result
-   * @return a new SelectCondition instance with the given fetchCount
-   */
-  SelectCondition fetchCount(int fetchCount);
 
   /**
    * Limit the levels of foreign keys to fetch

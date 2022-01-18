@@ -10,6 +10,7 @@ import is.codion.common.event.EventDataListener;
 import javax.swing.SortOrder;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,15 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   public final boolean isSortingEnabled() {
     return sortingStates.values().stream()
             .anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
+  }
+
+  @Override
+  public final LinkedHashMap<C, SortOrder> getColumnSortOrder() {
+    final LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
+    getSortingStatesOrderedByPriority().forEach(entry ->
+            columnSortOrder.put(entry.getKey(), entry.getValue().getSortOrder()));
+
+    return columnSortOrder;
   }
 
   @Override

@@ -67,7 +67,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean removeEntitiesOnDelete = true;
   private boolean refreshOnForeignKeyConditionValuesSet = true;
   private boolean editable = false;
-  private int fetchCount = -1;
+  private int limit = -1;
   private boolean includeHiddenColumnsInQuery = EntityTableModel.INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
 
   /**
@@ -313,13 +313,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final int getFetchCount() {
-    return fetchCount;
+  public final int getLimit() {
+    return limit;
   }
 
   @Override
-  public final void setFetchCount(final int fetchCount) {
-    this.fetchCount = fetchCount;
+  public final void setLimit(final int limit) {
+    this.limit = limit;
   }
 
   @Override
@@ -456,7 +456,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
               .toSelectCondition()
               .selectAttributes(getSelectAttributes())
-              .fetchCount(fetchCount)
+              .limit(limit)
               .orderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {

@@ -245,14 +245,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * this table model is refreshed, a value of -1 means all records should be fetched
    * @return the fetch count
    */
-  int getFetchCount();
+  int getLimit();
 
   /**
    * Sets the maximum number of records to fetch via the underlying query the next time
    * this table model is refreshed, a value of -1 means all records should be fetched
-   * @param fetchCount the fetch count
+   * @param limit the fetch count
    */
-  void setFetchCount(int fetchCount);
+  void setLimit(int limit);
 
   /**
    * Returns the query row count limit, a value of -1 means no limit.

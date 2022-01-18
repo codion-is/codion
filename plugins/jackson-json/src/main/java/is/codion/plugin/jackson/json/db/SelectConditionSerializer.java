@@ -50,7 +50,6 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeObjectField("limit", condition.getLimit());
     generator.writeObjectField("offset", condition.getOffset());
     generator.writeObjectField("forUpdate", condition.isForUpdate());
-    generator.writeObjectField("fetchCount", condition.getFetchCount());
     generator.writeObjectField("fetchDepth", condition.getFetchDepth());
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
