@@ -7556,3 +7556,4 @@
   FilteredTable.createToggleColumnsControls() added
   SwingFilteredTableColumnModel.setColumns(List) added
   FilteredTableColumnModel.getHiddenColumns() now returns column identifiers, getVisibleColumns() added
+  FilteredTable.selectColumns() now based on createToggleColumnsControls()
