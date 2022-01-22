@@ -10,6 +10,7 @@ import is.codion.common.state.State;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,9 +127,8 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public List<C> getVisibleColumns() {
-    return unmodifiableList(getAllColumns().stream()
+    return unmodifiableList(Collections.list(getColumns()).stream()
             .map(column -> (C) column.getIdentifier())
-            .filter(this::isColumnVisible)
             .collect(Collectors.toList()));
   }
 
