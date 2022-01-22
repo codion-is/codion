@@ -7553,3 +7553,4 @@
   SerializationWhitelist, some java doc improvements and dry run test added
   ServerConfiguration.CLASSPATH_KEYSTORE configuration value added, resolved to file on class load and set as javax.net.ssl.keyStore, server config moved to resources
   DefaultToggleControl.createCheckBoxMenuItem() and createRadioButtonMenuItem(), toggle without closing menu if CTRL is pressed
+  FilteredTable.createToggleColumnsControls() added

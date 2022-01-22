@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.state.State;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
@@ -19,6 +20,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -70,6 +72,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -82,8 +85,6 @@ import static java.util.Objects.requireNonNull;
 public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
-
-  public static final char FILTER_INDICATOR = '*';
 
   /**
    * Specifies whether to center the scrolled to row and or column.
@@ -408,6 +409,23 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
+   * @return Controls containing {@link ToggleControl}s for showing/hiding columns.
+   */
+  public Controls createToggleColumnsControls() {
+    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
+
+    return Controls.builder()
+            .caption(MESSAGES.getString(SELECT_COLUMNS))
+            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .description(MESSAGES.getString(SELECT_COLUMNS))
+            .controls(columnModel.getAllColumns().stream()
+                    .sorted(comparing(column -> column.getHeaderValue().toString()))
+                    .map(this::createToggleColumnControl)
+                    .toArray(ToggleControl[]::new))
+            .build();
+  }
+
+  /**
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl createSingleSelectionModeControl() {
@@ -632,6 +650,25 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       else {
         columnFilterPanel.showDialog(position);
       }
+    }
+  }
+
+  private ToggleControl createToggleColumnControl(final TableColumn column) {
+    final C identifier = (C) column.getIdentifier();
+    final State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
+    visibleState.addDataListener(visible -> setColumnVisible(identifier, visible));
+
+    return ToggleControl.builder(visibleState)
+            .caption(column.getHeaderValue().toString())
+            .build();
+  }
+
+  private void setColumnVisible(final C columnIdentifer, final boolean visible) {
+    if (visible) {
+      tableModel.getColumnModel().showColumn(columnIdentifer);
+    }
+    else {
+      tableModel.getColumnModel().hideColumn(columnIdentifer);
     }
   }
 
