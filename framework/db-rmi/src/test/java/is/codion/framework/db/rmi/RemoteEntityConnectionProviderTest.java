@@ -83,10 +83,10 @@ public class RemoteEntityConnectionProviderTest {
 
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
-    Clients.TRUSTSTORE.set("../server/src/main/resources/truststore.jks");
+    Clients.TRUSTSTORE.set("../server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    ServerConfiguration.CLASSPATH_KEYSTORE.set("keystore.jks");
+    ServerConfiguration.KEYSTORE.set("../server/src/main/config/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
 
     return EntityServerConfiguration.builder(3223, 3221)

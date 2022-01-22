@@ -265,16 +265,16 @@ abstract class AbstractHttpEntityConnectionTest {
 
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
-    Clients.TRUSTSTORE.set("../../framework/server/src/main/resources/truststore.jks");
+    Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Report.REPORT_PATH.set("report/path");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/resources/keystore.jks");
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(ClientHttps.TRUE);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
-    System.setProperty("java.security.policy", "../../framework/server/src/main/resources/all_permissions.policy");
+    System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
