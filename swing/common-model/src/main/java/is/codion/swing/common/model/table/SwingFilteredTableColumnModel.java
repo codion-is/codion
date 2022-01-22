@@ -10,12 +10,12 @@ import is.codion.common.state.State;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -65,7 +65,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public Collection<TableColumn> getAllColumns() {
-    return Collections.unmodifiableCollection(columns.values());
+    return unmodifiableCollection(columns.values());
   }
 
   @Override
@@ -103,16 +103,20 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public void setColumns(final C... columnIdentifiers) {
+    setColumns(asList(columnIdentifiers));
+  }
+
+  @Override
+  public void setColumns(final List<C> columnIdentifiers) {
     requireNonNull(columnIdentifiers);
     checkIfLocked();
-    final List<C> identifiers = asList(columnIdentifiers);
     int columnIndex = 0;
-    for (final C identifier : identifiers) {
+    for (final C identifier : columnIdentifiers) {
       showColumn(identifier);
       moveColumn(getColumnIndex(identifier), columnIndex++);
     }
     for (final TableColumn column : getAllColumns()) {
-      if (!identifiers.contains(column.getIdentifier())) {
+      if (!columnIdentifiers.contains(column.getIdentifier())) {
         hideColumn((C) column.getIdentifier());
       }
     }
@@ -120,7 +124,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public Collection<TableColumn> getHiddenColumns() {
-    return Collections.unmodifiableCollection(hiddenColumns.values());
+    return unmodifiableCollection(hiddenColumns.values());
   }
 
   @Override

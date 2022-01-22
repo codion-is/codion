@@ -8,6 +8,7 @@ import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A TableColumnModel handling hidden columns
@@ -59,6 +60,12 @@ public interface FilteredTableColumnModel<C> {
    * @param columnIdentifiers the column identifiers
    */
   void setColumns(C... columnIdentifiers);
+
+  /**
+   * Arranges the columns so that only the given columns are visible and in the given order
+   * @param columnIdentifiers the column identifiers
+   */
+  void setColumns(List<C> columnIdentifiers);
 
   /**
    * Returns the TableColumn with the given identifier
