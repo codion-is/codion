@@ -181,6 +181,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           "is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar", true);
 
   /**
+   * Specifies how column selection is presented to the user.<br>
+   * Value type: {@link ColumnSelection}<br>
+   * Default value: {@link ColumnSelection#DIALOG}
+   */
+  public static final PropertyValue<ColumnSelection> COLUMN_SELECTION = Configuration.enumValue(
+          "is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+
+  /**
    * The standard controls available to the TablePanel
    */
   public enum ControlCode {
@@ -200,6 +208,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     MOVE_SELECTION_UP,
     MOVE_SELECTION_DOWN,
     COPY_TABLE_DATA
+  }
+
+  /**
+   * Specifies how column selection is presented.
+   */
+  public enum ColumnSelection {
+    /**
+     * Display a dialog.
+     */
+    DIALOG,
+    /**
+     * Display toggle controls directly in the menu.
+     */
+    MENU
   }
 
   private static final Dimension TOOLBAR_BUTTON_SIZE = TextFields.DIMENSION_TEXT_FIELD_SQUARE;
@@ -267,6 +289,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * specifies whether to include a 'Clear' control in the popup menu.
    */
   private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
+
+  /**
+   * Specifies how column selection is presented.
+   */
+  private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 
   /**
    * specifies whether to include a popup menu
@@ -405,6 +432,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setIncludeClearControl(final boolean includeClearControl) {
     checkIfInitialized();
     this.includeClearControl = includeClearControl;
+  }
+
+  /**
+   * @param columnSelection specifies how columns are selected
+   */
+  public final void setColumnSelection(final ColumnSelection columnSelection) {
+    checkIfInitialized();
+    this.columnSelection = requireNonNull(columnSelection);
   }
 
   /**
@@ -1259,7 +1294,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
     }
     controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
-    controls.putIfAbsent(ControlCode.SELECT_COLUMNS, table.createSelectColumnsControl());
+    controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
+            table.createSelectColumnsControl() : table.createToggleColumnsControls());
     controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
     if (summaryScrollPane != null) {
       controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
