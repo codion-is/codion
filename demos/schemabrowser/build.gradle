@@ -81,7 +81,7 @@ task runClientRMI(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/resources/truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
@@ -106,7 +106,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/resources/truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
@@ -183,7 +183,7 @@ task loadTestHttpScript(type: ModularCreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/config/logback.xml'))
-    from(files('../../framework/server/src/main/resources/truststore.jks'))
+    from(files('../../framework/server/src/main/config/truststore.jks'))
 }
 
 applicationDistribution.into('bin') {
