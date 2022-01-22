@@ -50,7 +50,7 @@ task runServerMonitor(type: JavaExec) {
     systemProperties = [
             'codion.server.hostname'          : "${serverHostName}",
             'codion.server.admin.user'        : 'scott:tiger',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/resources/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/config/logback.xml'
     ]

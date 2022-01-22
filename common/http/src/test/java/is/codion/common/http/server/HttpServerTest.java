@@ -17,7 +17,7 @@ public class HttpServerTest {
   private static final int FILE_SERVER_PORT_NUMBER = 8089;
 
   static {
-    System.setProperty("javax.net.ssl.trustStore", "../../framework/server/src/main/security/truststore.jks");
+    System.setProperty("javax.net.ssl.trustStore", "../../framework/server/src/main/resources/truststore.jks");
 	  System.setProperty("javax.net.ssl.trustStorePassword", "crappypass");
   }
 
@@ -27,7 +27,7 @@ public class HttpServerTest {
   public HttpServerTest() {
     configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, ServerHttps.TRUE);
     configuration.setDocumentRoot(System.getProperty("user.dir"));
-    configuration.setKeystore("../../framework/server/src/main/security/keystore.jks", "crappypass");
+    configuration.setKeystore("../../framework/server/src/main/resources/keystore.jks", "crappypass");
     httpServer = new HttpServer(configuration);
   }
 
