@@ -75,7 +75,7 @@ codion.server.serializationFilterDryRun=true
 ====
 [source]
 ----
-include::{dir-source}/src/main/security/serialization-whitelist.txt[]
+include::{dir-source}/src/main/config/serialization-whitelist.txt[]
 ----
 ====
 
@@ -91,7 +91,7 @@ https://github.com/pro-grade/pro-grade/issues/29#issuecomment-592956858[Issue#29
 ====
 [source]
 ----
-include::{dir-source}/src/main/security/codion_server.policy[]
+include::{dir-source}/src/main/config/codion_server.policy[]
 ----
 ====
 

@@ -71,10 +71,7 @@ distributions {
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
                 into("lib")
             }
-            from(files(
-                    'src/main/security/codion_server.policy',
-                    'src/main/security/all_permissions.policy',
-                    'src/main/security/default.policy')) {
+            from(fileTree(dir: 'src/main/config', include: '**/*')) {
                 into("config")
             }
             from(files('../../demos/empdept/src/main/sql/create_schema.sql')) {
@@ -94,15 +91,15 @@ distributions {
 }
 applicationDefaultJvmArgs = [
         '-Xmx256m',
-        '-Dcodion.configurationFile=classpath:h2_embedded.config',
-        '-Dlogback.configurationFile=logback.xml',
+        '-Dcodion.configurationFile=../config/h2_embedded.config',
+        '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.policy=../config/codion_server.policy'
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
         '-Xmx256m',
-        '-Dcodion.configurationFile=classpath:h2_embedded.config',
-        '-Dlogback.configurationFile=logback.xml',
+        '-Dcodion.configurationFile=../config/h2_embedded.config',
+        '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM',
         '-Djava.security.policy=../config/default.policy',
         '-Dprograde.generated.policy=../config/generated.policy'
@@ -123,12 +120,12 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'codion.server.http.secure'                 : 'false',
             'codion.server.pooling.poolFactoryClass'    : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
             'codion.server.auxiliaryServerFactoryClassNames'   : 'is.codion.framework.servlet.EntityServletServerFactory',
-            'codion.server.serializationFilterWhitelist': 'classpath:serialization-whitelist.txt',
+            'codion.server.serializationFilterWhitelist': 'src/main/config/serialization-whitelist.txt',
             'codion.server.serializationFilterDryRun'   : 'false',
-            'codion.server.classpathKeyStore'           : 'keystore.jks',
+            'javax.net.ssl.keyStore'                    : 'src/main/config/keystore.jks',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : "${serverHostName}",
-            'logback.configurationFile'                 : 'logback.xml',
-            'java.security.policy'                      : 'src/main/security/codion_server.policy'
+            'logback.configurationFile'                 : 'src/main/config/logback.xml',
+            'java.security.policy'                      : 'src/main/config/codion_server.policy'
     ]
 }

@@ -108,7 +108,7 @@ task loadTestHttpScript(type: CreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/config/logback.xml'))
-    from(files('../../framework/server/src/main/security/truststore.jks'))
+    from(files('../../framework/server/src/main/config/truststore.jks'))
 }
 
 applicationDistribution.into('reports') {
@@ -141,7 +141,7 @@ task runClientRMI(type: JavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/resources/truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'             : 'true'
@@ -166,7 +166,7 @@ task runLoadTestRMI(type: JavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/resources/truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
