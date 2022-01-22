@@ -69,9 +69,18 @@ public interface ServerConfiguration {
   PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.server.registryPort", Registry.REGISTRY_PORT);
 
   /**
+   * The rmi ssl keystore to use on the classpath, this will be resolved to a temporary file and set
+   * as the javax.net.ssl.keyStore system property on server start<br>
+   * Value type: String
+   * Default value: null
+   */
+  PropertyValue<String> CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.classpathKeyStore", null);
+
+  /**
    * The rmi ssl keystore to use<br>
    * Value type: String
    * Default value: null
+   * @see #CLASSPATH_KEYSTORE
    */
   PropertyValue<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE, null);
 

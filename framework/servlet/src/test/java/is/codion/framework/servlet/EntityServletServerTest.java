@@ -646,11 +646,11 @@ public class EntityServletServerTest {
 
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
-    Clients.TRUSTSTORE.set("../../framework/server/src/main/security/truststore.jks");
+    Clients.TRUSTSTORE.set("../../framework/server/src/main/resources/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/keystore.jks");
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/resources/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
