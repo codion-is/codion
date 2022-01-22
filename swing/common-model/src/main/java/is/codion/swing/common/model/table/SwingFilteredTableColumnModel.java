@@ -13,9 +13,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -123,8 +125,16 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   }
 
   @Override
-  public Collection<TableColumn> getHiddenColumns() {
-    return unmodifiableCollection(hiddenColumns.values());
+  public List<C> getVisibleColumns() {
+    return unmodifiableList(getAllColumns().stream()
+            .map(column -> (C) column.getIdentifier())
+            .filter(this::isColumnVisible)
+            .collect(Collectors.toList()));
+  }
+
+  @Override
+  public Collection<C> getHiddenColumns() {
+    return unmodifiableCollection(hiddenColumns.keySet());
   }
 
   @Override

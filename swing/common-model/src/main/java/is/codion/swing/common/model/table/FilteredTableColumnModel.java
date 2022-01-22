@@ -17,14 +17,19 @@ import java.util.List;
 public interface FilteredTableColumnModel<C> {
 
   /**
-   * @return all columns in this model, both hidden and visible, in no particular order
+   * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
    */
   Collection<TableColumn> getAllColumns();
 
   /**
-   * @return an unmodifiable view of hidden table columns
+   * @return an unmodifiable view of the currently visible column identifiers
    */
-  Collection<TableColumn> getHiddenColumns();
+  List<C> getVisibleColumns();
+
+  /**
+   * @return an unmodifiable view of hidden table column identifiers
+   */
+  Collection<C> getHiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.

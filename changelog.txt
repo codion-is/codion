@@ -7555,3 +7555,4 @@
   DefaultToggleControl.createCheckBoxMenuItem() and createRadioButtonMenuItem(), toggle without closing menu if CTRL is pressed
   FilteredTable.createToggleColumnsControls() added
   SwingFilteredTableColumnModel.setColumns(List) added
+  FilteredTableColumnModel.getHiddenColumns() now returns column identifiers, getVisibleColumns() added
