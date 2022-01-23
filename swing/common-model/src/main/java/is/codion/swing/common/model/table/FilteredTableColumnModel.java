@@ -8,6 +8,7 @@ import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A TableColumnModel handling hidden columns
@@ -16,14 +17,19 @@ import java.util.Collection;
 public interface FilteredTableColumnModel<C> {
 
   /**
-   * @return all columns in this model, both hidden and visible, in no particular order
+   * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
    */
   Collection<TableColumn> getAllColumns();
 
   /**
-   * @return an unmodifiable view of hidden table columns
+   * @return an unmodifiable view of the currently visible column identifiers
    */
-  Collection<TableColumn> getHiddenColumns();
+  List<C> getVisibleColumns();
+
+  /**
+   * @return an unmodifiable view of hidden table column identifiers
+   */
+  Collection<C> getHiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -59,6 +65,12 @@ public interface FilteredTableColumnModel<C> {
    * @param columnIdentifiers the column identifiers
    */
   void setColumns(C... columnIdentifiers);
+
+  /**
+   * Arranges the columns so that only the given columns are visible and in the given order
+   * @param columnIdentifiers the column identifiers
+   */
+  void setColumns(List<C> columnIdentifiers);
 
   /**
    * Returns the TableColumn with the given identifier

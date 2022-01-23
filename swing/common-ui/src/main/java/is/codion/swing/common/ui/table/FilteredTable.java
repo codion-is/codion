@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.state.State;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
@@ -19,6 +20,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -62,6 +64,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.Collator;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,8 +85,6 @@ import static java.util.Objects.requireNonNull;
 public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
-
-  public static final char FILTER_INDICATOR = '*';
 
   /**
    * Specifies whether to center the scrolled to row and or column.
@@ -314,20 +315,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void selectColumns() {
     final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
-    final Map<TableColumn, JCheckBox> columnCheckBoxes = columnModel.getAllColumns().stream()
-            .collect(Collectors.toMap(column -> column, column ->
-                    new JCheckBox(column.getHeaderValue().toString(),
-                            tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()))));
-    Dialogs.okCancelDialog(initializeSelectColumnsPanel(columnCheckBoxes))
+    final List<C> currentColumns = columnModel.getVisibleColumns();
+    Dialogs.okCancelDialog(initializeSelectColumnsPanel(createToggleColumnsControls()))
             .owner(this)
-            .onOk(() -> SwingUtilities.invokeLater(() -> columnCheckBoxes.forEach((column, checkBox) -> {
-              if (checkBox.isSelected()) {
-                columnModel.showColumn((C) column.getIdentifier());
-              }
-              else {
-                columnModel.hideColumn((C) column.getIdentifier());
-              }
-            })))
+            .onCancel(() -> columnModel.setColumns(currentColumns))
             .show();
   }
 
@@ -404,6 +395,23 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             .caption(MESSAGES.getString(SELECT_COLUMNS) + "...")
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
+            .build();
+  }
+
+  /**
+   * @return Controls containing {@link ToggleControl}s for showing/hiding columns.
+   */
+  public Controls createToggleColumnsControls() {
+    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
+
+    return Controls.builder()
+            .caption(MESSAGES.getString(SELECT_COLUMNS))
+            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .description(MESSAGES.getString(SELECT_COLUMNS))
+            .controls(columnModel.getAllColumns().stream()
+                    .sorted(new ColumnComparator())
+                    .map(this::createToggleColumnControl)
+                    .toArray(ToggleControl[]::new))
             .build();
   }
 
@@ -589,18 +597,17 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     return popupMenu;
   }
 
-  private static JPanel initializeSelectColumnsPanel(final Map<TableColumn, JCheckBox> columnCheckBoxes) {
-    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnCheckBoxes.size()), 0));
-    final Collator columnCollator = Collator.getInstance();
-    columnCheckBoxes.keySet().stream()
-            .sorted((column1, column2) ->
-                    Text.collateSansSpaces(columnCollator, column1.getHeaderValue().toString(), column2.getHeaderValue().toString()))
-            .forEach(column -> togglePanel.add(columnCheckBoxes.get(column)));
+  private static JPanel initializeSelectColumnsPanel(final Controls columnToggleControls) {
+    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnToggleControls.size()), 0));
+    final List<ToggleControl> toggleControls = columnToggleControls.getActions().stream()
+            .map(ToggleControl.class::cast)
+            .collect(Collectors.toList());
+    toggleControls.forEach(control -> togglePanel.add(control.createCheckBox()));
     final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
-    Components.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(true))))
+    Components.button(control(() -> toggleControls.forEach(toggleControl -> toggleControl.getValue().set(true))))
             .caption(MESSAGES.getString("select_all"))
             .build(northPanel::add);
-    Components.button(control(() -> columnCheckBoxes.values().forEach(checkBox -> checkBox.setSelected(false))))
+    Components.button(control(() -> toggleControls.forEach(toggleControl -> toggleControl.getValue().set(false))))
             .caption(MESSAGES.getString("select_none"))
             .build(northPanel::add);
 
@@ -632,6 +639,25 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       else {
         columnFilterPanel.showDialog(position);
       }
+    }
+  }
+
+  private ToggleControl createToggleColumnControl(final TableColumn column) {
+    final C identifier = (C) column.getIdentifier();
+    final State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
+    visibleState.addDataListener(visible -> setColumnVisible(identifier, visible));
+
+    return ToggleControl.builder(visibleState)
+            .caption(column.getHeaderValue().toString())
+            .build();
+  }
+
+  private void setColumnVisible(final C columnIdentifer, final boolean visible) {
+    if (visible) {
+      tableModel.getColumnModel().showColumn(columnIdentifer);
+    }
+    else {
+      tableModel.getColumnModel().hideColumn(columnIdentifer);
     }
   }
 
@@ -888,6 +914,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         final TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
         column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
       }
+    }
+  }
+
+  private static final class ColumnComparator implements Comparator<TableColumn> {
+
+    private final Collator columnCollator = Collator.getInstance();
+
+    @Override
+    public int compare(final TableColumn col1, final TableColumn col2) {
+      return Text.collateSansSpaces(columnCollator, col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
     }
   }
 }

@@ -7585,3 +7585,10 @@
   SwingEntityTableModel.setOrderBySortOrder() added along with TableSortModel.getColumnSortOrder()
   SerializationWhitelist, some java doc improvements and dry run test added
   ServerConfiguration.CLASSPATH_KEYSTORE configuration value added, resolved to file on class load and set as javax.net.ssl.keyStore, server config moved to resources
+  DefaultToggleControl.createCheckBoxMenuItem() and createRadioButtonMenuItem(), toggle without closing menu if CTRL is pressed
+  FilteredTable.createToggleColumnsControls() added
+  SwingFilteredTableColumnModel.setColumns(List) added
+  FilteredTableColumnModel.getHiddenColumns() now returns column identifiers, getVisibleColumns() added
+  FilteredTable.selectColumns() now based on createToggleColumnsControls()
+  EntityTablePanel.setColumnSelection() added along with COLUMN_SELECTION configuration property
+  SwingFilteredTableColumnModel.getVisibleColumns() bug fixed, did not return columns in the correct order

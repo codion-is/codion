@@ -14,8 +14,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -65,7 +68,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public Collection<TableColumn> getAllColumns() {
-    return Collections.unmodifiableCollection(columns.values());
+    return unmodifiableCollection(columns.values());
   }
 
   @Override
@@ -103,24 +106,35 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public void setColumns(final C... columnIdentifiers) {
+    setColumns(asList(columnIdentifiers));
+  }
+
+  @Override
+  public void setColumns(final List<C> columnIdentifiers) {
     requireNonNull(columnIdentifiers);
     checkIfLocked();
-    final List<C> identifiers = asList(columnIdentifiers);
     int columnIndex = 0;
-    for (final C identifier : identifiers) {
+    for (final C identifier : columnIdentifiers) {
       showColumn(identifier);
       moveColumn(getColumnIndex(identifier), columnIndex++);
     }
     for (final TableColumn column : getAllColumns()) {
-      if (!identifiers.contains(column.getIdentifier())) {
+      if (!columnIdentifiers.contains(column.getIdentifier())) {
         hideColumn((C) column.getIdentifier());
       }
     }
   }
 
   @Override
-  public Collection<TableColumn> getHiddenColumns() {
-    return Collections.unmodifiableCollection(hiddenColumns.values());
+  public List<C> getVisibleColumns() {
+    return unmodifiableList(Collections.list(getColumns()).stream()
+            .map(column -> (C) column.getIdentifier())
+            .collect(Collectors.toList()));
+  }
+
+  @Override
+  public Collection<C> getHiddenColumns() {
+    return unmodifiableCollection(hiddenColumns.keySet());
   }
 
   @Override

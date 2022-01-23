@@ -17,6 +17,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 
 import static java.util.Objects.requireNonNull;
@@ -48,8 +49,19 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     if (getValue().isNullable()) {
       throw new IllegalArgumentException("A check box menu item does not support a nullable value");
     }
-    final JCheckBoxMenuItem item = new JCheckBoxMenuItem(this);
-    item.setModel(createButtonModel());
+    final ButtonModel buttonModel = createButtonModel();
+    final JCheckBoxMenuItem item = new JCheckBoxMenuItem(this) {
+      @Override
+      protected void processMouseEvent(final MouseEvent e) {
+        if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
+          buttonModel.setSelected(!buttonModel.isSelected());
+        }
+        else {
+          super.processMouseEvent(e);
+        }
+      }
+    };
+    item.setModel(buttonModel);
 
     return item;
   }
@@ -59,8 +71,19 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     if (getValue().isNullable()) {
       throw new IllegalArgumentException("A check box menu item does not support a nullable value");
     }
-    final JRadioButtonMenuItem item = new JRadioButtonMenuItem(this);
-    item.setModel(createButtonModel());
+    final ButtonModel buttonModel = createButtonModel();
+    final JRadioButtonMenuItem item = new JRadioButtonMenuItem(this) {
+      @Override
+      protected void processMouseEvent(final MouseEvent e) {
+        if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
+          buttonModel.setSelected(!buttonModel.isSelected());
+        }
+        else {
+          super.processMouseEvent(e);
+        }
+      }
+    };
+    item.setModel(buttonModel);
 
     return item;
   }

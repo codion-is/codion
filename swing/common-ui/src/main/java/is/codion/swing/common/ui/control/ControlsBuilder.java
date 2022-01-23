@@ -82,7 +82,9 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls.Builder controls(final Control.Builder... controlBuilders) {
-    this.controls.addAll(Arrays.stream(controlBuilders).map(Control.Builder::build).collect(Collectors.toList()));
+    this.controls.addAll(Arrays.stream(controlBuilders)
+            .map(Control.Builder::build)
+            .collect(Collectors.toList()));
     return this;
   }
 
@@ -106,6 +108,8 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls build() {
-    return (Controls) new DefaultControls(caption, mnemonic, enabledState, icon, controls).setDescription(description).setKeyStroke(keyStroke);
+    return (Controls) new DefaultControls(caption, mnemonic, enabledState, icon, controls)
+            .setDescription(description)
+            .setKeyStroke(keyStroke);
   }
 }
