@@ -83,12 +83,18 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   @Override
   public SliderBuilder mouseWheelScrolling(final boolean mouseWheelScrolling) {
     this.mouseWheelScrolling  = mouseWheelScrolling;
+    if (mouseWheelScrolling) {
+      this.mouseWheelScrollingReversed = false;
+    }
     return this;
   }
 
   @Override
-  public SliderBuilder mouseWheelScrollingReversed(final boolean reversed) {
-    this.mouseWheelScrollingReversed = reversed;
+  public SliderBuilder mouseWheelScrollingReversed(final boolean mouseWheelScrollingReversed) {
+    this.mouseWheelScrollingReversed = mouseWheelScrollingReversed;
+    if (mouseWheelScrollingReversed) {
+      this.mouseWheelScrolling = false;
+    }
     return this;
   }
 
@@ -108,7 +114,10 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
     slider.setInverted(inverted);
     slider.setOrientation(orientation);
     if (mouseWheelScrolling) {
-      slider.addMouseWheelListener(new SliderMouseWheelListener(boundedRangeModel, mouseWheelScrollingReversed));
+      slider.addMouseWheelListener(SliderMouseWheelListener.create(boundedRangeModel));
+    }
+    if (mouseWheelScrollingReversed) {
+      slider.addMouseWheelListener(SliderMouseWheelListener.createReversed(boundedRangeModel));
     }
 
     return slider;

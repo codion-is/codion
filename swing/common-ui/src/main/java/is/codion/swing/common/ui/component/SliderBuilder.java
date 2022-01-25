@@ -66,9 +66,9 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
   SliderBuilder mouseWheelScrolling(boolean mouseWheelScrolling);
 
   /**
-   * Only applies if mouse wheel scrolling is enabled.
-   * @param reversed if true then up/away decreases the value and down/towards increases it.
+   * Enable reversed mouse wheel scrolling on the slider
+   * @param mouseWheelScrollingReversed if true then up/away decreases the value and down/towards increases it.
    * @return this builder instance
    */
-  SliderBuilder mouseWheelScrollingReversed(boolean reversed);
+  SliderBuilder mouseWheelScrollingReversed(boolean mouseWheelScrollingReversed);
 }
