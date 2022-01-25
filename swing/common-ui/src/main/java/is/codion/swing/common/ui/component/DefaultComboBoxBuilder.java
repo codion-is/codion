@@ -129,6 +129,6 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   protected C createComboBox() {
-    return (C) new SteppedComboBox<T>(comboBoxModel);
+    return (C) new SteppedComboBox<>(comboBoxModel);
   }
 }
