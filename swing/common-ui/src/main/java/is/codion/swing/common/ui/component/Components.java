@@ -173,6 +173,8 @@ public final class Components {
    * @param comboBoxModel the combo box model
    * @param linkedValue the value to link to the component
    * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
    * @return a builder for a component
    */
   public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
