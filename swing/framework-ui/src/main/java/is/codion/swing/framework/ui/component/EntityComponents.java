@@ -13,7 +13,6 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
-import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
@@ -101,7 +100,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final BooleanComboBoxBuilder booleanComboBox(final Attribute<Boolean> attribute) {
+  public final ItemComboBoxBuilder<Boolean> booleanComboBox(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())

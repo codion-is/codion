@@ -89,7 +89,7 @@ public final class Components {
   /**
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox() {
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
     return booleanComboBox((Value<Boolean>) null);
   }
 
@@ -97,7 +97,7 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox(final Value<Boolean> linkedValue) {
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox(final Value<Boolean> linkedValue) {
     return booleanComboBox(ItemComboBoxModel.createBooleanModel(), linkedValue);
   }
 
@@ -105,7 +105,7 @@ public final class Components {
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel) {
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel) {
     return booleanComboBox(comboBoxModel, null);
   }
 
@@ -114,9 +114,9 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel,
-                                                       final Value<Boolean> linkedValue) {
-    return new DefaultBooleanComboBoxBuilder(comboBoxModel, linkedValue);
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel,
+                                                             final Value<Boolean> linkedValue) {
+    return new DefaultItemComboBoxBuilder<Boolean>(comboBoxModel, linkedValue);
   }
 
   /**

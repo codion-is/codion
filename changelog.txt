@@ -7563,3 +7563,4 @@
   TableSortModel.clear() added
   ComboBoxBuilder, ItemComboBoxBuilder.mouseWheelScrolling() added
   ComboBoxBuilder and DefaultComboBoxBuilder can now be extended
+  BooleanComboBoxBuilder removed, ItemComboBoxBuilder<Boolean> used instead

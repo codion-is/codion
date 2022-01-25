@@ -10,7 +10,6 @@ import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
-import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
@@ -607,7 +606,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build boolean combo box
    * @return a boolean combo box builder
    */
-  protected BooleanComboBoxBuilder createBooleanComboBox(final Attribute<Boolean> attribute) {
+  protected ItemComboBoxBuilder<Boolean> createBooleanComboBox(final Attribute<Boolean> attribute) {
     return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute));
   }
 

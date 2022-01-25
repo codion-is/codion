@@ -225,6 +225,7 @@ public final class ApplicationPanel extends JPanel {
     label("Boolean Selection")
             .build(inputPanel::add);
     booleanComboBox(model.getBooleanSelectionValue())
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
