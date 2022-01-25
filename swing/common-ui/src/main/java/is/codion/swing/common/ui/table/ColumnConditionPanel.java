@@ -512,6 +512,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
             .preferredHeight(TextFields.getPreferredTextFieldHeight())
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
+            .mouseWheelScrolling(true)
             .build();
   }
 

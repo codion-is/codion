@@ -8,8 +8,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
-import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
@@ -606,7 +606,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build boolean combo box
    * @return a boolean combo box builder
    */
-  protected BooleanComboBoxBuilder createBooleanComboBox(final Attribute<Boolean> attribute) {
+  protected ItemComboBoxBuilder<Boolean> createBooleanComboBox(final Attribute<Boolean> attribute) {
     return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute));
   }
 
@@ -615,9 +615,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build combo box
    * @param comboBoxModel the combo box model
    * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T> ComboBoxBuilder<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
+  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     return setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel));
   }
 
@@ -635,9 +637,11 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a builder for combo boxes, containing the values of the given attribute.
    * @param attribute the attribute for which to build a combo box
    * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T> ComboBoxBuilder<T> createAttributeComboBox(final Attribute<T> attribute) {
+  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(final Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.comboBox(attribute,
             (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute)));
   }

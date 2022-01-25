@@ -8,6 +8,7 @@ import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
@@ -31,6 +32,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private boolean sorted = true;
   private boolean nullable;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
+  private boolean mouseWheelScrolling = false;
 
   DefaultItemComboBoxBuilder(final List<Item<T>> items, final Value<T> linkedValue) {
     super(linkedValue);
@@ -82,12 +84,21 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
+  public ItemComboBoxBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
+    this.mouseWheelScrolling = mouseWheelScrolling;
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
     final ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
+    }
+    if (mouseWheelScrolling) {
+      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(itemComboBoxModel));
     }
 
     return comboBox;

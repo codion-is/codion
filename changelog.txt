@@ -7594,3 +7594,9 @@
   SwingFilteredTableColumnModel.getVisibleColumns() bug fixed, did not return columns in the correct order
   SwingEntityModel.setOrderBySortOrder() moved to EntityTableModel, renamed setOrderQueryBySortOrder(), ORDER_QUERY_BY_SORT_ORDER configuration value added, implemented in FXEntityListModel, tested
   TableSortModel.clear() added
+  ComboBoxBuilder, ItemComboBoxBuilder.mouseWheelScrolling() added
+  ComboBoxBuilder and DefaultComboBoxBuilder can now be extended
+  BooleanComboBoxBuilder removed, ItemComboBoxBuilder<Boolean> used instead
+  ComboBoxBuilder.popupWidth() added
+  ForeignKeyComboBoxBuilder now extends ComboBoxBuilder
+  ColumnConditionPanel, operator combo box now has mouse wheel scrolling enabled

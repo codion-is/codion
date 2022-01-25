@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -88,7 +89,7 @@ public final class Components {
   /**
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox() {
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
     return booleanComboBox((Value<Boolean>) null);
   }
 
@@ -96,7 +97,7 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox(final Value<Boolean> linkedValue) {
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox(final Value<Boolean> linkedValue) {
     return booleanComboBox(ItemComboBoxModel.createBooleanModel(), linkedValue);
   }
 
@@ -104,7 +105,7 @@ public final class Components {
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel) {
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel) {
     return booleanComboBox(comboBoxModel, null);
   }
 
@@ -113,9 +114,9 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static BooleanComboBoxBuilder booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel,
-                                                       final Value<Boolean> linkedValue) {
-    return new DefaultBooleanComboBoxBuilder(comboBoxModel, linkedValue);
+  public static ItemComboBoxBuilder<Boolean> booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel,
+                                                             final Value<Boolean> linkedValue) {
+    return new DefaultItemComboBoxBuilder<Boolean>(comboBoxModel, linkedValue);
   }
 
   /**
@@ -159,10 +160,12 @@ public final class Components {
 
   /**
    * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBox(final ComboBoxModel<T> comboBoxModel) {
+  public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final ComboBoxModel<T> comboBoxModel) {
     return comboBox(comboBoxModel, null);
   }
 
@@ -172,7 +175,7 @@ public final class Components {
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBox(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+  public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     return new DefaultComboBoxBuilder<>(comboBoxModel, linkedValue);
   }
 
