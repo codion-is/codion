@@ -314,6 +314,7 @@ public final class ComponentsTest {
             item(2, "2"), item(3, "3"));
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue = Components.itemComboBox(items)
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .sorted(true)
             .linkedValue(value)
@@ -344,6 +345,7 @@ public final class ComponentsTest {
             .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
             .editable(true)
             .linkedValue(value)
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true).buildComponentValue();
     final JComboBox<String> box = componentValue.getComponent();
 

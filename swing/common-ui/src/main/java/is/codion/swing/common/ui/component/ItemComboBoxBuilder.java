@@ -45,4 +45,11 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedCombo
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode);
+
+  /**
+   * Enable mouse wheel scrolling on the combo box
+   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 }

@@ -112,6 +112,7 @@ public final class ApplicationPanel extends JPanel {
             .build(inputPanel::add);
     comboBox(createStringComboBoxModel(), model.getStringSelectionValue())
             .editable(true)
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
@@ -167,6 +168,7 @@ public final class ApplicationPanel extends JPanel {
     itemComboBox(integerItemComboBoxModel, model.getIntegerItemValue())
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .popupMenuControl(createSelectRandomItemControl(integerItemComboBoxModel))
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
@@ -196,6 +198,7 @@ public final class ApplicationPanel extends JPanel {
             .build(inputPanel::add);
     comboBox(createIntegerComboBoxModel(), model.getIntegerSelectionValue())
             .editable(true)
+            .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);

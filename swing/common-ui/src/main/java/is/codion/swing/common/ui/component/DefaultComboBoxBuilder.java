@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
@@ -25,6 +26,7 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
   private ListCellRenderer<T> renderer;
   private ComboBoxEditor editor;
+  private boolean mouseWheelScrolling = false;
 
   DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
@@ -57,6 +59,12 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   }
 
   @Override
+  public ComboBoxBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
+    this.mouseWheelScrolling = mouseWheelScrolling;
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<T> buildComponent() {
     final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
     if (renderer != null) {
@@ -70,6 +78,9 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
     }
     if (!editable && editor == null) {
       Completion.enable(comboBox, completionMode);
+    }
+    if (mouseWheelScrolling) {
+      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel));
     }
 
     return comboBox;

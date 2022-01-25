@@ -34,4 +34,11 @@ public interface ComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<
    * @return this builder instance
    */
   ComboBoxBuilder<T> editor(ComboBoxEditor editor);
+
+  /**
+   * Enable mouse wheel scrolling on the combo box
+   * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
+   * @return this builder instance
+   */
+  ComboBoxBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 }
