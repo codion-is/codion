@@ -26,12 +26,19 @@ class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBox
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
   private ListCellRenderer<T> renderer;
   private ComboBoxEditor editor;
+  private int popupWidth;
   private boolean mouseWheelScrolling = false;
 
   DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
     this.comboBoxModel = comboBoxModel;
     preferredHeight(getPreferredTextFieldHeight());
+  }
+
+  @Override
+  public final B popupWidth(final int popupWidth) {
+    this.popupWidth = popupWidth;
+    return (B) this;
   }
 
   @Override
@@ -78,6 +85,9 @@ class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBox
     }
     if (!editable && editor == null) {
       Completion.enable(comboBox, completionMode);
+    }
+    if (popupWidth > 0) {
+      comboBox.setPopupWidth(popupWidth);
     }
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel));

@@ -18,6 +18,12 @@ import javax.swing.ListCellRenderer;
 public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
 
   /**
+   * @param popupWidth the required popup with
+   * @return this builder instance
+   */
+  B popupWidth(int popupWidth);
+
+  /**
    * @param editable specifies whether the combo box should be editable
    * @return this builder instance
    */
