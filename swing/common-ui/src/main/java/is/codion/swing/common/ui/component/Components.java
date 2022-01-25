@@ -116,7 +116,7 @@ public final class Components {
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(final ItemComboBoxModel<Boolean> comboBoxModel,
                                                              final Value<Boolean> linkedValue) {
-    return new DefaultItemComboBoxBuilder<Boolean>(comboBoxModel, linkedValue);
+    return new DefaultItemComboBoxBuilder<>(comboBoxModel, linkedValue);
   }
 
   /**

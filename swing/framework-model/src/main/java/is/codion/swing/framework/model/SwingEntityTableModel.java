@@ -877,7 +877,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   private OrderBy getOrderByFromSortModel() {
-    final EntityDefinition definition = getEntityDefinition();
     final OrderBy orderBy = OrderBy.orderBy();
     getSortModel().getColumnSortOrder().entrySet().stream()
             .filter(entry -> isColumnProperty(entry.getKey()))
