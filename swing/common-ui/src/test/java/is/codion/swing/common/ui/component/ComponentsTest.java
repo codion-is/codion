@@ -314,7 +314,7 @@ public final class ComponentsTest {
             item(2, "2"), item(3, "3"));
     final Value<Integer> value = Value.value();
     final ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue = Components.itemComboBox(items)
-            .mouseWheelScrolling(true)
+            .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true)
             .sorted(true)
             .linkedValue(value)
@@ -345,7 +345,7 @@ public final class ComponentsTest {
             .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
             .editable(true)
             .linkedValue(value)
-            .mouseWheelScrolling(true)
+            .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true).buildComponentValue();
     final JComboBox<String> box = componentValue.getComponent();
 
@@ -459,7 +459,6 @@ public final class ComponentsTest {
             .maximum(100d)
             .stepSize(10d)
             .columns(5)
-            .mouseWheelScrolling(true)
             .mouseWheelScrollingReversed(true)
             .transferFocusOnEnter(true)
             .linkedValue(value)
@@ -512,7 +511,6 @@ public final class ComponentsTest {
             .inverted(false)
             .minorTickSpacing(1)
             .majorTickSpacing(10)
-            .mouseWheelScrolling(true)
             .mouseWheelScrollingReversed(true)
             .linkedValue(value)
             .orientation(SwingConstants.VERTICAL)

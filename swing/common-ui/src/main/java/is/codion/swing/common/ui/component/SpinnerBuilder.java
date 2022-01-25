@@ -30,11 +30,11 @@ public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends Compo
   B mouseWheelScrolling(boolean mouseWheelScrolling);
 
   /**
-   * Only applies if mouse wheel scrolling is enabled.
-   * @param reversed if true then up/away decreases the value and down/towards increases it.
+   * Enable reversed mouse wheel scrolling on the spinner
+   * @param mouseWheelScrollingReversed if true then up/away decreases the value and down/towards increases it.
    * @return this builder instance
    */
-  B mouseWheelScrollingReversed(boolean reversed);
+  B mouseWheelScrollingReversed(boolean mouseWheelScrollingReversed);
 
   /**
    * @param horizontalAlignment the horizontal text alignment

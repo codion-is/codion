@@ -28,6 +28,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   private ComboBoxEditor editor;
   private int popupWidth;
   private boolean mouseWheelScrolling = false;
+  private boolean mouseWheelScrollingWithWrapAround = false;
 
   protected DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
@@ -68,6 +69,18 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   @Override
   public final B mouseWheelScrolling(final boolean mouseWheelScrolling) {
     this.mouseWheelScrolling = mouseWheelScrolling;
+    if (mouseWheelScrolling) {
+      this.mouseWheelScrollingWithWrapAround = false;
+    }
+    return (B) this;
+  }
+
+  @Override
+  public final B mouseWheelScrollingWithWrapAround(final boolean mouseWheelScrollingWithWrapAround) {
+    this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
+    if (mouseWheelScrollingWithWrapAround) {
+      this.mouseWheelScrolling = false;
+    }
     return (B) this;
   }
 
@@ -90,7 +103,10 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
       comboBox.setPopupWidth(popupWidth);
     }
     if (mouseWheelScrolling) {
-      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel));
+      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(comboBoxModel));
+    }
+    if (mouseWheelScrollingWithWrapAround) {
+      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.createWithWrapAround(comboBoxModel));
     }
 
     return comboBox;
@@ -113,6 +129,6 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   protected C createComboBox() {
-    return (C) new SteppedComboBox<T>(comboBoxModel);
+    return (C) new SteppedComboBox<>(comboBoxModel);
   }
 }

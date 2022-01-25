@@ -33,6 +33,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private boolean nullable;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
   private boolean mouseWheelScrolling = false;
+  private boolean mouseWheelScrollingWithWrapAround = false;
 
   DefaultItemComboBoxBuilder(final List<Item<T>> items, final Value<T> linkedValue) {
     super(linkedValue);
@@ -86,6 +87,18 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   @Override
   public ItemComboBoxBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
     this.mouseWheelScrolling = mouseWheelScrolling;
+    if (mouseWheelScrolling) {
+      this.mouseWheelScrollingWithWrapAround = false;
+    }
+    return this;
+  }
+
+  @Override
+  public ItemComboBoxBuilder<T> mouseWheelScrollingWithWrapAround(final boolean mouseWheelScrollingWithWrapAround) {
+    this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
+    if (mouseWheelScrollingWithWrapAround) {
+      this.mouseWheelScrolling = false;
+    }
     return this;
   }
 
@@ -98,7 +111,10 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
       comboBox.setPopupWidth(popupWidth);
     }
     if (mouseWheelScrolling) {
-      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(itemComboBoxModel));
+      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(itemComboBoxModel));
+    }
+    if (mouseWheelScrollingWithWrapAround) {
+      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.createWithWrapAround(comboBoxModel));
     }
 
     return comboBox;

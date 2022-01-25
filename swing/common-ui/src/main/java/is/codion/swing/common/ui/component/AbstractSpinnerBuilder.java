@@ -44,12 +44,18 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   @Override
   public final B mouseWheelScrolling(final boolean mouseWheelScrolling) {
     this.mouseWheelScrolling  = mouseWheelScrolling;
+    if (mouseWheelScrolling) {
+      this.mouseWheelScrollingReversed = false;
+    }
     return (B) this;
   }
 
   @Override
-  public B mouseWheelScrollingReversed(final boolean reversed) {
-    this.mouseWheelScrollingReversed = reversed;
+  public B mouseWheelScrollingReversed(final boolean mouseWheelScrollingReversed) {
+    this.mouseWheelScrollingReversed = mouseWheelScrollingReversed;
+    if (mouseWheelScrollingReversed) {
+      this.mouseWheelScrolling = false;
+    }
     return (B) this;
   }
 
@@ -81,7 +87,10 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
       }
     }
     if (mouseWheelScrolling) {
-      spinner.addMouseWheelListener(new SpinnerMouseWheelListener(spinnerModel, mouseWheelScrollingReversed));
+      spinner.addMouseWheelListener(SpinnerMouseWheelListener.create(spinnerModel));
+    }
+    if (mouseWheelScrollingReversed) {
+      spinner.addMouseWheelListener(SpinnerMouseWheelListener.createReversed(spinnerModel));
     }
 
     return spinner;
