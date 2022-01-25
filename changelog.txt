@@ -7565,3 +7565,4 @@
   ComboBoxBuilder and DefaultComboBoxBuilder can now be extended
   BooleanComboBoxBuilder removed, ItemComboBoxBuilder<Boolean> used instead
   ComboBoxBuilder.popupWidth() added
+  ForeignKeyComboBoxBuilder now extends ComboBoxBuilder

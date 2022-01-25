@@ -17,10 +17,10 @@ import javax.swing.ListCellRenderer;
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
+public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
         implements ComboBoxBuilder<T, C, B> {
 
-  private final ComboBoxModel<T> comboBoxModel;
+  protected final ComboBoxModel<T> comboBoxModel;
 
   private boolean editable = false;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
@@ -29,7 +29,7 @@ class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBox
   private int popupWidth;
   private boolean mouseWheelScrolling = false;
 
-  DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+  protected DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
     this.comboBoxModel = comboBoxModel;
     preferredHeight(getPreferredTextFieldHeight());

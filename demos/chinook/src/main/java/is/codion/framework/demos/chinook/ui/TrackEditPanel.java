@@ -32,12 +32,14 @@ public final class TrackEditPanel extends EntityEditPanel {
     createForeignKeySearchField(Track.ALBUM_FK);
     createTextField(Track.NAME);
     final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK)
+            .mouseWheelScrolling(true)
             .build();
     final Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
             .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
     final JPanel mediaTypePanel = Panels.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
     final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
+            .mouseWheelScrolling(true)
             .build();
     final Action newGenreAction = EntityPanel.builder(Genre.TYPE)
             .editPanelClass(GenreEditPanel.class)
