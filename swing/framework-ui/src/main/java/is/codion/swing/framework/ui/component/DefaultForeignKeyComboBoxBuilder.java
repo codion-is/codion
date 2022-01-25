@@ -8,8 +8,6 @@ import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
-
 final class DefaultForeignKeyComboBoxBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, ForeignKeyComboBoxBuilder>
         implements ForeignKeyComboBoxBuilder {
 
@@ -17,7 +15,6 @@ final class DefaultForeignKeyComboBoxBuilder extends DefaultComboBoxBuilder<Enti
 
   DefaultForeignKeyComboBoxBuilder(final SwingEntityComboBoxModel comboBoxModel) {
     super(comboBoxModel, null);
-    preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override
