@@ -83,6 +83,15 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   @Override
+  public final void clear() {
+    if (!sortingStates.isEmpty()) {
+      final C firstSortColumn = getSortingStatesOrderedByPriority().get(0).getKey();
+      sortingStates.clear();
+      sortingChangedEvent.onEvent(firstSortColumn);
+    }
+  }
+
+  @Override
   public final void addSortingChangedListener(final EventDataListener<C> listener) {
     sortingChangedEvent.addDataListener(listener);
   }

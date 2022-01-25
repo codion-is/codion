@@ -40,6 +40,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    */
   PropertyValue<Boolean> INCLUDE_HIDDEN_COLUMNS_IN_QUERY = Configuration.booleanValue("codion.client.includeHiddenColumnsInQuery", true);
 
+  /**
+   * Specifies whether the table model sort order is used as a basis for the query order by clause.
+   * Note that this only applies to column properties.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder", false);
+
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
   String PREFERENCES_COLUMN_VISIBLE = "visible";
@@ -277,6 +285,20 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #INCLUDE_HIDDEN_COLUMNS_IN_QUERY
    */
   void setIncludeHiddenColumnsInQuery(boolean includeHiddenColumnsInQuery);
+
+  /**
+   * Specifies whether the current sort order is used as a basis for the query order by clause.
+   * Note that this only applies to column properties.
+   * @return true if the current sort order should be used as a basis for the query order by clause
+   */
+  boolean isOrderQueryBySortOrder();
+
+  /**
+   * Specifies whether the current sort order is used as a basis for the query order by clause.
+   * Note that this only applies to column properties.
+   * @param orderQueryBySortOrder true if the current sort order should be used as a basis for the query order by clause
+   */
+  void setOrderQueryBySortOrder(boolean orderQueryBySortOrder);
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty

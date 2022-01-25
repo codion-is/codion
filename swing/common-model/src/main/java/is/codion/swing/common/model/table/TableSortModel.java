@@ -67,6 +67,12 @@ public interface TableSortModel<R, C> {
   Class<?> getColumnClass(C columnIdentifier);
 
   /**
+   * Clears the sorting states from this sort model. Note that only one sorting change event
+   * will happen, with the first sort column.
+   */
+  void clear();
+
+  /**
    * @param listener a listener notified each time the sorting state changes, with the column identifier as event data
    */
   void addSortingChangedListener(EventDataListener<C> listener);

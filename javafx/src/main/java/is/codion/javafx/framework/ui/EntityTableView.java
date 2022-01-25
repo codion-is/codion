@@ -59,6 +59,7 @@ public class EntityTableView extends TableView<Entity> {
     super(listModel.getSortedList());
     this.listModel = listModel;
     this.listModel.setSelectionModel(getSelectionModel());
+    this.listModel.setColumnSortOrder(getSortOrder());
     this.filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
     initializeToolPane();
