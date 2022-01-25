@@ -38,7 +38,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> INCLUDE_HIDDEN_COLUMNS_IN_QUERY = Configuration.booleanValue("codion.client.includeHiddenColumnsInQuery", true);
+  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("codion.client.queryHiddenColumns", true);
 
   /**
    * Specifies whether the table model sort order is used as a basis for the query order by clause.
@@ -278,13 +278,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Returns whether the values of hidden columns are included when querying data
    * @return true if the values of hidden columns are included when querying data
    */
-  boolean isIncludeHiddenColumnsInQuery();
+  boolean isQueryHiddenColumns();
 
   /**
-   * @param includeHiddenColumnsInQuery true if the values of hidden columns should be included when querying data
-   * @see #INCLUDE_HIDDEN_COLUMNS_IN_QUERY
+   * @param queryHiddenColumns true if the values of hidden columns should be included when querying data
+   * @see #QUERY_HIDDEN_COLUMNS
    */
-  void setIncludeHiddenColumnsInQuery(boolean includeHiddenColumnsInQuery);
+  void setQueryHiddenColumns(boolean queryHiddenColumns);
 
   /**
    * Specifies whether the current sort order is used as a basis for the query order by clause.

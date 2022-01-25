@@ -7569,3 +7569,4 @@
   ColumnConditionPanel, operator combo box now has mouse wheel scrolling enabled
   ComboBoxMouseWheelListener public constructor replaced with factory methods, wrap-around now optional
   SliderMouseWheelListener, SpinnerMouseWheelListener, public constructors replaced with static factory methods
+  EntityTableModel.includeHiddenColumnsInQuery renamed queryHiddenColumns

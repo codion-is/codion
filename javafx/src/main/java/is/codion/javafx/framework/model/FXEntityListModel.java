@@ -72,7 +72,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean refreshOnForeignKeyConditionValuesSet = true;
   private boolean editable = false;
   private int limit = -1;
-  private boolean includeHiddenColumnsInQuery = INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
+  private boolean queryHiddenColumns = QUERY_HIDDEN_COLUMNS.get();
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
@@ -316,13 +316,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final boolean isIncludeHiddenColumnsInQuery() {
-    return includeHiddenColumnsInQuery;
+  public final boolean isQueryHiddenColumns() {
+    return queryHiddenColumns;
   }
 
   @Override
-  public final void setIncludeHiddenColumnsInQuery(final boolean includeHiddenColumnsInQuery) {
-    this.includeHiddenColumnsInQuery = includeHiddenColumnsInQuery;
+  public final void setQueryHiddenColumns(final boolean queryHiddenColumns) {
+    this.queryHiddenColumns = queryHiddenColumns;
   }
 
   @Override
@@ -533,12 +533,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /**
    * Specifies the attributes to select when querying data. Return an empty list if all should be included.
-   * This method should take the {@link #isIncludeHiddenColumnsInQuery()} setting into account.
+   * This method should take the {@link #isQueryHiddenColumns()} setting into account.
    * @return the attributes to select when querying data, an empty list if all should be selected.
-   * @see #isIncludeHiddenColumnsInQuery()
+   * @see #isQueryHiddenColumns()
    */
   protected Collection<Attribute<?>> getSelectAttributes() {
-    if (includeHiddenColumnsInQuery || initialColumns.size() == columns.size()) {
+    if (queryHiddenColumns || initialColumns.size() == columns.size()) {
       return emptyList();
     }
 
