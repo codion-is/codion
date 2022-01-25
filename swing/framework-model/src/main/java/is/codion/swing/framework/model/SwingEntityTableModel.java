@@ -144,7 +144,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * Specifies whether to use the current sort order as the query order by clause
    */
-  private boolean orderBySortOrder = false;
+  private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
    * Instantiates a new SwingEntityTableModel with default column and condition models.
@@ -272,6 +272,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
+  public final boolean isOrderQueryBySortOrder() {
+    return orderQueryBySortOrder;
+  }
+
+  @Override
+  public final void setOrderQueryBySortOrder(final boolean orderQueryBySortOrder) {
+    this.orderQueryBySortOrder = orderQueryBySortOrder;
+  }
+
+  @Override
   public final State getQueryConditionRequiredState() {
     return queryConditionRequiredState;
   }
@@ -362,24 +372,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
-  }
-
-  /**
-   * Specifies whether to the current sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column properties.
-   * @return true if the current sort order should be used as a basis for the query order by clause
-   */
-  public final boolean isOrderBySortOrder() {
-    return orderBySortOrder;
-  }
-
-  /**
-   * Specifies whether to the current sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column properties.
-   * @param orderBySortOrder true if the current sort order should be used as a basis for the query order by clause
-   */
-  public final void setOrderBySortOrder(final boolean orderBySortOrder) {
-    this.orderBySortOrder = orderBySortOrder;
   }
 
   /**
@@ -735,7 +727,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @see EntityDefinition#getOrderBy()
    */
   protected OrderBy getOrderBy() {
-    if (orderBySortOrder && getSortModel().isSortingEnabled()) {
+    if (orderQueryBySortOrder && getSortModel().isSortingEnabled()) {
       final OrderBy orderBy = getOrderByFromSortModel();
       if (!orderBy.getOrderByAttributes().isEmpty()) {
         return orderBy;

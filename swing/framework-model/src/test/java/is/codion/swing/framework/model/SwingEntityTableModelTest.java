@@ -9,6 +9,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.model.DefaultConditionModelFactory;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
@@ -240,5 +241,51 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     model.clearPreferences();
     UserPreferences.flushUserPreferences();
+  }
+
+  @Test
+  void orderQueryBySortOrder() {
+    final SwingEntityTableModel tableModel = createEmployeeTableModel();
+    OrderBy orderBy = tableModel.getOrderBy();
+    //default order by for entity
+    assertEquals(2, orderBy.getOrderByAttributes().size());
+    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.getOrderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+
+    tableModel.getSortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    orderBy = tableModel.getOrderBy();
+    //still default order by for entity
+    assertEquals(2, orderBy.getOrderByAttributes().size());
+    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.getOrderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+
+    tableModel.setOrderQueryBySortOrder(true);
+    orderBy = tableModel.getOrderBy();
+    assertEquals(1, orderBy.getOrderByAttributes().size());
+    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(0).getAttribute());
+
+    tableModel.getSortModel().setSortOrder(TestDomain.EMP_HIREDATE, SortOrder.DESCENDING);
+    tableModel.getSortModel().addSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+
+    orderBy = tableModel.getOrderBy();
+    assertEquals(2, orderBy.getOrderByAttributes().size());
+    assertFalse(orderBy.getOrderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_HIREDATE, orderBy.getOrderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+
+    tableModel.getSortModel().clear();
+    orderBy = tableModel.getOrderBy();
+    //back to default order by for entity
+    assertEquals(2, orderBy.getOrderByAttributes().size());
+    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.getOrderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
   }
 }

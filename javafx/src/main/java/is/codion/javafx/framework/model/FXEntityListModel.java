@@ -19,6 +19,8 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
@@ -27,6 +29,7 @@ import is.codion.javafx.framework.ui.EntityTableColumn;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +63,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
+  private ObservableList<TableColumn<Entity, ?>> columnSortOrder;
   private List<AttributeTableColumn<?>> initialColumns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
@@ -68,7 +72,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean refreshOnForeignKeyConditionValuesSet = true;
   private boolean editable = false;
   private int limit = -1;
-  private boolean includeHiddenColumnsInQuery = EntityTableModel.INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
+  private boolean includeHiddenColumnsInQuery = INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
+  private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
    * Instantiates a new {@link FXEntityListModel} based on the given entityType
@@ -141,6 +146,24 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     this.columns = columns;
     this.initialColumns = new ArrayList<>((Collection<AttributeTableColumn<?>>) columns);
     applyPreferences();
+  }
+
+  /**
+   * Sets the column sort order
+   * @param columnSortOrder the column sort order
+   */
+  public final void setColumnSortOrder(final ObservableList<TableColumn<Entity, ?>> columnSortOrder) {
+    if (this.columnSortOrder != null) {
+      throw new IllegalStateException("Column sort order has already been set");
+    }
+    this.columnSortOrder = columnSortOrder;
+  }
+
+  /**
+   * @return the column sort order
+   */
+  public final ObservableList<TableColumn<Entity, ?>> getColumnSortOrder() {
+    return columnSortOrder;
   }
 
   /**
@@ -300,6 +323,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void setIncludeHiddenColumnsInQuery(final boolean includeHiddenColumnsInQuery) {
     this.includeHiddenColumnsInQuery = includeHiddenColumnsInQuery;
+  }
+
+  @Override
+  public final boolean isOrderQueryBySortOrder() {
+    return orderQueryBySortOrder;
+  }
+
+  @Override
+  public final void setOrderQueryBySortOrder(final boolean orderQueryBySortOrder) {
+    this.orderQueryBySortOrder = orderQueryBySortOrder;
   }
 
   @Override
@@ -488,6 +521,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @see EntityDefinition#getOrderBy()
    */
   protected OrderBy getOrderBy() {
+    if (orderQueryBySortOrder && columnSortOrder != null && !columnSortOrder.isEmpty()) {
+      final OrderBy orderBy = getOrderByFromSortModel();
+      if (!orderBy.getOrderByAttributes().isEmpty()) {
+        return orderBy;
+      }
+    }
+
     return getEntityDefinition().getOrderBy();
   }
 
@@ -579,6 +619,30 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       return toReplaceWith == null ? entity : toReplaceWith;
     });
     getSelectionModel().setSelectedIndexes(selected);
+  }
+
+  private OrderBy getOrderByFromSortModel() {
+    final EntityDefinition definition = getEntityDefinition();
+    final OrderBy orderBy = OrderBy.orderBy();
+    columnSortOrder.stream()
+            .map(EntityTableColumn.class::cast)
+            .filter(column -> isColumnProperty(column.getAttribute()))
+            .forEach(column -> {
+              if (column.getSortType() == SortType.ASCENDING) {
+                orderBy.ascending(column.getAttribute());
+              }
+              else {
+                orderBy.descending(column.getAttribute());
+              }
+            });
+
+    return orderBy;
+  }
+
+  private boolean isColumnProperty(final Attribute<?> attribute) {
+    final Property<?> property = getEntityDefinition().getProperty(attribute);
+
+    return property instanceof ColumnProperty;
   }
 
   private void applyPreferences() {
