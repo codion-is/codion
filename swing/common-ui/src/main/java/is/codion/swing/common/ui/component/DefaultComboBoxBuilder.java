@@ -17,8 +17,8 @@ import javax.swing.ListCellRenderer;
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<T>, ComboBoxBuilder<T>>
-        implements ComboBoxBuilder<T> {
+class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
+        implements ComboBoxBuilder<T, C, B> {
 
   private final ComboBoxModel<T> comboBoxModel;
 
@@ -35,38 +35,38 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   }
 
   @Override
-  public ComboBoxBuilder<T> editable(final boolean editable) {
+  public final B editable(final boolean editable) {
     this.editable = editable;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComboBoxBuilder<T> completionMode(final Completion.Mode completionMode) {
+  public final B completionMode(final Completion.Mode completionMode) {
     this.completionMode = requireNonNull(completionMode);
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComboBoxBuilder<T> renderer(final ListCellRenderer<T> renderer) {
+  public final B renderer(final ListCellRenderer<T> renderer) {
     this.renderer = requireNonNull(renderer);
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComboBoxBuilder<T> editor(final ComboBoxEditor editor) {
+  public final B editor(final ComboBoxEditor editor) {
     this.editor = requireNonNull(editor);
-    return this;
+    return (B) this;
   }
 
   @Override
-  public ComboBoxBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
+  public final B mouseWheelScrolling(final boolean mouseWheelScrolling) {
     this.mouseWheelScrolling = mouseWheelScrolling;
-    return this;
+    return (B) this;
   }
 
   @Override
-  protected SteppedComboBox<T> buildComponent() {
-    final SteppedComboBox<T> comboBox = new SteppedComboBox<>(comboBoxModel);
+  protected final C buildComponent() {
+    final C comboBox = createComboBox();
     if (renderer != null) {
       comboBox.setRenderer(renderer);
     }
@@ -87,18 +87,22 @@ final class DefaultComboBoxBuilder<T> extends AbstractComponentBuilder<T, Steppe
   }
 
   @Override
-  protected ComponentValue<T, SteppedComboBox<T>> buildComponentValue(final SteppedComboBox<T> component) {
+  protected final ComponentValue<T, C> buildComponentValue(final C component) {
     return ComponentValues.comboBox(component);
   }
 
   @Override
-  protected void setTransferFocusOnEnter(final SteppedComboBox<T> component) {
+  protected final void setTransferFocusOnEnter(final C component) {
     component.setTransferFocusOnEnter(true);
     TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override
-  protected void setInitialValue(final SteppedComboBox<T> component, final T initialValue) {
+  protected final void setInitialValue(final C component, final T initialValue) {
     component.setSelectedItem(initialValue);
+  }
+
+  protected C createComboBox() {
+    return (C) new SteppedComboBox<T>(comboBoxModel);
   }
 }

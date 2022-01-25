@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -159,10 +160,12 @@ public final class Components {
 
   /**
    * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBox(final ComboBoxModel<T> comboBoxModel) {
+  public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final ComboBoxModel<T> comboBoxModel) {
     return comboBox(comboBoxModel, null);
   }
 
@@ -172,7 +175,7 @@ public final class Components {
    * @param <T> the value type
    * @return a builder for a component
    */
-  public static <T> ComboBoxBuilder<T> comboBox(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+  public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     return new DefaultComboBoxBuilder<>(comboBoxModel, linkedValue);
   }
 

@@ -11,6 +11,7 @@ import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.BooleanComboBoxBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
@@ -167,12 +168,14 @@ public class EntityComponents {
    * @param attribute the attribute
    * @param comboBoxModel the combo box model
    * @param <T> the attribute type
+   * @param <C> the component type
+   * @param <B> the builder type
    * @return a builder
    */
-  public final <T> ComboBoxBuilder<T> comboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
+  public final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return Components.comboBox(comboBoxModel)
+    return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
             .toolTipText(property.getDescription());
   }
 

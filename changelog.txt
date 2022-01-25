@@ -7562,3 +7562,4 @@
   SwingEntityModel.setOrderBySortOrder() moved to EntityTableModel, renamed setOrderQueryBySortOrder(), ORDER_QUERY_BY_SORT_ORDER configuration value added, implemented in FXEntityListModel, tested
   TableSortModel.clear() added
   ComboBoxBuilder, ItemComboBoxBuilder.mouseWheelScrolling() added
+  ComboBoxBuilder and DefaultComboBoxBuilder can now be extended
