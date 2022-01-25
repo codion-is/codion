@@ -112,7 +112,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * Specifies whether the values of hidden columns are included in the underlying query
    */
-  private boolean includeHiddenColumnsInQuery = EntityTableModel.INCLUDE_HIDDEN_COLUMNS_IN_QUERY.get();
+  private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
 
   /**
    * If true then items deleted via the edit model are removed from this table model
@@ -262,13 +262,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final boolean isIncludeHiddenColumnsInQuery() {
-    return includeHiddenColumnsInQuery;
+  public final boolean isQueryHiddenColumns() {
+    return queryHiddenColumns;
   }
 
   @Override
-  public final void setIncludeHiddenColumnsInQuery(final boolean includeHiddenColumnsInQuery) {
-    this.includeHiddenColumnsInQuery = includeHiddenColumnsInQuery;
+  public final void setQueryHiddenColumns(final boolean queryHiddenColumns) {
+    this.queryHiddenColumns = queryHiddenColumns;
   }
 
   @Override
@@ -739,12 +739,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   /**
    * Specifies the attributes to select when querying data. Return an empty list if all should be included.
-   * This method should take the {@link #isIncludeHiddenColumnsInQuery()} setting into account.
+   * This method should take the {@link #isQueryHiddenColumns()} setting into account.
    * @return the attributes to select when querying data, an empty list if all should be selected.
-   * @see #isIncludeHiddenColumnsInQuery()
+   * @see #isQueryHiddenColumns()
    */
   protected Collection<Attribute<?>> getSelectAttributes() {
-    if (includeHiddenColumnsInQuery || getColumnModel().getHiddenColumns().isEmpty()) {
+    if (queryHiddenColumns || getColumnModel().getHiddenColumns().isEmpty()) {
       return emptyList();
     }
 
