@@ -7566,3 +7566,4 @@
   BooleanComboBoxBuilder removed, ItemComboBoxBuilder<Boolean> used instead
   ComboBoxBuilder.popupWidth() added
   ForeignKeyComboBoxBuilder now extends ComboBoxBuilder
+  ColumnConditionPanel, operator combo box now has mouse wheel scrolling enabled
