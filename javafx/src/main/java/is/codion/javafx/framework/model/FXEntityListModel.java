@@ -463,7 +463,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
 
     return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
-            getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
+                    getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }
 
@@ -622,7 +622,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private OrderBy getOrderByFromSortModel() {
-    final EntityDefinition definition = getEntityDefinition();
     final OrderBy orderBy = OrderBy.orderBy();
     columnSortOrder.stream()
             .map(EntityTableColumn.class::cast)
