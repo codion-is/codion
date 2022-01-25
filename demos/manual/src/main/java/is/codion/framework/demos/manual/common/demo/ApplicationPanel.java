@@ -168,7 +168,7 @@ public final class ApplicationPanel extends JPanel {
     itemComboBox(integerItemComboBoxModel, model.getIntegerItemValue())
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .popupMenuControl(createSelectRandomItemControl(integerItemComboBoxModel))
-            .mouseWheelScrolling(true)
+            .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);

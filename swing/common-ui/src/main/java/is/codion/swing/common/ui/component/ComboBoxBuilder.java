@@ -53,4 +53,11 @@ public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends Comb
    * @return this builder instance
    */
   B mouseWheelScrolling(boolean mouseWheelScrolling);
+
+  /**
+   * Enable mouse wheel scrolling on the combo box, with wrap around
+   * @param mouseWheelScrollingWithWrapAround true if mouse wheel scrolling with wrap around should be enabled
+   * @return this builder instance
+   */
+  B mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround);
 }
