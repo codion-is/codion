@@ -7570,3 +7570,4 @@
   ComboBoxMouseWheelListener public constructor replaced with factory methods, wrap-around now optional
   SliderMouseWheelListener, SpinnerMouseWheelListener, public constructors replaced with static factory methods
   EntityTableModel.includeHiddenColumnsInQuery renamed queryHiddenColumns
+  EntityTableConditionModel.add/removeConditionListener() and getConditionObserver() renamed add/removeConditionChangedListener() and getConditionChangedObserver() respectively

@@ -233,17 +233,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public StateObserver getConditionObserver() {
+  public StateObserver getConditionChangedObserver() {
     return conditionChangedState.getObserver();
   }
 
   @Override
-  public void addConditionListener(final EventListener listener) {
+  public void addConditionChangedListener(final EventListener listener) {
     conditionChangedState.addListener(listener);
   }
 
   @Override
-  public void removeConditionListener(final EventListener listener) {
+  public void removeConditionChangedListener(final EventListener listener) {
     conditionChangedState.removeListener(listener);
   }
 

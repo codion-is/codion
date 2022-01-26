@@ -148,7 +148,7 @@ public class DefaultEntityTableConditionModelTest {
   void conditionChangedListener() {
     final AtomicInteger counter = new AtomicInteger();
     final EventListener conditionChangedListener = counter::incrementAndGet;
-    conditionModel.addConditionListener(conditionChangedListener);
+    conditionModel.addConditionChangedListener(conditionChangedListener);
     final ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
             conditionModel.getConditionModel(TestDomain.EMP_COMMISSION);
     commissionModel.setEnabled(true);
@@ -159,7 +159,7 @@ public class DefaultEntityTableConditionModelTest {
     commissionModel.setLowerBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(3, counter.get());
-    this.conditionModel.removeConditionListener(conditionChangedListener);
+    this.conditionModel.removeConditionChangedListener(conditionChangedListener);
   }
 
   @Test

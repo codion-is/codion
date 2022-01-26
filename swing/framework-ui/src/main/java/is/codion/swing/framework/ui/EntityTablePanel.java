@@ -1359,7 +1359,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final JButton button = Components.button(control(tableModel::refresh))
-            .enabledState(tableModel.getTableConditionModel().getConditionObserver())
+            .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
             .toolTipText(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired())
             .build();
@@ -1459,7 +1459,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(Control.builder(tableModel::refresh)
-                      .enabledState(tableModel.getTableConditionModel().getConditionObserver())
+                      .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
                       .build())
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
