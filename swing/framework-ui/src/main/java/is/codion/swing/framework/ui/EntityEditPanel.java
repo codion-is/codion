@@ -258,6 +258,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @param controlCode the control code
    * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
+   * @see #containsControl(EntityEditPanel.ControlCode)
    */
   public final Control getControl(final ControlCode controlCode) {
     if (!containsControl(controlCode)) {
