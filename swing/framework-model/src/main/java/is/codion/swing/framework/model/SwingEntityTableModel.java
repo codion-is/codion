@@ -740,7 +740,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * Specifies the attributes to select when querying data. Return an empty list if all should be included.
    * This method should take the {@link #isQueryHiddenColumns()} setting into account.
-   * @return the attributes to select when querying data, an empty list if all should be selected.
+   * @return the attributes to select when querying data, an empty Collection if all should be selected.
    * @see #isQueryHiddenColumns()
    */
   protected Collection<Attribute<?>> getSelectAttributes() {
