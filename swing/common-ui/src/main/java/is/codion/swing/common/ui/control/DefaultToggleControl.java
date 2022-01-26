@@ -62,6 +62,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
       }
     };
     item.setModel(buttonModel);
+    addPropertyChangeListener(new ButtonPropertyChangeListener(item));
 
     return item;
   }
@@ -84,6 +85,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
       }
     };
     item.setModel(buttonModel);
+    addPropertyChangeListener(new ButtonPropertyChangeListener(item));
 
     return item;
   }
@@ -111,14 +113,17 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public JCheckBox createCheckBox() {
+    final JCheckBox checkBox;
     final ButtonModel buttonModel = createButtonModel();
     if (buttonModel instanceof NullableToggleButtonModel) {
-      return new NullableCheckBox((NullableToggleButtonModel) buttonModel, getCaption());
+      checkBox = new NullableCheckBox((NullableToggleButtonModel) buttonModel, getCaption());
     }
-
-    final JCheckBox checkBox = new JCheckBox(this);
-    checkBox.setModel(buttonModel);
+    else {
+      checkBox = new JCheckBox(this);
+      checkBox.setModel(buttonModel);
+    }
     checkBox.setMnemonic(getMnemonic());
+    addPropertyChangeListener(new ButtonPropertyChangeListener(checkBox));
 
     return checkBox;
   }
@@ -129,6 +134,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     toggleButton.setModel(createButtonModel());
     toggleButton.setText(getCaption());
     toggleButton.setMnemonic(getMnemonic());
+    addPropertyChangeListener(new ButtonPropertyChangeListener(toggleButton));
 
     return toggleButton;
   }

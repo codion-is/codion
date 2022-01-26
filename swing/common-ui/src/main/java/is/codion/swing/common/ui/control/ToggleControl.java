@@ -114,10 +114,10 @@ public interface ToggleControl extends Control {
     Builder mnemonic(char mnemonic);
 
     /**
-     * @param icon the control icon
+     * @param smallIcon the small control icon
      * @return this Builder instance
      */
-    Builder icon(Icon icon);
+    Builder smallIcon(Icon smallIcon);
 
     /**
      * @param description a string describing the control

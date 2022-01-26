@@ -7571,3 +7571,8 @@
   SliderMouseWheelListener, SpinnerMouseWheelListener, public constructors replaced with static factory methods
   EntityTableModel.includeHiddenColumnsInQuery renamed queryHiddenColumns
   EntityTableConditionModel.add/removeConditionListener() and getConditionObserver() renamed add/removeConditionChangedListener() and getConditionChangedObserver() respectively
+  EntityEditPanel.containsControl() added
+  Control, foreground, background and font properties added, linked to buttons and menu items created via the control
+  Control.createMenuItem() added
+  Control.get/setIcon() renamed get/setSmallIcon()
+  EntityPanel.initializePanel(), bindEvents() now called after initializeUI(), so edit and table panel controls have been initialized

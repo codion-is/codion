@@ -18,7 +18,7 @@ final class ControlBuilder implements Control.Builder {
   private String caption;
   private StateObserver enabledState;
   private char mnemonic;
-  private Icon icon;
+  private Icon smallIcon;
   private String description;
   private KeyStroke keyStroke;
 
@@ -51,8 +51,8 @@ final class ControlBuilder implements Control.Builder {
   }
 
   @Override
-  public Control.Builder icon(final Icon icon) {
-    this.icon = icon;
+  public Control.Builder smallIcon(final Icon smallIcon) {
+    this.smallIcon = smallIcon;
     return this;
   }
 
@@ -79,7 +79,7 @@ final class ControlBuilder implements Control.Builder {
     }
 
     return control.setMnemonic(mnemonic)
-            .setIcon(icon)
+            .setSmallIcon(smallIcon)
             .setDescription(description)
             .setKeyStroke(keyStroke);
   }

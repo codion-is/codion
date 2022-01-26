@@ -9,7 +9,10 @@ import is.codion.common.state.StateObserver;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
@@ -18,6 +21,21 @@ import static java.util.Objects.requireNonNull;
  * A beefed up Action.
  */
 public interface Control extends Action {
+
+  /**
+   * The key used for storing the Font.
+   */
+  String FONT = "Font";
+
+  /**
+   * The key used for storing the background color.
+   */
+  String BACKGROUND = "Background";
+
+  /**
+   * The key used for storing the foreground color.
+   */
+  String FOREGROUND = "Foreground";
 
   /**
    * @param description the description string
@@ -69,21 +87,60 @@ public interface Control extends Action {
   KeyStroke getKeyStroke();
 
   /**
-   * @param icon the icon to associate with this Control
+   * @param smallIcon the small icon to associate with this Control
    * @return this Control instance
    */
-  Control setIcon(Icon icon);
+  Control setSmallIcon(Icon smallIcon);
 
   /**
    * @return the icon
    */
-  Icon getIcon();
+  Icon getSmallIcon();
+
+  /**
+   * @param background the background color
+   * @return this Control instance
+   */
+  Control setBackground(Color background);
+
+  /**
+   * @return the background color
+   */
+  Color getBackground();
+
+  /**
+   * @param foreground the foreground color
+   * @return this Control instance
+   */
+  Control setForeground(Color foreground);
+
+  /**
+   * @return the foreground color
+   */
+  Color getForeground();
+
+  /**
+   * @param font the font
+   * @return this Control instance
+   */
+  Control setFont(Font font);
+
+  /**
+   * @return the font
+   */
+  Font getFont();
 
   /**
    * Creates a button based on this Control
    * @return a button based on this Control
    */
   JButton createButton();
+
+  /**
+   * Creates a menu item based on this Control
+   * @return a menu item based on this Control
+   */
+  JMenuItem createMenuItem();
 
   /**
    * Unsupported, the enabled state of Controls is based on their {@code enabledState}
@@ -198,10 +255,10 @@ public interface Control extends Action {
     Builder mnemonic(char mnemonic);
 
     /**
-     * @param icon the control icon
+     * @param smallIcon the small control icon
      * @return this Builder instance
      */
-    Builder icon(Icon icon);
+    Builder smallIcon(Icon smallIcon);
 
     /**
      * @param description a string describing the control

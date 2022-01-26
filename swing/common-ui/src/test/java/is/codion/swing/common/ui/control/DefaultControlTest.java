@@ -10,6 +10,8 @@ import is.codion.common.state.State;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +46,13 @@ public final class DefaultControlTest {
     assertTrue(button.isEnabled());
     button.doClick();
     assertEquals(1, callCount);
+    control.setForeground(Color.RED);
+    assertEquals(button.getForeground(), Color.RED);
+    control.setBackground(Color.BLACK);
+    assertEquals(button.getBackground(), Color.BLACK);
+    final Font font = button.getFont().deriveFont(Font.ITALIC);
+    control.setFont(font);
+    assertEquals(button.getFont(), font);
   }
 
   @Test
@@ -64,7 +73,7 @@ public final class DefaultControlTest {
     assertEquals(0, test.getMnemonic());
     test.setMnemonic(10);
     assertEquals(10, test.getMnemonic());
-    assertNull(test.getIcon());
+    assertNull(test.getSmallIcon());
     test.setKeyStroke(null);
     test.setDescription("description");
     assertEquals("description", test.getDescription());

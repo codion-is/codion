@@ -121,7 +121,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   public Controls getControls() {
     final Controls.Builder controls = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
-            .icon(frameworkIcons().filter());
+            .smallIcon(frameworkIcons().filter());
     if (hasAdvancedView()) {
       controls.control(ToggleControl.builder(getAdvancedState())
               .caption(FrameworkMessages.get(FrameworkMessages.ADVANCED)));
