@@ -43,7 +43,7 @@ public class DefaultControlsTest {
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
     assertFalse(nullOrEmpty(list.getCaption()));
-    assertNull(list.getIcon());
+    assertNull(list.getSmallIcon());
     assertEquals("list", list.getCaption());
     final Controls list1 = Controls.controls();
     assertTrue(nullOrEmpty(list1.getCaption()));

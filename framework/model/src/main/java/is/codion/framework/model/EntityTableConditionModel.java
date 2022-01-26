@@ -87,7 +87,7 @@ public interface EntityTableConditionModel {
    * A data model using this condition model should call this method each time the
    * model is refreshed according to the condition provided by this condition model.
    * @see #hasConditionChanged()
-   * @see #getConditionObserver
+   * @see #getConditionChangedObserver
    */
   void rememberCondition();
 
@@ -182,15 +182,15 @@ public interface EntityTableConditionModel {
    * @return a StateObserver indicating if the search condition has changed since it was last remembered
    * @see #rememberCondition()
    */
-  StateObserver getConditionObserver();
+  StateObserver getConditionChangedObserver();
 
   /**
    * @param listener a listener notified each time the search condition changes
    */
-  void addConditionListener(EventListener listener);
+  void addConditionChangedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionListener(EventListener listener);
+  void removeConditionChangedListener(EventListener listener);
 }

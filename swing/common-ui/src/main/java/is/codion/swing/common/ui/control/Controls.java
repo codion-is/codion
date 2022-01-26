@@ -206,10 +206,10 @@ public interface Controls extends Control {
     Builder enabledState(StateObserver enabledState);
 
     /**
-     * @param icon the icon
+     * @param smallIcon the icon
      * @return this Builder instance
      */
-    Builder icon(Icon icon);
+    Builder smallIcon(Icon smallIcon);
 
     /**
      * @param control the control to add to this controls instance

@@ -26,7 +26,7 @@ final class MenuControlHandler extends ControlHandler {
       menu.add(((ToggleControl) control).createCheckBoxMenuItem());
     }
     else {
-      menu.add(control);
+      menu.add(control.createMenuItem());
     }
   }
 

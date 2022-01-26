@@ -68,7 +68,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    */
   public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
     return Control.builder(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
-            .icon(frameworkIcons().filter())
+            .smallIcon(frameworkIcons().filter())
             .build();
   }
 

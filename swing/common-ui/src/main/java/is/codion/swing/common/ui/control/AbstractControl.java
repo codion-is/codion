@@ -7,10 +7,18 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstrct Control implementation, implementing everything except actionPerformed().
@@ -32,10 +40,10 @@ abstract class AbstractControl extends AbstractAction implements Control {
    * Constructs a new Control.
    * @param name the control name
    * @param enabledObserver the state observer controlling the enabled state of this control
-   * @param icon the icon
+   * @param smallIcon the icon
    */
-  AbstractControl(final String name, final StateObserver enabledObserver, final Icon icon) {
-    super(name, icon);
+  AbstractControl(final String name, final StateObserver enabledObserver, final Icon smallIcon) {
+    super(name, smallIcon);
     this.enabledObserver = enabledObserver == null ? State.state(true) : enabledObserver;
     this.enabledObserver.addDataListener(super::setEnabled);
     super.setEnabled(this.enabledObserver.get());
@@ -102,18 +110,91 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setIcon(final Icon icon) {
-    super.putValue(SMALL_ICON, icon);
+  public final Control setSmallIcon(final Icon smallIcon) {
+    super.putValue(SMALL_ICON, smallIcon);
     return this;
   }
 
   @Override
-  public final Icon getIcon() {
+  public final Icon getSmallIcon() {
     return (Icon) getValue(SMALL_ICON);
   }
 
   @Override
+  public final Control setBackground(final Color background) {
+    putValue(BACKGROUND, background);
+    return this;
+  }
+
+  @Override
+  public final Color getBackground() {
+    return (Color) getValue(BACKGROUND);
+  }
+
+  @Override
+  public final Control setForeground(final Color foreground) {
+    putValue(FOREGROUND, foreground);
+    return this;
+  }
+
+  @Override
+  public final Color getForeground() {
+    return (Color) getValue(FOREGROUND);
+  }
+
+  @Override
+  public final Control setFont(final Font font) {
+    putValue(FONT, font);
+    return this;
+  }
+
+  @Override
+  public final Font getFont() {
+    return (Font) getValue(FONT);
+  }
+
+  @Override
   public final JButton createButton() {
-    return new JButton(this);
+    final JButton button = new JButton(this);
+    addPropertyChangeListener(new ButtonPropertyChangeListener(button));
+
+    return button;
+  }
+
+  @Override
+  public final JMenuItem createMenuItem() {
+    final JMenuItem menuItem = new JMenuItem(this);
+    addPropertyChangeListener(new ButtonPropertyChangeListener(menuItem));
+
+    return menuItem;
+  }
+
+  static final class ButtonPropertyChangeListener implements PropertyChangeListener {
+
+    private final AbstractButton button;
+
+    ButtonPropertyChangeListener(final AbstractButton button) {
+      this.button = requireNonNull(button);
+    }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+      switch (evt.getPropertyName()) {
+        case BACKGROUND: {
+          button.setBackground((Color) evt.getNewValue());
+          break;
+        }
+        case FOREGROUND: {
+          button.setForeground((Color) evt.getNewValue());
+          break;
+        }
+        case FONT: {
+          button.setFont((Font) evt.getNewValue());
+          break;
+        }
+        default:
+          break;
+      }
+    }
   }
 }

@@ -248,11 +248,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   /**
    * @param controlCode the control code
+   * @return true if this edit panel contains the given control
+   */
+  public final boolean containsControl(final ControlCode controlCode) {
+    return controls.containsKey(requireNonNull(controlCode));
+  }
+
+  /**
+   * @param controlCode the control code
    * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
    */
   public final Control getControl(final ControlCode controlCode) {
-    if (!controls.containsKey(controlCode)) {
+    if (!containsControl(controlCode)) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
@@ -269,7 +277,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             .enabledState(activeState)
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().refresh())
+            .smallIcon(frameworkIcons().refresh())
             .build();
   }
 
@@ -285,7 +293,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                     getEditModel().getEntityNewObserver().getReversedObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().delete())
+            .smallIcon(frameworkIcons().delete())
             .build();
   }
 
@@ -299,7 +307,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             .enabledState(activeState)
             .description(FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().clear())
+            .smallIcon(frameworkIcons().clear())
             .build();
   }
 
@@ -316,7 +324,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
                     getEditModel().getModifiedObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().update())
+            .smallIcon(frameworkIcons().update())
             .build();
   }
 
@@ -330,7 +338,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.ADD_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().add())
+            .smallIcon(frameworkIcons().add())
             .build();
   }
 
@@ -347,7 +355,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             .enabledState(State.and(activeState, insertUpdateState))
             .description(FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
-            .icon(frameworkIcons().add())
+            .smallIcon(frameworkIcons().add())
             .build();
   }
 

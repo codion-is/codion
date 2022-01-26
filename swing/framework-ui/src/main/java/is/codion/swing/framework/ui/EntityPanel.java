@@ -443,8 +443,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       try {
         initializeAssociatedPanels();
         initializeControlPanels();
-        bindEvents();
         initializeUI();
+        bindEvents();
         initialize();
       }
       finally {
@@ -657,7 +657,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final Control getToggleEditPanelControl() {
     return Control.builder(this::toggleEditPanelState)
-            .icon(frameworkIcons().editPanel())
+            .smallIcon(frameworkIcons().editPanel())
             .description(MESSAGES.getString("toggle_edit"))
             .build();
   }
@@ -667,7 +667,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final Control getToggleDetailPanelControl() {
     return Control.builder(this::toggleDetailPanelState)
-            .icon(frameworkIcons().detail())
+            .smallIcon(frameworkIcons().detail())
             .description(MESSAGES.getString("toggle_detail"))
             .build();
   }
@@ -1393,7 +1393,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     final Controls.Builder controls = Controls.builder()
             .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
-            .icon(frameworkIcons().detail());
+            .smallIcon(frameworkIcons().detail());
     detailEntityPanels.forEach(detailPanel ->
             controls.control(Control.builder(createDetailPanelCommand(status, detailPanel))
                     .caption(detailPanel.getCaption())));
@@ -1556,6 +1556,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     entityModel.addBeforeRefreshListener(() -> WaitCursor.show(EntityPanel.this));
     entityModel.addAfterRefreshListener(() -> WaitCursor.hide(EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
+//    if (containsEditPanel() && editPanel.containsControl(ControlCode.REFRESH)) {
+//      final Control refreshControl = editPanel.getControl(ControlCode.REFRESH);
+//      getTableModel().getTableConditionModel().getConditionChangedObserver().addDataListener(changed -> {
+//        refreshControl.setForeground(changed ? Color.RED.darker() : UIManager.getColor("Button.foreground"));
+//        refreshControl.setSmallIcon(changed ? FrameworkIcons.frameworkIcons().refreshRequired() : FrameworkIcons.frameworkIcons().refresh());
+//      });
+//    }
   }
 
   private void checkIfInitialized() {
