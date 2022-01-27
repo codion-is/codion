@@ -7577,3 +7577,4 @@
   Control.get/setIcon() renamed get/setSmallIcon()
   EntityPanel.initializePanel(), bindEvents() now called after initializeUI(), so edit and table panel controls have been initialized
   EntityTablePanel.containsControl() added, for consitency
+  DefaultColumnConditionModel bug fixed, auto enable was not triggered on operator change
