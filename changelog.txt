@@ -7609,6 +7609,6 @@
   Control.createMenuItem() added
   Control.get/setIcon() renamed get/setSmallIcon()
   EntityPanel.initializePanel(), bindEvents() now called after initializeUI(), so edit and table panel controls have been initialized
-  EntityTablePanel.containsControl() added, for consitency
+  EntityTablePanel.containsControl() added, for consistency
   DefaultColumnConditionModel bug fixed, auto enable was not triggered on operator change
   EntityTablePanel, repaint header on sort moved to FilteredTable
