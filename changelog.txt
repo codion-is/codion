@@ -7579,3 +7579,4 @@
   EntityTablePanel.containsControl() added, for consistency
   DefaultColumnConditionModel bug fixed, auto enable was not triggered on operator change
   EntityTablePanel, repaint header on sort moved to FilteredTable
+0.17.16
