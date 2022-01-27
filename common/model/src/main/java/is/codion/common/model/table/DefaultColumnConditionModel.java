@@ -380,6 +380,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     equalValues.addListener(autoEnableListener);
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
+    operatorValue.addListener(autoEnableListener);
     equalValues.addListener(conditionChangedEvent);
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
