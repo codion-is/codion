@@ -578,11 +578,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * @param controlCode the control code
+   * @return true if this table panel contains the given control
+   */
+  public final boolean containsControl(final ControlCode controlCode) {
+    return controls.containsKey(requireNonNull(controlCode));
+  }
+
+  /**
+   * @param controlCode the control code
    * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
+   * @see #containsControl(ControlCode)
    */
   public final Control getControl(final ControlCode controlCode) {
-    if (!controls.containsKey(requireNonNull(controlCode))) {
+    if (!containsControl(controlCode)) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
