@@ -670,6 +670,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         }
       }
     });
+    tableModel.addSortListener(getTableHeader()::repaint);
     getTableHeader().setReorderingAllowed(true);
     getTableHeader().addMouseListener(new MouseSortHandler());
     getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(getTableHeader().getDefaultRenderer()));
