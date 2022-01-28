@@ -7591,3 +7591,4 @@
   ColumnConditionPanel now repaints as well as revalidates on operator change
   EntityApplicationPanel.HELP_URL configuration value added
   ColumnConditionPanel now final
+  DefaultEntities now validates that all attributes referenced via foreign key actually exist in the referenced entity

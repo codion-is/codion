@@ -619,6 +619,11 @@ public class DomainTest {
   }
 
   @Test
+  void missingForeignKeyReferenceProperty() {
+    assertThrows(IllegalArgumentException.class, TestFkDomain::new);
+  }
+
+  @Test
   void copyEntities() {
     final Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
