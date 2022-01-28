@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Font font;
   private Color foreground;
   private Color background;
+  private ComponentOrientation componentOrientation = ComponentOrientation.UNKNOWN;
   private StateObserver enabledState;
   private boolean enabled = true;
   private Controls popupMenuControls;
@@ -194,6 +196,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B componentOrientation(final ComponentOrientation componentOrientation) {
+    this.componentOrientation = requireNonNull(componentOrientation);
+    return (B) this;
+  }
+
+  @Override
   public final B validator(final Value.Validator<T> validator) {
     this.validator = validator;
     return (B) this;
@@ -280,6 +288,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (background != null) {
       component.setBackground(background);
     }
+    component.setComponentOrientation(componentOrientation);
     clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
     if (transferFocusOnEnter) {

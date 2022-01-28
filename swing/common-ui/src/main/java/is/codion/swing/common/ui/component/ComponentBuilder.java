@@ -16,6 +16,7 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.function.Consumer;
@@ -161,6 +162,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B background(Color background);
+
+  /**
+   * @param componentOrientation the component orientation
+   * @return this builder instance
+   */
+  B componentOrientation(ComponentOrientation componentOrientation);
 
   /**
    * @param validator the validator to use

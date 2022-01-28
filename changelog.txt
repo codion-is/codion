@@ -7584,3 +7584,5 @@
   Operator captions improved
   ColumnConditionPanel, operators moved to ColumnConditionModel
   ColumnConditionPanel, removed a few unnecessary null checks for a component that is never null
+  ComponentBuilder.componentOrientation() added
+  ComboBoxBuilder, ItemComboBoxBuilder.maximumRowCount() added
