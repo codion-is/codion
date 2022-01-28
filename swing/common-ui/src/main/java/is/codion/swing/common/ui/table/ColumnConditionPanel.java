@@ -449,6 +449,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
     revalidate();
+    repaint();
   }
 
   private void onAdvancedChange(final boolean advanced) {
