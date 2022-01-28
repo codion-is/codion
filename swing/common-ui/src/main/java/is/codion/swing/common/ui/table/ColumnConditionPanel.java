@@ -54,7 +54,7 @@ import static javax.swing.SwingConstants.CENTER;
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
  */
-public class ColumnConditionPanel<C, T> extends JPanel {
+public final class ColumnConditionPanel<C, T> extends JPanel {
 
   /**
    * Specifies whether a condition panel should include
@@ -128,7 +128,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   @Override
-  public final void updateUI() {
+  public void updateUI() {
     super.updateUI();
     Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
             equalField, lowerBoundField, upperBoundField, controlPanel, inputPanel);
@@ -137,21 +137,21 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the condition model this panel uses
    */
-  public final ColumnConditionModel<C, T> getModel() {
+  public ColumnConditionModel<C, T> getModel() {
     return this.conditionModel;
   }
 
   /**
    * @return true if the dialog is enabled
    */
-  public final boolean isDialogEnabled() {
+  public boolean isDialogEnabled() {
     return dialog != null;
   }
 
   /**
    * @return true if the dialog is being shown
    */
-  public final boolean isDialogVisible() {
+  public boolean isDialogVisible() {
     return dialog != null && dialog.isVisible();
   }
 
@@ -160,7 +160,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
    * @param dialogParent the dialog parent
    * @param title the dialog title
    */
-  public final void enableDialog(final Container dialogParent, final String title) {
+  public void enableDialog(final Container dialogParent, final String title) {
     if (!isDialogEnabled()) {
       initializeConditionDialog(dialogParent, title);
     }
@@ -170,7 +170,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
    * Displays this panel in a dialog
    * @param position the location, used if specified
    */
-  public final void showDialog(final Point position) {
+  public void showDialog(final Point position) {
     if (!isDialogEnabled()) {
       throw new IllegalStateException("Dialog has not been enabled for this condition panel");
     }
@@ -188,7 +188,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * Hides the dialog showing this panel if visible
    */
-  public final void hideDialog() {
+  public void hideDialog() {
     if (isDialogVisible()) {
       dialog.setVisible(false);
       dialog.dispose();
@@ -198,14 +198,14 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the dialog used to show this filter panel
    */
-  public final JDialog getDialog() {
+  public JDialog getDialog() {
     return dialog;
   }
 
   /**
    * Requests keyboard focus for this panels input field
    */
-  public final void requestInputFocus() {
+  public void requestInputFocus() {
     switch (conditionModel.getOperator()) {
       case EQUAL:
       case NOT_EQUAL:
@@ -231,63 +231,63 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @param advanced true if advanced condition should be enabled
    */
-  public final void setAdvanced(final boolean advanced) {
+  public void setAdvanced(final boolean advanced) {
     advancedConditionState.set(advanced);
   }
 
   /**
    * @return true if the advanced condition is enabled
    */
-  public final boolean isAdvanced() {
+  public boolean isAdvanced() {
     return advancedConditionState.get();
   }
 
   /**
    * @return the condition operator combo box
    */
-  public final JComboBox<Operator> getOperatorComboBox() {
+  public JComboBox<Operator> getOperatorComboBox() {
     return operatorCombo;
   }
 
   /**
    * @return the JComponent used to specify the equal value
    */
-  public final JComponent getEqualField() {
+  public JComponent getEqualField() {
     return equalField;
   }
 
   /**
    * @return the JComponent used to specify the upper bound
    */
-  public final JComponent getUpperBoundField() {
+  public JComponent getUpperBoundField() {
     return upperBoundField;
   }
 
   /**
    * @return the JComponent used to specify the lower bound
    */
-  public final JComponent getLowerBoundField() {
+  public JComponent getLowerBoundField() {
     return lowerBoundField;
   }
 
   /**
    * @param listener a listener notified each time the advanced condition state changes
    */
-  public final void addAdvancedListener(final EventDataListener<Boolean> listener) {
+  public void addAdvancedListener(final EventDataListener<Boolean> listener) {
     advancedConditionState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeAdvancedListener(final EventDataListener<Boolean> listener) {
+  public void removeAdvancedListener(final EventDataListener<Boolean> listener) {
     advancedConditionState.removeDataListener(listener);
   }
 
   /**
    * @param listener listener notified when this condition panels input fields receive focus
    */
-  public final void addFocusGainedListener(final EventDataListener<C> listener) {
+  public void addFocusGainedListener(final EventDataListener<C> listener) {
     focusGainedEvent.addDataListener(listener);
   }
 
