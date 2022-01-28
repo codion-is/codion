@@ -15,6 +15,7 @@ import is.codion.common.value.ValueSet;
 
 import java.text.Format;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -163,9 +164,25 @@ public interface ColumnConditionModel<C, T> {
   Operator getOperator();
 
   /**
-   * @param operator the search operator
+   * @param operator the conditional operator
+   * @throws IllegalArgumentException in case the given operator is not available in this condition model
    */
   void setOperator(Operator operator);
+
+  /**
+   * Select the previous operator, with wrap-around
+   */
+  void previousOperator();
+
+  /**
+   * Select the next operator, with wrap-around
+   */
+  void nextOperator();
+
+  /**
+   * @return the operators available in this condition model
+   */
+  List<Operator> getOperators();
 
   /**
    * @return true if auto enable is enabled

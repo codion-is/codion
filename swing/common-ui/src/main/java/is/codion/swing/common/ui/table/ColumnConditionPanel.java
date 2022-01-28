@@ -40,7 +40,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
@@ -88,23 +87,12 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   private JDialog dialog;
 
   /**
-   * Instantiates a new ColumnConditionPanel, with a default bound field factory and all available Operators.
+   * Instantiates a new ColumnConditionPanel, with a default bound field factory.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    */
   public ColumnConditionPanel(final ColumnConditionModel<C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton) {
-    this(conditionModel, toggleAdvancedButton, Arrays.asList(Operator.values()));
-  }
-
-  /**
-   * Instantiates a new ColumnConditionPanel, with a default bound field factory.
-   * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
-   * @param operators the operators available to this condition panel
-   */
-  public ColumnConditionPanel(final ColumnConditionModel<C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
-                              final List<Operator> operators) {
-    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel), operators);
+    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel));
   }
 
   /**
@@ -112,23 +100,19 @@ public class ColumnConditionPanel<C, T> extends JPanel {
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param boundFieldFactory the input field factory
-   * @param operators the search operators available to this condition panel
    * @throws IllegalArgumentException in case operators is empty
    */
   public ColumnConditionPanel(final ColumnConditionModel<C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
-                              final BoundFieldFactory boundFieldFactory, final List<Operator> operators) {
+                              final BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
-    if (requireNonNull(operators, "operators").isEmpty()) {
-      throw new IllegalArgumentException("One or more operators must be specified");
-    }
     this.conditionModel = conditionModel;
     final boolean modelLocked = conditionModel.isLocked();
     conditionModel.setLocked(false);//otherwise, the validator checking the locked state kicks in during value linking
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
-    this.operatorCombo = initializeOperatorComboBox(operators);
+    this.operatorCombo = initializeOperatorComboBox(conditionModel.getOperators());
     this.toggleEnabledButton = toggleButton(conditionModel.getEnabledState())
             .icon(icons().filter())
             .build();

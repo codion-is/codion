@@ -4,13 +4,11 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.Operator;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -81,9 +79,7 @@ import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1693,15 +1689,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         return null;
       }
 
-      return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES, getOperators(filterModel));
-    }
-
-    private static <C extends Attribute<?>> List<Operator> getOperators(final ColumnConditionModel<C, ?> model) {
-      if (model.getColumnIdentifier().isBoolean()) {
-        return Collections.singletonList(Operator.EQUAL);
-      }
-
-      return Arrays.asList(Operator.values());
+      return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES);
     }
   }
 }
