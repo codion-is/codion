@@ -7589,3 +7589,4 @@
   AbstractComponentBuilder, can now set min/max/preferred sizes to null
   ColumnConditionPanel, minor UI improvements, operator combo box button now on right side, popup now without scrollbar and contents are centered correctly
   ColumnConditionPanel now repaints as well as revalidates on operator change
+  EntityApplicationPanel.HELP_URL configuration value added

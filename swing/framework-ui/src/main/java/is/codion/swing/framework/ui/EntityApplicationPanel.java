@@ -123,6 +123,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
   /**
+   * Specifies the URL to the application help<br>
+   * Value type: String<br>
+   * Default value: https://codion.is/doc/{version}/{jdk}/help/client.html
+   */
+  public static PropertyValue<String> HELP_URL = Configuration.stringValue("codion.swing.helpUrl",
+          "https://codion.is/doc/" + Version.getVersionString() + "/jdk8/help/client.html");
+
+  /**
    * Indicates whether the application should ask for confirmation when exiting<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -164,7 +172,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
-  private static final String HELP_URL = "https://codion.is/doc/" + Version.getVersionString() + "/jdk8/help/client.html";
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
@@ -490,9 +497,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Displays the help.
    * @throws Exception in case of an exception, for example a malformed URL
+   * @see #HELP_URL
    */
   public void displayHelp() throws Exception {
-    Desktop.getDesktop().browse(new URL(HELP_URL).toURI());
+    Desktop.getDesktop().browse(new URL(HELP_URL.get()).toURI());
   }
 
   /**
