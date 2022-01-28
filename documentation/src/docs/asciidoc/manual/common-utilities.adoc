@@ -6,8 +6,6 @@ Codion provides a few classes with miscellanous utility functions.
 
 == Model
 
-{url-javadoc}/is/codion/common/FileUtil.html[FileUtil]
-
 {url-javadoc}/is/codion/common/Memory.html[Memory]
 
 {url-javadoc}/is/codion/common/Serializer.html[Serializer]
@@ -18,7 +16,7 @@ Codion provides a few classes with miscellanous utility functions.
 
 == UI
 
-{url-javadoc}/is/codion/swing/common/ui/Components.html[Components]
+{url-javadoc}/is/codion/swing/common/ui/component/Components.html[Components]
 
 {url-javadoc}/is/codion/swing/common/ui/dialog/Dialogs.html[Dialogs]
 
