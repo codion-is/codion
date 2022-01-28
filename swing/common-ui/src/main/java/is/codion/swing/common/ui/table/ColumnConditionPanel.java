@@ -419,9 +419,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     if (toggleAdvancedButton != null) {
       toggleAdvancedButton.addFocusListener(focusGainedListener);
     }
-    if (toggleEnabledButton != null) {
-      toggleEnabledButton.addFocusListener(focusGainedListener);
-    }
+    toggleEnabledButton.addFocusListener(focusGainedListener);
   }
 
   private void onOperatorChanged(final Operator operator) {
@@ -461,10 +459,8 @@ public class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setSimple() {
     remove(controlPanel);
-    if (toggleEnabledButton != null) {
-      controlPanel.remove(toggleEnabledButton);
-      inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
-    }
+    controlPanel.remove(toggleEnabledButton);
+    inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
     if (toggleAdvancedButton != null) {
       controlPanel.remove(toggleAdvancedButton);
       inputPanel.add(toggleAdvancedButton, BorderLayout.WEST);
@@ -475,10 +471,8 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void setAdvanced() {
-    if (toggleEnabledButton != null) {
-      inputPanel.remove(toggleEnabledButton);
-      controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
-    }
+    inputPanel.remove(toggleEnabledButton);
+    controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
     if (toggleAdvancedButton != null) {
       inputPanel.remove(toggleAdvancedButton);
       controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
@@ -504,11 +498,9 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     Utilities.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(new BorderLayout());
-    if (toggleEnabledButton != null) {
-      this.toggleEnabledButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
-    }
+    toggleEnabledButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     if (toggleAdvancedButton != null) {
-      this.toggleAdvancedButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+      toggleAdvancedButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     }
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.getOperator());
