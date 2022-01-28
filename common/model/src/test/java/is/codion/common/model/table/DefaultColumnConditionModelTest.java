@@ -10,14 +10,18 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnConditionModelTest {
+
+  private static final List<Operator> ALL_OPERATORS = asList(Operator.values());
 
   final AtomicInteger equalToCounter = new AtomicInteger();
   final AtomicInteger upperBoundCounter = new AtomicInteger();
@@ -37,7 +41,8 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void testSetBounds() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model =
+            new DefaultColumnConditionModel<>("test", String.class, Arrays.asList(Operator.values()), "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
     model.addEqualsValueListener(equalToListener);
@@ -80,7 +85,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void testMisc() {
-    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     assertEquals("test", model.getColumnIdentifier());
 
     model.setOperator(Operator.EQUAL);
@@ -91,7 +96,8 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void testOperator() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test",
+            String.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN), "%");
     model.addOperatorListener(operatorListener);
     assertEquals(Operator.EQUAL, model.getOperator());
     model.setOperator(Operator.LESS_THAN_OR_EQUAL);
@@ -105,11 +111,15 @@ public class DefaultColumnConditionModelTest {
     model.setOperator(Operator.NOT_BETWEEN);
     assertEquals(2, operatorCounter.get());
     model.removeOperatorListener(operatorListener);
+
+    assertThrows(IllegalArgumentException.class, () -> model.setOperator(Operator.BETWEEN));
+
+    assertThrows(IllegalArgumentException.class, () -> model.getOperatorValue().set(Operator.BETWEEN));
   }
 
   @Test
   void test() throws Exception {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     assertTrue(model.isAutoEnable());
     model.setEqualValue("test");
     assertTrue(model.isEnabled());
@@ -140,42 +150,42 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void setUpperBoundLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setUpperBound("test"));
   }
 
   @Test
   void setLowerBoundLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setLowerBound("test"));
   }
 
   @Test
   void setEqualValueLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setEqualValue("test"));
   }
 
   @Test
   void setEqualValuesLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setEqualValues(Collections.singletonList("test")));
   }
 
   @Test
   void setEnabledLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setEnabled(true));
   }
 
   @Test
   void setOperatorLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUAL));
     assertThrows(IllegalStateException.class, () -> model.getOperatorValue().set(Operator.NOT_EQUAL));
@@ -183,7 +193,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void multiConditionString() {
-    final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, "%");
 
     final Collection<String> strings = asList("abc", "def");
     conditionModel.setEqualValues(strings);
@@ -193,7 +203,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void autoEnable() {
-    final DefaultColumnConditionModel<String, Integer> conditionModel = new DefaultColumnConditionModel<>("Test", Integer.class, null);
+    final DefaultColumnConditionModel<String, Integer> conditionModel = new DefaultColumnConditionModel<>("Test", Integer.class, ALL_OPERATORS, null);
 
     conditionModel.setOperator(Operator.EQUAL);
     assertFalse(conditionModel.isEnabled());
@@ -322,5 +332,10 @@ public class DefaultColumnConditionModelTest {
     assertTrue(conditionModel.isEnabled());
     conditionModel.setLowerBound(null);
     conditionModel.setUpperBound(null);
+  }
+
+  @Test
+  void noOperators() {
+    assertThrows(IllegalArgumentException.class, () -> new DefaultColumnConditionModel<>("test", String.class, Collections.emptyList(), "%"));
   }
 }

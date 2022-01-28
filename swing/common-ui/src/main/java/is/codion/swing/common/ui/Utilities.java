@@ -11,6 +11,7 @@ import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
@@ -348,6 +349,18 @@ public final class Utilities {
    */
   public static <T> T getParentOfType(final Component component, final Class<T> clazz) {
     return (T) SwingUtilities.getAncestorOfClass(clazz, component);
+  }
+
+  private static void updateUI(final JComponent component) {
+    if (component != null) {
+      component.updateUI();
+      if (component instanceof JMenu) {
+        final JMenu menu = (JMenu) component;
+        for (int i = 0; i < menu.getItemCount(); i++) {
+          updateUI(menu.getItem(i));
+        }
+      }
+    }
   }
 
   private static final class FileTransferHandler extends TransferHandler {

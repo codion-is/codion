@@ -3,12 +3,14 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Operator;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A default ForeignKeyConditionModel implementation.
@@ -34,7 +36,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * @param entitySearchModel a EntitySearchModel
    */
   public DefaultForeignKeyConditionModel(final ForeignKey foreignKey, final EntitySearchModel entitySearchModel) {
-    super(foreignKey, Entity.class, Property.WILDCARD_CHARACTER.get());
+    super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Property.WILDCARD_CHARACTER.get());
     this.entitySearchModel = entitySearchModel;
     if (entitySearchModel != null) {
       bindSearchModelEvents();

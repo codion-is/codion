@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -25,11 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -89,23 +86,12 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityInputComponents, conditionModel.getColumnIdentifier());
     }
     try {
-      return new ColumnConditionPanel<>(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory, getOperators(conditionModel));
+      return new ColumnConditionPanel<>(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory);
     }
     catch (final IllegalArgumentException e) {
       LOG.error("Unable to create AttributeConditionPanel for attribute: " + conditionModel.getColumnIdentifier(), e);
       return null;
     }
-  }
-
-  private static <C extends Attribute<?>> List<Operator> getOperators(final ColumnConditionModel<C, ?> model) {
-    if (model instanceof ForeignKeyConditionModel) {
-      return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
-    }
-    if (model.getColumnIdentifier().isBoolean()) {
-      return Collections.singletonList(Operator.EQUAL);
-    }
-
-    return Arrays.asList(Operator.values());
   }
 
   private static final class ForeignKeyBoundFieldFactory implements ColumnConditionPanel.BoundFieldFactory {
@@ -158,12 +144,8 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     public JComponent createEqualField() {
       final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
       componentValue.link(conditionModel.getEqualValueSet().value());
-      final JComponent component = componentValue.getComponent();
-      if (component instanceof JCheckBox) {
-        ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
-      }
 
-      return component;
+      return configureComponent(componentValue.getComponent());
     }
 
     @Override
@@ -174,12 +156,8 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
       final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
       componentValue.link(conditionModel.getUpperBoundValue());
-      final JComponent component = componentValue.getComponent();
-      if (component instanceof JCheckBox) {
-        ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
-      }
 
-      return component;
+      return configureComponent(componentValue.getComponent());
     }
 
     @Override
@@ -190,8 +168,16 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
       final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
       componentValue.link(conditionModel.getLowerBoundValue());
-      final JComponent component = componentValue.getComponent();
-      if (component instanceof JCheckBox) {
+
+      return configureComponent(componentValue.getComponent());
+    }
+
+    private JComponent configureComponent(final JComponent component) {
+      if (component instanceof JTextField) {
+        ((JTextField) component).setColumns(0);
+        ((JTextField) component).setHorizontalAlignment(SwingConstants.CENTER);
+      }
+      else if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
 

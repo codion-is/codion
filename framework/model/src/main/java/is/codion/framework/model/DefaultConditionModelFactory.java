@@ -3,6 +3,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -13,6 +14,10 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,7 +47,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return null;
     }
 
-    return new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(),
+    return new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(), getOperators(attribute),
             Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
   }
 
@@ -76,5 +81,16 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
    */
   protected final ForeignKeyProperty getForeignKeyProperty(final ForeignKey foreignKey) {
     return connectionProvider.getEntities().getDefinition(foreignKey.getEntityType()).getForeignKeyProperty(foreignKey);
+  }
+
+  private static <C extends Attribute<?>> List<Operator> getOperators(final Attribute<?> attribute) {
+    if (attribute instanceof ForeignKey) {
+      return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
+    }
+    if (attribute.isBoolean()) {
+      return Collections.singletonList(Operator.EQUAL);
+    }
+
+    return Arrays.asList(Operator.values());
   }
 }

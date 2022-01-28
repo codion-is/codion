@@ -3,40 +3,38 @@
  */
 package is.codion.swing.common.ui.table;
 
+import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ColumnConditionPanelTest {
 
+  private static final List<Operator> ALL_OPERATORS = asList(Operator.values());
+
   @Test
   void test() {
     final String key = "key";
-    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
+    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, ALL_OPERATORS, "%");
     final ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
     assertEquals(model, panel.getModel());
     assertNotNull(panel.getEqualField());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
     assertFalse(panel.isDialogVisible());
-    assertFalse(panel.isAdvanced());
-    panel.setAdvanced(true);
-    assertTrue(panel.isAdvanced());
-    panel.setAdvanced(false);
-    assertFalse(panel.isAdvanced());
-    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, ToggleAdvancedButton.YES, null));
-    assertThrows(IllegalArgumentException.class, () -> new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES, Collections.emptyList()));
+    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, null));
   }
 
   @Test
   void lockedModel() {
-    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("key", String.class, "%");
+    final ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("key", String.class, ALL_OPERATORS, "%");
     model.setLocked(true);
     new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
   }

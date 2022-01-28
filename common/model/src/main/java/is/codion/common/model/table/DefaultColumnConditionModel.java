@@ -16,7 +16,9 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -41,6 +43,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final Class<T> typeClass;
   private final Format format;
   private final String dateTimePattern;
+  private final List<Operator> operators;
 
   private boolean autoEnable = true;
   private AutomaticWildcard automaticWildcard;
@@ -51,38 +54,46 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
+   * @param operators the conditional operators available to this condition model
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard) {
-    this(columnIdentifier, typeClass, wildcard, null, null);
+  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final List<Operator> operators,
+                                     final String wildcard) {
+    this(columnIdentifier, typeClass, operators, wildcard, null, null);
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
+   * @param operators the conditional operators available to this condition model
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard,
-                                     final Format format, final String dateTimePattern) {
-    this(columnIdentifier, typeClass, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
+  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final List<Operator> operators,
+                                     final String wildcard, final Format format, final String dateTimePattern) {
+    this(columnIdentifier, typeClass, operators, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
+   * @param operators the conditional operators available to this condition model
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard,
-                                     final Format format, final String dateTimePattern,
+  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final List<Operator> operators,
+                                     final String wildcard, final Format format, final String dateTimePattern,
                                      final AutomaticWildcard automaticWildcard) {
+    if (requireNonNull(operators, "operators").isEmpty()) {
+      throw new IllegalArgumentException("One or more operators must be specified");
+    }
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
+    this.operators = unmodifiableList(operators);
     this.typeClass = typeClass;
     this.wildcard = wildcard;
     this.format = format;
@@ -92,6 +103,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     this.equalValues.addValidator(value -> checkLock());
     this.upperBoundValue.addValidator(value -> checkLock());
     this.lowerBoundValue.addValidator(value -> checkLock());
+    this.operatorValue.addValidator(this::validateOperator);
     this.operatorValue.addValidator(value -> checkLock());
     bindEvents();
   }
@@ -185,7 +197,23 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final void setOperator(final Operator operator) {
-    operatorValue.set(requireNonNull(operator, "operator"));
+    validateOperator(operator);
+    operatorValue.set(operator);
+  }
+
+  @Override
+  public final void previousOperator() {
+    operatorValue.set(operators.get(getPreviousOperatorIndex()));
+  }
+
+  @Override
+  public final void nextOperator() {
+    operatorValue.set(operators.get(getNextOperatorIndex()));
+  }
+
+  @Override
+  public final List<Operator> getOperators() {
+    return operators;
   }
 
   /**
@@ -375,6 +403,18 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return value;
   }
 
+  private int getNextOperatorIndex() {
+    final int currentIndex = operators.indexOf(operatorValue.get());
+
+    return currentIndex == operators.size() - 1 ? 0 : currentIndex + 1;
+  }
+
+  private int getPreviousOperatorIndex() {
+    final int currentIndex = operators.indexOf(operatorValue.get());
+
+    return currentIndex == 0 ? operators.size() - 1 : currentIndex - 1;
+  }
+
   private void bindEvents() {
     final EventListener autoEnableListener = new AutoEnableListener();
     equalValues.addListener(autoEnableListener);
@@ -391,6 +431,12 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private void checkLock() {
     if (lockedState.get()) {
       throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
+    }
+  }
+
+  private void validateOperator(final Operator operator) {
+    if (!operators.contains(requireNonNull(operator, "operator"))) {
+      throw new IllegalArgumentException("Operator " + operator + " not available in this condition model");
     }
   }
 

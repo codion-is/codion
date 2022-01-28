@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Font font;
   private Color foreground;
   private Color background;
+  private ComponentOrientation componentOrientation = ComponentOrientation.UNKNOWN;
   private StateObserver enabledState;
   private boolean enabled = true;
   private Controls popupMenuControls;
@@ -88,9 +90,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B preferredSize(final Dimension preferredSize) {
-    requireNonNull(preferredSize);
-    this.preferredHeight = preferredSize.height;
-    this.preferredWidth = preferredSize.width;
+    this.preferredHeight = preferredSize == null ? 0 : preferredSize.height;
+    this.preferredWidth = preferredSize == null ? 0 : preferredSize.width;
     return (B) this;
   }
 
@@ -108,9 +109,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B maximumSize(final Dimension maximumSize) {
-    requireNonNull(maximumSize);
-    this.maximumHeight = maximumSize.height;
-    this.maximumWidth = maximumSize.width;
+    this.maximumHeight = maximumSize == null ? 0 : maximumSize.height;
+    this.maximumWidth = maximumSize == null ? 0 : maximumSize.width;
     return (B) this;
   }
 
@@ -128,9 +128,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B minimumSize(final Dimension minimumSize) {
-    requireNonNull(minimumSize);
-    this.minimumHeight = minimumSize.height;
-    this.minimumWidth = minimumSize.width;
+    this.minimumHeight = minimumSize == null ? 0 : minimumSize.height;
+    this.minimumWidth = minimumSize == null ? 0 : minimumSize.width;
     return (B) this;
   }
 
@@ -190,6 +189,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   @Override
   public final B background(final Color background) {
     this.background = background;
+    return (B) this;
+  }
+
+  @Override
+  public final B componentOrientation(final ComponentOrientation componentOrientation) {
+    this.componentOrientation = requireNonNull(componentOrientation);
     return (B) this;
   }
 
@@ -280,6 +285,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (background != null) {
       component.setBackground(background);
     }
+    component.setComponentOrientation(componentOrientation);
     clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
     if (transferFocusOnEnter) {

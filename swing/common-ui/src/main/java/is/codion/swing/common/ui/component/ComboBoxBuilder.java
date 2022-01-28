@@ -60,4 +60,10 @@ public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends Comb
    * @return this builder instance
    */
   B mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround);
+
+  /**
+   * @param maximumRowCount the maximum row count before a scroll bar is shown
+   * @return this builder instance
+   */
+  B maximumRowCount(int maximumRowCount);
 }

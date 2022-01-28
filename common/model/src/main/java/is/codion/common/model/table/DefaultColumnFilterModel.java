@@ -3,7 +3,12 @@
  */
 package is.codion.common.model.table;
 
+import is.codion.common.Operator;
+
 import java.text.Format;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -40,7 +45,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
    */
   public DefaultColumnFilterModel(final C columnIdentifier, final Class<T> typeClass, final String wildcard,
                                   final Format format, final String dateTimePattern) {
-    super(columnIdentifier, typeClass, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
+    super(columnIdentifier, typeClass, getOperators(typeClass), wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
   @Override
@@ -265,5 +270,13 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
     final int upperCompareResult = comparable.compareTo(upperBound);
 
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
+  }
+
+  private static List<Operator> getOperators(final Class<?> typeClass) {
+    if (typeClass.equals(Boolean.class)) {
+      return Collections.singletonList(Operator.EQUAL);
+    }
+
+    return Arrays.asList(Operator.values());
   }
 }

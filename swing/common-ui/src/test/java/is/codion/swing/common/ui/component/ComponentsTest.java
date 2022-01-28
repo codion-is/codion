@@ -38,6 +38,7 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.math.BigDecimal;
@@ -295,6 +296,7 @@ public final class ComponentsTest {
     final Value<Boolean> value = Value.value(true);
     final ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
             Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
+                    .maximumRowCount(5)
                     .transferFocusOnEnter(true)
                     .linkedValue(value)
                     .buildComponentValue();
@@ -342,8 +344,10 @@ public final class ComponentsTest {
     final DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
     final Value<String> value = Value.value();
     final ComponentValue<String, SteppedComboBox<String>> componentValue = Components.comboBox(boxModel)
-            .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
+            .completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
             .editable(true)
+            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .maximumRowCount(5)
             .linkedValue(value)
             .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true).buildComponentValue();

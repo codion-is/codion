@@ -34,6 +34,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
   private boolean mouseWheelScrolling = false;
   private boolean mouseWheelScrollingWithWrapAround = false;
+  private int maximumRowCount = -1;
 
   DefaultItemComboBoxBuilder(final List<Item<T>> items, final Value<T> linkedValue) {
     super(linkedValue);
@@ -103,6 +104,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
+  public ItemComboBoxBuilder<T> maximumRowCount(final int maximumRowCount) {
+    this.maximumRowCount = maximumRowCount;
+    return this;
+  }
+
+  @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
     final ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
@@ -115,6 +122,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
     }
     if (mouseWheelScrollingWithWrapAround) {
       comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.createWithWrapAround(comboBoxModel));
+    }
+    if (maximumRowCount >= 0) {
+      comboBox.setMaximumRowCount(maximumRowCount);
     }
 
     return comboBox;

@@ -59,4 +59,10 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedCombo
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround);
+
+  /**
+   * @param maximumRowCount the maximum row count
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount);
 }

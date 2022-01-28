@@ -7612,3 +7612,12 @@
   EntityTablePanel.containsControl() added, for consistency
   DefaultColumnConditionModel bug fixed, auto enable was not triggered on operator change
   EntityTablePanel, repaint header on sort moved to FilteredTable
+0.17.16
+  Utilities.updateUI() now handles JMenu recursively
+  Operator captions improved
+  ColumnConditionPanel, operators moved to ColumnConditionModel
+  ColumnConditionPanel, removed a few unnecessary null checks for a component that is never null
+  ComponentBuilder.componentOrientation() added
+  ComboBoxBuilder, ItemComboBoxBuilder.maximumRowCount() added
+  AbstractComponentBuilder, can now set min/max/preferred sizes to null
+  ColumnConditionPanel, minor UI improvements, operator combo box button now on right side, popup now without scrollbar and contents are centered correctly

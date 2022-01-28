@@ -16,10 +16,10 @@ public enum Operator {
   LESS_THAN_OR_EQUAL("\u2264"),
   GREATER_THAN(">"),
   GREATER_THAN_OR_EQUAL("\u2265"),
-  BETWEEN_EXCLUSIVE("> <"),
-  BETWEEN("\u2265 \u2264"),
-  NOT_BETWEEN_EXCLUSIVE("< >"),
-  NOT_BETWEEN("\u2264 \u2265");
+  BETWEEN_EXCLUSIVE("<\u2219<"),
+  BETWEEN("\u2264\u2219\u2264"),
+  NOT_BETWEEN_EXCLUSIVE(">\u2219>"),
+  NOT_BETWEEN("\u2265\u2219\u2265");
 
   private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
 
