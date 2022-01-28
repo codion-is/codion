@@ -90,9 +90,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B preferredSize(final Dimension preferredSize) {
-    requireNonNull(preferredSize);
-    this.preferredHeight = preferredSize.height;
-    this.preferredWidth = preferredSize.width;
+    this.preferredHeight = preferredSize == null ? 0 : preferredSize.height;
+    this.preferredWidth = preferredSize == null ? 0 : preferredSize.width;
     return (B) this;
   }
 
@@ -110,9 +109,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B maximumSize(final Dimension maximumSize) {
-    requireNonNull(maximumSize);
-    this.maximumHeight = maximumSize.height;
-    this.maximumWidth = maximumSize.width;
+    this.maximumHeight = maximumSize == null ? 0 : maximumSize.height;
+    this.maximumWidth = maximumSize == null ? 0 : maximumSize.width;
     return (B) this;
   }
 
@@ -130,9 +128,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B minimumSize(final Dimension minimumSize) {
-    requireNonNull(minimumSize);
-    this.minimumHeight = minimumSize.height;
-    this.minimumWidth = minimumSize.width;
+    this.minimumHeight = minimumSize == null ? 0 : minimumSize.height;
+    this.minimumWidth = minimumSize == null ? 0 : minimumSize.width;
     return (B) this;
   }
 

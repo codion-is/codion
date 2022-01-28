@@ -7586,3 +7586,4 @@
   ColumnConditionPanel, removed a few unnecessary null checks for a component that is never null
   ComponentBuilder.componentOrientation() added
   ComboBoxBuilder, ItemComboBoxBuilder.maximumRowCount() added
+  AbstractComponentBuilder, can now set min/max/preferred sizes to null
