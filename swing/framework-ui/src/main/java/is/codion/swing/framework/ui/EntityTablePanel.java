@@ -1612,6 +1612,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
     final JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     Utilities.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
+    scrollPane.setBorder(BorderFactory.createEmptyBorder());
     scrollPane.setVisible(false);
 
     return scrollPane;

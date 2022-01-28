@@ -16,12 +16,11 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.TextFields;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -29,10 +28,13 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
@@ -78,6 +80,7 @@ public class ColumnConditionPanel<C, T> extends JPanel {
   private final JComponent equalField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
+  private final JPanel buttonPanel = new JPanel();
   private final JPanel controlPanel = new JPanel(new BorderLayout());
   private final JPanel inputPanel = new JPanel(new BorderLayout());
 
@@ -459,38 +462,43 @@ public class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setSimple() {
     remove(controlPanel);
-    controlPanel.remove(toggleEnabledButton);
-    inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
-    if (toggleAdvancedButton != null) {
-      controlPanel.remove(toggleAdvancedButton);
-      inputPanel.add(toggleAdvancedButton, BorderLayout.WEST);
-    }
+    setupButtonPanel();
+    inputPanel.add(buttonPanel, BorderLayout.EAST);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
     revalidate();
   }
 
   private void setAdvanced() {
-    inputPanel.remove(toggleEnabledButton);
-    controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
-    if (toggleAdvancedButton != null) {
-      inputPanel.remove(toggleAdvancedButton);
-      controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
-    }
+    setupButtonPanel();
+    controlPanel.add(buttonPanel, BorderLayout.EAST);
     add(controlPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
   }
 
+  private void setupButtonPanel() {
+    buttonPanel.setLayout(new GridLayout(1, toggleAdvancedButton == null ? 1 : 2));
+    if (toggleAdvancedButton != null) {
+      buttonPanel.add(toggleAdvancedButton);
+      buttonPanel.add(toggleEnabledButton);
+    }
+    else {
+      buttonPanel.add(toggleEnabledButton);
+    }
+  }
+
   private SteppedComboBox<Operator> initializeOperatorComboBox(final List<Operator> operators) {
     return Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
                     conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
-            .preferredHeight(TextFields.getPreferredTextFieldHeight())
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .mouseWheelScrolling(true)
+            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .maximumRowCount(operators.size())
+            .onBuild(comboBox -> addComponentListener(new OperatorBoxPopupWidthListener()))
             .build();
   }
 
@@ -539,28 +547,26 @@ public class ColumnConditionPanel<C, T> extends JPanel {
     inputPanel.add(panel, BorderLayout.CENTER);
   }
 
-  private static final class OperatorComboBoxRenderer extends JLabel implements ListCellRenderer<Operator> {
+  private final class OperatorBoxPopupWidthListener extends ComponentAdapter {
+
+    @Override
+    public void componentResized(final ComponentEvent e) {
+      operatorCombo.setPopupWidth(getWidth() - 1);
+    }
+  }
+
+  private static final class OperatorComboBoxRenderer implements ListCellRenderer<Operator> {
+
+    private final DefaultListCellRenderer listCellRenderer = new DefaultListCellRenderer();
 
     private OperatorComboBoxRenderer() {
-      super("", CENTER);
-      setOpaque(true);
-      setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+      listCellRenderer.setHorizontalAlignment(CENTER);
     }
 
     @Override
     public Component getListCellRendererComponent(final JList<? extends Operator> list, final Operator value,
                                                   final int index, final boolean isSelected, final boolean cellHasFocus) {
-      if (isSelected) {
-        setBackground(list.getSelectionBackground());
-        setForeground(list.getSelectionForeground());
-      }
-      else {
-        setBackground(list.getBackground());
-        setForeground(list.getForeground());
-      }
-      setText((value == null) ? "" : value.toString());
-
-      return this;
+      return listCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     }
   }
 }
