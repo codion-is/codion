@@ -7,7 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.common.ui.icons.Logos;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ public final class DialogsTest {
     Dialogs.componentDialog(new JLabel())
             .owner(new JLabel())
             .title("title")
-            .icon(Icons.icons().filter())
+            .icon(Logos.logoTransparent())
             .modal(false)
             .resizable(false)
             .enterAction(Control.control(() -> {}))
@@ -39,7 +39,7 @@ public final class DialogsTest {
     Dialogs.progressWorkerDialog(() -> {})
             .owner(new JLabel())
             .title("title")
-            .icon(Icons.icons().filter())
+            .icon(Logos.logoTransparent())
             .northPanel(new JPanel())
             .westPanel(new JPanel())
             .failTitle("Fail")
@@ -54,7 +54,7 @@ public final class DialogsTest {
     Dialogs.exceptionDialog()
             .owner(new JLabel())
             .title("title")
-            .icon(Icons.icons().filter())
+            .icon(Logos.logoTransparent())
             .message("message");
   }
 
@@ -72,7 +72,7 @@ public final class DialogsTest {
     Dialogs.loginDialog()
             .owner(new JLabel())
             .title("title")
-            .icon(Icons.icons().filter())
+            .icon(Logos.logoTransparent())
             .validator(user -> {})
             .southComponent(new JLabel())
             .defaultUser(User.user("scott"));
@@ -84,7 +84,7 @@ public final class DialogsTest {
             .owner(new JLabel())
             .title("title")
             .modal(false)
-            .icon(Icons.icons().filter())
+            .icon(Logos.logoTransparent())
             .onOk(() -> {})
             .onCancel(() -> {})
             .build();

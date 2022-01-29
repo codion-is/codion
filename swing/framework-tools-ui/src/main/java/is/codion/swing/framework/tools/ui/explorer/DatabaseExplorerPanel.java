@@ -11,6 +11,7 @@ import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
@@ -31,7 +32,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
 public final class DatabaseExplorerPanel extends JPanel {
@@ -83,7 +83,7 @@ public final class DatabaseExplorerPanel extends JPanel {
         model.close();
       }
     });
-    frame.setIconImage(icons().logoTransparent().getImage());
+    frame.setIconImage(Logos.logoTransparent().getImage());
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.add(this);
     frame.pack();
@@ -113,7 +113,7 @@ public final class DatabaseExplorerPanel extends JPanel {
       final Database database = DatabaseFactory.getDatabase();
       final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
               Dialogs.loginDialog()
-                      .icon(icons().logoTransparent())
+                      .icon(Logos.logoTransparent())
                       .validator(user -> database.createConnection(user).close())
                       .show());
       new DatabaseExplorerPanel(explorerModel).showFrame();

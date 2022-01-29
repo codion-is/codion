@@ -11,7 +11,7 @@ import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
@@ -334,7 +334,7 @@ public final class ApplicationPanel extends JPanel {
 
     Dialogs.componentDialog(applicationPanel)
             .title("Codion Input Components Demo")
-            .icon(Icons.icons().logoTransparent())
+            .icon(Logos.logoTransparent())
             .show();
   }
 }

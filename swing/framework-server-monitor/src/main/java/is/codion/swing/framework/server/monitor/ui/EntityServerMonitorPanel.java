@@ -17,6 +17,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -42,8 +43,6 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-
-import static is.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -114,7 +113,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public void showFrame() {
     monitorFrame = new JFrame();
-    monitorFrame.setIconImage(icons().logoRed().getImage());
+    monitorFrame.setIconImage(Logos.logoRed().getImage());
     monitorFrame.setJMenuBar(initializeMainMenuControls().createMenuBar());
     monitorFrame.setTitle("Codion Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

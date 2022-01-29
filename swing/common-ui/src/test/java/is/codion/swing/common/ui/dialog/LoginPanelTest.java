@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.common.ui.icons.Logos;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +14,6 @@ public final class LoginPanelTest {
 
   @Test
   void test() {
-    new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, Icons.icons().logoTransparent(), new JLabel());
+    new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, Logos.logoTransparent(), new JLabel());
   }
 }

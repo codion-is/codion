@@ -7,6 +7,7 @@ import org.kordamp.ikonli.Ikon;
 
 public enum FrameworkIkons implements Ikon {
 
+  FILTER("fr-filter", '\uf14b'),
   ADD("fr-add", '\uf17f'),
   DELETE("fr-delete", '\uf204'),
   UPDATE("fr-update", '\uf1ac'),

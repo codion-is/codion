@@ -10,7 +10,7 @@ import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -549,7 +549,7 @@ public final class ComponentsTest {
   @Test
   void label() {
     final Value<String> textValue = Value.value("label");
-    final ComponentValue<String, JLabel> componentValue = Components.label(Icons.icons().filter())
+    final ComponentValue<String, JLabel> componentValue = Components.label(Logos.logoTransparent())
             .displayedMnemonic('l')
             .labelFor(new JButton())
             .linkedValue(textValue)

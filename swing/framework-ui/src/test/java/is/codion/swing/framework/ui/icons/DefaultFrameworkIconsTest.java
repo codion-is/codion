@@ -13,12 +13,6 @@ public final class DefaultFrameworkIconsTest {
   void test() {
     final DefaultFrameworkIcons icons = new DefaultFrameworkIcons();
     assertNotNull(icons.filter());
-    assertNotNull(icons.configure());
-    assertNotNull(icons.logoBlack());
-    assertNotNull(icons.logoTransparent());
-    assertNotNull(icons.logoRed());
-    assertNotNull(icons.filter());
-
     assertNotNull(icons.add());
     assertNotNull(icons.delete());
     assertNotNull(icons.update());

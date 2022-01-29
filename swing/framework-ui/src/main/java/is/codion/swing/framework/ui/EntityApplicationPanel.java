@@ -39,6 +39,7 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.panel.HierarchyPanel;
@@ -99,7 +100,6 @@ import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -219,7 +219,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public EntityApplicationPanel(final String applicationName, final ImageIcon applicationIcon, final Supplier<JFrame> frameProvider) {
     this.frameProvider = frameProvider;
     this.applicationName = applicationName == null ? "" : applicationName;
-    this.applicationIcon = applicationIcon == null ? icons().logoTransparent() : applicationIcon;
+    this.applicationIcon = applicationIcon == null ? Logos.logoTransparent() : applicationIcon;
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
@@ -776,7 +776,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
     final String versionString = Version.getVersionAndMetadataString();
-    panel.add(new JLabel(icons().logoTransparent()), BorderLayout.WEST);
+    panel.add(new JLabel(Logos.logoTransparent()), BorderLayout.WEST);
     final Version version = getClientVersion();
     final JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
     versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
