@@ -7594,3 +7594,5 @@
   DefaultEntities now validates that all attributes referenced via foreign key actually exist in the referenced entity
   DefaultEntityDefinition, added primary key index check for misconfigured primary key indexes
   DefaultIcons and DefaultFrameworkIcons now based on Ikonli, legacy icons removed, Ikonli foundation plugin module removed
+  Icons.ICON_SIZE configuration value added, EntityTablePanel no longer sets the toolbar button sizes to textfield square
+  DefaultIcons.filter() and configure() overloaded with size parameter

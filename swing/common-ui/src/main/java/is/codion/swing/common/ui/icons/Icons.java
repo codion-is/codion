@@ -15,6 +15,15 @@ import java.util.ServiceLoader;
  */
 public interface Icons {
 
+  int DEFAULT_ICON_SIZE = 16;
+
+  /**
+   * The icon size, note that this will affect the size of buttons<br>
+   * Value type: Integer<br>
+   * Default value: 16
+   */
+  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("is.codion.swing.iconSize", DEFAULT_ICON_SIZE);
+
   PropertyValue<String> ICONS_CLASSNAME = Configuration.stringValue("is.codion.swing.iconsClassName", DefaultIcons.class.getName());
 
   /**
@@ -23,9 +32,21 @@ public interface Icons {
   ImageIcon filter();
 
   /**
+   * @param size the icon size
+   * @return icon for the 'filter' action.
+   */
+  ImageIcon filter(int size);
+
+  /**
    * @return icon for the 'configure' action.
    */
   ImageIcon configure();
+
+  /**
+   * @param size the icon size
+   * @return icon for the 'configure' action.
+   */
+  ImageIcon configure(int size);
 
   /**
    * @return icon for the codion logo
