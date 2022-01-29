@@ -70,6 +70,21 @@ public final class Components {
   }
 
   /**
+   * @return a builder for a component
+   */
+  public static RadioButtonBuilder radioButton() {
+    return new DefaultRadioButtonBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the radion button
+   * @return a builder for a component
+   */
+  public static RadioButtonBuilder radioButton(final Value<Boolean> linkedValue) {
+    return new DefaultRadioButtonBuilder(linkedValue);
+  }
+
+  /**
    * @param <B> the builder type
    * @return a builder for a component
    */

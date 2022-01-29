@@ -19,7 +19,7 @@ public interface CheckBoxBuilder extends ToggleButtonBuilder<JCheckBox, CheckBox
   CheckBoxBuilder nullable(boolean nullable);
 
   /**
-   * @param horizontalAlignment the horizontal text alignment
+   * @param horizontalAlignment the horizontal alignment
    * @return this builder instance
    */
   CheckBoxBuilder horizontalAlignment(int horizontalAlignment);

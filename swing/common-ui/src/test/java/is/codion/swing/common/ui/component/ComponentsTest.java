@@ -30,6 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -269,6 +270,27 @@ public final class ComponentsTest {
 
     value.set(true);
     assertTrue(box.isSelected());
+  }
+
+  @Test
+  void radioButton() {
+    final Value<Boolean> value = Value.value(true, false);
+    final ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton(value)
+            .caption("caption")
+            .includeCaption(true)
+            .transferFocusOnEnter(true)
+            .buildComponentValue();
+    final JRadioButton button = componentValue.getComponent();
+    assertTrue(button.isSelected());
+    assertTrue(value.get());
+
+    button.doClick();
+
+    assertFalse(button.isSelected());
+    assertFalse(value.get());
+
+    value.set(true);
+    assertTrue(button.isSelected());
   }
 
   @Test
