@@ -18,15 +18,6 @@ public enum Ikons implements Ikon {
     this.code = code;
   }
 
-  public static Ikons findByDescription(final String description) {
-    for (final Ikons font : values()) {
-      if (font.getDescription().equals(description)) {
-        return font;
-      }
-    }
-    throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-  }
-
   @Override
   public String getDescription() {
     return description;

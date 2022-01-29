@@ -30,15 +30,6 @@ public enum FrameworkIkons implements Ikon {
     this.code = code;
   }
 
-  public static FrameworkIkons findByDescription(final String description) {
-    for (final FrameworkIkons font : values()) {
-      if (font.getDescription().equals(description)) {
-        return font;
-      }
-    }
-    throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
-  }
-
   @Override
   public String getDescription() {
     return description;

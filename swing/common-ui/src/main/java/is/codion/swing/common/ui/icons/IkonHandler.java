@@ -19,7 +19,13 @@ public final class IkonHandler extends AbstractIkonHandler {
 
   @Override
   public Ikon resolve(final String description) {
-    return Ikons.findByDescription(description);
+    for (final Ikons font : Ikons.values()) {
+      if (font.getDescription().equals(description)) {
+        return font;
+      }
+    }
+
+    throw new IllegalArgumentException("Uknown icon description '" + description + "'");
   }
 
   @Override
