@@ -1,5 +1,7 @@
 module is.codion.swing.framework.ui {
   requires org.slf4j;
+  requires org.kordamp.ikonli.core;
+  requires org.kordamp.ikonli.swing;
   requires transitive is.codion.swing.framework.model;
   requires transitive is.codion.swing.common.ui;
 
