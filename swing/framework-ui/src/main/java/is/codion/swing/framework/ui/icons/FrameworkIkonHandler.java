@@ -8,9 +8,13 @@ import org.kordamp.ikonli.Ikon;
 
 public final class FrameworkIkonHandler extends AbstractIkonHandler {
 
+  private static final String FONT_RESOURCE = "is/codion/swing/framework/ui/icons/framework-icons.ttf";
+  private static final String FONT_FAMILY = "codion-framework-icons";
+  private static final String DESCRIPTION_PREFIX = "fr-";
+
   @Override
   public boolean supports(final String description) {
-    return description != null && description.startsWith("fr-");
+    return description != null && description.startsWith(DESCRIPTION_PREFIX);
   }
 
   @Override
@@ -20,11 +24,11 @@ public final class FrameworkIkonHandler extends AbstractIkonHandler {
 
   @Override
   public String getFontResourcePath() {
-    return "is/codion/swing/framework/ui/icons/framework-icons.ttf";
+    return FONT_RESOURCE;
   }
 
   @Override
   public String getFontFamily() {
-    return "codion-framework-icons";
+    return FONT_FAMILY;
   }
 }
