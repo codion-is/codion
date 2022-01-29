@@ -172,15 +172,24 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
+    final EntityType entityType = definition.getEntityType();
     for (final ForeignKey foreignKey : definition.getForeignKeys()) {
-      final EntityType entityType = definition.getEntityType();
-      if (!entityType.equals(foreignKey.getReferencedEntityType()) && strictForeignKeys) {
-        final EntityDefinition foreignEntity = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
-        if (foreignEntity == null) {
-          throw new IllegalArgumentException("Entity '" + foreignKey.getReferencedEntityType()
-                  + "' referenced by entity '" + entityType + "' via foreign key property '"
-                  + foreignKey + "' has not been defined");
-        }
+      final EntityType referencedType = foreignKey.getReferencedEntityType();
+      final EntityDefinition referencedEntity = referencedType.equals(entityType) ?
+              definition : entityDefinitions.get(referencedType.getName());
+      if (referencedEntity == null && strictForeignKeys) {
+        throw new IllegalArgumentException("Entity '" + referencedType
+                + "' referenced by entity '" + entityType + "' via foreign key '"
+                + foreignKey + "' has not been defined");
+      }
+      if (referencedEntity != null) {
+        foreignKey.getReferences().stream()
+                .map(ForeignKey.Reference::getReferencedAttribute)
+                .forEach(attribute -> {
+                  if (!referencedEntity.containsAttribute(attribute)) {
+                    throw new IllegalArgumentException("Property referenced by foreign key not found in referenced entity: " + attribute);
+                  }
+                });
       }
     }
   }

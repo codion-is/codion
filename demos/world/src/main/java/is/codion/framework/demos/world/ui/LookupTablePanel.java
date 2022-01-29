@@ -7,15 +7,9 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import org.kordamp.ikonli.foundation.Foundation;
-import org.kordamp.ikonli.swing.FontIcon;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import static is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.ICON_SIZE;
-import static is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.imageIcon;
 
 public final class LookupTablePanel extends EntityTablePanel {
 
@@ -34,7 +28,6 @@ public final class LookupTablePanel extends EntityTablePanel {
             .addSeparatorAt(1)
             .addAt(2, Control.builder(this::exportCSV)
                     .caption("Export CSV...")
-                    .smallIcon(imageIcon(FontIcon.of(Foundation.PAGE_EXPORT_CSV, ICON_SIZE)))
                     .build());
   }
 

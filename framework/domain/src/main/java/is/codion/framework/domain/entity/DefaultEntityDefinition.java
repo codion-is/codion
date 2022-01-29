@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -853,8 +854,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       propertyMap.put(property.getAttribute(), property);
     }
 
-    private static void validatePrimaryKeyProperties(final Map<Attribute<?>, Property<?>> propertyMap) {
-      final Set<Integer> usedPrimaryKeyIndexes = new HashSet<>();
+    private void validatePrimaryKeyProperties(final Map<Attribute<?>, Property<?>> propertyMap) {
+      final Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
       for (final Property<?> property : propertyMap.values()) {
         if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
           final Integer index = ((ColumnProperty<?>) property).getPrimaryKeyIndex();
@@ -864,6 +865,23 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
           usedPrimaryKeyIndexes.add(index);
         }
       }
+      usedPrimaryKeyIndexes.stream()
+              .min(Integer::compareTo)
+              .ifPresent(minPrimaryKeyIndex -> {
+                if (minPrimaryKeyIndex != 0) {
+                  throw new IllegalArgumentException("Minimum primary key index is "
+                          + minPrimaryKeyIndex + " for entity " + entityType + ", when it should be 0");
+                }
+              });
+      usedPrimaryKeyIndexes.stream()
+              .max(Integer::compareTo)
+              .ifPresent(maxPrimaryKeyIndex -> {
+                if (usedPrimaryKeyIndexes.size() != maxPrimaryKeyIndex + 1) {
+                  throw new IllegalArgumentException("Expecting " + (maxPrimaryKeyIndex + 1)
+                          + " primary key properties for entity " + entityType + ", but found only "
+                          + usedPrimaryKeyIndexes.size() + " distinct primary key indexes " + usedPrimaryKeyIndexes + "");
+                }
+              });
     }
 
     private void validate(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {

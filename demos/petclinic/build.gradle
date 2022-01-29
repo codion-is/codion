@@ -6,8 +6,6 @@ apply from: '../demos.gradle'
 dependencies {
     implementation project(':codion-swing-framework-ui')
 
-    implementation project(':codion-plugin-ikonli-foundation')
-
     runtimeOnly project(':codion-plugin-logback-proxy')
 
     runtimeOnly project(':codion-framework-db-local')

@@ -522,15 +522,6 @@ image::modules/plugins/credentials-server/build/reports/dependency-graph/depende
 ====
 
 [discrete]
-==== codion-plugin-ikonli-foundation
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/ikonli-foundation/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
 ==== codion-plugin-imagepanel
 
 .Dependency graph

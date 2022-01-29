@@ -3,4 +3,6 @@ dependencies {
     api project(':codion-common-model')
 
     api project(':codion-swing-common-model')
+
+    api 'org.kordamp.ikonli:ikonli-swing:2.6.0'
 }
