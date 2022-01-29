@@ -620,7 +620,15 @@ public class DomainTest {
 
   @Test
   void missingForeignKeyReferenceProperty() {
-    assertThrows(IllegalArgumentException.class, TestFkDomain::new);
+    assertThrows(IllegalArgumentException.class, () -> new TestKeysDomain().testForeignKeys());
+  }
+
+  @Test
+  void misconfiguredPrimaryKeyPropertyIndexes() {
+    assertThrows(IllegalArgumentException.class, () -> new TestKeysDomain().testPrimaryKeyIndexes1());
+    assertThrows(IllegalArgumentException.class, () -> new TestKeysDomain().testPrimaryKeyIndexes2());
+    assertThrows(IllegalArgumentException.class, () -> new TestKeysDomain().testPrimaryKeyIndexes3());
+    assertThrows(IllegalArgumentException.class, () -> new TestKeysDomain().testPrimaryKeyIndexes4());
   }
 
   @Test
