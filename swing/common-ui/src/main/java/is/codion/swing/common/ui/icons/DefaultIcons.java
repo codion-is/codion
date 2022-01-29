@@ -25,7 +25,7 @@ public class DefaultIcons implements Icons {
 
   @Override
   public final ImageIcon filter(final int size) {
-    return imageIcon(FontIcon.of(Ikons.FILTER, size));
+    return imageIcon(FontIcon.of(Ikons.FILTER, size, ICON_COLOR.get()));
   }
 
   @Override
@@ -35,7 +35,7 @@ public class DefaultIcons implements Icons {
 
   @Override
   public final ImageIcon configure(final int size) {
-    return imageIcon(FontIcon.of(Ikons.CONFIGURE, size));
+    return imageIcon(FontIcon.of(Ikons.CONFIGURE, size, ICON_COLOR.get()));
   }
 
   @Override

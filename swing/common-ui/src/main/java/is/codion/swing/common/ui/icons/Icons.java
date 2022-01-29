@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 
 import javax.swing.ImageIcon;
+import java.awt.Color;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
@@ -23,6 +24,13 @@ public interface Icons {
    * Default value: 16
    */
   PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("is.codion.swing.iconSize", DEFAULT_ICON_SIZE);
+
+  /**
+   * The icon color<br>
+   * Value type: Color<br>
+   * Default value: Color.BLACK
+   */
+  PropertyValue<Color> ICON_COLOR = Configuration.value("is.codion.swing.iconColor", Color.BLACK, Color::decode);
 
   PropertyValue<String> ICONS_CLASSNAME = Configuration.stringValue("is.codion.swing.iconsClassName", DefaultIcons.class.getName());
 
