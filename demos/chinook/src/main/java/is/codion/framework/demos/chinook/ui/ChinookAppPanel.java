@@ -75,7 +75,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final ChinookApplicationModel applicationModel) {
     final EntityPanel.Builder trackBuilder =
             EntityPanel.builder(SwingEntityModel.builder(Track.TYPE))
-                    .editPanelClass(TrackEditPanel.class)
                     .tablePanelClass(TrackTablePanel.class);
 
     final EntityPanel.Builder customerBuilder =
