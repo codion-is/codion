@@ -12,10 +12,12 @@ import java.net.URL;
 public final class IkonHandler extends AbstractIkonHandler {
 
   private static final String FONT_RESOURCE = "is/codion/swing/common/ui/icons/common-icons.ttf";
+  private static final String FONT_FAMILY = "codion-common-icons";
+  private static final String DESCRIPTION_PREFIX = "co-";
 
   @Override
   public boolean supports(final String description) {
-    return description != null && description.startsWith("co-");
+    return description != null && description.startsWith(DESCRIPTION_PREFIX);
   }
 
   @Override
@@ -35,6 +37,6 @@ public final class IkonHandler extends AbstractIkonHandler {
 
   @Override
   public String getFontFamily() {
-    return "codion-common-icons";
+    return FONT_FAMILY;
   }
 }
