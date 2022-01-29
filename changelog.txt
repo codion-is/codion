@@ -7634,3 +7634,4 @@
   RadioButtonBuilder added
   ColumnConditionPanel now uses radio button for the enabled toggle button instead of a toggle button with an icon
   DefaultIcons in common.swing removed, filter icon moved to FrameworkIcons, Icons renamed Logos
+  Ikonli dependence moved from swing.common to swing.framework
