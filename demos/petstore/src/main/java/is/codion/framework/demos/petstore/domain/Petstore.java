@@ -199,7 +199,7 @@ public final class Petstore extends DefaultDomain {
                     .nullable(false),
             foreignKeyProperty(Item.ADDRESS_FK, "Address"),
             booleanProperty(Item.DISABLED, Item.DISABLED.getName(), Integer.class, 1, 0)
-                    .columnName("disabled").defaultValue(false))
+                    .columnName("disabled").defaultValue(false).nullable(false))
             .keyGenerator(increment("petstore.item", "itemid"))
             .orderBy(orderBy().ascending(Item.NAME))
             .stringFactory(stringFactory(Item.PRODUCT_FK)
