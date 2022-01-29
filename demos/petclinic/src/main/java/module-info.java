@@ -1,6 +1,5 @@
 module is.codion.framework.demos.petclinic {
   requires is.codion.swing.framework.ui;
-  requires is.codion.swing.plugin.ikonli.foundation;
 
   exports is.codion.framework.demos.petclinic.model
           to is.codion.swing.framework.model;

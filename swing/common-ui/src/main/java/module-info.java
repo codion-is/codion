@@ -1,6 +1,8 @@
 module is.codion.swing.common.ui {
   requires java.rmi;
   requires transitive is.codion.swing.common.model;
+  requires transitive org.kordamp.ikonli.core;
+  requires transitive org.kordamp.ikonli.swing;
 
   exports is.codion.swing.common.ui;
   exports is.codion.swing.common.ui.calendar;
@@ -18,8 +20,12 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui.table;
   exports is.codion.swing.common.ui.textfield;
 
+  opens is.codion.swing.common.ui.icons;
+
   uses is.codion.swing.common.ui.icons.Icons;
 
   provides is.codion.swing.common.ui.icons.Icons
           with is.codion.swing.common.ui.icons.DefaultIcons;
+  provides org.kordamp.ikonli.IkonHandler
+          with is.codion.swing.common.ui.icons.IkonHandler;
 }

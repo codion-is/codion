@@ -6,7 +6,12 @@ package is.codion.swing.common.ui.icons;
 import org.kordamp.ikonli.AbstractIkonHandler;
 import org.kordamp.ikonli.Ikon;
 
+import java.io.InputStream;
+import java.net.URL;
+
 public final class IkonHandler extends AbstractIkonHandler {
+
+  private static final String FONT_RESOURCE = "is/codion/swing/common/ui/icons/common-icons.ttf";
 
   @Override
   public boolean supports(final String description) {
@@ -19,8 +24,13 @@ public final class IkonHandler extends AbstractIkonHandler {
   }
 
   @Override
-  public String getFontResourcePath() {
-    return "is/codion/swing/common/ui/icons/common-icons.ttf";
+  public URL getFontResource() {
+    return IkonHandler.class.getClassLoader().getResource(FONT_RESOURCE);
+  }
+
+  @Override
+  public InputStream getFontResourceAsStream() {
+    return IkonHandler.class.getClassLoader().getResourceAsStream(FONT_RESOURCE);
   }
 
   @Override

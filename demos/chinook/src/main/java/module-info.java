@@ -9,7 +9,6 @@ module is.codion.framework.demos.chinook {
   requires is.codion.javafx.framework;
   requires is.codion.plugin.jasperreports;
   requires is.codion.plugin.imagepanel;
-  requires is.codion.swing.plugin.ikonli.foundation;
   requires jasperreports;
   requires com.formdev.flatlaf;
 

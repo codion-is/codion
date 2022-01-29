@@ -45,7 +45,7 @@ public enum FrameworkIkons implements Ikon {
   }
 
   @Override
-  public char getCode() {
+  public int getCode() {
     return code;
   }
 }
