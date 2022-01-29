@@ -22,7 +22,13 @@ public final class FrameworkIkonHandler extends AbstractIkonHandler {
 
   @Override
   public Ikon resolve(final String description) {
-    return FrameworkIkons.findByDescription(description);
+    for (final FrameworkIkons font : FrameworkIkons.values()) {
+      if (font.getDescription().equals(description)) {
+        return font;
+      }
+    }
+
+    throw new IllegalArgumentException("Uknown icon description '" + description + "'");
   }
 
   @Override

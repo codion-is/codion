@@ -45,7 +45,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -71,7 +70,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     NO
   }
 
-  private static final int ICON_SIZE = 16;
   private static final float OPERATOR_FONT_SIZE = 18f;
 
   private final ColumnConditionModel<C, T> conditionModel;
@@ -117,11 +115,11 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.upperBoundField = boundFieldFactory.createUpperBoundField();
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
     this.operatorCombo = initializeOperatorComboBox(conditionModel.getOperators());
-    this.toggleEnabledButton = toggleButton(conditionModel.getEnabledState())
-            .icon(icons().filter(ICON_SIZE))
+    this.toggleEnabledButton = radioButton(conditionModel.getEnabledState())
+            .horizontalAlignment(CENTER)
             .build();
     this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedConditionState)
-            .icon(icons().configure(ICON_SIZE))
+            .caption("...")
             .build() : null;
     conditionModel.setLocked(modelLocked);
     initializeUI();

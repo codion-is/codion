@@ -13,6 +13,7 @@ import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.MemoryUsageField;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -48,7 +49,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -105,7 +105,7 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public JFrame showFrame() {
     final JFrame frame = new JFrame();
-    frame.setIconImage(icons().logoTransparent().getImage());
+    frame.setIconImage(Logos.logoTransparent().getImage());
     final String title = "Codion - " + loadTestModel.getTitle();
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {

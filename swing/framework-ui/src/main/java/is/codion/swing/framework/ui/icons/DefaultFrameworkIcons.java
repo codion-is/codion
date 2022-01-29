@@ -3,16 +3,23 @@
  */
 package is.codion.swing.framework.ui.icons;
 
-import is.codion.swing.common.ui.icons.DefaultIcons;
-
 import org.kordamp.ikonli.swing.FontIcon;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 
-public final class DefaultFrameworkIcons extends DefaultIcons implements FrameworkIcons {
+import static java.util.Objects.requireNonNull;
 
-@Override
+public final class DefaultFrameworkIcons implements FrameworkIcons {
+
+  @Override
+  public ImageIcon filter() {
+    return imageIcon(FontIcon.of(FrameworkIkons.FILTER, ICON_SIZE.get(), ICON_COLOR.get()));
+  }
+
+  @Override
   public ImageIcon add() {
     return imageIcon(FontIcon.of(FrameworkIkons.ADD, ICON_SIZE.get(), ICON_COLOR.get()));
   }
@@ -90,5 +97,18 @@ public final class DefaultFrameworkIcons extends DefaultIcons implements Framewo
   @Override
   public ImageIcon dependencies() {
     return imageIcon(FontIcon.of(FrameworkIkons.DEPENDENCIES, ICON_SIZE.get(), ICON_COLOR.get()));
+  }
+
+  /**
+   * Creates a {@link ImageIcon} from the given icon.
+   * @param icon the icon
+   * @return a ImageIcon based on the given icon
+   */
+  private static ImageIcon imageIcon(final Icon icon) {
+    requireNonNull(icon, "icon");
+    final BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+    icon.paintIcon(null, image.getGraphics(), 0, 0);
+
+    return new ImageIcon(image);
   }
 }

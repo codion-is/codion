@@ -7,6 +7,7 @@ import org.kordamp.ikonli.Ikon;
 
 public enum FrameworkIkons implements Ikon {
 
+  FILTER("fr-filter", '\uf14b'),
   ADD("fr-add", '\uf17f'),
   DELETE("fr-delete", '\uf204'),
   UPDATE("fr-update", '\uf1ac'),
@@ -28,15 +29,6 @@ public enum FrameworkIkons implements Ikon {
   FrameworkIkons(final String description, final char code) {
     this.description = description;
     this.code = code;
-  }
-
-  public static FrameworkIkons findByDescription(final String description) {
-    for (final FrameworkIkons font : values()) {
-      if (font.getDescription().equals(description)) {
-        return font;
-      }
-    }
-    throw new IllegalArgumentException("Icon description '" + description + "' is invalid!");
   }
 
   @Override

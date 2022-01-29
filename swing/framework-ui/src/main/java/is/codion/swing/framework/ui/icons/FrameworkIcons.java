@@ -5,18 +5,40 @@ package is.codion.swing.framework.ui.icons;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
-import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.common.ui.icons.Logos;
 
 import javax.swing.ImageIcon;
+import java.awt.Color;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
  * Provides icons for framework ui components.
  */
-public interface FrameworkIcons extends Icons {
+public interface FrameworkIcons extends Logos {
+
+  int DEFAULT_ICON_SIZE = 16;
+
+  /**
+   * The icon size, note that this will affect the size of buttons<br>
+   * Value type: Integer<br>
+   * Default value: 16
+   */
+  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("is.codion.swing.iconSize", DEFAULT_ICON_SIZE);
+
+  /**
+   * The icon color<br>
+   * Value type: Color<br>
+   * Default value: Color.BLACK
+   */
+  PropertyValue<Color> ICON_COLOR = Configuration.value("is.codion.swing.iconColor", Color.BLACK, Color::decode);
 
   PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("is.codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
+
+  /**
+   * @return icon for the 'filter' action.
+   */
+  ImageIcon filter();
 
   /**
    * @return icon for the 'add' action.
