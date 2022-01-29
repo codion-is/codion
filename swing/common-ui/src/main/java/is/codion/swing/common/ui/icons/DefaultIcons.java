@@ -14,20 +14,28 @@ import static java.util.Objects.requireNonNull;
 
 public class DefaultIcons implements Icons {
 
-  public static final int ICON_SIZE = 16;
-
   private static final String CODION_LOGO_BLACK_48 = "codion-logo-rounded-black-48x48.png";
   private static final String CODION_LOGO_TRANSPARENT_48 = "codion-logo-transparent-48x48.png";
   private static final String CODION_LOGO_RED_48 = "codion-logo-rounded-red-48x48.png";
 
   @Override
   public final ImageIcon filter() {
-    return imageIcon(FontIcon.of(Ikons.FILTER, ICON_SIZE));
+    return filter(ICON_SIZE.get());
+  }
+
+  @Override
+  public final ImageIcon filter(final int size) {
+    return imageIcon(FontIcon.of(Ikons.FILTER, size, ICON_COLOR.get()));
   }
 
   @Override
   public final ImageIcon configure() {
-    return imageIcon(FontIcon.of(Ikons.CONFIGURE, ICON_SIZE));
+    return configure(ICON_SIZE.get());
+  }
+
+  @Override
+  public final ImageIcon configure(final int size) {
+    return imageIcon(FontIcon.of(Ikons.CONFIGURE, size, ICON_COLOR.get()));
   }
 
   @Override

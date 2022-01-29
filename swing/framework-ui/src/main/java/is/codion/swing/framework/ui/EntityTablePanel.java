@@ -41,7 +41,6 @@ import is.codion.swing.common.ui.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.table.TableColumnComponentPanel;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -70,7 +69,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
@@ -220,7 +218,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     MENU
   }
 
-  private static final Dimension TOOLBAR_BUTTON_SIZE = TextFields.DIMENSION_TEXT_FIELD_SQUARE;
   private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int POPUP_LOCATION_X_OFFSET = 42;
@@ -1275,9 +1272,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Controls toolbarControls = getToolBarControls(additionalToolBarControls);
     if (toolbarControls != null) {
       final JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
-      for (final Component component : southToolBar.getComponents()) {
-        component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
-      }
       southToolBar.setFocusable(false);
       southToolBar.setFloatable(false);
       southToolBar.setRollover(true);
@@ -1363,19 +1357,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final JButton button = Components.button(control(tableModel::refresh))
+    final Control refreshControl = control(tableModel::refresh);
+    final JButton button = Components.button(refreshControl)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
             .toolTipText(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .icon(frameworkIcons().refreshRequired())
+            .focusable(false)
             .build();
 
     KeyEvents.builder(KeyEvent.VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(button.getAction())
+            .action(refreshControl)
             .enable(this);
-
-    button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
-    button.setFocusable(false);
 
     final JToolBar toolBar = new JToolBar(SwingConstants.HORIZONTAL);
     toolBar.setFocusable(false);

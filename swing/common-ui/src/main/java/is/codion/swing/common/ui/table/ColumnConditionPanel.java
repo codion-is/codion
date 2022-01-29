@@ -71,6 +71,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     NO
   }
 
+  private static final int ICON_SIZE = 16;
   private static final float OPERATOR_FONT_SIZE = 18f;
 
   private final ColumnConditionModel<C, T> conditionModel;
@@ -117,10 +118,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.lowerBoundField = boundFieldFactory.createLowerBoundField();
     this.operatorCombo = initializeOperatorComboBox(conditionModel.getOperators());
     this.toggleEnabledButton = toggleButton(conditionModel.getEnabledState())
-            .icon(icons().filter())
+            .icon(icons().filter(ICON_SIZE))
             .build();
     this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedConditionState)
-            .icon(icons().configure())
+            .icon(icons().configure(ICON_SIZE))
             .build() : null;
     conditionModel.setLocked(modelLocked);
     initializeUI();
