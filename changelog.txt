@@ -7598,3 +7598,4 @@
   DefaultIcons.filter() and configure() overloaded with size parameter
   Icons.ICON_COLOR configuration value added
   RadioButtonBuilder added
+  ColumnConditionPanel now uses radio button for the enabled toggle button instead of a toggle button with an icon
