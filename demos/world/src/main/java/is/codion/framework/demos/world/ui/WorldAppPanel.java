@@ -10,14 +10,10 @@ import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.CountryOverviewModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
-import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
-import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
-import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -80,8 +76,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
-    Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
-    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");

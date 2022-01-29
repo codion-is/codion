@@ -18,15 +18,11 @@ import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.icons.Icons;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
-import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
-import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
 import javax.swing.SwingUtilities;
 import java.util.List;
@@ -93,8 +89,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
-    FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityEditPanel.USE_SAVE_CONTROL.set(false);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);

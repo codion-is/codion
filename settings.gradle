@@ -114,9 +114,6 @@ project(':codion-plugin-credentials-server').projectDir = file('plugins/credenti
 include 'codion-plugin-hikari-pool'
 project(':codion-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
 
-include 'codion-plugin-ikonli-foundation'
-project(':codion-plugin-ikonli-foundation').projectDir = file('plugins/ikonli-foundation')
-
 include 'codion-plugin-imagepanel'
 project(':codion-plugin-imagepanel').projectDir = file('plugins/imagepanel')
 

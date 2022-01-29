@@ -3,7 +3,6 @@ apply from: '../demos.gradle'
 dependencies {
     implementation project(':codion-swing-framework-ui')
     implementation project(':codion-plugin-jackson-json')
-    implementation project(':codion-plugin-ikonli-foundation')
     implementation project(':codion-plugin-jasperreports')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"

@@ -7593,3 +7593,4 @@
   ColumnConditionPanel now final
   DefaultEntities now validates that all attributes referenced via foreign key actually exist in the referenced entity
   DefaultEntityDefinition, added primary key index check for misconfigured primary key indexes
+  DefaultIcons and DefaultFrameworkIcons now based on Ikonli, legacy icons removed, Ikonli foundation plugin module removed

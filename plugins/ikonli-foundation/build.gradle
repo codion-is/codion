@@ -1,7 +1,0 @@
-dependencies {
-    implementation project(':codion-swing-common-ui')
-    implementation project(':codion-swing-framework-ui')
-
-    api 'org.kordamp.ikonli:ikonli-swing:2.6.0'
-    api 'org.kordamp.ikonli:ikonli-foundation-pack:2.6.0'
-}

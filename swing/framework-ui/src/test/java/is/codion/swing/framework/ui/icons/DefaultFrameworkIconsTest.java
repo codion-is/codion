@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.plugin.ikonli.foundation;
+package is.codion.swing.framework.ui.icons;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public final class IkonliFoundationFrameworkIconsTest {
+public final class DefaultFrameworkIconsTest {
 
   @Test
   void test() {
-    final IkonliFoundationFrameworkIcons icons = new IkonliFoundationFrameworkIcons();
+    final DefaultFrameworkIcons icons = new DefaultFrameworkIcons();
     assertNotNull(icons.filter());
     assertNotNull(icons.configure());
     assertNotNull(icons.logoBlack());
