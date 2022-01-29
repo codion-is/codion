@@ -16,6 +16,7 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.TextFields;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -506,6 +507,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     Utilities.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(new BorderLayout());
+    controlPanel.setBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0));
+    inputPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 0));
     toggleEnabledButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     if (toggleAdvancedButton != null) {
       toggleAdvancedButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
