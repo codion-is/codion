@@ -7,26 +7,31 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import javax.swing.JTable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 public final class LookupTablePanel extends EntityTablePanel {
 
   public LookupTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     setConditionPanelVisible(true);
     setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
             .caption("Clear")
             .mnemonic('C')
+            .smallIcon(frameworkIcons().clear())
             .build());
   }
 
   @Override
   protected Controls getPopupControls(List<Controls> additionalPopupControls) {
     return super.getPopupControls(additionalPopupControls)
-            .addSeparatorAt(1)
-            .addAt(2, Control.builder(this::exportCSV)
+            .addSeparatorAt(2)
+            .addAt(3, Control.builder(this::exportCSV)
                     .caption("Export CSV...")
                     .build());
   }

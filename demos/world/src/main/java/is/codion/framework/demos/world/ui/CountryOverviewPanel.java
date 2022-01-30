@@ -13,6 +13,8 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.PieDataset;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -20,6 +22,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
@@ -35,12 +38,8 @@ public final class CountryOverviewPanel extends EntityPanel {
   public CountryOverviewPanel(SwingEntityModel entityModel) {
     super(entityModel, new CountryEditPanel(entityModel.getEditModel()));
     CountryOverviewTableModel tableModel = (CountryOverviewTableModel) entityModel.getTableModel();
-    cityChartPanel = new ChartPanel(createPieChart("Cities", tableModel.getCitiesDataset()));
-    cityChartPanel.getChart().removeLegend();
-    cityChartPanel.setPreferredSize(new Dimension(300, 300));
-    languageChartPanel = new ChartPanel(createPieChart("Languages", tableModel.getLanguagesDataset()));
-    languageChartPanel.getChart().removeLegend();
-    languageChartPanel.setPreferredSize(new Dimension(300, 300));
+    cityChartPanel = createChartPanel("Cities", tableModel.getCitiesDataset());
+    languageChartPanel = createChartPanel("Languages", tableModel.getLanguagesDataset());
   }
 
   @Override
@@ -114,5 +113,16 @@ public final class CountryOverviewPanel extends EntityPanel {
               .show();
     }
     getEditPanel().requestInitialFocus();
+  }
+
+  private ChartPanel createChartPanel(String title, PieDataset<String> dataset) {
+    JFreeChart languagesChart = createPieChart(title, dataset);
+    languagesChart.getPlot().setBackgroundPaint(UIManager.getColor("Table.background"));
+    languagesChart.setBackgroundPaint(this.getBackground());
+    ChartPanel chartPanel = new ChartPanel(languagesChart);
+    chartPanel.getChart().removeLegend();
+    chartPanel.setPreferredSize(new Dimension(300, 300));
+
+    return chartPanel;
   }
 }
