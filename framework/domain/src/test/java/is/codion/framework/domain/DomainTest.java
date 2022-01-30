@@ -690,8 +690,15 @@ public class DomainTest {
     assertEquals(deptActive, departmentBean.active());
 
     departmentBean.active(false);
+    departmentBean.setDeptNo(42);
 
     assertFalse(department.get(Department.ACTIVE));
+    assertEquals(42, department.get(Department.NO));
+
+    department.put(Department.NO, null);
+    assertEquals(0d, departmentBean.deptNo());
+
+    departmentBean.setDeptNo(deptNo);
 
     final Entity manager = entities.builder(Employee.TYPE)
             .with(Employee.ID, 12)

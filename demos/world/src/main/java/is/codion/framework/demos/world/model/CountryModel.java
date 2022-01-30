@@ -7,12 +7,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
-
-import static java.util.stream.Collectors.toList;
-
 public final class CountryModel extends SwingEntityModel {
 
   public CountryModel(EntityConnectionProvider connectionProvider) {
@@ -29,24 +23,18 @@ public final class CountryModel extends SwingEntityModel {
   }
 
   private Double getAverageCityPopulation() {
-    SwingEntityTableModel cityTableModel = getDetailModel(City.TYPE).getTableModel();
-    if (!getEditModel().isEntityNew()) {
-      Entity country = getEditModel().getEntityCopy();
-
-      List<City> cities = Entity.castTo(City.class, cityTableModel.getItems()).stream()
-              .filter(city -> city.isInCountry(country))
-              .collect(toList());
-
-      OptionalDouble averageCityPopulation = cities.stream()
-              .map(city -> city.getOptional(City.POPULATION))
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .mapToInt(Integer::valueOf)
-              .average();
-
-      return averageCityPopulation.isPresent() ? averageCityPopulation.getAsDouble() : null;
+    if (getEditModel().isEntityNew()) {
+      return null;
     }
 
-    return null;
+    SwingEntityTableModel cityTableModel = getDetailModel(City.TYPE).getTableModel();
+    Entity country = getEditModel().getEntityCopy();
+
+    return Entity.castTo(City.class, cityTableModel.getItems()).stream()
+            .filter(city -> city.isInCountry(country))
+            .map(City::population)
+            .mapToInt(Integer::valueOf)
+            .average()
+            .orElse(0d);
   }
 }

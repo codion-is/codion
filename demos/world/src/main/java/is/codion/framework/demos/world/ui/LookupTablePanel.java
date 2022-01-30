@@ -16,8 +16,8 @@ import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 public final class LookupTablePanel extends EntityTablePanel {
 
-  public LookupTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
+  public LookupTablePanel(SwingEntityTableModel lookupModel) {
+    super(lookupModel);
     getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     setConditionPanelVisible(true);
     setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)

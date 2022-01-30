@@ -205,11 +205,12 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Boolean> ACTIVE = TYPE.booleanAttribute("active");
     Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
 
-    Integer deptNo();
+    int deptNo();
     String name();
     String location();
     Boolean active();
     void active(Boolean active);
+    void setDeptNo(int deptNo);
   }
 
   void department() {

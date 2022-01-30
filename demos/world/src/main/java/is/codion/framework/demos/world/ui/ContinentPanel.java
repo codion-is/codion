@@ -23,8 +23,8 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 
 public final class ContinentPanel extends EntityPanel {
 
-  public ContinentPanel(SwingEntityModel entityModel) {
-    super(entityModel, new ContinentTablePanel(entityModel.getTableModel()));
+  public ContinentPanel(SwingEntityModel continentModel) {
+    super(continentModel, new ContinentTablePanel(continentModel.getTableModel()));
   }
 
   @Override
@@ -63,6 +63,7 @@ public final class ContinentPanel extends EntityPanel {
     chart.getPlot().setBackgroundPaint(UIManager.getColor("Table.background"));
     chart.setBackgroundPaint(this.getBackground());
     ChartPanel chartPanel = new ChartPanel(chart);
+    chartPanel.getChart().removeLegend();
     chartPanel.setPreferredSize(new Dimension(300, 300));
 
     return chartPanel;

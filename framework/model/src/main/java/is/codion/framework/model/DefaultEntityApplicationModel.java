@@ -151,10 +151,10 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final M getEntityModel(final Class<? extends M> modelClass) {
+  public final <T extends M> T getEntityModel(final Class<? extends M> modelClass) {
     for (final M model : entityModels) {
       if (model.getClass().equals(modelClass)) {
-        return model;
+        return (T) model;
       }
     }
 

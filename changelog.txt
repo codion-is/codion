@@ -7635,3 +7635,7 @@
   ColumnConditionPanel now uses radio button for the enabled toggle button instead of a toggle button with an icon
   DefaultIcons in common.swing removed, filter icon moved to FrameworkIcons, Icons renamed Logos
   Ikonli dependence moved from swing.common to swing.framework
+  EntityApplicationModel.getEntityModel(modelClass) added return type parameter
+  EntityModel.getDetailModel(modelClass) added return type parameter
+  FrameworkIcons, default icon color is now UIManager.getColor("Button.foreground")
+  Primitive types for getters and setters now supported for Entity type classes
