@@ -4,21 +4,23 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
 import java.util.List;
 
-public final class CountryOverviewTableModel extends CountryTableModel {
+public final class CountryOverviewTableModel extends SwingEntityTableModel {
 
   private final DefaultPieDataset<String> citiesDataset = new DefaultPieDataset<>();
   private final DefaultPieDataset<String> languagesDataset = new DefaultPieDataset<>();
 
   public CountryOverviewTableModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
+    super(Country.TYPE, connectionProvider);
     bindEvents();
   }
 

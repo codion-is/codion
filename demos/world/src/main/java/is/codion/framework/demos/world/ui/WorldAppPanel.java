@@ -1,6 +1,8 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
@@ -68,6 +70,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Locale.setDefault(new Locale("en", "EN"));
     addLookAndFeelProvider(LookAndFeelProvider.create(FlatLightLaf.class.getName(), FlatLightLaf::setup));
     addLookAndFeelProvider(LookAndFeelProvider.create(FlatDarkLaf.class.getName(), FlatDarkLaf::setup));
+    ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.COLUMN_SELECTION.set(ColumnSelection.MENU);
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
