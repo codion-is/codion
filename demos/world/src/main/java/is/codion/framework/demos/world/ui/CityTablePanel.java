@@ -22,52 +22,52 @@ public final class CityTablePanel extends EntityTablePanel {
   @Override
   protected Controls getPopupControls(List<Controls> additionalPopupControls) {
     return super.getPopupControls(additionalPopupControls)
-            .addAt(0, createUpdateLocationControl())
+            .addAt(0, createFetchLocationControl())
             .addSeparatorAt(1);
   }
 
-  private Control createUpdateLocationControl() {
-    return Control.builder(this::updateLocation)
-            .caption("Update location")
+  private Control createFetchLocationControl() {
+    return Control.builder(this::fetchLocation)
+            .caption("Fetch location")
             .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
             .build();
   }
 
-  private void updateLocation() {
-    UpdateLocationTask updateLocationTask = new UpdateLocationTask((CityTableModel) getTableModel());
+  private void fetchLocation() {
+    FetchLocationTask fetchLocationTask = new FetchLocationTask((CityTableModel) getTableModel());
 
-    Dialogs.progressWorkerDialog(updateLocationTask)
+    Dialogs.progressWorkerDialog(fetchLocationTask)
             .owner(this)
-            .title("Updating locations")
+            .title("Fetching locations")
             .stringPainted(true)
             .controls(Controls.builder()
-                    .control(Control.builder(updateLocationTask::cancel)
+                    .control(Control.builder(fetchLocationTask::cancel)
                             .caption("Cancel")
-                            .enabledState(updateLocationTask.isWorkingObserver()))
+                            .enabledState(fetchLocationTask.isWorkingObserver()))
                     .build())
-            .onException(this::displayUpdateException)
+            .onException(this::displayFetchException)
             .execute();
   }
 
-  private void displayUpdateException(Throwable exception) {
+  private void displayFetchException(Throwable exception) {
     Dialogs.exceptionDialog()
             .owner(this)
-            .title("Unable to update locations")
+            .title("Unable to fetch location")
             .show(exception);
   }
 
-  private static final class UpdateLocationTask implements ProgressTask<Void, String> {
+  private static final class FetchLocationTask implements ProgressTask<Void, String> {
 
     private final CityTableModel tableModel;
     private final State cancelledState = State.state();
 
-    private UpdateLocationTask(CityTableModel tableModel) {
+    private FetchLocationTask(CityTableModel tableModel) {
       this.tableModel = tableModel;
     }
 
     @Override
     public Void perform(ProgressReporter<String> progressReporter) throws Exception {
-      tableModel.updateLocationForSelected(progressReporter, cancelledState);
+      tableModel.fetchLocationForSelected(progressReporter, cancelledState);
       return null;
     }
 

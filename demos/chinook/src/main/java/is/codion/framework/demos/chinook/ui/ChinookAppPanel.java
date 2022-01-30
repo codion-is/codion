@@ -163,12 +163,13 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.COLUMN_SELECTION.set(EntityTablePanel.ColumnSelection.MENU);
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
+    EntityTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     SwingUtilities.invokeLater(() -> new ChinookAppPanel().starter()
-            .frameSize(new Dimension(1280, 720))
+            .frameSize(new Dimension(1920, 1080))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());
 

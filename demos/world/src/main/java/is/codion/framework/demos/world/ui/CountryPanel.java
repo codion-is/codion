@@ -2,6 +2,7 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -15,7 +16,7 @@ public final class CountryPanel extends EntityPanel {
 
     SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
     EntityPanel cityPanel = new EntityPanel(cityModel,
-            new CityEditPanel(cityModel.getEditModel()),
+            new CityEditPanel(cityModel.getEditModel(), (CityTableModel) cityModel.getTableModel()),
             new CityTablePanel(cityModel.getTableModel()));
 
     SwingEntityModel countryLanguageModel = countryModel.getDetailModel(CountryLanguage.TYPE);

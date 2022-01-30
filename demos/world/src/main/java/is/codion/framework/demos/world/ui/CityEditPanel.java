@@ -2,7 +2,8 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.demos.world.domain.api.World.City;
-import is.codion.framework.model.ValueChange;
+import is.codion.framework.demos.world.model.CityTableModel;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -18,17 +19,26 @@ import org.jxmapviewer.viewer.WaypointPainter;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
+import static java.util.stream.Collectors.toSet;
 import static javax.swing.BorderFactory.createRaisedBevelBorder;
 
 public final class CityEditPanel extends EntityEditPanel {
 
+  private final CityTableModel tableModel;
+
   public CityEditPanel(SwingEntityEditModel editModel) {
+    this(editModel, null);
+  }
+
+  CityEditPanel(SwingEntityEditModel editModel, final CityTableModel tableModel) {
     super(editModel);
+    this.tableModel = tableModel;
   }
 
   @Override
@@ -52,7 +62,9 @@ public final class CityEditPanel extends EntityEditPanel {
 
     setLayout(borderLayout());
     add(inputBasePanel, BorderLayout.WEST);
-    add(initializeMapKit(), BorderLayout.CENTER);
+    if (tableModel != null) {
+      add(initializeMapKit(), BorderLayout.CENTER);
+    }
   }
 
   private JXMapKit initializeMapKit() {
@@ -65,12 +77,12 @@ public final class CityEditPanel extends EntityEditPanel {
     mapKit.getMainMap().setZoom(14);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
 
-    getEditModel().addValueListener(City.LOCATION, new LocationListener(mapKit.getMainMap()));
+    tableModel.addDisplayLocationListener(new LocationListener(mapKit.getMainMap()));
 
     return mapKit;
   }
 
-  private static final class LocationListener implements EventDataListener<ValueChange<GeoPosition>> {
+  private static final class LocationListener implements EventDataListener<Collection<Entity>> {
 
     private final JXMapViewer mapViewer;
 
@@ -79,16 +91,27 @@ public final class CityEditPanel extends EntityEditPanel {
     }
 
     @Override
-    public void onEvent(ValueChange<GeoPosition> locationChange) {
+    public void onEvent(Collection<Entity> cities) {
+      paintWaypoints(cities.stream()
+              .map(city -> city.get(City.LOCATION))
+              .filter(Objects::nonNull)
+              .collect(toSet()));
+    }
+
+    private void paintWaypoints(Set<GeoPosition> positions) {
       WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
-      if (locationChange.getValue() != null) {
-        GeoPosition position = locationChange.getValue();
-        overlayPainter.setWaypoints(singleton((new DefaultWaypoint(position.getLatitude(), position.getLongitude()))));
-        mapViewer.setCenterPosition(position);
+      overlayPainter.setWaypoints(positions.stream()
+              .map(position -> new DefaultWaypoint(position.getLatitude(), position.getLongitude()))
+              .collect(toSet()));
+      if (positions.isEmpty()) {
+        mapViewer.repaint();
+      }
+      else if (positions.size() == 1) {
+        mapViewer.setCenterPosition(positions.iterator().next());
+        mapViewer.setZoom(10);
       }
       else {
-        overlayPainter.setWaypoints(emptySet());
-        mapViewer.repaint();
+        mapViewer.zoomToBestFit(positions, .9);
       }
     }
   }
