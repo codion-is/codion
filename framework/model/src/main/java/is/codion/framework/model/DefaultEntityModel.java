@@ -235,11 +235,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final Class<? extends M> modelClass) {
+  public final <T extends M> T getDetailModel(final Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
     for (final M detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
-        return detailModel;
+        return (T) detailModel;
       }
     }
 
