@@ -7605,3 +7605,4 @@
   EntityModel.getDetailModel(modelClass) added return type parameter
   FrameworkIcons, default icon color is now UIManager.getColor("Button.foreground")
   Primitive types for getters and setters now supported for Entity type classes
+  DefaultFrameworkIcons, icons now singletons, icon colors dynamically updated when the look & feel changes
