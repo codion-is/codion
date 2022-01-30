@@ -692,6 +692,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return Control.builder(tableModel::clear)
             .caption(clearCaption)
             .mnemonic(clearCaption.charAt(0))
+            .smallIcon(frameworkIcons().clear())
             .build();
   }
 
