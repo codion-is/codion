@@ -56,8 +56,8 @@ public final class CountryTablePanel extends EntityTablePanel {
     return fillReport(classPathReport(CountryTablePanel.class, "country_report.jasper"), dataSource, getReportParameters());
   }
 
-  private void viewReport(final JasperPrint customerReport) {
-    Dialogs.componentDialog(new JRViewer(customerReport))
+  private void viewReport(final JasperPrint countryReport) {
+    Dialogs.componentDialog(new JRViewer(countryReport))
             .owner(this)
             .modal(false)
             .title(COUNTRY_REPORT)

@@ -3,9 +3,7 @@ package is.codion.framework.demos.world.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Continent;
-import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.CountryOverviewModel;
@@ -40,35 +38,16 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   // tag::initializeEntityPanels[]
   @Override
   protected List<EntityPanel> initializeEntityPanels(WorldAppModel applicationModel) {
-    SwingEntityModel countryModel = applicationModel.getEntityModel(CountryModel.class);
-    SwingEntityModel countryOverviewModel = applicationModel.getEntityModel(CountryOverviewModel.class);
-    SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
-    SwingEntityModel countryLanguageModel = countryModel.getDetailModel(CountryLanguage.TYPE);
-    SwingEntityModel continentModel = applicationModel.getEntityModel(Continent.TYPE);
-    SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
+    CountryModel countryModel = applicationModel.getEntityModel(CountryModel.class);
+    EntityPanel countryPanel = new CountryPanel(countryModel);
 
-    EntityPanel countryPanel = new EntityPanel(countryModel,
-            new CountryEditPanel(countryModel.getEditModel()),
-            new CountryTablePanel(countryModel.getTableModel()));
-    countryPanel.setDetailSplitPanelResizeWeight(0.7);
-    countryModel.refresh();
-
+    CountryOverviewModel countryOverviewModel = applicationModel.getEntityModel(CountryOverviewModel.class);
     EntityPanel countryOverviewPanel = new CountryOverviewPanel(countryOverviewModel);
-    countryOverviewPanel.setCaption("Country Overview");
-    countryOverviewModel.refresh();
 
-    EntityPanel cityPanel = new EntityPanel(cityModel,
-            new CityEditPanel(cityModel.getEditModel()),
-            new CityTablePanel(cityModel.getTableModel()));
-
-    EntityPanel countryLanguagePanel = new EntityPanel(countryLanguageModel,
-            new CountryLanguageEditPanel(countryLanguageModel.getEditModel()));
-
-    countryPanel.addDetailPanels(cityPanel, countryLanguagePanel);
-
+    SwingEntityModel continentModel = applicationModel.getEntityModel(Continent.TYPE);
     EntityPanel continentPanel = new ContinentPanel(continentModel);
-    continentModel.refresh();
 
+    SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
     EntityPanel lookupPanel = new EntityPanel(lookupModel, new LookupTablePanel(lookupModel.getTableModel()));
 
     return asList(countryPanel, countryOverviewPanel, continentPanel, lookupPanel);
