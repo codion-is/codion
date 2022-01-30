@@ -78,7 +78,7 @@ public final class WorldImpl extends DefaultDomain {
             .validator(new CityValidator())
             .orderBy(orderBy().ascending(City.NAME))
             .stringFactory(stringFactory(City.NAME))
-            .backgroundColorProvider(new CityColorProvider())
+            .foregroundColorProvider(new CityColorProvider())
             .caption("City");
   }
   // end::defineCity[]
@@ -272,7 +272,7 @@ public final class WorldImpl extends DefaultDomain {
       }
       City city = cityEntity.castTo(City.class);
       if (attribute.equals(City.NAME) && city.isCapital()) {
-        return Color.CYAN;
+        return Color.GREEN;
       }
 
       return null;
