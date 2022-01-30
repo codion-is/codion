@@ -8,6 +8,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.icons.Logos;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 import java.awt.Color;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -29,9 +30,9 @@ public interface FrameworkIcons extends Logos {
   /**
    * The icon color<br>
    * Value type: Color<br>
-   * Default value: Color.BLACK
+   * Default value: UIManager.getColor("Button.foreground")
    */
-  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", Color.BLACK, Color::decode);
+  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", UIManager.getColor("Button.foreground"), Color::decode);
 
   PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 

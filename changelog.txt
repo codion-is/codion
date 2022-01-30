@@ -7603,3 +7603,4 @@
   Ikonli dependence moved from swing.common to swing.framework
   EntityApplicationModel.getEntityModel(modelClass) added return type parameter
   EntityModel.getDetailModel(modelClass) added return type parameter
+  FrameworkIcons, default icon color is now UIManager.getColor("Button.foreground")
