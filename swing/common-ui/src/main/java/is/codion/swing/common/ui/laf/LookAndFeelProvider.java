@@ -27,8 +27,8 @@ import static java.util.Objects.requireNonNull;
  */
 public interface LookAndFeelProvider {
 
-/**
-   * Specifies whether to change the Look&Feel dynamically when choosing<br>
+  /**
+   * Specifies whether to change the Look and Feel dynamically when choosing<br>
    * Value type: Boolean<br>
    * Default value: false
    */
