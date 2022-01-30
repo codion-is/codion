@@ -366,15 +366,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
    * @see LookAndFeelProvider#getLookAndFeelProvider(String)
    * @see LookAndFeelProvider#selectLookAndFeel(JComponent, String)
+   * @see LookAndFeelProvider#CHANGE_DURING_SELECTION
    */
   public final void selectLookAndFeel() {
-    LookAndFeelProvider.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL)).ifPresent(provider -> {
-      provider.enable();
-      for (final Window window : Window.getWindows()) {
-        SwingUtilities.updateComponentTreeUI(window);
-      }
-      UserPreferences.putUserPreference(applicationLookAndFeelProperty, provider.getName());
-    });
+    LookAndFeelProvider.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL))
+            .ifPresent(provider -> UserPreferences.putUserPreference(applicationLookAndFeelProperty, provider.getName()));
   }
 
   /**

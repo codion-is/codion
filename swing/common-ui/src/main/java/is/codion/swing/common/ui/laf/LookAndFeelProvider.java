@@ -3,14 +3,18 @@
  */
 package is.codion.swing.common.ui.laf;
 
+import is.codion.common.Configuration;
 import is.codion.common.item.Item;
+import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,6 +26,13 @@ import static java.util.Objects.requireNonNull;
  * Provides a LookAndFeel implementation.
  */
 public interface LookAndFeelProvider {
+
+/**
+   * Specifies whether to change the Look&Feel dynamically when choosing<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  PropertyValue<Boolean> CHANGE_DURING_SELECTION = Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection", false);
 
   /**
    * The name of the underlying LookAndFeel class
@@ -127,6 +138,7 @@ public interface LookAndFeelProvider {
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
   static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
+    final boolean changeDuringSelection = CHANGE_DURING_SELECTION.get();
     final List<Item<LookAndFeelProvider>> items = new ArrayList<>();
     final Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
     final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
@@ -141,11 +153,37 @@ public interface LookAndFeelProvider {
             });
     final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
     currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
+    if (changeDuringSelection) {
+      comboBoxModel.addSelectionListener(lookAndFeelProvider ->
+              SwingUtilities.invokeLater(() -> enableLookAndFeel(lookAndFeelProvider.getValue())));
+    }
 
     final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(comboBoxModel),
             dialogTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+    final LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
+    if (option == JOptionPane.OK_OPTION) {
+      if (currentLookAndFeel.get().getValue() != selectedLookAndFeel) {
+        enableLookAndFeel(selectedLookAndFeel);
+      }
 
-    return option == JOptionPane.OK_OPTION ? Optional.of(comboBoxModel.getSelectedValue().getValue()) : Optional.empty();
+      return Optional.of(selectedLookAndFeel);
+    }
+    if (changeDuringSelection && currentLookAndFeel.get().getValue() != selectedLookAndFeel) {
+      enableLookAndFeel(currentLookAndFeel.get().getValue());
+    }
+
+    return Optional.empty();
+  }
+
+  /**
+   * Enables the given look and feel and updates all window component trees.
+   * @param lookAndFeelProvider the look and feel provider to enable
+   */
+  static void enableLookAndFeel(final LookAndFeelProvider lookAndFeelProvider) {
+    requireNonNull(lookAndFeelProvider).enable();
+    for (final Window window : Window.getWindows()) {
+      SwingUtilities.updateComponentTreeUI(window);
+    }
   }
 
   /**
