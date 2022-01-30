@@ -7604,3 +7604,4 @@
   EntityApplicationModel.getEntityModel(modelClass) added return type parameter
   EntityModel.getDetailModel(modelClass) added return type parameter
   FrameworkIcons, default icon color is now UIManager.getColor("Button.foreground")
+  Primitive types for getters and setters now supported for Entity type classes

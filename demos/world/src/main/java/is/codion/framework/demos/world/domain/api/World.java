@@ -32,7 +32,7 @@ public interface World {
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
 
     String name();
-    Integer population();
+    int population();
 
     default boolean isInCountry(Entity country) {
       return country != null && Objects.equals(get(COUNTRY_FK), country);
@@ -84,7 +84,7 @@ public interface World {
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
 
     String language();
-    Integer noOfSpeakers();
+    int noOfSpeakers();
   }
 
   interface Continent extends Entity {
@@ -100,11 +100,11 @@ public interface World {
     Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
 
     String name();
-    Integer surfaceArea();
-    Long population();
-    Double minLifeExpectancy();
-    Double maxLifeExpectancy();
-    Double gnp();
+    int surfaceArea();
+    long population();
+    double minLifeExpectancy();
+    double maxLifeExpectancy();
+    double gnp();
   }
 
   interface Lookup {

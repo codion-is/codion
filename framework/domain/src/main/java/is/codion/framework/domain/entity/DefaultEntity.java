@@ -41,6 +41,26 @@ final class DefaultEntity implements Entity, Serializable {
 
   private static final String ATTRIBUTE = "attribute";
 
+  private static final Map<Class<?>, Object> DEFAULT_PRIMITIVE_VALUES;
+  private static boolean DEFAULT_BOOLEAN;
+  private static byte DEFAULT_BYTE;
+  private static short DEFAULT_SHORT;
+  private static int DEFAULT_INT;
+  private static long DEFAULT_LONG;
+  private static float DEFAULT_FLOAT;
+  private static double DEFAULT_DOUBLE;
+
+  static {
+    DEFAULT_PRIMITIVE_VALUES = new HashMap<>();
+    DEFAULT_PRIMITIVE_VALUES.put(Boolean.TYPE, DEFAULT_BOOLEAN);
+    DEFAULT_PRIMITIVE_VALUES.put(Byte.TYPE, DEFAULT_BYTE);
+    DEFAULT_PRIMITIVE_VALUES.put(Short.TYPE, DEFAULT_SHORT);
+    DEFAULT_PRIMITIVE_VALUES.put(Integer.TYPE, DEFAULT_INT);
+    DEFAULT_PRIMITIVE_VALUES.put(Long.TYPE, DEFAULT_LONG);
+    DEFAULT_PRIMITIVE_VALUES.put(Float.TYPE, DEFAULT_FLOAT);
+    DEFAULT_PRIMITIVE_VALUES.put(Double.TYPE, DEFAULT_DOUBLE);
+  }
+
   /**
    * Holds the values contained in this entity.
    */
@@ -891,7 +911,7 @@ final class DefaultEntity implements Entity, Serializable {
       if (method.getParameterCount() == 0) {
         final Attribute<?> attribute = definition.getGetterAttribute(method);
         if (attribute != null) {
-          return getValue(attribute, method.getReturnType().equals(Optional.class));
+          return getValue(attribute, method.getReturnType());
         }
       }
       else if (method.getParameterCount() == 1) {
@@ -907,21 +927,36 @@ final class DefaultEntity implements Entity, Serializable {
       return method.invoke(entity, args);
     }
 
-    private Object getValue(final Attribute<?> attribute, final boolean optional) {
+    private Object getValue(final Attribute<?> attribute, final Class<?> getterReturnType) {
       Object value = entity.get(attribute);
       if (value instanceof Entity) {
         final Entity entityValue = (Entity) value;
 
         value = entityValue.castTo(entityValue.getEntityType().getEntityClass());
       }
+      if (getterReturnType.equals(Optional.class)) {
+        return Optional.ofNullable(value);
+      }
+      if (value == null && getterReturnType.isPrimitive()) {
+        return getDefaultPrimitiveValue(getterReturnType);
+      }
 
-      return optional ? Optional.ofNullable(value) : value;
+      return value;
     }
 
     private Object setValue(final Attribute<?> attribute, final Object value) {
       entity.put((Attribute<Object>) attribute, value);
 
       return null;
+    }
+
+    private static Object getDefaultPrimitiveValue(final Class<?> typeClass) {
+      final Object value = DEFAULT_PRIMITIVE_VALUES.get(typeClass);
+      if (value == null) {
+        throw new IllegalArgumentException("Not a primitive type: " + typeClass);
+      }
+
+      return value;
     }
   }
 }
