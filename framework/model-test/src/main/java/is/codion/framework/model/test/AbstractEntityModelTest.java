@@ -117,30 +117,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void constructorNullEditModelNullTableModel() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityModel<>(null, null));
-  }
-
-  @Test
-  public void constructorTableModelEntityTypeMismatch() {
-    if (!departmentModel.containsTableModel()) {
-      return;
-    }
-    final EditModel editModel = createDepartmentEditModel();
-    final TableModel tableModel = createEmployeeTableModel();
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel<>(editModel, tableModel));
-  }
-
-  @Test
-  public void constructorTableModelEditModelMismatch() {
-    if (!departmentModel.containsTableModel()) {
-      return;
-    }
-    final EditModel editModel = createDepartmentEditModel();
-    final EditModel editModel2 = createDepartmentEditModel();
-    final TableModel tableModel = createDepartmentTableModel();
-    tableModel.setEditModel(editModel);
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel<>(editModel2, tableModel));
+  public void constructorNullTableModel() {
+    assertThrows(NullPointerException.class, () -> new DefaultEntityModel<>((EntityTableModel) null));
   }
 
   @Test

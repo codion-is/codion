@@ -68,9 +68,7 @@ public final class EntitySelectionDialog extends JDialog {
     }
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    if (tableModel.hasEditModel()) {
-      tableModel.getEditModel().setReadOnly(true);
-    }
+    this.tableModel.getEditModel().setReadOnly(true);
     this.entityTablePanel = initializeTablePanel(tableModel, preferredSize, singleSelection);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

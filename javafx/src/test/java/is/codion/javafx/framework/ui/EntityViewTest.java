@@ -7,7 +7,6 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
 import is.codion.javafx.framework.model.FXEntityModel;
 
@@ -30,10 +29,9 @@ public final class EntityViewTest {
 
   @Test
   void constructor() {
-    final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-    final FXEntityModel model = new FXEntityModel(editModel, listModel);
+    final FXEntityModel model = new FXEntityModel(listModel);
 
-    new EntityView(model, new EntityEditViewTest.EmpEditView(editModel), new EntityTableView(listModel)).initializePanel();
+    new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.getEditModel()), new EntityTableView(listModel)).initializePanel();
   }
 }

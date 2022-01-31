@@ -7,8 +7,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityModel;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A JavaFX {@link is.codion.framework.model.EntityEditModel} implementation
  */
@@ -21,7 +19,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param connectionProvider the connection provider
    */
   public FXEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
-    this(new FXEntityEditModel(entityType, connectionProvider), new FXEntityListModel(entityType, connectionProvider));
+    this(new FXEntityListModel(entityType, connectionProvider));
   }
 
   /**
@@ -30,7 +28,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @throws IllegalArgumentException in case editModel is null
    */
   public FXEntityModel(final FXEntityEditModel editModel) {
-    this(requireNonNull(editModel), new FXEntityListModel(editModel.getEntityType(), editModel.getConnectionProvider()));
+    this(new FXEntityListModel(editModel));
   }
 
   /**
@@ -39,17 +37,6 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param listModel the {@link FXEntityListModel} to use
    */
   public FXEntityModel(final FXEntityListModel listModel) {
-    this(requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityType(),
-            listModel.getConnectionProvider()) : listModel.getEditModel(), listModel);
-  }
-
-  /**
-   * Instantiates a new {@link FXEntityModel}
-   * @param editModel the {@link FXEntityEditModel} to use
-   * @param listModel the {@link FXEntityListModel} to use
-   * @throws IllegalArgumentException in case editModel is null
-   */
-  public FXEntityModel(final FXEntityEditModel editModel, final FXEntityListModel listModel) {
-    super(editModel, listModel);
+    super(listModel);
   }
 }

@@ -27,29 +27,19 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
   }
 
   /**
-   * Instantiates a new SwingEntityModel, including a {@link SwingEntityTableModel}
+   * Instantiates a new SwingEntityModel, with a default {@link SwingEntityTableModel}
    * @param editModel the edit model
    */
   public SwingEntityModel(final SwingEntityEditModel editModel) {
-    super(editModel, new SwingEntityTableModel(editModel.getEntityType(), editModel.getConnectionProvider()));
-  }
-
-  /**
-   * Instantiates a new SwingEntityModel, including a default {@link SwingEntityEditModel}
-   * @param tableModel the table model
-   */
-  public SwingEntityModel(final SwingEntityTableModel tableModel) {
-    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityType(),
-            tableModel.getConnectionProvider()), tableModel);
+    super(new SwingEntityTableModel(editModel));
   }
 
   /**
    * Instantiates a new SwingEntityModel
-   * @param editModel the edit model
    * @param tableModel the table model
    */
-  public SwingEntityModel(final SwingEntityEditModel editModel, final SwingEntityTableModel tableModel) {
-    super(editModel, tableModel);
+  public SwingEntityModel(final SwingEntityTableModel tableModel) {
+    super(tableModel);
   }
 
   /**

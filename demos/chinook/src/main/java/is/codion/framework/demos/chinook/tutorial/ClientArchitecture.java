@@ -35,13 +35,13 @@ public final class ClientArchitecture {
     SwingEntityEditModel artistEditModel =
             new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-    // initialize a default table model
+    // initialize a default table model, using the edit model
     SwingEntityTableModel artistTableModel =
-            new SwingEntityTableModel(Artist.TYPE, connectionProvider);
+            new SwingEntityTableModel(artistEditModel);
 
-    // initialize a default model using the edit and table models
+    // initialize a default model using the table model
     SwingEntityModel artistModel =
-            new SwingEntityModel(artistEditModel, artistTableModel);
+            new SwingEntityModel(artistTableModel);
 
     // Note that this does the same as the above, that is, initializes
     // a SwingEntityModel with a default edit and table model

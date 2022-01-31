@@ -11,8 +11,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 public class CustomerModel extends SwingEntityModel {
 
   public CustomerModel(EntityConnectionProvider connectionProvider) {
-    super(new CustomerEditModel(connectionProvider),
-            new CustomerTableModel(connectionProvider));
+    super(new CustomerTableModel(connectionProvider));
     bindEvents();
   }
 

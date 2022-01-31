@@ -162,8 +162,7 @@ public final class SwingEntityModelTest
     tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
     assertNotEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
 
-    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
-    tableModel.setEditModel(editModel);
+    tableModel = new SwingEntityTableModel(editModel);
     assertEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
   }
 

@@ -64,7 +64,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {
     public TestEntityModel(final TestEntityEditModel editModel) {
-      super(editModel, null);
+      super(editModel);
     }
   }
 

@@ -252,10 +252,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   private SwingEntityModel buildDefaultModel(final EntityConnectionProvider connectionProvider) {
-    final SwingEntityTableModel tableModel = buildTableModel(connectionProvider);
-    final SwingEntityEditModel editModel = tableModel.hasEditModel() ?
-            tableModel.getEditModel() : buildEditModel(connectionProvider);
-
-    return new SwingEntityModel(editModel, tableModel);
+    return new SwingEntityModel(buildTableModel(connectionProvider));
   }
 }

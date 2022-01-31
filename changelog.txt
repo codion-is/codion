@@ -7607,3 +7607,4 @@
   Primitive types for getters and setters now supported for Entity type classes
   DefaultFrameworkIcons, icons now singletons, icon colors dynamically updated when the look & feel changes
   LookAndFeelProvivder.CHANGE_DURING_SELECTION configuration value added
+  SwingEntityTableModel and FXEntityListModel, editModel now final
