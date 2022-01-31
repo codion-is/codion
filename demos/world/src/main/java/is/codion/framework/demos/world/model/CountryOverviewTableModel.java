@@ -4,7 +4,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
-import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -20,7 +19,7 @@ public final class CountryOverviewTableModel extends SwingEntityTableModel {
   private final DefaultPieDataset<String> languagesDataset = new DefaultPieDataset<>();
 
   public CountryOverviewTableModel(EntityConnectionProvider connectionProvider) {
-    super(Country.TYPE, connectionProvider);
+    super(new CountryEditModel(connectionProvider));
     bindEvents();
   }
 

@@ -31,19 +31,21 @@ public final class SwingEntityModelBuilderTest {
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
             .modelClass(SwingEntityModel.class).editModelClass(DepartmentEditModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+            .tableModelClass(DepartmentTableModel.class).editModelClass(DepartmentEditModel.class));
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+            .editModelClass(DepartmentEditModel.class).tableModelClass(DepartmentTableModel.class));
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
             .modelClass(SwingEntityModel.class).tableModelClass(DepartmentTableModel.class));
   }
 
   @Test
   void testDetailModelBuilder() {
     final SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .editModelClass(DepartmentEditModel.class)
             .tableModelClass(DepartmentTableModel.class);
     final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
     departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
-    assertEquals(DepartmentEditModel.class, departmentModelBuilder.getEditModelClass());
     assertEquals(DepartmentTableModel.class, departmentModelBuilder.getTableModelClass());
 
     final SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
@@ -73,7 +75,6 @@ public final class SwingEntityModelBuilderTest {
   @Test
   void modelClasses() {
     SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .editModelClass(DepartmentEditModel.class)
             .tableModelClass(DepartmentTableModel.class);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.getEditModel() instanceof DepartmentEditModel);
@@ -94,9 +95,23 @@ public final class SwingEntityModelBuilderTest {
     final State editModelInitialized = State.state();
     final State tableModelInitialized = State.state();
 
-    final SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .editModelClass(DepartmentEditModel.class)
+    SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .tableModelClass(DepartmentTableModel.class)
+            .modelInitializer(swingEntityModel -> modelInitialized.set(true))
+            .editModelInitializer(swingEntityEditModel -> editModelInitialized.set(true))
+            .tableModelInitializer(swingEntityTableModel -> tableModelInitialized.set(true));
+
+    builder.buildModel(CONNECTION_PROVIDER);
+
+    assertTrue(modelInitialized.get());
+    assertFalse(editModelInitialized.get());
+    assertTrue(tableModelInitialized.get());
+
+    modelInitialized.set(false);
+    tableModelInitialized.set(false);
+
+    builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+            .editModelClass(DepartmentEditModel.class)
             .modelInitializer(swingEntityModel -> modelInitialized.set(true))
             .editModelInitializer(swingEntityEditModel -> editModelInitialized.set(true))
             .tableModelInitializer(swingEntityTableModel -> tableModelInitialized.set(true));
@@ -111,7 +126,7 @@ public final class SwingEntityModelBuilderTest {
   static final class DepartmentModel extends SwingEntityModel {
 
     public DepartmentModel(final EntityConnectionProvider connectionProvider) {
-      super(new DepartmentEditModel(connectionProvider), new DepartmentTableModel(connectionProvider));
+      super(new DepartmentTableModel(connectionProvider));
     }
   }
 
@@ -125,7 +140,7 @@ public final class SwingEntityModelBuilderTest {
   static final class DepartmentTableModel extends SwingEntityTableModel {
 
     public DepartmentTableModel(final EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_DEPARTMENT, connectionProvider);
+      super(new DepartmentEditModel(connectionProvider));
     }
   }
 }

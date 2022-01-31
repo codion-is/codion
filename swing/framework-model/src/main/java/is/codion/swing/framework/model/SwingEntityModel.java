@@ -27,29 +27,19 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
   }
 
   /**
-   * Instantiates a new SwingEntityModel, including a {@link SwingEntityTableModel}
+   * Instantiates a new SwingEntityModel, with a default {@link SwingEntityTableModel}
    * @param editModel the edit model
    */
   public SwingEntityModel(final SwingEntityEditModel editModel) {
-    super(editModel, new SwingEntityTableModel(editModel.getEntityType(), editModel.getConnectionProvider()));
-  }
-
-  /**
-   * Instantiates a new SwingEntityModel, including a default {@link SwingEntityEditModel}
-   * @param tableModel the table model
-   */
-  public SwingEntityModel(final SwingEntityTableModel tableModel) {
-    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityType(),
-            tableModel.getConnectionProvider()), tableModel);
+    super(new SwingEntityTableModel(editModel));
   }
 
   /**
    * Instantiates a new SwingEntityModel
-   * @param editModel the edit model
    * @param tableModel the table model
    */
-  public SwingEntityModel(final SwingEntityEditModel editModel, final SwingEntityTableModel tableModel) {
-    super(editModel, tableModel);
+  public SwingEntityModel(final SwingEntityTableModel tableModel) {
+    super(tableModel);
   }
 
   /**
@@ -75,6 +65,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * Sets the model class
      * @param modelClass the model class
      * @return this SwingEntityModel.Builder instance
+     * @throws IllegalStateException in case the edit or table model classes have already been set
      */
     Builder modelClass(Class<? extends SwingEntityModel> modelClass);
 
@@ -82,6 +73,8 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * Sets the edit model class
      * @param editModelClass the edit model class
      * @return this SwingEntityModel.Builder instance
+     * @throws IllegalStateException in case the model class has already been set
+     * @throws IllegalStateException in case the table model class has already been set
      */
     Builder editModelClass(Class<? extends SwingEntityEditModel> editModelClass);
 
@@ -89,6 +82,8 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * Sets the table model class
      * @param tableModelClass the table model class
      * @return this SwingEntityModel.Builder instance
+     * @throws IllegalStateException in case the model class has already been set
+     * @throws IllegalStateException in case the edit model class has already been set
      */
     Builder tableModelClass(Class<? extends SwingEntityTableModel> tableModelClass);
 

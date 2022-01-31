@@ -68,6 +68,9 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     if (modelClass != null) {
       throw new IllegalStateException("Model class has been set");
     }
+    if (tableModelClass != null) {
+      throw new IllegalStateException("TableModel class has been set");
+    }
     this.editModelClass = requireNonNull(editModelClass, "editModelClass");
     return this;
   }
@@ -76,6 +79,9 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   public SwingEntityModel.Builder tableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
     if (modelClass != null) {
       throw new IllegalStateException("Model class has been set");
+    }
+    if (editModelClass != null) {
+      throw new IllegalStateException("EditModel class has been set");
     }
     this.tableModelClass = requireNonNull(tableModelClass, "tableModelClass");
     return this;
@@ -214,7 +220,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
       }
       else if (getTableModelClass().equals(SwingEntityTableModel.class)) {
         LOG.debug("{} initializing a default table model", this);
-        tableModel = new SwingEntityTableModel(entityType, connectionProvider);
+        tableModel = new SwingEntityTableModel(buildEditModel(connectionProvider));
       }
       else {
         LOG.debug("{} initializing a custom table model: {}", this, getTableModelClass());
@@ -252,10 +258,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   private SwingEntityModel buildDefaultModel(final EntityConnectionProvider connectionProvider) {
-    final SwingEntityTableModel tableModel = buildTableModel(connectionProvider);
-    final SwingEntityEditModel editModel = tableModel.hasEditModel() ?
-            tableModel.getEditModel() : buildEditModel(connectionProvider);
-
-    return new SwingEntityModel(editModel, tableModel);
+    return new SwingEntityModel(buildTableModel(connectionProvider));
   }
 }

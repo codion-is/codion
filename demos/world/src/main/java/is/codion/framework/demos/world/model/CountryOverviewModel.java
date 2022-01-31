@@ -8,7 +8,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 public final class CountryOverviewModel extends SwingEntityModel {
 
   public CountryOverviewModel(EntityConnectionProvider connectionProvider) {
-    super(new CountryEditModel(connectionProvider), new CountryOverviewTableModel(connectionProvider));
+    super(new CountryOverviewTableModel(connectionProvider));
     SwingEntityModel cityModel = new SwingEntityModel(City.TYPE, connectionProvider);
     SwingEntityModel countryLanguageModel = new SwingEntityModel(CountryLanguage.TYPE, connectionProvider);
     addDetailModels(cityModel, countryLanguageModel);

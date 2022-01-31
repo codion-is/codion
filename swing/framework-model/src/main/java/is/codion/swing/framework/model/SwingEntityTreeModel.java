@@ -117,11 +117,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
   private void bindEvents(final SwingEntityTableModel tableModel) {
     tableModel.addRefreshSuccessfulListener(this::refreshRoot);
-    tableModel.addEditModelSetListener(editModel -> {
-      editModel.addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
-      editModel.addAfterInsertListener(this::nodesUpdated);
-      editModel.addAfterDeleteListener(this::nodesDeleted);
-    });
+    tableModel.getEditModel().addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
+    tableModel.getEditModel().addAfterInsertListener(this::nodesUpdated);
+    tableModel.getEditModel().addAfterDeleteListener(this::nodesDeleted);
   }
 
   private static TreePath find(final EntityTreeNode root, final Entity entity) {

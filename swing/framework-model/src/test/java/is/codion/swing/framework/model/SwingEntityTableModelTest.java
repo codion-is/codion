@@ -40,7 +40,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
         return testEntities;
       }
     };
-    tableModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, getConnectionProvider()));
 
     return tableModel;
   }
@@ -52,18 +51,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createDetailTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_DETAIL, getConnectionProvider());
-  }
-
-  @Override
-  protected SwingEntityTableModel createEmployeeTableModelWithoutEditModel() {
-    return new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider());
+    return new SwingEntityTableModel(createDetailEditModel());
   }
 
   @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
     final SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
-    deptModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
     deptModel.getSortModel().setSortOrder(TestDomain.DEPARTMENT_NAME, SortOrder.ASCENDING);
 
     return deptModel;
@@ -71,10 +64,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createEmployeeTableModel() {
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
-    tableModel.setEditModel(new SwingEntityEditModel(TestDomain.T_EMP, testModel.getConnectionProvider()));
-
-    return tableModel;
+    return new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
   }
 
   @Override
@@ -107,7 +97,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void nonMatchingConditionModelEntityType() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory(getConnectionProvider()));
-    assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
+    assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, getConnectionProvider()),
             new SwingEntityTableSortModel(getConnectionProvider().getEntities()), conditionModel));
   }
 
