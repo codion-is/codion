@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -46,7 +45,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -1370,12 +1368,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refreshControl = control(tableModel::refresh);
-    final JButton button = Components.button(refreshControl)
+    final Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
-            .toolTipText(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
-            .icon(frameworkIcons().refreshRequired())
-            .focusable(false)
+            .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
+            .smallIcon(frameworkIcons().refreshRequired())
             .build();
 
     KeyEvents.builder(KeyEvent.VK_F5)
@@ -1383,11 +1379,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .action(refreshControl)
             .enable(this);
 
-    final JToolBar toolBar = new JToolBar(SwingConstants.HORIZONTAL);
+    final JToolBar toolBar = Controls.controls(refreshControl).createHorizontalToolBar();
     toolBar.setFocusable(false);
+    toolBar.getComponentAtIndex(0).setFocusable(false);
     toolBar.setFloatable(false);
     toolBar.setRollover(true);
-    toolBar.add(button);
     if (automaticallyHideRefreshToolbar) {
       //made visible when condition panel is visible
       toolBar.setVisible(false);

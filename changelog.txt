@@ -7613,3 +7613,4 @@
   Icon widths now consistent
   ToolBarControlHandler now makes toolbar button dimensions equal
   EntityTablePanel.includeSelectionModeControl added, default false
+  EntityTablePanel, refreshToolBar no longer created manually, Controls used, button now square
