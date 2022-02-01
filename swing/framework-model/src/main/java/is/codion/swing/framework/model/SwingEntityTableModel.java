@@ -136,7 +136,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   /**
    * Instantiates a new DefaultEntityTableModel.
    * @param editModel the edit model
-   * @throws NullPointerException in case editModel is null
    */
   public SwingEntityTableModel(final SwingEntityEditModel editModel) {
     this(requireNonNull(editModel, "editModel"), new SwingEntityTableSortModel(editModel.getEntities()));
@@ -147,7 +146,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param entityType the entityType
    * @param connectionProvider the db provider
    * @param sortModel the sort model
-   * @throws NullPointerException in case editModel or sortModel is null
    */
   public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Attribute<?>> sortModel) {
@@ -156,13 +154,32 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   /**
    * Instantiates a new DefaultEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the db provider
+   * @param tableConditionModel the table condition model
+   */
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
+                               final EntityTableConditionModel tableConditionModel) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), tableConditionModel);
+  }
+
+  /**
+   * Instantiates a new DefaultEntityTableModel.
    * @param editModel the edit model
    * @param sortModel the sort model
-   * @throws NullPointerException in case editModel or sortModel is null
    */
   public SwingEntityTableModel(final SwingEntityEditModel editModel, final TableSortModel<Entity, Attribute<?>> sortModel) {
     this(editModel, sortModel, new DefaultEntityTableConditionModel(editModel.getEntityType(), editModel.getConnectionProvider(),
             new DefaultFilterModelFactory(), new SwingConditionModelFactory(editModel.getConnectionProvider())));
+  }
+
+  /**
+   * Instantiates a new DefaultEntityTableModel.
+   * @param editModel the edit model
+   * @param tableConditionModel the table condition model
+   */
+  public SwingEntityTableModel(final SwingEntityEditModel editModel, final EntityTableConditionModel tableConditionModel) {
+    this(editModel, new SwingEntityTableSortModel(editModel.getEntities()), tableConditionModel);
   }
 
   /**
