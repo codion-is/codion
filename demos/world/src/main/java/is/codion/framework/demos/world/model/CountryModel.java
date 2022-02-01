@@ -1,5 +1,6 @@
 package is.codion.framework.demos.world.model;
 
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.domain.entity.Entity;
@@ -8,6 +9,8 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 
 public final class CountryModel extends SwingEntityModel {
 
+  private final Value<Double> averageCityPopulationValue = Value.value();
+
   CountryModel(EntityConnectionProvider connectionProvider) {
     super(new CountryTableModel(connectionProvider));
     SwingEntityModel cityModel =
@@ -15,12 +18,11 @@ public final class CountryModel extends SwingEntityModel {
     SwingEntityModel countryLanguageModel =
             new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
     addDetailModels(cityModel, countryLanguageModel);
-    bindEvents();
-  }
 
-  private void bindEvents() {
-    getDetailModel(City.TYPE).getTableModel().addRefreshSuccessfulListener(() ->
-            ((CountryEditModel) getEditModel()).setAverageCityPopulation(getAverageCityPopulation()));
+    CountryEditModel countryEditModel = (CountryEditModel) getEditModel();
+    cityModel.getTableModel().addRefreshSuccessfulListener(() ->
+            averageCityPopulationValue.set(getAverageCityPopulation()));
+    countryEditModel.setAverageCityPopulationObserver(averageCityPopulationValue.getObserver());
   }
 
   private Double getAverageCityPopulation() {
