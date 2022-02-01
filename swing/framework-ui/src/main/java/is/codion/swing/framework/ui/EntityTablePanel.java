@@ -46,7 +46,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -1038,7 +1037,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     southCenterSplitPane.setBottomComponent(statusMessageLabel);
     final JPanel southPanel = new JPanel(new BorderLayout());
     southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
-    southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(refreshToolBar, BorderLayout.WEST);
     final JToolBar southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {

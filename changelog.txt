@@ -7610,3 +7610,5 @@
   SwingEntityTableModel and FXEntityListModel, editModel now final
   SwingEntityTableModel, added a couple of overloaded constructors
   PostgreSQLDatabase bug fixed, now uses the correct INVALID_PASSWORD error code for identifying authentication exceptions
+  Icon widths now consistent
+  ToolBarControlHandler now makes toolbar button dimensions equal
