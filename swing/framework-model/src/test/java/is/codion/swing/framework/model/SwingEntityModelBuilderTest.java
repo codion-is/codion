@@ -10,7 +10,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.test.TestDomain;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,7 +90,6 @@ public final class SwingEntityModelBuilderTest {
   }
 
   @Test
-  @Disabled//todo
   void initializers() {
     final State modelInitialized = State.state();
     final State editModelInitialized = State.state();
