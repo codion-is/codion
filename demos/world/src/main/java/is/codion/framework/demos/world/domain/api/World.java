@@ -43,8 +43,8 @@ public interface World {
     }
   }
 
-  interface Country {
-    EntityType TYPE = DOMAIN.entityType("world.country");
+  interface Country extends Entity {
+    EntityType TYPE = DOMAIN.entityType("world.country", Country.class);
 
     Attribute<String> CODE = TYPE.stringAttribute("code");
     Attribute<String> NAME = TYPE.stringAttribute("name");
@@ -70,6 +70,12 @@ public interface World {
     // tag::foreignKeyCapital[]
     ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
     // end::foreignKeyCapital[]
+
+    String name();
+    String continent();
+    String region();
+    double surfacearea();
+    int population();
   }
 
   interface CountryLanguage extends Entity {

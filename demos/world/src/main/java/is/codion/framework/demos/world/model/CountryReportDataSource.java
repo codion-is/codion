@@ -23,8 +23,8 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
   private final EntityConnection connection;
 
-  CountryReportDataSource(final List<Entity> countries, final EntityConnection connection,
-                          final ProgressReporter<String> progressReporter) {
+  CountryReportDataSource(List<Entity> countries, EntityConnection connection,
+                          ProgressReporter<String> progressReporter) {
     super(countries.iterator(), new CountryValueProvider(),
             new CountryReportProgressReporter(progressReporter, countries.size()));
     this.connection = connection;
@@ -53,31 +53,36 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     private static final String CONTINENT = "continent";
     private static final String REGION = "region";
     private static final String SURFACEAREA = "surfacearea";
-    private static final String INDEPYEAR = "indipyear";
     private static final String POPULATION = "population";
 
     @Override
-    public Object apply(final Entity entity, final JRField field) {
+    public Object apply(Entity entity, JRField field) {
+      Country country = entity.castTo(Country.class);
       switch (field.getName()) {
-        case NAME: return entity.get(Country.NAME);
-        case CONTINENT: return entity.get(Country.CONTINENT);
-        case REGION: return entity.get(Country.REGION);
-        case SURFACEAREA: return entity.toString(Country.SURFACEAREA);
-        case INDEPYEAR: return entity.toString(Country.INDEPYEAR);
-        case POPULATION: return entity.toString(Country.POPULATION);
-        default: return "";
+        case NAME: return country.name();
+        case CONTINENT: return country.continent();
+        case REGION: return country.region();
+        case SURFACEAREA: return country.surfacearea();
+        case POPULATION: return country.population();
+        default:
+          throw new IllegalArgumentException("Unknow field: " + field.getName());
       }
     }
   }
 
   private static final class CityValueProvider implements BiFunction<Entity, JRField, Object> {
 
+    private static final String NAME = "name";
+    private static final String POPULATION = "population";
+
     @Override
-    public Object apply(final Entity entity, final JRField field) {
+    public Object apply(Entity entity, JRField field) {
+      City city = entity.castTo(City.class);
       switch (field.getName()) {
-        case "name": return entity.get(City.NAME);
-        case "population": return entity.toString(City.POPULATION);
-        default: return "";
+        case NAME: return city.name();
+        case POPULATION: return city.population();
+        default:
+          throw new IllegalArgumentException("Unknow field: " + field.getName());
       }
     }
   }
@@ -88,8 +93,8 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     private final ProgressReporter<String> progressReporter;
     private final int noOfCountries;
 
-    private CountryReportProgressReporter(final ProgressReporter<String> progressReporter,
-                                          final int noOfCountries) {
+    private CountryReportProgressReporter(ProgressReporter<String> progressReporter,
+                                          int noOfCountries) {
       this.progressReporter = progressReporter;
       this.noOfCountries = noOfCountries;
     }
