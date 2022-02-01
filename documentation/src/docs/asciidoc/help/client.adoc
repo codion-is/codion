@@ -39,14 +39,14 @@ image::help/search_string_wildcard_no_refresh.png[Search, string wildcard, no re
 
 There are multiple ways of refreshing the table:
 
-* Pressing the kbd:[Enter] key with the cursor somewhere on a column condition panel
-* Using the aformentioned refresh button or its kbd:[F5] keyboard shortcut
+* Pressing the kbd:[Enter] key with the focus somewhere on a column condition panel
+* Using the aformentioned refresh button or the kbd:[F5] keyboard shortcut
 * Using the *Refresh* action in the table popup menu
 * Using the *Refresh* button on the input panel, if one is available, or its kbd:[Alt + R] keyboard shortcut
 
 After the table has been refreshed, the refresh button becomes disabled, indicating that the table data represents the current search condition.
 
-NOTE: You can tell a column condition is enabled by its BOLD header and shaded data.
+NOTE: You can tell a condition is enabled by its BOLD header and shaded column.
 
 image::help/search_string_wildcard.png[Search, string wildcard]
 
@@ -76,7 +76,7 @@ Adding a *NOT EQUAL* condition to the *Composer* column with an empty value.
 
 image::help/search_string_wildcard_negated_number_between_selection_negated_and_not_null.png[Search, string wildcard negated, number between, selection and not null]
 
-NOTE: When searching for empty values, the condition must be manually enabled, since its automatically enabled only when a non-empty value is entered.
+NOTE: When searching for empty values, the condition must be manually enabled, since it's only enabled automatically when a non-empty value is entered.
 
 NOTE: To clear all column conditions use the *Search* -> *Clear* action in the table popup menu. This clears all values and resets all operators to *EQUAL*.
 
