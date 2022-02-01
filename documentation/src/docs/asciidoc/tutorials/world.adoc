@@ -4,6 +4,7 @@
 :toc: left
 :imagesdir: ../images
 :dir-source: ../../../../../demos/world/src/main/java
+:dir-reports: ../../../../../demos/world/src/main/reports
 :dir-resources: ../../../../../demos/world/src/main/resources
 :dir-test-source: ../../../../../demos/world/src/test/java
 
@@ -101,6 +102,20 @@ include::{dir-source}/is/codion/framework/demos/world/model/CountryModel.java[ta
 ----
 include::{dir-source}/is/codion/framework/demos/world/model/CountryTableModel.java[tag=**]
 ----
+
+.country_report.jrxml
+[%collapsible]
+====
+[source,xml]
+include::{dir-reports}/country_report.jrxml[]
+====
+
+.city_report.jrxml
+[%collapsible]
+====
+[source,xml]
+include::{dir-reports}/city_report.jrxml[]
+====
 
 [source,java]
 ----
