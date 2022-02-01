@@ -330,7 +330,7 @@ public class EntityServerTest {
             .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))
             .clientLoggingEnabled(true)
             .sslEnabled(true)
-            .serializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt")
+            .serializationFilterWhitelist("classpath:serialization-whitelist-test.txt")
             .build();
   }
 
