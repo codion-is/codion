@@ -32,7 +32,7 @@ import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
-  public WorldAppPanel() {
+  private WorldAppPanel() {
     super("World");
   }
 
@@ -40,13 +40,14 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   @Override
   protected List<EntityPanel> initializeEntityPanels(WorldAppModel applicationModel) {
     CountryModel countryModel = applicationModel.getEntityModel(CountryModel.class);
-    EntityPanel countryPanel = new CountryPanel(countryModel);
+    CountryPanel countryPanel = new CountryPanel(countryModel);
 
     SwingEntityModel continentModel = applicationModel.getEntityModel(Continent.TYPE);
-    EntityPanel continentPanel = new ContinentPanel(continentModel);
+    ContinentPanel continentPanel = new ContinentPanel(continentModel);
 
     SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
-    EntityPanel lookupPanel = new EntityPanel(lookupModel, new LookupTablePanel(lookupModel.getTableModel()));
+    EntityPanel lookupPanel = new EntityPanel(lookupModel,
+            new LookupTablePanel(lookupModel.getTableModel()));
 
     return asList(countryPanel, continentPanel, lookupPanel);
   }

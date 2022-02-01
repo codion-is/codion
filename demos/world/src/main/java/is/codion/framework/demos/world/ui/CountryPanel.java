@@ -9,7 +9,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 final class CountryPanel extends EntityPanel {
 
-  public CountryPanel(CountryModel countryModel) {
+  CountryPanel(CountryModel countryModel) {
     super(countryModel,
             new CountryEditPanel(countryModel.getEditModel()),
             new CountryTablePanel(countryModel.getTableModel()));

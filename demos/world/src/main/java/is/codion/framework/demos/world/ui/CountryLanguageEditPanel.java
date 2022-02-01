@@ -8,7 +8,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 final class CountryLanguageEditPanel extends EntityEditPanel {
 
-  public CountryLanguageEditPanel(SwingEntityEditModel editModel) {
+  CountryLanguageEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

@@ -20,7 +20,7 @@ import static is.codion.swing.common.ui.panel.Panels.createEastButtonPanel;
 
 final class CountryEditPanel extends EntityEditPanel {
 
-  public CountryEditPanel(SwingEntityEditModel editModel) {
+  CountryEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

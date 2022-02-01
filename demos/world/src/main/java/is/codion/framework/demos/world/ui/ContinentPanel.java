@@ -23,7 +23,7 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 
 final class ContinentPanel extends EntityPanel {
 
-  public ContinentPanel(SwingEntityModel continentModel) {
+  ContinentPanel(SwingEntityModel continentModel) {
     super(continentModel, new ContinentTablePanel(continentModel.getTableModel()));
   }
 

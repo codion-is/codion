@@ -9,22 +9,28 @@
 
 == Screenshots
 
-.Country
+.Country & Cities (Table)
 [%collapsible]
 ====
-image::tutorials/world/country.png[]
+image::tutorials/world/country_cities_table.png[]
 ====
 
-.Country Overview - Tables
+.Country & Cities (Chart)
 [%collapsible]
 ====
-image::tutorials/world/country_overview_tables.png[]
+image::tutorials/world/country_cities_chart.png[]
 ====
 
-.Country Overview - Charts
+.Country & Languages (Table)
 [%collapsible]
 ====
-image::tutorials/world/country_overview_charts.png[]
+image::tutorials/world/country_language_table.png[]
+====
+
+.Country & Languages (Chart)
+[%collapsible]
+====
+image::tutorials/world/country_language_chart.png[]
 ====
 
 .Continent
@@ -79,19 +85,11 @@ include::{dir-test-source}/is/codion/framework/demos/world/domain/WorldImplTest.
 
 == Model
 
-[source,java]
-----
-include::{dir-source}/is/codion/framework/demos/world/model/CityTableModel.java[tag=**]
-----
+=== Main application model
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryEditModel.java[tag=**]
-----
-
-[source,java]
-----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryTableModel.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/model/WorldAppModel.java[tag=**]
 ----
 
 [source,java]
@@ -101,12 +99,27 @@ include::{dir-source}/is/codion/framework/demos/world/model/CountryModel.java[ta
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryOverviewTableModel.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/model/CountryTableModel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/CountryOverviewModel.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/model/CountryReportDataSource.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/model/CountryEditModel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/model/CityTableModel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/model/CountryLanguageTableModel.java[tag=**]
 ----
 
 [source,java]
@@ -119,14 +132,20 @@ include::{dir-source}/is/codion/framework/demos/world/model/ContinentModel.java[
 include::{dir-source}/is/codion/framework/demos/world/model/LookupTableModel.java[tag=**]
 ----
 
-=== Main application model
+== UI
+
+[#_main_application_panel]
+=== Main application panel
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/model/WorldAppModel.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/ui/WorldAppPanel.java[tag=**]
 ----
 
-== UI
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/ui/CountryPanel.java[tag=**]
+----
 
 [source,java]
 ----
@@ -140,7 +159,7 @@ include::{dir-source}/is/codion/framework/demos/world/ui/CountryTablePanel.java[
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryReportDataSource.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/ui/CityTablePanel.java[tag=**]
 ----
 
 [source,java]
@@ -150,12 +169,12 @@ include::{dir-source}/is/codion/framework/demos/world/ui/CityEditPanel.java[tag=
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryLanguageEditPanel.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/ui/CountryLanguageTablePanel.java[tag=**]
 ----
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/ui/CountryOverviewPanel.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/ui/CountryLanguageEditPanel.java[tag=**]
 ----
 
 [source,java]
@@ -171,12 +190,4 @@ include::{dir-source}/is/codion/framework/demos/world/ui/ContinentTablePanel.jav
 [source,java]
 ----
 include::{dir-source}/is/codion/framework/demos/world/ui/LookupTablePanel.java[tag=**]
-----
-
-[#_main_application_panel]
-=== Main application panel
-
-[source,java]
-----
-include::{dir-source}/is/codion/framework/demos/world/ui/WorldAppPanel.java[tag=**]
 ----

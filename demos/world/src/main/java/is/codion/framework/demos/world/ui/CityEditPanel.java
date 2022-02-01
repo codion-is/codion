@@ -27,7 +27,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.stream.Collectors.toSet;
 import static javax.swing.BorderFactory.createRaisedBevelBorder;
 
-final class CityEditPanel extends EntityEditPanel {
+public final class CityEditPanel extends EntityEditPanel {
 
   private final CityTableModel tableModel;
 
@@ -57,14 +57,14 @@ final class CityEditPanel extends EntityEditPanel {
     inputPanel.add(createInputPanel(City.POPULATION));
 
     JPanel inputBasePanel = new JPanel();
-    if (tableModel != null) {
+    if (tableModel == null) {
+      inputBasePanel.setLayout(borderLayout());
+      inputBasePanel.add(inputPanel, BorderLayout.NORTH);
+    }
+    else {
       inputBasePanel.setLayout(gridLayout(1, 2));
       inputBasePanel.add(inputPanel);
       inputBasePanel.add(initializeMapKit(), BorderLayout.CENTER);
-    }
-    else {
-      inputBasePanel.setLayout(borderLayout());
-      inputBasePanel.add(inputPanel, BorderLayout.NORTH);
     }
     setLayout(borderLayout());
     add(inputBasePanel, BorderLayout.CENTER);
