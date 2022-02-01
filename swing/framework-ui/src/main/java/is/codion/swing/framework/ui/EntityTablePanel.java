@@ -73,6 +73,7 @@ import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -1281,6 +1282,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Controls toolbarControls = getToolBarControls(additionalToolBarControls);
     if (toolbarControls != null) {
       final JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
+      Arrays.stream(southToolBar.getComponents())
+              .map(JComponent.class::cast)
+              .forEach(component -> component.setToolTipText(null));
       southToolBar.setFocusable(false);
       southToolBar.setFloatable(false);
       southToolBar.setRollover(true);
@@ -1370,7 +1374,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
-            .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
             .smallIcon(frameworkIcons().refreshRequired())
             .build();
 
@@ -1420,9 +1423,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
-      final String status = getStatusMessage();
-      statusMessageLabel.setText(status);
-      statusMessageLabel.setToolTipText(status);
+      statusMessageLabel.setText(getStatusMessage());
     }
   }
 
