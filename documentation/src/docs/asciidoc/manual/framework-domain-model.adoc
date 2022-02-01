@@ -270,7 +270,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=derivedPropertyProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=derivedPropertyProvider]
 ----
 
 == Domain
@@ -378,7 +378,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=colorProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=colorProvider]
 ----
 
 == Validation
@@ -389,7 +389,7 @@ The *DefaultEntityValidator* implementation provides basic range and null valida
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=validator]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=validator]
 ----
 
 == Examples
