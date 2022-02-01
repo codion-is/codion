@@ -7,7 +7,7 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import javax.swing.JTable;
 import java.util.List;
 
-public final class ContinentTablePanel extends EntityTablePanel {
+final class ContinentTablePanel extends EntityTablePanel {
 
   public ContinentTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);

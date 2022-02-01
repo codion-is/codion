@@ -21,7 +21,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static org.jfree.chart.ChartFactory.createBarChart;
 import static org.jfree.chart.ChartFactory.createPieChart;
 
-public final class ContinentPanel extends EntityPanel {
+final class ContinentPanel extends EntityPanel {
 
   public ContinentPanel(SwingEntityModel continentModel) {
     super(continentModel, new ContinentTablePanel(continentModel.getTableModel()));

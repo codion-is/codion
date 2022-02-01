@@ -12,7 +12,7 @@ import static java.util.Collections.singletonList;
 
 public final class LookupTableModel extends SwingEntityTableModel {
 
-  public LookupTableModel(EntityConnectionProvider connectionProvider) {
+  LookupTableModel(EntityConnectionProvider connectionProvider) {
     super(Lookup.TYPE, connectionProvider);
   }
 

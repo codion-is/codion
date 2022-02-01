@@ -14,7 +14,7 @@ import java.util.List;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
-public final class LookupTablePanel extends EntityTablePanel {
+final class LookupTablePanel extends EntityTablePanel {
 
   public LookupTablePanel(SwingEntityTableModel lookupModel) {
     super(lookupModel);

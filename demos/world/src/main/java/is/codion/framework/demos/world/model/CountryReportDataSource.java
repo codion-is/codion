@@ -1,4 +1,4 @@
-package is.codion.framework.demos.world.ui;
+package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;

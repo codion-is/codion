@@ -6,7 +6,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<import value="is.codion.framework.demos.world.ui.CountryReportDataSource"/>
+	<import value="is.codion.framework.demos.world.model.CountryReportDataSource"/>
 	<parameter name="CITY_SUBREPORT" class="net.sf.jasperreports.engine.JasperReport"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="continent" class="java.lang.String"/>

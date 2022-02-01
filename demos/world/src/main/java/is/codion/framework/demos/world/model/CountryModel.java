@@ -2,17 +2,18 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
-import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 public final class CountryModel extends SwingEntityModel {
 
-  public CountryModel(EntityConnectionProvider connectionProvider) {
-    super(new CountryEditModel(connectionProvider));
-    SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
-    SwingEntityModel countryLanguageModel = new SwingEntityModel(CountryLanguage.TYPE, connectionProvider);
+  CountryModel(EntityConnectionProvider connectionProvider) {
+    super(new CountryTableModel(connectionProvider));
+    SwingEntityModel cityModel =
+            new SwingEntityModel(new CityTableModel(connectionProvider));
+    SwingEntityModel countryLanguageModel =
+            new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
     addDetailModels(cityModel, countryLanguageModel);
     bindEvents();
   }

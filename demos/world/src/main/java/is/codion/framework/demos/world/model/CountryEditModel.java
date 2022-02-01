@@ -13,7 +13,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 
   private final Value<Double> averageCityPopulationValue = Value.value();
 
-  public CountryEditModel(EntityConnectionProvider connectionProvider) {
+  CountryEditModel(EntityConnectionProvider connectionProvider) {
     super(Country.TYPE, connectionProvider);
   }
 

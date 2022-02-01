@@ -18,7 +18,6 @@ import org.jxmapviewer.viewer.WaypointPainter;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -28,7 +27,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.stream.Collectors.toSet;
 import static javax.swing.BorderFactory.createRaisedBevelBorder;
 
-public final class CityEditPanel extends EntityEditPanel {
+final class CityEditPanel extends EntityEditPanel {
 
   private final CityTableModel tableModel;
 
@@ -51,30 +50,33 @@ public final class CityEditPanel extends EntityEditPanel {
     createTextField(City.DISTRICT);
     createTextField(City.POPULATION);
 
-    JPanel inputPanel = new JPanel(gridLayout(4, 1));
+    JPanel inputPanel = new JPanel(gridLayout(0, 1));
     inputPanel.add(createInputPanel(City.COUNTRY_FK));
     inputPanel.add(createInputPanel(City.NAME));
     inputPanel.add(createInputPanel(City.DISTRICT));
     inputPanel.add(createInputPanel(City.POPULATION));
 
-    JPanel inputBasePanel = new JPanel(borderLayout());
-    inputBasePanel.add(inputPanel, BorderLayout.NORTH);
-
-    setLayout(borderLayout());
-    add(inputBasePanel, BorderLayout.WEST);
+    JPanel inputBasePanel = new JPanel();
     if (tableModel != null) {
-      add(initializeMapKit(), BorderLayout.CENTER);
+      inputBasePanel.setLayout(gridLayout(1, 2));
+      inputBasePanel.add(inputPanel);
+      inputBasePanel.add(initializeMapKit(), BorderLayout.CENTER);
     }
+    else {
+      inputBasePanel.setLayout(borderLayout());
+      inputBasePanel.add(inputPanel, BorderLayout.NORTH);
+    }
+    setLayout(borderLayout());
+    add(inputBasePanel, BorderLayout.CENTER);
   }
 
   private JXMapKit initializeMapKit() {
     JXMapKit mapKit = new JXMapKit();
-    mapKit.setPreferredSize(new Dimension(300, 300));
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
     mapKit.setMiniMapVisible(false);
     mapKit.setZoomSliderVisible(false);
     mapKit.setBorder(createRaisedBevelBorder());
-    mapKit.getMainMap().setZoom(14);
+    mapKit.getMainMap().setZoom(19);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
 
     tableModel.addDisplayLocationListener(new LocationListener(mapKit.getMainMap()));
@@ -111,6 +113,7 @@ public final class CityEditPanel extends EntityEditPanel {
         mapViewer.setZoom(10);
       }
       else {
+        mapViewer.setZoom(1);
         mapViewer.zoomToBestFit(positions, .9);
       }
     }
