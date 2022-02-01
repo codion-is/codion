@@ -13,15 +13,13 @@ public final class CountryModel extends SwingEntityModel {
 
   CountryModel(EntityConnectionProvider connectionProvider) {
     super(new CountryTableModel(connectionProvider));
-    SwingEntityModel cityModel =
-            new SwingEntityModel(new CityTableModel(connectionProvider));
-    SwingEntityModel countryLanguageModel =
-            new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
+    SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
+    SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
     addDetailModels(cityModel, countryLanguageModel);
 
-    CountryEditModel countryEditModel = (CountryEditModel) getEditModel();
     cityModel.getTableModel().addRefreshSuccessfulListener(() ->
             averageCityPopulationValue.set(getAverageCityPopulation()));
+    CountryEditModel countryEditModel = (CountryEditModel) getEditModel();
     countryEditModel.setAverageCityPopulationObserver(averageCityPopulationValue.getObserver());
   }
 
