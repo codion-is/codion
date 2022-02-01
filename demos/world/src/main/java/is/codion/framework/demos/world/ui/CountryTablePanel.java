@@ -15,20 +15,23 @@ import net.sf.jasperreports.swing.JRViewer;
 
 import java.awt.Dimension;
 
+import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+
 final class CountryTablePanel extends EntityTablePanel {
 
   private static final String COUNTRY_REPORT = "Country report";
 
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    setControl(ControlCode.PRINT_TABLE, Control.builder(this::viewCountryReport)
+            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .smallIcon(frameworkIcons().print())
+            .build());
   }
 
   @Override
   protected Controls createPrintControls() {
-    return super.createPrintControls()
-            .add(Control.builder(this::viewCountryReport)
-                    .caption(COUNTRY_REPORT)
-                    .build());
+    return super.createPrintControls().removeAll();
   }
 
   private void viewCountryReport() throws Exception {

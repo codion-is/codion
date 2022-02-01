@@ -37,14 +37,9 @@ public final class CountryTableModel extends SwingEntityTableModel {
   }
 
   private List<Entity> getCountriesForReport() {
-    return getAllOrSelected().stream()
+    return getSelectionModel().getSelectedItems().stream()
             .sorted(comparing(country -> country.get(World.Country.NAME)))
             .collect(toList());
-  }
-
-  private List<Entity> getAllOrSelected() {
-    return getSelectionModel().isSelectionEmpty() ?
-            getItems() : getSelectionModel().getSelectedItems();
   }
 
   private static Map<String, Object> getReportParameters() throws ReportException {
