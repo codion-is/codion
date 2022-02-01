@@ -6,7 +6,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
-public final class CountryLanguageEditPanel extends EntityEditPanel {
+final class CountryLanguageEditPanel extends EntityEditPanel {
 
   public CountryLanguageEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
@@ -22,7 +22,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
     createCheckBox(CountryLanguage.IS_OFFICIAL);
     createTextField(CountryLanguage.PERCENTAGE);
 
-    setLayout(gridLayout(2, 4));
+    setLayout(gridLayout(0, 1));
 
     addInputPanel(CountryLanguage.COUNTRY_FK);
     addInputPanel(CountryLanguage.LANGUAGE);

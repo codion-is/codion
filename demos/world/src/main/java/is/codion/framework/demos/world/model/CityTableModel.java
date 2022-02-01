@@ -15,6 +15,8 @@ import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingEntityTableSortModel;
 
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -37,11 +39,17 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   public static final String OPENSTREETMAP_ORG_SEARCH = "https://nominatim.openstreetmap.org/search/";
 
+  private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
   private final Event<Collection<Entity>> displayLocationEvent = Event.event();
 
-  public CityTableModel(EntityConnectionProvider connectionProvider) {
+  CityTableModel(EntityConnectionProvider connectionProvider) {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
     getSelectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
+    addRefreshSuccessfulListener(this::refreshChartDataset);
+  }
+
+  public PieDataset<String> getChartDataset() {
+    return chartDataset;
   }
 
   public void addDisplayLocationListener(EventDataListener<Collection<Entity>> listener) {
@@ -85,6 +93,12 @@ public final class CityTableModel extends SwingEntityTableModel {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream(), UTF_8))) {
       return new JSONArray(reader.lines().collect(joining()));
     }
+  }
+
+  private void refreshChartDataset() {
+    chartDataset.clear();
+    Entity.castTo(City.class, getVisibleItems())
+            .forEach(city -> chartDataset.setValue(city.name(), city.population()));
   }
 
   private static final class CityTableSortModel extends SwingEntityTableSortModel {

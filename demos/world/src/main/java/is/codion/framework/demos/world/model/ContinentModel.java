@@ -17,7 +17,7 @@ public final class ContinentModel extends SwingEntityModel {
   private final DefaultPieDataset<String> gnpDataset = new DefaultPieDataset<>();
   private final DefaultCategoryDataset lifeExpectancyDataset = new DefaultCategoryDataset();
 
-  public ContinentModel(EntityConnectionProvider connectionProvider) {
+  ContinentModel(EntityConnectionProvider connectionProvider) {
     super(Continent.TYPE, connectionProvider);
     getTableModel().addRefreshSuccessfulListener(this::refreshChartDatasets);
   }

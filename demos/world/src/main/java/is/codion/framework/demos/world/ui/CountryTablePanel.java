@@ -25,7 +25,7 @@ import static java.util.Collections.singletonMap;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
-public final class CountryTablePanel extends EntityTablePanel {
+final class CountryTablePanel extends EntityTablePanel {
 
   private static final String COUNTRY_REPORT = "Country report";
 

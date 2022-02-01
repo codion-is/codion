@@ -8,7 +8,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
-import is.codion.framework.demos.world.model.CountryOverviewModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -43,16 +42,13 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     CountryModel countryModel = applicationModel.getEntityModel(CountryModel.class);
     EntityPanel countryPanel = new CountryPanel(countryModel);
 
-    CountryOverviewModel countryOverviewModel = applicationModel.getEntityModel(CountryOverviewModel.class);
-    EntityPanel countryOverviewPanel = new CountryOverviewPanel(countryOverviewModel);
-
     SwingEntityModel continentModel = applicationModel.getEntityModel(Continent.TYPE);
     EntityPanel continentPanel = new ContinentPanel(continentModel);
 
     SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
     EntityPanel lookupPanel = new EntityPanel(lookupModel, new LookupTablePanel(lookupModel.getTableModel()));
 
-    return asList(countryPanel, countryOverviewPanel, continentPanel, lookupPanel);
+    return asList(countryPanel, continentPanel, lookupPanel);
   }
   // end::initializeEntityPanels[]
 

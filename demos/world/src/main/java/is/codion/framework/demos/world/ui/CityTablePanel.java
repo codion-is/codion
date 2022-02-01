@@ -11,12 +11,35 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.PieDataset;
+
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import java.awt.BorderLayout;
 import java.util.List;
 
-public final class CityTablePanel extends EntityTablePanel {
+import static org.jfree.chart.ChartFactory.createPieChart;
 
-  public CityTablePanel(SwingEntityTableModel tableModel) {
+final class CityTablePanel extends EntityTablePanel {
+
+  CityTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+  }
+
+  @Override
+  protected void layoutPanel(final JPanel tablePanel, final JPanel southPanel) {
+    JPanel tableViewPanel = new JPanel(new BorderLayout());
+    tableViewPanel.add(tablePanel, BorderLayout.CENTER);
+    tableViewPanel.add(southPanel, BorderLayout.SOUTH);
+    ChartPanel cityChartPanel = createChartPanel("Cities", ((CityTableModel) getTableModel()).getChartDataset());
+    JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane.addTab("Table", tableViewPanel);
+    tabbedPane.addTab("Chart", cityChartPanel);
+    setLayout(new BorderLayout());
+    add(tabbedPane, BorderLayout.CENTER);
   }
 
   @Override
@@ -54,6 +77,16 @@ public final class CityTablePanel extends EntityTablePanel {
             .owner(this)
             .title("Unable to fetch location")
             .show(exception);
+  }
+
+  private ChartPanel createChartPanel(String title, PieDataset<String> dataset) {
+    JFreeChart languagesChart = createPieChart(title, dataset);
+    languagesChart.getPlot().setBackgroundPaint(UIManager.getColor("Table.background"));
+    languagesChart.setBackgroundPaint(getBackground());
+    ChartPanel chartPanel = new ChartPanel(languagesChart);
+    chartPanel.getChart().removeLegend();
+
+    return chartPanel;
   }
 
   private static final class FetchLocationTask implements ProgressTask<Void, String> {
