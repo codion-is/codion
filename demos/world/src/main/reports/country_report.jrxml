@@ -11,9 +11,8 @@
 	<field name="name" class="java.lang.String"/>
 	<field name="continent" class="java.lang.String"/>
 	<field name="region" class="java.lang.String"/>
-	<field name="surfacearea" class="java.lang.String"/>
-	<field name="indepyear" class="java.lang.String"/>
-	<field name="population" class="java.lang.String"/>
+	<field name="surfacearea" class="java.lang.Double"/>
+	<field name="population" class="java.lang.Integer"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -34,14 +33,14 @@
 				<reportElement x="200" y="14" width="140" height="14" uuid="94bb3563-d458-47f3-bb98-bb9914e458f7"/>
 				<textFieldExpression><![CDATA[$F{region}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="###,###,###,###">
 				<reportElement x="350" y="14" width="84" height="14" uuid="7ae9640c-d57f-4cd9-b08c-b2e582ae4084">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{surfacearea}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="###,###,###,###">
 				<reportElement x="435" y="14" width="100" height="14" uuid="0aeaac02-df9f-4c84-9533-3daee90d0082">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>

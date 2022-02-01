@@ -7650,3 +7650,4 @@
   EntityTablePanel, refreshToolBar no longer created manually, Controls used, button now square
   ColumnConditionPanel, minor UI improvements
   EntityTablePanel, tooltips disable for south panel components, tend to get in the way when clicking buttons when the window is maximized
+  EntityTablePanel, print control handling improved a bit

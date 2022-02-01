@@ -1,6 +1,5 @@
 package is.codion.framework.demos.world.model;
 
-import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
@@ -11,7 +10,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 public final class CountryEditModel extends SwingEntityEditModel {
 
-  private final Value<Double> averageCityPopulationValue = Value.value();
+  private ValueObserver<Double> averageCityPopulationObserver;
 
   CountryEditModel(EntityConnectionProvider connectionProvider) {
     super(Country.TYPE, connectionProvider);
@@ -24,17 +23,18 @@ public final class CountryEditModel extends SwingEntityEditModel {
       //only show cities for currently selected country
       addEntitySetListener(country ->
               comboBoxModel.setIncludeCondition(cityEntity ->
-                      cityEntity.castTo(City.class).isInCountry(country)));
+                      cityEntity.castTo(City.class)
+                              .isInCountry(country)));
     }
 
     return comboBoxModel;
   }
 
-  public void setAverageCityPopulation(Double value) {
-    averageCityPopulationValue.set(value);
+  public ValueObserver<Double> getAvarageCityPopulationValue() {
+    return averageCityPopulationObserver;
   }
 
-  public ValueObserver<Double> getAvarageCityPopulationValue() {
-    return averageCityPopulationValue.getObserver();
+  public void setAverageCityPopulationObserver(ValueObserver<Double> averageCityPopulationObserver) {
+    this.averageCityPopulationObserver = averageCityPopulationObserver;
   }
 }

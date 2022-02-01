@@ -26,7 +26,7 @@ final class CountryLanguageTablePanel extends EntityTablePanel {
     JPanel tableViewPanel = new JPanel(new BorderLayout());
     tableViewPanel.add(tablePanel, BorderLayout.CENTER);
     tableViewPanel.add(southPanel, BorderLayout.SOUTH);
-    ChartPanel cityChartPanel = createChartPanel("Cities", ((CountryLanguageTableModel) getTableModel()).getChartDataset());
+    ChartPanel cityChartPanel = createChartPanel("Languages", ((CountryLanguageTableModel) getTableModel()).getChartDataset());
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.addTab("Table", tableViewPanel);
     tabbedPane.addTab("Chart", cityChartPanel);

@@ -30,7 +30,7 @@ final class CityTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected void layoutPanel(final JPanel tablePanel, final JPanel southPanel) {
+  protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
     JPanel tableViewPanel = new JPanel(new BorderLayout());
     tableViewPanel.add(tablePanel, BorderLayout.CENTER);
     tableViewPanel.add(southPanel, BorderLayout.SOUTH);
