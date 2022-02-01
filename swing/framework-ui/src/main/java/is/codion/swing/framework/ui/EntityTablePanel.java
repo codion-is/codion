@@ -282,6 +282,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
 
   /**
+   * specifies whether to include the selection mode control in the popup menu
+   */
+  private boolean includeSelectionModeControl = false;
+
+  /**
    * Specifies how column selection is presented.
    */
   private ColumnSelection columnSelection = COLUMN_SELECTION.get();
@@ -423,6 +428,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setIncludeClearControl(final boolean includeClearControl) {
     checkIfInitialized();
     this.includeClearControl = includeClearControl;
+  }
+
+  /**
+   * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final void setIncludeSelectionModeControl(final boolean includeSelectionModeControl) {
+    checkIfInitialized();
+    this.includeSelectionModeControl = includeClearControl;
   }
 
   /**
@@ -1304,7 +1319,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     controls.putIfAbsent(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
     controls.putIfAbsent(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
     controls.putIfAbsent(ControlCode.COPY_TABLE_DATA, createCopyControls());
-    controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+    if (includeSelectionModeControl) {
+      controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+    }
   }
 
   private void copySelectedCell() {
