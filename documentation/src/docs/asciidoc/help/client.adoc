@@ -2,7 +2,7 @@
 = Client
 :toc: left
 :docinfo: shared-head
-:imagesdir: ../images
+:imagesdir: ../images/help
 :basedir: ..
 
 == Searching
@@ -25,7 +25,7 @@
 
 Each table has an associated search panel, which can be displayed by using the button highlighted in the screenshot below. This button toggles through the avilable search panel views; *hidden*, *visible* and *advanced*.
 
-image::help/search_cleared.png[Search, cleared]
+image::search/search_cleared.png[Search, cleared]
 
 By default, all condition operators are set to *EQUAL*, to change the operator you must switch to the *advanced* search panel view, see below.
 
@@ -35,48 +35,48 @@ NOTE: The condition is automatically enabled when a value has been entered.
 
 When the search condition has been changed, as in, when it does not represent the data currently in the table, the refresh button in the lower left corner becomes enabled, indicating that a refresh is in order. Further column conditions can be added before a refresh is performed.
 
-image::help/search_string_wildcard_no_refresh.png[Search, string wildcard, no refresh]
+image::search/search_string_wildcard_no_refresh.png[Search, string wildcard, no refresh]
 
 There are multiple ways of refreshing the table:
 
-* Pressing the kbd:[Enter] key with the cursor somewhere on a column condition panel
-* Using the aformentioned refresh button or its kbd:[F5] keyboard shortcut
+* Pressing the kbd:[Enter] key with the focus somewhere on a column condition panel
+* Using the aformentioned refresh button or the kbd:[F5] keyboard shortcut
 * Using the *Refresh* action in the table popup menu
 * Using the *Refresh* button on the input panel, if one is available, or its kbd:[Alt + R] keyboard shortcut
 
 After the table has been refreshed, the refresh button becomes disabled, indicating that the table data represents the current search condition.
 
-NOTE: You can tell a column condition is enabled by its BOLD header and shaded data.
+NOTE: You can tell a condition is enabled by its BOLD header and shaded column.
 
-image::help/search_string_wildcard.png[Search, string wildcard]
+image::search/search_string_wildcard.png[Search, string wildcard]
 
 Adding a condition to the *Genre* column.
 
 With multiple conditions enabled, all of them are included next time the table is refreshed.
 
-image::help/search_string_wildcard_and_selection.png[Search, string wildcard and selection]
+image::search/search_string_wildcard_and_selection.png[Search, string wildcard and selection]
 
 Enabling the *advanced* condition panel view in order to change the *Name* condition to *NOT EQUAL*.
 
-image::help/search_string_wildcard_negated_and_selection.png[Search, string wildcard negated and selection]
+image::search/search_string_wildcard_negated_and_selection.png[Search, string wildcard negated and selection]
 
 Adding a *LESS THAN* condition to the *Price* column.
 
-image::help/search_string_wildcard_negated_number_less_and_selection.png[Search, string wildcard negated, number less and selection]
+image::search/search_string_wildcard_negated_number_less_and_selection.png[Search, string wildcard negated, number less and selection]
 
 Changing the *Price* condition to *GREATER THAN OR EQUAL*.
 
-image::help/search_string_wildcard_negated_number_greater_or_equal_than_and_selection.png[Search, string wildcard negated, number greater or equal and selection]
+image::search/search_string_wildcard_negated_number_greater_or_equal_than_and_selection.png[Search, string wildcard negated, number greater or equal and selection]
 
 Changing the *Price* condition to *BETWEEN* and the *Genre* condition to *NOT EQUAL*.
 
-image::help/search_string_wildcard_negated_number_between_and_selection_negated.png[Search, string wildcard negated, number between and selection]
+image::search/search_string_wildcard_negated_number_between_and_selection_negated.png[Search, string wildcard negated, number between and selection]
 
 Adding a *NOT EQUAL* condition to the *Composer* column with an empty value.
 
-image::help/search_string_wildcard_negated_number_between_selection_negated_and_not_null.png[Search, string wildcard negated, number between, selection and not null]
+image::search/search_string_wildcard_negated_number_between_selection_negated_and_not_null.png[Search, string wildcard negated, number between, selection and not null]
 
-NOTE: When searching for empty values, the condition must be manually enabled, since its automatically enabled only when a non-empty value is entered.
+NOTE: When searching for empty values, the condition must be manually enabled, since it's only enabled automatically when a non-empty value is entered.
 
 NOTE: To clear all column conditions use the *Search* -> *Clear* action in the table popup menu. This clears all values and resets all operators to *EQUAL*.
 

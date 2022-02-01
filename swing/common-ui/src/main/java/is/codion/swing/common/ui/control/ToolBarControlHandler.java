@@ -3,8 +3,11 @@
  */
 package is.codion.swing.common.ui.control;
 
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JToolBar;
+import java.awt.Component;
+import java.awt.Dimension;
 
 final class ToolBarControlHandler extends ControlHandler {
 
@@ -22,10 +25,10 @@ final class ToolBarControlHandler extends ControlHandler {
   @Override
   public void onControl(final Control control) {
     if (control instanceof ToggleControl) {
-      toolbar.add(((ToggleControl) control).createToggleButton());
+      squareSize((AbstractButton) toolbar.add(((ToggleControl) control).createToggleButton()));
     }
     else {
-      toolbar.add(control);
+      squareSize(toolbar.add(control));
     }
   }
 
@@ -37,5 +40,11 @@ final class ToolBarControlHandler extends ControlHandler {
   @Override
   public void onAction(final Action action) {
     toolbar.add(action);
+  }
+
+  private static void squareSize(final Component component) {
+    final Dimension preferredSize = component.getPreferredSize();
+    final int minimumDimension = Math.min(preferredSize.height, preferredSize.width);
+    component.setPreferredSize(new Dimension(minimumDimension, minimumDimension));
   }
 }

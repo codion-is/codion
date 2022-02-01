@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -46,8 +45,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -283,6 +280,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
 
   /**
+   * specifies whether to include the selection mode control in the popup menu
+   */
+  private boolean includeSelectionModeControl = false;
+
+  /**
    * Specifies how column selection is presented.
    */
   private ColumnSelection columnSelection = COLUMN_SELECTION.get();
@@ -424,6 +426,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setIncludeClearControl(final boolean includeClearControl) {
     checkIfInitialized();
     this.includeClearControl = includeClearControl;
+  }
+
+  /**
+   * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final void setIncludeSelectionModeControl(final boolean includeSelectionModeControl) {
+    checkIfInitialized();
+    this.includeSelectionModeControl = includeClearControl;
   }
 
   /**
@@ -1038,7 +1050,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     southCenterSplitPane.setBottomComponent(statusMessageLabel);
     final JPanel southPanel = new JPanel(new BorderLayout());
     southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
-    southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(refreshToolBar, BorderLayout.WEST);
     final JToolBar southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {
@@ -1306,7 +1317,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     controls.putIfAbsent(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
     controls.putIfAbsent(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
     controls.putIfAbsent(ControlCode.COPY_TABLE_DATA, createCopyControls());
-    controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+    if (includeSelectionModeControl) {
+      controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+    }
   }
 
   private void copySelectedCell() {
@@ -1355,12 +1368,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refreshControl = control(tableModel::refresh);
-    final JButton button = Components.button(refreshControl)
+    final Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
-            .toolTipText(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
-            .icon(frameworkIcons().refreshRequired())
-            .focusable(false)
+            .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + " (" + keyName + ")")
+            .smallIcon(frameworkIcons().refreshRequired())
             .build();
 
     KeyEvents.builder(KeyEvent.VK_F5)
@@ -1368,11 +1379,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .action(refreshControl)
             .enable(this);
 
-    final JToolBar toolBar = new JToolBar(SwingConstants.HORIZONTAL);
+    final JToolBar toolBar = Controls.controls(refreshControl).createHorizontalToolBar();
     toolBar.setFocusable(false);
+    toolBar.getComponentAtIndex(0).setFocusable(false);
     toolBar.setFloatable(false);
     toolBar.setRollover(true);
-    toolBar.add(button);
     if (automaticallyHideRefreshToolbar) {
       //made visible when condition panel is visible
       toolBar.setVisible(false);
