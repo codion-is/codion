@@ -7643,3 +7643,4 @@
   LookAndFeelProvivder.CHANGE_DURING_SELECTION configuration value added
   SwingEntityTableModel and FXEntityListModel, editModel now final
   SwingEntityTableModel, added a couple of overloaded constructors
+  PostgreSQLDatabase bug fixed, now uses the correct INVALID_PASSWORD error code for identifying authentication exceptions
