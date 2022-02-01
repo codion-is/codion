@@ -2,13 +2,22 @@ package is.codion.framework.demos.world.domain.api;
 
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ColorProvider;
+import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.DerivedProperty;
 
 import org.jxmapviewer.viewer.GeoPosition;
 
+import java.awt.Color;
+import java.io.Serializable;
 import java.util.Objects;
+
+import static is.codion.common.Util.notNull;
 
 /**
  * World domain api.
@@ -42,6 +51,49 @@ public interface World {
       return Objects.equals(get(City.ID), get(City.COUNTRY_FK).get(Country.CAPITAL));
     }
   }
+
+  // tag::colorProvider[]
+  final class CityColorProvider implements ColorProvider {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public Object getColor(Entity cityEntity, Attribute<?> attribute) {
+      if (attribute.equals(City.POPULATION) &&
+              cityEntity.get(City.POPULATION) > 1_000_000) {
+        return Color.YELLOW;
+      }
+      City city = cityEntity.castTo(City.class);
+      if (attribute.equals(City.NAME) && city.isCapital()) {
+        return Color.GREEN;
+      }
+
+      return null;
+    }
+  }
+  // end::colorProvider[]
+
+  // tag::validator[]
+  final class CityValidator
+          extends DefaultEntityValidator implements Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public void validate(Entity city, EntityDefinition cityDefinition) throws ValidationException {
+      super.validate(city, cityDefinition);
+      //after a call to super.validate() property values that are not nullable
+      //(such as country and population) are guaranteed to be non-null
+      Entity country = city.get(City.COUNTRY_FK);
+      Integer cityPopulation = city.get(City.POPULATION);
+      Integer countryPopulation = country.get(Country.POPULATION);
+      if (countryPopulation != null && cityPopulation > countryPopulation) {
+        throw new ValidationException(City.POPULATION,
+                cityPopulation, "City population can not exceed country population");
+      }
+    }
+  }
+  // end::validator[]
 
   interface Country extends Entity {
     EntityType TYPE = DOMAIN.entityType("world.country", Country.class);
@@ -92,6 +144,25 @@ public interface World {
     String language();
     int noOfSpeakers();
   }
+
+  // tag::derivedPropertyProvider[]
+  final class NoOfSpeakersProvider
+          implements DerivedProperty.Provider<Integer> {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public Integer get(DerivedProperty.SourceValues sourceValues) {
+      Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
+      Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
+      if (notNull(percentage, country) && country.isNotNull(Country.POPULATION)) {
+        return Double.valueOf(country.get(Country.POPULATION) * (percentage / 100)).intValue();
+      }
+
+      return null;
+    }
+  }
+  // end::derivedPropertyProvider[]
 
   interface Continent extends Entity {
     EntityType TYPE = DOMAIN.entityType("continent", Continent.class);

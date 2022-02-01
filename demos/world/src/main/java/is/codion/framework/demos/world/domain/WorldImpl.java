@@ -1,30 +1,15 @@
 package is.codion.framework.demos.world.domain;
 
 import is.codion.framework.demos.world.domain.api.World;
-import is.codion.framework.demos.world.domain.api.World.City;
-import is.codion.framework.demos.world.domain.api.World.Continent;
-import is.codion.framework.demos.world.domain.api.World.Country;
-import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
-import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.domain.DefaultDomain;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ColorProvider;
-import is.codion.framework.domain.entity.DefaultEntityValidator;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
-import is.codion.framework.domain.property.DerivedProperty;
 
 import org.jxmapviewer.viewer.GeoPosition;
 
-import java.awt.Color;
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static is.codion.common.Util.notNull;
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -33,7 +18,7 @@ import static is.codion.framework.domain.property.Properties.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
-public final class WorldImpl extends DefaultDomain {
+public final class WorldImpl extends DefaultDomain implements World {
 
   public WorldImpl() {
     super(World.DOMAIN);
@@ -258,68 +243,6 @@ public final class WorldImpl extends DefaultDomain {
             .readOnly()
             .caption("Continent");
   }
-
-  // tag::colorProvider[]
-  private static final class CityColorProvider implements ColorProvider {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public Object getColor(Entity cityEntity, Attribute<?> attribute) {
-      if (attribute.equals(City.POPULATION) &&
-              cityEntity.get(City.POPULATION) > 1_000_000) {
-        return Color.YELLOW;
-      }
-      City city = cityEntity.castTo(City.class);
-      if (attribute.equals(City.NAME) && city.isCapital()) {
-        return Color.GREEN;
-      }
-
-      return null;
-    }
-  }
-  // end::colorProvider[]
-
-  // tag::derivedPropertyProvider[]
-  private static final class NoOfSpeakersProvider
-          implements DerivedProperty.Provider<Integer> {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public Integer get(DerivedProperty.SourceValues sourceValues) {
-      Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
-      Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
-      if (notNull(percentage, country) && country.isNotNull(Country.POPULATION)) {
-        return Double.valueOf(country.get(Country.POPULATION) * (percentage / 100)).intValue();
-      }
-
-      return null;
-    }
-  }
-  // end::derivedPropertyProvider[]
-
-  // tag::validator[]
-  private static final class CityValidator
-          extends DefaultEntityValidator implements Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public void validate(Entity city, EntityDefinition cityDefinition) throws ValidationException {
-      super.validate(city, cityDefinition);
-      //after a call to super.validate() property values that are not nullable
-      //(such as country and population) are guaranteed to be non-null
-      Entity country = city.get(City.COUNTRY_FK);
-      Integer cityPopulation = city.get(City.POPULATION);
-      Integer countryPopulation = country.get(Country.POPULATION);
-      if (countryPopulation != null && cityPopulation > countryPopulation) {
-        throw new ValidationException(City.POPULATION,
-                cityPopulation, "City population can not exceed country population");
-      }
-    }
-  }
-  // end::validator[]
 
   // tag::converter[]
   private static final class LocationConverter implements ValueConverter<GeoPosition, String> {
