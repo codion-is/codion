@@ -8,7 +8,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.javafx.framework.model.FXEntityApplicationModel;
-import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
 import is.codion.javafx.framework.model.FXEntityModel;
 
@@ -34,11 +33,10 @@ public final class EntityApplicationViewTest {
     final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
       @Override
       protected void initializeEntityViews() {
-        final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
         final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-        final FXEntityModel model = new FXEntityModel(editModel, listModel);
+        final FXEntityModel model = new FXEntityModel(listModel);
 
-        addEntityView(new EntityView(model, new EntityEditViewTest.EmpEditView(editModel), new EntityTableView(listModel)));
+        addEntityView(new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.getEditModel()), new EntityTableView(listModel)));
       }
 
       @Override

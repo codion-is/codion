@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.SelectionModel;
@@ -99,29 +98,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
-   * @see #setEditModel(EntityEditModel)
-   * @see #hasEditModel()
-   * @throws IllegalStateException in case no edit model has been associated with this table model
    */
   E getEditModel();
-
-  /**
-   * @return true if this {@link EntityTableModel} contains a {@link EntityEditModel}
-   */
-  boolean hasEditModel();
-
-  /**
-   * Associates the given {@link EntityEditModel} with this {@link EntityTableModel}, this enables delete/update
-   * functionality via this table model as well as enabling it to
-   * react to delete events in the edit model.
-   * Throws a RuntimeException in case the edit model has been previously set
-   * @param editModel the edit model to associate with this table model
-   * @see #deleteSelected()
-   * @see #update(java.util.List)
-   * @throws IllegalStateException in case an {@link EntityEditModel} has already been associated with this {@link EntityTableModel}
-   * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityType as this {@link EntityTableModel}
-   */
-  void setEditModel(E editModel);
 
   /**
    * Sets {@code foreignKeyValues} as the search condition values for the given foreign key
@@ -202,23 +180,17 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setEditable(boolean editable);
 
   /**
-   * @return true if this model has an edit model and that edit model allows deletion of records
-   * @see #hasEditModel()
-   * @see #setEditModel(EntityEditModel)
+   * @return true if the underlying edit model allows deletion of records
    */
   boolean isDeleteEnabled();
 
   /**
-   * @return true if this model has no {@link EntityEditModel} or if that edit model is read only
-   * @see #hasEditModel()
-   * @see #setEditModel(EntityEditModel)
+   * @return true if the underlying edit model is read only
    */
   boolean isReadOnly();
 
   /**
-   * @return true if this model has an edit model and that edit model allows updating of records
-   * @see #hasEditModel()
-   * @see #setEditModel(EntityEditModel)
+   * @return true if the underlying edit model allows updating of records
    */
   boolean isUpdateEnabled();
 
@@ -420,11 +392,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the {@link SelectionModel}
    */
   SelectionModel<Entity> getSelectionModel();
-
-  /**
-   * @param listener listener notified when an edit model has been set.
-   */
-  void addEditModelSetListener(EventDataListener<E> listener);
 
   /**
    * @param listener notified when the selection changes in the underlying selection model

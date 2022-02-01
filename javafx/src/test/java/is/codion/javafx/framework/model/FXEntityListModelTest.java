@@ -36,7 +36,6 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
         return testEntities;
       }
     };
-    listModel.setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, getConnectionProvider()));
     final ListView<Entity> listView = new ListView<>(listModel);
     listModel.setSelectionModel(listView.getSelectionModel());
 
@@ -50,21 +49,12 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createDetailTableModel() {
-    return new FXEntityListModel(TestDomain.T_DETAIL, getConnectionProvider());
-  }
-
-  @Override
-  protected FXEntityListModel createEmployeeTableModelWithoutEditModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, getConnectionProvider());
-    new EntityTableView(listModel);
-
-    return listModel;
+    return new FXEntityListModel(createDetailEditModel());
   }
 
   @Override
   protected FXEntityListModel createDepartmentTableModel() {
     final FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
-    deptModel.setEditModel(new FXEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
     final EntityTableView tableView = new EntityTableView(deptModel);
     tableView.getSortOrder().add(deptModel.getTableColumn(TestDomain.DEPARTMENT_NAME));
 
@@ -74,7 +64,6 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
   @Override
   protected FXEntityListModel createEmployeeTableModel() {
     final FXEntityListModel empModel = new FXEntityListModel(TestDomain.T_EMP, testModel.getConnectionProvider());
-    empModel.setEditModel(new FXEntityEditModel(TestDomain.T_EMP, testModel.getConnectionProvider()));
     new EntityTableView(empModel);
 
     return empModel;

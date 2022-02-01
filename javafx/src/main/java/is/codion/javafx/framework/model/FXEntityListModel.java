@@ -5,8 +5,6 @@ package is.codion.javafx.framework.model;
 
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -59,9 +57,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private final EntityTableConditionModel tableConditionModel;
   private final State queryConditionRequiredState = State.state();
-  private final Event<FXEntityEditModel> editModelSetEvent = Event.event();
+  private final FXEntityEditModel editModel;
 
-  private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
   private ObservableList<TableColumn<Entity, ?>> columnSortOrder;
   private List<AttributeTableColumn<?>> initialColumns;
@@ -75,34 +72,27 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean queryHiddenColumns = QUERY_HIDDEN_COLUMNS.get();
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
-  /**
-   * Instantiates a new {@link FXEntityListModel} based on the given entityType
-   * @param entityType the entityType
-   * @param connectionProvider the connection provider
-   */
   public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, new DefaultEntityTableConditionModel(entityType, connectionProvider,
-            null, new FXConditionModelFactory(connectionProvider)));
+    this(new FXEntityEditModel(entityType, connectionProvider));
   }
 
-  /**
-   * Instantiates a new {@link FXEntityListModel} based on the given entityType
-   * @param entityType the entityType
-   * @param connectionProvider the connection provider
-   * @param tableConditionModel the {@link EntityTableConditionModel} to use
-   * @throws IllegalArgumentException in case the condition model is based on a different entity
-   */
-  public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                           final EntityTableConditionModel tableConditionModel) {
-    super(entityType, connectionProvider);
+
+  public FXEntityListModel(final FXEntityEditModel editModel) {
+    this(editModel, new DefaultEntityTableConditionModel(editModel.getEntityType(), editModel.getConnectionProvider(),
+            null, new FXConditionModelFactory(editModel.getConnectionProvider())));
+  }
+
+  public FXEntityListModel(final FXEntityEditModel editModel, final EntityTableConditionModel tableConditionModel) {
+    super(editModel.getEntityType(), editModel.getConnectionProvider());
     requireNonNull(tableConditionModel);
-    if (!tableConditionModel.getEntityType().equals(entityType)) {
+    if (!tableConditionModel.getEntityType().equals(getEntityType())) {
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + tableConditionModel.getEntityType()
-              + ", tableModel: " + entityType);
+              + ", tableModel: " + getEntityType());
     }
     if (getEntityDefinition().getVisibleProperties().isEmpty()) {
-      throw new IllegalArgumentException("No visible properties defined for entity: " + entityType);
+      throw new IllegalArgumentException("No visible properties defined for entity: " + getEntityType());
     }
+    this.editModel = editModel;
     this.tableConditionModel = tableConditionModel;
     bindEvents();
   }
@@ -113,24 +103,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setEditModel(final FXEntityEditModel editModel) {
-    requireNonNull(editModel, "editModel");
-    if (this.editModel != null) {
-      throw new IllegalStateException("Edit model has already been set");
-    }
-    if (!editModel.getEntityType().equals(getEntityType())) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityType() + ", tableModel: " + getEntityType());
-    }
-    this.editModel = editModel;
-    bindEditModelEvents();
-    editModelSetEvent.onEvent(editModel);
-  }
-
-  @Override
   public final FXEntityEditModel getEditModel() {
-    if (editModel == null) {
-      throw new IllegalStateException("No edit model has been set for list: " + this);
-    }
     return editModel;
   }
 
@@ -222,11 +195,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final int getRowCount() {
     return size();
-  }
-
-  @Override
-  public final boolean hasEditModel() {
-    return editModel != null;
   }
 
   @Override
@@ -467,11 +435,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             String.valueOf(delimiter));
   }
 
-  @Override
-  public final void addEditModelSetListener(final EventDataListener<FXEntityEditModel> listener) {
-    editModelSetEvent.addDataListener(listener);
-  }
-
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderBy()}
@@ -700,20 +663,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return columnPreferencesRoot;
   }
 
-  private void bindEditModelEvents() {
-    getEditModel().addAfterInsertListener(this::onInsert);
-    getEditModel().addAfterUpdateListener(this::onUpdate);
-    getEditModel().addAfterDeleteListener(this::onDelete);
-    getEditModel().addAfterRefreshListener(this::refresh);
-    getEditModel().addEntitySetListener(entity -> {
+  private void bindEvents() {
+    addRefreshListener(tableConditionModel::rememberCondition);
+    editModel.addAfterInsertListener(this::onInsert);
+    editModel.addAfterUpdateListener(this::onUpdate);
+    editModel.addAfterDeleteListener(this::onDelete);
+    editModel.addAfterRefreshListener(this::refresh);
+    editModel.addEntitySetListener(entity -> {
       if (entity == null && selectionModelHasBeenSet() && getSelectionModel().isSelectionNotEmpty()) {
         getSelectionModel().clearSelection();
       }
     });
-  }
-
-  private void bindEvents() {
-    addRefreshListener(tableConditionModel::rememberCondition);
   }
 
   /**

@@ -41,7 +41,6 @@ import is.codion.swing.common.ui.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.table.TableColumnComponentPanel;
-import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
@@ -957,14 +956,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     final EntityType entityType = entities.iterator().next().getEntityType();
-    final SwingEntityEditModel editModel = new SwingEntityEditModel(entityType, connectionProvider);
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
       protected Collection<Entity> refreshItems() {
         return entities;
       }
     };
-    tableModel.setEditModel(editModel);
     tableModel.refresh();
 
     return createEntityTablePanel(tableModel);
@@ -1450,9 +1447,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.addRefreshStartedListener(() -> WaitCursor.show(EntityTablePanel.this));
     tableModel.addRefreshSuccessfulListener(() -> WaitCursor.hide(EntityTablePanel.this));
     tableModel.addRefreshFailedListener(throwable -> WaitCursor.hide(EntityTablePanel.this));
-    if (tableModel.hasEditModel()) {
-      tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
-    }
+    tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

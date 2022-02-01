@@ -54,7 +54,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void setSelectedByKey() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
     final List<Key> keys = tableModel.getEntities().primaryKeys(TestDomain.T_EMP, 1, 2);
@@ -81,7 +81,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void getSelectedEntitiesIterator() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
     tableModel.getSelectionModel().setSelectedIndexes(asList(0, 3, 5));
@@ -89,20 +89,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(tableModel.getItems().get(0), iterator.next());
     assertEquals(tableModel.getItems().get(3), iterator.next());
     assertEquals(tableModel.getItems().get(5), iterator.next());
-  }
-
-  @Test
-  public void updateNoEditModel() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    assertThrows(IllegalStateException.class, () -> tableModel.update(new ArrayList<>()));
-  }
-
-  @Test
-  public void deleteSelectedNoEditModel() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    tableModel.refresh();
-    tableModel.getSelectionModel().setSelectedIndex(0);
-    assertThrows(IllegalStateException.class, tableModel::deleteSelected);
   }
 
   @Test
@@ -179,7 +165,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void getEntityByKey() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
     final Entities entities = tableModel.getEntities();
@@ -191,58 +177,18 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void setEditModelNullValue() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    assertThrows(NullPointerException.class, () -> tableModel.setEditModel(null));
-  }
-
-  @Test
-  public void setEditModelWrongEntityType() {
-    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    assertThrows(IllegalArgumentException.class, () -> tableModel.setEditModel(createDepartmentEditModel()));
-  }
-
-  @Test
-  public void setEditModelAlreadySet() {
-    assertTrue(testModel.hasEditModel());
-    assertThrows(IllegalStateException.class, () -> testModel.setEditModel(createDetailEditModel()));
-  }
-
-  @Test
-  public void setAndGetEditModel() {
-    final TableModel tableModel = createDetailTableModel();
-    final EditModel editModel = createDetailEditModel();
-    assertFalse(tableModel.hasEditModel());
-    tableModel.setEditModel(editModel);
-    assertTrue(tableModel.hasEditModel());
-    assertEquals(editModel, tableModel.getEditModel());
-  }
-
-  @Test
-  public void getEditModelNoEditModelSet() {
-    final TableModel tableModel = createDetailTableModel();
-    assertThrows(IllegalStateException.class, tableModel::getEditModel);
-  }
-
-  @Test
   public void isUpdateEnabled() {
     final TableModel tableModel = createDetailTableModel();
-    final EditModel editModel = createDetailEditModel();
-    assertFalse(tableModel.isUpdateEnabled());
-    tableModel.setEditModel(editModel);
     assertTrue(tableModel.isUpdateEnabled());
-    editModel.setUpdateEnabled(false);
+    tableModel.getEditModel().setUpdateEnabled(false);
     assertFalse(tableModel.isUpdateEnabled());
   }
 
   @Test
   public void isDeleteEnabled() {
     final TableModel tableModel = createDetailTableModel();
-    final EditModel editModel = createDetailEditModel();
-    assertFalse(tableModel.isDeleteEnabled());
-    tableModel.setEditModel(editModel);
     assertTrue(tableModel.isDeleteEnabled());
-    editModel.setDeleteEnabled(false);
+    tableModel.getEditModel().setDeleteEnabled(false);
     assertFalse(tableModel.isDeleteEnabled());
   }
 
@@ -375,8 +321,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
    * @see TestDomain#T_MASTER
    */
   protected abstract TableModel createMasterTableModel();
-
-  protected abstract TableModel createEmployeeTableModelWithoutEditModel();
 
   protected abstract TableModel createDepartmentTableModel();
 

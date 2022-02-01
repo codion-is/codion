@@ -92,16 +92,26 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private boolean searchOnMasterInsert = EntityModel.SEARCH_ON_MASTER_INSERT.get();
 
   /**
-   * Instantiates a new DefaultEntityModel
+   * Instantiates a new DefaultEntityModel, without a table model
    * @param editModel the edit model
-   * @param tableModel the table model
    */
-  public DefaultEntityModel(final E editModel, final T tableModel) {
+  public DefaultEntityModel(final E editModel) {
     requireNonNull(editModel, "editModel");
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
+    this.tableModel = null;
+    bindEventsInternal();
+  }
+
+  /**
+   * Instantiates a new DefaultEntityModel
+   * @param tableModel the table model
+   */
+  public DefaultEntityModel(final T tableModel) {
+    requireNonNull(tableModel, "tableModel");
+    this.connectionProvider = tableModel.getConnectionProvider();
+    this.editModel = tableModel.getEditModel();
     this.tableModel = tableModel;
-    setTableEditModel(editModel, tableModel);
     bindEventsInternal();
   }
 
@@ -478,22 +488,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
 
     return singletonList(editModel.getEntityCopy());
-  }
-
-  private void setTableEditModel(final E editModel, final EntityTableModel<E> tableModel) {
-    if (tableModel != null && !editModel.getEntityType().equals(tableModel.getEntityType())) {
-      throw new IllegalArgumentException("Table model entityType mismatch, found: " + tableModel.getEntityType() + ", required: " + editModel.getEntityType());
-    }
-    if (tableModel != null) {
-      if (tableModel.hasEditModel()) {
-        if (tableModel.getEditModel() != editModel) {
-          throw new IllegalArgumentException("Edit model instance mismatch, found: " + tableModel.getEditModel() + ", required: " + editModel);
-        }
-      }
-      else {
-        tableModel.setEditModel(editModel);
-      }
-    }
   }
 
   private void bindEventsInternal() {
