@@ -8,10 +8,6 @@ public final class WorldAppModel extends SwingEntityApplicationModel {
 
   public WorldAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
-    setupEntityModels(connectionProvider);
-  }
-
-  private void setupEntityModels(EntityConnectionProvider connectionProvider) {
     CountryModel countryModel = new CountryModel(connectionProvider);
     SwingEntityModel lookupModel = new SwingEntityModel(new LookupTableModel(connectionProvider));
     ContinentModel continentModel = new ContinentModel(connectionProvider);
