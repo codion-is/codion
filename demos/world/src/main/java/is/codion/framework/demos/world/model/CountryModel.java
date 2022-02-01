@@ -9,7 +9,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 public final class CountryModel extends SwingEntityModel {
 
   CountryModel(EntityConnectionProvider connectionProvider) {
-    super(new CountryEditModel(connectionProvider));
+    super(new CountryTableModel(connectionProvider));
     SwingEntityModel cityModel =
             new SwingEntityModel(new CityTableModel(connectionProvider));
     SwingEntityModel countryLanguageModel =

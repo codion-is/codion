@@ -47,7 +47,7 @@ task buildReports(dependsOn: 'compileJava') {
     // which are required on the report compile classpath have not been created yet
     dependsOn configurations.runtimeClasspath
     def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/ui')
+    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/model')
     inputs.dir jasperSourceDir
     outputs.dir jasperTargetDir
     doLast {
