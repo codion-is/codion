@@ -1090,7 +1090,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (controls.containsKey(ControlCode.DELETE_SELECTED)) {
       toolbarControls.add(controls.get(ControlCode.DELETE_SELECTED));
     }
-    toolbarControls.add(createPrintTableControl());
+    if (controls.containsKey(ControlCode.PRINT_TABLE)) {
+      toolbarControls.add(controls.get(ControlCode.PRINT_TABLE));
+    }
     toolbarControls.add(controls.get(ControlCode.CLEAR_SELECTION));
     toolbarControls.addSeparator();
     toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_UP));
@@ -1145,7 +1147,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       separatorRequired = false;
     }
     final Controls printControls = createPrintControls();
-    if (printControls != null) {
+    if (printControls != null && !printControls.isEmpty()) {
       popupControls.add(printControls);
       separatorRequired = true;
     }
@@ -1180,12 +1182,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected Controls createPrintControls() {
     final String printCaption = Messages.get(Messages.PRINT);
-    return Controls.builder()
+    final Controls.Builder builder = Controls.builder()
             .caption(printCaption)
             .mnemonic(printCaption.charAt(0))
-            .smallIcon(frameworkIcons().print())
-            .control(controls.get(ControlCode.PRINT_TABLE))
-            .build();
+            .smallIcon(frameworkIcons().print());
+    if (controls.containsKey(ControlCode.PRINT_TABLE)) {
+      builder.control(controls.get(ControlCode.PRINT_TABLE));
+    }
+
+    return builder.build();
   }
 
   protected final Control createConditionPanelControl() {
