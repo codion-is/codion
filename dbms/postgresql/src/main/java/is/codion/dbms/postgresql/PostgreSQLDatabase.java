@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class PostgreSQLDatabase extends AbstractDatabase {
 
-  private static final String INVALID_AUTHORIZATION_SPECIFICATION = "28000";
+  private static final String INVALID_PASSWORD = "28P01";
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
   private static final String FOREIGN_KEY_VIOLATION = "23503";
   private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
@@ -66,7 +66,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
-    return INVALID_AUTHORIZATION_SPECIFICATION.equals(exception.getSQLState());
+    return INVALID_PASSWORD.equals(exception.getSQLState());
   }
 
   @Override
