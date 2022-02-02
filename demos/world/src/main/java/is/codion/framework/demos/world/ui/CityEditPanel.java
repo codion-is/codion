@@ -18,6 +18,7 @@ import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Objects;
@@ -29,6 +30,8 @@ import static java.util.stream.Collectors.toSet;
 import static javax.swing.BorderFactory.createRaisedBevelBorder;
 
 public final class CityEditPanel extends EntityEditPanel {
+
+  private static final int MAX_ZOOM = 19;
 
   private final CityTableModel tableModel;
 
@@ -77,7 +80,7 @@ public final class CityEditPanel extends EntityEditPanel {
     mapKit.setMiniMapVisible(false);
     mapKit.setZoomSliderVisible(false);
     mapKit.setBorder(createRaisedBevelBorder());
-    mapKit.getMainMap().setZoom(19);
+    mapKit.getMainMap().setZoom(MAX_ZOOM);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
 
     tableModel.addDisplayLocationListener(new LocationListener(mapKit.getMainMap()));
@@ -87,6 +90,8 @@ public final class CityEditPanel extends EntityEditPanel {
 
   private static final class LocationListener implements EventDataListener<Collection<Entity>> {
 
+    private static final int SINGLE_WAYPOINT_ZOOM_LEVEL = 10;
+
     private final JXMapViewer mapViewer;
 
     private LocationListener(JXMapViewer mapViewer) {
@@ -95,28 +100,36 @@ public final class CityEditPanel extends EntityEditPanel {
 
     @Override
     public void onEvent(Collection<Entity> cities) {
+      SwingUtilities.invokeLater(() -> paintWaypoints(cities));
+    }
+
+    private void paintWaypoints(Collection<Entity> cities) {
       paintWaypoints(cities.stream()
               .map(city -> city.get(City.LOCATION))
               .filter(Objects::nonNull)
-              .map(LocationListener::toGeoPosition)
               .collect(toSet()));
     }
 
-    private void paintWaypoints(Set<GeoPosition> positions) {
+    private void paintWaypoints(Set<Location> positions) {
+      Set<GeoPosition> geoPositions = positions.stream()
+              .map(LocationListener::toGeoPosition)
+              .collect(toSet());
       WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
-      overlayPainter.setWaypoints(positions.stream()
-              .map(position -> new DefaultWaypoint(position.getLatitude(), position.getLongitude()))
+      overlayPainter.setWaypoints(geoPositions.stream()
+              .map(DefaultWaypoint::new)
               .collect(toSet()));
-      if (positions.isEmpty()) {
+      if (geoPositions.isEmpty()) {
+        mapViewer.setZoom(MAX_ZOOM);
         mapViewer.repaint();
       }
-      else if (positions.size() == 1) {
-        mapViewer.setCenterPosition(positions.iterator().next());
-        mapViewer.setZoom(10);
+      else if (geoPositions.size() == 1) {
+        mapViewer.setZoom(0);
+        mapViewer.setCenterPosition(geoPositions.iterator().next());
+        mapViewer.setZoom(SINGLE_WAYPOINT_ZOOM_LEVEL);
       }
       else {
-        mapViewer.setZoom(1);
-        mapViewer.zoomToBestFit(positions, .9);
+        mapViewer.setZoom(0);
+        mapViewer.zoomToBestFit(geoPositions, .9);
       }
     }
 
