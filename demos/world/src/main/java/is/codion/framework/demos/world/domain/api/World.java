@@ -11,8 +11,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 
-import org.jxmapviewer.viewer.GeoPosition;
-
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.Objects;
@@ -35,7 +33,7 @@ public interface World {
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
     // tag::customType[]
-    Attribute<GeoPosition> LOCATION = TYPE.attribute("location", GeoPosition.class);
+    Attribute<Location> LOCATION = TYPE.attribute("location", Location.class);
     // end::customType[]
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
@@ -51,6 +49,36 @@ public interface World {
       return Objects.equals(get(City.ID), get(City.COUNTRY_FK).get(Country.CAPITAL));
     }
   }
+
+  // tag::customTypeClass[]
+  final class Location {
+
+    private final double latitude;
+    private final double longitude;
+
+    private Location(double latitude, double longitude) {
+      this.latitude = latitude;
+      this.longitude = longitude;
+    }
+
+    public static Location of(double latitude, double longitude) {
+      return new Location(latitude, longitude);
+    }
+
+    public double latitude() {
+      return latitude;
+    }
+
+    public double longitude() {
+      return longitude;
+    }
+
+    @Override
+    public String toString() {
+      return "[lat: " + latitude + ", lon: " + longitude + "]";
+    }
+  }
+  // end::customTypeClass[]
 
   // tag::colorProvider[]
   final class CityColorProvider implements ColorProvider {

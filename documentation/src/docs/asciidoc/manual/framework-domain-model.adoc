@@ -410,6 +410,11 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.jav
 
 [source,java,indent=0]
 ----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=customTypeClass]
+----
+
+[source,java,indent=0]
+----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnClass]
 ----
 
