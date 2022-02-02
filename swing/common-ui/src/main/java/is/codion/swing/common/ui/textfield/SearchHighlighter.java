@@ -88,7 +88,8 @@ public final class SearchHighlighter {
   public JTextField createSearchField() {
     final JTextField searchField = new JTextField(12);
     ComponentValues.textComponent(searchField).link(searchStringValue);
-    TextFieldHint.create(searchField, "Search");
+    //todo make this work somehow
+    //TextFieldHint.create(searchField, "Search");
     searchField.setComponentPopupMenu(Controls.builder()
             .control(ToggleControl.builder(caseSensitiveState)
                     .caption("Case-sensitive"))
