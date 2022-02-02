@@ -7,6 +7,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.demos.world.domain.api.World.Location;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -19,7 +20,6 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jxmapviewer.viewer.GeoPosition;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -85,7 +85,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   }
 
   private void fetchLocation(Entity city, JSONObject cityInformation) throws DatabaseException, ValidationException {
-    city.put(City.LOCATION, new GeoPosition(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
+    city.put(City.LOCATION, Location.of(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
     getEditModel().update(singletonList(city));
   }
 

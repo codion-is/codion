@@ -2,6 +2,7 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Location;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -97,6 +98,7 @@ public final class CityEditPanel extends EntityEditPanel {
       paintWaypoints(cities.stream()
               .map(city -> city.get(City.LOCATION))
               .filter(Objects::nonNull)
+              .map(LocationListener::toGeoPosition)
               .collect(toSet()));
     }
 
@@ -116,6 +118,10 @@ public final class CityEditPanel extends EntityEditPanel {
         mapViewer.setZoom(1);
         mapViewer.zoomToBestFit(positions, .9);
       }
+    }
+
+    private static GeoPosition toGeoPosition(final Location location) {
+      return new GeoPosition(location.latitude(), location.longitude());
     }
   }
 }

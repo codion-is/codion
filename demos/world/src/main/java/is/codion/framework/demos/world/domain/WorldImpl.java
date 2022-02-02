@@ -5,8 +5,6 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 
-import org.jxmapviewer.viewer.GeoPosition;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -245,20 +243,20 @@ public final class WorldImpl extends DefaultDomain implements World {
   }
 
   // tag::converter[]
-  private static final class LocationConverter implements ValueConverter<GeoPosition, String> {
+  private static final class LocationConverter implements ValueConverter<Location, String> {
 
     @Override
-    public String toColumnValue(GeoPosition geoPosition,
+    public String toColumnValue(Location geoPosition,
                                 Statement statement) throws SQLException {
       if (geoPosition == null) {
         return null;
       }
 
-      return "POINT (" + geoPosition.getLongitude() + " " + geoPosition.getLatitude() + ")";
+      return "POINT (" + geoPosition.longitude() + " " + geoPosition.latitude() + ")";
     }
 
     @Override
-    public GeoPosition fromColumnValue(String columnValue) throws SQLException {
+    public Location fromColumnValue(String columnValue) throws SQLException {
       if (columnValue == null) {
         return null;
       }
@@ -266,7 +264,7 @@ public final class WorldImpl extends DefaultDomain implements World {
       String[] latLon = columnValue.replace("POINT (", "")
               .replace(")", "").split(" ");
 
-      return new GeoPosition(parseDouble(latLon[1]), parseDouble(latLon[0]));
+      return Location.of(parseDouble(latLon[1]), parseDouble(latLon[0]));
     }
   }
   // end::converter[]
