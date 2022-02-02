@@ -267,6 +267,7 @@ abstract class AbstractHttpEntityConnectionTest {
     Clients.SERVER_HOST_NAME.set("localhost");
     Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.resolveTrustStore();
     Report.REPORT_PATH.set("report/path");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
@@ -289,6 +290,8 @@ abstract class AbstractHttpEntityConnectionTest {
     Clients.SERVER_HOST_NAME.set(null);
     Clients.TRUSTSTORE.set(null);
     Clients.TRUSTSTORE_PASSWORD.set(null);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
     Report.REPORT_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);

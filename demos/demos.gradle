@@ -61,7 +61,7 @@ task clientRMIScript(type: CreateStartScripts) {
             '-Dcodion.client.connectionType=remote',
             "-Dcodion.server.hostname=${serverHostName}",
             '-Djavax.net.ssl.trustStore=../config/truststore.jks',
-            '-Djavax.net.ssl.trustStorePassword=crappypass',
+            '-Dcodion.client.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -86,8 +86,8 @@ task loadTestRMIScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=remote',
             "-Dcodion.server.hostname=${serverHostName}",
-            '-Djavax.net.ssl.trustStore=../config/truststore.jks',
-            '-Djavax.net.ssl.trustStorePassword=crappypass',
+            '-Dcodion.client.trustStore=../config/truststore.jks',
+            '-Dcodion.client.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -141,8 +141,8 @@ task runClientRMI(type: JavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
+            'codion.client.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'             : 'true'
     ]
@@ -166,8 +166,8 @@ task runLoadTestRMI(type: JavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
+            'codion.client.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
 }
