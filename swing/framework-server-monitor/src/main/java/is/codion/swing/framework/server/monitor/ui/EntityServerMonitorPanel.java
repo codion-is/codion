@@ -250,7 +250,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public static void main(final String[] arguments) {
     UiManagerDefaults.initialize();
-    Clients.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
+    Clients.resolveTrustStore();
     SwingUtilities.invokeLater(() -> {
       try {
         UIManager.setLookAndFeel(LookAndFeelProvider.getSystemLookAndFeelClassName());

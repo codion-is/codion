@@ -99,7 +99,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   @Override
   protected EntityConnection connect() {
     if (!truststoreResolved) {
-      Clients.resolveTrustStoreFromClasspath(getClientTypeId());
+      Clients.resolveTrustStore();
       truststoreResolved = true;
     }
     try {

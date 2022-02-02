@@ -435,7 +435,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }
-    Clients.resolveTrustStoreFromClasspath(DefaultEntityServerAdmin.class.getSimpleName());
+    Clients.resolveTrustStore();
     try {
       final Registry registry = LocateRegistry.getRegistry(registryPort);
       final Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);

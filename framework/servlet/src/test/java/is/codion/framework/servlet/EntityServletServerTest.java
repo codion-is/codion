@@ -648,6 +648,7 @@ public class EntityServletServerTest {
     Clients.SERVER_HOST_NAME.set("localhost");
     Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.resolveTrustStore();
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
@@ -669,6 +670,8 @@ public class EntityServletServerTest {
     Clients.SERVER_HOST_NAME.set(null);
     Clients.TRUSTSTORE.set(null);
     Clients.TRUSTSTORE_PASSWORD.set(null);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
     ServerConfiguration.RMI_SERVER_HOSTNAME.set(null);
     ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);

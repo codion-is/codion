@@ -317,6 +317,7 @@ public class EntityServerTest {
     Clients.SERVER_HOST_NAME.set("localhost");
     Clients.TRUSTSTORE.set("src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.resolveTrustStore();
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.KEYSTORE.set("src/main/config/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");

@@ -85,6 +85,7 @@ public class RemoteEntityConnectionProviderTest {
     Clients.SERVER_HOST_NAME.set("localhost");
     Clients.TRUSTSTORE.set("../server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.resolveTrustStore();
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.KEYSTORE.set("../server/src/main/config/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");

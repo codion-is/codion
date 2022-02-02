@@ -39,8 +39,8 @@ applicationDistribution.from(files(
 }
 
 applicationDefaultJvmArgs = [
-        "-Djavax.net.ssl.trustStore=../config/truststore.jks",
-        "-Djavax.net.ssl.trustStorePassword=crappypass",
+        "-Dcodion.client.trustStore=../config/truststore.jks",
+        "-Dcodion.client.trustStorePassword=crappypass",
         "-Djava.security.policy=../config/all_permissions.policy",
         "-Dcodion.configurationFile=../config/server_monitor.config"
 ]
@@ -53,8 +53,8 @@ task runServerMonitor(type: ModularJavaExec) {
     systemProperties = [
             'codion.server.hostname'          : "${serverHostName}",
             'codion.server.admin.user'        : 'scott:tiger',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
+            'codion.client.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/config/logback.xml'
     ]
 }

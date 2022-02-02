@@ -50,7 +50,9 @@ public interface World {
   }
 
   // tag::customTypeClass[]
-  final class Location {
+  final class Location implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private final double latitude;
     private final double longitude;
@@ -75,6 +77,25 @@ public interface World {
     @Override
     public String toString() {
       return "[lat: " + latitude + ", lon: " + longitude + "]";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+      if (this == other) {
+        return true;
+      }
+      if (other == null || getClass() != other.getClass()) {
+        return false;
+      }
+      Location location = (Location) other;
+
+      return Double.compare(location.latitude, latitude) == 0
+              && Double.compare(location.longitude, longitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(latitude, longitude);
     }
   }
   // end::customTypeClass[]
