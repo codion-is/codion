@@ -37,6 +37,7 @@ public final class ProgressDialog extends JDialog {
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     progressBar = initializeProgressBar(indeterminate, stringPainted);
     initializeUI(northPanel, westPanel, buttonControls);
+    setLocationRelativeTo(dialogOwner);
   }
 
   /**
