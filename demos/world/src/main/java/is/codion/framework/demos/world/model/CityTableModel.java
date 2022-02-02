@@ -3,6 +3,7 @@ package is.codion.framework.demos.world.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
@@ -41,10 +42,12 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
   private final Event<Collection<Entity>> displayLocationEvent = Event.event();
+  private final State citiesWithoutLocationSelectedState = State.state();
 
   CityTableModel(EntityConnectionProvider connectionProvider) {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
     getSelectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
+    getSelectionModel().addSelectionChangedListener(this::updateCitiesWithoutLocationSelected);
     addRefreshSuccessfulListener(this::refreshChartDataset);
   }
 
@@ -54,6 +57,10 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   public void addDisplayLocationListener(EventDataListener<Collection<Entity>> listener) {
     displayLocationEvent.addDataListener(listener);
+  }
+
+  public StateObserver getCitiesWithoutLocationSelectedObserver() {
+    return citiesWithoutLocationSelectedState.getObserver();
   }
 
   public void fetchLocationForSelected(ProgressReporter<String> progressReporter,
@@ -99,6 +106,11 @@ public final class CityTableModel extends SwingEntityTableModel {
     chartDataset.clear();
     Entity.castTo(City.class, getVisibleItems())
             .forEach(city -> chartDataset.setValue(city.name(), city.population()));
+  }
+
+  private void updateCitiesWithoutLocationSelected() {
+    citiesWithoutLocationSelectedState.set(getSelectionModel().getSelectedItems().stream()
+            .anyMatch(city -> city.isNull(City.LOCATION)));
   }
 
   private static final class CityTableSortModel extends SwingEntityTableSortModel {

@@ -8,6 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.Components;
 
 import javax.swing.JComboBox;
@@ -159,6 +160,7 @@ public interface LookAndFeelProvider {
     }
 
     final JComboBox<Item<LookAndFeelProvider>> comboBox = Components.comboBox(comboBoxModel)
+            .completionMode(Completion.Mode.NONE)
             .mouseWheelScrolling(true)
             .build();
     final int option = JOptionPane.showOptionDialog(dialogOwner, comboBox, dialogTitle,

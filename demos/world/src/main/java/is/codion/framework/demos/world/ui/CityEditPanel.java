@@ -33,7 +33,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   private static final int MAX_ZOOM = 19;
 
-  private final CityTableModel tableModel;
+  private final JXMapKit mapKit;
 
   public CityEditPanel(SwingEntityEditModel editModel) {
     this(editModel, null);
@@ -41,7 +41,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   CityEditPanel(SwingEntityEditModel editModel, final CityTableModel tableModel) {
     super(editModel);
-    this.tableModel = tableModel;
+    this.mapKit = tableModel == null ? null : initializeMapKit(tableModel);
   }
 
   @Override
@@ -61,20 +61,20 @@ public final class CityEditPanel extends EntityEditPanel {
     inputPanel.add(createInputPanel(City.POPULATION));
 
     JPanel inputBasePanel = new JPanel();
-    if (tableModel == null) {
+    if (mapKit == null) {
       inputBasePanel.setLayout(borderLayout());
       inputBasePanel.add(inputPanel, BorderLayout.NORTH);
     }
     else {
       inputBasePanel.setLayout(gridLayout(1, 2));
       inputBasePanel.add(inputPanel);
-      inputBasePanel.add(initializeMapKit(), BorderLayout.CENTER);
+      inputBasePanel.add(mapKit, BorderLayout.CENTER);
     }
     setLayout(borderLayout());
     add(inputBasePanel, BorderLayout.CENTER);
   }
 
-  private JXMapKit initializeMapKit() {
+  private static JXMapKit initializeMapKit(final CityTableModel tableModel) {
     JXMapKit mapKit = new JXMapKit();
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
     mapKit.setMiniMapVisible(false);
