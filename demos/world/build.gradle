@@ -18,7 +18,8 @@ dependencies {
     runtimeOnly project(':codion-framework-db-rmi')
     runtimeOnly project(':codion-framework-db-http')
 
-    implementation 'com.formdev:flatlaf:2.0.1'
+    implementation "com.formdev:flatlaf:${flatLafVersion}"
+    implementation "com.formdev:flatlaf-intellij-themes:${flatLafVersion}"
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
