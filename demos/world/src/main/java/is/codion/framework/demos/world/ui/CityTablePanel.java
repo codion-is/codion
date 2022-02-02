@@ -25,8 +25,11 @@ import static org.jfree.chart.ChartFactory.createPieChart;
 
 final class CityTablePanel extends EntityTablePanel {
 
+  private final CityTableModel cityTableModel;
+
   CityTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    this.cityTableModel = (CityTableModel) tableModel;
   }
 
   @Override
@@ -34,7 +37,7 @@ final class CityTablePanel extends EntityTablePanel {
     JPanel tableViewPanel = new JPanel(new BorderLayout());
     tableViewPanel.add(tablePanel, BorderLayout.CENTER);
     tableViewPanel.add(southPanel, BorderLayout.SOUTH);
-    ChartPanel cityChartPanel = createChartPanel("Cities", ((CityTableModel) getTableModel()).getChartDataset());
+    ChartPanel cityChartPanel = createChartPanel("Cities", cityTableModel.getChartDataset());
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.addTab("Table", tableViewPanel);
     tabbedPane.addTab("Chart", cityChartPanel);
@@ -52,12 +55,12 @@ final class CityTablePanel extends EntityTablePanel {
   private Control createFetchLocationControl() {
     return Control.builder(this::fetchLocation)
             .caption("Fetch location")
-            .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
+            .enabledState(cityTableModel.getCitiesWithoutLocationSelectedObserver())
             .build();
   }
 
   private void fetchLocation() {
-    FetchLocationTask fetchLocationTask = new FetchLocationTask((CityTableModel) getTableModel());
+    FetchLocationTask fetchLocationTask = new FetchLocationTask(cityTableModel);
 
     Dialogs.progressWorkerDialog(fetchLocationTask)
             .owner(this)
