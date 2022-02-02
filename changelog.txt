@@ -7654,3 +7654,4 @@
   ColumnConditionPanel.initializeUI(), removed single pixel empty border buffer
   SwingEntityTableModel.getColor() added, parses and caches colors from hex strings
   Clients.resolveTrustStoreFromClasspath() renamed resolveTrustStore(), now uses sslcontext-kickstart library to combine the specified client truststore with the default system truststore, otherwise the ssl context is messed up and https calls fail, for example
+  SearchHighlighter text field hint was triggering search, so commented out for now
