@@ -50,7 +50,9 @@ public interface World {
   }
 
   // tag::customTypeClass[]
-  final class Location {
+  final class Location implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private final double latitude;
     private final double longitude;
