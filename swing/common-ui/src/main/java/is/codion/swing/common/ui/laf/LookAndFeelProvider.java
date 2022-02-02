@@ -8,6 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.Components;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -154,12 +155,14 @@ public interface LookAndFeelProvider {
     final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
     currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
     if (changeDuringSelection) {
-      comboBoxModel.addSelectionListener(lookAndFeelProvider ->
-              SwingUtilities.invokeLater(() -> enableLookAndFeel(lookAndFeelProvider.getValue())));
+      comboBoxModel.addSelectionListener(lookAndFeelProvider -> enableLookAndFeel(lookAndFeelProvider.getValue()));
     }
 
-    final int option = JOptionPane.showOptionDialog(dialogOwner, new JComboBox<>(comboBoxModel),
-            dialogTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+    final JComboBox<Item<LookAndFeelProvider>> comboBox = Components.comboBox(comboBoxModel)
+            .mouseWheelScrolling(true)
+            .build();
+    final int option = JOptionPane.showOptionDialog(dialogOwner, comboBox, dialogTitle,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
     final LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
     if (option == JOptionPane.OK_OPTION) {
       if (currentLookAndFeel.get().getValue() != selectedLookAndFeel) {

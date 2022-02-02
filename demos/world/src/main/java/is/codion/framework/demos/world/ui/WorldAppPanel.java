@@ -19,11 +19,12 @@ import is.codion.swing.framework.ui.EntityTablePanel.ColumnSelection;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.Dimension;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,8 +66,9 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    addLookAndFeelProvider(LookAndFeelProvider.create(FlatLightLaf.class.getName(), FlatLightLaf::setup));
-    addLookAndFeelProvider(LookAndFeelProvider.create(FlatDarkLaf.class.getName(), FlatDarkLaf::setup));
+    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
+            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
+    LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
