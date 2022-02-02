@@ -7623,3 +7623,4 @@
   SearchHighlighter text field hint was triggering search, so commented out for now
   ProgressDialog bug fixed, did not set location relative to dialog owner
   LookAndFeelProvider.selectLookAndFeel() combo box now with mouse scrolling
+  LookAndFeelProvider.selectLookAndFeel() combo box no longer with completion enabled
