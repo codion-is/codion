@@ -84,15 +84,18 @@ public interface World {
 
     private static final long serialVersionUID = 1;
 
+    private static final String YELLOW = "#ffff00";
+    private static final String GREEN = "#00ff00";
+
     @Override
     public Object getColor(Entity cityEntity, Attribute<?> attribute) {
       if (attribute.equals(City.POPULATION) &&
               cityEntity.get(City.POPULATION) > 1_000_000) {
-        return "#ffff00";
+        return YELLOW;
       }
       City city = cityEntity.castTo(City.class);
       if (attribute.equals(City.NAME) && city.isCapital()) {
-        return "#00ff00";
+        return GREEN;
       }
 
       return null;
