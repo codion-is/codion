@@ -48,6 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -76,6 +77,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * If true then querying should be disabled if no condition is specified
    */
   private final State queryConditionRequiredState = State.state();
+
+  /**
+   * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
+   */
+  private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
 
   /**
    * The maximum number of rows this table model accepts from a query.
@@ -414,12 +420,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   public Color getBackgroundColor(final int row, final Attribute<?> attribute) {
-    return (Color) getEntityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
+    final Object color = getEntityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
+
+    return color == null ? null : getColor(color);
   }
 
   @Override
   public Color getForegroundColor(final int row, final Attribute<?> attribute) {
-    return (Color) getEntityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
+    final Object color = getEntityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
+
+    return color == null ? null : getColor(color);
   }
 
   @Override
@@ -686,6 +696,29 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
 
     return entity.get(attribute);
+  }
+
+  /**
+   * Returns a {@link java.awt.Color} instance from the given Object.
+   * {@link java.awt.Color} instances are returned as-is, but instances of
+   * {@link java.lang.String} are assumed to be in HEX format (f.ex: #ffff00" or #00ff00)
+   * and are parsed with {@link Color#decode(String)}. Colors parsed from Strings are cached.
+   * Override to support other representations.
+   * @param color the object representing the color.
+   * @return a {@link java.awt.Color} instance based on the given Object
+   * @throws IllegalArgumentException in case the representation is not supported
+   * @throws NullPointerException in case color is null
+   */
+  protected Color getColor(final Object color) {
+    requireNonNull(color);
+    if (color instanceof Color) {
+      return (Color) color;
+    }
+    if (color instanceof String) {
+      return colorCache.computeIfAbsent((String) color, Color::decode);
+    }
+
+    throw new IllegalArgumentException("Unsupported Color representation: " + color);
   }
 
   @Override

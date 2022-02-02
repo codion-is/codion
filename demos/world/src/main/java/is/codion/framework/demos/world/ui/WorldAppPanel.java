@@ -32,7 +32,7 @@ import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
-  private WorldAppPanel() {
+  public WorldAppPanel() {
     super("World");
   }
 

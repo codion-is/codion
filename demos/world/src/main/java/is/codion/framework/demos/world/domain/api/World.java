@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -89,11 +88,11 @@ public interface World {
     public Object getColor(Entity cityEntity, Attribute<?> attribute) {
       if (attribute.equals(City.POPULATION) &&
               cityEntity.get(City.POPULATION) > 1_000_000) {
-        return Color.YELLOW;
+        return "#ffff00";
       }
       City city = cityEntity.castTo(City.class);
       if (attribute.equals(City.NAME) && city.isCapital()) {
-        return Color.GREEN;
+        return "#00ff00";
       }
 
       return null;

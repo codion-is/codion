@@ -7652,3 +7652,4 @@
   EntityTablePanel, tooltips disable for south panel components, tend to get in the way when clicking buttons when the window is maximized
   EntityTablePanel, print control handling improved a bit
   ColumnConditionPanel.initializeUI(), removed single pixel empty border buffer
+  SwingEntityTableModel.getColor() added, parses and caches colors from hex strings

@@ -179,7 +179,7 @@ public final class TestDomain extends DefaultDomain {
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return CYAN;
+                return "#00ff00";//Color.GREEN
               }
 
               return null;

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
+import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -188,6 +189,16 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(Boolean.class, testModel.getColumnClass(5));
     assertEquals(Boolean.class, testModel.getColumnClass(6));
     assertEquals(Entity.class, testModel.getColumnClass(7));
+  }
+
+  @Test
+  void backgroundColor() {
+    final SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
+    final ColumnConditionModel<Attribute<String>, String> nameConditionModel =
+            employeeTableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_NAME);
+    nameConditionModel.setEqualValue("BLAKE");
+    employeeTableModel.refresh();
+    assertEquals(Color.GREEN, employeeTableModel.getBackgroundColor(0, TestDomain.EMP_JOB));
   }
 
   @Test
