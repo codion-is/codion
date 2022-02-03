@@ -7626,3 +7626,4 @@
   LookAndFeelProvider.selectLookAndFeel() combo box no longer with completion enabled
   H2 database upgraded to 2.1.210, demo schema definitions and domain models updated accordingly
   EntityEditPanel, minor refactoring in insert, update and delete
+  ComponentDialogBuilder, OkCancelDialogBuilder.onShown(JDialog) added
