@@ -872,7 +872,7 @@ public final class FXUiUtil {
    */
   public static void showExceptionDialog(final Throwable exception) {
     final Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle(Messages.get(Messages.EXCEPTION));
+    alert.setTitle(Messages.get(Messages.ERROR));
     alert.setHeaderText(exception.getClass().getSimpleName());
     alert.setContentText(exception.getMessage());
 

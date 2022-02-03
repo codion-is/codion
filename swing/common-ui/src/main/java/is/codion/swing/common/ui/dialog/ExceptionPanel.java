@@ -149,7 +149,7 @@ final class ExceptionPanel extends JPanel {
   }
 
   private JPanel createNorthPanel() {
-    final JLabel label = new JLabel(Messages.get(Messages.EXCEPTION) + ": ");
+    final JLabel label = new JLabel(Messages.get(Messages.ERROR) + ": ");
     label.setHorizontalAlignment(SwingConstants.LEFT);
     detailPanel.add(label);
     detailPanel.add(exceptionField);

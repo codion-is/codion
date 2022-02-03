@@ -485,7 +485,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       catch (final ValidationException e) {
         invalidAttribute.set(e.getAttribute());
         JOptionPane.showMessageDialog(component, e.getMessage(),
-                Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
+                Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
       }
       catch (final Exception e) {
         DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(component));
