@@ -15,6 +15,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -138,11 +139,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
         final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-          throw new NullValidationException(property.getAttribute(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property.getCaption());
+          throw new NullValidationException(property.getAttribute(),
+                  MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.getCaption()));
         }
       }
       else {
-        throw new NullValidationException(property.getAttribute(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property.getCaption());
+        throw new NullValidationException(property.getAttribute(),
+                MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.getCaption()));
       }
     }
   }

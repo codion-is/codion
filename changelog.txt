@@ -7666,3 +7666,4 @@
   ValueObserver now extends Supplier
   CalendarPanel now uses onShown to request current day button focus, instead of initial focus hack
   ExceptionDialog renamed ExceptionPanel, refactored
+  Exception messages improved a bit

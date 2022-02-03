@@ -139,7 +139,7 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
       else {
         new DefaultExceptionDialogBuilder()
                 .owner(owner)
-                .message(Messages.get(Messages.EXCEPTION))
+                .message(Messages.get(Messages.ERROR))
                 .show(exception);
       }
     }
