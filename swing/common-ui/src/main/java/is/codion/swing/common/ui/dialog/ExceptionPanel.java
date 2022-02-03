@@ -4,6 +4,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyStore;
 import is.codion.common.state.State;
@@ -11,7 +14,6 @@ import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -19,7 +21,6 @@ import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,8 +32,6 @@ import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,16 +46,17 @@ import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 /**
  * A JDialog for displaying information on exceptions.
  */
-final class ExceptionDialog extends JDialog {
+final class ExceptionPanel extends JPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionDialog.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionPanel.class.getName());
 
   /**
    * Specifies whether an ExceptionDialog should display system properties in the detail panel<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES = Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties", true);
+  public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
+          Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties", true);
 
   private static final int DESCRIPTION_LABEL_WIDTH = 250;
   private static final int MESSAGE_LABEL_WIDTH = 50;
@@ -67,8 +67,6 @@ final class ExceptionDialog extends JDialog {
   private static final int ICON_TEXT_GAP = 10;
   private static final int TAB_SIZE = 4;
 
-  //ui components
-  private final Window parentWindow;
   private final JTextField exceptionField;
   private final JTextArea messageArea;
   private final JTextArea detailsArea;
@@ -80,14 +78,9 @@ final class ExceptionDialog extends JDialog {
   private final JPanel centerPanel;
 
   private final State showDetailsState = State.state();
+  private final Event<?> closeEvent = Event.event();
 
-  /**
-   * Instantiates a new ExceptionDialog with the given window as parent
-   * @param parentWindow the dialog parent
-   */
-  ExceptionDialog(final Window parentWindow) {
-    super(parentWindow);
-    this.parentWindow = parentWindow;
+  ExceptionPanel(final Throwable throwable, final String message) {
     exceptionField = new JTextField();
     exceptionField.setEnabled(false);
     messageArea = new JTextArea();
@@ -99,8 +92,6 @@ final class ExceptionDialog extends JDialog {
     detailsArea = new JTextArea();
     detailsArea.setTabSize(TAB_SIZE);
     detailsArea.setEditable(false);
-    detailsArea.setLineWrap(true);
-    detailsArea.setWrapStyleWord(true);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
     Sizes.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
     descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
@@ -124,8 +115,17 @@ final class ExceptionDialog extends JDialog {
             .rowsColumns(2, 2)
             .fixedRowHeight(exceptionField.getPreferredSize().height)
             .build());
-    bindEvents();
+    showDetailsState.addDataListener(this::initializeDetailView);
     initializeUI();
+    setException(throwable, message);
+  }
+
+  void addDetailsListener(final EventDataListener<Boolean> detailsListener) {
+    showDetailsState.addDataListener(detailsListener);
+  }
+
+  public EventObserver<?> getCloseObserver() {
+    return closeEvent.getObserver();
   }
 
   private void initializeUI() {
@@ -135,13 +135,8 @@ final class ExceptionDialog extends JDialog {
     basePanel.add(centerPanel, BorderLayout.CENTER);
     basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
-    getContentPane().setLayout(borderLayout());
-    getContentPane().add(basePanel, BorderLayout.CENTER);
-  }
-
-  private void bindEvents() {
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    showDetailsState.addDataListener(this::initializeDetailView);
+    setLayout(borderLayout());
+    add(basePanel, BorderLayout.CENTER);
   }
 
   private void initializeDetailView(final boolean show) {
@@ -150,14 +145,7 @@ final class ExceptionDialog extends JDialog {
     copyButton.setVisible(show);
     detailPanel.setVisible(show);
     centerPanel.setVisible(show);
-    pack();
     detailPanel.revalidate();
-    if (parentWindow != null && parentWindow.isVisible()) {
-      positionOverFrame();
-    }
-    else {
-      Windows.centerWindow(this);
-    }
   }
 
   private JPanel createNorthPanel() {
@@ -192,10 +180,9 @@ final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    final Control closeControl = Control.builder(this::dispose)
+    final Control closeControl = Control.builder(closeEvent::onEvent)
             .caption(MESSAGES.getString("close"))
             .description(MESSAGES.getString("close_dialog"))
-            .mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
             .build();
     final ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
             .caption(MESSAGES.getString("details"))
@@ -205,12 +192,12 @@ final class ExceptionDialog extends JDialog {
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
             .action(closeControl)
-            .enable(getRootPane());
+            .enable(this);
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .onKeyPressed()
             .action(closeControl)
-            .enable(getRootPane());
+            .enable(this);
 
     final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
     rightButtonPanel.add(copyButton);
@@ -228,28 +215,7 @@ final class ExceptionDialog extends JDialog {
     return baseButtonPanel;
   }
 
-  private void positionOverFrame() {
-    final Point p = getOwner().getLocation();
-    final Dimension d = getOwner().getSize();
-
-    p.x += (d.width - getWidth()) >> 1;
-    p.y += (d.height - getHeight()) >> 1;
-
-    if (p.x < 0) {
-      p.x = 0;
-    }
-
-    if (p.y < 0) {
-      p.y = 0;
-    }
-
-    setLocation(p);
-  }
-
-  ExceptionDialog showForThrowable(final Throwable throwable, final String title, final String message, final boolean modal) {
-    setModal(modal);
-    setTitle(title);
-
+  void setException(final Throwable throwable, final String message) {
     final String name = throwable.getClass().getSimpleName();
     descriptionLabel.setText(message == null ? name : truncateMessage(message));
     descriptionLabel.setToolTipText(message);
@@ -271,9 +237,6 @@ final class ExceptionDialog extends JDialog {
 
     detailsArea.setCaretPosition(0);
     initializeDetailView(false);
-    setVisible(true);
-
-    return this;
   }
 
   private void saveDetails() throws IOException {
