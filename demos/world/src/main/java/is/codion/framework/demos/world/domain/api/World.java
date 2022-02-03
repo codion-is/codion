@@ -35,7 +35,7 @@ public interface World {
     Attribute<Location> LOCATION = TYPE.attribute("location", Location.class);
     // end::customType[]
 
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country", City.COUNTRY_CODE, Country.CODE);
 
     String name();
     int population();

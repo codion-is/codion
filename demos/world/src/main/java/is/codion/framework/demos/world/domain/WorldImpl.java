@@ -44,8 +44,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(35),
             columnProperty(City.COUNTRY_CODE)
                     .nullable(false),
-            foreignKeyProperty(City.COUNTRY_FK, "Country")
-                    .beanProperty("country"),
+            foreignKeyProperty(City.COUNTRY_FK, "Country"),
             columnProperty(City.DISTRICT, "District")
                     .nullable(false)
                     .maximumLength(20),
