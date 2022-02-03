@@ -27,7 +27,7 @@ import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinoo
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
@@ -50,7 +50,7 @@ public final class EntitiesTutorial {
     public interface Artist {
       EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("artistid");
+      Attribute<Long> ID = TYPE.longAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
 
@@ -59,9 +59,9 @@ public final class EntitiesTutorial {
     public interface Album {
       EntityType TYPE = DOMAIN.entityType("chinook.album");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("albumid");
+      Attribute<Long> ID = TYPE.longAttribute("albumid");
       Attribute<String> TITLE = TYPE.stringAttribute("title");
-      Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
+      Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
 
       // create a foreign key attribute referencing the Artist.TYPE, via the Album.ARTIST_ID attribute
       ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
@@ -74,7 +74,7 @@ public final class EntitiesTutorial {
       //a fluent call chain in the *define* methods parameter list.
 
       // create properties for the columns in the table 'chinook.artist'
-      Property.Builder<Integer, ?> artistId = primaryKeyProperty(Artist.ID);
+      Property.Builder<Long, ?> artistId = primaryKeyProperty(Artist.ID);
 
       Property.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name");
 
@@ -83,19 +83,19 @@ public final class EntitiesTutorial {
       // define an entity based on the table 'chinook.artist',
       // with the above properties
       define(Artist.TYPE, artistId, artistName)
-              .keyGenerator(automatic("chinook.artist"))
+              .keyGenerator(identity())
               .stringFactory(stringFactory(Artist.NAME))
               .smallDataset()
               .caption("Artist");
 
       // create properties for the columns in the table 'chinook.album'
-      Property.Builder<Integer, ?> albumId = primaryKeyProperty(Album.ID);
+      Property.Builder<Long, ?> albumId = primaryKeyProperty(Album.ID);
 
       Property.Builder<String, ?> albumTitle = columnProperty(Album.TITLE, "Title");
 
       albumTitle.nullable(false).maximumLength(160);
 
-      Property.Builder<Integer, ?> albumArtistId = columnProperty(Album.ARTIST_ID);
+      Property.Builder<Long, ?> albumArtistId = columnProperty(Album.ARTIST_ID);
 
       albumId.nullable(false);
 
@@ -105,7 +105,7 @@ public final class EntitiesTutorial {
       // define an entity based on the table 'chinook.album',
       // with the above properties
       define(Album.TYPE, albumId, albumTitle, albumArtistId, albumArtist)
-              .keyGenerator(automatic("chinook.album"))
+              .keyGenerator(identity())
               .stringFactory(stringFactory()
                       .value(Album.ARTIST_FK)
                       .text(" - ")

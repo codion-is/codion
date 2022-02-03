@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
@@ -37,7 +37,7 @@ public final class Store extends DefaultDomain {
   public interface Address {
     EntityType TYPE = STORE.entityType("store.address");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
     Attribute<Boolean> VALID = TYPE.booleanAttribute("valid");
@@ -56,9 +56,9 @@ public final class Store extends DefaultDomain {
   public interface CustomerAddress {
     EntityType TYPE = STORE.entityType("store.customer_address");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
-    Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
+    Attribute<Long> ADDRESS_ID = TYPE.longAttribute("address_id");
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
     ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", CustomerAddress.ADDRESS_ID, Address.ID);
@@ -103,7 +103,7 @@ public final class Store extends DefaultDomain {
                     .columnHasDefaultValue().nullable(false))
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))
-            .keyGenerator(automatic("store.address"))
+            .keyGenerator(identity())
             .smallDataset()
             .caption("Address");
     // end::address[]
@@ -119,7 +119,7 @@ public final class Store extends DefaultDomain {
             columnProperty(CustomerAddress.ADDRESS_ID)
                     .nullable(false),
             foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address"))
-            .keyGenerator(automatic("store.customer_address"))
+            .keyGenerator(identity())
             .caption("Customer address");
     // end::customerAddress[]
   }

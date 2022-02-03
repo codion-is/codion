@@ -107,7 +107,7 @@ public final class ChinookLoginProxy implements LoginProxy {
     private static final DomainType DOMAIN = domainType(Authentication.class);
 
     interface User {
-      EntityType TYPE = DOMAIN.entityType("chinook.user");
+      EntityType TYPE = DOMAIN.entityType("chinook.users");
       Attribute<Integer> ID = TYPE.integerAttribute("userid");
       Attribute<String> USERNAME = TYPE.stringAttribute("username");
       Attribute<Integer> PASSWORD_HASH = TYPE.integerAttribute("passwordhash");
