@@ -77,6 +77,7 @@ public final class CityTableModel extends SwingEntityTableModel {
       fetchLocation(city);
       updatedCities.add(city);
       progressReporter.setProgress(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
+      displayLocationEvent.onEvent(singletonList(city));
     }
     displayLocationEvent.onEvent(getSelectionModel().getSelectedItems());
   }

@@ -90,7 +90,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   private static final class LocationListener implements EventDataListener<Collection<Entity>> {
 
-    private static final int SINGLE_WAYPOINT_ZOOM_LEVEL = 10;
+    private static final int SINGLE_WAYPOINT_ZOOM_LEVEL = 15;
 
     private final JXMapViewer mapViewer;
 
