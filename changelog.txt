@@ -7628,3 +7628,4 @@
   EntityEditPanel, minor refactoring in insert, update and delete
   ComponentDialogBuilder, OkCancelDialogBuilder.onShown(JDialog) added
   DefaultComponentDialogBuilder.createDialog() added, used in DefaultOkCancelDialogBuilder
+  EntityPanelBuilder.InsertEntityAction now handles validation errors during insert by setting the focus on the correct input field

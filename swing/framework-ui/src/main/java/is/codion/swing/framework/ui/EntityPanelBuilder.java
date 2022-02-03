@@ -4,24 +4,31 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.i18n.Messages;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.WaitCursor;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -392,6 +399,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private final class InsertEntityAction extends AbstractAction {
 
+    private static final int BORDER = 10;
+
     private final JComponent component;
     private final EntityConnectionProvider connectionProvider;
     private final EventDataListener<List<Entity>> insertListener;
@@ -429,23 +438,28 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
       final EntityEditPanel editPanel = buildEditPanel(connectionProvider);
       editPanel.initializePanel();
+      editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
       editPanel.getEditModel().addAfterInsertListener(inserted -> {
         this.insertedEntities.clear();
         this.insertedEntities.addAll(inserted);
       });
-      final JOptionPane optionPane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-      final JDialog dialog = optionPane.createDialog(component, getCaption() == null ?
-              connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption());
-      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      Utilities.addInitialFocusHack(editPanel, Control.control(editPanel::requestInitialFocus));
+      final State cancelled = State.state();
+      final Value<Attribute<?>> invalidAttribute = Value.value();
+      final JDialog dialog = Dialogs.okCancelDialog(editPanel)
+              .owner(component)
+              .title(getCaption() == null ? connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption())
+              .onShown(dlg -> invalidAttribute.toOptional()
+                      .ifPresent(editPanel::requestComponentFocus))
+              .onCancel(() -> cancelled.set(true))
+              .build();
       try {
         boolean insertPerformed = false;
         while (!insertPerformed) {
           dialog.setVisible(true);
-          if (optionPane.getValue() == null || !optionPane.getValue().equals(JOptionPane.OK_OPTION)) {
+          if (cancelled.get()) {
             return;//cancelled
           }
-          insertPerformed = editPanel.insert();
+          insertPerformed = insert(editPanel.getEditModel(), invalidAttribute);
           if (insertPerformed && !insertedEntities.isEmpty()) {
             insertListener.onEvent(insertedEntities);
           }
@@ -454,6 +468,30 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       finally {
         component.requestFocusInWindow();
       }
+    }
+
+    private boolean insert(final SwingEntityEditModel editModel, final Value<Attribute<?>> invalidAttribute) {
+      try {
+        WaitCursor.show(component);
+        try {
+          editModel.insert();
+
+          return true;
+        }
+        finally {
+          WaitCursor.hide(component);
+        }
+      }
+      catch (final ValidationException e) {
+        invalidAttribute.set(e.getAttribute());
+        JOptionPane.showMessageDialog(component, e.getMessage(),
+                Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
+      }
+      catch (final Exception e) {
+        DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(component));
+      }
+
+      return false;
     }
 
     private void addShortcutKey() {
