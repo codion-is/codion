@@ -129,7 +129,7 @@ public final class CityEditPanel extends EntityEditPanel {
       }
       else {
         mapViewer.setZoom(0);
-        mapViewer.zoomToBestFit(geoPositions, .9);
+        mapViewer.zoomToBestFit(geoPositions, 1);
       }
     }
 

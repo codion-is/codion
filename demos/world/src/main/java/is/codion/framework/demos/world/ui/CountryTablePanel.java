@@ -19,8 +19,6 @@ import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 final class CountryTablePanel extends EntityTablePanel {
 
-  private static final String COUNTRY_REPORT = "Country report";
-
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setControl(ControlCode.PRINT_TABLE, Control.builder(this::viewCountryReport)
@@ -36,6 +34,7 @@ final class CountryTablePanel extends EntityTablePanel {
 
   private void viewCountryReport() throws Exception {
     Dialogs.progressWorkerDialog(this::fillCountryReport)
+            .owner(this)
             .indeterminate(false)
             .stringPainted(true)
             .onSuccess(this::viewReport)
@@ -50,7 +49,7 @@ final class CountryTablePanel extends EntityTablePanel {
     Dialogs.componentDialog(new JRViewer(countryReport))
             .owner(this)
             .modal(false)
-            .title(COUNTRY_REPORT)
+            .title("Country report")
             .size(new Dimension(800, 600))
             .show();
   }

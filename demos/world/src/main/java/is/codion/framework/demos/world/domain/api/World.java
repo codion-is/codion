@@ -39,6 +39,8 @@ public interface World {
 
     String name();
     int population();
+    Country country();
+    void location(Location location);
 
     default boolean isInCountry(Entity country) {
       return country != null && Objects.equals(get(COUNTRY_FK), country);
@@ -72,7 +74,7 @@ public interface World {
 
     @Override
     public String toString() {
-      return "[lat: " + latitude + ", lon: " + longitude + "]";
+      return "[" + latitude + ", " + longitude + "]";
     }
 
     @Override
@@ -121,8 +123,7 @@ public interface World {
   // end::colorProvider[]
 
   // tag::validator[]
-  final class CityValidator
-          extends DefaultEntityValidator implements Serializable {
+  final class CityValidator extends DefaultEntityValidator implements Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -193,8 +194,7 @@ public interface World {
   }
 
   // tag::derivedPropertyProvider[]
-  final class NoOfSpeakersProvider
-          implements DerivedProperty.Provider<Integer> {
+  final class NoOfSpeakersProvider implements DerivedProperty.Provider<Integer> {
 
     private static final long serialVersionUID = 1;
 

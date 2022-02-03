@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static org.jfree.chart.ChartFactory.createPieChart;
 
 final class CountryLanguageTablePanel extends EntityTablePanel {
@@ -23,14 +24,14 @@ final class CountryLanguageTablePanel extends EntityTablePanel {
 
   @Override
   protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    JPanel tableViewPanel = new JPanel(new BorderLayout());
+    JPanel tableViewPanel = new JPanel(borderLayout());
     tableViewPanel.add(tablePanel, BorderLayout.CENTER);
     tableViewPanel.add(southPanel, BorderLayout.SOUTH);
     ChartPanel cityChartPanel = createChartPanel("Languages", ((CountryLanguageTableModel) getTableModel()).getChartDataset());
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.addTab("Table", tableViewPanel);
     tabbedPane.addTab("Chart", cityChartPanel);
-    setLayout(new BorderLayout());
+    setLayout(borderLayout());
     add(tabbedPane, BorderLayout.CENTER);
   }
 

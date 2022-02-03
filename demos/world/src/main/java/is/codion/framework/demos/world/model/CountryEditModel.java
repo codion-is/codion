@@ -30,7 +30,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
     return comboBoxModel;
   }
 
-  public ValueObserver<Double> getAvarageCityPopulationValue() {
+  public ValueObserver<Double> getAverageCityPopulationValue() {
     return averageCityPopulationObserver;
   }
 
