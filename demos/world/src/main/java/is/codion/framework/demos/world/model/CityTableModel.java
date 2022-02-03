@@ -92,7 +92,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   }
 
   private void fetchLocation(Entity city, JSONObject cityInformation) throws DatabaseException, ValidationException {
-    city.put(City.LOCATION, Location.of(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
+    city.put(City.LOCATION, new Location(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
     getEditModel().update(singletonList(city));
   }
 
