@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 
+import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
 import static java.util.Objects.requireNonNull;
@@ -40,8 +41,18 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   }
 
   private void displayException(final Throwable exception) {
-    new ExceptionDialog(owner).showForThrowable(exception,
-            title == null ? Messages.get(Messages.EXCEPTION) : title,
-            message == null ? exception.getMessage() : message, true).dispose();
+    final ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
+
+    final JDialog dialog = Dialogs.componentDialog(exceptionPanel)
+            .title(title == null ? Messages.get(Messages.EXCEPTION) : title)
+            .owner(owner)
+            .closeEvent(exceptionPanel.getCloseObserver())
+            .build();
+    exceptionPanel.addDetailsListener(details -> {
+      dialog.pack();
+      dialog.setLocationRelativeTo(owner);
+    });
+
+    dialog.setVisible(true);
   }
 }

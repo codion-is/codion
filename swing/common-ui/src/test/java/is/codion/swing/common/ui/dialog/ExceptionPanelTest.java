@@ -5,10 +5,10 @@ package is.codion.swing.common.ui.dialog;
 
 import org.junit.jupiter.api.Test;
 
-public final class ExceptionDialogTest {
+public final class ExceptionPanelTest {
 
   @Test
   void test() {
-    new ExceptionDialog(null);
+    new ExceptionPanel(new Exception("Exception"), "Title");
   }
 }

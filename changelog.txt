@@ -7631,3 +7631,4 @@
   EntityPanelBuilder.InsertEntityAction now handles validation errors during insert by setting the focus on the correct input field
   ValueObserver now extends Supplier
   CalendarPanel now uses onShown to request current day button focus, instead of initial focus hack
+  ExceptionDialog renamed ExceptionPanel, refactored
