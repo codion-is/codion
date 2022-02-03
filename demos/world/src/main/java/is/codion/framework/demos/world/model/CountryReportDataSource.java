@@ -65,7 +65,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
         case SURFACEAREA: return country.surfacearea();
         case POPULATION: return country.population();
         default:
-          throw new IllegalArgumentException("Unknow field: " + field.getName());
+          throw new IllegalArgumentException("Unknown field: " + field.getName());
       }
     }
   }
@@ -82,7 +82,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
         case NAME: return city.name();
         case POPULATION: return city.population();
         default:
-          throw new IllegalArgumentException("Unknow field: " + field.getName());
+          throw new IllegalArgumentException("Unknown field: " + field.getName());
       }
     }
   }
@@ -100,7 +100,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     }
 
     @Override
-    public void accept(final Entity country) {
+    public void accept(Entity country) {
       progressReporter.publish(country.get(Country.NAME));
       progressReporter.setProgress(100 * counter.incrementAndGet() / noOfCountries);
     }

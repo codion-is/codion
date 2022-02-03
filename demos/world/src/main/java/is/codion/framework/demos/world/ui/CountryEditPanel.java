@@ -52,21 +52,19 @@ final class CountryEditPanel extends EntityEditPanel {
             .preferredWidth(120)
             .build();
     //create a panel with a button for adding a new city
-    JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
-            EntityPanel.builder(City.TYPE)
-                    .editPanelClass(CityEditPanel.class)
-                    .editPanelInitializer(this::initializeCapitalEditPanel)
-                    .createEditPanelAction(capitalComboBox));
+    JPanel capitalPanel = createEastButtonPanel(capitalComboBox, EntityPanel.builder(City.TYPE)
+            .editPanelClass(CityEditPanel.class)
+            .editPanelInitializer(this::initializeCapitalEditPanel)
+            .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
-    DoubleField averageCityPopulationField =
-            Components.doubleField()
-                    .maximumFractionDigits(2)
-                    .groupingUsed(true)
-                    .focusable(false)
-                    .editable(false)
-                    .linkedValueObserver(((CountryEditModel) getEditModel()).getAvarageCityPopulationValue())
-                    .buildComponentValue()
-                    .getComponent();
+    DoubleField averageCityPopulationField = Components.doubleField()
+            .maximumFractionDigits(2)
+            .groupingUsed(true)
+            .focusable(false)
+            .editable(false)
+            .linkedValueObserver(((CountryEditModel) getEditModel()).getAverageCityPopulationValue())
+            .buildComponentValue()
+            .getComponent();
 
     setLayout(gridLayout(4, 5));
 

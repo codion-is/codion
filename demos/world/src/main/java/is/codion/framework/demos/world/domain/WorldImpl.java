@@ -44,7 +44,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(35),
             columnProperty(City.COUNTRY_CODE)
                     .nullable(false),
-            foreignKeyProperty(City.COUNTRY_FK, "Country"),
+            foreignKeyProperty(City.COUNTRY_FK, "Country")
+                    .beanProperty("country"),
             columnProperty(City.DISTRICT, "District")
                     .nullable(false)
                     .maximumLength(20),
@@ -246,13 +247,13 @@ public final class WorldImpl extends DefaultDomain implements World {
   private static final class LocationConverter implements ValueConverter<Location, String> {
 
     @Override
-    public String toColumnValue(Location geoPosition,
+    public String toColumnValue(Location location,
                                 Statement statement) throws SQLException {
-      if (geoPosition == null) {
+      if (location == null) {
         return null;
       }
 
-      return "POINT (" + geoPosition.longitude() + " " + geoPosition.latitude() + ")";
+      return "POINT (" + location.longitude() + " " + location.latitude() + ")";
     }
 
     @Override
@@ -261,8 +262,10 @@ public final class WorldImpl extends DefaultDomain implements World {
         return null;
       }
 
-      String[] latLon = columnValue.replace("POINT (", "")
-              .replace(")", "").split(" ");
+      String[] latLon = columnValue
+              .replace("POINT (", "")
+              .replace(")", "")
+              .split(" ");
 
       return new Location(parseDouble(latLon[1]), parseDouble(latLon[0]));
     }
