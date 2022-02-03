@@ -1202,6 +1202,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (displayProgressDialog) {
       Dialogs.progressWorkerDialog(applicationStarter)
               .title(applicationName)
+              .icon(applicationIcon)
               .westPanel(initializeStartupIconPanel(applicationIcon))
               .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
               .execute();

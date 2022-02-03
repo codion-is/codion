@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -29,6 +30,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   private Controls buttonControls;
   private boolean indeterminate = true;
   private boolean stringPainted = false;
+  private Dimension progressBarSize;
 
   DefaultProgressWorkerDialogBuilder(final ProgressTask<T, V> progressTask) {
     this.progressTask = progressTask;
@@ -103,6 +105,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   }
 
   @Override
+  public ProgressWorkerDialogBuilder<T, V> progressBarSize(final Dimension progressBarSize) {
+    this.progressBarSize = progressBarSize;
+    return this;
+  }
+
+  @Override
   public ProgressWorker<T, V> execute() {
     final ProgressWorker<T, V> worker = build();
     worker.execute();
@@ -121,6 +129,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .northPanel(northPanel)
             .westPanel(westPanel)
             .buttonControls(buttonControls)
+            .progressBarSize(progressBarSize)
             .build();
 
     return ProgressWorker.builder(progressTask)

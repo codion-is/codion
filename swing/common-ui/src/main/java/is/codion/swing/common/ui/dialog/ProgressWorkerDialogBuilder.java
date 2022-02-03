@@ -7,6 +7,7 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.util.function.Consumer;
 
 /**
@@ -78,6 +79,12 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
    * @return this Builder instance
    */
   ProgressWorkerDialogBuilder<T, V> controls(Controls controls);
+
+  /**
+   * @param progressBarSize the size of the progress bar
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
 
   /**
    * Builds and executes a new {@link ProgressWorker} based on this builder

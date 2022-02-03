@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JPanel;
+import java.awt.Dimension;
 
 class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.Builder> implements ProgressDialog.Builder {
 
@@ -14,6 +15,7 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.
   private JPanel northPanel;
   private JPanel westPanel;
   private Controls buttonControls;
+  private Dimension progressBarSize;
 
   @Override
   public ProgressDialog.Builder indeterminate(final boolean indeterminate) {
@@ -46,7 +48,14 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.
   }
 
   @Override
+  public ProgressDialog.Builder progressBarSize(final Dimension progressBarSize) {
+    this.progressBarSize = progressBarSize;
+    return this;
+  }
+
+  @Override
   public ProgressDialog build() {
-    return new ProgressDialog(owner, title, icon, indeterminate, stringPainted, northPanel, westPanel, buttonControls);
+    return new ProgressDialog(owner, title, icon, indeterminate, stringPainted, northPanel,
+            westPanel, buttonControls, progressBarSize);
   }
 }
