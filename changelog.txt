@@ -7634,3 +7634,4 @@
   ExceptionDialog renamed ExceptionPanel, refactored
   Exception messages improved a bit
   FilteredTableModel.add/removeRefreshSuccessfulListener() renamed add/removeRefreshListener()
+  DefaultEntity.EntityInvoker.getValue() now uses entity.getForeignKey() for foreign keys, to reduce the likelihood of NullPointerException

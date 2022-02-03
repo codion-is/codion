@@ -780,6 +780,7 @@ public class DomainTest {
     assertEquals(detailTyped.getId().get(), 1L);
     assertEquals(detailTyped.getDouble().get(), 1.2);
     assertEquals(detailTyped.getMaster().get(), master);
+    assertEquals(detailTyped.master(), master);
 
     detailTyped.setId(2L);
     detailTyped.setDouble(2.1);
