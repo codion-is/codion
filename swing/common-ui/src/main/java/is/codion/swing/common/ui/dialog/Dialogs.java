@@ -48,7 +48,7 @@ public final class Dialogs {
    * @param task the task to run
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    */
-  public static ProgressWorkerDialogBuilder<?> progressWorkerDialog(final Control.Command task) {
+  public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(final Control.Command task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
@@ -62,7 +62,7 @@ public final class Dialogs {
    * @param <T> the worker result type
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    */
-  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialog(final ProgressWorker.Task<T> task) {
+  public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(final ProgressWorker.Task<T> task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.perform()).indeterminate(true);
@@ -72,10 +72,11 @@ public final class Dialogs {
    * Note, also sets the progress bar type to 'determinate'.
    * @param task the task to run
    * @param <T> the worker result type
+   * @param <V> the worker intermediate result type
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
    */
-  public static <T> ProgressWorkerDialogBuilder<T> progressWorkerDialog(final ProgressWorker.ProgressTask<T, String> task) {
+  public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(final ProgressWorker.ProgressTask<T, V> task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);
