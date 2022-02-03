@@ -17,34 +17,55 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
         implements ProgressWorkerDialogBuilder<T, V> {
 
   private final ProgressTask<T, V> progressTask;
+  private final ProgressDialog.Builder progressDialogBuilder;
 
   private Consumer<T> onSuccess;
   private Consumer<Throwable> onException;
-  private JPanel northPanel;
-  private JPanel westPanel;
-  private Controls controls;
-  private boolean indeterminate = true;
-  private boolean stringPainted = false;
-  private Dimension progressBarSize;
 
   DefaultProgressWorkerDialogBuilder(final ProgressTask<T, V> progressTask) {
-    this.progressTask = progressTask;
+    this.progressTask = requireNonNull(progressTask);
+    this.progressDialogBuilder = new DefaultProgressDialogBuilder();
   }
 
   @Override
   public ProgressWorkerDialogBuilder<T, V> indeterminate(final boolean indeterminate) {
-    this.indeterminate = indeterminate;
+    progressDialogBuilder.indeterminate(indeterminate);
     return this;
   }
 
   @Override
   public ProgressWorkerDialogBuilder<T, V> stringPainted(final boolean stringPainted) {
-    this.stringPainted = stringPainted;
+    progressDialogBuilder.stringPainted(stringPainted);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> northPanel(final JPanel northPanel) {
+    progressDialogBuilder.northPanel(northPanel);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> westPanel(final JPanel westPanel) {
+    progressDialogBuilder.westPanel(westPanel);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> controls(final Controls controls) {
+    progressDialogBuilder.controls(controls);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> progressBarSize(final Dimension progressBarSize) {
+    progressDialogBuilder.progressBarSize(progressBarSize);
     return this;
   }
 
@@ -87,30 +108,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> northPanel(final JPanel northPanel) {
-    this.northPanel = northPanel;
-    return this;
-  }
-
-  @Override
-  public ProgressWorkerDialogBuilder<T, V> westPanel(final JPanel westPanel) {
-    this.westPanel = westPanel;
-    return this;
-  }
-
-  @Override
-  public ProgressWorkerDialogBuilder<T, V> controls(final Controls controls) {
-    this.controls = controls;
-    return this;
-  }
-
-  @Override
-  public ProgressWorkerDialogBuilder<T, V> progressBarSize(final Dimension progressBarSize) {
-    this.progressBarSize = progressBarSize;
-    return this;
-  }
-
-  @Override
   public ProgressWorker<T, V> execute() {
     final ProgressWorker<T, V> worker = build();
     worker.execute();
@@ -120,16 +117,10 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
   @Override
   public ProgressWorker<T, V> build() {
-    final ProgressDialog progressDialog = new DefaultProgressDialogBuilder()
+    final ProgressDialog progressDialog = progressDialogBuilder
             .owner(owner)
-            .indeterminate(indeterminate)
-            .stringPainted(stringPainted)
             .title(title)
             .icon(icon)
-            .northPanel(northPanel)
-            .westPanel(westPanel)
-            .controls(controls)
-            .progressBarSize(progressBarSize)
             .build();
 
     return ProgressWorker.builder(progressTask)

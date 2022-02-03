@@ -33,6 +33,30 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
   ProgressWorkerDialogBuilder<T, V> stringPainted(boolean stringPainted);
 
   /**
+   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel);
+
+  /**
+   * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel);
+
+  /**
+   * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> controls(Controls controls);
+
+  /**
+   * @param progressBarSize the size of the progress bar
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
+
+  /**
    * @param onSuccess executed on the EDT after a successful run
    * @return this Builder instance
    */
@@ -61,30 +85,6 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
    * @return this Builder instance
    */
   ProgressWorkerDialogBuilder<T, V> failTitle(String failTitle);
-
-  /**
-   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel);
-
-  /**
-   * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel);
-
-  /**
-   * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> controls(Controls controls);
-
-  /**
-   * @param progressBarSize the size of the progress bar
-   * @return this Builder instance
-   */
-  ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
 
   /**
    * Builds and executes a new {@link ProgressWorker} based on this builder

@@ -7638,3 +7638,4 @@
   ProgressWorkerDialogBuilder now with a intermediate result type parameter
   ProgressDialog.Builder and ProgressWorkerDialogBuilder.progressBarSize() added
   ProgressDialog.Builder.buttonControls() renamed controls()
+  DefaultProgressWorkerDialogBuilder refactored, now uses DefaultProgressDialogBuilder internally
