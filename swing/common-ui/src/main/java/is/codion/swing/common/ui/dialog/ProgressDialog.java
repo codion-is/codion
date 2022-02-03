@@ -29,7 +29,7 @@ public final class ProgressDialog extends JDialog {
 
   ProgressDialog(final Window dialogOwner, final String title, final ImageIcon icon,
                  final boolean indeterminate, final boolean stringPainted, final JPanel northPanel,
-                 final JPanel westPanel, final Controls buttonControls, final Dimension progressBarSize) {
+                 final JPanel westPanel, final Controls controls, final Dimension progressBarSize) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     if (icon != null) {
@@ -37,7 +37,7 @@ public final class ProgressDialog extends JDialog {
     }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     progressBar = initializeProgressBar(indeterminate, stringPainted, progressBarSize);
-    initializeUI(northPanel, westPanel, buttonControls);
+    initializeUI(northPanel, westPanel, controls);
     setLocationRelativeTo(dialogOwner);
   }
 
@@ -61,9 +61,9 @@ public final class ProgressDialog extends JDialog {
    * Initalizes the UI, override for a custom look
    * @param northPanel a panel to display at the {@link BorderLayout#NORTH} position
    * @param westPanel a panel to display at the {@link BorderLayout#WEST} position
-   * @param buttonControls if specified buttons based on these controls are added to this dialog
+   * @param controls if specified buttons based on these controls are added to this dialog
    */
-  private void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
+  private void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls controls) {
     setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
@@ -72,9 +72,9 @@ public final class ProgressDialog extends JDialog {
       add(westPanel, BorderLayout.WEST);
     }
     add(progressBar, BorderLayout.CENTER);
-    if (buttonControls != null) {
+    if (controls != null) {
       final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-      southPanel.add(buttonControls.createHorizontalButtonPanel());
+      southPanel.add(controls.createHorizontalButtonPanel());
       add(southPanel, BorderLayout.SOUTH);
     }
     pack();
@@ -130,10 +130,10 @@ public final class ProgressDialog extends JDialog {
     Builder westPanel(JPanel westPanel);
 
     /**
-     * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
+     * @param controls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
      * @return this ProgressDialogBuilder instance
      */
-    Builder buttonControls(Controls buttonControls);
+    Builder controls(Controls controls);
 
     /**
      * @param progressBarSize the progress bar size

@@ -14,7 +14,7 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.
   private boolean stringPainted = false;
   private JPanel northPanel;
   private JPanel westPanel;
-  private Controls buttonControls;
+  private Controls controls;
   private Dimension progressBarSize;
 
   @Override
@@ -42,8 +42,8 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.
   }
 
   @Override
-  public ProgressDialog.Builder buttonControls(final Controls buttonControls) {
-    this.buttonControls = buttonControls;
+  public ProgressDialog.Builder controls(final Controls controls) {
+    this.controls = controls;
     return this;
   }
 
@@ -56,6 +56,6 @@ class DefaultProgressDialogBuilder extends AbstractDialogBuilder<ProgressDialog.
   @Override
   public ProgressDialog build() {
     return new ProgressDialog(owner, title, icon, indeterminate, stringPainted, northPanel,
-            westPanel, buttonControls, progressBarSize);
+            westPanel, controls, progressBarSize);
   }
 }

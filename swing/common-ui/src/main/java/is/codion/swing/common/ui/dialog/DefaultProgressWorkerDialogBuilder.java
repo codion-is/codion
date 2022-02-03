@@ -27,7 +27,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   private Consumer<Throwable> onException;
   private JPanel northPanel;
   private JPanel westPanel;
-  private Controls buttonControls;
+  private Controls controls;
   private boolean indeterminate = true;
   private boolean stringPainted = false;
   private Dimension progressBarSize;
@@ -100,7 +100,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
   @Override
   public ProgressWorkerDialogBuilder<T, V> controls(final Controls controls) {
-    this.buttonControls = controls;
+    this.controls = controls;
     return this;
   }
 
@@ -128,7 +128,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .icon(icon)
             .northPanel(northPanel)
             .westPanel(westPanel)
-            .buttonControls(buttonControls)
+            .controls(controls)
             .progressBarSize(progressBarSize)
             .build();
 
