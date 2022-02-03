@@ -60,8 +60,6 @@ public final class Clients {
   public static final PropertyValue<String> SERVER_HOST_NAME =
           Configuration.stringValue("codion.server.hostname", "localhost");
 
-  private static final int INPUT_BUFFER_SIZE = 8192;
-
   private Clients() {}
 
   /**

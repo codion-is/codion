@@ -83,7 +83,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
     return connectionProvider.getEntities().getDefinition(foreignKey.getEntityType()).getForeignKeyProperty(foreignKey);
   }
 
-  private static <C extends Attribute<?>> List<Operator> getOperators(final Attribute<?> attribute) {
+  private static List<Operator> getOperators(final Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
     }

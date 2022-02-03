@@ -42,23 +42,23 @@ final class DefaultEntity implements Entity, Serializable {
   private static final String ATTRIBUTE = "attribute";
 
   private static final Map<Class<?>, Object> DEFAULT_PRIMITIVE_VALUES;
-  private static boolean DEFAULT_BOOLEAN;
-  private static byte DEFAULT_BYTE;
-  private static short DEFAULT_SHORT;
-  private static int DEFAULT_INT;
-  private static long DEFAULT_LONG;
-  private static float DEFAULT_FLOAT;
-  private static double DEFAULT_DOUBLE;
+  private static boolean defaultBoolean;
+  private static byte defaultByte;
+  private static short defaultShort;
+  private static int defaultInt;
+  private static long defaultLong;
+  private static float defaultFloat;
+  private static double defaultDouble;
 
   static {
     DEFAULT_PRIMITIVE_VALUES = new HashMap<>();
-    DEFAULT_PRIMITIVE_VALUES.put(Boolean.TYPE, DEFAULT_BOOLEAN);
-    DEFAULT_PRIMITIVE_VALUES.put(Byte.TYPE, DEFAULT_BYTE);
-    DEFAULT_PRIMITIVE_VALUES.put(Short.TYPE, DEFAULT_SHORT);
-    DEFAULT_PRIMITIVE_VALUES.put(Integer.TYPE, DEFAULT_INT);
-    DEFAULT_PRIMITIVE_VALUES.put(Long.TYPE, DEFAULT_LONG);
-    DEFAULT_PRIMITIVE_VALUES.put(Float.TYPE, DEFAULT_FLOAT);
-    DEFAULT_PRIMITIVE_VALUES.put(Double.TYPE, DEFAULT_DOUBLE);
+    DEFAULT_PRIMITIVE_VALUES.put(Boolean.TYPE, defaultBoolean);
+    DEFAULT_PRIMITIVE_VALUES.put(Byte.TYPE, defaultByte);
+    DEFAULT_PRIMITIVE_VALUES.put(Short.TYPE, defaultShort);
+    DEFAULT_PRIMITIVE_VALUES.put(Integer.TYPE, defaultInt);
+    DEFAULT_PRIMITIVE_VALUES.put(Long.TYPE, defaultLong);
+    DEFAULT_PRIMITIVE_VALUES.put(Float.TYPE, defaultFloat);
+    DEFAULT_PRIMITIVE_VALUES.put(Double.TYPE, defaultDouble);
   }
 
   /**

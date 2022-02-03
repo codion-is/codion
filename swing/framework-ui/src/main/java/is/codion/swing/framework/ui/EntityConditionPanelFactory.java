@@ -172,7 +172,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
       return configureComponent(componentValue.getComponent());
     }
 
-    private JComponent configureComponent(final JComponent component) {
+    private static JComponent configureComponent(final JComponent component) {
       if (component instanceof JTextField) {
         ((JTextField) component).setColumns(0);
         ((JTextField) component).setHorizontalAlignment(SwingConstants.CENTER);
