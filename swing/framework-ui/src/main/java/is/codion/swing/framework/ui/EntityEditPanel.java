@@ -524,17 +524,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       WaitCursor.show(this);
       try {
         getEditModel().insert();
+        if (clearAfterInsert) {
+          getEditModel().setDefaultValues();
+        }
+        if (requestFocusAfterInsert) {
+          requestAfterInsertFocus();
+        }
+
+        return true;
       }
       finally {
         WaitCursor.hide(this);
       }
-      if (clearAfterInsert) {
-        getEditModel().setDefaultValues();
-      }
-      if (requestFocusAfterInsert) {
-        requestAfterInsertFocus();
-      }
-      return true;
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);
@@ -569,13 +570,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       WaitCursor.show(this);
       try {
         getEditModel().delete();
+        requestInitialFocus();
+
+        return true;
       }
       finally {
         WaitCursor.hide(this);
       }
-      requestInitialFocus();
-
-      return true;
     }
     catch (final ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
@@ -611,13 +612,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
       WaitCursor.show(this);
       try {
         getEditModel().update();
+        requestInitialFocus();
+
+        return true;
       }
       finally {
         WaitCursor.hide(this);
       }
-      requestInitialFocus();
-
-      return true;
     }
     catch (final ValidationException e) {
       LOG.debug(e.getMessage(), e);

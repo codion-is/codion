@@ -7659,3 +7659,9 @@
   LookAndFeelProvider.selectLookAndFeel() combo box now with mouse scrolling
   LookAndFeelProvider.selectLookAndFeel() combo box no longer with completion enabled
   H2 database upgraded to 2.1.210, demo schema definitions and domain models updated accordingly
+  EntityEditPanel, minor refactoring in insert, update and delete
+  ComponentDialogBuilder, OkCancelDialogBuilder.onShown(JDialog) added
+  DefaultComponentDialogBuilder.createDialog() added, used in DefaultOkCancelDialogBuilder
+  EntityPanelBuilder.InsertEntityAction now handles validation errors during insert by setting the focus on the correct input field
+  ValueObserver now extends Supplier
+  CalendarPanel now uses onShown to request current day button focus, instead of initial focus hack

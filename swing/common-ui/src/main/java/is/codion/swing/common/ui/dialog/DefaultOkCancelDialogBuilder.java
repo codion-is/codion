@@ -21,19 +21,22 @@ import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
   private final JComponent component;
 
-  private boolean resizable = true;
   private boolean modal = true;
+  private boolean resizable = true;
   private Dimension size;
+  private JComponent locationRelativeTo;
+  private Consumer<JDialog> onShown;
   private Action okAction;
   private Action cancelAction;
-  private JComponent locationRelativeTo;
 
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
@@ -100,6 +103,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   @Override
+  public OkCancelDialogBuilder onShown(final Consumer<JDialog> onShown) {
+    this.onShown = onShown;
+    return this;
+  }
+
+  @Override
   public JDialog show() {
     final JDialog dialog = build();
     dialog.setVisible(true);
@@ -109,28 +118,11 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog build() {
-    final JDialog dialog = new JDialog(owner, title);
-    if (icon != null) {
-      dialog.setIconImage(icon.getImage());
-    }
-    dialog.setLayout(Layouts.borderLayout());
-    dialog.add(component, BorderLayout.CENTER);
-    dialog.add(createButtonBasePanel(), BorderLayout.SOUTH);
-    if (size != null) {
-      dialog.setSize(size);
-    }
-    else {
-      dialog.pack();
-    }
-    if (locationRelativeTo != null) {
-      dialog.setLocationRelativeTo(locationRelativeTo);
-    }
-    else {
-      dialog.setLocationRelativeTo(owner);
-    }
-    dialog.setModal(modal);
-    dialog.setResizable(resizable);
+    final JPanel panel = new JPanel(Layouts.borderLayout());
+    panel.add(component, BorderLayout.CENTER);
+    panel.add(createButtonBasePanel(), BorderLayout.SOUTH);
 
+    final JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
       @Override

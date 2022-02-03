@@ -11,6 +11,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 
 /**
  * A builder for JDialog containing a single component.
@@ -75,6 +76,12 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this builder instance
    */
   ComponentDialogBuilder locationRelativeTo(JComponent component);
+
+  /**
+   * @param onShown called each time the dialog is shown
+   * @return this builder instance
+   */
+  ComponentDialogBuilder onShown(Consumer<JDialog> onShown);
 
   /**
    * @return a new JDialog instance based on this builder.

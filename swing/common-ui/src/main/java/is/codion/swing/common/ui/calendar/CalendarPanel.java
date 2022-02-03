@@ -8,7 +8,6 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -123,7 +122,6 @@ public final class CalendarPanel extends JPanel {
     initializeUI();
     updateFormattedDate();
     bindEvents();
-    Utilities.addInitialFocusHack(this, control(() -> dayButtons.get(dayValue.get()).requestFocusInWindow()));
   }
 
   /**
@@ -234,6 +232,7 @@ public final class CalendarPanel extends JPanel {
             .locationRelativeTo(dialogOwner)
             .title(dialogTitle)
             .onOk(() -> okPressed.set(true))
+            .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
             .show();
 
     return okPressed.get() ? Optional.of(calendarPanel.getDate()) : Optional.empty();
@@ -267,6 +266,7 @@ public final class CalendarPanel extends JPanel {
             .owner(dialogOwner)
             .locationRelativeTo(dialogOwner)
             .title(dialogTitle)
+            .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
             .onOk(() -> okPressed.set(true))
             .show();
 

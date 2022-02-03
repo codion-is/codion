@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 
 
 /**
@@ -65,6 +66,12 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
    * @return this builder instance
    */
   OkCancelDialogBuilder locationRelativeTo(JComponent component);
+
+  /**
+   * @param onShown called each time the dialog is shown
+   * @return this builder instance
+   */
+  OkCancelDialogBuilder onShown(Consumer<JDialog> onShown);
 
   /**
    * Builds and shows the dialog.

@@ -10,15 +10,20 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,12 +34,13 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   private boolean modal = true;
   private boolean resizable = true;
   private Dimension size;
+  private JComponent locationRelativeTo;
+  private Consumer<JDialog> onShown;
   private Action enterAction;
   private Action onClosedAction;
   private EventObserver<?> closeEvent;
   private EventDataListener<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
-  private JComponent locationRelativeTo;
 
   DefaultComponentDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
@@ -95,6 +101,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
+  public ComponentDialogBuilder onShown(final Consumer<JDialog> onShown) {
+    this.onShown = onShown;
+    return this;
+  }
+
+  @Override
   public JDialog show() {
     final JDialog dialog = build();
     dialog.setVisible(true);
@@ -104,27 +116,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog build() {
-    final JDialog dialog = new JDialog(owner, title);
-    if (icon != null) {
-      dialog.setIconImage(icon.getImage());
-    }
-    dialog.setLayout(Layouts.borderLayout());
-    dialog.add(component, BorderLayout.CENTER);
-    if (size != null) {
-      dialog.setSize(size);
-    }
-    else {
-      dialog.pack();
-    }
-    if (locationRelativeTo != null) {
-      dialog.setLocationRelativeTo(locationRelativeTo);
-    }
-    else {
-      dialog.setLocationRelativeTo(owner);
-    }
-    dialog.setModal(modal);
-    dialog.setResizable(resizable);
-
+    final JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo, modal, resizable, onShown);
     if (enterAction != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -158,6 +150,41 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
         @Override
         public void windowClosed(final WindowEvent e) {
           onClosedAction.actionPerformed(new ActionEvent(dialog, -1, null));
+        }
+      });
+    }
+
+    return dialog;
+  }
+
+  static JDialog createDialog(final Window owner, final String title, final ImageIcon icon,
+                              final JComponent component, final Dimension size, final JComponent locationRelativeTo,
+                              final boolean modal, final boolean resizable, final Consumer<JDialog> onShown) {
+    final JDialog dialog = new JDialog(owner, title);
+    if (icon != null) {
+      dialog.setIconImage(icon.getImage());
+    }
+    dialog.setLayout(Layouts.borderLayout());
+    dialog.add(component, BorderLayout.CENTER);
+    if (size != null) {
+      dialog.setSize(size);
+    }
+    else {
+      dialog.pack();
+    }
+    if (locationRelativeTo != null) {
+      dialog.setLocationRelativeTo(locationRelativeTo);
+    }
+    else {
+      dialog.setLocationRelativeTo(owner);
+    }
+    dialog.setModal(modal);
+    dialog.setResizable(resizable);
+    if (onShown != null) {
+      dialog.addComponentListener(new ComponentAdapter() {
+        @Override
+        public void componentShown(final ComponentEvent e) {
+          onShown.accept(dialog);
         }
       });
     }
