@@ -55,7 +55,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -1375,7 +1374,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the refresh toolbar
    */
   private JToolBar initializeRefreshToolBar() {
-    final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
             .smallIcon(frameworkIcons().refreshRequired())
