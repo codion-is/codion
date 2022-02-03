@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.Sizes;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -14,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
@@ -27,16 +27,17 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  ProgressDialog(final Window dialogOwner, final String title, final ImageIcon icon, final boolean indeterminate,
-                 final boolean stringPainted, final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
+  ProgressDialog(final Window dialogOwner, final String title, final ImageIcon icon,
+                 final boolean indeterminate, final boolean stringPainted, final JPanel northPanel,
+                 final JPanel westPanel, final Controls controls, final Dimension progressBarSize) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     if (icon != null) {
       setIconImage(icon.getImage());
     }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = initializeProgressBar(indeterminate, stringPainted);
-    initializeUI(northPanel, westPanel, buttonControls);
+    progressBar = initializeProgressBar(indeterminate, stringPainted, progressBarSize);
+    initializeUI(northPanel, westPanel, controls);
     setLocationRelativeTo(dialogOwner);
   }
 
@@ -60,9 +61,9 @@ public final class ProgressDialog extends JDialog {
    * Initalizes the UI, override for a custom look
    * @param northPanel a panel to display at the {@link BorderLayout#NORTH} position
    * @param westPanel a panel to display at the {@link BorderLayout#WEST} position
-   * @param buttonControls if specified buttons based on these controls are added to this dialog
+   * @param controls if specified buttons based on these controls are added to this dialog
    */
-  private void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls buttonControls) {
+  private void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls controls) {
     setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
@@ -71,19 +72,24 @@ public final class ProgressDialog extends JDialog {
       add(westPanel, BorderLayout.WEST);
     }
     add(progressBar, BorderLayout.CENTER);
-    if (buttonControls != null) {
+    if (controls != null) {
       final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-      southPanel.add(buttonControls.createHorizontalButtonPanel());
+      southPanel.add(controls.createHorizontalButtonPanel());
       add(southPanel, BorderLayout.SOUTH);
     }
     pack();
-    Windows.centerWindow(this);
   }
 
-  private static JProgressBar initializeProgressBar(final boolean indeterminate, final boolean stringPainted) {
+  private static JProgressBar initializeProgressBar(final boolean indeterminate, final boolean stringPainted,
+                                                    final Dimension size) {
     final JProgressBar progressBar = new JProgressBar();
     progressBar.setStringPainted(stringPainted);
-    Sizes.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+    if (size != null) {
+      progressBar.setPreferredSize(size);
+    }
+    else {
+      Sizes.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+    }
     if (indeterminate) {
       progressBar.setIndeterminate(true);
     }
@@ -124,10 +130,16 @@ public final class ProgressDialog extends JDialog {
     Builder westPanel(JPanel westPanel);
 
     /**
-     * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
+     * @param controls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
      * @return this ProgressDialogBuilder instance
      */
-    Builder buttonControls(Controls buttonControls);
+    Builder controls(Controls controls);
+
+    /**
+     * @param progressBarSize the progress bar size
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder progressBarSize(Dimension progressBarSize);
 
     /**
      * @return a new ProgressDialog

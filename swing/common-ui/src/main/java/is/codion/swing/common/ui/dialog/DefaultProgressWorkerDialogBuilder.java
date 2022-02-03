@@ -11,52 +11,77 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
-final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T>> implements ProgressWorkerDialogBuilder<T> {
+final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
+        implements ProgressWorkerDialogBuilder<T, V> {
 
-  private final ProgressTask<T, String> progressTask;
+  private final ProgressTask<T, V> progressTask;
+  private final ProgressDialog.Builder progressDialogBuilder;
 
   private Consumer<T> onSuccess;
   private Consumer<Throwable> onException;
-  private JPanel northPanel;
-  private JPanel westPanel;
-  private Controls buttonControls;
-  private boolean indeterminate = true;
-  private boolean stringPainted = false;
 
-  DefaultProgressWorkerDialogBuilder(final ProgressTask<T, String> progressTask) {
-    this.progressTask = progressTask;
+  DefaultProgressWorkerDialogBuilder(final ProgressTask<T, V> progressTask) {
+    this.progressTask = requireNonNull(progressTask);
+    this.progressDialogBuilder = new DefaultProgressDialogBuilder();
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> indeterminate(final boolean indeterminate) {
-    this.indeterminate = indeterminate;
+  public ProgressWorkerDialogBuilder<T, V> indeterminate(final boolean indeterminate) {
+    progressDialogBuilder.indeterminate(indeterminate);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> stringPainted(final boolean stringPainted) {
-    this.stringPainted = stringPainted;
+  public ProgressWorkerDialogBuilder<T, V> stringPainted(final boolean stringPainted) {
+    progressDialogBuilder.stringPainted(stringPainted);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> onSuccess(final Runnable onSuccess) {
+  public ProgressWorkerDialogBuilder<T, V> northPanel(final JPanel northPanel) {
+    progressDialogBuilder.northPanel(northPanel);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> westPanel(final JPanel westPanel) {
+    progressDialogBuilder.westPanel(westPanel);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> controls(final Controls controls) {
+    progressDialogBuilder.controls(controls);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> progressBarSize(final Dimension progressBarSize) {
+    progressDialogBuilder.progressBarSize(progressBarSize);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> onSuccess(final Runnable onSuccess) {
     return onSuccess(result -> onSuccess.run());
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> onSuccess(final Consumer<T> onSuccess) {
+  public ProgressWorkerDialogBuilder<T, V> onSuccess(final Consumer<T> onSuccess) {
     this.onSuccess = onSuccess;
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> successMessage(final String successMessage) {
+  public ProgressWorkerDialogBuilder<T, V> successMessage(final String successMessage) {
     return onSuccess(result -> {
       if (!nullOrEmpty(successMessage)) {
         JOptionPane.showMessageDialog(owner, successMessage, null, JOptionPane.INFORMATION_MESSAGE);
@@ -65,13 +90,13 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> onException(final Consumer<Throwable> onException) {
+  public ProgressWorkerDialogBuilder<T, V> onException(final Consumer<Throwable> onException) {
     this.onException = onException;
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> failTitle(final String failTitle) {
+  public ProgressWorkerDialogBuilder<T, V> failTitle(final String failTitle) {
     return onException(exception -> {
       if (!(exception instanceof CancelException)) {
         new DefaultExceptionDialogBuilder()
@@ -83,42 +108,19 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T> northPanel(final JPanel northPanel) {
-    this.northPanel = northPanel;
-    return this;
-  }
-
-  @Override
-  public ProgressWorkerDialogBuilder<T> westPanel(final JPanel westPanel) {
-    this.westPanel = westPanel;
-    return this;
-  }
-
-  @Override
-  public ProgressWorkerDialogBuilder<T> controls(final Controls controls) {
-    this.buttonControls = controls;
-    return this;
-  }
-
-  @Override
-  public ProgressWorker<T, String> execute() {
-    final ProgressWorker<T, String> worker = build();
+  public ProgressWorker<T, V> execute() {
+    final ProgressWorker<T, V> worker = build();
     worker.execute();
 
     return worker;
   }
 
   @Override
-  public ProgressWorker<T, String> build() {
-    final ProgressDialog progressDialog = new DefaultProgressDialogBuilder()
+  public ProgressWorker<T, V> build() {
+    final ProgressDialog progressDialog = progressDialogBuilder
             .owner(owner)
-            .indeterminate(indeterminate)
-            .stringPainted(stringPainted)
             .title(title)
             .icon(icon)
-            .northPanel(northPanel)
-            .westPanel(westPanel)
-            .buttonControls(buttonControls)
             .build();
 
     return ProgressWorker.builder(progressTask)
@@ -145,8 +147,8 @@ final class DefaultProgressWorkerDialogBuilder<T> extends AbstractDialogBuilder<
     }
   }
 
-  private static String getMessage(final List<String> chunks) {
-    return chunks.isEmpty() ? null : chunks.get(chunks.size() - 1);
+  private String getMessage(final List<V> chunks) {
+    return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
   }
 
   private static void closeDialog(final ProgressDialog dialog) {

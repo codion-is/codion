@@ -99,7 +99,7 @@ public final class DialogsTest {
             .stringPainted(true)
             .northPanel(new JPanel())
             .westPanel(new JPanel())
-            .buttonControls(Controls.builder()
+            .controls(Controls.builder()
                     .control(Control.builder(() -> {}))
                     .build())
             .build();
