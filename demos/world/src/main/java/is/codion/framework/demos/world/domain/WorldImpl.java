@@ -264,7 +264,7 @@ public final class WorldImpl extends DefaultDomain implements World {
       String[] latLon = columnValue.replace("POINT (", "")
               .replace(")", "").split(" ");
 
-      return Location.of(parseDouble(latLon[1]), parseDouble(latLon[0]));
+      return new Location(parseDouble(latLon[1]), parseDouble(latLon[0]));
     }
   }
   // end::converter[]

@@ -38,10 +38,9 @@ asciidoctor {
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
-        version = '2.5.2'
+        version = '2.5.3'
         modules {
             diagram.use()
-            diagram.version '2.2.1'
         }
         attributes 'source-highlighter': 'prettify'
     }

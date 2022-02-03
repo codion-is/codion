@@ -42,7 +42,7 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
               throws IOException, JsonProcessingException {
         JsonNode node = parser.getCodec().readTree(parser);
 
-        return Location.of(node.get("lat").asDouble(), node.get("lon").asDouble());
+        return new Location(node.get("lat").asDouble(), node.get("lon").asDouble());
       }
     };
 

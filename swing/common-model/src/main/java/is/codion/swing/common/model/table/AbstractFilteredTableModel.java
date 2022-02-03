@@ -57,7 +57,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event<?> sortEvent = Event.event();
   private final Event<?> refreshStartedEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
-  private final Event<?> refreshSuccessfulEvent = Event.event();
+  private final Event<?> refreshEvent = Event.event();
   private final Event<?> tableDataChangedEvent = Event.event();
   private final Event<?> tableModelClearedEvent = Event.event();
   private final Event<Removal> rowsRemovedEvent = Event.event();
@@ -473,13 +473,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final void addRefreshSuccessfulListener(final EventListener listener) {
-    refreshSuccessfulEvent.addListener(listener);
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeRefreshSuccessfulListener(final EventListener listener) {
-    refreshSuccessfulEvent.removeListener(listener);
+  public final void removeSuccessfulListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
   }
 
   @Override
@@ -740,7 +740,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       clearAndAdd(items);
     }
     refreshingState.set(false);
-    refreshSuccessfulEvent.onEvent();
+    refreshEvent.onEvent();
   }
 
   private void merge(final Collection<R> items) {

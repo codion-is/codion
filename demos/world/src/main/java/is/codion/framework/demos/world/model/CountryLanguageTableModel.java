@@ -14,7 +14,7 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
   CountryLanguageTableModel(final EntityConnectionProvider connectionProvider) {
     super(CountryLanguage.TYPE, connectionProvider);
-    addRefreshSuccessfulListener(this::refreshChartDataset);
+    addRefreshListener(this::refreshChartDataset);
   }
 
   public PieDataset<String> getChartDataset() {

@@ -134,6 +134,7 @@ public final class TestDomain extends DefaultDomain {
     void setId(Long value);
     Optional<Double> getDouble();
     void setDouble(Double value);
+    Master master();
     Optional<Master> getMaster();
     void setMaster(Master master);
 

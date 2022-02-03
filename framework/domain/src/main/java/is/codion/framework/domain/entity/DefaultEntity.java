@@ -928,7 +928,13 @@ final class DefaultEntity implements Entity, Serializable {
     }
 
     private Object getValue(final Attribute<?> attribute, final Class<?> getterReturnType) {
-      Object value = entity.get(attribute);
+      Object value;
+      if (attribute instanceof ForeignKey) {
+        value = entity.getForeignKey((ForeignKey) attribute);
+      }
+      else {
+        value = entity.get(attribute);
+      }
       if (value instanceof Entity) {
         final Entity entityValue = (Entity) value;
 

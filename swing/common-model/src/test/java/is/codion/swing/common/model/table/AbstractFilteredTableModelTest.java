@@ -179,7 +179,7 @@ public final class AbstractFilteredTableModelTest {
     final EventDataListener<Throwable> failedListener = exception -> {};
     final EventListener clearedListener = cleared::incrementAndGet;
     tableModel.addRefreshStartedListener(startListener);
-    tableModel.addRefreshSuccessfulListener(successfulListener);
+    tableModel.addRefreshListener(successfulListener);
     tableModel.addRefreshFailedListener(failedListener);
     tableModel.addTableModelClearedListener(clearedListener);
     tableModel.refresh();
@@ -198,7 +198,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(0, cleared.get());
 
     tableModel.removeRefreshStartedListener(startListener);
-    tableModel.removeRefreshSuccessfulListener(successfulListener);
+    tableModel.removeSuccessfulListener(successfulListener);
     tableModel.removeRefreshFailedListener(failedListener);
     tableModel.removeTableModelClearedListener(clearedListener);
   }

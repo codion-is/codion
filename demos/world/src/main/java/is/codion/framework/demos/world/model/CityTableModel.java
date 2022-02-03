@@ -48,7 +48,7 @@ public final class CityTableModel extends SwingEntityTableModel {
     super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
     getSelectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
     getSelectionModel().addSelectionChangedListener(this::updateCitiesWithoutLocationSelected);
-    addRefreshSuccessfulListener(this::refreshChartDataset);
+    addRefreshListener(this::refreshChartDataset);
   }
 
   public PieDataset<String> getChartDataset() {
@@ -92,7 +92,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   }
 
   private void fetchLocation(Entity city, JSONObject cityInformation) throws DatabaseException, ValidationException {
-    city.put(City.LOCATION, Location.of(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
+    city.put(City.LOCATION, new Location(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
     getEditModel().update(singletonList(city));
   }
 

@@ -57,13 +57,9 @@ public interface World {
     private final double latitude;
     private final double longitude;
 
-    private Location(double latitude, double longitude) {
+    public Location(double latitude, double longitude) {
       this.latitude = latitude;
       this.longitude = longitude;
-    }
-
-    public static Location of(double latitude, double longitude) {
-      return new Location(latitude, longitude);
     }
 
     public double latitude() {
