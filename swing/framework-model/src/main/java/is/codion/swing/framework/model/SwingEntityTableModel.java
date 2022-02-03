@@ -783,7 +783,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
-    addRefreshSuccessfulListener(tableConditionModel::rememberCondition);
+    addRefreshListener(tableConditionModel::rememberCondition);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);

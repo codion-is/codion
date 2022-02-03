@@ -19,7 +19,7 @@ public final class ContinentModel extends SwingEntityModel {
 
   ContinentModel(EntityConnectionProvider connectionProvider) {
     super(Continent.TYPE, connectionProvider);
-    getTableModel().addRefreshSuccessfulListener(this::refreshChartDatasets);
+    getTableModel().addRefreshListener(this::refreshChartDatasets);
   }
 
   public PieDataset<String> getPopulationDataset() {

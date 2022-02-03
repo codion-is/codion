@@ -38,12 +38,12 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * @param listener a listener to be notified each time a refresh has successfully finished
    * @see #refresh()
    */
-  void addRefreshSuccessfulListener(EventListener listener);
+  void addRefreshListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshSuccessfulListener(EventListener listener);
+  void removeSuccessfulListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has failed
