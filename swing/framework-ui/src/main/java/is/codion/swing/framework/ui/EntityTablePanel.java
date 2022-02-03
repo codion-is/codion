@@ -436,7 +436,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final void setIncludeSelectionModeControl(final boolean includeSelectionModeControl) {
     checkIfInitialized();
-    this.includeSelectionModeControl = includeClearControl;
+    this.includeSelectionModeControl = includeSelectionModeControl;
   }
 
   /**
@@ -1376,7 +1376,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   private JToolBar initializeRefreshToolBar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
-    final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
             .smallIcon(frameworkIcons().refreshRequired())
