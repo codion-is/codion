@@ -7624,3 +7624,4 @@
   ProgressDialog bug fixed, did not set location relative to dialog owner
   LookAndFeelProvider.selectLookAndFeel() combo box now with mouse scrolling
   LookAndFeelProvider.selectLookAndFeel() combo box no longer with completion enabled
+  H2 database upgraded to 2.1.210, demo schema definitions and domain models updated accordingly

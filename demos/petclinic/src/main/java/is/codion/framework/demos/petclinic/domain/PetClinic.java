@@ -13,7 +13,7 @@ import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
 
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
@@ -42,7 +42,7 @@ public final class PetClinic extends DefaultDomain {
                     .searchProperty()
                     .maximumLength(30)
                     .nullable(false))
-            .keyGenerator(automatic(Vet.TYPE.getName()))
+            .keyGenerator(identity())
             .caption("Vets")
             .stringFactory(stringFactory(Vet.LAST_NAME)
                     .text(", ").value(Vet.FIRST_NAME))
@@ -57,7 +57,7 @@ public final class PetClinic extends DefaultDomain {
                     .searchProperty()
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(Specialty.TYPE.getName()))
+            .keyGenerator(identity())
             .caption("Specialties")
             .stringFactory(stringFactory(Specialty.NAME))
             .smallDataset();
@@ -83,7 +83,7 @@ public final class PetClinic extends DefaultDomain {
                     .searchProperty()
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(PetType.TYPE.getName()))
+            .keyGenerator(identity())
             .caption("Pet types")
             .stringFactory(stringFactory(PetType.NAME))
             .orderBy(orderBy().ascending(PetType.NAME))
@@ -107,7 +107,7 @@ public final class PetClinic extends DefaultDomain {
                     .maximumLength(80),
             columnProperty(Owner.TELEPHONE, "Telephone")
                     .maximumLength(20))
-            .keyGenerator(automatic(Owner.TYPE.getName()))
+            .keyGenerator(identity())
             .caption("Owners")
             .stringFactory(stringFactory(Owner.LAST_NAME).text(", ")
                     .value(Owner.FIRST_NAME))
@@ -129,7 +129,7 @@ public final class PetClinic extends DefaultDomain {
             columnProperty(Pet.OWNER_ID)
                     .nullable(false),
             foreignKeyProperty(Pet.OWNER_FK, "Owner"))
-            .keyGenerator(automatic(Pet.TYPE.getName()))
+            .keyGenerator(identity())
             .caption("Pets")
             .stringFactory(stringFactory(Pet.NAME))
             .orderBy(orderBy().ascending(Pet.NAME));
@@ -145,7 +145,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false),
             columnProperty(Visit.DESCRIPTION, "Description")
                     .maximumLength(255))
-            .keyGenerator(automatic(Visit.TYPE.getName()))
+            .keyGenerator(identity())
             .orderBy(orderBy().ascending(Visit.PET_ID).descending(Visit.DATE))
             .caption("Visits");
   }

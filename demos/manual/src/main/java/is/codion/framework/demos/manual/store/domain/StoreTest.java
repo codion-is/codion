@@ -45,7 +45,7 @@ public class StoreTest extends EntityTestUnit {
     //see if the currently running test requires an ADDRESS entity
     if (entityType.equals(Address.TYPE)) {
       return getEntities().builder(Address.TYPE)
-              .with(Address.ID, 21)
+              .with(Address.ID, 21L)
               .with(Address.STREET, "One Way")
               .with(Address.CITY, "Sin City")
               .build();
@@ -61,7 +61,7 @@ public class StoreTest extends EntityTestUnit {
       //Initialize an entity representing the table STORE.ADDRESS,
       //which can be used for the testing
       return getEntities().builder(Address.TYPE)
-              .with(Address.ID, 42)
+              .with(Address.ID, 42L)
               .with(Address.STREET, "Street")
               .with(Address.CITY, "City")
               .build();
