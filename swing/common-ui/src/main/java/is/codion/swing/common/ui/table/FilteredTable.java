@@ -963,45 +963,47 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private static JScrollPane createScrollPane(final Collection<JCheckBox> checkBoxes) {
-      final JPanel togglePanel = createTogglePanel(new ArrayList<>(checkBoxes));
-      final JScrollPane scrollPane = new JScrollPane(togglePanel);
+      final JPanel checkBoxPanel = createCheckBoxPanel(new ArrayList<>(checkBoxes));
+      final JScrollPane scrollPane = new JScrollPane(checkBoxPanel);
       scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, COLUMNS_SELECTION_PANEL_HEIGHT));
 
       return scrollPane;
     }
 
-    private static JPanel createTogglePanel(final List<JCheckBox> checkBoxes) {
-      final JPanel togglePanel = new JPanel(Layouts.gridLayout(0, 1));
-      checkBoxes.forEach(togglePanel::add);
+    private static JPanel createCheckBoxPanel(final List<JCheckBox> checkBoxes) {
+      final JPanel northPanel = new JPanel(Layouts.gridLayout(0, 1));
+      checkBoxes.forEach(northPanel::add);
       final KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
               .condition(JComponent.WHEN_FOCUSED)
               .onKeyPressed()
-              .action(control(new MoveFocusCommand(checkBoxes, false)));
+              .action(control(new TransferFocusCommand(checkBoxes, false)));
       final KeyEvents.Builder downEventBuilder = KeyEvents.builder(KeyEvent.VK_DOWN)
               .condition(JComponent.WHEN_FOCUSED)
               .onKeyPressed()
-              .action(control(new MoveFocusCommand(checkBoxes, true)));
+              .action(control(new TransferFocusCommand(checkBoxes, true)));
       checkBoxes.forEach(checkBox -> {
         upEventBuilder.enable(checkBox);
         downEventBuilder.enable(checkBox);
         checkBox.addFocusListener(new FocusAdapter() {
           @Override
           public void focusGained(final FocusEvent e) {
-            togglePanel.scrollRectToVisible(checkBox.getBounds());
+            northPanel.scrollRectToVisible(checkBox.getBounds());
           }
         });
       });
+      final JPanel panel = new JPanel(Layouts.borderLayout());
+      panel.add(northPanel, BorderLayout.NORTH);
 
-      return togglePanel;
+      return panel;
     }
 
-    private static final class MoveFocusCommand implements Control.Command {
+    private static final class TransferFocusCommand implements Control.Command {
 
       private final List<JCheckBox> checkBoxes;
-      private final boolean down;
+      private final boolean next;
 
-      private MoveFocusCommand(final List<JCheckBox> checkBoxes, final boolean down) {
-        this.down = down;
+      private TransferFocusCommand(final List<JCheckBox> checkBoxes, final boolean next) {
+        this.next = next;
         this.checkBoxes = checkBoxes;
       }
 
@@ -1010,7 +1012,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         checkBoxes.stream()
                 .filter(Component::isFocusOwner)
                 .findAny()
-                .ifPresent(checkBox -> checkBoxes.get(down ?
+                .ifPresent(checkBox -> checkBoxes.get(next ?
                                 getNextIndex(checkBoxes.indexOf(checkBox)) :
                                 getPreviousIndex(checkBoxes.indexOf(checkBox)))
                         .requestFocusInWindow());

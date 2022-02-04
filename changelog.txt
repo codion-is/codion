@@ -7643,3 +7643,4 @@
   FilteredTablePanel.selectColumns() bug fixed, key event with JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT condition did not work with JDK 17
   FilteredTablePanel.selectColumns() bug fixed, changed the column ordering when applying without changes
   SwingFilteredTableColumnModel, now does it's best to display hidden columns in a reasonable location when shown again, to the left of any column which was at its right when it was hidden
+  FilteredTablePanel.selectColumns() bug fixed, no longer stretches the checkbox panel to fill the scrollpane, related refactoring
