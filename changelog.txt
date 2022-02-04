@@ -7673,3 +7673,4 @@
   ProgressDialog.Builder and ProgressWorkerDialogBuilder.progressBarSize() added
   ProgressDialog.Builder.buttonControls() renamed controls()
   DefaultProgressWorkerDialogBuilder refactored, now uses DefaultProgressDialogBuilder internally
+  FilteredTablePanel.selectColumns() refactored, now only applies changes on OK, not dynamically
