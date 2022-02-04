@@ -79,7 +79,6 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A JTable implementation for {@link AbstractFilteredTableModel}.
@@ -918,10 +917,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private void applyChanges() {
-      columnModel.setColumns(checkBoxes.entrySet().stream()
-              .filter(entry -> entry.getValue().isSelected())
-              .map(entry -> (C) entry.getKey().getIdentifier())
-              .collect(toList()));
+      checkBoxes.forEach((key, value) -> {
+        if (value.isSelected()) {
+          columnModel.showColumn((C) key.getIdentifier());
+        }
+        else {
+          columnModel.hideColumn((C) key.getIdentifier());
+        }
+      });
     }
 
     private Map<TableColumn, JCheckBox> initializeCheckBoxMap() {
