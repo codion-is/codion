@@ -10,10 +10,12 @@ import is.codion.common.state.State;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -35,7 +37,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   /**
    * All columns in this column model, visible and hidden
    */
-  private final Map<C, TableColumn> columns = new HashMap<>();
+  private final Map<C, TableColumn> columns = new LinkedHashMap<>();
   /**
    * All column identifiers mapped to their respective column model index
    */
@@ -43,8 +45,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   /**
    * Contains columns that have been hidden
    */
-  private final Map<C, TableColumn> hiddenColumns = new HashMap<>();
-
+  private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
   /**
    * A lock which prevents adding or removing columns from this column model
    */
@@ -78,23 +79,23 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public void showColumn(final C columnIdentifier) {
-    final TableColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    checkIfLocked();
+    final HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
-      checkIfLocked();
       hiddenColumns.remove(columnIdentifier);
-      addColumn(column);
-      moveColumn(getColumnCount() - 1, 0);
+      addColumn(column.column);
+      moveColumn(getColumnCount() - 1, column.getIndexWhenShown());
       columnShownEvent.onEvent(columnIdentifier);
     }
   }
 
   @Override
   public void hideColumn(final C columnIdentifier) {
+    checkIfLocked();
     if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      checkIfLocked();
-      final TableColumn column = getTableColumn(columnIdentifier);
-      removeColumn(column);
-      hiddenColumns.put(columnIdentifier, column);
+      final HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
+      hiddenColumns.put(columnIdentifier, hiddenColumn);
+      removeColumn(hiddenColumn.column);
       columnHiddenEvent.onEvent(columnIdentifier);
     }
   }
@@ -127,7 +128,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public List<C> getVisibleColumns() {
-    return unmodifiableList(Collections.list(getColumns()).stream()
+    return unmodifiableList(tableColumns.stream()
             .map(column -> (C) column.getIdentifier())
             .collect(Collectors.toList()));
   }
@@ -185,6 +186,36 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   private void checkIfLocked() {
     if (lockedState.get()) {
       throw new IllegalStateException("Column model is locked");
+    }
+  }
+
+  private final class HiddenColumn {
+
+    private final TableColumn column;
+    private final Set<TableColumn> columnsToTheRight;
+
+    private HiddenColumn(final TableColumn column) {
+      this.column = column;
+      this.columnsToTheRight = getColumnsToTheRightOf(column);
+    }
+
+    private Set<TableColumn> getColumnsToTheRightOf(final TableColumn column) {
+      final Set<TableColumn> set = new HashSet<>();
+      for (int i = tableColumns.indexOf(column) + 1; i < tableColumns.size(); i++) {
+        set.add(tableColumns.get(i));
+      }
+
+      return set;
+    }
+
+    private int getIndexWhenShown() {
+      for (int i = 0; i < tableColumns.size(); i++) {
+        if (columnsToTheRight.contains(tableColumns.get(i))) {
+          return i;
+        }
+      }
+
+      return tableColumns.size() - 1;
     }
   }
 }

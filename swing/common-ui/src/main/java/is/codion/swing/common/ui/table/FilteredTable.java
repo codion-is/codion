@@ -910,24 +910,28 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     private SelectColumnsPanel(final SwingFilteredTableColumnModel<C> columnModel) {
       super(Layouts.borderLayout());
       this.columnModel = columnModel;
-      this.checkBoxes = initializeCheckBoxMap();
+      this.checkBoxes = createCheckBoxMap();
       setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       add(createNorthPanel(checkBoxes.values()), BorderLayout.NORTH);
       add(createScrollPane(checkBoxes.values()), BorderLayout.CENTER);
     }
 
     private void applyChanges() {
-      checkBoxes.forEach((key, value) -> {
-        if (value.isSelected()) {
-          columnModel.showColumn((C) key.getIdentifier());
+      columnModel.getVisibleColumns().forEach(identifier -> {
+        final TableColumn tableColumn = columnModel.getTableColumn(identifier);
+        if (!checkBoxes.get(tableColumn).isSelected()) {
+          columnModel.hideColumn(identifier);
         }
-        else {
-          columnModel.hideColumn((C) key.getIdentifier());
+      });
+      new ArrayList<>(columnModel.getHiddenColumns()).forEach(identifier -> {
+        final TableColumn tableColumn = columnModel.getTableColumn(identifier);
+        if (checkBoxes.get(tableColumn).isSelected()) {
+          columnModel.showColumn(identifier);
         }
       });
     }
 
-    private Map<TableColumn, JCheckBox> initializeCheckBoxMap() {
+    private Map<TableColumn, JCheckBox> createCheckBoxMap() {
       final Map<TableColumn, JCheckBox> checkBoxMap = new LinkedHashMap<>();
       columnModel.getAllColumns().stream()
               .sorted(new ColumnComparator())
