@@ -7675,3 +7675,4 @@
   DefaultProgressWorkerDialogBuilder refactored, now uses DefaultProgressDialogBuilder internally
   FilteredTablePanel.selectColumns() refactored, now only applies changes on OK, not dynamically
   FilteredTablePanel.selectColumns() bug fixed, key event with JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT condition did not work with JDK 17
+  FilteredTablePanel.selectColumns() bug fixed, changed the column ordering when applying without changes
