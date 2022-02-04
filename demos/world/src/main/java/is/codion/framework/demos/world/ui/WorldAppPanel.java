@@ -14,8 +14,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
-import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.EntityTablePanel.ColumnSelection;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -72,7 +70,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityTablePanel.COLUMN_SELECTION.set(ColumnSelection.MENU);
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");

@@ -32,6 +32,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -51,12 +52,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -64,16 +67,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A JTable implementation for {@link AbstractFilteredTableModel}.
@@ -110,7 +116,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private static final String SELECT_COLUMNS = "select_columns";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
-  private static final int SELECT_COLUMNS_GRID_ROWS = 15;
+  private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
@@ -314,11 +320,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectColumns() {
-    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
-    final List<C> currentColumns = columnModel.getVisibleColumns();
-    Dialogs.okCancelDialog(initializeSelectColumnsPanel(createToggleColumnsControls()))
+    final SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
+    Dialogs.okCancelDialog(selectColumnsPanel)
             .owner(this)
-            .onCancel(() -> columnModel.setColumns(currentColumns))
+            .title(MESSAGES.getString("select_columns"))
+            .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
+            .onOk(selectColumnsPanel::applyChanges)
             .show();
   }
 
@@ -595,28 +602,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             .build());
 
     return popupMenu;
-  }
-
-  private static JPanel initializeSelectColumnsPanel(final Controls columnToggleControls) {
-    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, columnToggleControls.size()), 0));
-    final List<ToggleControl> toggleControls = columnToggleControls.getActions().stream()
-            .map(ToggleControl.class::cast)
-            .collect(Collectors.toList());
-    toggleControls.forEach(control -> togglePanel.add(control.createCheckBox()));
-    final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
-    Components.button(control(() -> toggleControls.forEach(toggleControl -> toggleControl.getValue().set(true))))
-            .caption(MESSAGES.getString("select_all"))
-            .build(northPanel::add);
-    Components.button(control(() -> toggleControls.forEach(toggleControl -> toggleControl.getValue().set(false))))
-            .caption(MESSAGES.getString("select_none"))
-            .build(northPanel::add);
-
-    final JPanel base = new JPanel(Layouts.borderLayout());
-    base.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    base.add(northPanel, BorderLayout.NORTH);
-    base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
-
-    return base;
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
@@ -914,6 +899,120 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       if (selectedColumnIndex != -1) {
         final TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
         column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
+      }
+    }
+  }
+
+  private static final class SelectColumnsPanel<C> extends JPanel {
+
+    private final SwingFilteredTableColumnModel<C> columnModel;
+    private final Map<TableColumn, JCheckBox> checkBoxes;
+
+    private SelectColumnsPanel(final SwingFilteredTableColumnModel<C> columnModel) {
+      super(Layouts.borderLayout());
+      this.columnModel = columnModel;
+      this.checkBoxes = initializeCheckBoxMap();
+      setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      add(createNorthPanel(checkBoxes.values()), BorderLayout.NORTH);
+      add(createScrollPane(checkBoxes.values()), BorderLayout.CENTER);
+    }
+
+    private void applyChanges() {
+      columnModel.setColumns(checkBoxes.entrySet().stream()
+              .filter(entry -> entry.getValue().isSelected())
+              .map(entry -> (C) entry.getKey().getIdentifier())
+              .collect(toList()));
+    }
+
+    private Map<TableColumn, JCheckBox> initializeCheckBoxMap() {
+      final Map<TableColumn, JCheckBox> checkBoxMap = new LinkedHashMap<>();
+      columnModel.getAllColumns().stream()
+              .sorted(new ColumnComparator())
+              .forEach(column -> checkBoxMap.put(column,
+                      new JCheckBox(column.getHeaderValue().toString(),
+                              columnModel.isColumnVisible((C) column.getIdentifier()))));
+
+      return checkBoxMap;
+    }
+
+    private void requestColumnPanelFocus() {
+      if (!checkBoxes.isEmpty()) {
+        checkBoxes.values().iterator().next().requestFocusInWindow();
+      }
+    }
+
+    private static JPanel createNorthPanel(final Collection<JCheckBox> checkBoxes) {
+      final JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
+      Components.button(control(() -> checkBoxes.forEach(checkBox -> checkBox.setSelected(true))))
+              .caption(MESSAGES.getString("select_all"))
+              .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
+              .build(northPanel::add);
+      Components.button(control(() -> checkBoxes.forEach(checkBox -> checkBox.setSelected(false))))
+              .caption(MESSAGES.getString("select_none"))
+              .mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))
+              .build(northPanel::add);
+
+      return northPanel;
+    }
+
+    private static JScrollPane createScrollPane(final Collection<JCheckBox> checkBoxes) {
+      final JPanel togglePanel = createTogglePanel(new ArrayList<>(checkBoxes));
+      final JScrollPane scrollPane = new JScrollPane(togglePanel);
+      scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, COLUMNS_SELECTION_PANEL_HEIGHT));
+
+      return scrollPane;
+    }
+
+    private static JPanel createTogglePanel(final List<JCheckBox> checkBoxes) {
+      final JPanel togglePanel = new JPanel(Layouts.gridLayout(0, 1));
+      checkBoxes.forEach(togglePanel::add);
+      checkBoxes.forEach(checkBox -> checkBox.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(final FocusEvent e) {
+          togglePanel.scrollRectToVisible(checkBox.getBounds());
+        }
+      }));
+      KeyEvents.builder(KeyEvent.VK_UP)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .onKeyPressed()
+              .action(Control.control(new MoveFocusCommand(checkBoxes, false)))
+              .enable(togglePanel);
+      KeyEvents.builder(KeyEvent.VK_DOWN)
+              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .onKeyPressed()
+              .action(Control.control(new MoveFocusCommand(checkBoxes, true)))
+              .enable(togglePanel);
+
+      return togglePanel;
+    }
+
+    private static final class MoveFocusCommand implements Control.Command {
+
+      private final List<JCheckBox> checkBoxes;
+      private final boolean down;
+
+      private MoveFocusCommand(final List<JCheckBox> checkBoxes, final boolean down) {
+        this.down = down;
+        this.checkBoxes = checkBoxes;
+      }
+
+      @Override
+      public void perform() throws Exception {
+        checkBoxes.stream()
+                .filter(Component::isFocusOwner)
+                .findAny()
+                .ifPresent(checkBox -> checkBoxes.get(down ?
+                                getNextIndex(checkBoxes.indexOf(checkBox)) :
+                                getPreviousIndex(checkBoxes.indexOf(checkBox)))
+                        .requestFocusInWindow());
+      }
+
+      private int getNextIndex(final int currentIndex) {
+        return currentIndex == checkBoxes.size() - 1 ? 0 : currentIndex + 1;
+      }
+
+      private int getPreviousIndex(final int currentIndex) {
+        return currentIndex == 0 ? checkBoxes.size() - 1 : currentIndex - 1;
       }
     }
   }
