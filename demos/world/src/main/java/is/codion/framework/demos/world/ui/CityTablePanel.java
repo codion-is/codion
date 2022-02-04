@@ -8,42 +8,13 @@ import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTablePanel;
 
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.PieDataset;
-
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-import java.awt.BorderLayout;
 import java.util.List;
 
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static org.jfree.chart.ChartFactory.createPieChart;
+final class CityTablePanel extends ChartTablePanel {
 
-final class CityTablePanel extends EntityTablePanel {
-
-  private final CityTableModel cityTableModel;
-
-  CityTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel);
-    this.cityTableModel = (CityTableModel) tableModel;
-  }
-
-  @Override
-  protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    JPanel tableViewPanel = new JPanel(borderLayout());
-    tableViewPanel.add(tablePanel, BorderLayout.CENTER);
-    tableViewPanel.add(southPanel, BorderLayout.SOUTH);
-    ChartPanel cityChartPanel = createChartPanel("Cities", cityTableModel.getChartDataset());
-    JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.addTab("Table", tableViewPanel);
-    tabbedPane.addTab("Chart", cityChartPanel);
-    setLayout(borderLayout());
-    add(tabbedPane, BorderLayout.CENTER);
+  CityTablePanel(CityTableModel tableModel) {
+    super(tableModel, tableModel.getChartDataset(), "Cities");
   }
 
   @Override
@@ -56,12 +27,12 @@ final class CityTablePanel extends EntityTablePanel {
   private Control createFetchLocationControl() {
     return Control.builder(this::fetchLocation)
             .caption("Fetch location")
-            .enabledState(cityTableModel.getCitiesWithoutLocationSelectedObserver())
+            .enabledState(((CityTableModel) getTableModel()).getCitiesWithoutLocationSelectedObserver())
             .build();
   }
 
   private void fetchLocation() {
-    FetchLocationTask fetchLocationTask = new FetchLocationTask(cityTableModel);
+    FetchLocationTask fetchLocationTask = new FetchLocationTask(((CityTableModel) getTableModel()));
 
     Dialogs.progressWorkerDialog(fetchLocationTask)
             .owner(this)
@@ -81,16 +52,6 @@ final class CityTablePanel extends EntityTablePanel {
             .owner(this)
             .title("Unable to fetch location")
             .show(exception);
-  }
-
-  private ChartPanel createChartPanel(String title, PieDataset<String> dataset) {
-    JFreeChart languagesChart = createPieChart(title, dataset);
-    languagesChart.getPlot().setBackgroundPaint(UIManager.getColor("Table.background"));
-    languagesChart.setBackgroundPaint(getBackground());
-    ChartPanel chartPanel = new ChartPanel(languagesChart);
-    chartPanel.getChart().removeLegend();
-
-    return chartPanel;
   }
 
   private static final class FetchLocationTask implements ProgressTask<Void, String> {

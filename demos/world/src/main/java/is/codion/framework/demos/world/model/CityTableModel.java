@@ -105,8 +105,8 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private void refreshChartDataset() {
     chartDataset.clear();
-    Entity.castTo(City.class, getVisibleItems())
-            .forEach(city -> chartDataset.setValue(city.name(), city.population()));
+    Entity.castTo(City.class, getVisibleItems()).forEach(city ->
+            chartDataset.setValue(city.name(), city.population()));
   }
 
   private void updateCitiesWithoutLocationSelected() {
