@@ -629,20 +629,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private ToggleControl createToggleColumnControl(final TableColumn column) {
     final C identifier = (C) column.getIdentifier();
     final State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
-    visibleState.addDataListener(visible -> setColumnVisible(identifier, visible));
+    visibleState.addDataListener(visible -> tableModel.getColumnModel().setColumnVisible(identifier, visible));
 
     return ToggleControl.builder(visibleState)
             .caption(column.getHeaderValue().toString())
             .build();
-  }
-
-  private void setColumnVisible(final C columnIdentifer, final boolean visible) {
-    if (visible) {
-      tableModel.getColumnModel().showColumn(columnIdentifer);
-    }
-    else {
-      tableModel.getColumnModel().hideColumn(columnIdentifer);
-    }
   }
 
   private void initializeTableHeader() {
@@ -920,13 +911,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       columnModel.getVisibleColumns().forEach(identifier -> {
         final TableColumn tableColumn = columnModel.getTableColumn(identifier);
         if (!checkBoxes.get(tableColumn).isSelected()) {
-          columnModel.hideColumn(identifier);
+          columnModel.setColumnVisible(identifier, false);
         }
       });
       new ArrayList<>(columnModel.getHiddenColumns()).forEach(identifier -> {
         final TableColumn tableColumn = columnModel.getTableColumn(identifier);
         if (checkBoxes.get(tableColumn).isSelected()) {
-          columnModel.showColumn(identifier);
+          columnModel.setColumnVisible(identifier, true);
         }
       });
     }

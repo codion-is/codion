@@ -78,26 +78,13 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   }
 
   @Override
-  public void showColumn(final C columnIdentifier) {
+  public boolean setColumnVisible(final C columnIdentifier, final boolean visible) {
     checkIfLocked();
-    final HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
-    if (column != null) {
-      hiddenColumns.remove(columnIdentifier);
-      addColumn(column.column);
-      moveColumn(getColumnCount() - 1, column.getIndexWhenShown());
-      columnShownEvent.onEvent(columnIdentifier);
+    if (visible) {
+      return showColumn(columnIdentifier);
     }
-  }
 
-  @Override
-  public void hideColumn(final C columnIdentifier) {
-    checkIfLocked();
-    if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      final HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
-      hiddenColumns.put(columnIdentifier, hiddenColumn);
-      removeColumn(hiddenColumn.column);
-      columnHiddenEvent.onEvent(columnIdentifier);
-    }
+    return hideColumn(columnIdentifier);
   }
 
   @Override
@@ -181,6 +168,35 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   @Override
   public void removeColumnShownListener(final EventDataListener<C> listener) {
     columnShownEvent.removeDataListener(listener);
+  }
+
+  private boolean showColumn(final C columnIdentifier) {
+    checkIfLocked();
+    final HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    if (column != null) {
+      hiddenColumns.remove(columnIdentifier);
+      addColumn(column.column);
+      moveColumn(getColumnCount() - 1, column.getIndexWhenShown());
+      columnShownEvent.onEvent(columnIdentifier);
+
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean hideColumn(final C columnIdentifier) {
+    checkIfLocked();
+    if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
+      final HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
+      hiddenColumns.put(columnIdentifier, hiddenColumn);
+      removeColumn(hiddenColumn.column);
+      columnHiddenEvent.onEvent(columnIdentifier);
+
+      return true;
+    }
+
+    return false;
   }
 
   private void checkIfLocked() {

@@ -39,20 +39,13 @@ public interface FilteredTableColumnModel<C> {
   State getLockedState();
 
   /**
-   * Shows the column with the given columnIdentifier.
-   * @param columnIdentifier the column identifier
+   * @param columnIdentifier the columnd identifier
+   * @param visible true if the column should be visible, false if it should be hidden
+   * @return true if the column visibility changed
    * @throws IllegalStateException in case this model is locked
    * @see #getLockedState()
    */
-  void showColumn(C columnIdentifier);
-
-  /**
-   * Hides the column with the given columnIdentifier.
-   * @param columnIdentifier the column identifier
-   * @throws IllegalStateException in case this model is locked
-   * @see #getLockedState()
-   */
-  void hideColumn(C columnIdentifier);
+  boolean setColumnVisible(C columnIdentifier, boolean visible);
 
   /**
    * @param columnIdentifier the key for which to query if its column is visible
