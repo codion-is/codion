@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
  */
-public interface FilteredTableColumnModel<C> {
+public interface FilteredTableColumnModel<C> extends TableColumnModel {
 
   /**
    * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
