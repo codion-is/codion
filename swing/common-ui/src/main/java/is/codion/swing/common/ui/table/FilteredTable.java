@@ -966,22 +966,24 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     private static JPanel createTogglePanel(final List<JCheckBox> checkBoxes) {
       final JPanel togglePanel = new JPanel(Layouts.gridLayout(0, 1));
       checkBoxes.forEach(togglePanel::add);
-      checkBoxes.forEach(checkBox -> checkBox.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(final FocusEvent e) {
-          togglePanel.scrollRectToVisible(checkBox.getBounds());
-        }
-      }));
-      KeyEvents.builder(KeyEvent.VK_UP)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+      final KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
+              .condition(JComponent.WHEN_FOCUSED)
               .onKeyPressed()
-              .action(Control.control(new MoveFocusCommand(checkBoxes, false)))
-              .enable(togglePanel);
-      KeyEvents.builder(KeyEvent.VK_DOWN)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(control(new MoveFocusCommand(checkBoxes, false)));
+      final KeyEvents.Builder downEventBuilder = KeyEvents.builder(KeyEvent.VK_DOWN)
+              .condition(JComponent.WHEN_FOCUSED)
               .onKeyPressed()
-              .action(Control.control(new MoveFocusCommand(checkBoxes, true)))
-              .enable(togglePanel);
+              .action(control(new MoveFocusCommand(checkBoxes, true)));
+      checkBoxes.forEach(checkBox -> {
+        upEventBuilder.enable(checkBox);
+        downEventBuilder.enable(checkBox);
+        checkBox.addFocusListener(new FocusAdapter() {
+          @Override
+          public void focusGained(final FocusEvent e) {
+            togglePanel.scrollRectToVisible(checkBox.getBounds());
+          }
+        });
+      });
 
       return togglePanel;
     }
