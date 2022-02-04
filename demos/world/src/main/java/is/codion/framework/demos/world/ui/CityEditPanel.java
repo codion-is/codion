@@ -27,7 +27,6 @@ import java.util.Set;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.stream.Collectors.toSet;
-import static javax.swing.BorderFactory.createRaisedBevelBorder;
 
 public final class CityEditPanel extends EntityEditPanel {
 
@@ -79,7 +78,7 @@ public final class CityEditPanel extends EntityEditPanel {
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
     mapKit.setMiniMapVisible(false);
     mapKit.setZoomSliderVisible(false);
-    mapKit.setBorder(createRaisedBevelBorder());
+    mapKit.setZoomButtonsVisible(false);
     mapKit.getMainMap().setZoom(MAX_ZOOM);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
 

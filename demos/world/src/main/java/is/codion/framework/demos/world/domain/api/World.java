@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.DerivedProperty.SourceValues;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -43,11 +44,11 @@ public interface World {
     void location(Location location);
 
     default boolean isInCountry(Entity country) {
-      return country != null && Objects.equals(get(COUNTRY_FK), country);
+      return country != null && Objects.equals(country(), country);
     }
 
     default boolean isCapital() {
-      return Objects.equals(get(City.ID), get(City.COUNTRY_FK).get(Country.CAPITAL));
+      return Objects.equals(get(City.ID), country().get(Country.CAPITAL));
     }
   }
 
@@ -243,7 +244,7 @@ public interface World {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Integer get(DerivedProperty.SourceValues sourceValues) {
+    public Integer get(SourceValues sourceValues) {
       Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
       Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(Country.POPULATION)) {

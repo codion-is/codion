@@ -6,20 +6,16 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.general.PieDataset;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import static is.codion.framework.demos.world.ui.ChartPanels.createBarChartPanel;
+import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
 import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static org.jfree.chart.ChartFactory.createBarChart;
-import static org.jfree.chart.ChartFactory.createPieChart;
 
 final class ContinentPanel extends EntityPanel {
 
@@ -35,10 +31,15 @@ final class ContinentPanel extends EntityPanel {
     tablePanel.initializePanel();
     setPreferredHeight(tablePanel, 200);
 
-    ChartPanel populationChartPanel = createChartPanel("Population", model.getPopulationDataset());
-    ChartPanel surfaceAreaChartPanel = createChartPanel("Surface area", model.getSurfaceAreaDataset());
-    ChartPanel gnpChartPanel = createChartPanel("GNP", model.getGnpDataset());
-    ChartPanel lifeExpectancyChartPanel = createLifeExpectancyChartPanel(model.getLifeExpectancyDataset());
+    ChartPanel populationChartPanel = createPieChartPanel(this, model.getPopulationDataset(), "Population");
+    ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.getSurfaceAreaDataset(), "Surface area");
+    ChartPanel gnpChartPanel = createPieChartPanel(this, model.getGnpDataset(), "GNP");
+    ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.getLifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
+
+    Dimension pieChartSize = new Dimension(300, 300);
+    populationChartPanel.setPreferredSize(pieChartSize);
+    surfaceAreaChartPanel.setPreferredSize(pieChartSize);
+    gnpChartPanel.setPreferredSize(pieChartSize);
 
     JPanel centerPanel = new JPanel(borderLayout());
     centerPanel.add(tablePanel, BorderLayout.NORTH);
@@ -56,24 +57,5 @@ final class ContinentPanel extends EntityPanel {
 
     initializeKeyboardActions();
     initializeNavigation();
-  }
-
-  private ChartPanel createChartPanel(String title, PieDataset<String> dataset) {
-    JFreeChart chart = createPieChart(title, dataset);
-    chart.getPlot().setBackgroundPaint(UIManager.getColor("Table.background"));
-    chart.setBackgroundPaint(this.getBackground());
-    ChartPanel chartPanel = new ChartPanel(chart);
-    chartPanel.getChart().removeLegend();
-    chartPanel.setPreferredSize(new Dimension(300, 300));
-
-    return chartPanel;
-  }
-
-  private ChartPanel createLifeExpectancyChartPanel(CategoryDataset dataset) {
-    JFreeChart chart = createBarChart("Life expectancy", "Continent", "Years", dataset);
-    chart.getPlot().setBackgroundPaint(UIManager.getColor("Table.background"));
-    chart.setBackgroundPaint(this.getBackground());
-
-    return new ChartPanel(chart);
   }
 }

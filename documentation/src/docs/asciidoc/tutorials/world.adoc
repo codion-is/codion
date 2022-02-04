@@ -206,3 +206,13 @@ include::{dir-source}/is/codion/framework/demos/world/ui/ContinentTablePanel.jav
 ----
 include::{dir-source}/is/codion/framework/demos/world/ui/LookupTablePanel.java[tag=**]
 ----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/ui/ChartTablePanel.java[tag=**]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/ui/ChartPanels.java[tag=**]
+----
