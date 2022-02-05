@@ -914,13 +914,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         Windows.getParentWindow(entityPanel).toFront();
       }
       else {
+        final String dialogTitle = panelBuilder.getCaption() == null ?
+                applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() :
+                panelBuilder.getCaption();
         Dialogs.componentDialog(entityPanel)
                 .owner(getParentWindow())
-                .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
-                .onClosedAction(Control.control(() -> {
+                .title(dialogTitle)
+                .onClosed(e -> {
                   entityPanel.getModel().savePreferences();
                   entityPanel.savePreferences();
-                }))
+                })
                 .modal(modalDialog)
                 .resizable(true)
                 .show();

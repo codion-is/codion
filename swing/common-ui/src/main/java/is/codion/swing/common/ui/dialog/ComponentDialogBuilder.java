@@ -11,6 +11,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
 /**
@@ -41,12 +42,6 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this DialogBuilder instance
    */
   ComponentDialogBuilder enterAction(Action enterAction);
-
-  /**
-   * @param onClosedAction this action will be registered as a windowClosed action for the dialog
-   * @return this DialogBuilder instance
-   */
-  ComponentDialogBuilder onClosedAction(Action onClosedAction);
 
   /**
    * Sets the Event which triggers the closing of the dialog, note that {@link #disposeOnEscape(boolean)}
@@ -82,6 +77,18 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this builder instance
    */
   ComponentDialogBuilder onShown(Consumer<JDialog> onShown);
+
+  /**
+   * @param onOpened called when dialog is opened
+   * @return this DialogBuilder instance
+   */
+  ComponentDialogBuilder onOpened(Consumer<WindowEvent> onOpened);
+
+  /**
+   * @param onClosedAction called when dialog is closed
+   * @return this DialogBuilder instance
+   */
+  ComponentDialogBuilder onClosed(Consumer<WindowEvent> onClosed);
 
   /**
    * @return a new JDialog instance based on this builder.
