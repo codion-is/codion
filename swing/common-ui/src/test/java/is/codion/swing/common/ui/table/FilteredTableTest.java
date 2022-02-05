@@ -29,7 +29,7 @@ public class FilteredTableTest {
 
   @Test
   void constructorNullTableModel() {
-    assertThrows(Exception.class, () -> new FilteredTable<Object, Object, AbstractFilteredTableModel<Object, Object>>(null));
+    assertThrows(Exception.class, () -> new FilteredTable<>(null));
   }
 
   @Test
