@@ -7651,3 +7651,7 @@
   PanelBuilder extends ComponentBuilder, Panels.createOkCancelButtonPanel() removed
   OkCancelDialogBuilder.buttonPanelConstraints() and buttonPanelBorder() added
   PanelBuilder moved to component package, builder factory method moved to Components
+  State.Combination now extends StateObserver instead of State
+  State.combination(), and() and or()  overloaded with Collection<? extends StateObserver> parameter
+  ButtonBuilder.actionListener() added
+  Components.checkBox(), radioButton() and toggleButton() overloaded with ValueObserver<Boolean> parameter

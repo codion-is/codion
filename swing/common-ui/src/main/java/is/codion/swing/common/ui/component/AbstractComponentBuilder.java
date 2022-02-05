@@ -70,6 +70,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     this.linkedValue = linkedValue;
   }
 
+  /**
+   * @param linkedValueObserver the linked value observer, may be null
+   */
+  protected AbstractComponentBuilder(final ValueObserver<T> linkedValueObserver) {
+    this.linkedValueObserver = linkedValueObserver;
+  }
+
   @Override
   public final B focusable(final boolean focusable) {
     this.focusable = focusable;

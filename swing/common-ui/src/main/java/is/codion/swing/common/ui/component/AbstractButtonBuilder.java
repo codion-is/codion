@@ -4,10 +4,12 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import java.awt.event.ActionListener;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
         extends AbstractComponentBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
@@ -17,9 +19,14 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private boolean includeCaption = true;
   private Icon icon;
   private Action action;
+  private ActionListener actionListener;
 
   protected AbstractButtonBuilder(final Value<T> linkedValue) {
     super(linkedValue);
+  }
+
+  protected AbstractButtonBuilder(final ValueObserver<T> linkedValueObserver) {
+    super(linkedValueObserver);
   }
 
   @Override
@@ -53,10 +60,19 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B actionListener(final ActionListener actionListener) {
+    this.actionListener = actionListener;
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     final C button = createButton();
     if (action != null) {
       button.setAction(action);
+    }
+    if (actionListener != null) {
+      button.addActionListener(actionListener);
     }
     if (includeCaption) {
       button.setText(caption);

@@ -7,6 +7,9 @@ import is.codion.common.Conjunction;
 import is.codion.common.event.EventDataListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +22,13 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   private final Conjunction conjunction;
 
   DefaultStateCombination(final Conjunction conjunction, final StateObserver... states) {
-    this.conjunction = requireNonNull(conjunction, "conjunction");
-    if (states != null) {
-      for (final StateObserver state : states) {
-        addState(state);
-      }
+    this(conjunction, states == null ? Collections.emptyList() : Arrays.asList(states));
+  }
+
+  DefaultStateCombination(final Conjunction conjunction, final Collection<? extends StateObserver> states) {
+    this.conjunction = requireNonNull(conjunction);
+    for (final StateObserver state : requireNonNull(states)) {
+      addState(state);
     }
   }
 

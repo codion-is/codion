@@ -349,7 +349,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control createSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    final State insertUpdateState = State.or(getEditModel().getInsertEnabledObserver(),
+    final StateObserver insertUpdateState = State.or(getEditModel().getInsertEnabledObserver(),
             State.and(getEditModel().getUpdateEnabledObserver(), getEditModel().getModifiedObserver()));
     return Control.builder(this::save)
             .caption(FrameworkMessages.get(FrameworkMessages.SAVE))

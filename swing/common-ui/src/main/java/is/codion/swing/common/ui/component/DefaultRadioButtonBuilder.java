@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
@@ -14,6 +15,10 @@ final class DefaultRadioButtonBuilder extends AbstractToggleButtonBuilder<JRadio
 
   DefaultRadioButtonBuilder(final Value<Boolean> value) {
     super(value);
+  }
+
+  DefaultRadioButtonBuilder(final ValueObserver<Boolean> valueObserver) {
+    super(valueObserver);
   }
 
   @Override
