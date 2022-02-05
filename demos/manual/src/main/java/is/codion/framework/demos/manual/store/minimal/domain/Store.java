@@ -36,8 +36,7 @@ public class Store extends DefaultDomain {
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
 
-    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
-            Address.CUSTOMER_ID, Customer.ID);
+    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
   }
 
   public Store() {
@@ -52,6 +51,7 @@ public class Store extends DefaultDomain {
             columnProperty(Customer.EMAIL, "Email")
                     .maximumLength(100),
             columnProperty(Customer.IS_ACTIVE, "Is active")
+                    .nullable(false)
                     .defaultValue(true))
             .keyGenerator(identity())
             .stringFactory(stringFactory(Customer.LAST_NAME)
@@ -64,9 +64,11 @@ public class Store extends DefaultDomain {
                     .nullable(false),
             foreignKeyProperty(Address.CUSTOMER_FK, "Customer"),
             columnProperty(Address.STREET, "Street")
-                    .nullable(false).maximumLength(100),
+                    .nullable(false)
+                    .maximumLength(100),
             columnProperty(Address.CITY, "City")
-                    .nullable(false).maximumLength(50))
+                    .nullable(false)
+                    .maximumLength(50))
             .keyGenerator(identity())
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))

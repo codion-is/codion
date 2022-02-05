@@ -24,8 +24,7 @@ import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -152,8 +151,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
     LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);
-    addLookAndFeelProvider(LookAndFeelProvider.create(FlatLightLaf.class.getName(), FlatLightLaf::setup));
-    addLookAndFeelProvider(LookAndFeelProvider.create(FlatDarkLaf.class.getName(), FlatDarkLaf::setup));
+    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
+            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME.set(true);
@@ -169,7 +168,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     SwingUtilities.invokeLater(() -> new ChinookAppPanel().starter()
-            .frameSize(new Dimension(1920, 1080))
+            .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parseUser("scott:tiger"))
             .start());
 
