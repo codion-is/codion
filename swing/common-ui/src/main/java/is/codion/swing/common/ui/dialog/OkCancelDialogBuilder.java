@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.control.Control;
-
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -53,16 +51,16 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
   OkCancelDialogBuilder buttonPanelBorder(Border buttonPanelBorder);
 
   /**
-   * @param command calloed on ok pressed, before the dialog has been disposed
+   * @param onOk called on ok pressed, before the dialog has been disposed
    * @return this builder instance
    */
-  OkCancelDialogBuilder onOk(Control.Command command);
+  OkCancelDialogBuilder onOk(Runnable onOk);
 
   /**
-   * @param command called on cancel pressed, before the dialog has been disposed
+   * @param onCancel called on cancel pressed, before the dialog has been disposed
    * @return this builder instance
    */
-  OkCancelDialogBuilder onCancel(Control.Command command);
+  OkCancelDialogBuilder onCancel(Runnable onCancel);
 
   /**
    * @param okAction the action for the OK button, this action must dispose the dialog

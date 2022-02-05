@@ -99,19 +99,19 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
-   * the include condition used by this model
-   */
-  private Predicate<R> includeCondition;
-
-  /**
    * true if searching the table model should be done via regular expressions
    */
-  private boolean regularExpressionSearch = false;
+  private final State regularExpressionSearch = State.state();
 
   /**
    * true if searching the table model should be case-sensitive
    */
-  private boolean caseSensitiveSearch = false;
+  private final State caseSensitiveSearch = State.state();
+
+  /**
+   * the include condition used by this model
+   */
+  private Predicate<R> includeCondition;
 
   /**
    * true if refresh should merge, in order to not clear the selection during refresh
@@ -318,23 +318,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final boolean isRegularExpressionSearch() {
+  public final State getRegularExpressionSearchState() {
     return regularExpressionSearch;
   }
 
   @Override
-  public final void setRegularExpressionSearch(final boolean regularExpressionSearch) {
-    this.regularExpressionSearch = regularExpressionSearch;
-  }
-
-  @Override
-  public final boolean isCaseSensitiveSearch() {
+  public final State getCaseSensitiveSearchState() {
     return caseSensitiveSearch;
-  }
-
-  @Override
-  public final void setCaseSensitiveSearch(final boolean caseSensitiveSearch) {
-    this.caseSensitiveSearch = caseSensitiveSearch;
   }
 
   @Override
@@ -653,11 +643,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   private Predicate<String> getSearchCondition(final String searchText) {
     requireNonNull(searchText, "searchText");
-    if (regularExpressionSearch) {
+    if (regularExpressionSearch.get()) {
       return new RegexSearchCondition(searchText);
     }
 
-    return new StringSearchCondition(searchText, caseSensitiveSearch);
+    return new StringSearchCondition(searchText, caseSensitiveSearch.get());
   }
 
   private void bindEventsInternal() {

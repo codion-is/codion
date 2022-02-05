@@ -319,8 +319,6 @@ The *EntityConnection* interface defines the database layer. There are three imp
 
 [source,java]
 ----
-UIManager.setLookAndFeel(new FlatDarculaLaf());
-
 Database database = new H2DatabaseFactory()
         .createDatabase("jdbc:h2:mem:store",
                 "src/main/sql/create_schema_minimal.sql");

@@ -18,7 +18,6 @@ import is.codion.swing.common.model.table.TableSortModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -29,9 +28,7 @@ import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -66,7 +63,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -565,31 +561,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
-    final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive_search"), tableModel.isCaseSensitiveSearch());
-    final JCheckBox boxRegexp = new JCheckBox(MESSAGES.getString("regular_expression_search"), tableModel.isRegularExpressionSearch());
-    final JPanel panel = Components.panel(gridLayout(2, 1))
-            .add(boxCaseSensitive, boxRegexp)
-            .build();
 
-    final Control control = Control.builder(() -> {
-              tableModel.setCaseSensitiveSearch(boxCaseSensitive.isSelected());
-              tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
-            })
-            .caption(Messages.get(Messages.OK))
-            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
-            .build();
-
-    final JPopupMenu popupMenu = new JPopupMenu();
-    final String settingsMessage = MESSAGES.getString("settings");
-    popupMenu.add(Control.builder(() -> Dialogs.componentDialog(panel)
-                    .owner(FilteredTable.this)
-                    .title(settingsMessage)
-                    .onClosedAction(control)
-                    .show())
-            .caption(settingsMessage)
-            .build());
-
-    return popupMenu;
+    return Controls.builder()
+            .caption(MESSAGES.getString("settings"))
+            .control(ToggleControl.builder(tableModel.getCaseSensitiveSearchState())
+                    .caption(MESSAGES.getString("case_sensitive_search")))
+            .controls(ToggleControl.builder(tableModel.getCaseSensitiveSearchState())
+                    .caption(MESSAGES.getString("regular_expression_search")))
+            .build()
+            .createMenu()
+            .getPopupMenu();
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {

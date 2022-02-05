@@ -45,14 +45,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
-    this.okAction = Control.builder(() -> Windows.getParentDialog(component).dispose())
-            .caption(Messages.get(Messages.OK))
-            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
-            .build();
-    this.cancelAction = Control.builder(() -> Windows.getParentDialog(component).dispose())
-            .caption(Messages.get(Messages.CANCEL))
-            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
-            .build();
+    this.okAction = Control.control(() -> Windows.getParentDialog(component).dispose());
+    this.cancelAction = Control.control(() -> Windows.getParentDialog(component).dispose());
   }
 
   @Override
@@ -86,19 +80,13 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   @Override
-  public OkCancelDialogBuilder onOk(final Control.Command command) {
-    return okAction(performAndCloseControl(requireNonNull(command))
-            .caption(Messages.get(Messages.OK))
-            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
-            .build());
+  public OkCancelDialogBuilder onOk(final Runnable onOk) {
+    return okAction(performAndCloseControl(requireNonNull(onOk)));
   }
 
   @Override
-  public OkCancelDialogBuilder onCancel(final Control.Command command) {
-    return cancelAction(performAndCloseControl(requireNonNull(command))
-            .caption(Messages.get(Messages.CANCEL))
-            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
-            .build());
+  public OkCancelDialogBuilder onCancel(final Runnable onCancel) {
+    return cancelAction(performAndCloseControl(requireNonNull(onCancel)));
   }
 
   @Override
@@ -135,16 +123,23 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog build() {
-    final JButton okButton = new JButton(okAction);
-    final JButton cancelButton = new JButton(cancelAction);
-    okButton.setText(Messages.get(Messages.OK));
-    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    cancelButton.setText(Messages.get(Messages.CANCEL));
-    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-
-    final JPanel panel = new JPanel(new BorderLayout());
-    panel.add(component, BorderLayout.CENTER);
-    panel.add(createButtonBasePanel(okButton, cancelButton), BorderLayout.SOUTH);
+    final JButton okButton = Components.button(okAction)
+            .caption(Messages.get(Messages.OK))
+            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+            .build();
+    final JButton cancelButton = Components.button(cancelAction)
+            .caption(Messages.get(Messages.CANCEL))
+            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
+            .build();
+    final JPanel panel = Components.panel(new BorderLayout())
+            .addConstrained(component, BorderLayout.CENTER)
+            .addConstrained(Components.panel(Layouts.flowLayout(buttonPanelConstraints))
+                    .add(Components.panel(Layouts.gridLayout(1, 2))
+                            .add(okButton, cancelButton)
+                            .build())
+                    .border(buttonPanelBorder)
+                    .build(), BorderLayout.SOUTH)
+            .build();
 
     final JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -163,20 +158,10 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     return dialog;
   }
 
-  private Control.Builder performAndCloseControl(final Control.Command command) {
-    return Control.builder(() -> {
-      command.perform();
+  private Control performAndCloseControl(final Runnable command) {
+    return Control.control(() -> {
+      command.run();
       Windows.getParentDialog(component).dispose();
     });
-  }
-
-  private JPanel createButtonBasePanel(final JButton okButton, final JButton cancelButton) {
-    return Components.panel(new FlowLayout(buttonPanelConstraints))
-            .add(Components.panel(Layouts.gridLayout(1, 2))
-                    .add(okButton)
-                    .add(cancelButton)
-                    .build())
-            .border(buttonPanelBorder)
-            .build();
   }
 }

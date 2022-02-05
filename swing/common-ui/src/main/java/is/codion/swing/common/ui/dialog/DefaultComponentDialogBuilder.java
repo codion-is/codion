@@ -17,7 +17,6 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -35,9 +34,10 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   private boolean resizable = true;
   private Dimension size;
   private JComponent locationRelativeTo;
-  private Consumer<JDialog> onShown;
   private Action enterAction;
-  private Action onClosedAction;
+  private Consumer<JDialog> onShown;
+  private Consumer<WindowEvent> onOpened;
+  private Consumer<WindowEvent> onClosed;
   private EventObserver<?> closeEvent;
   private EventDataListener<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
@@ -67,12 +67,6 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   @Override
   public ComponentDialogBuilder enterAction(final Action enterAction) {
     this.enterAction = requireNonNull(enterAction);
-    return this;
-  }
-
-  @Override
-  public ComponentDialogBuilder onClosedAction(final Action onClosedAction) {
-    this.onClosedAction = onClosedAction;
     return this;
   }
 
@@ -107,6 +101,18 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
+  public ComponentDialogBuilder onOpened(final Consumer<WindowEvent> onOpened) {
+    this.onOpened = requireNonNull(onOpened);
+    return this;
+  }
+
+  @Override
+  public ComponentDialogBuilder onClosed(final Consumer<WindowEvent> onClosed) {
+    this.onClosed = requireNonNull(onClosed);
+    return this;
+  }
+
+  @Override
   public JDialog show() {
     final JDialog dialog = build();
     dialog.setVisible(true);
@@ -127,11 +133,23 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
     final Action disposeAction = new DisposeDialogAction(() -> dialog, confirmCloseListener);
     dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(final WindowEvent e) {
-          disposeAction.actionPerformed(null);
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        disposeAction.actionPerformed(null);
+      }
+      @Override
+      public void windowClosed(final WindowEvent e) {
+        if (onClosed != null) {
+          onClosed.accept(e);
         }
-      });
+      }
+      @Override
+      public void windowOpened(final WindowEvent e) {
+        if (onOpened != null) {
+          onOpened.accept(e);
+        }
+      }
+    });
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
@@ -144,14 +162,6 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     }
     else {
       closeEvent.addListener(() -> disposeAction.actionPerformed(null));
-    }
-    if (onClosedAction != null) {
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(final WindowEvent e) {
-          onClosedAction.actionPerformed(new ActionEvent(dialog, -1, null));
-        }
-      });
     }
 
     return dialog;

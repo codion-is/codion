@@ -1497,7 +1497,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .title(caption)
               .modal(false)
               .disposeOnEscape(disposeEditDialogOnEscape)
-              .onClosedAction(Control.control(() -> setEditPanelState(HIDDEN)))
+              .onClosed(e -> setEditPanelState(HIDDEN))
               .build();
     }
   }
@@ -1519,12 +1519,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .owner(this)
               .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
               .modal(false)
-              .onClosedAction(Control.control(() -> {
+              .onClosed(e -> {
                 //the dialog can be closed when embedding the panel, don't hide if that's the case
                 if (getDetailPanelState() != EMBEDDED) {
                   setDetailPanelState(HIDDEN);
                 }
-              }))
+              })
               .build();
     }
   }

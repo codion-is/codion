@@ -7694,3 +7694,7 @@
   PanelBuilder.add(JComponent component, Object constraints) renamed addConstrained()
   SelectColumnsPanel moved up to package level, refactored
   DefaultLoginDialogBuilder now uses DefaultOkCancelDialogBuilder instead of DefaultComponentDialogBuilder
+  ComponentDialogBuilder.onClosedAction() replaced with onClosed(), onOpened() added
+  FilteredTableModel regularExpressionSearch and caseSensitive boolean properties replaced with States
+  FilteredTable, searchField settings dialog replaced with a popup menu
+  OkCancelDialogBuilder.onOk() and onCancel() now take Runnables instead of Control.Commands, DefaultOkCancelDialogBuilder refactored

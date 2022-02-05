@@ -10,6 +10,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SelectionModel;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
@@ -234,26 +235,14 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   Optional<RowColumn> findPrevious(int fromRowIndex, Predicate<String> condition);
 
   /**
-   * @return true if regular expressions should be used when searching this table model
+   * @return the state controlling whether regular expressions should be used when searching this table model
    */
-  boolean isRegularExpressionSearch();
+  State getRegularExpressionSearchState();
 
   /**
-   * Specifies whether to use regular expressions when searching this table model
-   * @param regularExpressionSearch true if regular expression search should be enabled
+   * @return the state controlling whether searching this table model is case-sensitive
    */
-  void setRegularExpressionSearch(boolean regularExpressionSearch);
-
-  /**
-   * @return true if searching this table model is case-sensitive
-   */
-  boolean isCaseSensitiveSearch();
-
-  /**
-   * Specifies whether searching this table model should be case-sensitive
-   * @param caseSensitiveSearch true if search should be case-sensitive
-   */
-  void setCaseSensitiveSearch(boolean caseSensitiveSearch);
+  State getCaseSensitiveSearchState();
 
   /**
    * @return true if merge on refresh is enabled
