@@ -18,6 +18,12 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +39,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private final Event<C> buildEvent = Event.event();
   private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
   private final Map<Object, Object> clientProperties = new HashMap<>();
+  private final List<FocusListener> focusListeners = new ArrayList<>();
+  private final List<MouseListener> mouseListeners = new ArrayList<>();
+  private final List<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
+  private final List<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
+  private final List<KeyListener> keyListeners = new ArrayList<>();
+  private final List<ComponentListener> componentListeners = new ArrayList<>();
 
   private C component;
   private ComponentValue<T, C> componentValue;
@@ -224,6 +236,42 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B focusListener(final FocusListener focusListener) {
+    this.focusListeners.add(requireNonNull(focusListener));
+    return (B) this;
+  }
+
+  @Override
+  public final B mouseListener(final MouseListener mouseListener) {
+    this.mouseListeners.add(requireNonNull(mouseListener));
+    return (B) this;
+  }
+
+  @Override
+  public final B mouseMotionListener(final MouseMotionListener mouseMotionListener) {
+    this.mouseMotionListeners.add(requireNonNull(mouseMotionListener));
+    return (B) this;
+  }
+
+  @Override
+  public final B mouseWheelListener(final MouseWheelListener mouseWheelListener) {
+    this.mouseWheelListeners.add(requireNonNull(mouseWheelListener));
+    return (B) this;
+  }
+
+  @Override
+  public final B keyListener(final KeyListener keyListener) {
+    this.keyListeners.add(requireNonNull(keyListener));
+    return (B) this;
+  }
+
+  @Override
+  public final B componentListener(final ComponentListener componentListener) {
+    this.componentListeners.add(requireNonNull(componentListener));
+    return (B) this;
+  }
+
+  @Override
   public final B linkedValue(final Value<T> linkedValue) {
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
@@ -295,6 +343,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     component.setComponentOrientation(componentOrientation);
     clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
+    focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));
+    mouseListeners.forEach(mouseListener -> component.addMouseListener(mouseListener));
+    mouseMotionListeners.forEach(mouseMotionListener -> component.addMouseMotionListener(mouseMotionListener));
+    mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
+    keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
+    componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }

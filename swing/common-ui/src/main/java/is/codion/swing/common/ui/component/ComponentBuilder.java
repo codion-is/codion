@@ -19,6 +19,12 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 import java.util.function.Consumer;
 
 /**
@@ -192,6 +198,42 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @see JComponent#putClientProperty(Object, Object)
    */
   B clientProperty(Object key, Object value);
+
+  /**
+   * @param focusListener the focus listener
+   * @return this builder instance
+   */
+  B focusListener(FocusListener focusListener);
+
+  /**
+   * @param mouseListener the mouse listener
+   * @return this builder instance
+   */
+  B mouseListener(MouseListener mouseListener);
+
+  /**
+   * @param mouseMotionListener the mouse motion listener
+   * @return this builder instance
+   */
+  B mouseMotionListener(MouseMotionListener mouseMotionListener);
+
+  /**
+   * @param mouseWheelListener the mouse wheel listener
+   * @return this builder instance
+   */
+  B mouseWheelListener(MouseWheelListener mouseWheelListener);
+
+  /**
+   * @param keyListener the key listener
+   * @return this builder instance
+   */
+  B keyListener(KeyListener keyListener);
+
+  /**
+   * @param componentListener the component listener
+   * @return this builder instance
+   */
+  B componentListener(ComponentListener componentListener);
 
   /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.
