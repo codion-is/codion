@@ -23,14 +23,13 @@ public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilde
    * @param constraints the layout constraints
    * @return this builder instance
    */
-  PanelBuilder add(JComponent component, Object constraints);
+  PanelBuilder addConstrained(JComponent component, Object constraints);
 
   /**
    * @param components the components to add
    * @return this builder instance
    */
   PanelBuilder add(JComponent... components);
-
 
   /**
    * @param components the components to add

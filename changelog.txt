@@ -7657,3 +7657,4 @@
   Components.checkBox(), radioButton() and toggleButton() overloaded with ValueObserver<Boolean> parameter
   PanelBuilder.add() overloaded with JComponent... and Collection<? extends JComponent> parameters
   ComponentBuilder.focusListener(), mouseListener(), mouseMotionListener(), mouseWheelListener(), keyListener() and componentListener() added
+  PanelBuilder.add(JComponent component, Object constraints) renamed addConstrained()

@@ -29,7 +29,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
   }
 
   @Override
-  public PanelBuilder add(final JComponent component, final Object constraints) {
+  public PanelBuilder addConstrained(final JComponent component, final Object constraints) {
     componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
     return this;
   }

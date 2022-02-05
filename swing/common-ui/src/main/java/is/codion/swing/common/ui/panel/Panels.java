@@ -35,8 +35,8 @@ public final class Panels {
     requireNonNull(centerComponent, CENTER_COMPONENT);
 
     return Components.panel(Layouts.borderLayout())
-            .add(northComponent, BorderLayout.NORTH)
-            .add(centerComponent, BorderLayout.CENTER)
+            .addConstrained(northComponent, BorderLayout.NORTH)
+            .addConstrained(centerComponent, BorderLayout.CENTER)
             .build();
   }
 
@@ -51,8 +51,8 @@ public final class Panels {
     requireNonNull(centerComponent, CENTER_COMPONENT);
 
     return Components.panel(Layouts.borderLayout())
-            .add(westComponent, BorderLayout.WEST)
-            .add(centerComponent, BorderLayout.CENTER)
+            .addConstrained(westComponent, BorderLayout.WEST)
+            .addConstrained(centerComponent, BorderLayout.CENTER)
             .build();
   }
 
@@ -88,8 +88,8 @@ public final class Panels {
     button.setFocusable(buttonFocusable);
 
     return Components.panel(new BorderLayout())
-            .add(centerComponent, BorderLayout.CENTER)
-            .add(button, BorderLayout.EAST)
+            .addConstrained(centerComponent, BorderLayout.CENTER)
+            .addConstrained(button, BorderLayout.EAST)
             .build();
   }
 }
