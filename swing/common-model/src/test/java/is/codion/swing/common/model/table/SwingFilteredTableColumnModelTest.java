@@ -30,11 +30,11 @@ public class SwingFilteredTableColumnModelTest {
     assertEquals(1, testModel.getColumnCount());
     assertNotNull(testModel.getTableColumn(0));
 
-    testModel.hideColumn(0);
+    testModel.setColumnVisible(0, false);
     assertFalse(testModel.isColumnVisible(0));
     assertEquals(1, hidden.size());
     assertEquals(1, testModel.getHiddenColumns().size());
-    testModel.showColumn(0);
+    testModel.setColumnVisible(0, true);
     assertTrue(testModel.isColumnVisible(0));
     assertEquals(1, shown.size());
 
@@ -126,11 +126,11 @@ public class SwingFilteredTableColumnModelTest {
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.getLockedState().set(true);
-    assertThrows(IllegalStateException.class, () -> columnModel.hideColumn(0));
+    assertThrows(IllegalStateException.class, () -> columnModel.setColumnVisible(0, false));
     columnModel.getLockedState().set(false);
-    columnModel.hideColumn(0);
+    columnModel.setColumnVisible(0, false);
     columnModel.getLockedState().set(true);
-    assertThrows(IllegalStateException.class, () -> columnModel.showColumn(0));
+    assertThrows(IllegalStateException.class, () -> columnModel.setColumnVisible(0, true));
     assertThrows(IllegalStateException.class, () -> columnModel.setColumns(0));
 
     columnModel.getLockedState().set(false);

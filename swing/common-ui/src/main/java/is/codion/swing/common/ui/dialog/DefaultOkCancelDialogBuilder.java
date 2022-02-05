@@ -6,15 +6,18 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.panel.Panels;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -37,6 +40,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private Consumer<JDialog> onShown;
   private Action okAction;
   private Action cancelAction;
+  private int buttonPanelConstraints = FlowLayout.RIGHT;
+  private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
@@ -65,6 +70,18 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   @Override
   public OkCancelDialogBuilder size(final Dimension size) {
     this.size = requireNonNull(size);
+    return this;
+  }
+
+  @Override
+  public OkCancelDialogBuilder buttonPanelConstraints(final int buttonPanelConstraints) {
+    this.buttonPanelConstraints = buttonPanelConstraints;
+    return this;
+  }
+
+  @Override
+  public OkCancelDialogBuilder buttonPanelBorder(final Border buttonPanelBorder) {
+    this.buttonPanelBorder = buttonPanelBorder;
     return this;
   }
 
@@ -118,9 +135,16 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog build() {
-    final JPanel panel = new JPanel(Layouts.borderLayout());
+    final JButton okButton = new JButton(okAction);
+    final JButton cancelButton = new JButton(cancelAction);
+    okButton.setText(Messages.get(Messages.OK));
+    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    cancelButton.setText(Messages.get(Messages.CANCEL));
+    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+
+    final JPanel panel = new JPanel(new BorderLayout());
     panel.add(component, BorderLayout.CENTER);
-    panel.add(createButtonBasePanel(), BorderLayout.SOUTH);
+    panel.add(createButtonBasePanel(okButton, cancelButton), BorderLayout.SOUTH);
 
     final JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -130,14 +154,10 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
         cancelAction.actionPerformed(null);
       }
     });
+    dialog.getRootPane().setDefaultButton(okButton);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .action(cancelAction)
-            .enable(dialog.getRootPane());
-    KeyEvents.builder(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .onKeyPressed()
-            .action(okAction)
             .enable(dialog.getRootPane());
 
     return dialog;
@@ -150,10 +170,13 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     });
   }
 
-  private JPanel createButtonBasePanel() {
-    final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    buttonBasePanel.add(Panels.createOkCancelButtonPanel(okAction, cancelAction));
-
-    return buttonBasePanel;
+  private JPanel createButtonBasePanel(final JButton okButton, final JButton cancelButton) {
+    return Components.panel(new FlowLayout(buttonPanelConstraints))
+            .add(Components.panel(Layouts.gridLayout(1, 2))
+                    .add(okButton)
+                    .add(cancelButton)
+                    .build())
+            .border(buttonPanelBorder)
+            .build();
   }
 }

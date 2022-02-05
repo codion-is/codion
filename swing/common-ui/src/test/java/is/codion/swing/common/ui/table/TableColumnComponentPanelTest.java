@@ -37,20 +37,20 @@ public class TableColumnComponentPanelTest {
   }
 
   @Test
-  void showColumn() {
+  void setColumnVisible() {
     final SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2));
-    columnModel.hideColumn(1);
+    columnModel.setColumnVisible(1, false);
 
     final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
     assertTrue(panel.getColumnComponents().containsKey(column1));
 
     assertNull(panel.getColumnComponents().get(column1).getParent());
-    columnModel.showColumn(1);
+    columnModel.setColumnVisible(1, true);
     assertNotNull(panel.getColumnComponents().get(column1).getParent());
-    columnModel.hideColumn(2);
+    columnModel.setColumnVisible(2, false);
     assertNull(panel.getColumnComponents().get(column2).getParent());
-    columnModel.showColumn(2);
+    columnModel.setColumnVisible(2, true);
     assertNotNull(panel.getColumnComponents().get(column2).getParent());
   }
 

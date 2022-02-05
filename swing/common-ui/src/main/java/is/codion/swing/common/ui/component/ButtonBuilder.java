@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import java.awt.event.ActionListener;
 
 /**
  * Builds buttons.
@@ -44,4 +45,10 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @return this builder instance
    */
   B action(Action action);
+
+  /**
+   * @param actionListener the action listener
+   * @return this builder instance
+   */
+  B actionListener(ActionListener actionListener);
 }

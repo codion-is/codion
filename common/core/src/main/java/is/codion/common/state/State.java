@@ -6,6 +6,8 @@ package is.codion.common.state;
 import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
 
+import java.util.Collection;
+
 /**
  * A class encapsulating a boolean state, non-nullable with null values translated to false.
  * <pre>
@@ -31,7 +33,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * A state which combines a number of states, either ANDing or ORing those together
    * when determining its own state.
    */
-  interface Combination extends State {
+  interface Combination extends StateObserver {
 
     /**
      * Returns the {@link Conjunction} used when combining the states.
@@ -96,6 +98,16 @@ public interface State extends StateObserver, Value<Boolean> {
   }
 
   /**
+   * Instantiates a new {@link State.Combination} instance.
+   * @param conjunction the conjunction to use
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination combination(final Conjunction conjunction, final Collection<? extends StateObserver> stateObservers) {
+    return new DefaultStateCombination(conjunction, stateObservers);
+  }
+
+  /**
    * Instantiates a new {@link State.Combination} instance using {@link Conjunction#AND}.
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
@@ -105,11 +117,29 @@ public interface State extends StateObserver, Value<Boolean> {
   }
 
   /**
+   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#AND}.
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination and(final Collection<? extends StateObserver> stateObservers) {
+    return new DefaultStateCombination(Conjunction.AND, stateObservers);
+  }
+
+  /**
    * Instantiates a new {@link State.Combination} instance using {@link Conjunction#OR}.
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
   static Combination or(final StateObserver... stateObservers) {
+    return new DefaultStateCombination(Conjunction.OR, stateObservers);
+  }
+
+  /**
+   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#OR}.
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
+   */
+  static Combination or(final Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 

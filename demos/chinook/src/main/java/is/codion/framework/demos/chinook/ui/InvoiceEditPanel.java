@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.panel.Panels;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -54,8 +54,8 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     createTextField(Invoice.BILLINGPOSTALCODE)
             .selectAllOnFocusGained(true);
 
-    final JPanel centerBasePanel = Panels.builder(borderLayout())
-            .add(Panels.builder(gridLayout(4, 2))
+    final JPanel centerBasePanel = Components.panel(borderLayout())
+            .addConstrained(Components.panel(gridLayout(4, 2))
                     .add(createInputPanel(Invoice.CUSTOMER_FK)).add(createInputPanel(Invoice.DATE))
                     .add(createInputPanel(Invoice.BILLINGADDRESS)).add(createInputPanel(Invoice.BILLINGCITY))
                     .add(createInputPanel(Invoice.BILLINGSTATE)).add(createInputPanel(Invoice.BILLINGCOUNTRY))

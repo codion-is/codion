@@ -7673,8 +7673,23 @@
   ProgressDialog.Builder and ProgressWorkerDialogBuilder.progressBarSize() added
   ProgressDialog.Builder.buttonControls() renamed controls()
   DefaultProgressWorkerDialogBuilder refactored, now uses DefaultProgressDialogBuilder internally
-  FilteredTablePanel.selectColumns() refactored, now only applies changes on OK, not dynamically
-  FilteredTablePanel.selectColumns() bug fixed, key event with JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT condition did not work with JDK 17
-  FilteredTablePanel.selectColumns() bug fixed, changed the column ordering when applying without changes
+  FilteredTable.selectColumns() refactored, now only applies changes on OK, not dynamically
+  FilteredTable.selectColumns() bug fixed, key event with JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT condition did not work with JDK 17
+  FilteredTable.selectColumns() bug fixed, changed the column ordering when applying without changes
   SwingFilteredTableColumnModel, now does it's best to display hidden columns in a reasonable location when shown again, to the left of any column which was at its right when it was hidden
-  FilteredTablePanel.selectColumns() bug fixed, no longer stretches the checkbox panel to fill the scrollpane, related refactoring
+  FilteredTable.selectColumns() bug fixed, no longer stretches the checkbox panel to fill the scrollpane, related refactoring
+  FilteredTableColumnModel.showColumn() and hideColumn() replaced with good ol' setColumnVisible() from way back
+  FilteredTableColumnModel now extends TableColumnModel
+  SwingFilteredTableColumnModel no longer extends DefaultTableColumnModel, addColumn() and removeColumn() now throw UnsupportedOperationException
+  LoginPanel, DefaultLoginDialogBuilder refactored
+  PanelBuilder extends ComponentBuilder, Panels.createOkCancelButtonPanel() removed
+  OkCancelDialogBuilder.buttonPanelConstraints() and buttonPanelBorder() added
+  PanelBuilder moved to component package, builder factory method moved to Components
+  State.Combination now extends StateObserver instead of State
+  State.combination(), and() and or()  overloaded with Collection<? extends StateObserver> parameter
+  ButtonBuilder.actionListener() added
+  Components.checkBox(), radioButton() and toggleButton() overloaded with ValueObserver<Boolean> parameter
+  PanelBuilder.add() overloaded with JComponent... and Collection<? extends JComponent> parameters
+  ComponentBuilder.focusListener(), mouseListener(), mouseMotionListener(), mouseWheelListener(), keyListener() and componentListener() added
+  PanelBuilder.add(JComponent component, Object constraints) renamed addConstrained()
+  SelectColumnsPanel moved up to package level, refactored

@@ -8,7 +8,9 @@ import is.codion.swing.common.ui.control.Control;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.border.Border;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.function.Consumer;
 
 
@@ -36,6 +38,19 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
    * @return this OkCancelDialogBuilder instance
    */
   OkCancelDialogBuilder size(Dimension size);
+
+  /**
+   * Default {@link FlowLayout#RIGHT}
+   * @param buttonPanelConstraints the {@link FlowLayout} panel constraints for the button panel
+   * @return this OkCancelDialogBuilder
+   */
+  OkCancelDialogBuilder buttonPanelConstraints(int buttonPanelConstraints);
+
+  /**
+   * @param buttonPanelBorder the button panel border
+   * @return this OkCancelDialogBuilder
+   */
+  OkCancelDialogBuilder buttonPanelBorder(Border buttonPanelBorder);
 
   /**
    * @param command calloed on ok pressed, before the dialog has been disposed

@@ -7,9 +7,13 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
+import javax.swing.ListSelectionModel;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -24,12 +28,16 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A TableColumnModel handling hidden columns
+ * A TableColumnModel handling hidden columns.
+ * Note that this column model does not support dynamically adding or removing columns,
+ * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}
  * @param <C> the type of column identifier
  */
-public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
+public final class SwingFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
+
+  private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
   private final Event<C> columnHiddenEvent = Event.event();
   private final Event<C> columnShownEvent = Event.event();
@@ -63,7 +71,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
       final C identifier = (C) column.getIdentifier();
       columns.put(identifier, column);
       columnIdentifiers.put(column.getModelIndex(), identifier);
-      addColumn(column);
+      tableColumnModel.addColumn(column);
     });
   }
 
@@ -78,26 +86,13 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
   }
 
   @Override
-  public void showColumn(final C columnIdentifier) {
+  public boolean setColumnVisible(final C columnIdentifier, final boolean visible) {
     checkIfLocked();
-    final HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
-    if (column != null) {
-      hiddenColumns.remove(columnIdentifier);
-      addColumn(column.column);
-      moveColumn(getColumnCount() - 1, column.getIndexWhenShown());
-      columnShownEvent.onEvent(columnIdentifier);
+    if (visible) {
+      return showColumn(columnIdentifier);
     }
-  }
 
-  @Override
-  public void hideColumn(final C columnIdentifier) {
-    checkIfLocked();
-    if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      final HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
-      hiddenColumns.put(columnIdentifier, hiddenColumn);
-      removeColumn(hiddenColumn.column);
-      columnHiddenEvent.onEvent(columnIdentifier);
-    }
+    return hideColumn(columnIdentifier);
   }
 
   @Override
@@ -128,7 +123,7 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
   @Override
   public List<C> getVisibleColumns() {
-    return unmodifiableList(tableColumns.stream()
+    return unmodifiableList(Collections.list(tableColumnModel.getColumns()).stream()
             .map(column -> (C) column.getIdentifier())
             .collect(Collectors.toList()));
   }
@@ -163,6 +158,105 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
     throw new IllegalArgumentException("Column at model index not found: " + columnModelIndex);
   }
 
+  /* TableColumnModel implementation begins */
+
+  @Override
+  public void addColumn(final TableColumn column) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void removeColumn(final TableColumn column) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void moveColumn(final int fromIndex, final int toIndex) {
+    tableColumnModel.moveColumn(fromIndex, toIndex);
+  }
+
+  @Override
+  public void setColumnMargin(final int columnMargin) {
+    tableColumnModel.setColumnMargin(columnMargin);
+  }
+
+  @Override
+  public int getColumnCount() {
+    return tableColumnModel.getColumnCount();
+  }
+
+  @Override
+  public Enumeration<TableColumn> getColumns() {
+    return tableColumnModel.getColumns();
+  }
+
+  @Override
+  public int getColumnIndex(final Object columnIdentifier) {
+    return tableColumnModel.getColumnIndex(columnIdentifier);
+  }
+
+  @Override
+  public TableColumn getColumn(final int columnIndex) {
+    return tableColumnModel.getColumn(columnIndex);
+  }
+
+  @Override
+  public int getColumnMargin() {
+    return tableColumnModel.getColumnMargin();
+  }
+
+  @Override
+  public int getColumnIndexAtX(final int xPosition) {
+    return tableColumnModel.getColumnIndexAtX(xPosition);
+  }
+
+  @Override
+  public int getTotalColumnWidth() {
+    return tableColumnModel.getTotalColumnWidth();
+  }
+
+  @Override
+  public void setColumnSelectionAllowed(final boolean columnSelectionAllowed) {
+    tableColumnModel.setColumnSelectionAllowed(columnSelectionAllowed);
+  }
+
+  @Override
+  public boolean getColumnSelectionAllowed() {
+    return tableColumnModel.getColumnSelectionAllowed();
+  }
+
+  @Override
+  public int[] getSelectedColumns() {
+    return tableColumnModel.getSelectedColumns();
+  }
+
+  @Override
+  public int getSelectedColumnCount() {
+    return tableColumnModel.getSelectedColumnCount();
+  }
+
+  @Override
+  public void setSelectionModel(final ListSelectionModel listSelectionModel) {
+    tableColumnModel.setSelectionModel(listSelectionModel);
+  }
+
+  @Override
+  public ListSelectionModel getSelectionModel() {
+    return tableColumnModel.getSelectionModel();
+  }
+
+  @Override
+  public void addColumnModelListener(final TableColumnModelListener listener) {
+    tableColumnModel.addColumnModelListener(listener);
+  }
+
+  @Override
+  public void removeColumnModelListener(final TableColumnModelListener listener) {
+    tableColumnModel.removeColumnModelListener(listener);
+  }
+
+  /* TableColumnModel implementation ends */
+
   @Override
   public void addColumnHiddenListener(final EventDataListener<C> listener) {
     columnHiddenEvent.addDataListener(listener);
@@ -183,6 +277,35 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
     columnShownEvent.removeDataListener(listener);
   }
 
+  private boolean showColumn(final C columnIdentifier) {
+    checkIfLocked();
+    final HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    if (column != null) {
+      hiddenColumns.remove(columnIdentifier);
+      tableColumnModel.addColumn(column.column);
+      tableColumnModel.moveColumn(getColumnCount() - 1, column.getIndexWhenShown());
+      columnShownEvent.onEvent(columnIdentifier);
+
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean hideColumn(final C columnIdentifier) {
+    checkIfLocked();
+    if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
+      final HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
+      hiddenColumns.put(columnIdentifier, hiddenColumn);
+      tableColumnModel.removeColumn(hiddenColumn.column);
+      columnHiddenEvent.onEvent(columnIdentifier);
+
+      return true;
+    }
+
+    return false;
+  }
+
   private void checkIfLocked() {
     if (lockedState.get()) {
       throw new IllegalStateException("Column model is locked");
@@ -201,21 +324,21 @@ public final class SwingFilteredTableColumnModel<C> extends DefaultTableColumnMo
 
     private Set<TableColumn> getColumnsToTheRightOf(final TableColumn column) {
       final Set<TableColumn> set = new HashSet<>();
-      for (int i = tableColumns.indexOf(column) + 1; i < tableColumns.size(); i++) {
-        set.add(tableColumns.get(i));
+      for (int i = tableColumnModel.getColumnIndex(column.getIdentifier()) + 1; i < tableColumnModel.getColumnCount(); i++) {
+        set.add(tableColumnModel.getColumn(i));
       }
 
       return set;
     }
 
     private int getIndexWhenShown() {
-      for (int i = 0; i < tableColumns.size(); i++) {
-        if (columnsToTheRight.contains(tableColumns.get(i))) {
+      for (int i = 0; i < tableColumnModel.getColumnCount(); i++) {
+        if (columnsToTheRight.contains(tableColumnModel.getColumn(i))) {
           return i;
         }
       }
 
-      return tableColumns.size() - 1;
+      return tableColumnModel.getColumnCount() - 1;
     }
   }
 }

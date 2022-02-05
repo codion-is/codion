@@ -20,6 +20,7 @@ import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
+import java.awt.LayoutManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,6 +71,14 @@ public final class Components {
   }
 
   /**
+   * @param linkedValueObserver the value observer to link to the check-box
+   * @return a builder for a component
+   */
+  public static CheckBoxBuilder checkBox(final ValueObserver<Boolean> linkedValueObserver) {
+    return new DefaultCheckBoxBuilder(linkedValueObserver);
+  }
+
+  /**
    * @return a builder for a component
    */
   public static RadioButtonBuilder radioButton() {
@@ -82,6 +91,14 @@ public final class Components {
    */
   public static RadioButtonBuilder radioButton(final Value<Boolean> linkedValue) {
     return new DefaultRadioButtonBuilder(linkedValue);
+  }
+
+  /**
+   * @param linkedValueObserver the value observer to link to the radio button
+   * @return a builder for a component
+   */
+  public static RadioButtonBuilder radioButton(final ValueObserver<Boolean> linkedValueObserver) {
+    return new DefaultRadioButtonBuilder(linkedValueObserver);
   }
 
   /**
@@ -99,6 +116,15 @@ public final class Components {
    */
   public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Value<Boolean> linkedValue) {
     return new DefaultToggleButtonBuilder<>(linkedValue);
+  }
+
+  /**
+   * @param linkedValueObserver the value observer to link to the button
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final ValueObserver<Boolean> linkedValueObserver) {
+    return new DefaultToggleButtonBuilder<>(linkedValueObserver);
   }
 
   /**
@@ -670,6 +696,14 @@ public final class Components {
    */
   public static LabelBuilder label(final String text) {
     return new DefaultLabelBuilder(text, null);
+  }
+
+  /**
+   * @param layoutManager the panel layout
+   * @return a panel builder
+   */
+  public static PanelBuilder panel(final LayoutManager layoutManager) {
+    return new DefaultPanelBuilder(layoutManager);
   }
 
   /**

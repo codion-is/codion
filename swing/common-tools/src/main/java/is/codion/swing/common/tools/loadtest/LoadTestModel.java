@@ -9,6 +9,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -58,7 +59,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   private final State pausedState = State.state();
   private final State collectChartDataState = State.state();
-  private final State chartUpdateSchedulerEnabledState =
+  private final StateObserver chartUpdateSchedulerEnabledState =
           State.and(pausedState.getReversedObserver(), collectChartDataState);
 
   private final Value<Integer> loginDelayFactorValue;

@@ -106,12 +106,6 @@ public class StateTest {
   }
 
   @Test
-  void stateCombinationSetActive() {
-    final State.Combination orState = State.or();
-    assertThrows(UnsupportedOperationException.class, () -> orState.set(true));
-  }
-
-  @Test
   void stateCombination() {
     State.Combination orState = State.or();
     final State stateOne = State.state();
@@ -201,7 +195,7 @@ public class StateTest {
     final State two = State.state();
     final State three = State.state();
 
-    final State combinationAnd = State.and(one, two, three);
+    final StateObserver combinationAnd = State.and(one, two, three);
     combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
     one.set(true);
     two.set(true);
@@ -210,7 +204,7 @@ public class StateTest {
     two.set(false);
     three.set(false);
 
-    final State combinationOr = State.or(one, two, three);
+    final StateObserver combinationOr = State.or(one, two, three);
     combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
     one.set(true);
     one.set(false);

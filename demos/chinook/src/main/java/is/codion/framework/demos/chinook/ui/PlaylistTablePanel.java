@@ -10,7 +10,6 @@ import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -90,11 +89,11 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
     private RandomPlaylistParametersPanel() {
       super(borderLayout());
-      Panels.builder(gridLayout(1, 2))
+      Components.panel(gridLayout(1, 2))
               .add(new JLabel(BUNDLE.getString("playlist_name")))
               .add(new JLabel(BUNDLE.getString("no_of_tracks")))
               .build(panel -> add(panel, BorderLayout.NORTH));
-      Panels.builder(gridLayout(1, 2))
+      Components.panel(gridLayout(1, 2))
               .add(playlistNameField)
               .add(noOfTracksField)
               .build(panel -> add(panel, BorderLayout.CENTER));

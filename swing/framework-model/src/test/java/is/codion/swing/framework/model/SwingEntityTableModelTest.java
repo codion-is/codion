@@ -222,7 +222,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final SwingEntityTableModel tableModel = createTestTableModel();
     assertTrue(tableModel.getColumnModel().isColumnVisible(TestDomain.DETAIL_STRING));
 
-    tableModel.getColumnModel().hideColumn(TestDomain.DETAIL_STRING);
+    tableModel.getColumnModel().setColumnVisible(TestDomain.DETAIL_STRING, false);
     tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.getColumnModel().getColumn(3);
     column.setWidth(150);//timestamp

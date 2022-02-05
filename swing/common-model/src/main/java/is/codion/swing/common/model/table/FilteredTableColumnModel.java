@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
  */
-public interface FilteredTableColumnModel<C> {
+public interface FilteredTableColumnModel<C> extends TableColumnModel {
 
   /**
    * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
@@ -39,20 +40,13 @@ public interface FilteredTableColumnModel<C> {
   State getLockedState();
 
   /**
-   * Shows the column with the given columnIdentifier.
-   * @param columnIdentifier the column identifier
+   * @param columnIdentifier the columnd identifier
+   * @param visible true if the column should be visible, false if it should be hidden
+   * @return true if the column visibility changed
    * @throws IllegalStateException in case this model is locked
    * @see #getLockedState()
    */
-  void showColumn(C columnIdentifier);
-
-  /**
-   * Hides the column with the given columnIdentifier.
-   * @param columnIdentifier the column identifier
-   * @throws IllegalStateException in case this model is locked
-   * @see #getLockedState()
-   */
-  void hideColumn(C columnIdentifier);
+  boolean setColumnVisible(C columnIdentifier, boolean visible);
 
   /**
    * @param columnIdentifier the key for which to query if its column is visible

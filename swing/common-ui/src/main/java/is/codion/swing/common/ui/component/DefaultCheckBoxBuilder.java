@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 
@@ -17,6 +18,10 @@ final class DefaultCheckBoxBuilder extends AbstractToggleButtonBuilder<JCheckBox
 
   DefaultCheckBoxBuilder(final Value<Boolean> value) {
     super(value);
+  }
+
+  DefaultCheckBoxBuilder(final ValueObserver<Boolean> valueObserver) {
+    super(valueObserver);
   }
 
   @Override

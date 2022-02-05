@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
@@ -21,8 +20,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -33,7 +30,6 @@ import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
@@ -81,30 +77,12 @@ final class LoginPanel extends JPanel {
     initializeUI(defaultUser, southComponent);
   }
 
-  User showLoginPanel(final Window parent, final String title) {
-    Window parentWindow = parent;
-    JFrame dummyFrame = null;
-    if (parentWindow == null && isWindows()) {
-      dummyFrame = createDummyFrame(title, icon);
-      parentWindow = dummyFrame;
-    }
-    final JDialog dialog = new DefaultComponentDialogBuilder(this)
-            .owner(parentWindow)
-            .resizable(false)
-            .title(title == null ? Messages.get(Messages.LOGIN) : title)
-            .icon(icon)
-            .enterAction(okControl)
-            .show();
-    if (dummyFrame != null) {
-      dummyFrame.dispose();
-    }
-    dialog.dispose();
-
-    if (userValue.isNull()) {
-      throw new CancelException();
-    }
-
+  User getUser() {
     return userValue.get();
+  }
+
+  Control getOkControl() {
+    return okControl;
   }
 
   private void initializeUI(final User defaultUser, final JComponent southComponent) {
@@ -197,27 +175,11 @@ final class LoginPanel extends JPanel {
   private void onValidationFailure(final Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
-    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentDialog(this));
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this));
   }
 
   private void closeDialog() {
     Windows.getParentDialog(this).dispose();
-  }
-
-  private static JFrame createDummyFrame(final String title, final ImageIcon icon) {
-    final JFrame frame = new JFrame(title);
-    frame.setUndecorated(true);
-    frame.setVisible(true);
-    frame.setLocationRelativeTo(null);
-    if (icon != null) {
-      frame.setIconImage(icon.getImage());
-    }
-
-    return frame;
-  }
-
-  private static boolean isWindows() {
-    return System.getProperty("os.name").toLowerCase().contains("win");
   }
 
   private static final class SelectAllListener extends FocusAdapter {
