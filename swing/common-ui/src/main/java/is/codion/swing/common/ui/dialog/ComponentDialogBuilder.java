@@ -85,7 +85,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
   ComponentDialogBuilder onOpened(Consumer<WindowEvent> onOpened);
 
   /**
-   * @param onClosedAction called when dialog is closed
+   * @param onClosed called when dialog is closed
    * @return this DialogBuilder instance
    */
   ComponentDialogBuilder onClosed(Consumer<WindowEvent> onClosed);
