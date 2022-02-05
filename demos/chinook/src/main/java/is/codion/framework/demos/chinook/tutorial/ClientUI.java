@@ -16,8 +16,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.ComponentValues;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -144,7 +144,7 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(titleField,
                     "Inserted: " + insertedEntities.get(0)));
 
-    JPanel albumPanel = Panels.builder(gridLayout(4, 1))
+    JPanel albumPanel = Components.panel(gridLayout(4, 1))
             .add(new JLabel("Artist"))
             .add(artistComboBox)
             .add(new JLabel("Title"))

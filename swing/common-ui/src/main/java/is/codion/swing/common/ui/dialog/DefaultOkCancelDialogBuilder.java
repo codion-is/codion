@@ -6,9 +6,9 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.panel.Panels;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -171,8 +171,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   private JPanel createButtonBasePanel(final JButton okButton, final JButton cancelButton) {
-    return Panels.builder(new FlowLayout(buttonPanelConstraints))
-            .add(Panels.builder(Layouts.gridLayout(1, 2))
+    return Components.panel(new FlowLayout(buttonPanelConstraints))
+            .add(Components.panel(Layouts.gridLayout(1, 2))
                     .add(okButton)
                     .add(cancelButton)
                     .build())

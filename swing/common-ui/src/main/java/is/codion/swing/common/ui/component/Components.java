@@ -20,6 +20,7 @@ import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
+import java.awt.LayoutManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -670,6 +671,14 @@ public final class Components {
    */
   public static LabelBuilder label(final String text) {
     return new DefaultLabelBuilder(text, null);
+  }
+
+  /**
+   * @param layoutManager the panel layout
+   * @return a panel builder
+   */
+  public static PanelBuilder panel(final LayoutManager layoutManager) {
+    return new DefaultPanelBuilder(layoutManager);
   }
 
   /**

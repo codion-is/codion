@@ -7650,3 +7650,4 @@
   LoginPanel, DefaultLoginDialogBuilder refactored
   PanelBuilder extends ComponentBuilder, Panels.createOkCancelButtonPanel() removed
   OkCancelDialogBuilder.buttonPanelConstraints() and buttonPanelBorder() added
+  PanelBuilder moved to component package, builder factory method moved to Components

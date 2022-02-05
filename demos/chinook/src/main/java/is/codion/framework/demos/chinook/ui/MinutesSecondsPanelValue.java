@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.common.ui.textfield.IntegerField;
 
 import javax.swing.JLabel;
@@ -59,7 +58,7 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
     private MinutesSecondsPanel(final boolean horizontal) {
       super(borderLayout());
       if (horizontal) {
-        Panels.builder(gridLayout(1, 4))
+        Components.panel(gridLayout(1, 4))
                 .add(new JLabel(BUNDLE.getString("min")))
                 .add(minutesField)
                 .add(new JLabel(BUNDLE.getString("sec")))
@@ -67,11 +66,11 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
                 .build(panel -> add(panel, BorderLayout.CENTER));
       }
       else {
-        Panels.builder(gridLayout(1, 2))
+        Components.panel(gridLayout(1, 2))
                 .add(new JLabel(BUNDLE.getString("min")))
                 .add(new JLabel(BUNDLE.getString("sec")))
                 .build(panel -> add(panel, BorderLayout.NORTH));
-        Panels.builder(gridLayout(1, 2))
+        Components.panel(gridLayout(1, 2))
                 .add(minutesField)
                 .add(secondsField)
                 .build(panel -> add(panel, BorderLayout.CENTER));
