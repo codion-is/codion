@@ -3,7 +3,9 @@
  */
 package is.codion.swing.common.ui.panel;
 
-import is.codion.common.i18n.Messages;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -83,28 +85,6 @@ public final class Panels {
     return createEastButtonPanel(centerComponent, buttonAction, true);
   }
 
-  /**
-   * Creates a panel containing two buttons, based on the given actions
-   * @param okAction the ok action
-   * @param cancelAction the cancel action
-   * @return a new panel instance
-   */
-  public static JPanel createOkCancelButtonPanel(final Action okAction, final Action cancelAction) {
-    requireNonNull(okAction, "okAction");
-    requireNonNull(cancelAction, "cancelAction");
-    final JButton okButton = new JButton(okAction);
-    final JButton cancelButton = new JButton(cancelAction);
-    okButton.setText(Messages.get(Messages.OK));
-    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    cancelButton.setText(Messages.get(Messages.CANCEL));
-    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
-
-    return builder(Layouts.gridLayout(1, 2))
-            .add(okButton)
-            .add(cancelButton)
-            .build();
-  }
-
   public static PanelBuilder builder(final LayoutManager layoutManager) {
     return new DefaultPanelBuilder(layoutManager);
   }
@@ -126,7 +106,7 @@ public final class Panels {
   /**
    * Builds a JPanel instance.
    */
-  public interface PanelBuilder {
+  public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilder> {
 
     /**
      * @param component the component to add
@@ -153,7 +133,7 @@ public final class Panels {
     JPanel build(Consumer<JPanel> onBuild);
   }
 
-  private static final class DefaultPanelBuilder implements PanelBuilder {
+  private static final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, PanelBuilder> implements PanelBuilder {
 
     private final LayoutManager layoutManager;
     private final List<ComponentConstraints> componentConstraints = new ArrayList<>();
@@ -175,12 +155,7 @@ public final class Panels {
     }
 
     @Override
-    public JPanel build() {
-      return build(null);
-    }
-
-    @Override
-    public JPanel build(final Consumer<JPanel> onBuild) {
+    protected JPanel buildComponent() {
       final JPanel panel = new JPanel(layoutManager);
       componentConstraints.forEach(componentConstraint -> {
         if (componentConstraint.constraints != null) {
@@ -190,12 +165,17 @@ public final class Panels {
           panel.add(componentConstraint.component);
         }
       });
-      if (onBuild != null) {
-        onBuild.accept(panel);
-      }
 
       return panel;
     }
+
+    @Override
+    protected ComponentValue<Void, JPanel> buildComponentValue(final JPanel component) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void setInitialValue(final JPanel component, final Void initialValue) {}
   }
 
   private static final class ComponentConstraints {

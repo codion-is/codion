@@ -7648,3 +7648,5 @@
   FilteredTableColumnModel now extends TableColumnModel
   SwingFilteredTableColumnModel no longer extends DefaultTableColumnModel, addColumn() and removeColumn() now throw UnsupportedOperationException
   LoginPanel, DefaultLoginDialogBuilder refactored
+  PanelBuilder extends ComponentBuilder, Panels.createOkCancelButtonPanel() removed
+  OkCancelDialogBuilder.buttonPanelConstraints() and buttonPanelBorder() added

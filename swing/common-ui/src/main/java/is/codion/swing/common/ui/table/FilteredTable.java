@@ -29,7 +29,6 @@ import is.codion.swing.common.ui.textfield.TextFieldHint;
 import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -899,10 +898,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     private final Map<TableColumn, JCheckBox> checkBoxes;
 
     private SelectColumnsPanel(final SwingFilteredTableColumnModel<C> columnModel) {
-      super(Layouts.borderLayout());
+      super(new BorderLayout());
       this.columnModel = columnModel;
       this.checkBoxes = createCheckBoxMap();
-      setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       add(createNorthPanel(checkBoxes.values()), BorderLayout.NORTH);
       add(createScrollPane(checkBoxes.values()), BorderLayout.CENTER);
     }
