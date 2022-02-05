@@ -7659,3 +7659,4 @@
   ComponentBuilder.focusListener(), mouseListener(), mouseMotionListener(), mouseWheelListener(), keyListener() and componentListener() added
   PanelBuilder.add(JComponent component, Object constraints) renamed addConstrained()
   SelectColumnsPanel moved up to package level, refactored
+  DefaultLoginDialogBuilder now uses DefaultOkCancelDialogBuilder instead of DefaultComponentDialogBuilder

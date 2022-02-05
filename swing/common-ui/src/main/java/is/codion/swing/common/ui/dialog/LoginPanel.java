@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -85,6 +84,10 @@ final class LoginPanel extends JPanel {
     return okControl;
   }
 
+  Control getCancelControl() {
+    return cancelControl;
+  }
+
   private void initializeUI(final User defaultUser, final JComponent southComponent) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
@@ -133,13 +136,6 @@ final class LoginPanel extends JPanel {
     else {
       Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
-    final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    buttonBasePanel.add(Controls.builder()
-            .control(okControl)
-            .control(cancelControl)
-            .build()
-            .createHorizontalButtonPanel());
-    add(buttonBasePanel, BorderLayout.SOUTH);
     if (icon != null) {
       final JLabel label = new JLabel(icon, SwingConstants.CENTER);
       label.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 10));

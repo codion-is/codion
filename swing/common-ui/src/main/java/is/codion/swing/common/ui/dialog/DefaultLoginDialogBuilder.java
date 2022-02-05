@@ -45,12 +45,13 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
       owner = dummyFrame = createDummyFrame(title, icon);
     }
     final LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent);
-    final JDialog dialog = new DefaultComponentDialogBuilder(loginPanel)
+    final JDialog dialog = new DefaultOkCancelDialogBuilder(loginPanel)
             .owner(owner)
             .resizable(false)
             .title(title == null ? Messages.get(Messages.LOGIN) : title)
             .icon(icon)
-            .enterAction(loginPanel.getOkControl())
+            .okAction(loginPanel.getOkControl())
+            .cancelAction(loginPanel.getCancelControl())
             .show();
     if (dummyFrame != null) {
       dummyFrame.dispose();
