@@ -16,6 +16,9 @@ dependencies {
     implementation project(':codion-framework-servlet')
     implementation project(':codion-dbms-h2database')
 
+    implementation "com.formdev:flatlaf:${flatLafVersion}"
+    implementation "com.formdev:flatlaf-intellij-themes:${flatLafVersion}"
+
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }

@@ -57,10 +57,10 @@ public final class ClientTutorial {
       EntityType TYPE = DOMAIN.entityType("chinook.album");
 
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
-      Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");
-      Attribute<Integer> ARTIST_ID = Artist.TYPE.integerAttribute("artistid");
+      Attribute<String> TITLE = TYPE.stringAttribute("title");
+      Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
 
-      ForeignKey ARTIST_FK = Artist.TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
+      ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
     }
 
     public Chinook() {

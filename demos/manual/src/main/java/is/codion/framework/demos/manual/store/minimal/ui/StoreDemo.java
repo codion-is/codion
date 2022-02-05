@@ -15,6 +15,10 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+
+import javax.swing.UIManager;
+
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
@@ -35,7 +39,7 @@ public class StoreDemo {
       createTextField(Customer.LAST_NAME);
       createTextField(Customer.EMAIL);
       createCheckBox(Customer.IS_ACTIVE);
-      setLayout(gridLayout(2, 2));
+      setLayout(gridLayout(4, 1));
       addInputPanel(Customer.FIRST_NAME);
       addInputPanel(Customer.LAST_NAME);
       addInputPanel(Customer.EMAIL);
@@ -62,7 +66,9 @@ public class StoreDemo {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
+    UIManager.setLookAndFeel(new FlatDarculaLaf());
+
     Database database = new H2DatabaseFactory()
             .createDatabase("jdbc:h2:mem:h2db",
                     "src/main/sql/create_schema_minimal.sql");
@@ -86,9 +92,9 @@ public class StoreDemo {
                     new AddressEditPanel(addressModel.getEditModel()));
     customerPanel.addDetailPanel(addressPanel);
 
-    customerPanel.getTablePanel().setConditionPanelVisible(true);
     customerPanel.getTablePanel().getTable().setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     addressPanel.getTablePanel().getTable().setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+    addressPanel.getTablePanel().setConditionPanelVisible(true);
 
     customerModel.refresh();
     customerPanel.initializePanel();
