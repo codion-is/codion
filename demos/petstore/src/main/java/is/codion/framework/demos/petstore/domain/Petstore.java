@@ -122,7 +122,7 @@ public final class Petstore extends DefaultDomain {
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
 
-    ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", Product.CATEGORY_ID, Category.ID);
+    ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", CATEGORY_ID, Category.ID);
   }
 
   void product() {
@@ -201,9 +201,9 @@ public final class Petstore extends DefaultDomain {
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
     Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
 
-    ForeignKey PRODUCT_FK = TYPE.foreignKey("Product", Item.PRODUCT_ID, Product.ID);
-    ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("Contact info", Item.CONTACT_INFO_ID, SellerContactInfo.ID);
-    ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", Item.ADDRESS_ID, Address.ID);
+    ForeignKey PRODUCT_FK = TYPE.foreignKey("Product", PRODUCT_ID, Product.ID);
+    ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("Contact info", CONTACT_INFO_ID, SellerContactInfo.ID);
+    ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", ADDRESS_ID, Address.ID);
   }
 
   void item() {
@@ -284,8 +284,8 @@ public final class Petstore extends DefaultDomain {
     Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
 
-    ForeignKey ITEM_FK = TYPE.foreignKey("Item", TagItem.ITEM_ID, Item.ID);
-    ForeignKey TAG_FK = TYPE.foreignKey("Tag", TagItem.TAG_ID, Tag.ID);
+    ForeignKey ITEM_FK = TYPE.foreignKey("Item", ITEM_ID, Item.ID);
+    ForeignKey TAG_FK = TYPE.foreignKey("Tag", TAG_ID, Tag.ID);
   }
 
   void tagItem() {

@@ -16,6 +16,6 @@ public interface VetSpecialty extends Entity {
   Attribute<Integer> VET = TYPE.integerAttribute("vet");
   Attribute<Integer> SPECIALTY = TYPE.integerAttribute("specialty");
 
-  ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VetSpecialty.VET, Vet.ID);
-  ForeignKey SPECIALTY_FK = TYPE.foreignKey("specialty_fk", VetSpecialty.SPECIALTY, Specialty.ID);
+  ForeignKey VET_FK = TYPE.foreignKey("vet_fk", VET, Vet.ID);
+  ForeignKey SPECIALTY_FK = TYPE.foreignKey("specialty_fk", SPECIALTY, Specialty.ID);
 }

@@ -108,10 +108,8 @@ public final class Example {
       Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
       Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
 
-      ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
-              CustomerAddress.CUSTOMER_ID, Customer.ID);
-      ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk",
-              CustomerAddress.ADDRESS_ID, Address.ID);
+      ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+      ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);
     }
 
     void customerAddress() {

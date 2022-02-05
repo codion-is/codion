@@ -60,8 +60,8 @@ public final class Store extends DefaultDomain {
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
     Attribute<Long> ADDRESS_ID = TYPE.longAttribute("address_id");
 
-    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
-    ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", CustomerAddress.ADDRESS_ID, Address.ID);
+    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+    ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);
   }
 
   public static final ReportType<JasperReport, JasperPrint, Map<String, Object>> CUSTOMER_REPORT =

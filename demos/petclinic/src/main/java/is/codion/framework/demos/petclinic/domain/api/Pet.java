@@ -21,6 +21,6 @@ public interface Pet extends Entity {
   Attribute<Integer> PET_TYPE_ID = TYPE.integerAttribute("type_id");
   Attribute<Integer> OWNER_ID = TYPE.integerAttribute("owner_id");
 
-  ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", Pet.PET_TYPE_ID, PetType.ID);
-  ForeignKey OWNER_FK = TYPE.foreignKey("owner_fk", Pet.OWNER_ID, Owner.ID);
+  ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", PET_TYPE_ID, PetType.ID);
+  ForeignKey OWNER_FK = TYPE.foreignKey("owner_fk", OWNER_ID, Owner.ID);
 }

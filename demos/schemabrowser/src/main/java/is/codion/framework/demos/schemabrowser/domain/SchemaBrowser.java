@@ -68,7 +68,7 @@ public final class SchemaBrowser extends DefaultDomain {
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("table_name"));
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("table_schema"));
 
-    ForeignKey SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), Table.SCHEMA, Schema.NAME);
+    ForeignKey SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), SCHEMA, Schema.NAME);
   }
 
   void table() {

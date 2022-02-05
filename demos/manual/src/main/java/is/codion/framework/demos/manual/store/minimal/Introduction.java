@@ -38,7 +38,7 @@ class Introduction {
       Attribute<String> NAME = TYPE.stringAttribute("name");
       Attribute<Integer> CITY_ID = TYPE.integerAttribute("city_id");
 
-      ForeignKey CITY_FK = TYPE.foreignKey("city", Customer.CITY_ID, City.ID);
+      ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);
     }
   }
   // end::storeApi[]
