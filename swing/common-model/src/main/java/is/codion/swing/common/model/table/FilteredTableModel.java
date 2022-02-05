@@ -199,7 +199,8 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param searchText the text to search for
    * @return the search result coordinate, an empty Optional if nothing was found
-   * @see #isRegularExpressionSearch()
+   * @see #getRegularExpressionSearchState()
+   * @see #getCaseSensitiveSearchState()
    */
   Optional<RowColumn> findNext(int fromRowIndex, String searchText);
 
@@ -210,7 +211,8 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param searchText the text to search for
    * @return the search result coordinate, an empty Optional if nothing was found
-   * @see #isRegularExpressionSearch()
+   * @see #getRegularExpressionSearchState()
+   * @see #getCaseSensitiveSearchState()
    */
   Optional<RowColumn> findPrevious(int fromRowIndex, String searchText);
 
