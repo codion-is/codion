@@ -53,7 +53,7 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
   OkCancelDialogBuilder buttonPanelBorder(Border buttonPanelBorder);
 
   /**
-   * @param command calloed on ok pressed, before the dialog has been disposed
+   * @param command called on ok pressed, before the dialog has been disposed
    * @return this builder instance
    */
   OkCancelDialogBuilder onOk(Control.Command command);
