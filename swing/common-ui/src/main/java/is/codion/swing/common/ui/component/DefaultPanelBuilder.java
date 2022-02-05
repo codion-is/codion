@@ -7,6 +7,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -29,6 +31,18 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
   @Override
   public PanelBuilder add(final JComponent component, final Object constraints) {
     componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
+    return this;
+  }
+
+  @Override
+  public PanelBuilder add(final JComponent... components) {
+    add(Arrays.asList(components));
+    return this;
+  }
+
+  @Override
+  public PanelBuilder add(final Collection<? extends JComponent> components) {
+    requireNonNull(components).forEach(this::add);
     return this;
   }
 

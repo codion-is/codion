@@ -7655,3 +7655,4 @@
   State.combination(), and() and or()  overloaded with Collection<? extends StateObserver> parameter
   ButtonBuilder.actionListener() added
   Components.checkBox(), radioButton() and toggleButton() overloaded with ValueObserver<Boolean> parameter
+  PanelBuilder.add() overloaded with JComponent... and Collection<? extends JComponent> parameters

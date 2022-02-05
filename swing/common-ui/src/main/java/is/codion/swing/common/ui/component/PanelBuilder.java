@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.util.Collection;
 
 /**
  * Builds a JPanel instance.
@@ -23,4 +24,17 @@ public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilde
    * @return this builder instance
    */
   PanelBuilder add(JComponent component, Object constraints);
+
+  /**
+   * @param components the components to add
+   * @return this builder instance
+   */
+  PanelBuilder add(JComponent... components);
+
+
+  /**
+   * @param components the components to add
+   * @return this builder instance
+   */
+  PanelBuilder add(Collection<? extends JComponent> components);
 }
