@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -331,12 +332,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (loggerProxy == null) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }
-    final DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
+    final ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
     model.setSelectedItem(loggerProxy.getLogLevel());
-    JOptionPane.showMessageDialog(this, new JComboBox<>(model),
-            resourceBundle.getString(SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
-    loggerProxy.setLogLevel(model.getSelectedItem());
-
+    Dialogs.okCancelDialog(new JComboBox<>(model))
+            .owner(this)
+            .title(resourceBundle.getString(SET_LOG_LEVEL))
+            .onOk(() -> loggerProxy.setLogLevel(model.getSelectedItem()))
+            .show();
   }
 
   /**
@@ -400,14 +402,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         return component;
       }
     });
-
-    final int option = JOptionPane.showOptionDialog(this, comboBox,
-            resourceBundle.getString("select_font_size"), JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (option == JOptionPane.OK_OPTION) {
-      UserPreferences.putUserPreference(applicationFontSizeProperty, ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue().toString());
-      JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
-    }
+    Dialogs.okCancelDialog(comboBox)
+            .owner(this)
+            .title(resourceBundle.getString("select_font_size"))
+            .onOk(() -> {
+              final Integer selectedFontSize = ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue();
+              if (!selectedFontSize.equals(defaultFontSize)) {
+                UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSize.toString());
+                JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
+              }
+            })
+            .show();
   }
 
   @Override

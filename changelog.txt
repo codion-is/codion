@@ -7698,3 +7698,4 @@
   FilteredTableModel regularExpressionSearch and caseSensitive boolean properties replaced with States
   FilteredTable, searchField settings dialog replaced with a popup menu
   OkCancelDialogBuilder.onOk() and onCancel() now take Runnables instead of Control.Commands, DefaultOkCancelDialogBuilder refactored
+  EntityApplicationPanel.selectFontSize() and setLogLevel() refactored
