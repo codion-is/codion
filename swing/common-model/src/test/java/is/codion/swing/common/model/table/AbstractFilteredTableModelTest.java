@@ -392,8 +392,7 @@ public final class AbstractFilteredTableModelTest {
     coordinate = testModel.findPrevious(coordinate.getRow(), "e").orElse(null);
     assertEquals(RowColumn.rowColumn(0, 1), coordinate);
 
-    testModel.setRegularExpressionSearch(true);
-    assertTrue(testModel.isRegularExpressionSearch());
+    testModel.getRegularExpressionSearchState().set(true);
     coordinate = testModel.findNext(0, "(?i)B").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 1), coordinate);
 
@@ -424,8 +423,7 @@ public final class AbstractFilteredTableModelTest {
     coordinate = testModel.findPrevious(coordinate.getRow(), "e").orElse(null);
     assertEquals(RowColumn.rowColumn(0, 0), coordinate);
 
-    testModel.setRegularExpressionSearch(true);
-    assertTrue(testModel.isRegularExpressionSearch());
+    testModel.getRegularExpressionSearchState().set(true);
     coordinate = testModel.findNext(0, "(?i)B").orElse(null);
     assertEquals(RowColumn.rowColumn(3, 0), coordinate);
 
