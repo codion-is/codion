@@ -7668,3 +7668,4 @@
   FilteredTable, ExceptionPanel and LoginPanel refactored a bit
   ColumnSummaryPanel and ColumnSummaryModel refactored, now based on Value and State
   ComponentBuilder.popupMenu() added
+  Components.checkBox(), radioButton() and toggleButton() ValueObserver<Boolean> overload removed, sets bad precedent, use setLinkedValueObserver()

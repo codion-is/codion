@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -23,10 +22,6 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
   protected AbstractButtonBuilder(final Value<T> linkedValue) {
     super(linkedValue);
-  }
-
-  protected AbstractButtonBuilder(final ValueObserver<T> linkedValueObserver) {
-    super(linkedValueObserver);
   }
 
   @Override

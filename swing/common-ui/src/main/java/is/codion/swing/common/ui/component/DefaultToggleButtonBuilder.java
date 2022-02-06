@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import javax.swing.JToggleButton;
 
@@ -13,10 +12,6 @@ final class DefaultToggleButtonBuilder<B extends ToggleButtonBuilder<JToggleButt
 
   DefaultToggleButtonBuilder(final Value<Boolean> linkedValue) {
     super(linkedValue);
-  }
-
-  DefaultToggleButtonBuilder(final ValueObserver<Boolean> linkedValueObserver) {
-    super(linkedValueObserver);
   }
 
   @Override
