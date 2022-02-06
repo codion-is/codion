@@ -12,10 +12,10 @@ import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.event.AncestorEvent;
@@ -149,12 +149,11 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
     return () -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
-      final int result = JOptionPane.showOptionDialog(this, createForeignKeyFilterComboBox(foreignKey),
-              MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.QUESTION_MESSAGE, null, null, null);
-      if (result != JOptionPane.OK_OPTION) {
-        getModel().setForeignKeyFilterEntities(foreignKey, current);
-      }
+      Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey))
+              .owner(this)
+              .title(MESSAGES.getString("filter_by"))
+              .onOk(() -> getModel().setForeignKeyFilterEntities(foreignKey, current))
+              .show();
     };
   }
 
