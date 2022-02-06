@@ -10,6 +10,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
@@ -18,18 +19,17 @@ import is.codion.swing.common.model.table.TableSortModel;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.textfield.TextFieldHint;
-import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
@@ -474,49 +474,42 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a search field
    */
   private JTextField initializeSearchField() {
-    final JTextField field = new JTextField();
-    field.setColumns(SEARCH_FIELD_COLUMNS);
-    TextFields.selectAllOnFocusGained(field);
-    final Control findNext = control(() -> findNext(field.getText()));
-    final Control findAndSelectNext = control(() -> findAndSelectNext(field.getText()));
-    final Control findPrevious = control(() -> findPrevious(field.getText()));
-    final Control findAndSelectPrevious = control(() -> findAndSelectPrevious(field.getText()));
+    final Value<String> searchString = Value.value();
+    final Control findNext = control(() -> findNext(searchString.get()));
+    final Control findAndSelectNext = control(() -> findAndSelectNext(searchString.get()));
+    final Control findPrevious = control(() -> findPrevious(searchString.get()));
+    final Control findAndSelectPrevious = control(() -> findAndSelectPrevious(searchString.get()));
     final Control cancel = control(this::requestFocusInWindow);
-    KeyEvents.builder(KeyEvent.VK_ENTER)
-            .onKeyPressed()
-            .action(findNext)
-            .enable(field);
-    KeyEvents.builder(KeyEvent.VK_ENTER)
-            .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .action(findAndSelectNext)
-            .enable(field);
-    KeyEvents.builder(KeyEvent.VK_DOWN)
-            .onKeyPressed()
-            .action(findNext)
-            .enable(field);
-    KeyEvents.builder(KeyEvent.VK_DOWN)
-            .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .action(findAndSelectNext)
-            .enable(field);
-    KeyEvents.builder(KeyEvent.VK_UP)
-            .onKeyPressed()
-            .action(findPrevious)
-            .enable(field);
-    KeyEvents.builder(KeyEvent.VK_UP)
-            .onKeyPressed()
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .action(findAndSelectPrevious)
-            .enable(field);
-    KeyEvents.builder(KeyEvent.VK_ESCAPE)
-            .onKeyPressed()
-            .action(cancel)
-            .enable(field);
 
-    field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
-
-    return field;
+    return Components.textField(searchString)
+            .columns(SEARCH_FIELD_COLUMNS)
+            .selectAllOnFocusGained(true)
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+                    .onKeyPressed()
+                    .action(findNext))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+                    .onKeyPressed()
+                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+                    .action(findAndSelectNext))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+                    .onKeyPressed()
+                    .action(findNext))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+                    .onKeyPressed()
+                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+                    .action(findAndSelectNext))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+                    .onKeyPressed()
+                    .action(findPrevious))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+                    .onKeyPressed()
+                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+                    .action(findAndSelectPrevious))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+                    .onKeyPressed()
+                    .action(cancel))
+            .popupMenuControls(getSearchFieldPopupMenuControls())
+            .build();
   }
 
   private TextFieldHint initializeSearchFieldHint() {
@@ -558,17 +551,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
   }
 
-  private JPopupMenu initializeSearchFieldPopupMenu() {
-
+  private Controls getSearchFieldPopupMenuControls() {
     return Controls.builder()
-            .caption(MESSAGES.getString("settings"))
             .control(ToggleControl.builder(tableModel.getCaseSensitiveSearchState())
                     .caption(MESSAGES.getString("case_sensitive_search")))
-            .controls(ToggleControl.builder(tableModel.getCaseSensitiveSearchState())
+            .controls(ToggleControl.builder(tableModel.getRegularExpressionSearchState())
                     .caption(MESSAGES.getString("regular_expression_search")))
-            .build()
-            .createMenu()
-            .getPopupMenu();
+            .build();
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {

@@ -535,11 +535,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void rangePanel(final JComponent lowerBoundField, final JComponent upperBoundField) {
-    final JPanel panel = new JPanel(new GridLayout(1, 2));
-    panel.add(lowerBoundField);
-    panel.add(upperBoundField);
     inputPanel.removeAll();
-    inputPanel.add(panel, BorderLayout.CENTER);
+    inputPanel.add(Components.panel(new GridLayout(1, 2))
+            .add(lowerBoundField, upperBoundField)
+            .build(), BorderLayout.CENTER);
   }
 
   private final class OperatorBoxPopupWidthListener extends ComponentAdapter {

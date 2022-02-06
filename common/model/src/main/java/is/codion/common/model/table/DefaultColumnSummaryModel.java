@@ -3,9 +3,9 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import java.util.List;
 
@@ -16,81 +16,50 @@ import static java.util.Objects.requireNonNull;
  * A default ColumnSummaryModel implementation.
  * @param <T> the column type
  */
-public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
+public final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
-  private final Event<Summary> summaryChangedEvent = Event.event();
-  private final Event<?> summaryValueChangedEvent = Event.event();
-
+  private final Value<Summary> summaryValue = Value.value(ColumnSummary.NONE);
+  private final Value<String> summaryTextValue = Value.value();
+  private final State lockedState = State.state();
   private final ColumnValueProvider<T> valueProvider;
   private final List<Summary> summaries = asList(ColumnSummary.values());
-
-  private Summary summary = ColumnSummary.NONE;
-  private boolean locked = false;
 
   /**
    * Instantiates a new DefaultColumnSummaryModel
    * @param valueProvider the property value provider
    */
   public DefaultColumnSummaryModel(final ColumnValueProvider<T> valueProvider) {
-    this.valueProvider = valueProvider;
-    this.valueProvider.addValuesChangedListener(summaryValueChangedEvent);
-    this.summaryChangedEvent.addListener(summaryValueChangedEvent);
+    this.valueProvider = requireNonNull(valueProvider);
+    this.summaryValue.addValidator(summary -> {
+      if (lockedState.get()) {
+        throw new IllegalStateException("Summary model is locked");
+      }
+    });
+    this.valueProvider.addValuesChangedListener(this::updateSummary);
+    this.summaryValue.addListener(this::updateSummary);
   }
 
   @Override
-  public boolean isLocked() {
-    return locked;
+  public State getLockedState() {
+    return lockedState;
   }
 
   @Override
-  public void setLocked(final boolean locked) {
-    this.locked = locked;
+  public Value<Summary> getSummaryValue() {
+    return summaryValue;
   }
 
   @Override
-  public final void setSummary(final Summary summary) {
-    if (isLocked()) {
-      throw new IllegalStateException("Summary model is locked");
-    }
-    requireNonNull(summary, "summary");
-    if (!this.summary.equals(summary)) {
-      this.summary = summary;
-      summaryChangedEvent.onEvent(this.summary);
-    }
-  }
-
-  @Override
-  public final Summary getSummary() {
-    return summary;
-  }
-
-  @Override
-  public final List<Summary> getAvailableSummaries() {
+  public List<Summary> getAvailableSummaries() {
     return summaries;
   }
 
   @Override
-  public final String getSummaryText() {
-    return summary.getSummary(valueProvider);
+  public ValueObserver<String> getSummaryTextObserver() {
+    return summaryTextValue.getObserver();
   }
 
-  @Override
-  public final void addSummaryValueListener(final EventListener listener) {
-    summaryValueChangedEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeSummaryValueListener(final EventListener listener) {
-    summaryValueChangedEvent.removeListener(listener);
-  }
-
-  @Override
-  public final void addSummaryListener(final EventDataListener<Summary> listener) {
-    summaryChangedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeSummaryListener(final EventDataListener<Summary> listener) {
-    summaryChangedEvent.removeDataListener(listener);
+  private void updateSummary() {
+    summaryTextValue.set(getSummaryValue().get().getSummary(valueProvider));
   }
 }

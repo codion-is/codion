@@ -7665,3 +7665,6 @@
   FilteredTable, searchField settings dialog replaced with a popup menu
   OkCancelDialogBuilder.onOk() and onCancel() now take Runnables instead of Control.Commands, DefaultOkCancelDialogBuilder refactored
   EntityApplicationPanel.selectFontSize() and setLogLevel() refactored
+  FilteredTable, ExceptionPanel and LoginPanel refactored a bit
+  ColumnSummaryPanel and ColumnSummaryModel refactored, now based on Value and State
+  ComponentBuilder.popupMenu() added

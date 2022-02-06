@@ -14,6 +14,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -129,14 +130,13 @@ final class ExceptionPanel extends JPanel {
   }
 
   private void initializeUI() {
-    final JPanel basePanel = new JPanel(borderLayout());
-    basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
-    basePanel.add(createNorthPanel(), BorderLayout.NORTH);
-    basePanel.add(centerPanel, BorderLayout.CENTER);
-    basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
-
     setLayout(borderLayout());
-    add(basePanel, BorderLayout.CENTER);
+    add(Components.panel(borderLayout())
+            .border(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE))
+            .addConstrained(createNorthPanel(), BorderLayout.NORTH)
+            .addConstrained(centerPanel, BorderLayout.CENTER)
+            .addConstrained(createButtonPanel(), BorderLayout.SOUTH)
+            .build(), BorderLayout.CENTER);
   }
 
   private void initializeDetailView(final boolean show) {
@@ -161,22 +161,21 @@ final class ExceptionPanel extends JPanel {
             ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
 
-    final JPanel northPanel = new JPanel(borderLayout());
-    final JPanel northNorthPanel = new JPanel(flowLayout(FlowLayout.LEFT));
-    northNorthPanel.add(descriptionLabel);
-    northPanel.add(northNorthPanel, BorderLayout.NORTH);
-    northPanel.add(detailPanel, BorderLayout.CENTER);
-
-    return northPanel;
+    return Components.panel(borderLayout())
+            .addConstrained(Components.panel(flowLayout(FlowLayout.LEFT))
+                    .add(descriptionLabel)
+                    .build(), BorderLayout.NORTH)
+            .addConstrained(descriptionLabel, BorderLayout.CENTER)
+            .build();
   }
 
   private JPanel createCenterPanel() {
     final JScrollPane scrollPane = new JScrollPane(detailsArea);
     scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
-    final JPanel center = new JPanel(new BorderLayout());
-    center.add(scrollPane, BorderLayout.CENTER);
 
-    return center;
+    return Components.panel(new BorderLayout())
+            .addConstrained(scrollPane, BorderLayout.CENTER)
+            .build();
   }
 
   private JPanel createButtonPanel() {
@@ -199,20 +198,14 @@ final class ExceptionPanel extends JPanel {
             .action(closeControl)
             .enable(this);
 
-    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    rightButtonPanel.add(copyButton);
-    rightButtonPanel.add(printButton);
-    rightButtonPanel.add(saveButton);
-    rightButtonPanel.add(closeControl.createButton());
-
-    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    leftButtonPanel.add(detailsControl.createCheckBox());
-
-    final JPanel baseButtonPanel = new JPanel(new BorderLayout());
-    baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
-    baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);
-
-    return baseButtonPanel;
+    return Components.panel(new BorderLayout())
+            .addConstrained(Components.panel(new FlowLayout(FlowLayout.LEFT, 0, 0))
+                    .add(detailsControl.createCheckBox())
+                    .build(), BorderLayout.WEST)
+            .addConstrained(Components.panel(new FlowLayout(FlowLayout.RIGHT, 0, 0))
+                    .add(copyButton, printButton, saveButton, closeControl.createButton())
+                    .build(), BorderLayout.CENTER)
+            .build();
   }
 
   void setException(final Throwable throwable, final String message) {
