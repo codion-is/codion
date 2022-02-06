@@ -307,7 +307,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
             .owner(this)
-            .title(MESSAGES.getString("select_columns"))
+            .title(MESSAGES.getString(SELECT_COLUMNS))
             .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
             .onOk(selectColumnsPanel::applyChanges)
             .show();
@@ -393,13 +393,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return Controls containing {@link ToggleControl}s for showing/hiding columns.
    */
   public Controls createToggleColumnsControls() {
-    final SwingFilteredTableColumnModel<C> columnModel = tableModel.getColumnModel();
-
     return Controls.builder()
             .caption(MESSAGES.getString(SELECT_COLUMNS))
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
-            .controls(columnModel.getAllColumns().stream()
+            .controls(tableModel.getColumnModel().getAllColumns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
                     .toArray(ToggleControl[]::new))

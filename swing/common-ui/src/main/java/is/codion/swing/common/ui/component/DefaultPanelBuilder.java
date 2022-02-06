@@ -63,7 +63,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   @Override
   protected ComponentValue<Void, JPanel> buildComponentValue(final JPanel component) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("A ComponentValue can not be based on a JPanel");
   }
 
   @Override
