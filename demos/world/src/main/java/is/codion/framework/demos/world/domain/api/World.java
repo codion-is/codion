@@ -36,7 +36,7 @@ public interface World {
     Attribute<Location> LOCATION = TYPE.attribute("location", Location.class);
     // end::customType[]
 
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country", City.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country", COUNTRY_CODE, Country.CODE);
 
     String name();
     int population();
@@ -77,7 +77,7 @@ public interface World {
     Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
 
     // tag::foreignKeyCapital[]
-    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
+    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
     // end::foreignKeyCapital[]
 
     String name();
@@ -96,7 +96,7 @@ public interface World {
     Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");
     Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
 
     String language();
     int noOfSpeakers();

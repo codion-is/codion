@@ -70,8 +70,8 @@ public final class EmpDeptMinimalApp {
     Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
     Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
 
-    ForeignKey DEPT_FK = TYPE.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
-    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
+    ForeignKey DEPT_FK = TYPE.foreignKey("dept_fk", DEPTNO, Department.DEPTNO);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.EMPNO);
   }
 
   /**

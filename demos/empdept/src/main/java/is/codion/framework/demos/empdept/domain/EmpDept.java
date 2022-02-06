@@ -71,10 +71,10 @@ public final class EmpDept extends DefaultDomain {
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
 
-    /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
-    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", Employee.DEPARTMENT, Department.ID);
+    /**Foreign key (reference) attribute for the DEPTNO column in the table scott.emp*/
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
     /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
-    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", Employee.MGR, Employee.ID);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     /**Attribute for the denormalized department location property*/
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 

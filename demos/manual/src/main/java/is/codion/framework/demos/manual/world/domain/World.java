@@ -23,7 +23,7 @@ public interface World {
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
 
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
   }
 
   interface Country {
@@ -49,7 +49,7 @@ public interface World {
     Attribute<Integer> NO_OF_LANGUAGES = TYPE.integerAttribute("no_of_languages");
     Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
 
-    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
+    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
   }
 
   interface CountryLanguage extends Entity {
@@ -61,7 +61,7 @@ public interface World {
     Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");
     Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
   }
 
   interface Continent extends Entity {

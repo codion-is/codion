@@ -20,5 +20,5 @@ public interface Visit extends Entity {
   Attribute<LocalDate> DATE = TYPE.localDateAttribute("\"date\"");
   Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
 
-  ForeignKey PET_FK = TYPE.foreignKey("pet_fk", Visit.PET_ID, Pet.ID);
+  ForeignKey PET_FK = TYPE.foreignKey("pet_fk", PET_ID, Pet.ID);
 }
