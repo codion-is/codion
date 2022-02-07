@@ -89,28 +89,28 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   private TemporalField<T> createTemporalField() {
     if (valueClass.equals(LocalTime.class)) {
-      return (TemporalField<T>) new DefaultLocalTimeFieldBuilder(dateTimePattern, null)
+      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(LocalTime.class, dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(LocalDate.class)) {
-      return (TemporalField<T>) new DefaultLocalDateFieldBuilder(dateTimePattern, null)
+      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(LocalDate.class, dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(LocalDateTime.class)) {
-      return (TemporalField<T>) new DefaultLocalDateTimeFieldBuilder(dateTimePattern, null)
+      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(LocalDateTime.class, dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();
     }
     else if (valueClass.equals(OffsetDateTime.class)) {
-      return (TemporalField<T>) new DefaultOffsetDateTimeFieldBuilder(dateTimePattern, null)
+      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(OffsetDateTime.class, dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)

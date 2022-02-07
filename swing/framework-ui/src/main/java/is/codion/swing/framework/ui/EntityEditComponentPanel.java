@@ -19,17 +19,15 @@ import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
-import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
-import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
-import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
 import is.codion.swing.common.ui.component.LongFieldBuilder;
-import is.codion.swing.common.ui.component.OffsetDateTimeFieldBuilder;
+import is.codion.swing.common.ui.component.TemporalFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.ForeignKeyComboBoxBuilder;
@@ -502,7 +500,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a local time field builder
    */
-  protected final LocalTimeFieldBuilder createLocalTimeField(final Attribute<LocalTime> attribute) {
+  protected final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> createLocalTimeField(final Attribute<LocalTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.localTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -512,7 +510,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a local date field builder
    */
-  protected final LocalDateFieldBuilder createLocalDateField(final Attribute<LocalDate> attribute) {
+  protected final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> createLocalDateField(final Attribute<LocalDate> attribute) {
     return setComponentBuilder(attribute, entityComponents.localDateField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -522,7 +520,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return a local date time field builder
    */
-  protected final LocalDateTimeFieldBuilder createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
+  protected final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.localDateTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -532,7 +530,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to build a temporal field
    * @return an offset date time field builder
    */
-  protected final OffsetDateTimeFieldBuilder createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
+  protected final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.offsetDateTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }

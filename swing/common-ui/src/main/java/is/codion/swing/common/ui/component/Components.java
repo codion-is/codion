@@ -8,6 +8,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.TemporalField;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -360,7 +361,7 @@ public final class Components {
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static LocalTimeFieldBuilder localTimeField(final String dateTimePattern) {
+  public static TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(final String dateTimePattern) {
     return localTimeField(dateTimePattern, null);
   }
 
@@ -369,15 +370,15 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static LocalTimeFieldBuilder localTimeField(final String dateTimePattern, final Value<LocalTime> linkedValue) {
-    return new DefaultLocalTimeFieldBuilder(dateTimePattern, linkedValue);
+  public static TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(final String dateTimePattern, final Value<LocalTime> linkedValue) {
+    return new DefaultTemporalFieldBuilder<>(LocalTime.class, dateTimePattern, linkedValue);
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static LocalDateFieldBuilder localDateField(final String dateTimePattern) {
+  public static TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(final String dateTimePattern) {
     return localDateField(dateTimePattern, null);
   }
 
@@ -386,15 +387,15 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static LocalDateFieldBuilder localDateField(final String dateTimePattern, final Value<LocalDate> linkedValue) {
-    return new DefaultLocalDateFieldBuilder(dateTimePattern, linkedValue);
+  public static TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(final String dateTimePattern, final Value<LocalDate> linkedValue) {
+    return new DefaultTemporalFieldBuilder<>(LocalDate.class, dateTimePattern, linkedValue);
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static LocalDateTimeFieldBuilder localDateTimeField(final String dateTimePattern) {
+  public static TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(final String dateTimePattern) {
     return localDateTimeField(dateTimePattern, null);
   }
 
@@ -403,16 +404,16 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static LocalDateTimeFieldBuilder localDateTimeField(final String dateTimePattern,
-                                                             final Value<LocalDateTime> linkedValue) {
-    return new DefaultLocalDateTimeFieldBuilder(dateTimePattern, linkedValue);
+  public static TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(final String dateTimePattern,
+                                                                                                     final Value<LocalDateTime> linkedValue) {
+    return new DefaultTemporalFieldBuilder<>(LocalDateTime.class, dateTimePattern, linkedValue);
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static OffsetDateTimeFieldBuilder offsetDateTimeField(final String dateTimePattern) {
+  public static TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(final String dateTimePattern) {
     return offsetDateTimeField(dateTimePattern, null);
   }
 
@@ -421,9 +422,9 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static OffsetDateTimeFieldBuilder offsetDateTimeField(final String dateTimePattern,
-                                                               final Value<OffsetDateTime> linkedValue) {
-    return new DefaultOffsetDateTimeFieldBuilder(dateTimePattern, linkedValue);
+  public static TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(final String dateTimePattern,
+                                                                                                        final Value<OffsetDateTime> linkedValue) {
+    return new DefaultTemporalFieldBuilder<>(OffsetDateTime.class, dateTimePattern, linkedValue);
   }
 
   /**
