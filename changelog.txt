@@ -7699,3 +7699,13 @@
   FilteredTable, searchField settings dialog replaced with a popup menu
   OkCancelDialogBuilder.onOk() and onCancel() now take Runnables instead of Control.Commands, DefaultOkCancelDialogBuilder refactored
   EntityApplicationPanel.selectFontSize() and setLogLevel() refactored
+  FilteredTable, ExceptionPanel and LoginPanel refactored a bit
+  ColumnSummaryPanel and ColumnSummaryModel refactored, now based on Value and State
+  ComponentBuilder.popupMenu() added
+  Components.checkBox(), radioButton() and toggleButton() ValueObserver<Boolean> overload removed, sets bad precedent, use setLinkedValueObserver()
+  PanelBuilder.layout() added
+  Components.panel(panel) added for configuring a panel
+  Components.builder(component) renamed component()
+  SplitPaneBuilder and TabbedPaneBuilder added
+  ToggleButtonBuilder removed
+  TemporalFieldBuilder cleanup

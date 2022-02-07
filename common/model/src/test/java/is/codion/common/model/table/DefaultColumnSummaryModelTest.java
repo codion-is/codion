@@ -3,7 +3,6 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
@@ -51,80 +50,74 @@ public class DefaultColumnSummaryModelTest {
 
   @Test
   void test() {
-    testIntModel.setSummary(ColumnSummary.SUM);
-    assertEquals(ColumnSummary.SUM, testIntModel.getSummary());
+    testIntModel.getSummaryValue().set(ColumnSummary.SUM);
+    assertEquals(ColumnSummary.SUM, testIntModel.getSummaryValue().get());
     assertTrue(testIntModel.getAvailableSummaries().size() > 0);
-    final EventListener listener = () -> {};
-    final EventDataListener<ColumnSummaryModel.Summary> summaryListener = data -> {};
-    testIntModel.addSummaryValueListener(listener);
-    testIntModel.addSummaryListener(summaryListener);
-    testIntModel.removeSummaryValueListener(listener);
-    testIntModel.removeSummaryListener(summaryListener);
   }
 
   @Test
   void intSum() {
-    testIntModel.setSummary(ColumnSummary.SUM);
-    assertEquals("15", testIntModel.getSummaryText());
+    testIntModel.getSummaryValue().set(ColumnSummary.SUM);
+    assertEquals("15", testIntModel.getSummaryTextObserver().get());
   }
 
   @Test
   void intAverage() {
-    testIntModel.setSummary(ColumnSummary.AVERAGE);
-    assertEquals(numberFormat.format(2.5), testIntModel.getSummaryText());
+    testIntModel.getSummaryValue().set(ColumnSummary.AVERAGE);
+    assertEquals(numberFormat.format(2.5), testIntModel.getSummaryTextObserver().get());
   }
 
   @Test
   void intMininum() {
-    testIntModel.setSummary(ColumnSummary.MINIMUM);
-    assertEquals("1", testIntModel.getSummaryText());
+    testIntModel.getSummaryValue().set(ColumnSummary.MINIMUM);
+    assertEquals("1", testIntModel.getSummaryTextObserver().get());
   }
 
   @Test
   void intMaximum() {
-    testIntModel.setSummary(ColumnSummary.MAXIMUM);
-    assertEquals("5", testIntModel.getSummaryText());
+    testIntModel.getSummaryValue().set(ColumnSummary.MAXIMUM);
+    assertEquals("5", testIntModel.getSummaryTextObserver().get());
   }
 
   @Test
   void intMininumMaximum() {
-    testIntModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
-    assertEquals("1/5", testIntModel.getSummaryText());
+    testIntModel.getSummaryValue().set(ColumnSummary.MINIMUM_MAXIMUM);
+    assertEquals("1/5", testIntModel.getSummaryTextObserver().get());
   }
 
   @Test
   void doubleSum() {
-    testDoubleModel.setSummary(ColumnSummary.SUM);
-    assertEquals(numberFormat.format(16.5), testDoubleModel.getSummaryText());
+    testDoubleModel.getSummaryValue().set(ColumnSummary.SUM);
+    assertEquals(numberFormat.format(16.5), testDoubleModel.getSummaryTextObserver().get());
   }
 
   @Test
   void doubleAverage() {
-    testDoubleModel.setSummary(ColumnSummary.AVERAGE);
-    assertEquals(numberFormat.format(2.75), testDoubleModel.getSummaryText());
+    testDoubleModel.getSummaryValue().set(ColumnSummary.AVERAGE);
+    assertEquals(numberFormat.format(2.75), testDoubleModel.getSummaryTextObserver().get());
   }
 
   @Test
   void doubleMininum() {
-    testDoubleModel.setSummary(ColumnSummary.MINIMUM);
-    assertEquals(numberFormat.format(1.1), testDoubleModel.getSummaryText());
+    testDoubleModel.getSummaryValue().set(ColumnSummary.MINIMUM);
+    assertEquals(numberFormat.format(1.1), testDoubleModel.getSummaryTextObserver().get());
   }
 
   @Test
   void doubleMaximum() {
-    testDoubleModel.setSummary(ColumnSummary.MAXIMUM);
-    assertEquals(numberFormat.format(5.5), testDoubleModel.getSummaryText());
+    testDoubleModel.getSummaryValue().set(ColumnSummary.MAXIMUM);
+    assertEquals(numberFormat.format(5.5), testDoubleModel.getSummaryTextObserver().get());
   }
 
   @Test
   void doubleMininumMaximum() {
-    testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
-    assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
+    testDoubleModel.getSummaryValue().set(ColumnSummary.MINIMUM_MAXIMUM);
+    assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryTextObserver().get());
   }
 
   @Test
   void locked() {
-    testDoubleModel.setLocked(true);
-    assertThrows(IllegalStateException.class, () -> testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM));
+    testDoubleModel.getLockedState().set(true);
+    assertThrows(IllegalStateException.class, () -> testDoubleModel.getSummaryValue().set(ColumnSummary.MINIMUM_MAXIMUM));
   }
 }

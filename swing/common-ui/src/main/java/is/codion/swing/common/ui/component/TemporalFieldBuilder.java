@@ -10,8 +10,8 @@ import java.time.temporal.Temporal;
 /**
  * A builder for {@link TemporalField}.
  */
-public interface TemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>, B extends TemporalFieldBuilder<T, C, B>>
-        extends TextFieldBuilder<T, C, B> {
+public interface TemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>>
+        extends TextFieldBuilder<T, C, TemporalFieldBuilder<T, C>> {
 
   /**
    * @param focusLostBehaviour the focus lost behaviour, JFormattedTextField.COMMIT by default
@@ -21,5 +21,5 @@ public interface TemporalFieldBuilder<T extends Temporal, C extends TemporalFiel
    * @see javax.swing.JFormattedTextField#REVERT
    * @see javax.swing.JFormattedTextField#PERSIST
    */
-  B focusLostBehaviour(int focusLostBehaviour);
+  TemporalFieldBuilder<T, C> focusLostBehaviour(int focusLostBehaviour);
 }

@@ -15,11 +15,24 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, PanelBuilder> implements PanelBuilder {
 
-  private final LayoutManager layoutManager;
+  private final JPanel panel;
   private final List<ComponentConstraints> componentConstraints = new ArrayList<>();
 
-  DefaultPanelBuilder(final LayoutManager layoutManager) {
-    this.layoutManager = requireNonNull(layoutManager);
+  private LayoutManager layout;
+
+  DefaultPanelBuilder(final JPanel panel) {
+    this.panel = requireNonNull(panel);
+  }
+
+  DefaultPanelBuilder(final LayoutManager layout) {
+    this.layout = layout;
+    this.panel = null;
+  }
+
+  @Override
+  public PanelBuilder layout(final LayoutManager layoutManager) {
+    this.layout = requireNonNull(layoutManager);
+    return this;
   }
 
   @Override
@@ -48,17 +61,20 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   @Override
   protected JPanel buildComponent() {
-    final JPanel panel = new JPanel(layoutManager);
+    final JPanel component = panel == null ? new JPanel() : panel;
+    if (layout != null) {
+      component.setLayout(layout);
+    }
     componentConstraints.forEach(componentConstraint -> {
       if (componentConstraint.constraints != null) {
-        panel.add(componentConstraint.component, componentConstraint.constraints);
+        component.add(componentConstraint.component, componentConstraint.constraints);
       }
       else {
-        panel.add(componentConstraint.component);
+        component.add(componentConstraint.component);
       }
     });
 
-    return panel;
+    return component;
   }
 
   @Override

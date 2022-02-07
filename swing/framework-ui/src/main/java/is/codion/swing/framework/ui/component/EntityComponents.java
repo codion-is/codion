@@ -13,6 +13,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
+import is.codion.swing.common.ui.component.ButtonBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
@@ -20,16 +21,13 @@ import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
-import is.codion.swing.common.ui.component.LocalDateFieldBuilder;
-import is.codion.swing.common.ui.component.LocalDateTimeFieldBuilder;
-import is.codion.swing.common.ui.component.LocalTimeFieldBuilder;
 import is.codion.swing.common.ui.component.LongFieldBuilder;
-import is.codion.swing.common.ui.component.OffsetDateTimeFieldBuilder;
+import is.codion.swing.common.ui.component.TemporalFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
-import is.codion.swing.common.ui.component.ToggleButtonBuilder;
+import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -86,10 +84,10 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Attribute<Boolean> attribute) {
+  public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return (ToggleButtonBuilder<JToggleButton, B>) Components.toggleButton()
+    return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
             .toolTipText(property.getDescription())
             .caption(property.getCaption())
             .includeCaption(false);
@@ -265,7 +263,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LocalTimeFieldBuilder localTimeField(final Attribute<LocalTime> attribute) {
+  public final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(final Attribute<LocalTime> attribute) {
     final Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localTimeField(property.getDateTimePattern())
@@ -277,7 +275,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LocalDateFieldBuilder localDateField(final Attribute<LocalDate> attribute) {
+  public final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(final Attribute<LocalDate> attribute) {
     final Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateField(property.getDateTimePattern())
@@ -289,7 +287,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LocalDateTimeFieldBuilder localDateTimeField(final Attribute<LocalDateTime> attribute) {
+  public final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(final Attribute<LocalDateTime> attribute) {
     final Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateTimeField(property.getDateTimePattern())
@@ -301,7 +299,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final OffsetDateTimeFieldBuilder offsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
+  public final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
     final Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.offsetDateTimeField(property.getDateTimePattern())

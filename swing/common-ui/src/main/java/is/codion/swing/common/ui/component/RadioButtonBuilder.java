@@ -8,7 +8,7 @@ import javax.swing.JRadioButton;
 /**
  * Builds a JRadioButton.
  */
-public interface RadioButtonBuilder extends ToggleButtonBuilder<JRadioButton, RadioButtonBuilder> {
+public interface RadioButtonBuilder extends ButtonBuilder<Boolean, JRadioButton, RadioButtonBuilder> {
 
   /**
    * @param horizontalAlignment the horizontal alignment

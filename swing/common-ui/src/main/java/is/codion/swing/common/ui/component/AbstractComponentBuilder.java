@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -65,7 +66,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private ComponentOrientation componentOrientation = ComponentOrientation.UNKNOWN;
   private StateObserver enabledState;
   private boolean enabled = true;
-  private Controls popupMenuControls;
+  private JPopupMenu popupMenu;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
   private Value.Validator<T> validator;
@@ -80,13 +81,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    */
   protected AbstractComponentBuilder(final Value<T> linkedValue) {
     this.linkedValue = linkedValue;
-  }
-
-  /**
-   * @param linkedValueObserver the linked value observer, may be null
-   */
-  protected AbstractComponentBuilder(final ValueObserver<T> linkedValueObserver) {
-    this.linkedValueObserver = linkedValueObserver;
   }
 
   @Override
@@ -183,7 +177,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B popupMenuControls(final Controls popupMenuControls) {
-    this.popupMenuControls = popupMenuControls;
+    return popupMenu(requireNonNull(popupMenuControls).createPopupMenu());
+  }
+
+  @Override
+  public final B popupMenu(final JPopupMenu popupMenu) {
+    this.popupMenu = popupMenu;
     return (B) this;
   }
 
@@ -325,8 +324,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (enabledState != null) {
       linkToEnabledState(enabledState, component);
     }
-    if (popupMenuControls != null) {
-      component.setComponentPopupMenu(popupMenuControls.createPopupMenu());
+    if (popupMenu != null) {
+      component.setComponentPopupMenu(popupMenu);
     }
     if (toolTipText != null) {
       component.setToolTipText(toolTipText);

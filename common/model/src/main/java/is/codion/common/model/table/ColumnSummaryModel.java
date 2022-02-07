@@ -3,8 +3,10 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.state.State;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,24 +31,9 @@ public interface ColumnSummaryModel {
   }
 
   /**
-   * @param summary the type of summary to show
+   * @return the locked state, if true then changing summary type is disabled
    */
-  void setSummary(Summary summary);
-
-  /**
-   * @return the current summary type
-   */
-  Summary getSummary();
-
-  /**
-   * @return true if changing the summary type is disabled
-   */
-  boolean isLocked();
-
-  /**
-   * @param locked if true then changing summary type is disable
-   */
-  void setLocked(boolean locked);
+  State getLockedState();
 
   /**
    * @return a list containing the available summaries
@@ -54,29 +41,14 @@ public interface ColumnSummaryModel {
   List<Summary> getAvailableSummaries();
 
   /**
-   * @return a string representing the summary value
+   * @return the value controlling the summary
    */
-  String getSummaryText();
+  Value<Summary> getSummaryValue();
 
   /**
-   * @param listener a listener to be notified each time the summary value changes
+   * @return an observer for the string representing the summary value
    */
-  void addSummaryValueListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSummaryValueListener(EventListener listener);
-
-  /**
-   * @param listener a listener to be notified each time the summary type changes
-   */
-  void addSummaryListener(EventDataListener<Summary> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSummaryListener(EventDataListener<Summary> listener);
+  ValueObserver<String> getSummaryTextObserver();
 
   /**
    * Provides the values used when creating the summary value.

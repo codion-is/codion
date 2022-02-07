@@ -93,11 +93,13 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   private JPanel createNorthPanel(final Insets insets) {
-    final JCheckBox selectAllButton = Components.checkBox(State.and(states.values()))
+    final JCheckBox selectAllButton = Components.checkBox()
+            .linkedValueObserver(State.and(states.values()))
             .caption(MESSAGES.getString("select_all"))
             .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
             .build();
-    final JCheckBox selectNoneButton = Components.checkBox(State.and(states.values().stream()
+    final JCheckBox selectNoneButton = Components.checkBox()
+            .linkedValueObserver(State.and(states.values().stream()
                     .map(StateObserver::getReversedObserver)
                     .collect(Collectors.toList())))
             .caption(MESSAGES.getString("select_none"))

@@ -11,8 +11,8 @@ import java.time.temporal.Temporal;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>, B extends TemporalFieldBuilder<T, C, B>>
-        extends DefaultTextFieldBuilder<T, C, B> implements TemporalFieldBuilder<T, C, B> {
+class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>>
+        extends DefaultTextFieldBuilder<T, C, TemporalFieldBuilder<T, C>> implements TemporalFieldBuilder<T, C> {
 
   private final String dateTimePattern;
 
@@ -24,9 +24,9 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
   }
 
   @Override
-  public final B focusLostBehaviour(final int focusLostBehaviour) {
+  public final TemporalFieldBuilder<T, C> focusLostBehaviour(final int focusLostBehaviour) {
     this.focusLostBehaviour = focusLostBehaviour;
-    return (B) this;
+    return this;
   }
 
   @Override

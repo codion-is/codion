@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -105,29 +106,32 @@ final class LoginPanel extends JPanel {
     progressBar.setPreferredSize(passwordField.getPreferredSize());
     progressBar.setIndeterminate(true);
     final CardLayout passwordProgressLayout = new CardLayout();
-    final JPanel passwordProgressPanel = new JPanel(passwordProgressLayout);
-    passwordProgressPanel.add(passwordField, PASSWORD_CARD);
-    passwordProgressPanel.add(progressBar, PROGRESS_CARD);
+    final JPanel passwordProgressPanel = Components.panel(passwordProgressLayout)
+            .addConstrained(passwordField, PASSWORD_CARD)
+            .addConstrained(progressBar, PROGRESS_CARD)
+            .build();
     validatingState.addDataListener(validating ->
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
 
-    final JPanel credentialsPanel = new JPanel(Layouts.flexibleGridLayout()
-            .rowsColumns(2, 2)
-            .fixRowHeights(true)
-            .build());
-    credentialsPanel.add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT));
-    credentialsPanel.add(usernameField);
-    credentialsPanel.add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT));
-    credentialsPanel.add(passwordProgressPanel);
+    final JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout()
+                    .rowsColumns(2, 2)
+                    .fixRowHeights(true)
+                    .build())
+            .add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT))
+            .add(usernameField)
+            .add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT))
+            .add(passwordProgressPanel)
+            .build();
     final JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
     credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);
     if (southComponent != null) {
       credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
     }
 
-    final JPanel centerPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 20));
-    centerPanel.add(credentialsBasePanel);
+    final JPanel centerPanel = Components.panel(Layouts.flowLayout(FlowLayout.CENTER))
+            .border(BorderFactory.createEmptyBorder(20, 10, 20, 20))
+            .add(credentialsBasePanel)
+            .build();
     setLayout(new BorderLayout(0, 0));
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().isEmpty()) {

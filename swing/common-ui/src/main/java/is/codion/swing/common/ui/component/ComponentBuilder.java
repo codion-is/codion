@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -150,6 +151,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B popupMenuControls(Controls popupMenuControls);
+
+  /**
+   * @param popupMenu the popup menu
+   * @return this builder instance
+   */
+  B popupMenu(JPopupMenu popupMenu);
 
   /**
    * @param font the component font

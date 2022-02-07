@@ -4,19 +4,14 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 
 import javax.swing.JToggleButton;
 
-abstract class AbstractToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
-        extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
+abstract class AbstractToggleButtonBuilder<C extends JToggleButton, B extends ButtonBuilder<Boolean, C, B>>
+        extends AbstractButtonBuilder<Boolean, C, B> implements ButtonBuilder<Boolean, C, B> {
 
   protected AbstractToggleButtonBuilder(final Value<Boolean> linkedValue) {
     super(linkedValue);
-  }
-
-  protected AbstractToggleButtonBuilder(final ValueObserver<Boolean> linkedValueObserver) {
-    super(linkedValueObserver);
   }
 
   @Override

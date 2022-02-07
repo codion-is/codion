@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.table;
 
 import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.ButtonGroup;
@@ -23,55 +24,42 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ColumnSummaryPanel extends JPanel {
 
-  private final ColumnSummaryModel model;
-  private final JTextField summaryField = new JTextField();
-
   /**
    * @param model the PropertySummaryModel instance
    */
   public ColumnSummaryPanel(final ColumnSummaryModel model) {
-    this.model = requireNonNull(model, "model");
-    model.addSummaryValueListener(() -> {
-      final String summaryText = model.getSummaryText();
-      summaryField.setText(summaryText);
-      summaryField.setToolTipText(summaryText.length() != 0 ? (model.getSummary() + ": " + summaryText) : summaryText);
-    });
-    initialize();
-  }
-
-  /**
-   * @return the summary type
-   */
-  public ColumnSummaryModel getModel() {
-    return model;
-  }
-
-  private void initialize() {
     setLayout(new BorderLayout());
-    summaryField.setHorizontalAlignment(SwingConstants.RIGHT);
-    summaryField.setEditable(false);
-    summaryField.setFocusable(false);
-    add(summaryField, BorderLayout.CENTER);
-    final JPopupMenu menu = createPopupMenu();
-    summaryField.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        if (!model.isLocked()) {
-          menu.show(summaryField, e.getX(), e.getY() - menu.getPreferredSize().height);
-        }
-      }
-    });
+    add(initializeSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
   }
 
-  private JPopupMenu createPopupMenu() {
+  private static JTextField initializeSummaryField(final ColumnSummaryModel model) {
+    final JPopupMenu menu = createPopupMenu(model);
+    return Components.textField()
+            .linkedValueObserver(model.getSummaryTextObserver())
+            .horizontalAlignment(SwingConstants.RIGHT)
+            .editable(false)
+            .focusable(false)
+            .popupMenu(menu)
+            .mouseListener(new MouseAdapter() {
+              @Override
+              public void mouseReleased(final MouseEvent e) {
+                if (!model.getLockedState().get()) {
+                  menu.show(e.getComponent(), e.getX(), e.getY() - menu.getPreferredSize().height);
+                }
+              }
+            })
+            .build();
+  }
+
+  private static JPopupMenu createPopupMenu(final ColumnSummaryModel model) {
     final JPopupMenu popupMenu = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
     for (final ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
-      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.setSummary(summary))
+      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.getSummaryValue().set(summary))
               .caption(summary.toString())
               .build());
-      model.addSummaryListener(newSummary -> item.setSelected(newSummary.equals(summary)));
-      item.setSelected(model.getSummary().equals(summary));
+      model.getSummaryValue().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));
+      item.setSelected(model.getSummaryValue().equals(summary));
       group.add(item);
       popupMenu.add(item);
     }
