@@ -420,7 +420,7 @@ public final class ComponentsTest {
     final JTextArea textArea = componentValue.getComponent();
     textArea.setText("hello");
     assertEquals("hello", value.get());
-    builder.buildScrollPane();
+    builder.scrollPane().build();
   }
 
   @Test
@@ -578,7 +578,7 @@ public final class ComponentsTest {
     assertEquals("two", componentValue.get());
     textValue.set("three");
     assertEquals("three", componentValue.get());
-    listBuilder.buildScrollPane();
+    listBuilder.scrollPane().build();
   }
 
   @Test

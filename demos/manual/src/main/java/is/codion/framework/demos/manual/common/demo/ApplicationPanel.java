@@ -96,7 +96,8 @@ public final class ApplicationPanel extends JPanel {
                     .action(Control.actionControl(actionEvent ->
                             ((JTextArea) actionEvent.getSource()).append("SPACE"))))
             .enabledState(inputEnabledState)
-            .buildScrollPane(inputPanel::add);
+            .scrollPane()
+            .build(inputPanel::add);
 
     label("Formatted String")
             .build(inputPanel::add);
@@ -237,7 +238,7 @@ public final class ApplicationPanel extends JPanel {
             .layoutOrientation(JList.HORIZONTAL_WRAP)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
-            .buildScrollPane(inputPanel::add);
+            .build(inputPanel::add);
 
     add(settingsPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);

@@ -264,6 +264,11 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B initialValue(T initialValue);
 
   /**
+   * @return a ScrollPaneBuilder using this component as the view
+   */
+  ScrollPaneBuilder scrollPane();
+
+  /**
    * @param onBuild called when the component has been built
    * @return this builder instance
    */

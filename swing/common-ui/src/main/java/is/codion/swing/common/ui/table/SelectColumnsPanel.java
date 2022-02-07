@@ -55,9 +55,9 @@ final class SelectColumnsPanel<C> extends JPanel {
                     .caption(Objects.toString(entry.getKey().getHeaderValue()))
                     .build())
             .collect(Collectors.toList());
-    final JScrollPane centerPanel = createCenterPanel();
-    add(createNorthPanel(centerPanel.getBorder().getBorderInsets(centerPanel)), BorderLayout.NORTH);
-    add(centerPanel, BorderLayout.CENTER);
+    final JScrollPane checkBoxPanel = createCheckBoxPanel();
+    add(createNorthPanel(checkBoxPanel.getBorder().getBorderInsets(checkBoxPanel)), BorderLayout.NORTH);
+    add(checkBoxPanel, BorderLayout.CENTER);
   }
 
   void requestColumnPanelFocus() {
@@ -121,13 +121,7 @@ final class SelectColumnsPanel<C> extends JPanel {
     states.values().forEach(state -> state.set(false));
   }
 
-  private JScrollPane createCenterPanel() {
-    return Components.scrollPane(createCheckBoxPanel())
-            .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
-            .build();
-  }
-
-  private JPanel createCheckBoxPanel() {
+  private JScrollPane createCheckBoxPanel() {
     final JPanel northPanel = Components.panel(gridLayout(0, 1))
             .add(checkBoxes)
             .build();
@@ -152,6 +146,8 @@ final class SelectColumnsPanel<C> extends JPanel {
 
     return Components.panel(borderLayout())
             .addConstrained(northPanel, BorderLayout.NORTH)
+            .scrollPane()
+            .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
             .build();
   }
 

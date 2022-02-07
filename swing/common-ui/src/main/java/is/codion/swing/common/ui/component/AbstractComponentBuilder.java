@@ -295,6 +295,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final ScrollPaneBuilder scrollPane() {
+    return new DefaultScrollPaneBuilder(build());
+  }
+
+  @Override
   public final B onBuild(final Consumer<C> onBuild) {
     buildEvent.addDataListener(onBuild::accept);
     return (B) this;
