@@ -159,7 +159,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public B enabled(final boolean enabled) {
+  public final B enabled(final boolean enabled) {
     this.enabled = enabled;
     return (B) this;
   }

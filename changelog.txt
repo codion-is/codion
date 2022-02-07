@@ -7675,3 +7675,4 @@
   SplitPaneBuilder and TabbedPaneBuilder added
   ToggleButtonBuilder removed
   TemporalFieldBuilder cleanup
+  ScrollPaneBuilder added

@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -123,11 +122,9 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   private JScrollPane createCenterPanel() {
-    final JScrollPane scrollPane = new JScrollPane(createCheckBoxPanel());
-    scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width,
-            COLUMNS_SELECTION_PANEL_HEIGHT));
-
-    return scrollPane;
+    return Components.scrollPane(createCheckBoxPanel())
+            .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
+            .build();
   }
 
   private JPanel createCheckBoxPanel() {

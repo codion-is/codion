@@ -713,6 +713,14 @@ public final class Components {
   }
 
   /**
+   * @param view the view component
+   * @return a scroll pane builder
+   */
+  public static ScrollPaneBuilder scrollPane(final JComponent view) {
+    return new DefaultScrollPaneBuilder(view);
+  }
+
+  /**
    * Returns a generic component builder, for configuring components. Configures and returns the given component on build.
    * @param component the component to configure
    * @param <T> the value type
