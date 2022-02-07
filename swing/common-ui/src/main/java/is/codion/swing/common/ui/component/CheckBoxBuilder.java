@@ -10,7 +10,7 @@ import javax.swing.JCheckBox;
 /**
  * Builds a JCheckBox.
  */
-public interface CheckBoxBuilder extends ToggleButtonBuilder<JCheckBox, CheckBoxBuilder> {
+public interface CheckBoxBuilder extends ButtonBuilder<Boolean, JCheckBox, CheckBoxBuilder> {
 
   /**
    * @param nullable if true then a {@link NullableCheckBox} is built.

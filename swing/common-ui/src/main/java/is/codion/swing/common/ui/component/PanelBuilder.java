@@ -5,12 +5,19 @@ package is.codion.swing.common.ui.component;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.awt.LayoutManager;
 import java.util.Collection;
 
 /**
  * Builds a JPanel instance.
  */
 public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilder> {
+
+  /**
+   * @param layoutManager the layout manager
+   * @return this builder instance
+   */
+  PanelBuilder layout(LayoutManager layoutManager);
 
   /**
    * @param component the component to add

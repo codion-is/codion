@@ -83,22 +83,22 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
     final EntityPanel.Builder genreBuilder =
             EntityPanel.builder(SwingEntityModel.builder(Genre.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
+                            .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
                     .editPanelClass(GenreEditPanel.class)
                     .detailPanelBuilder(trackBuilder)
                     .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     final EntityPanel.Builder mediaTypeBuilder =
             EntityPanel.builder(SwingEntityModel.builder(MediaType.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
+                            .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
                     .editPanelClass(MediaTypeEditPanel.class)
                     .detailPanelBuilder(trackBuilder)
                     .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     final EntityPanel.Builder employeeBuilder =
             EntityPanel.builder(SwingEntityModel.builder(Employee.TYPE)
-                    .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
-                    .tableModelClass(EmployeeTableModel.class))
+                            .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
+                            .tableModelClass(EmployeeTableModel.class))
                     .editPanelClass(EmployeeEditPanel.class)
                     .tablePanelClass(EmployeeTablePanel.class)
                     .detailPanelBuilder(customerBuilder)
@@ -127,16 +127,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   private void selectLanguage() {
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
-    final JRadioButton enButton = new JRadioButton("English");
-    final JRadioButton isButton = new JRadioButton("Íslenska");
+    final JRadioButton enButton = new JRadioButton("English", language.equals(LANGUAGE_EN));
+    final JRadioButton isButton = new JRadioButton("Íslenska", language.equals(LANGUAGE_IS));
     final ButtonGroup langButtonGroup = new ButtonGroup();
     langButtonGroup.add(enButton);
     langButtonGroup.add(isButton);
     final JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
     buttonPanel.add(enButton);
     buttonPanel.add(isButton);
-    enButton.setSelected(language.equals(LANGUAGE_EN));
-    isButton.setSelected(language.equals(LANGUAGE_IS));
     showMessageDialog(this, buttonPanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
     final String newLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
     if (!language.equals(newLanguage)) {

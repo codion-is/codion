@@ -301,57 +301,50 @@ public final class LoadTestPanel<T> extends JPanel {
     systemLoadChartPanel.setBorder(BorderFactory.createTitledBorder("System load"));
     failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario run failures per second"));
 
-    final JTabbedPane twoTab = new JTabbedPane();
-    twoTab.addTab("Scenarios run", usageScenarioChartPanel);
-    twoTab.addTab("Failed runs", failureChartPanel);
-
-    final JPanel bottomPanel = new JPanel(new GridLayout(1, 4, 0, 0));
-    bottomPanel.add(memoryUsageChartPanel);
-    bottomPanel.add(systemLoadChartPanel);
-    bottomPanel.add(thinkTimeChartPanel);
-    bottomPanel.add(numberOfApplicationsChartPanel);
-
-    final JSplitPane two = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-    two.setOneTouchExpandable(true);
-    two.setLeftComponent(twoTab);
-    two.setRightComponent(bottomPanel);
-    two.setResizeWeight(RESIZE_WEIGHT);
-
-    final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
-
-    final JTabbedPane tabPane = new JTabbedPane();
-    tabPane.addTab("Overview", two);
-    tabPane.addTab("Scenarios", scenarioBase);
-
-    chartBase.add(tabPane);
-
-    return chartBase;
+    return Components.panel(new BorderLayout(0, 0))
+            .add(Components.tabbedPane()
+                    .tab("Overview", Components.splitPane()
+                            .orientation(JSplitPane.VERTICAL_SPLIT)
+                            .oneTouchExpandable(true)
+                            .leftComponent(Components.tabbedPane()
+                                    .tab("Scenarios run", usageScenarioChartPanel)
+                                    .tab("Failed runs", failureChartPanel)
+                                    .build())
+                            .rightComponent(Components.panel(new GridLayout(1, 4, 0, 0))
+                                    .add(memoryUsageChartPanel)
+                                    .add(systemLoadChartPanel)
+                                    .add(thinkTimeChartPanel)
+                                    .add(numberOfApplicationsChartPanel)
+                                    .build())
+                            .resizeWeight(RESIZE_WEIGHT)
+                            .build())
+                    .tab("Scenarios", scenarioBase)
+                    .build())
+            .build();
   }
 
   private JPanel initializeActivityPanel() {
-    final JPanel thinkTimePanel = new JPanel(Layouts.flexibleGridLayout()
-            .rowsColumns(4, 2)
-            .fixRowHeights(true)
-            .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
-            .build());
-    thinkTimePanel.add(new JLabel("Max. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(Components.integerSpinner(loadTestModel.getMaximumThinkTimeValue())
-            .stepSize(SPINNER_STEP_SIZE)
-            .columns(SMALL_TEXT_FIELD_COLUMNS)
-            .build());
-    thinkTimePanel.add(new JLabel("Min. think time", SwingConstants.CENTER));
-    thinkTimePanel.add(Components.integerSpinner(loadTestModel.getMinimumThinkTimeValue())
-            .stepSize(SPINNER_STEP_SIZE)
-            .columns(SMALL_TEXT_FIELD_COLUMNS)
-            .build());
-    thinkTimePanel.add(Components.toggleButton(loadTestModel.getPausedState())
-            .caption("Pause")
-            .mnemonic('P')
-            .build());
-
-    thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
-
-    return thinkTimePanel;
+    return Components.panel(Layouts.flexibleGridLayout()
+                    .rowsColumns(4, 2)
+                    .fixRowHeights(true)
+                    .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
+                    .build())
+            .add(new JLabel("Max. think time", SwingConstants.CENTER))
+            .add(Components.integerSpinner(loadTestModel.getMaximumThinkTimeValue())
+                    .stepSize(SPINNER_STEP_SIZE)
+                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                    .build())
+            .add(new JLabel("Min. think time", SwingConstants.CENTER))
+            .add(Components.integerSpinner(loadTestModel.getMinimumThinkTimeValue())
+                    .stepSize(SPINNER_STEP_SIZE)
+                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                    .build())
+            .add(Components.toggleButton(loadTestModel.getPausedState())
+                    .caption("Pause")
+                    .mnemonic('P')
+                    .build())
+            .border(BorderFactory.createTitledBorder("Activity"))
+            .build();
   }
 
   private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<UsageScenario<T>>> selectedScenarios) {

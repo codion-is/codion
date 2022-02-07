@@ -13,6 +13,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
+import is.codion.swing.common.ui.component.ButtonBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
@@ -29,7 +30,6 @@ import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
-import is.codion.swing.common.ui.component.ToggleButtonBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -86,10 +86,10 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Attribute<Boolean> attribute) {
+  public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(final Attribute<Boolean> attribute) {
     final Property<Boolean> property = entityDefinition.getProperty(attribute);
 
-    return (ToggleButtonBuilder<JToggleButton, B>) Components.toggleButton()
+    return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
             .toolTipText(property.getDescription())
             .caption(property.getCaption())
             .includeCaption(false);

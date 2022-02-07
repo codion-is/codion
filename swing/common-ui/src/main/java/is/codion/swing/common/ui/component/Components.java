@@ -15,6 +15,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListModel;
@@ -89,7 +90,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton() {
+  public static <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton() {
     return new DefaultToggleButtonBuilder<>(null);
   }
 
@@ -98,7 +99,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(final Value<Boolean> linkedValue) {
+  public static <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(final Value<Boolean> linkedValue) {
     return new DefaultToggleButtonBuilder<>(linkedValue);
   }
 
@@ -674,11 +675,40 @@ public final class Components {
   }
 
   /**
-   * @param layoutManager the panel layout
    * @return a panel builder
    */
-  public static PanelBuilder panel(final LayoutManager layoutManager) {
-    return new DefaultPanelBuilder(layoutManager);
+  public static PanelBuilder panel() {
+    return new DefaultPanelBuilder((LayoutManager) null);
+  }
+
+  /**
+   * @param layout the panel layout manager
+   * @return a panel builder
+   */
+  public static PanelBuilder panel(final LayoutManager layout) {
+    return new DefaultPanelBuilder(requireNonNull(layout));
+  }
+
+  /**
+   * @param panel the panel to configure
+   * @return a panel builder
+   */
+  public static PanelBuilder panel(final JPanel panel) {
+    return new DefaultPanelBuilder(panel);
+  }
+
+  /**
+   * @return a tabbed pane builder
+   */
+  public static TabbedPaneBuilder tabbedPane() {
+    return new DefaultTabbedPaneBuilder();
+  }
+
+  /**
+   * @return a split pane builder
+   */
+  public static SplitPaneBuilder splitPane() {
+    return new DefaultSplitPaneBuilder();
   }
 
   /**
@@ -689,7 +719,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a generic builder, returning the given component on build
    */
-  public static <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> builder(final C component) {
+  public static <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(final C component) {
     return new DefaultComponentBuilder<>(requireNonNull(component, "component"));
   }
 }
