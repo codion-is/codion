@@ -159,7 +159,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public B enabled(final boolean enabled) {
+  public final B enabled(final boolean enabled) {
     this.enabled = enabled;
     return (B) this;
   }
@@ -292,6 +292,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   public final B initialValue(final T initialValue) {
     this.initialValue = requireNonNull(initialValue);
     return (B) this;
+  }
+
+  @Override
+  public final ScrollPaneBuilder scrollPane() {
+    return new DefaultScrollPaneBuilder(build());
   }
 
   @Override

@@ -6,10 +6,8 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.value.Value;
 
 import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,8 +19,6 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   private int layoutOrientation = JList.VERTICAL;
   private int fixedCellHeight = -1;
   private int fixedCellWidth = -1;
-
-  private JScrollPane scrollPane;
 
   DefaultListBuilder(final ListModel<T> listModel, final Value<T> linkedValue) {
     super(linkedValue);
@@ -63,23 +59,6 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
     list.setFixedCellWidth(fixedCellWidth);
 
     return list;
-  }
-
-  @Override
-  public JScrollPane buildScrollPane() {
-    return buildScrollPane(null);
-  }
-
-  @Override
-  public JScrollPane buildScrollPane(final Consumer<JScrollPane> onBuild) {
-    if (scrollPane == null) {
-      scrollPane = new JScrollPane(build());
-      if (onBuild != null) {
-        onBuild.accept(scrollPane);
-      }
-    }
-
-    return scrollPane;
   }
 
   @Override

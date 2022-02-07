@@ -3,9 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.util.function.Consumer;
+import javax.swing.text.Document;
 
 /**
  * Builds a JTextArea.
@@ -50,15 +49,8 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
   TextAreaBuilder tabSize(int tabSize);
 
   /**
-   * Builds the text area and returns a scroll pane containing it, note that subsequent calls return the same scroll pane.
-   * @return a scroll pane containing the text area
+   * @param document the document
+   * @return this builder instance
    */
-  JScrollPane buildScrollPane();
-
-  /**
-   * Builds the text area and returns a scroll pane containing it
-   * @param onBuild called after the first call when the component is built, not called on subsequent calls.
-   * @return a scroll pane containing the text area
-   */
-  JScrollPane buildScrollPane(Consumer<JScrollPane> onBuild);
+  TextAreaBuilder document(Document document);
 }

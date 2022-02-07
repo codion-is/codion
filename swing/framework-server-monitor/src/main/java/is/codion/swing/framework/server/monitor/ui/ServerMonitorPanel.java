@@ -227,7 +227,8 @@ public final class ServerMonitorPanel extends JPanel {
             .lineWrap(true)
             .wrapStyleWord(true)
             .initialValue(model.getEnvironmentInfo())
-            .buildScrollPane();
+            .scrollPane()
+            .build();
   }
 
   private JTextField initializeConnectionCountField() {
