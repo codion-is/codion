@@ -8,10 +8,11 @@ import is.codion.swing.common.ui.textfield.CaseDocumentFilter;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.textfield.StringLengthValidator;
 
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
-import java.util.function.Consumer;
+import javax.swing.text.Document;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, JTextArea, TextAreaBuilder>
         implements TextAreaBuilder {
@@ -21,8 +22,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private boolean lineWrap = true;
   private boolean wrapStyleWord = true;
   private boolean autoscrolls = true;
-
-  private JScrollPane scrollPane;
+  private Document document;
 
   DefaultTextAreaBuilder(final Value<String> linkedValue) {
     super(linkedValue);
@@ -65,29 +65,31 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   }
 
   @Override
-  public JScrollPane buildScrollPane() {
-    return buildScrollPane(null);
-  }
-
-  @Override
-  public JScrollPane buildScrollPane(final Consumer<JScrollPane> onBuild) {
-    if (scrollPane == null) {
-      scrollPane = new JScrollPane(build());
-      if (onBuild != null) {
-        onBuild.accept(scrollPane);
-      }
-    }
-
-    return scrollPane;
+  public TextAreaBuilder document(final Document document) {
+    this.document = requireNonNull(document);
+    return this;
   }
 
   @Override
   protected JTextArea buildComponent() {
     final JTextArea textArea = new JTextArea(rows, columns);
-    final AbstractDocument document = (AbstractDocument) textArea.getDocument();
-    final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
-    caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
-    document.setDocumentFilter(caseDocumentFilter);
+    if (document != null) {
+      textArea.setDocument(document);
+    }
+    else {
+      document = textArea.getDocument();
+    }
+    if (document instanceof AbstractDocument) {
+      final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
+      caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
+      if (upperCase) {
+        caseDocumentFilter.setDocumentCase(DocumentCase.UPPERCASE);
+      }
+      if (lowerCase) {
+        caseDocumentFilter.setDocumentCase(DocumentCase.LOWERCASE);
+      }
+      ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
+    }
     textArea.setAutoscrolls(autoscrolls);
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
@@ -97,12 +99,6 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
     }
     if (margin != null) {
       textArea.setMargin(margin);
-    }
-    if (upperCase) {
-      caseDocumentFilter.setDocumentCase(DocumentCase.UPPERCASE);
-    }
-    if (lowerCase) {
-      caseDocumentFilter.setDocumentCase(DocumentCase.LOWERCASE);
     }
 
     return textArea;

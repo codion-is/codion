@@ -7677,3 +7677,4 @@
   TemporalFieldBuilder cleanup
   ScrollPaneBuilder added
   ComponentBuilder.scrollPane() added, returns ScrollPaneBuilder with the component as the view, ListBuilder and TextAreaBuilder.buildScrollPane() removed
+  TextAreaBuilder.document() added
