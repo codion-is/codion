@@ -3,6 +3,8 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.event.EventListener;
+import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -60,6 +62,16 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public void removeForeignKeyValues(final List<Entity> entities) {}
     @Override
     public void clear() {}
+    @Override
+    public StateObserver getRefreshingObserver() {
+      return null;
+    }
+    @Override
+    public void addRefreshingObserver(final StateObserver refreshingObserver) {}
+    @Override
+    public void addAfterRefreshListener(final EventListener listener) {}
+    @Override
+    public void removeAfterRefreshListener(final EventListener listener) {}
   }
 
   public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {

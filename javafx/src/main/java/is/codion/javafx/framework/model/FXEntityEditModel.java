@@ -3,6 +3,11 @@
  */
 package is.codion.javafx.framework.model;
 
+import is.codion.common.Conjunction;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -23,6 +28,9 @@ import static java.util.Objects.requireNonNull;
 public class FXEntityEditModel extends DefaultEntityEditModel {
 
   private final Map<ForeignKey, FXEntityListModel> foreignKeyListModels = new HashMap<>();
+
+  private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
+  private final Event<?> afterRefreshEvent = Event.event();
 
   /**
    * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityType}.
@@ -61,7 +69,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   public FXEntityListModel createForeignKeyListModel(final ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    return new FXEntityListModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+    final FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+    refreshingObserver.addState(entityListModel.getRefreshingObserver());
+
+    return entityListModel;
   }
 
   @Override
@@ -116,8 +127,29 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
+  public final void addRefreshingObserver(final StateObserver refreshingObserver) {
+    this.refreshingObserver.addState(refreshingObserver);
+  }
+
+  @Override
+  public final StateObserver getRefreshingObserver() {
+    return refreshingObserver;
+  }
+
+  @Override
+  public final void addAfterRefreshListener(final EventListener listener) {
+    afterRefreshEvent.addListener(listener);
+  }
+
+  @Override
+  public final void removeAfterRefreshListener(final EventListener listener) {
+    afterRefreshEvent.removeListener(listener);
+  }
+
+  @Override
   protected void refreshDataModels() {
     foreignKeyListModels.values().forEach(FXEntityListModel::refresh);
+    afterRefreshEvent.onEvent();
   }
 
   private void clearForeignKeyReferences(final ForeignKey foreignKey, final List<Entity> entities) {

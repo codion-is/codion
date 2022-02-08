@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -51,6 +52,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> selectionChangedEvent = Event.event();
   private final Event<?> filterEvent = Event.event();
+  private final State refreshingState = State.state();
 
   private FXEntityListSelectionModel selectionModel;
 
@@ -107,6 +109,11 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       onRefreshFailed(e);
     }
     setSelectedItems(selectedItems);
+  }
+
+  @Override
+  public final StateObserver getRefreshingObserver() {
+    return refreshingState.getObserver();
   }
 
   /**
@@ -374,15 +381,18 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   private void onRefreshStarted() {
+    refreshingState.set(true);
     refreshStartedEvent.onEvent();
   }
 
   private void onRefreshFailed(final Throwable throwable) {
+    refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
 
   private void onRefreshResult(final Collection<Entity> items) {
     setAll(items);
+    refreshingState.set(false);
     refreshEvent.onEvent();
   }
 

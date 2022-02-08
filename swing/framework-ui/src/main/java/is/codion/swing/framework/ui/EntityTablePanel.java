@@ -692,6 +692,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP))
             .mnemonic(refreshCaption.charAt(0))
             .smallIcon(frameworkIcons().refresh())
+            .enabledState(tableModel.getRefreshingObserver().getReversedObserver())
             .build();
   }
 
