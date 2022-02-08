@@ -7682,3 +7682,9 @@
   EntityTablePanel now uses tableModel.getRefreshingObserver() to turn the wait cursor on and off
   EntityEditModel.getRefreshingObserver() added, EntityEditPanel uses it to turn the wait cursor on and off
   SwingEntityTableModel, DefaultEntityEditModel bug fixed, wait cursor was not turned off when a refresh triggered via edit model failed, since the exception stopped further event listeners from receiving the event, one of which was the EntityEditPanel turning the wait cursor off
+  AbstractFilteredTableModel.refresh() no longer throws exceptions, EntityTablePanel uses addRefreshFailedListener() to listen for exceptions during refresh
+  FilteredTableModel.setAsyncRefresh() added
+  EntityTableModel.ASYNC_REFRESH configuration parameter added, false by default, used in SwingEntityTableModel
+  EntityTableModel.add/RemoveRefreshFailedListener() added
+  ObservableEntityList.addRefreshFailedListener() added, now implements refresh like AbstractFilteredTableModel, except for async support
+  FXEntityListModel now checks row count

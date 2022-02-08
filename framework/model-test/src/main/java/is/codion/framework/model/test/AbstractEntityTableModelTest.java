@@ -9,6 +9,7 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -268,17 +269,27 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void queryRowCountLimit() {
     final TableModel tableModel = createEmployeeTableModel();
+    final Value<Throwable> exceptionValue = Value.value();
+    tableModel.addRefreshFailedListener(exceptionValue::set);
     tableModel.setQueryRowCountLimit(6);
-    assertThrows(IllegalStateException.class, tableModel::refresh);
+    tableModel.refresh();
+    assertTrue(exceptionValue.isNotNull());
+    assertEquals(IllegalStateException.class, exceptionValue.get().getClass());
+    exceptionValue.set(null);
     final ColumnConditionModel<?, Double> commissionConditionModel =
             tableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION);
     commissionConditionModel.setOperator(Operator.EQUAL);
     commissionConditionModel.setEnabled(true);
     tableModel.refresh();
+    assertTrue(exceptionValue.isNull());
     commissionConditionModel.setEnabled(false);
-    assertThrows(IllegalStateException.class, tableModel::refresh);
+    tableModel.refresh();
+    assertTrue(exceptionValue.isNotNull());
+    assertEquals(IllegalStateException.class, exceptionValue.get().getClass());
+    exceptionValue.set(null);
     tableModel.setQueryRowCountLimit(-1);
     tableModel.refresh();
+    assertTrue(exceptionValue.isNull());
   }
 
   @Test

@@ -12,6 +12,7 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -117,6 +118,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * true if refresh should merge, in order to not clear the selection during refresh
    */
   private boolean mergeOnRefresh = false;
+
+  /**
+   * If true then refreshing is performed off the EDT using a {@link ProgressWorker}.
+   */
+  private boolean asyncRefresh = false;
 
   /**
    * Instantiates a new table model.
@@ -242,17 +248,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
-    onRefreshStarted();
-    try {
-      onRefreshResult(refreshItems());
+    if (asyncRefresh) {
+      refreshAsync();
     }
-    catch (final RuntimeException e) {
-      onRefreshFailed(e);
-      throw e;
-    }
-    catch (final Exception e) {
-      onRefreshFailed(e);
-      throw new RuntimeException(e);
+    else {
+      refreshSync();
     }
   }
 
@@ -335,6 +335,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void setMergeOnRefresh(final boolean mergeOnRefresh) {
     this.mergeOnRefresh = mergeOnRefresh;
+  }
+
+  @Override
+  public final boolean isAsyncRefresh() {
+    return asyncRefresh;
+  }
+
+  @Override
+  public final void setAsyncRefresh(final boolean asyncRefresh) {
+    this.asyncRefresh = asyncRefresh;
   }
 
   @Override
@@ -710,6 +720,27 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private boolean include(final R item) {
     return includeCondition == null || includeCondition.test(item);
+  }
+
+  private void refreshAsync() {
+    ProgressWorker.builder(this::refreshItems)
+            .onStarted(this::onRefreshStarted)
+            .onResult(this::onRefreshResult)
+            .onException(this::onRefreshFailed)
+            .execute();
+  }
+
+  private void refreshSync() {
+    onRefreshStarted();
+    try {
+      onRefreshResult(refreshItems());
+    }
+    catch (final RuntimeException e) {
+      onRefreshFailed(e);
+    }
+    catch (final Exception e) {
+      onRefreshFailed(e);
+    }
   }
 
   private void onRefreshStarted() {
