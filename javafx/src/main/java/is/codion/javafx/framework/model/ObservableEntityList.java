@@ -93,6 +93,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     return connectionProvider;
   }
 
+  @Override
   public final void refresh() {
     final List<Entity> selectedItems = getSelectedItems();
     onRefreshStarted();
@@ -153,6 +154,16 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       ((MultipleSelectionModel<Entity>) selectionModel).setSelectionMode(SelectionMode.MULTIPLE);
     }
     bindSelectionModelEvents();
+  }
+
+  @Override
+  public final boolean isAsyncRefresh() {
+    throw new UnsupportedOperationException("Async refresh is not supported");
+  }
+
+  @Override
+  public final void setAsyncRefresh(final boolean asyncRefresh) {
+    throw new UnsupportedOperationException("Async refresh is not supported");
   }
 
   /**
@@ -290,6 +301,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @param listener a listener to be notified each time a refresh has failed
    * @see #refresh()
    */
+  @Override
   public final void addRefreshFailedListener(final EventDataListener<Throwable> listener) {
     refreshFailedEvent.addDataListener(listener);
   }
@@ -297,6 +309,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   /**
    * @param listener the listener to remove
    */
+  @Override
   public final void removeRefreshFailedListener(final EventDataListener<Throwable> listener) {
     refreshFailedEvent.removeDataListener(listener);
   }
