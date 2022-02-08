@@ -572,6 +572,11 @@ public interface EntityEditModel {
   StateObserver getInsertEnabledObserver();
 
   /**
+   * @return a {@link StateObserver} which is active while data models are being refreshed
+   */
+  StateObserver getRefreshingObserver();
+
+  /**
    * Adds a listener notified each time the value associated with the given attribute is edited via
    * {@link #put(Attribute, Object)} or {@link #remove(Attribute)}, note that this event is only fired
    * when the value actually changes.

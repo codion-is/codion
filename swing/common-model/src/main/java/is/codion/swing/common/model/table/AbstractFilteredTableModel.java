@@ -468,7 +468,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final void removeSuccessfulListener(final EventListener listener) {
+  public final void removeRefreshListener(final EventListener listener) {
     refreshEvent.removeListener(listener);
   }
 

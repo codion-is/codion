@@ -7679,3 +7679,6 @@
   ComponentBuilder.scrollPane() added, returns ScrollPaneBuilder with the component as the view, ListBuilder and TextAreaBuilder.buildScrollPane() removed
   TextAreaBuilder.document() added
   FilteredTable, now scrolls table horizontally as required when dragging columns around
+  EntityTablePanel now uses tableModel.getRefreshingObserver() to turn the wait cursor on and off
+  EntityEditModel.getRefreshingObserver() added, EntityEditPanel uses it to turn the wait cursor on and off
+  SwingEntityTableModel, DefaultEntityEditModel bug fixed, wait cursor was not turned off when a refresh triggered via edit model failed, since the exception stopped further event listeners from receiving the event, one of which was the EntityEditPanel turning the wait cursor off

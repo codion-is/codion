@@ -819,14 +819,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(this::showEntityMenu))
             .enable(this);
-    getEditModel().addBeforeRefreshListener(() -> WaitCursor.show(EntityEditPanel.this));
-    getEditModel().addAfterRefreshListener(() -> WaitCursor.hide(EntityEditPanel.this));
+    getEditModel().getRefreshingObserver().addDataListener(this::onRefreshingChanged);
     getEditModel().addConfirmSetEntityObserver(confirmationState -> {
       final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
     });
+  }
+
+  private void onRefreshingChanged(final boolean refreshing) {
+    if (refreshing) {
+      WaitCursor.show(EntityEditPanel.this);
+    }
+    else {
+      WaitCursor.hide(EntityEditPanel.this);
+    }
   }
 
   private void showEntityMenu() {

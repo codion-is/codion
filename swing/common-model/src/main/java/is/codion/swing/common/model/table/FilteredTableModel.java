@@ -44,7 +44,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   /**
    * @param listener the listener to remove
    */
-  void removeSuccessfulListener(EventListener listener);
+  void removeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has failed
