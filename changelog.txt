@@ -7698,3 +7698,4 @@
   SwingEntityEditModel and FXEntityEditModel.addRefreshingObserver() added so that table models can add their own refreshingObservers
   EntityTablePanel, EntityEditPanel, refresh controls now enabled only when refresh is not in progress
   EntityEditPanel bug fixed, refresh control enabled state did not take activeState in account
+  DefaultStateObserver.toString() added

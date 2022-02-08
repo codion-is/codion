@@ -26,6 +26,11 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
+  public String toString() {
+    return Boolean.toString(get());
+  }
+
+  @Override
   public Boolean get() {
     synchronized (lock) {
       return reversed ? !stateObserver.get() : stateObserver.get();
