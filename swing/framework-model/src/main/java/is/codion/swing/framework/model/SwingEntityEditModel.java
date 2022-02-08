@@ -3,7 +3,12 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.Conjunction;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -27,6 +32,9 @@ import static java.util.Objects.requireNonNull;
  * A Swing implementation of {@link EntityEditModel}.
  */
 public class SwingEntityEditModel extends DefaultEntityEditModel {
+
+  private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
+  private final Event<?> afterRefreshEvent = Event.event();
 
   /**
    * Holds the ComboBoxModels used by this {@link EntityEditModel}
@@ -157,6 +165,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
+    refreshingObserver.addState(model.getRefreshingObserver());
 
     return model;
   }
@@ -176,6 +185,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
             FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
     model.refresh();
     addEntitiesEditedListener(model::refresh);
+    refreshingObserver.addState(model.getRefreshingObserver());
 
     return model;
   }
@@ -222,8 +232,29 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
+  public final void addRefreshingObserver(final StateObserver refreshingObserver) {
+    this.refreshingObserver.addState(refreshingObserver);
+  }
+
+  @Override
+  public final StateObserver getRefreshingObserver() {
+    return refreshingObserver;
+  }
+
+  @Override
+  public final void addAfterRefreshListener(final EventListener listener) {
+    afterRefreshEvent.addListener(listener);
+  }
+
+  @Override
+  public final void removeAfterRefreshListener(final EventListener listener) {
+    afterRefreshEvent.removeListener(listener);
+  }
+
+  @Override
   protected void refreshDataModels() {
     refreshComboBoxModels();
+    afterRefreshEvent.onEvent();
   }
 
   @Override

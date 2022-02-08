@@ -227,8 +227,6 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addBeforeUpdateListener(eventDataListener);
     final EventListener listener = () -> {};
     employeeEditModel.addEntitiesEditedListener(listener);
-    employeeEditModel.addBeforeRefreshListener(listener);
-    employeeEditModel.addAfterRefreshListener(listener);
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityType());
 
@@ -313,8 +311,6 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.removeBeforeInsertListener(eventDataListener);
     employeeEditModel.removeBeforeUpdateListener(eventDataListener);
     employeeEditModel.removeEntitiesEditedListener(listener);
-    employeeEditModel.removeBeforeRefreshListener(listener);
-    employeeEditModel.removeAfterRefreshListener(listener);
   }
 
   @Test
@@ -538,6 +534,16 @@ public final class DefaultEntityEditModelTest {
       public void removeForeignKeyValues(final List<Entity> entities) {}
       @Override
       public void clear() {}
+      @Override
+      public StateObserver getRefreshingObserver() {
+        return null;
+      }
+      @Override
+      public void addRefreshingObserver(final StateObserver refreshingObserver) {}
+      @Override
+      public void addAfterRefreshListener(final EventListener listener) {}
+      @Override
+      public void removeAfterRefreshListener(final EventListener listener) {}
     };
 
     final AtomicInteger derivedCounter = new AtomicInteger();
@@ -636,5 +642,19 @@ public final class DefaultEntityEditModelTest {
 
     @Override
     public void clear() {}
+
+    @Override
+    public StateObserver getRefreshingObserver() {
+      return null;
+    }
+
+    @Override
+    public void addRefreshingObserver(final StateObserver refreshingObserver) {}
+
+    @Override
+    public void addAfterRefreshListener(final EventListener listener) {}
+
+    @Override
+    public void removeAfterRefreshListener(final EventListener listener) {}
   }
 }

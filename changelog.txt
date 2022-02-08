@@ -7726,3 +7726,8 @@
   EntityEditComponentPanel now implements DialogExceptionHandler instead of EntityEditPanel
   EntityEditComponentPanel now adds refreshFailed listeners to combobox models and displays the exception
   EntityTableModel.ASYNC_REFRESH moved to FilteredModel
+  FilteredTableModel.getRefreshingObserver() moved to FilteredModel
+  EntityEditModel, addRemove/BeforeRefreshListener() removed
+  SwingEntityEditModel and FXEntityEditModel.getRefreshingObserver() added, State.Combination based on combo box model refreshing states
+  SwingEntityEditModel and FXEntityEditModel.addRefreshingObserver() added so that table models can add their own refreshingObservers
+  EntityTablePanel, EntityEditPanel, refresh controls now enabled only when refresh is not in progress

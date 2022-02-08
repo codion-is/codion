@@ -276,6 +276,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .smallIcon(frameworkIcons().refresh())
+            .enabledState(getEditModel().getRefreshingObserver().getReversedObserver())
             .build();
   }
 

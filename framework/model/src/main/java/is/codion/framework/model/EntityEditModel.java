@@ -577,6 +577,13 @@ public interface EntityEditModel {
   StateObserver getRefreshingObserver();
 
   /**
+   * Adds a {@link StateObserver} instance to this edit models refreshing observer
+   * @param refreshingObserver the refreshing observer to add
+   * @see #getRefreshingObserver()
+   */
+  void addRefreshingObserver(StateObserver refreshingObserver);
+
+  /**
    * Adds a listener notified each time the value associated with the given attribute is edited via
    * {@link #put(Attribute, Object)} or {@link #remove(Attribute)}, note that this event is only fired
    * when the value actually changes.
@@ -701,17 +708,6 @@ public interface EntityEditModel {
    * @param listener a listener to remove
    */
   void removeAfterDeleteListener(EventDataListener<List<Entity>> listener);
-
-  /**
-   * @param listener a listener to be notified before a refresh is performed
-   */
-  void addBeforeRefreshListener(EventListener listener);
-
-  /**
-   * Removes the given listener.
-   * @param listener a listener to remove
-   */
-  void removeBeforeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed

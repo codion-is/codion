@@ -6,6 +6,7 @@ package is.codion.common.model;
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 
 import java.util.List;
@@ -121,6 +122,11 @@ public interface FilteredModel<T> {
    * to listen for exceptions that happen during refresh.
    */
   void refresh();
+
+  /**
+   * @return an observer active while a refresh is in progress
+   */
+  StateObserver getRefreshingObserver();
 
   /**
    * @param listener a listener to be notified each time a refresh has failed

@@ -9,6 +9,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.ComboBoxModel;
@@ -38,6 +40,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> refreshStartedEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
+  private final State refreshingState = State.state();
 
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
@@ -96,6 +99,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     else {
       refreshSync();
     }
+  }
+
+  @Override
+  public final StateObserver getRefreshingObserver() {
+    return refreshingState.getObserver();
   }
 
   @Override
@@ -471,15 +479,18 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   private void onRefreshStarted() {
+    refreshingState.set(true);
     refreshStartedEvent.onEvent();
   }
 
   private void onRefreshFailed(final Throwable throwable) {
+    refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
 
   private void onRefreshResult(final Collection<T> items) {
     setContents(items);
+    refreshingState.set(false);
     refreshEvent.onEvent();
   }
 

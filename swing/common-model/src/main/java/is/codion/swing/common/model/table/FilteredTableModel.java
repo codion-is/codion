@@ -11,7 +11,6 @@ import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.Map;
@@ -86,11 +85,6 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * @param listener the listener to remove
    */
   void removeRowsRemovedListener(EventDataListener<Removal> listener);
-
-  /**
-   * @return an observer active while a refresh is in progress
-   */
-  StateObserver getRefreshingObserver();
 
   /**
    * @return true if an impending selection change should be allowed
