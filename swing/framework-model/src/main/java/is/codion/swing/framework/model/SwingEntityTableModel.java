@@ -206,7 +206,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
     this.tableConditionModel = tableConditionModel;
     this.editModel = editModel;
-    setAsyncRefresh(EntityTableModel.ASYNC_REFRESH.get());
     bindEventsInternal();
     applyPreferences();
   }

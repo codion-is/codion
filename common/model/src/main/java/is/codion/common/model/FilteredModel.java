@@ -3,7 +3,10 @@
  */
 package is.codion.common.model;
 
+import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.value.PropertyValue;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -13,6 +16,14 @@ import java.util.function.Predicate;
  * @param <T> the type of data in the model.
  */
 public interface FilteredModel<T> {
+
+  /**
+   * Specifies whether data models should refresh data on the EDT or asynchronously.<br>
+   * EXPERIMENTAL, enable at your own risk.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", false);
 
   /**
    * @param listener a listener notified each time this model is filtered
@@ -93,4 +104,32 @@ public interface FilteredModel<T> {
    * @return true if the given item is filtered
    */
   boolean isFiltered(T item);
+
+  /**
+   * @return true if this table model refreshes data asynchronously
+   */
+  boolean isAsyncRefresh();
+
+  /**
+   * @param asyncRefresh if true then this table model refreshes data asynchronously off the EDT
+   */
+  void setAsyncRefresh(boolean asyncRefresh);
+
+  /**
+   * Refreshes the data in this model.
+   * Note that this method does not throw exceptions, use {@link #addRefreshFailedListener(EventDataListener)}
+   * to listen for exceptions that happen during refresh.
+   */
+  void refresh();
+
+  /**
+   * @param listener a listener to be notified each time a refresh has failed
+   * @see #refresh()
+   */
+  void addRefreshFailedListener(EventDataListener<Throwable> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeRefreshFailedListener(EventDataListener<Throwable> listener);
 }

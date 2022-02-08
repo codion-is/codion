@@ -19,8 +19,6 @@ import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -33,7 +31,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -53,7 +50,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A UI component based on a {@link EntityEditModel}.
  */
-public abstract class EntityEditPanel extends EntityEditComponentPanel implements DialogExceptionHandler {
+public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
@@ -387,20 +384,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
     requestComponentFocus(exception.getAttribute());
-  }
-
-  /**
-   * Handles the given exception, simply displays the error message to the user by default.
-   * @param exception the exception to handle
-   * @see #displayException(Throwable, Window)
-   */
-  public void onException(final Throwable exception) {
-    displayException(exception, Windows.getParentWindow(this));
-  }
-
-  @Override
-  public final void displayException(final Throwable throwable, final Window dialogParent) {
-    DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
   /**

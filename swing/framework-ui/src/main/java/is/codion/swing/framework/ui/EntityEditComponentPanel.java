@@ -4,10 +4,12 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
+import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
@@ -25,9 +27,12 @@ import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.ForeignKeyComboBoxBuilder;
@@ -42,6 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Window;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -62,7 +68,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for entity edit panels, providing components for editing entities.
  */
-public class EntityEditComponentPanel extends JPanel {
+public class EntityEditComponentPanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * The edit model these edit components are associated with
@@ -287,6 +293,20 @@ public class EntityEditComponentPanel extends JPanel {
   public final void excludeComponentFromSelection(final Attribute<?> attribute) {
     getEditModel().getEntityDefinition().getProperty(attribute);//just validating that the attribute exists
     excludeFromSelection.add(attribute);
+  }
+
+  /**
+   * Handles the given exception, simply displays the error message to the user by default.
+   * @param exception the exception to handle
+   * @see #displayException(Throwable, Window)
+   */
+  public void onException(final Throwable exception) {
+    displayException(exception, Windows.getParentWindow(this));
+  }
+
+  @Override
+  public final void displayException(final Throwable throwable, final Window dialogParent) {
+    DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
   /**
@@ -640,8 +660,10 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a combo box builder
    */
   protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(final Attribute<T> attribute) {
-    return setComponentBuilder(attribute, entityComponents.comboBox(attribute,
-            (ComboBoxModel<T>) getEditModel().getComboBoxModel(attribute)));
+    final FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
+    comboBoxModel.addRefreshFailedListener(this::onException);
+
+    return setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel));
   }
 
   /**
@@ -650,8 +672,10 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a foreign key combo box builder
    */
   protected final ForeignKeyComboBoxBuilder createForeignKeyComboBox(final ForeignKey foreignKey) {
-    return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey,
-            getEditModel().getForeignKeyComboBoxModel(foreignKey)));
+    final SwingEntityComboBoxModel comboBoxModel = getEditModel().getForeignKeyComboBoxModel(foreignKey);
+    comboBoxModel.addRefreshFailedListener(this::onException);
+
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel));
   }
 
   /**

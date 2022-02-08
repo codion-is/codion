@@ -7688,3 +7688,7 @@
   EntityTableModel.add/RemoveRefreshFailedListener() added
   ObservableEntityList.addRefreshFailedListener() added, now implements refresh like AbstractFilteredTableModel, except for async support
   FXEntityListModel now checks row count
+  EntityTableModel.addRefreshFailedListener() and setAsyncRefresh() moved to FilteredModel, FilteredTableModel.refresh() moved to FilteredModel
+  EntityEditComponentPanel now implements DialogExceptionHandler instead of EntityEditPanel
+  EntityEditComponentPanel now adds refreshFailed listeners to combobox models and displays the exception
+  EntityTableModel.ASYNC_REFRESH moved to FilteredModel

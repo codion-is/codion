@@ -6,6 +6,7 @@ package is.codion.swing.common.model.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
@@ -122,7 +123,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * If true then refreshing is performed off the EDT using a {@link ProgressWorker}.
    */
-  private boolean asyncRefresh = false;
+  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Instantiates a new table model.

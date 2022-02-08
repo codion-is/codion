@@ -7,7 +7,9 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.FilteredModel;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
@@ -34,6 +36,8 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private final Event<T> selectionChangedEvent = Event.event();
   private final Event<?> filterEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
+  private final Event<?> refreshStartedEvent = Event.event();
+  private final Event<Throwable> refreshFailedEvent = Event.event();
 
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
@@ -48,6 +52,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private String nullString;
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
+  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Due to a java.util.ConcurrentModificationException in OSX
@@ -85,8 +90,22 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void refresh() {
-    setContents(refreshItems());
-    refreshEvent.onEvent();
+    if (asyncRefresh) {
+      refreshAsync();
+    }
+    else {
+      refreshSync();
+    }
+  }
+
+  @Override
+  public final boolean isAsyncRefresh() {
+    return asyncRefresh;
+  }
+
+  @Override
+  public final void setAsyncRefresh(final boolean asyncRefresh) {
+    this.asyncRefresh = asyncRefresh;
   }
 
   @Override
@@ -360,6 +379,16 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
+  public final void addRefreshFailedListener(final EventDataListener<Throwable> listener) {
+    refreshFailedEvent.addDataListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshFailedListener(final EventDataListener<Throwable> listener) {
+    refreshFailedEvent.removeDataListener(listener);
+  }
+
+  @Override
   public final void addSelectionListener(final EventDataListener<T> listener) {
     selectionChangedEvent.addDataListener(listener);
   }
@@ -418,6 +447,40 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       visibleItems.sort(sortComparator);
       fireContentsChanged();
     }
+  }
+
+  private void refreshAsync() {
+    ProgressWorker.builder(this::refreshItems)
+            .onStarted(this::onRefreshStarted)
+            .onResult(this::onRefreshResult)
+            .onException(this::onRefreshFailed)
+            .execute();
+  }
+
+  private void refreshSync() {
+    onRefreshStarted();
+    try {
+      onRefreshResult(refreshItems());
+    }
+    catch (final RuntimeException e) {
+      onRefreshFailed(e);
+    }
+    catch (final Exception e) {
+      onRefreshFailed(e);
+    }
+  }
+
+  private void onRefreshStarted() {
+    refreshStartedEvent.onEvent();
+  }
+
+  private void onRefreshFailed(final Throwable throwable) {
+    refreshFailedEvent.onEvent(throwable);
+  }
+
+  private void onRefreshResult(final Collection<T> items) {
+    setContents(items);
+    refreshEvent.onEvent();
   }
 
   private static final class SortComparator<T> implements Comparator<T> {
