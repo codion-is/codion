@@ -257,6 +257,16 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
+   * @return true if this table model refreshes data asynchronously
+   */
+  boolean isAsyncRefresh();
+
+  /**
+   * @param asyncRefresh if true then this table model refreshes data asynchronously off the EDT
+   */
+  void setAsyncRefresh(boolean asyncRefresh);
+
+  /**
    * Sorts the visible contents according to the {@link TableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
    * @see #getSortModel()
@@ -280,6 +290,8 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
    * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
+   * Note that this method does not throw exceptions, use {@link #addRefreshFailedListener(EventDataListener)}
+   * to listen for exceptions that happen during refresh.
    */
   void refresh();
 

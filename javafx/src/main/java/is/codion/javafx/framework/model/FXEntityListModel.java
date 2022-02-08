@@ -448,6 +448,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       return emptyList();
     }
 
+    checkQueryRowCount();
     try {
       return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
               .toSelectCondition()
@@ -674,6 +675,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
         getSelectionModel().clearSelection();
       }
     });
+  }
+
+  private void checkQueryRowCount() {
+    if (getQueryRowCountLimit() >= 0 && getQueryRowCount() > getQueryRowCountLimit()) {
+      throw new IllegalStateException("Too many rows returned, add query condition");
+    }
   }
 
   /**

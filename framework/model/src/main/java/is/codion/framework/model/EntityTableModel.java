@@ -5,6 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.SelectionModel;
@@ -46,6 +47,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Default value: false
    */
   PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder", false);
+
+  /**
+   * Specifies whether data models should refresh data on the EDT or asynchronously.<br>
+   * EXPERIMENTAL, enable at your own risk.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("codion.client.asyncRefresh", false);
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
@@ -409,4 +418,15 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #setForeignKeyConditionValues(ForeignKey, Collection)
    */
   boolean isRefreshOnForeignKeyConditionValuesSet();
+
+  /**
+   * @param listener a listener to be notified each time a refresh has failed
+   * @see #refresh()
+   */
+  void addRefreshFailedListener(EventDataListener<Throwable> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeRefreshFailedListener(EventDataListener<Throwable> listener);
 }

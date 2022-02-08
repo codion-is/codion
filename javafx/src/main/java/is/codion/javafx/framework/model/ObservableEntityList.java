@@ -5,6 +5,7 @@ package is.codion.javafx.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.state.StateObserver;
@@ -23,6 +24,7 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -44,6 +46,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
 
+  private final Event<?> refreshStartedEvent = Event.event();
+  private final Event<Throwable> refreshFailedEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> selectionChangedEvent = Event.event();
   private final Event<?> filterEvent = Event.event();
@@ -90,16 +94,18 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   public final void refresh() {
-    checkQueryRowCount();
-    List<Entity> selectedItems = null;
-    if (selectionModel != null) {
-      selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
+    final List<Entity> selectedItems = getSelectedItems();
+    onRefreshStarted();
+    try {
+      onRefreshResult(performQuery());
     }
-    setAll(performQuery());
-    refreshEvent.onEvent();
-    if (selectedItems != null) {
-      selectionModel.setSelectedItems(selectedItems);
+    catch (final RuntimeException e) {
+      onRefreshFailed(e);
     }
+    catch (final Exception e) {
+      onRefreshFailed(e);
+    }
+    setSelectedItems(selectedItems);
   }
 
   /**
@@ -281,6 +287,21 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   /**
+   * @param listener a listener to be notified each time a refresh has failed
+   * @see #refresh()
+   */
+  public final void addRefreshFailedListener(final EventDataListener<Throwable> listener) {
+    refreshFailedEvent.addDataListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public final void removeRefreshFailedListener(final EventDataListener<Throwable> listener) {
+    refreshFailedEvent.removeDataListener(listener);
+  }
+
+  /**
    * Sets the condition to use when querying data
    * @param selectCondition the select condition to use
    * @see #performQuery()
@@ -300,6 +321,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @return the entities to display in this list
    */
   protected List<Entity> performQuery() {
+    checkQueryRowCount();
     try {
       Condition condition = selectCondition;
       if (condition == null) {
@@ -336,6 +358,33 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    */
   protected void bindSelectionModelEvents() {
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
+  }
+
+  private void onRefreshStarted() {
+    refreshStartedEvent.onEvent();
+  }
+
+  private void onRefreshFailed(final Throwable throwable) {
+    refreshFailedEvent.onEvent(throwable);
+  }
+
+  private void onRefreshResult(final Collection<Entity> items) {
+    setAll(items);
+    refreshEvent.onEvent();
+  }
+
+  private void setSelectedItems(final List<Entity> selectedItems) {
+    if (selectedItems != null && selectionModel != null) {
+      selectionModel.setSelectedItems(selectedItems);
+    }
+  }
+
+  private List<Entity> getSelectedItems() {
+    if (selectionModel != null) {
+      return new ArrayList<>(selectionModel.getSelectedItems());
+    }
+
+    return null;
   }
 
   private void checkQueryRowCount() {
