@@ -178,7 +178,8 @@ public final class WorldImpl extends DefaultDomain implements World {
 
   void lookup() {
     define(Lookup.TYPE,
-            columnProperty(Lookup.COUNTRY_CODE, "Country code"),
+            columnProperty(Lookup.COUNTRY_CODE, "Country code")
+                    .primaryKeyIndex(0),
             columnProperty(Lookup.COUNTRY_NAME, "Country name"),
             columnProperty(Lookup.COUNTRY_CONTINENT, "Continent"),
             columnProperty(Lookup.COUNTRY_REGION, "Region"),
@@ -197,7 +198,8 @@ public final class WorldImpl extends DefaultDomain implements World {
             columnProperty(Lookup.COUNTRY_HEADOFSTATE, "Head of state"),
             blobProperty(Lookup.COUNTRY_FLAG, "Flag"),
             columnProperty(Lookup.COUNTRY_CODE2, "Code2"),
-            columnProperty(Lookup.CITY_ID),
+            columnProperty(Lookup.CITY_ID)
+                    .primaryKeyIndex(1),
             columnProperty(Lookup.CITY_NAME, "City"),
             columnProperty(Lookup.CITY_DISTRICT, "District"),
             columnProperty(Lookup.CITY_POPULATION, "City population")
