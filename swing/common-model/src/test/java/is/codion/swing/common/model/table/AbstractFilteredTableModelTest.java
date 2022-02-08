@@ -198,7 +198,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(0, cleared.get());
 
     tableModel.removeRefreshStartedListener(startListener);
-    tableModel.removeSuccessfulListener(successfulListener);
+    tableModel.removeRefreshListener(successfulListener);
     tableModel.removeRefreshFailedListener(failedListener);
     tableModel.removeTableModelClearedListener(clearedListener);
   }

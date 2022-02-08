@@ -62,6 +62,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<List<Entity>> beforeDeleteEvent = Event.event();
   private final Event<List<Entity>> afterDeleteEvent = Event.event();
   private final Event<?> entitiesEditedEvent = Event.event();
+  private final State refreshingState = State.state();
   private final Event<?> beforeRefreshEvent = Event.event();
   private final Event<?> afterRefreshEvent = Event.event();
   private final Event<State> confirmSetEntityEvent = Event.event();
@@ -435,6 +436,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
+  public final StateObserver getRefreshingObserver() {
+    return refreshingState.getObserver();
+  }
+
+  @Override
   public final StateObserver getValidObserver() {
     return validState.getObserver();
   }
@@ -599,11 +605,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void refresh() {
+    beforeRefreshEvent.onEvent();
+    refreshingState.set(true);
     try {
-      beforeRefreshEvent.onEvent();
       refreshDataModels();
     }
     finally {
+      refreshingState.set(false);
       afterRefreshEvent.onEvent();
     }
   }

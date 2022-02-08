@@ -55,6 +55,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -594,16 +595,11 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void initializeTableHeader() {
-    getTableHeader().addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.isAltDown() && e.isControlDown()) {
-          toggleColumnFilterPanel(e);
-        }
-      }
-    });
+    getTableHeader().addMouseListener(new MouseColumnFilterPanelHandler());
     tableModel.addSortListener(getTableHeader()::repaint);
     getTableHeader().setReorderingAllowed(true);
+    getTableHeader().setAutoscrolls(true);
+    getTableHeader().addMouseMotionListener(new MouseColumnDragHandler());
     getTableHeader().addMouseListener(new MouseSortHandler());
     getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(getTableHeader().getDefaultRenderer()));
   }
@@ -798,6 +794,22 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         default://case DESCENDING:
           return SortOrder.ASCENDING;
       }
+    }
+  }
+
+  private final class MouseColumnFilterPanelHandler extends MouseAdapter {
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+      if (e.isAltDown() && e.isControlDown()) {
+        toggleColumnFilterPanel(e);
+      }
+    }
+  }
+
+  private final class MouseColumnDragHandler extends MouseMotionAdapter {
+    @Override
+    public void mouseDragged(final MouseEvent e) {
+      scrollRectToVisible(new Rectangle(e.getX(), e.getY(), 1, 1));
     }
   }
 

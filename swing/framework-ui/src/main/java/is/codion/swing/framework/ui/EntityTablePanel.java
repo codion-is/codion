@@ -1458,9 +1458,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.addTableDataChangedListener(statusListener);
     tableModel.getTableConditionModel().getConditionModels().values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
-    tableModel.addRefreshStartedListener(() -> WaitCursor.show(EntityTablePanel.this));
-    tableModel.addRefreshListener(() -> WaitCursor.hide(EntityTablePanel.this));
-    tableModel.addRefreshFailedListener(throwable -> WaitCursor.hide(EntityTablePanel.this));
+    tableModel.getRefreshingObserver().addDataListener(this::onRefreshingChanged);
     tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
@@ -1573,6 +1571,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void onConditionChanged() {
     table.getTableHeader().repaint();
     table.repaint();
+  }
+
+  private void onRefreshingChanged(final boolean refreshing) {
+    if (refreshing) {
+      WaitCursor.show(EntityTablePanel.this);
+    }
+    else {
+      WaitCursor.hide(EntityTablePanel.this);
+    }
   }
 
   private static void addAdditionalControls(final Controls popupControls, final List<Controls> additionalPopupControls) {
