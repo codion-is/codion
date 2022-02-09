@@ -111,6 +111,7 @@ public class EntityComponents {
    * Creates a builder.
    * @param foreignKey the foreign key
    * @param comboBoxModel the combo box model
+   * @param <B> the builder type
    * @return a builder
    */
   public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(final ForeignKey foreignKey,
