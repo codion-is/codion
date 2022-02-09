@@ -619,6 +619,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         final DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
         symbols.setDecimalSeparator(defaultDecimalSeparator.charAt(0));
         symbols.setGroupingSeparator(defaultGroupingSeparator.charAt(0));
+        ((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);
       }
     }
 
