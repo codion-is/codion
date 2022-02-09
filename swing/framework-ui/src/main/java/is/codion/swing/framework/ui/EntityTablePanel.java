@@ -187,6 +187,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     VIEW_DEPENDENCIES,
     UPDATE_SELECTED,
     SELECT_COLUMNS,
+    RESET_COLUMNS,
     EXPORT_JSON,
     SELECTION_MODE,
     CLEAR,
@@ -1151,11 +1152,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       popupControls.add(printControls);
       separatorRequired = true;
     }
-    if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
+    final Controls columnControls = createColumnControls();
+    if (!columnControls.isEmpty()) {
       if (separatorRequired) {
         popupControls.addSeparator();
       }
-      popupControls.add(controls.get(ControlCode.SELECT_COLUMNS));
+      popupControls.add(columnControls);
       separatorRequired = true;
     }
     if (controls.containsKey(ControlCode.SELECTION_MODE)) {
@@ -1188,6 +1190,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .smallIcon(frameworkIcons().print());
     if (controls.containsKey(ControlCode.PRINT_TABLE)) {
       builder.control(controls.get(ControlCode.PRINT_TABLE));
+    }
+
+    return builder.build();
+  }
+
+  protected final Controls createColumnControls() {
+    final Controls.Builder builder = Controls.builder()
+            .caption(MESSAGES.getString("columns"));
+    if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
+      builder.control(controls.get(ControlCode.SELECT_COLUMNS));
+    }
+    if (controls.containsKey(ControlCode.RESET_COLUMNS)) {
+      builder.control(controls.get(ControlCode.RESET_COLUMNS));
     }
 
     return builder.build();
@@ -1313,6 +1328,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
     controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
             table.createSelectColumnsControl() : table.createToggleColumnsControls());
+    controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
     controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
     if (summaryScrollPane != null) {
       controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());

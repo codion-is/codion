@@ -7700,3 +7700,4 @@
   EntityEditPanel bug fixed, refresh control enabled state did not take activeState in account
   DefaultStateObserver.toString() added
   EntityEditPanel, revert refresh control enabled state based on refreshing observer, needs more thought
+  FilteredTableColumnModel.resetColumns() and FilteredTable.createResetColumnsControl() added, EntityTablePanel popup menu now contains a Columns submenu with select and reset actions

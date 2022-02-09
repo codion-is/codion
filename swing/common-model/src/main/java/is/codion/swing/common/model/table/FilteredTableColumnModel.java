@@ -87,6 +87,11 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   C getColumnIdentifier(int modelColumnIndex);
 
   /**
+   * Resets the columns to their original location and visibility
+   */
+  void resetColumns();
+
+  /**
    * @param listener a listener to be notified each time a column is hidden
    */
   void addColumnHiddenListener(EventDataListener<C> listener);
