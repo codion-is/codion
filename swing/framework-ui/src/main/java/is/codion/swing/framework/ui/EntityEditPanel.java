@@ -272,7 +272,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Control.builder(getEditModel()::refresh)
             .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
-            .enabledState(activeState)
+            .enabledState(State.and(activeState, getEditModel().getRefreshingObserver().getReversedObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .smallIcon(frameworkIcons().refresh())

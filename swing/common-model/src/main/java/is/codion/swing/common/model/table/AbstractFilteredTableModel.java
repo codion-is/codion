@@ -15,6 +15,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -249,7 +250,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
-    if (asyncRefresh) {
+    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {
