@@ -139,7 +139,9 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public final void refresh() {
     for (final M entityModel : entityModels) {
-      entityModel.refresh();
+      if (entityModel.containsTableModel()) {
+        entityModel.getTableModel().refresh();
+      }
     }
   }
 

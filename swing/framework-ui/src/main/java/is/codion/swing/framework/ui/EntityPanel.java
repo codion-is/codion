@@ -1553,8 +1553,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(() -> WaitCursor.show(EntityPanel.this));
-    entityModel.addAfterRefreshListener(() -> WaitCursor.hide(EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
 //    if (containsEditPanel() && editPanel.containsControl(ControlCode.REFRESH)) {
 //      final Control refreshControl = editPanel.getControl(ControlCode.REFRESH);

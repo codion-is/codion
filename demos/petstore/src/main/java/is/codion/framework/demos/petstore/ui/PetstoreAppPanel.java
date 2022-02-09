@@ -53,7 +53,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     itemPanel.addDetailPanels(tagItemPanel);
     itemPanel.setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    categoryModel.refresh();
+    categoryModel.getTableModel().refresh();
 
     return Collections.singletonList(categoryPanel);
   }

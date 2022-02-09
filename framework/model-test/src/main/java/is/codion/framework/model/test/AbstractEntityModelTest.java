@@ -6,7 +6,6 @@ package is.codion.framework.model.test;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -46,7 +45,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
           DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
   private final EntityConnectionProvider connectionProvider;
-  private int eventCount = 0;
 
   protected final Model departmentModel;
 
@@ -60,7 +58,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    departmentModel.refresh();
+    departmentModel.getTableModel().refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final TableModel deptTableModel = departmentModel.getTableModel();
     final Key operationsKey = deptEditModel.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations
@@ -102,11 +100,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    departmentModel.refresh();
+    departmentModel.getTableModel().refresh();
     assertTrue(departmentModel.getTableModel().getRowCount() > 0);
 
     final Model employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
-    employeeModel.refresh();
+    employeeModel.getTableModel().refresh();
     assertTrue(employeeModel.getTableModel().getRowCount() > 0);
 
     departmentModel.clearDetailModels();
@@ -126,7 +124,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    departmentModel.refresh();
+    departmentModel.getTableModel().refresh();
     departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(asList(1, 2, 3));
     assertTrue(departmentModel.getTableModel().getSelectionModel().isSelectionNotEmpty());
     assertFalse(departmentModel.getEditModel().isEntityNew());
@@ -140,15 +138,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertNotNull(departmentModel.getEditModel());
 
     final EventDataListener<Model> linkedListener = model -> {};
-    final EventListener listener = () -> eventCount++;
     departmentModel.addLinkedDetailModelAddedListener(linkedListener);
     departmentModel.addLinkedDetailModelRemovedListener(linkedListener);
-    departmentModel.addBeforeRefreshListener(listener);
-    departmentModel.addAfterRefreshListener(listener);
-    departmentModel.refresh();
-    assertEquals(2, eventCount);
-    departmentModel.removeBeforeRefreshListener(listener);
-    departmentModel.removeAfterRefreshListener(listener);
     departmentModel.removeLinkedDetailModelAddedListener(linkedListener);
     departmentModel.removeLinkedDetailModelRemovedListener(linkedListener);
   }
@@ -166,17 +157,19 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
     assertNotNull(departmentModel.getDetailModel(TestDomain.T_EMP));
-    departmentModel.refresh();
-    departmentModel.refreshDetailModels();
-
     if (!departmentModel.containsTableModel()) {
       return;
     }
 
+    departmentModel.getTableModel().refresh();
+    departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().refresh();
     assertTrue(departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getRowCount() > 0);
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+
+    departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
+
     final List<Entity> salesEmployees = connection.select(where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);

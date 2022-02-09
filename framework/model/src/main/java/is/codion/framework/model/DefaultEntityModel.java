@@ -81,11 +81,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private M masterModel;
 
   /**
-   * True while the model is being refreshed
-   */
-  private boolean isRefreshing = false;
-
-  /**
    * If true then this models table model will automatically search by the inserted entity
    * when an insert is performed in a master model
    */
@@ -289,34 +284,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void refresh() {
-    if (isRefreshing) {
-      return;
-    }
-    try {
-      LOG.debug("{} refreshing", this);
-      isRefreshing = true;
-      refreshStartedEvent.onEvent();
-      if (containsTableModel()) {
-        tableModel.refresh();
-      }
-      initializeDetailModels();
-    }
-    finally {
-      isRefreshing = false;
-      refreshDoneEvent.onEvent();
-      LOG.debug("{} done refreshing", this);
-    }
-  }
-
-  @Override
-  public final void refreshDetailModels() {
-    for (final M detailModel : detailModels) {
-      detailModel.refresh();
-    }
-  }
-
-  @Override
   public final void clear() {
     if (containsTableModel()) {
       tableModel.clear();
@@ -388,26 +355,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final void removeLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addBeforeRefreshListener(final EventListener listener) {
-    refreshStartedEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeBeforeRefreshListener(final EventListener listener) {
-    refreshStartedEvent.removeListener(listener);
-  }
-
-  @Override
-  public final void addAfterRefreshListener(final EventListener listener) {
-    refreshDoneEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeAfterRefreshListener(final EventListener listener) {
-    refreshDoneEvent.removeListener(listener);
   }
 
   /**

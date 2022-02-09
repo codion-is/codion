@@ -26,7 +26,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     albumModel.addDetailModel(trackModel);
     artistModel.addDetailModel(albumModel);
 
-    artistModel.refresh();
+    artistModel.getTableModel().refresh();
 
     return artistModel;
   }
@@ -37,7 +37,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
     playlistModel.addDetailModel(playlistTrackModel);
 
-    playlistModel.refresh();
+    playlistModel.getTableModel().refresh();
 
     return playlistModel;
   }
@@ -47,7 +47,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     final SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
     customerModel.addDetailModel(invoiceModel);
 
-    customerModel.refresh();
+    customerModel.getTableModel().refresh();
 
     return customerModel;
   }

@@ -39,7 +39,7 @@ public final class MultiPanelDemo {
     EntityEditModel.POST_EDIT_EVENTS.set(true);
 
     SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
-    employeeModel.refresh();
+    employeeModel.getTableModel().refresh();
 
     JPanel basePanel = new JPanel(gridLayout(2, 2));
     for (int i = 0; i < 4; i++) {

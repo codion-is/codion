@@ -67,8 +67,8 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
     vetsPanel.addDetailPanel(vetSpecialtiesPanel);
 
-    ownersModel.refresh();
-    vetsModel.refresh();
+    ownersModel.getTableModel().refresh();
+    vetsModel.getTableModel().refresh();
 
     return asList(ownersPanel, vetsPanel);
   }

@@ -7711,3 +7711,4 @@
   SwingEntityEditModel no longer refreshes attribute combo boxes on creation
   SwingFilteredComboBoxModel and AbstractFilteredTableModel bug fixed, now only do async refresh when on EDT, refreshingObserver now working properly when async is enabled
   EntityEditPanel refresh control again enabled only when a refresh is not in progress
+  EntityModel.refresh() removed
