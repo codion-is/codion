@@ -183,9 +183,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute, null);
     model.setNullString(getValidator().isNullable(getEntity(), getEntityDefinition().getProperty(attribute)) ?
             FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
-    model.refresh();
-    addEntitiesEditedListener(model::refresh);
     refreshingObserver.addState(model.getRefreshingObserver());
+    addEntitiesEditedListener(model::refresh);
 
     return model;
   }

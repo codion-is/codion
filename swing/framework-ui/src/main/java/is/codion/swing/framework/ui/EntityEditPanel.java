@@ -441,7 +441,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
         setupControls();
         bindEventsInternal();
         initializeUI();
-        getEditModel().refreshForeignKeyComboBoxModels();
+        getEditModel().refreshComboBoxModels();
       }
       finally {
         panelInitialized = true;

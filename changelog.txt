@@ -7707,3 +7707,5 @@
   DefaultProperty.setSeparators() bug fixed, getDecimalFormatSymbols() returns a clone, must be set again
   ScrollPaneBuilder.horizontal/verticalUnit/BlockIncrement() added
   EntityApplicationPanel.ApplicationStarter no longer refreshes edit model combo box models, EntityEditPanel does that when initialized
+  EntityEditPanel bug fixed, now refreshes all combo boxes when initialized, not just foreign key combo boxes
+  SwingEntityEditModel no longer refreshes attribute combo boxes on creation
