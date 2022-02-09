@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.Configuration;
-import is.codion.common.Util;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
@@ -15,7 +14,6 @@ import javax.swing.text.BadLocationException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 
 /**
  * A text field for numbers.
@@ -31,24 +29,6 @@ public class NumberField<T extends Number> extends JTextField {
   public static final PropertyValue<Boolean> DISABLE_GROUPING =
           Configuration.booleanValue("codion.swing.common.ui.disableNumberFieldGrouping", false);
 
-  /**
-   * Specifies the default number grouping separator.<br>
-   * Value type: String (1 character)<br>
-   * Default value: The grouping separator for the default locale
-   */
-  public static final PropertyValue<String> GROUPING_SEPARATOR =
-          Configuration.stringValue("codion.swing.common.ui.groupingSeparator",
-                  String.valueOf(DecimalFormatSymbols.getInstance().getGroupingSeparator()));
-
-  /**
-   * Specifies the default number decimal separator.<br>
-   * Value type: String (1 character)<br>
-   * Default value: The decimal separator for the default locale
-   */
-  public static final PropertyValue<String> DECIMAL_SEPARATOR =
-          Configuration.stringValue("codion.swing.common.ui.decimalSeparator",
-                  String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator()));
-
   private final Value<T> value = Value.value();
 
   /**
@@ -58,7 +38,6 @@ public class NumberField<T extends Number> extends JTextField {
    */
   public NumberField(final NumberDocument<T> document, final int columns) {
     super(document, null, columns);
-    setDefaultSeparators();
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
@@ -153,15 +132,6 @@ public class NumberField<T extends Number> extends JTextField {
    */
   protected final NumberDocument<T> getTypedDocument() {
     return (NumberDocument<T>) super.getDocument();
-  }
-
-  private void setDefaultSeparators() {
-    final String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
-    final String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
-    if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)
-            && defaultGroupingSeparator.length() == 1 && defaultDecimalSeparator.length() == 0) {
-      setSeparators(defaultDecimalSeparator.charAt(0), defaultGroupingSeparator.charAt(0));
-    }
   }
 
   private final class GroupingSkipAdapter extends KeyAdapter {

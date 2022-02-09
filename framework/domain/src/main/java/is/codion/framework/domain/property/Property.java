@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.math.RoundingMode;
+import java.text.DecimalFormatSymbols;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
@@ -71,6 +72,22 @@ public interface Property<T> {
    * Default value: false
    */
   PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = Configuration.booleanValue("codion.domain.numberFormatGrouping", false);
+
+  /**
+   * Specifies the default number grouping separator.<br>
+   * Value type: String (1 character)<br>
+   * Default value: The grouping separator for the default locale
+   */
+  PropertyValue<String> GROUPING_SEPARATOR = Configuration.stringValue("codion.domain.groupingSeparator",
+          String.valueOf(DecimalFormatSymbols.getInstance().getGroupingSeparator()));
+
+  /**
+   * Specifies the default number decimal separator.<br>
+   * Value type: String (1 character)<br>
+   * Default value: The decimal separator for the default locale
+   */
+  PropertyValue<String> DECIMAL_SEPARATOR = Configuration.stringValue("codion.domain.decimalSeparator",
+          String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator()));
 
   /**
    * Specifies the default foreign key fetch depth<br>

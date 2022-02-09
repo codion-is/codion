@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
@@ -601,11 +602,26 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   private static NumberFormat getDefaultNumberFormat(final Attribute<?> attribute) {
-    final boolean grouping = Property.NUMBER_FORMAT_GROUPING.get();
+    final boolean grouping = NUMBER_FORMAT_GROUPING.get();
     if (attribute.isInteger() || attribute.isLong()) {
-      return grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat();
+      return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat());
     }
 
-    return grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat();
+    return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat());
+  }
+
+  private static NumberFormat setSeparators(final NumberFormat numberFormat) {
+    if (numberFormat instanceof DecimalFormat) {
+      final String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
+      final String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
+      if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)
+              && defaultGroupingSeparator.length() == 1 && defaultDecimalSeparator.length() == 1) {
+        final DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+        symbols.setDecimalSeparator(defaultDecimalSeparator.charAt(0));
+        symbols.setGroupingSeparator(defaultGroupingSeparator.charAt(0));
+      }
+    }
+
+    return numberFormat;
   }
 }
