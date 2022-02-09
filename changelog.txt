@@ -7715,3 +7715,4 @@
   ComboBoxBuilder.onSetVisible() added, EntityComboBox.refreshOnSetVisible() removed, ForeignKeyComboBoxBuilder.refreshOnSetVisible() removed
   EntityEditPanel no longer refreshes combo box models during initialization
   EntityConditionPanelFactory.ForeignKeyBoundFieldFactory now uses a EntityComponents instance for builders instead of instantiating EntityComboBox and EntitySearchField directly
+  ForeignKeyComboBoxBuilder removed
