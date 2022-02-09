@@ -58,7 +58,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       comboBoxModel.setSelectedItem(initialValue);
 
       return (ComponentValue<T, C>) inputComponents.getComponentBuilders().foreignKeyComboBox(foreignKey, comboBoxModel)
-              .refreshOnSetVisible(true)
+              .onSetVisible(comboBox -> comboBoxModel.refresh())
               .buildComponentValue();
     }
 

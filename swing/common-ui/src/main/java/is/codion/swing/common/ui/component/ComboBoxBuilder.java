@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ListCellRenderer;
+import java.util.function.Consumer;
 
 /**
  * Builds a {@link SteppedComboBox}.
@@ -66,4 +67,10 @@ public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends Comb
    * @return this builder instance
    */
   B maximumRowCount(int maximumRowCount);
+
+  /**
+   * @param onSetVisible called when the combo box is made visible for the first time
+   * @return this builder instance
+   */
+  B onSetVisible(Consumer<C> onSetVisible);
 }

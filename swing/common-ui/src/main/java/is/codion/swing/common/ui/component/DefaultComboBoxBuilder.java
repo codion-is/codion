@@ -11,8 +11,12 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
@@ -30,6 +34,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   private boolean mouseWheelScrolling = false;
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
+  private Consumer<C> onSetVisible;
 
   protected DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
@@ -92,6 +97,12 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   @Override
+  public final B onSetVisible(final Consumer<C> onSetVisible) {
+    this.onSetVisible = onSetVisible;
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     final C comboBox = createComboBox();
     if (renderer != null) {
@@ -118,6 +129,9 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
+    if (onSetVisible != null) {
+      new OnSetVisible<>(comboBox, onSetVisible);
+    }
 
     return comboBox;
   }
@@ -140,5 +154,29 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
   protected C createComboBox() {
     return (C) new SteppedComboBox<>(comboBoxModel);
+  }
+
+  private static final class OnSetVisible<T, C extends JComboBox<T>> implements AncestorListener {
+
+    private final C comboBox;
+    private final Consumer<C> onSetVisible;
+
+    private OnSetVisible(final C comboBox, final Consumer<C> onSetVisible) {
+      this.comboBox = comboBox;
+      this.onSetVisible = onSetVisible;
+      this.comboBox.addAncestorListener(this);
+    }
+
+    @Override
+    public void ancestorAdded(final AncestorEvent event) {
+      onSetVisible.accept(comboBox);
+      comboBox.removeAncestorListener(this);
+    }
+
+    @Override
+    public void ancestorRemoved(final AncestorEvent event) {/*Not necessary*/}
+
+    @Override
+    public void ancestorMoved(final AncestorEvent event) {/*Not necessary*/}
   }
 }

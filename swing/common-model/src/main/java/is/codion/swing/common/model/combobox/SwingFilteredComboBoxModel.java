@@ -39,7 +39,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private final Event<T> selectionChangedEvent = Event.event();
   private final Event<?> filterEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
-  private final Event<?> refreshStartedEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final State refreshingState = State.state();
 
@@ -481,7 +480,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private void onRefreshStarted() {
     refreshingState.set(true);
-    refreshStartedEvent.onEvent();
   }
 
   private void onRefreshFailed(final Throwable throwable) {

@@ -663,7 +663,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     final FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
-    return setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel));
+    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel)
+            .onSetVisible(comboBox -> comboBoxModel.refresh()));
   }
 
   /**
@@ -675,7 +676,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     final SwingEntityComboBoxModel comboBoxModel = getEditModel().getForeignKeyComboBoxModel(foreignKey);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
-    return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel));
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
+            .onSetVisible(comboBox -> comboBoxModel.refresh()));
   }
 
   /**
