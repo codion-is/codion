@@ -174,7 +174,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Builder<T, V> {
 
     /**
-     * @param onStarted called when the worker starts
+     * @param onStarted called on the EDT when the worker starts
      * @return this builder instance
      */
     Builder<T, V> onStarted(Runnable onStarted);
@@ -186,7 +186,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     Builder<T, V> onFinished(Runnable onFinished);
 
     /**
-     * @param onResult called on the EDT when result of a successful run is available
+     * @param onResult called on the EDT when the result of a successful run is available
      * @return this builder instance
      */
     Builder<T, V> onResult(Consumer<T> onResult);
