@@ -7706,3 +7706,4 @@
   NumberField.GROUPING_SEPARATOR and DECIMAL_SEPARATOR moved to Property
   DefaultProperty.setSeparators() bug fixed, getDecimalFormatSymbols() returns a clone, must be set again
   ScrollPaneBuilder.horizontal/verticalUnit/BlockIncrement() added
+  EntityApplicationPanel.ApplicationStarter no longer refreshes edit model combo box models, EntityEditPanel does that when initialized
