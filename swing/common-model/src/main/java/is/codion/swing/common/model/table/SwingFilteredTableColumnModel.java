@@ -11,6 +11,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -156,6 +157,11 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
     }
 
     throw new IllegalArgumentException("Column at model index not found: " + columnModelIndex);
+  }
+
+  @Override
+  public void resetColumns() {
+    setColumns(new ArrayList<>(columns.keySet()));
   }
 
   /* TableColumnModel implementation begins */

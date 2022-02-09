@@ -101,6 +101,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private static final String SELECT_COLUMNS = "select_columns";
+  private static final String RESET_COLUMNS = "reset_columns";
+  private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
@@ -402,6 +404,17 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
                     .toArray(ToggleControl[]::new))
+            .build();
+  }
+
+  /**
+   * @return a Control for resetting the columns to their original location and visibility
+   */
+  public Control createResetColumnsControl() {
+    return Control.builder(getModel().getColumnModel()::resetColumns)
+            .caption(MESSAGES.getString(RESET_COLUMNS))
+            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
   }
 
