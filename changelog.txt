@@ -7705,3 +7705,4 @@
   NumberField.GROUPING_SEPARATOR and DECIMAL_SEPARATOR configuration values added, with defaults from the default locale, used in NumberField
   NumberField.GROUPING_SEPARATOR and DECIMAL_SEPARATOR moved to Property
   DefaultProperty.setSeparators() bug fixed, getDecimalFormatSymbols() returns a clone, must be set again
+  ScrollPaneBuilder.horizontal/verticalUnit/BlockIncrement() added

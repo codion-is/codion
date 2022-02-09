@@ -24,6 +24,30 @@ public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, S
   ScrollPaneBuilder horizontalScrollBarPolicy(int horizontalScrollBarPolicy);
 
   /**
+   * @param verticalUnitIncrement the unit increment for the vertical scrollbar
+   * @return this builder instance
+   */
+  ScrollPaneBuilder verticalUnitIncrement(int verticalUnitIncrement);
+
+  /**
+   * @param horizontalUnitIncrement the unit increment for the horizontal scrollbar
+   * @return this builder instance
+   */
+  ScrollPaneBuilder horizontalUnitIncrement(int horizontalUnitIncrement);
+
+  /**
+   * @param verticalBlockIncrement the block increment for the vertical scrollbar
+   * @return this builder instance
+   */
+  ScrollPaneBuilder verticalBlockIncrement(int verticalBlockIncrement);
+
+  /**
+   * @param horizontalBlockIncrement the block increment for the horizontal scrollbar
+   * @return this builder instance
+   */
+  ScrollPaneBuilder horizontalBlockIncrement(int horizontalBlockIncrement);
+
+  /**
    * @param wheelScrollingEnabled wheel scrolling enabled
    * @return this builder instance
    */
