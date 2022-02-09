@@ -670,6 +670,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   /**
    * Creates a builder for foreign key combo boxes.
    * @param foreignKey the foreign key for which to build a combo box
+   * @param <B> the builder type
    * @return a foreign key combo box builder
    */
   protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(final ForeignKey foreignKey) {
