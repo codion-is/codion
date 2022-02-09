@@ -41,6 +41,7 @@ final class SelectColumnsPanel<C> extends JPanel {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SelectColumnsPanel.class.getName());
 
   private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
+  private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
 
   private final SwingFilteredTableColumnModel<C> columnModel;
   private final Map<TableColumn, State> states;
@@ -148,6 +149,7 @@ final class SelectColumnsPanel<C> extends JPanel {
             .addConstrained(northPanel, BorderLayout.NORTH)
             .scrollPane()
             .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
+            .verticalUnitIncrement(COLUMN_SCROLL_BAR_UNIT_INCREMENT)
             .build();
   }
 

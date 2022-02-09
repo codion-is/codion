@@ -14,6 +14,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void refresh() {
-    if (asyncRefresh) {
+    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {

@@ -44,7 +44,6 @@ import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.panel.HierarchyPanel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
-import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1575,7 +1574,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         else {
           SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
         }
-        applicationModel.getEntityModels().forEach(this::refreshComboBoxModels);
         LOG.info(getFrameTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
       }
       catch (final InterruptedException e) {
@@ -1586,11 +1584,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         displayException(exception, null);
         throw new CancelException();
       }
-    }
-
-    private void refreshComboBoxModels(final SwingEntityModel model) {
-      model.getEditModel().refreshForeignKeyComboBoxModels();
-      model.getDetailModels().forEach(this::refreshComboBoxModels);
     }
   }
 }

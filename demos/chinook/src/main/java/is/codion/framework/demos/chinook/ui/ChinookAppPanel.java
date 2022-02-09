@@ -4,6 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.model.FilteredModel;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -152,6 +153,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
+    FilteredModel.ASYNC_REFRESH.set(true);
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME.set(true);
     EntityApplicationPanel.PERSIST_ENTITY_PANELS.set(true);
