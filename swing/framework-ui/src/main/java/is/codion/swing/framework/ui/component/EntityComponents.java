@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -29,6 +30,7 @@ import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.ui.EntityComboBox;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
@@ -111,10 +113,11 @@ public class EntityComponents {
    * @param comboBoxModel the combo box model
    * @return a builder
    */
-  public final ForeignKeyComboBoxBuilder foreignKeyComboBox(final ForeignKey foreignKey, final SwingEntityComboBoxModel comboBoxModel) {
+  public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(final ForeignKey foreignKey,
+                                                                                                                                    final SwingEntityComboBoxModel comboBoxModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return new DefaultForeignKeyComboBoxBuilder(comboBoxModel)
+    return (ComboBoxBuilder<Entity, EntityComboBox, B>) new DefaultForeignKeyComboBoxBuilder<>(comboBoxModel)
             .toolTipText(foreignKeyProperty.getDescription());
   }
 

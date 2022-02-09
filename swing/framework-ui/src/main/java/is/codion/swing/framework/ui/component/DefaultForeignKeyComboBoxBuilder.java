@@ -4,32 +4,20 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 
-final class DefaultForeignKeyComboBoxBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, ForeignKeyComboBoxBuilder>
-        implements ForeignKeyComboBoxBuilder {
-
-  private boolean refreshOnSetVisible;
+final class DefaultForeignKeyComboBoxBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>>
+        extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
 
   DefaultForeignKeyComboBoxBuilder(final SwingEntityComboBoxModel comboBoxModel) {
     super(comboBoxModel, null);
   }
 
   @Override
-  public ForeignKeyComboBoxBuilder refreshOnSetVisible(final boolean refreshOnSetVisible) {
-    this.refreshOnSetVisible = refreshOnSetVisible;
-    return this;
-  }
-
-  @Override
   protected EntityComboBox createComboBox() {
-    final EntityComboBox comboBox = new EntityComboBox((SwingEntityComboBoxModel) comboBoxModel);
-    if (refreshOnSetVisible) {
-      comboBox.refreshOnSetVisible();
-    }
-
-    return comboBox;
+    return new EntityComboBox((SwingEntityComboBoxModel) comboBoxModel);
   }
 }

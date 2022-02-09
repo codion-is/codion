@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -35,7 +36,6 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
-import is.codion.swing.framework.ui.component.ForeignKeyComboBoxBuilder;
 import is.codion.swing.framework.ui.component.ForeignKeyFieldBuilder;
 import is.codion.swing.framework.ui.component.ForeignKeySearchFieldBuilder;
 
@@ -663,7 +663,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     final FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
-    return setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel));
+    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel)
+            .onSetVisible(comboBox -> comboBoxModel.refresh()));
   }
 
   /**
@@ -671,11 +672,12 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param foreignKey the foreign key for which to build a combo box
    * @return a foreign key combo box builder
    */
-  protected final ForeignKeyComboBoxBuilder createForeignKeyComboBox(final ForeignKey foreignKey) {
+  protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(final ForeignKey foreignKey) {
     final SwingEntityComboBoxModel comboBoxModel = getEditModel().getForeignKeyComboBoxModel(foreignKey);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
-    return setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel));
+    return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
+            .onSetVisible(comboBox -> comboBoxModel.refresh()));
   }
 
   /**

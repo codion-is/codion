@@ -96,7 +96,7 @@ public class StoreDemo {
     addressPanel.getTablePanel().getTable().setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     addressPanel.getTablePanel().setConditionPanelVisible(true);
 
-    customerModel.refresh();
+    customerModel.getTableModel().refresh();
     customerPanel.initializePanel();
 
     Dialogs.componentDialog(customerPanel)

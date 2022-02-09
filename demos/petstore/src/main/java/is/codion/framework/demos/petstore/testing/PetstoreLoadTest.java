@@ -28,7 +28,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
       protected void perform(final PetstoreAppModel application) {
         final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
-        categoryModel.refresh();
+        categoryModel.getTableModel().refresh();
         selectRandomRow(categoryModel.getTableModel());
         selectRandomRow(categoryModel.getDetailModels().iterator().next().getTableModel());
         selectRandomRow(categoryModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());

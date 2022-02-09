@@ -6,7 +6,6 @@ package is.codion.framework.model;
 import is.codion.common.Configuration;
 import is.codion.common.Util;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -200,19 +199,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   ForeignKey getDetailModelForeignKey(M detailModel);
 
   /**
-   * Refreshes all data models used by this model, combo box models f.ex.
-   */
-  void refresh();
-
-  /**
    * Clears all data models used by this model.
    */
   void clear();
-
-  /**
-   * Refreshes the detail models.
-   */
-  void refreshDetailModels();
 
   /**
    * Clears the detail models.
@@ -232,26 +221,6 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
   void setSearchOnMasterInsert(boolean searchOnMasterInsert);
-
-  /**
-   * @param listener a listener to be notified before a refresh is performed
-   */
-  void addBeforeRefreshListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeBeforeRefreshListener(EventListener listener);
-
-  /**
-   * @param listener a listener to be notified each time a refresh has been performed
-   */
-  void addAfterRefreshListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeAfterRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a linked detail model is added

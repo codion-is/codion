@@ -136,7 +136,7 @@ public final class ClientTutorial {
       SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
       SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
       artistModel.addDetailModel(albumModel);
-      artistModel.refresh();
+      artistModel.getTableModel().refresh();
 
       SwingEntityApplicationModel applicationModel = new SwingEntityApplicationModel(connectionProvider);
       applicationModel.addEntityModel(artistModel);

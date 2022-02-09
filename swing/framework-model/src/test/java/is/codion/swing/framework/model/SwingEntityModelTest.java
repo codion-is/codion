@@ -87,7 +87,7 @@ public final class SwingEntityModelTest
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     assertNotNull(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
-    departmentModel.refresh();
+    departmentModel.getTableModel().refresh();
     final SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
@@ -133,7 +133,7 @@ public final class SwingEntityModelTest
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     connection.beginTransaction();
     try {
-      departmentModel.refresh();
+      departmentModel.getTableModel().refresh();
       final Entity department =
               connection.selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);

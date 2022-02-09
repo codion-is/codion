@@ -7745,3 +7745,8 @@
   SwingEntityEditModel no longer refreshes attribute combo boxes on creation
   SwingFilteredComboBoxModel and AbstractFilteredTableModel bug fixed, now only do async refresh when on EDT, refreshingObserver now working properly when async is enabled
   EntityEditPanel refresh control again enabled only when a refresh is not in progress
+  EntityModel.refresh() removed
+  ComboBoxBuilder.onSetVisible() added, EntityComboBox.refreshOnSetVisible() removed, ForeignKeyComboBoxBuilder.refreshOnSetVisible() removed
+  EntityEditPanel no longer refreshes combo box models during initialization
+  EntityConditionPanelFactory.ForeignKeyBoundFieldFactory now uses a EntityComponents instance for builders instead of instantiating EntityComboBox and EntitySearchField directly
+  ForeignKeyComboBoxBuilder removed

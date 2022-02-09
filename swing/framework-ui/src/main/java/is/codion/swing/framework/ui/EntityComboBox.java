@@ -18,9 +18,6 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -47,18 +44,6 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   @Override
   public SwingEntityComboBoxModel getModel() {
     return (SwingEntityComboBoxModel) super.getModel();
-  }
-
-  /**
-   * Calling this method results in the underlying combo box model being refreshed
-   * the next time this combo box is made visible.
-   * Calling this method when this combo box is already visible has no effect.
-   * @return this combo box
-   * @see SwingEntityComboBoxModel#refresh()
-   */
-  public EntityComboBox refreshOnSetVisible() {
-    new RefreshOnVisible(this);
-    return this;
   }
 
   /**
@@ -155,30 +140,5 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
               .onOk(() -> getModel().setForeignKeyFilterEntities(foreignKey, current))
               .show();
     };
-  }
-
-  private static final class RefreshOnVisible implements AncestorListener {
-
-    private final EntityComboBox comboBox;
-
-    private RefreshOnVisible(final EntityComboBox comboBox) {
-      this.comboBox = comboBox;
-      if (!comboBox.isShowing() && Arrays.stream(comboBox.getAncestorListeners())
-              .noneMatch(RefreshOnVisible.class::isInstance)) {
-        this.comboBox.addAncestorListener(this);
-      }
-    }
-
-    @Override
-    public void ancestorAdded(final AncestorEvent event) {
-      comboBox.getModel().refresh();
-      comboBox.removeAncestorListener(this);
-    }
-
-    @Override
-    public void ancestorRemoved(final AncestorEvent event) {/*Not necessary*/}
-
-    @Override
-    public void ancestorMoved(final AncestorEvent event) {/*Not necessary*/}
   }
 }

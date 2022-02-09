@@ -49,7 +49,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             new DepartmentTablePanel(departmentModel.getTableModel()));
     departmentPanel.addDetailPanel(employeePanelBuilder);
 
-    departmentModel.refresh();
+    departmentModel.getTableModel().refresh();
 
     return Collections.singletonList(departmentPanel);
   }

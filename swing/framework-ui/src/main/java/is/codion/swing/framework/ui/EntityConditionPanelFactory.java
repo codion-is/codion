@@ -7,6 +7,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Sizes;
@@ -16,7 +17,9 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
+import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntityInputComponents;
 
 import org.slf4j.Logger;
@@ -80,7 +83,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
     final ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel instanceof ForeignKeyConditionModel) {
-      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel);
+      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityInputComponents.getComponentBuilders());
     }
     else {
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityInputComponents, conditionModel.getColumnIdentifier());
@@ -96,10 +99,12 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
   private static final class ForeignKeyBoundFieldFactory implements ColumnConditionPanel.BoundFieldFactory {
 
+    private final EntityComponents entityComponents;
     private final ColumnConditionModel<ForeignKey, Entity> model;
 
-    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<ForeignKey, Entity> model) {
+    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<ForeignKey, Entity> model, final EntityComponents entityComponents) {
       this.model = model;
+      this.entityComponents = entityComponents;
     }
 
     @Override
@@ -119,10 +124,17 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     private JComponent createForeignKeyField() {
       if (model instanceof SwingForeignKeyConditionModel) {
-        return Completion.maximumMatch(new EntityComboBox(((SwingForeignKeyConditionModel) model).getEntityComboBoxModel()).refreshOnSetVisible());
+        final SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
+
+        return entityComponents.foreignKeyComboBox(model.getColumnIdentifier(), comboBoxModel)
+                .completionMode(Completion.Mode.MAXIMUM_MATCH)
+                .onSetVisible(comboBox -> comboBoxModel.refresh())
+                .build();
       }
 
-      return TextFields.selectAllOnFocusGained(new EntitySearchField(((ForeignKeyConditionModel) model).getEntitySearchModel()));
+      final EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).getEntitySearchModel();
+
+      return entityComponents.foreignKeySearchField(model.getColumnIdentifier(), searchModel).build();
     }
   }
 
