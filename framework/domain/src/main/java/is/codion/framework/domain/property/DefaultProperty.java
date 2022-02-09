@@ -585,8 +585,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     private static Format initializeDefaultFormat(final Attribute<?> attribute) {
       if (attribute.isNumerical()) {
-        final NumberFormat numberFormat = attribute.isInteger() || attribute.isLong() ?
-                Formats.getNonGroupingIntegerFormat() : Formats.getNonGroupingNumberFormat();
+        final NumberFormat numberFormat = getDefaultNumberFormat(attribute);
         if (attribute.isBigDecimal()) {
           ((DecimalFormat) numberFormat).setParseBigDecimal(true);
         }
@@ -599,5 +598,14 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
       return Formats.NULL_FORMAT;
     }
+  }
+
+  private static NumberFormat getDefaultNumberFormat(final Attribute<?> attribute) {
+    final boolean grouping = Property.NUMBER_FORMAT_GROUPING.get();
+    if (attribute.isInteger() || attribute.isLong()) {
+      return grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat();
+    }
+
+    return grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat();
   }
 }

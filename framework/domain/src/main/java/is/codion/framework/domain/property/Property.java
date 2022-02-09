@@ -66,6 +66,13 @@ public interface Property<T> {
           .delimiterDash().yearFourDigits().build().getDatePattern());
 
   /**
+   * Specifies whether number format grouping is used by default<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = Configuration.booleanValue("codion.domain.numberFormatGrouping", false);
+
+  /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1
