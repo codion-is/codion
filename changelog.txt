@@ -7736,3 +7736,4 @@
   EntityEditPanel, revert refresh control enabled state based on refreshing observer, needs more thought
   FilteredTableColumnModel.resetColumns() and FilteredTable.createResetColumnsControl() added, EntityTablePanel popup menu now contains a Columns submenu with select and reset actions
   Property.NUMBER_FORMAT_GROUPING configuration value added, false by default, used in DefaultProperty when initializing the default format
+  NumberField.GROUPING_SEPARATOR and DECIMAL_SEPARATOR configuration values added, with defaults from the default locale, used in NumberField
