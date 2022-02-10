@@ -726,9 +726,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     try {
       onRefreshResult(refreshItems());
     }
-    catch (final RuntimeException e) {
-      onRefreshFailed(e);
-    }
     catch (final Exception e) {
       onRefreshFailed(e);
     }
