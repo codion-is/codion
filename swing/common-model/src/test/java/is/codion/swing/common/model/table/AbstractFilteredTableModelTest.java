@@ -171,7 +171,6 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   void refreshEvents() {
-    final AtomicInteger started = new AtomicInteger();
     final AtomicInteger done = new AtomicInteger();
     final AtomicInteger cleared = new AtomicInteger();
     final EventListener successfulListener = done::incrementAndGet;
@@ -182,16 +181,13 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableModelClearedListener(clearedListener);
     tableModel.refresh();
     assertTrue(tableModel.getRowCount() > 0);
-    assertEquals(1, started.get());
     assertEquals(1, done.get());
     assertEquals(1, cleared.get());
 
-    started.set(0);
     done.set(0);
     cleared.set(0);
     tableModel.setMergeOnRefresh(true);
     tableModel.refresh();
-    assertEquals(1, started.get());
     assertEquals(1, done.get());
     assertEquals(0, cleared.get());
 
