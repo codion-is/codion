@@ -100,8 +100,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     NEITHER
   }
 
-  private static final String SELECT_COLUMNS = "select_columns";
-  private static final String RESET_COLUMNS = "reset_columns";
+  private static final String SELECT = "select";
+  private static final String RESET = "reset";
   private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
   private static final int SEARCH_FIELD_COLUMNS = 8;
@@ -310,7 +310,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
             .owner(this)
-            .title(MESSAGES.getString(SELECT_COLUMNS))
+            .title(MESSAGES.getString(SELECT))
             .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
             .onOk(selectColumnsPanel::applyChanges)
             .show();
@@ -386,9 +386,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
-            .caption(MESSAGES.getString(SELECT_COLUMNS) + "...")
+            .caption(MESSAGES.getString(SELECT) + "...")
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
-            .description(MESSAGES.getString(SELECT_COLUMNS))
+            .description(MESSAGES.getString(SELECT))
             .build();
   }
 
@@ -397,9 +397,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public Controls createToggleColumnsControls() {
     return Controls.builder()
-            .caption(MESSAGES.getString(SELECT_COLUMNS))
+            .caption(MESSAGES.getString(SELECT))
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
-            .description(MESSAGES.getString(SELECT_COLUMNS))
+            .description(MESSAGES.getString(SELECT))
             .controls(tableModel.getColumnModel().getAllColumns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
@@ -412,7 +412,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public Control createResetColumnsControl() {
     return Control.builder(getModel().getColumnModel()::resetColumns)
-            .caption(MESSAGES.getString(RESET_COLUMNS))
+            .caption(MESSAGES.getString(RESET))
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
