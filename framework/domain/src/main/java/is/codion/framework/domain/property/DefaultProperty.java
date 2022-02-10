@@ -599,30 +599,30 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
       return Formats.NULL_FORMAT;
     }
-  }
 
-  private static NumberFormat getDefaultNumberFormat(final Attribute<?> attribute) {
-    final boolean grouping = NUMBER_FORMAT_GROUPING.get();
-    if (attribute.isInteger() || attribute.isLong()) {
-      return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat());
-    }
-
-    return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat());
-  }
-
-  private static NumberFormat setSeparators(final NumberFormat numberFormat) {
-    if (numberFormat instanceof DecimalFormat) {
-      final String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
-      final String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
-      if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)
-              && defaultGroupingSeparator.length() == 1 && defaultDecimalSeparator.length() == 1) {
-        final DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
-        symbols.setDecimalSeparator(defaultDecimalSeparator.charAt(0));
-        symbols.setGroupingSeparator(defaultGroupingSeparator.charAt(0));
-        ((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);
+    private static NumberFormat getDefaultNumberFormat(final Attribute<?> attribute) {
+      final boolean grouping = NUMBER_FORMAT_GROUPING.get();
+      if (attribute.isInteger() || attribute.isLong()) {
+        return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat());
       }
+
+      return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat());
     }
 
-    return numberFormat;
+    private static NumberFormat setSeparators(final NumberFormat numberFormat) {
+      if (numberFormat instanceof DecimalFormat) {
+        final String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
+        final String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
+        if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)
+                && defaultGroupingSeparator.length() == 1 && defaultDecimalSeparator.length() == 1) {
+          final DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+          symbols.setDecimalSeparator(defaultDecimalSeparator.charAt(0));
+          symbols.setGroupingSeparator(defaultGroupingSeparator.charAt(0));
+          ((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);
+        }
+      }
+
+      return numberFormat;
+    }
   }
 }

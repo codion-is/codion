@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTabbedPane, TabbedPaneBuilder> implements TabbedPaneBuilder {
 
-  private int tabPlacement = JTabbedPane.TOP;
+  private int tabPlacement = SwingConstants.TOP;
   private final Map<String, JComponent> tabs = new LinkedHashMap<>();
   private final Map<Integer, Integer> mnemonicAt = new HashMap<>();
   private final List<ChangeListener> changeListeners = new ArrayList<>();

@@ -574,14 +574,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             .build();
   }
 
-  private void toggleColumnFilterPanel(final MouseEvent event) {
-    final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
-    final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
-    toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
-                    (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
-            this, column.getHeaderValue().toString(), event.getLocationOnScreen());
-  }
-
   private static void toggleFilterPanel(final ColumnConditionPanel<?, ?> columnFilterPanel, final Container parent,
                                         final String title, final Point position) {
     if (columnFilterPanel != null) {
@@ -816,6 +808,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       if (e.isAltDown() && e.isControlDown()) {
         toggleColumnFilterPanel(e);
       }
+    }
+
+    private void toggleColumnFilterPanel(final MouseEvent event) {
+      final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+      final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
+      toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
+                      (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
+              FilteredTable.this, column.getHeaderValue().toString(), event.getLocationOnScreen());
     }
   }
 

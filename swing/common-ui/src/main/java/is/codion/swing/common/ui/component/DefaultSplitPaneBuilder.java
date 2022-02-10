@@ -62,6 +62,7 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
     splitPane.setLeftComponent(leftTopComponent);
     splitPane.setRightComponent(rightBottomComponent);
     splitPane.setResizeWeight(resizeWeight);
+    splitPane.setOneTouchExpandable(oneTouchExpandable);
 
     return splitPane;
   }

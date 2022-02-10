@@ -40,8 +40,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
 
-  private final Event<?> refreshStartedEvent = Event.event();
-  private final Event<?> refreshDoneEvent = Event.event();
   private final Event<M> linkedDetailModelAddedEvent = Event.event();
   private final Event<M> linkedDetailModelRemovedEvent = Event.event();
 

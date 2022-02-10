@@ -678,12 +678,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
   }
 
-  private void checkQueryRowCount() {
-    if (getQueryRowCountLimit() >= 0 && getQueryRowCount() > getQueryRowCountLimit()) {
-      throw new IllegalStateException("Too many rows returned, add query condition");
-    }
-  }
-
   /**
    * A {@link TableColumn} based on a {@link Attribute} instance
    * @param <T> the column data type

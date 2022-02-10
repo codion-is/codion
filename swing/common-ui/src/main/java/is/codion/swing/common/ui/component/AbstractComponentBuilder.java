@@ -454,20 +454,20 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
   }
 
-  private static final class OnSetVisible<T, C extends JComponent> implements AncestorListener {
+  private static final class OnSetVisible<C extends JComponent> implements AncestorListener {
 
     private final C component;
-    private final Consumer<C> onSetVisible;
+    private final Consumer<C> consumer;
 
-    private OnSetVisible(final C component, final Consumer<C> onSetVisible) {
+    private OnSetVisible(final C component, final Consumer<C> consumer) {
       this.component = component;
-      this.onSetVisible = onSetVisible;
+      this.consumer = consumer;
       this.component.addAncestorListener(this);
     }
 
     @Override
     public void ancestorAdded(final AncestorEvent event) {
-      onSetVisible.accept(component);
+      consumer.accept(component);
       component.removeAncestorListener(this);
     }
 

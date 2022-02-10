@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import java.awt.LayoutManager;
 
 import static java.util.Objects.requireNonNull;
@@ -13,8 +14,8 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 
   private final JComponent view;
 
-  private int vsbPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-  private int hsbPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+  private int vsbPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+  private int hsbPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
   private boolean wheelScrollingEnabled = true;
   private int verticalUnitIncrement;
   private int horizontalUnitIncrement;

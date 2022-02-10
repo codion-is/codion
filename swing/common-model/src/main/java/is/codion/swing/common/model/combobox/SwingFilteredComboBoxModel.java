@@ -470,9 +470,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     try {
       onRefreshResult(refreshItems());
     }
-    catch (final RuntimeException e) {
-      onRefreshFailed(e);
-    }
     catch (final Exception e) {
       onRefreshFailed(e);
     }

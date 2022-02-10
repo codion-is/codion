@@ -102,9 +102,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     try {
       onRefreshResult(performQuery());
     }
-    catch (final RuntimeException e) {
-      onRefreshFailed(e);
-    }
     catch (final Exception e) {
       onRefreshFailed(e);
     }
@@ -380,6 +377,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
   }
 
+  protected final void checkQueryRowCount() {
+    if (queryRowCountLimit >= 0 && getQueryRowCount() > queryRowCountLimit) {
+      throw new IllegalStateException("Too many rows returned, add query condition");
+    }
+  }
+
   private void onRefreshStarted() {
     refreshingState.set(true);
     refreshStartedEvent.onEvent();
@@ -407,13 +410,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       return new ArrayList<>(selectionModel.getSelectedItems());
     }
 
-    return null;
-  }
-
-  private void checkQueryRowCount() {
-    if (queryRowCountLimit >= 0 && getQueryRowCount() > queryRowCountLimit) {
-      throw new IllegalStateException("Too many rows returned, add query condition");
-    }
+    return emptyList();
   }
 
   private void checkIfSelectionModelHasBeenSet() {
