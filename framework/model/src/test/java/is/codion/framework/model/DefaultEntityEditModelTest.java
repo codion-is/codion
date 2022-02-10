@@ -541,9 +541,9 @@ public final class DefaultEntityEditModelTest {
       @Override
       public void addRefreshingObserver(final StateObserver refreshingObserver) {}
       @Override
-      public void addAfterRefreshListener(final EventListener listener) {}
+      public void addRefreshListener(final EventListener listener) {}
       @Override
-      public void removeAfterRefreshListener(final EventListener listener) {}
+      public void removeRefreshListener(final EventListener listener) {}
     };
 
     final AtomicInteger derivedCounter = new AtomicInteger();
@@ -652,9 +652,9 @@ public final class DefaultEntityEditModelTest {
     public void addRefreshingObserver(final StateObserver refreshingObserver) {}
 
     @Override
-    public void addAfterRefreshListener(final EventListener listener) {}
+    public void addRefreshListener(final EventListener listener) {}
 
     @Override
-    public void removeAfterRefreshListener(final EventListener listener) {}
+    public void removeRefreshListener(final EventListener listener) {}
   }
 }

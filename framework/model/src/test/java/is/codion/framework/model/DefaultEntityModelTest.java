@@ -69,9 +69,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void addRefreshingObserver(final StateObserver refreshingObserver) {}
     @Override
-    public void addAfterRefreshListener(final EventListener listener) {}
+    public void addRefreshListener(final EventListener listener) {}
     @Override
-    public void removeAfterRefreshListener(final EventListener listener) {}
+    public void removeRefreshListener(final EventListener listener) {}
   }
 
   public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {

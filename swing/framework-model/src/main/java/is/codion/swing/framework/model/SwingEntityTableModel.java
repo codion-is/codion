@@ -787,7 +787,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
-    editModel.addAfterRefreshListener(this::refresh);
+    editModel.addRefreshListener(this::refresh);
     editModel.addEntitySetListener(this::onEntitySet);
     editModel.addRefreshingObserver(getRefreshingObserver());
     getSelectionModel().addSelectedItemListener(editModel::setEntity);

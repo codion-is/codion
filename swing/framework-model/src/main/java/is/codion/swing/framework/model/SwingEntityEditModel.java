@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
-  private final Event<?> afterRefreshEvent = Event.event();
+  private final Event<?> refreshEvent = Event.event();
 
   /**
    * Holds the ComboBoxModels used by this {@link EntityEditModel}
@@ -106,6 +106,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKey);
       if (comboBoxModel == null) {
         comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
+        refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
         comboBoxModels.put(foreignKey, comboBoxModel);
       }
 
@@ -127,6 +128,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       if (comboBoxModel == null) {
         comboBoxModel = createComboBoxModel(attribute);
         comboBoxModels.put(attribute, comboBoxModel);
+        refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
       }
 
       return (FilteredComboBoxModel<T>) comboBoxModel;
@@ -165,7 +167,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
-    refreshingObserver.addState(model.getRefreshingObserver());
 
     return model;
   }
@@ -183,7 +184,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute, null);
     model.setNullString(getValidator().isNullable(getEntity(), getEntityDefinition().getProperty(attribute)) ?
             FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
-    refreshingObserver.addState(model.getRefreshingObserver());
     addEntitiesEditedListener(model::refresh);
 
     return model;
@@ -241,19 +241,19 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addAfterRefreshListener(final EventListener listener) {
-    afterRefreshEvent.addListener(listener);
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeAfterRefreshListener(final EventListener listener) {
-    afterRefreshEvent.removeListener(listener);
+  public final void removeRefreshListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
   }
 
   @Override
   protected void refreshDataModels() {
     refreshComboBoxModels();
-    afterRefreshEvent.onEvent();
+    refreshEvent.onEvent();
   }
 
   @Override
