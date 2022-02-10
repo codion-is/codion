@@ -488,8 +488,8 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   private void onRefreshResult(final Collection<T> items) {
-    setContents(items);
     refreshingState.set(false);
+    setContents(items);
     refreshEvent.onEvent();
   }
 

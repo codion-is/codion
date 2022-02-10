@@ -7718,3 +7718,5 @@
   ForeignKeyComboBoxBuilder removed
   ComboBoxBuilder.onSetVisible() moved to ComponentBuilder
   ProgressWorker bug fixed, sometimes onResult was executed before onStarted, was wreaking havoc during async refresh, now listens for propertyChangeEvent for started and done, proper usage of SwingWorker
+  FilteredTableModel.add/RemoveRefreshStartedListener() removed
+  SwingFilteredComboBoxModel and AbstractFilteredTableModel.onRefreshResult() now starts by setting refreshingState to false

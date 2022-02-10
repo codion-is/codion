@@ -25,16 +25,6 @@ import java.util.function.Predicate;
 public interface FilteredTableModel<R, C> extends FilteredModel<R> {
 
   /**
-   * @param listener a listener to be notified each time a refresh is about to start
-   */
-  void addRefreshStartedListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeRefreshStartedListener(EventListener listener);
-
-  /**
    * @param listener a listener to be notified each time a refresh has successfully finished
    * @see #refresh()
    */
