@@ -106,6 +106,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKey);
       if (comboBoxModel == null) {
         comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
+        refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
         comboBoxModels.put(foreignKey, comboBoxModel);
       }
 
@@ -127,6 +128,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       if (comboBoxModel == null) {
         comboBoxModel = createComboBoxModel(attribute);
         comboBoxModels.put(attribute, comboBoxModel);
+        refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
       }
 
       return (FilteredComboBoxModel<T>) comboBoxModel;
@@ -165,7 +167,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
-    refreshingObserver.addState(model.getRefreshingObserver());
 
     return model;
   }
@@ -183,7 +184,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute, null);
     model.setNullString(getValidator().isNullable(getEntity(), getEntityDefinition().getProperty(attribute)) ?
             FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
-    refreshingObserver.addState(model.getRefreshingObserver());
     addEntitiesEditedListener(model::refresh);
 
     return model;
