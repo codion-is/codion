@@ -15,6 +15,8 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -71,6 +73,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private ValueObserver<T> linkedValueObserver;
   private Value.Validator<T> validator;
   private T initialValue;
+  private Consumer<C> onSetVisible;
 
   protected AbstractComponentBuilder() {
     this(null);
@@ -271,6 +274,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B onSetVisible(final Consumer<C> onSetVisible) {
+    this.onSetVisible = onSetVisible;
+    return (B) this;
+  }
+
+  @Override
   public final B linkedValue(final Value<T> linkedValue) {
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
@@ -353,6 +362,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
     keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
     componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
+    if (onSetVisible != null) {
+      new OnSetVisible<>(component, onSetVisible);
+    }
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }
@@ -440,5 +452,29 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (preferredWidth > 0) {
       setPreferredWidth(component, preferredWidth);
     }
+  }
+
+  private static final class OnSetVisible<T, C extends JComponent> implements AncestorListener {
+
+    private final C component;
+    private final Consumer<C> onSetVisible;
+
+    private OnSetVisible(final C component, final Consumer<C> onSetVisible) {
+      this.component = component;
+      this.onSetVisible = onSetVisible;
+      this.component.addAncestorListener(this);
+    }
+
+    @Override
+    public void ancestorAdded(final AncestorEvent event) {
+      onSetVisible.accept(component);
+      component.removeAncestorListener(this);
+    }
+
+    @Override
+    public void ancestorRemoved(final AncestorEvent event) {/*Not necessary*/}
+
+    @Override
+    public void ancestorMoved(final AncestorEvent event) {/*Not necessary*/}
   }
 }

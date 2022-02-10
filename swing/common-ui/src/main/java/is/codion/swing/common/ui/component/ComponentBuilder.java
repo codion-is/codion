@@ -243,6 +243,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B componentListener(ComponentListener componentListener);
 
   /**
+   * @param onSetVisible called when the combo box is made visible for the first time
+   * @return this builder instance
+   */
+  B onSetVisible(Consumer<C> onSetVisible);
+
+  /**
    * Creates a bi-directional link to the given value. Overrides any initial value set.
    * @param linkedValue a value to link to the component value
    * @return this builder instance
