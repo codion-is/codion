@@ -712,13 +712,13 @@ public interface EntityEditModel {
   /**
    * @param listener a listener to be notified each time a refresh has been performed
    */
-  void addAfterRefreshListener(EventListener listener);
+  void addRefreshListener(EventListener listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterRefreshListener(EventListener listener);
+  void removeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time an entity is edited via this model,

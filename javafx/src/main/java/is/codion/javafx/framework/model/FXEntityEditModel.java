@@ -137,12 +137,12 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addAfterRefreshListener(final EventListener listener) {
+  public final void addRefreshListener(final EventListener listener) {
     afterRefreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeAfterRefreshListener(final EventListener listener) {
+  public final void removeRefreshListener(final EventListener listener) {
     afterRefreshEvent.removeListener(listener);
   }
 

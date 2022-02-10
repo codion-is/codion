@@ -119,9 +119,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     if (exception instanceof RuntimeException) {
       throw (RuntimeException) exception;
     }
-    else {
-      throw new RuntimeException(exception);
-    }
+
+    throw new RuntimeException(exception);
   }
 
   /**

@@ -7721,3 +7721,4 @@
   FilteredTableModel.add/RemoveRefreshStartedListener() removed
   SwingFilteredComboBoxModel and AbstractFilteredTableModel.onRefreshResult() now starts by setting refreshingState to false
   SwingEntityEditModel, adding combo boxes to refreshObserver moved out of overridable methods
+  EntityEditModel.addAfterRefreshListener() renamed addRefreshListener()

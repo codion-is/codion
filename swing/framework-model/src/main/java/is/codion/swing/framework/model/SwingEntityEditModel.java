@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
-  private final Event<?> afterRefreshEvent = Event.event();
+  private final Event<?> refreshEvent = Event.event();
 
   /**
    * Holds the ComboBoxModels used by this {@link EntityEditModel}
@@ -241,19 +241,19 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addAfterRefreshListener(final EventListener listener) {
-    afterRefreshEvent.addListener(listener);
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeAfterRefreshListener(final EventListener listener) {
-    afterRefreshEvent.removeListener(listener);
+  public final void removeRefreshListener(final EventListener listener) {
+    refreshEvent.removeListener(listener);
   }
 
   @Override
   protected void refreshDataModels() {
     refreshComboBoxModels();
-    afterRefreshEvent.onEvent();
+    refreshEvent.onEvent();
   }
 
   @Override
