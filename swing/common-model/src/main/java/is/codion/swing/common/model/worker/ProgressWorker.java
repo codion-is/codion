@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.worker;
 
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
@@ -31,6 +30,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
+  private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
 
   private final ProgressTask<T, V> task;
@@ -79,13 +79,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected T doInBackground() throws Exception {
-    SwingUtilities.invokeLater(onStarted);
-    try {
-      return task.perform(new TaskProgressReporter());
-    }
-    finally {
-      SwingUtilities.invokeLater(onFinished);
-    }
+    return task.perform(new TaskProgressReporter());
   }
 
   @Override
@@ -107,7 +101,16 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   }
 
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
-    if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
+    if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
+      final Object newValue = changeEvent.getNewValue();
+      if (StateValue.STARTED.equals(newValue)) {
+        onStarted.run();
+      }
+      else if (StateValue.DONE.equals(newValue)) {
+        onFinished.run();
+      }
+    }
+    else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
       onProgress.accept((Integer) changeEvent.getNewValue());
     }
   }

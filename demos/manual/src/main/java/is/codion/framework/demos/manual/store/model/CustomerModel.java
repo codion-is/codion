@@ -17,8 +17,11 @@ public class CustomerModel extends SwingEntityModel {
 
   // tag::bindEvents[]
   private void bindEvents() {
-    getTableModel().addRefreshStartedListener(() ->
-            System.out.println("Refresh is about to start"));
+    getTableModel().getRefreshingObserver().addDataListener(refreshing -> {
+      if (refreshing) {
+        System.out.println("Refresh is about to start");
+      }
+    });
 
     getEditModel().addValueListener(Customer.FIRST_NAME, valueChange ->
             System.out.println("Attribute " + valueChange.getAttribute() +
