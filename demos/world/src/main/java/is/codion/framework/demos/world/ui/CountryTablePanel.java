@@ -37,7 +37,7 @@ final class CountryTablePanel extends EntityTablePanel {
             .owner(this)
             .indeterminate(false)
             .stringPainted(true)
-            .onSuccess(this::viewReport)
+            .onResult(this::viewReport)
             .execute();
   }
 

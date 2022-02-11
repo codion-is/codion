@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * @param <V> the type of intermediate result this {@link ProgressWorker} produces.
  * @see ProgressWorker.ProgressTask#perform(ProgressWorker.ProgressReporter) to indicate work progress
  */
-public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>>{
+public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
 
   /**
    * @param indeterminate true if the progress bar should be indeterminate
@@ -57,22 +57,22 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
   ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
 
   /**
-   * @param onSuccess executed on the EDT after a successful run
+   * @param onResult executed on the EDT after a successful run
    * @return this Builder instance
    */
-  ProgressWorkerDialogBuilder<T, V> onSuccess(Runnable onSuccess);
+  ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult);
 
   /**
-   * @param onSuccess executed on the EDT after a successful run
+   * @param onResult executed on the EDT after a successful run
    * @return this Builder instance
    */
-  ProgressWorkerDialogBuilder<T, V> onSuccess(Consumer<T> onSuccess);
+  ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);
 
   /**
-   * @param successMessage if specified then this message is displayed after the task has successfully run
+   * @param resultMessage if specified then this message is displayed after the task has successfully run
    * @return this Builder instance
    */
-  ProgressWorkerDialogBuilder<T, V> successMessage(String successMessage);
+  ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage);
 
   /**
    * @param onException the exception handler
@@ -81,10 +81,10 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
   ProgressWorkerDialogBuilder<T, V> onException(Consumer<Throwable> onException);
 
   /**
-   * @param failTitle the title of the failure dialog
+   * @param exceptionTitle the title of the exception dialog
    * @return this Builder instance
    */
-  ProgressWorkerDialogBuilder<T, V> failTitle(String failTitle);
+  ProgressWorkerDialogBuilder<T, V> onException(String exceptionTitle);
 
   /**
    * Builds and executes a new {@link ProgressWorker} based on this builder

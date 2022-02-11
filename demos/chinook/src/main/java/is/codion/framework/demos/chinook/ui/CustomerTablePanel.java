@@ -43,7 +43,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
   private void viewCustomerReport() throws Exception {
     Dialogs.progressWorkerDialog(this::fillCustomerReport)
-            .onSuccess(this::viewReport)
+            .onResult(this::viewReport)
             .execute();
   }
 

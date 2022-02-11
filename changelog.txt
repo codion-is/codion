@@ -7734,3 +7734,4 @@
   EntityApplicationPanel.startApplication() bug fixed, did not ignore CancelException and didn't close dialog on exception
   DefaultProgressWorkerDialog, now closes dialog onResult as well, to prevent the above problem in EntityApplicationPanel.startApplication()
   EntityApplicationPanel.startApplication() rollback recent changes
+  ProgressWorkerDialogBuilder, now uses the same method names as ProgressWorker.Builder

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
@@ -25,7 +24,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   private final ProgressTask<T, V> progressTask;
   private final ProgressDialog.Builder progressDialogBuilder;
 
-  private Consumer<T> onSuccess;
+  private Consumer<T> onResult;
   private Consumer<Throwable> onException;
 
   DefaultProgressWorkerDialogBuilder(final ProgressTask<T, V> progressTask) {
@@ -70,23 +69,21 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onSuccess(final Runnable onSuccess) {
-    return onSuccess(result -> onSuccess.run());
+  public ProgressWorkerDialogBuilder<T, V> onResult(final Runnable onResult) {
+    return onResult(result -> onResult.run());
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onSuccess(final Consumer<T> onSuccess) {
-    this.onSuccess = onSuccess;
+  public ProgressWorkerDialogBuilder<T, V> onResult(final Consumer<T> onResult) {
+    this.onResult = onResult;
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> successMessage(final String successMessage) {
-    return onSuccess(result -> {
-      if (!nullOrEmpty(successMessage)) {
-        JOptionPane.showMessageDialog(owner, successMessage, null, JOptionPane.INFORMATION_MESSAGE);
-      }
-    });
+  public ProgressWorkerDialogBuilder<T, V> onResult(final String resultMessage) {
+    requireNonNull(resultMessage);
+
+    return onResult(result -> JOptionPane.showMessageDialog(owner, resultMessage, null, JOptionPane.INFORMATION_MESSAGE));
   }
 
   @Override
@@ -96,12 +93,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> failTitle(final String failTitle) {
+  public ProgressWorkerDialogBuilder<T, V> onException(final String exceptionTitle) {
     return onException(exception -> {
       if (!(exception instanceof CancelException)) {
         new DefaultExceptionDialogBuilder()
                 .owner(owner)
-                .title(failTitle)
+                .title(exceptionTitle)
                 .show(exception);
       }
     });
@@ -130,7 +127,9 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .onFinished(() -> closeDialog(progressDialog))
             .onResult((result) -> {
               closeDialog(progressDialog);
-              onSuccess.accept(result);
+              if (onResult != null) {
+                onResult.accept(result);
+              }
             })
             .onException(this::handleException)
             .build();

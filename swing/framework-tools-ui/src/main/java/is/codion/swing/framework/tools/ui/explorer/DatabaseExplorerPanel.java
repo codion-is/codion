@@ -100,7 +100,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .owner(this)
             .title("Populating")
             .northPanel(northPanel)
-            .onSuccess(model.getSchemaModel()::refresh)
+            .onResult(model.getSchemaModel()::refresh)
             .execute();
   }
 

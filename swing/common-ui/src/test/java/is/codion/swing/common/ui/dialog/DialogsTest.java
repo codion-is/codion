@@ -43,8 +43,8 @@ public final class DialogsTest {
             .icon(Logos.logoTransparent())
             .northPanel(new JPanel())
             .westPanel(new JPanel())
-            .failTitle("Fail")
-            .successMessage("Success")
+            .onException("Fail")
+            .onResult("Success")
             .stringPainted(true)
             .indeterminate(false)
             .build();
