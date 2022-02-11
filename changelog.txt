@@ -7728,3 +7728,4 @@
   AbstractTableSortModel no longer uses a lexical comparator for strings and non-comparables by default
   DefaultColumnConditionModel bug fixed, auto enable no longer disables when going between EQUAL and NOT_EQUAL if no value is specified
   ColumnConditionPanel bug fixed, no longer loses focus when changing operator
+  EntityApplicationPanel.startApplication() bug fixed, did not play well with the latest changes in ProgressWorker, frame went behind the foremost window after progress dialog was closed, only in Windows
