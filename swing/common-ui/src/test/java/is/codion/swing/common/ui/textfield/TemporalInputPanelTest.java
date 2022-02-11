@@ -8,10 +8,13 @@ import is.codion.swing.common.ui.Utilities;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,6 +63,13 @@ public class TemporalInputPanelTest {
   }
 
   @Test
+  void unsupportedType() {
+    final TemporalField<LocalTime> field = TemporalField.localTimeField("hh:MM");
+    final TemporalInputPanel<LocalTime> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    assertFalse(panel.getCalendarButton().isPresent());
+  }
+
+  @Test
   void constructorNullInputField() {
     assertThrows(NullPointerException.class, () -> new TemporalInputPanel<>(null, new DefaultCalendarProvider()));
   }
@@ -71,25 +81,25 @@ public class TemporalInputPanelTest {
     final TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     Utilities.linkToEnabledState(enabledState, inputPanel);
     assertFalse(field.isEnabled());
-    assertFalse(inputPanel.getCalendarButton().isEnabled());
+    final Optional<JButton> calendarButton = inputPanel.getCalendarButton();
+    assertTrue(calendarButton.isPresent());
+    assertFalse(calendarButton.get().isEnabled());
     enabledState.set(true);
     Thread.sleep(100);
-    assertTrue(field.isEnabled());
-    assertTrue(inputPanel.getCalendarButton().isEnabled());
+    assertTrue(calendarButton.get().isEnabled());
   }
 
   private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
 
     @Override
-    public Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
-                                            final LocalDate startDate) {
+    public <T extends Temporal> Optional<T> getTemporal(final Class<T> temporalClass, final JComponent dialogOwner,
+                                                        final T initialValue) {
       return Optional.empty();
     }
 
     @Override
-    public Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
-                                                    final LocalDateTime startDateTime) {
-      return Optional.empty();
+    public <T extends Temporal> boolean supports(final Class<T> temporalClass) {
+      return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
     }
   }
 }

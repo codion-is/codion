@@ -15,11 +15,8 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,8 +25,6 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the Temporal type supplied by this panel
  */
 public final class TemporalInputPanel<T extends Temporal> extends JPanel {
-
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalInputPanel.class.getName());
 
   private final TemporalField<T> inputField;
   private final CalendarProvider calendarProvider;
@@ -44,12 +39,17 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
     this.calendarProvider = requireNonNull(calendarProvider, "calendarProvider");
-    this.calendarButton = new JButton(Control.builder(this::displayCalendar)
-            .caption("...")
-            .build());
-    this.calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
     add(temporalField, BorderLayout.CENTER);
-    add(calendarButton, BorderLayout.EAST);
+    if (calendarProvider.supports(temporalField.getTemporalClass())) {
+      calendarButton = new JButton(Control.builder(this::displayCalendar)
+              .caption("...")
+              .build());
+      calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+      add(calendarButton, BorderLayout.EAST);
+    }
+    else {
+      calendarButton = null;
+    }
     addFocusListener(new InputFocusAdapter(temporalField));
   }
 
@@ -63,8 +63,8 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @return the calendar button
    */
-  public JButton getCalendarButton() {
-    return calendarButton;
+  public Optional<JButton> getCalendarButton() {
+    return Optional.ofNullable(calendarButton);
   }
 
   /**
@@ -102,11 +102,15 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
       TransferFocusOnEnter.enable(inputField);
-      TransferFocusOnEnter.enable(calendarButton);
+      if (calendarButton != null) {
+        TransferFocusOnEnter.enable(calendarButton);
+      }
     }
     else {
       TransferFocusOnEnter.disable(inputField);
-      TransferFocusOnEnter.disable(calendarButton);
+      if (calendarButton != null) {
+        TransferFocusOnEnter.disable(calendarButton);
+      }
     }
   }
 
@@ -114,7 +118,9 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   public void setEnabled(final boolean enabled) {
     super.setEnabled(enabled);
     inputField.setEnabled(enabled);
-    calendarButton.setEnabled(enabled);
+    if (calendarButton != null) {
+      calendarButton.setEnabled(enabled);
+    }
   }
 
   /**
@@ -126,53 +132,30 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
-   * Provides a calendar UI for retrieving a date from the user.
+   * Provides a calendar UI in a dialog for retrieving a date and/or time from the user.
    */
   public interface CalendarProvider {
 
     /**
-     * Retrieves a LocalDateTime from the user by displaying a calendar.
-     * @param dialogTitle the dialog title
+     * Retrieves a Temporal value from the user by displaying a calendar in a dialog.
      * @param dialogOwner the dialog owner
-     * @param startDate the start date
-     * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
+     * @param initialValue the initial, if null the current date/time is used
+     * @return a Temporal value from the user, {@link Optional#empty()} in case the user cancels
      */
-    Optional<LocalDate> getLocalDate(String dialogTitle, JComponent dialogOwner, LocalDate startDate);
+    <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner, T initialValue);
 
     /**
-     * Retrieves a LocalDateTime from the user by displaying a calendar.
-     * @param dialogTitle the dialog title
-     * @param dialogOwner the dialog owner
-     * @param startDateTime the starting date, if null the current date is used
-     * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
+     * @param temporalClass the temporal class
+     * @param <T> the temporal type
+     * @return true if this calendar provider supports the given type
      */
-    Optional<LocalDateTime> getLocalDateTime(String dialogTitle, JComponent dialogOwner, LocalDateTime startDateTime);
+    <T extends Temporal> boolean supports(Class<T> temporalClass);
   }
 
   private void displayCalendar() {
-    if (inputField.getTemporalClass().equals(LocalDate.class)) {
-      displayCalendarForLocalDate();
-    }
-    else if (inputField.getTemporalClass().equals(LocalDateTime.class)) {
-      displayCalendarForLocalDateTime();
-    }
-    else {
-      throw new IllegalStateException("Unsupported Temporal type: " + inputField.getTemporalClass());
-    }
-  }
-
-  private void displayCalendarForLocalDate() {
-    calendarProvider.getLocalDate(MESSAGES.getString("select_date"), inputField, (LocalDate) getTemporal())
-            .ifPresent(localDate -> {
-              inputField.setText(getInputField().getDateTimeFormatter().format(localDate));
-              inputField.requestFocusInWindow();
-            });
-  }
-
-  private void displayCalendarForLocalDateTime() {
-    calendarProvider.getLocalDateTime(MESSAGES.getString("select_date_time"), inputField, (LocalDateTime) getTemporal())
-            .ifPresent(localDateTime -> {
-              inputField.setText(getInputField().getDateTimeFormatter().format(localDateTime));
+    calendarProvider.getTemporal(inputField.getTemporalClass(), inputField, getTemporal())
+            .ifPresent(temporal -> {
+              inputField.setTemporal(temporal);
               inputField.requestFocusInWindow();
             });
   }

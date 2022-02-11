@@ -123,15 +123,21 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private static CalendarProvider calendarProvider() {
     return new CalendarProvider() {
       @Override
-      public Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
-                                              final LocalDate startDate) {
-        return CalendarPanel.getLocalDate(dialogTitle, dialogOwner, startDate);
+      public <T extends Temporal> Optional<T> getTemporal(final Class<T> temporalClass, final JComponent dialogOwner,
+                                                          final T initialValue) {
+        if (LocalDate.class.equals(temporalClass)) {
+          return (Optional<T>) CalendarPanel.getLocalDate(dialogOwner, (LocalDate) initialValue);
+        }
+        if (LocalDateTime.class.equals(temporalClass)) {
+          return (Optional<T>) CalendarPanel.getLocalDateTime(dialogOwner, (LocalDateTime) initialValue);
+        }
+
+        throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass);
       }
 
       @Override
-      public Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
-                                                      final LocalDateTime startDateTime) {
-        return CalendarPanel.getLocalDateTime(dialogTitle, dialogOwner, startDateTime);
+      public <T extends Temporal> boolean supports(final Class<T> temporalClass) {
+        return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
       }
     };
   }

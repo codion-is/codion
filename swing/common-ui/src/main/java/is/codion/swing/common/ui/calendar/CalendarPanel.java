@@ -205,22 +205,20 @@ public final class CalendarPanel extends JPanel {
 
   /**
    * Retrieves a LocalDate from the user.
-   * @param dialogTitle the dialog title
    * @param dialogOwner the dialog owner
    * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner) {
-    return getLocalDate(dialogTitle, dialogOwner, null);
+  public static Optional<LocalDate> getLocalDate(final JComponent dialogOwner) {
+    return getLocalDate(dialogOwner, null);
   }
 
   /**
    * Retrieves a LocalDate from the user.
-   * @param dialogTitle the dialog title
    * @param dialogOwner the dialog owner
    * @param startDate the starting date, if null the current date is used
    * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
+  public static Optional<LocalDate> getLocalDate(final JComponent dialogOwner,
                                                  final LocalDate startDate) {
     final CalendarPanel calendarPanel = dateCalendarPanel();
     if (startDate != null) {
@@ -230,7 +228,7 @@ public final class CalendarPanel extends JPanel {
     Dialogs.okCancelDialog(calendarPanel)
             .owner(dialogOwner)
             .locationRelativeTo(dialogOwner)
-            .title(dialogTitle)
+            .title(MESSAGES.getString("select_date"))
             .onOk(() -> okPressed.set(true))
             .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
             .show();
@@ -240,22 +238,20 @@ public final class CalendarPanel extends JPanel {
 
   /**
    * Retrieves a LocalDateTime from the user.
-   * @param dialogTitle the dialog title
    * @param dialogOwner the dialog owner
    * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner) {
-    return getLocalDateTime(dialogTitle, dialogOwner, null);
+  public static Optional<LocalDateTime> getLocalDateTime(final JComponent dialogOwner) {
+    return getLocalDateTime(dialogOwner, null);
   }
 
   /**
    * Retrieves a LocalDateTime from the user.
-   * @param dialogTitle the dialog title
    * @param dialogOwner the dialog owner
    * @param startDateTime the starting date, if null the current date is used
    * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
+  public static Optional<LocalDateTime> getLocalDateTime(final JComponent dialogOwner,
                                                          final LocalDateTime startDateTime) {
     final CalendarPanel calendarPanel = dateTimeCalendarPanel();
     if (startDateTime != null) {
@@ -265,7 +261,7 @@ public final class CalendarPanel extends JPanel {
     Dialogs.okCancelDialog(calendarPanel)
             .owner(dialogOwner)
             .locationRelativeTo(dialogOwner)
-            .title(dialogTitle)
+            .title(MESSAGES.getString("select_date_time"))
             .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
             .onOk(() -> okPressed.set(true))
             .show();
