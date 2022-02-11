@@ -19,6 +19,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Comparator;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -33,6 +34,9 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
+  private static final Comparator<?> LEXICAL_COMPARATOR = Text.getSpaceAwareCollator();
+  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
+  private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
   private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
   /**
@@ -124,6 +128,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
    * The rounding mode to use when working with decimal numbers
    */
   private RoundingMode decimalRoundingMode;
+
+  /**
+   * The comparator for this attribute
+   */
+  private Comparator<T> comparator;
 
   /**
    * The date/time format pattern
@@ -245,6 +254,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
+  public Comparator<T> getComparator() {
+    return comparator;
+  }
+
+  @Override
   public final int getMaximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
       return -1;
@@ -355,12 +369,32 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  private static class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
+  private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
 
     private static final long serialVersionUID = 1;
 
     private NullDefaultValueSupplier() {
       super(null);
+    }
+  }
+
+  private static final class DefaultComparator implements Comparator<Comparable<Object>>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
+      return o1.compareTo(o2);
+    }
+  }
+
+  private static final class ToStringComparator implements Comparator<Object>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public int compare(final Object o1, final Object o2) {
+      return o1.toString().compareTo(o2.toString());
     }
   }
 
@@ -371,6 +405,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     DefaultPropertyBuilder(final DefaultProperty<T> property) {
       this.property = property;
       property.format = initializeDefaultFormat(property.getAttribute());
+      property.comparator = initializeDefaultComparator(property.getAttribute());
       property.beanProperty = Text.underscoreToCamelCase(property.attribute.getName());
       property.captionResourceKey = property.attribute.getName();
       property.hidden = property.caption == null && resourceNotFound(property.attribute.getEntityType().getResourceBundleName(), property.captionResourceKey);
@@ -570,6 +605,12 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return (B) this;
     }
 
+    @Override
+    public B comparator(final Comparator<T> comparator) {
+      property.comparator = requireNonNull(comparator);
+      return (B) this;
+    }
+
     private static boolean resourceNotFound(final String resourceBundleName, final String captionResourceKey) {
       if (resourceBundleName == null) {
         return true;
@@ -623,6 +664,17 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       }
 
       return numberFormat;
+    }
+
+    private static <T> Comparator<T> initializeDefaultComparator(final Attribute<T> attribute) {
+      if (attribute.isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
+        return (Comparator<T>) LEXICAL_COMPARATOR;
+      }
+      if (Comparable.class.isAssignableFrom(attribute.getTypeClass())) {
+        return (Comparator<T>) COMPARABLE_COMPARATOR;
+      }
+
+      return (Comparator<T>) TO_STRING_COMPARATOR;
     }
   }
 }

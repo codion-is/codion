@@ -39,7 +39,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, At
       return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
     }
 
-    return super.initializeColumnComparator(attribute);
+    return entities.getDefinition(attribute.getEntityType()).getProperty(attribute).getComparator();
   }
 
   @Override
