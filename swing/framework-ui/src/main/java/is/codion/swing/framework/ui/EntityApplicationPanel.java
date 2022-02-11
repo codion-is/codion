@@ -28,6 +28,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
@@ -39,6 +40,7 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.dialog.ProgressDialog;
 import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -1207,17 +1209,32 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setVersionProperty();
     final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
     if (displayProgressDialog) {
-      Dialogs.progressWorkerDialog(applicationStarter)
-              .title(applicationName)
-              .icon(applicationIcon)
-              .westPanel(initializeStartupIconPanel(applicationIcon))
-              .onSuccess(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
-              .execute();
+      startWithProgressDialog(frameSize, maximizeFrame, displayFrame, includeMainMenu, applicationStarter);
     }
     else {
       applicationStarter.perform();
       applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu));
     }
+  }
+
+  private void startWithProgressDialog(final Dimension frameSize, final boolean maximizeFrame, final boolean displayFrame,
+                                       final boolean includeMainMenu, final ApplicationStarter applicationStarter) {
+    final ProgressDialog progressDialog = Dialogs.progressDialog()
+            .title(applicationName)
+            .icon(applicationIcon)
+            .build();
+
+    ProgressWorker.builder(applicationStarter)
+            .onStarted(() -> progressDialog.setVisible(true))
+            .onProgress(progressDialog::setProgress)
+            .onResult((Void) -> {
+              progressDialog.dispose();
+              applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu));
+            })
+            .onException(exception -> Dialogs.exceptionDialog()
+                    .message(Messages.get(Messages.ERROR))
+                    .show(exception))
+            .execute();
   }
 
   /**
@@ -1555,7 +1572,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private final class ApplicationStarter implements Control.Command {
+  private final class ApplicationStarter implements ProgressWorker.Task<Void> {
 
     private final EntityConnectionProvider connectionProvider;
 
@@ -1564,7 +1581,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     @Override
-    public void perform() {
+    public Void perform() {
       try {
         final long initializationStarted = System.currentTimeMillis();
         applicationModel = initializeApplicationModel(connectionProvider);
@@ -1575,6 +1592,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
         }
         LOG.info(getFrameTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+
+        return null;
       }
       catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
