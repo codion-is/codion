@@ -29,7 +29,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
   DefaultProgressWorkerDialogBuilder(final ProgressTask<T, V> progressTask) {
     this.progressTask = requireNonNull(progressTask);
-    this.progressDialogBuilder = new DefaultProgressDialogBuilder();
+    this.progressDialogBuilder = new ProgressDialog.DefaultProgressDialogBuilder();
   }
 
   @Override

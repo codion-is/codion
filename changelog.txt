@@ -7735,3 +7735,4 @@
   DefaultProgressWorkerDialog, now closes dialog onResult as well, to prevent the above problem in EntityApplicationPanel.startApplication()
   EntityApplicationPanel.startApplication() rollback recent changes
   ProgressWorkerDialogBuilder, now uses the same method names as ProgressWorker.Builder
+  Multiple constructor parameters replaced with a Builder instance where applicable

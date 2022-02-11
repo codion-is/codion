@@ -42,17 +42,15 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private final Consumer<Throwable> onException;
   private final Runnable onInterrupted;
 
-  private ProgressWorker(final ProgressTask<T, V> task, final Runnable onStarted, final Runnable onFinished,
-                         final Consumer<T> onResult, final Consumer<Integer> onProgress, final Consumer<List<V>> onPublish,
-                         final Consumer<Throwable> onException, final Runnable onInterrupted) {
-    this.task = requireNonNull(task);
-    this.onStarted = onStarted == null ? () -> {} : onStarted;
-    this.onFinished = onFinished == null ? () -> {} : onFinished;
-    this.onResult = onResult == null ? result -> {} : onResult;
-    this.onProgress = onProgress == null ? progress -> {} : onProgress;
-    this.onPublish = onPublish == null ? chunks -> {} : onPublish;
-    this.onException = onException == null ? ProgressWorker::handleException : onException;
-    this.onInterrupted = onInterrupted == null ? () -> Thread.currentThread().interrupt() : onInterrupted;
+  private ProgressWorker(final DefaultBuilder<T, V> builder) {
+    this.task = builder.task;
+    this.onStarted = builder.onStarted;
+    this.onFinished = builder.onFinished;
+    this.onResult = builder.onResult;
+    this.onProgress = builder.onProgress;
+    this.onPublish = builder.onPublish;
+    this.onException = builder.onException;
+    this.onInterrupted = builder.onInterrupted;
     addPropertyChangeListener(this::onPropertyChangeEvent);
   }
 
@@ -113,14 +111,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
       onProgress.accept((Integer) changeEvent.getNewValue());
     }
-  }
-
-  private static void handleException(final Throwable exception) {
-    if (exception instanceof RuntimeException) {
-      throw (RuntimeException) exception;
-    }
-
-    throw new RuntimeException(exception);
   }
 
   /**
@@ -245,13 +235,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     private final ProgressTask<T, V> task;
 
-    private Runnable onStarted;
-    private Runnable onFinished;
-    private Consumer<T> onResult;
-    private Consumer<Integer> onProgress;
-    private Consumer<List<V>> onPublish;
-    private Consumer<Throwable> onException;
-    private Runnable onInterrupted;
+    private Runnable onStarted = () -> {};
+    private Runnable onFinished = () -> {};
+    private Consumer<T> onResult = result -> {};
+    private Consumer<Integer> onProgress = progress -> {};
+    private Consumer<List<V>> onPublish = chunks -> {};
+    private Consumer<Throwable> onException = DefaultBuilder::handleException;
+    private Runnable onInterrupted = () -> Thread.currentThread().interrupt();
 
     private DefaultBuilder(final ProgressTask<T, V> task) {
       this.task = requireNonNull(task);
@@ -309,7 +299,15 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public ProgressWorker<T, V> build() {
-      return new ProgressWorker<>(task, onStarted, onFinished, onResult, onProgress, onPublish, onException, onInterrupted);
+      return new ProgressWorker<>(this);
+    }
+
+    private static void handleException(final Throwable exception) {
+      if (exception instanceof RuntimeException) {
+        throw (RuntimeException) exception;
+      }
+
+      throw new RuntimeException(exception);
     }
   }
 }

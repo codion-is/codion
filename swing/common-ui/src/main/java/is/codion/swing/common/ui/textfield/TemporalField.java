@@ -42,14 +42,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
 
-  private TemporalField(final Class<T> temporalClass, final String dateTimePattern, final DateTimeFormatter dateTimeFormatter,
-                        final DateTimeParser<T> dateTimeParser, final int focusLostBehaviour) {
-    super(initializeFormatter(dateTimePattern));
-    this.temporalClass = temporalClass;
-    this.dateTimePattern = dateTimePattern;
-    this.formatter = requireNonNull(dateTimeFormatter, "dateTimeFormatter");
-    this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
-    setFocusLostBehavior(focusLostBehaviour);
+  private TemporalField(final DefaultBuilder<T> builder) {
+    super(initializeFormatter(builder.dateTimePattern));
+    this.temporalClass = builder.temporalClass;
+    this.dateTimePattern = builder.dateTimePattern;
+    this.formatter = requireNonNull(builder.dateTimeFormatter, "dateTimeFormatter");
+    this.dateTimeParser = requireNonNull(builder.dateTimeParser, "dateTimeParser");
+    setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
   }
 
@@ -284,8 +283,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
         throw new IllegalStateException("dateTimeParser must be specified");
       }
 
-      final TemporalField<T> temporalField = new TemporalField<>(temporalClass, dateTimePattern,
-              dateTimeFormatter, dateTimeParser, focusLostBehaviour);
+      final TemporalField<T> temporalField = new TemporalField<>(this);
       temporalField.setTemporal(initialValue);
 
       return temporalField;

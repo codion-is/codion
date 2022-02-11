@@ -42,18 +42,15 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final boolean displayConditionState;
   private final Border border;
 
-  private DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property,
-                                         final Format format, final DateTimeFormatter dateTimeFormatter,
-                                         final int horizontalAlignment, final boolean toolTipData,
-                                         final boolean displayConditionState, final Border border) {
-    this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.property = requireNonNull(property, "property");
-    this.format = format == null ? property.getFormat() : format;
-    this.dateTimeFormatter = dateTimeFormatter;
-    this.toolTipData = toolTipData;
-    this.displayConditionState = displayConditionState;
+  private DefaultEntityTableCellRenderer(final DefaultBuilder builder, final Border border) {
+    this.tableModel = requireNonNull(builder.tableModel, "tableModel");
+    this.property = requireNonNull(builder.property, "property");
+    this.format = builder.format == null ? property.getFormat() : builder.format;
+    this.dateTimeFormatter = builder.dateTimeFormatter;
+    this.toolTipData = builder.toolTipData;
+    this.displayConditionState = builder.displayConditionState;
     this.border = border;
-    setHorizontalAlignment(horizontalAlignment);
+    setHorizontalAlignment(builder.horizontalAlignment);
   }
 
   @Override
@@ -126,14 +123,13 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private final boolean displayConditionState;
     private final Border border;
 
-    private BooleanRenderer(final SwingEntityTableModel tableModel, final Property<?> property, final int horizontalAlignment,
-                            final boolean displayConditionState, final Border border) {
+    private BooleanRenderer(final DefaultBuilder builder, final Border border) {
       super(new NullableToggleButtonModel());
-      this.tableModel = tableModel;
-      this.property = property;
-      this.displayConditionState = displayConditionState;
+      this.tableModel = requireNonNull(builder.tableModel, "tableModel");
+      this.property = requireNonNull(builder.property, "property");
+      this.displayConditionState = builder.displayConditionState;
       this.border = border;
-      setHorizontalAlignment(horizontalAlignment);
+      setHorizontalAlignment(builder.horizontalAlignment);
       setBorderPainted(true);
     }
 
@@ -311,12 +307,10 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     public EntityTableCellRenderer build() {
       final Border border = leftPadding > 0 || rightPadding > 0 ? BorderFactory.createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return new DefaultEntityTableCellRenderer.BooleanRenderer(tableModel, property, horizontalAlignment,
-                displayConditionState, border);
+        return new DefaultEntityTableCellRenderer.BooleanRenderer(this, border);
       }
 
-      return new DefaultEntityTableCellRenderer(tableModel, property, format, dateTimeFormatter, horizontalAlignment,
-              toolTipData, displayConditionState, border);
+      return new DefaultEntityTableCellRenderer(this, border);
     }
 
     private static int getDefaultHorizontalAlignment(final Property<?> property) {

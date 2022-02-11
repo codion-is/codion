@@ -39,14 +39,13 @@ public final class TextInputPanel extends JPanel {
   private final Dimension textAreaSize;
   private final int maximumLength;
 
-  private TextInputPanel(final JTextField textField, final String dialogTitle, final String caption,
-                         final Dimension textAreaSize, final boolean buttonFocusable, final int maximumLength) {
-    this.dialogTitle = dialogTitle;
-    this.textField = textField;
-    this.textAreaSize = textAreaSize;
-    this.button = createButton(buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
-    this.caption = caption;
-    this.maximumLength = maximumLength;
+  private TextInputPanel(final DefaultBuilder builder) {
+    this.dialogTitle = builder.dialogTitle;
+    this.textField = builder.textField;
+    this.textAreaSize = builder.textAreaSize;
+    this.button = createButton(builder.buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    this.caption = builder.caption;
+    this.maximumLength = builder.maximumLength;
     initializeUI();
   }
 
@@ -262,7 +261,7 @@ public final class TextInputPanel extends JPanel {
 
     @Override
     public TextInputPanel build() {
-      return new TextInputPanel(textField, dialogTitle, caption, textAreaSize, buttonFocusable, maximumLength);
+      return new TextInputPanel(this);
     }
   }
 
