@@ -31,7 +31,7 @@ final class ChartPanels {
     return new ChartPanel(chart);
   }
 
-  private static void linkColors(final JComponent parent, final JFreeChart chart) {
+  private static void linkColors(JComponent parent, JFreeChart chart) {
     chart.setBackgroundPaint(parent.getBackground());
     chart.getPlot().setBackgroundPaint(parent.getBackground());
     parent.addPropertyChangeListener("background", evt -> {

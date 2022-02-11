@@ -17,8 +17,8 @@ abstract class ChartTablePanel extends EntityTablePanel {
 
   private final ChartPanel chartPanel;
 
-  protected ChartTablePanel(final SwingEntityTableModel tableModel, final PieDataset<String> chartDataset,
-                            final String chartTitle) {
+  protected ChartTablePanel(SwingEntityTableModel tableModel, PieDataset<String> chartDataset,
+                            String chartTitle) {
     super(tableModel);
     chartPanel = createPieChartPanel(this, chartDataset, chartTitle);
   }
