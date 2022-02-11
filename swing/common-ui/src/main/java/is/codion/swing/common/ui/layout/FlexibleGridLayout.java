@@ -24,11 +24,10 @@ public final class FlexibleGridLayout extends GridLayout {
   private int fixedColumnWidth;
   private int fixedRowHeight;
 
-  private FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap,
-                             final boolean fixRowHeights, final boolean fixColumnWidths) {
-    super(rows, cols, hgap, vgap);
-    this.fixedRowHeights = fixRowHeights;
-    this.fixedColumnWidths = fixColumnWidths;
+  private FlexibleGridLayout(final DefaultBuilder builder) {
+    super(builder.rows, builder.columns, builder.horizontalGap, builder.verticalGap);
+    this.fixedRowHeights = builder.fixRowHeights;
+    this.fixedColumnWidths = builder.fixColumnWidths;
   }
 
   /**
@@ -343,7 +342,7 @@ public final class FlexibleGridLayout extends GridLayout {
 
     @Override
     public FlexibleGridLayout build() {
-      final FlexibleGridLayout layout = new FlexibleGridLayout(rows, columns, horizontalGap, verticalGap, fixRowHeights, fixColumnWidths);
+      final FlexibleGridLayout layout = new FlexibleGridLayout(this);
       if (fixedRowHeight > 0) {
         layout.setFixedRowHeight(fixedRowHeight);
       }

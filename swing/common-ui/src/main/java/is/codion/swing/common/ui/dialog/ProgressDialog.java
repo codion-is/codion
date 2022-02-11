@@ -7,7 +7,6 @@ import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -27,17 +26,15 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  ProgressDialog(final Window dialogOwner, final String title, final ImageIcon icon,
-                 final boolean indeterminate, final boolean stringPainted, final JPanel northPanel,
-                 final JPanel westPanel, final Controls controls, final Dimension progressBarSize) {
+  ProgressDialog(final DefaultProgressDialogBuilder builder, final Window dialogOwner) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
-    setTitle(title);
-    if (icon != null) {
-      setIconImage(icon.getImage());
+    setTitle(builder.title);
+    if (builder.icon != null) {
+      setIconImage(builder.icon.getImage());
     }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = initializeProgressBar(indeterminate, stringPainted, progressBarSize);
-    initializeUI(northPanel, westPanel, controls);
+    progressBar = initializeProgressBar(builder.indeterminate, builder.stringPainted, builder.progressBarSize);
+    initializeUI(builder.northPanel, builder.westPanel, builder.controls);
     setLocationRelativeTo(dialogOwner);
   }
 
@@ -145,5 +142,56 @@ public final class ProgressDialog extends JDialog {
      * @return a new ProgressDialog
      */
     ProgressDialog build();
+  }
+
+  static class DefaultProgressDialogBuilder extends AbstractDialogBuilder<Builder> implements Builder {
+
+    private boolean indeterminate = true;
+    private boolean stringPainted = false;
+    private JPanel northPanel;
+    private JPanel westPanel;
+    private Controls controls;
+    private Dimension progressBarSize;
+
+    @Override
+    public Builder indeterminate(final boolean indeterminate) {
+      this.indeterminate = indeterminate;
+      return this;
+    }
+
+    @Override
+    public Builder stringPainted(final boolean stringPainted) {
+      this.stringPainted = stringPainted;
+      return this;
+    }
+
+    @Override
+    public Builder northPanel(final JPanel northPanel) {
+      this.northPanel = northPanel;
+      return this;
+    }
+
+    @Override
+    public Builder westPanel(final JPanel westPanel) {
+      this.westPanel = westPanel;
+      return this;
+    }
+
+    @Override
+    public Builder controls(final Controls controls) {
+      this.controls = controls;
+      return this;
+    }
+
+    @Override
+    public Builder progressBarSize(final Dimension progressBarSize) {
+      this.progressBarSize = progressBarSize;
+      return this;
+    }
+
+    @Override
+    public ProgressDialog build() {
+      return new ProgressDialog(this, owner);
+    }
   }
 }

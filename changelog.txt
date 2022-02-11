@@ -7766,3 +7766,7 @@
   FilteredTable i18n resource keys fixed
   TemporalInputPanel.CalendarProvider.supportsType() added, getLocalDate() and getLocalDateTime() replaced with getTemporal()
   EntityApplicationPanel.startApplication() bug fixed, did not ignore CancelException and didn't close dialog on exception
+  DefaultProgressWorkerDialog, now closes dialog onResult as well, to prevent the above problem in EntityApplicationPanel.startApplication()
+  EntityApplicationPanel.startApplication() rollback recent changes
+  ProgressWorkerDialogBuilder, now uses the same method names as ProgressWorker.Builder
+  Multiple constructor parameters replaced with a Builder instance where applicable
