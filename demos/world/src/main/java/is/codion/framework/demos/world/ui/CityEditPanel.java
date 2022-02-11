@@ -73,7 +73,7 @@ public final class CityEditPanel extends EntityEditPanel {
     add(inputBasePanel, BorderLayout.CENTER);
   }
 
-  private static JXMapKit initializeMapKit(final CityTableModel tableModel) {
+  private static JXMapKit initializeMapKit(CityTableModel tableModel) {
     JXMapKit mapKit = new JXMapKit();
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
     mapKit.setMiniMapVisible(false);
@@ -82,18 +82,18 @@ public final class CityEditPanel extends EntityEditPanel {
     mapKit.getMainMap().setZoom(MAX_ZOOM);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
 
-    tableModel.addDisplayLocationListener(new LocationListener(mapKit.getMainMap()));
+    tableModel.addDisplayLocationListener(new DisplayLocationListener(mapKit.getMainMap()));
 
     return mapKit;
   }
 
-  private static final class LocationListener implements EventDataListener<Collection<Entity>> {
+  private static final class DisplayLocationListener implements EventDataListener<Collection<Entity>> {
 
     private static final int SINGLE_WAYPOINT_ZOOM_LEVEL = 15;
 
     private final JXMapViewer mapViewer;
 
-    private LocationListener(JXMapViewer mapViewer) {
+    private DisplayLocationListener(JXMapViewer mapViewer) {
       this.mapViewer = mapViewer;
     }
 
@@ -111,7 +111,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
     private void paintWaypoints(Set<Location> positions) {
       Set<GeoPosition> geoPositions = positions.stream()
-              .map(LocationListener::toGeoPosition)
+              .map(DisplayLocationListener::toGeoPosition)
               .collect(toSet());
       WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
       overlayPainter.setWaypoints(geoPositions.stream()
@@ -132,7 +132,7 @@ public final class CityEditPanel extends EntityEditPanel {
       }
     }
 
-    private static GeoPosition toGeoPosition(final Location location) {
+    private static GeoPosition toGeoPosition(Location location) {
       return new GeoPosition(location.latitude(), location.longitude());
     }
   }
