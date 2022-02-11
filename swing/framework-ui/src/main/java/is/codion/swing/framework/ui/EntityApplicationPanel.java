@@ -1227,13 +1227,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     ProgressWorker.builder(applicationStarter)
             .onStarted(() -> progressDialog.setVisible(true))
             .onProgress(progressDialog::setProgress)
+            .onFinished(progressDialog::dispose)
             .onResult((Void) -> {
               progressDialog.dispose();
               applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu));
             })
-            .onException(exception -> Dialogs.exceptionDialog()
-                    .message(Messages.get(Messages.ERROR))
-                    .show(exception))
+            .onException(exception -> {
+              if (!(exception instanceof CancelException)) {
+                Dialogs.exceptionDialog()
+                        .message(Messages.get(Messages.ERROR))
+                        .show(exception);
+              }
+            })
             .execute();
   }
 
