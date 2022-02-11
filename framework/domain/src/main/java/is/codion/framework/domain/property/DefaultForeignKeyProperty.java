@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -128,6 +129,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
       foreignKeyProperty.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributes));
 
       return this;
+    }
+
+    @Override
+    public ForeignKeyProperty.Builder comparator(final Comparator<Entity> comparator) {
+      throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
     }
   }
 }

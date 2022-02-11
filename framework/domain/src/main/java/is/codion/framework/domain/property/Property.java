@@ -14,6 +14,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.function.Supplier;
 
 /**
@@ -102,6 +103,13 @@ public interface Property<T> {
    * Default value: %
    */
   PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("codion.wildcardCharacter", "%");
+
+  /**
+   * Specifies whether String values should use a lexical comparator by default<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = Configuration.booleanValue("codion.domain.useLexicalStringComparator", true);
 
   /**
    * The {@link Attribute} this property is based on, should be unique within an Entity.
@@ -229,6 +237,11 @@ public interface Property<T> {
    * @return the DateTimeFormatter for this property or null if this is not a date/time based property
    */
   DateTimeFormatter getDateTimeFormatter();
+
+  /**
+   * @return the Comparator to use when comparing values for this attribute
+   */
+  Comparator<T> getComparator();
 
   /**
    * Supplies values, for example default ones.
@@ -377,6 +390,12 @@ public interface Property<T> {
      * @return this instance
      */
     B description(String description);
+
+    /**
+     * @param comparator the Comparator to use when comparing values for this attribute
+     * @return this instance
+     */
+    B comparator(Comparator<T> comparator);
 
     /**
      * Sets the Format to use when presenting property values

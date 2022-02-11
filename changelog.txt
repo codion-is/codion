@@ -7723,3 +7723,6 @@
   SwingEntityEditModel, adding combo boxes to refreshObserver moved out of overridable methods
   EntityEditModel.addAfterRefreshListener() renamed addRefreshListener()
   FilteredTable, captions for column selection and reset shortened
+  Property.getComparator() added, used in SwingEntityTableModel, ForeignKeyProperty overrides and throws UnsupportedOperationException
+  Property.USE_LEXICAL_STRING_COMPARATOR configuration value added
+  AbstractTableSortModel no longer uses a lexical comparator for strings and non-comparables by default

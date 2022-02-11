@@ -843,4 +843,15 @@ public class DomainTest {
     //entity type name clash
     assertThrows(IllegalArgumentException.class, TestDomainExtended.TestDomainThirdExtension::new);
   }
+
+  @Test
+  void foreignKeyComparator() {
+    final EntityType ref = DOMAIN.entityType("fkCompRef");
+    final Attribute<Integer> id = ref.integerAttribute("id");
+
+    final EntityType entityType = DOMAIN.entityType("fkComp");
+    final Attribute<Integer> ref_id = entityType.integerAttribute("ref_id");
+    final ForeignKey foreignKey = entityType.foreignKey("fk", ref_id, id);
+    assertThrows(UnsupportedOperationException.class, () -> Properties.foreignKeyProperty(foreignKey).comparator((o1, o2) -> 0));
+  }
 }

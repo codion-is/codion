@@ -5,6 +5,7 @@
  * {@link is.codion.framework.domain.property.Property#NUMBER_FORMAT_GROUPING}<br>
  * {@link is.codion.framework.domain.property.Property#GROUPING_SEPARATOR}<br>
  * {@link is.codion.framework.domain.property.Property#DECIMAL_SEPARATOR}<br>
+ * {@link is.codion.framework.domain.property.Property#USE_LEXICAL_STRING_COMPARATOR}<br>
  * {@link is.codion.framework.domain.property.Property#DATE_TIME_FORMAT}<br>
  * {@link is.codion.framework.domain.property.Property#DATE_FORMAT}<br>
  * {@link is.codion.framework.domain.property.Property#FOREIGN_KEY_FETCH_DEPTH}<br>

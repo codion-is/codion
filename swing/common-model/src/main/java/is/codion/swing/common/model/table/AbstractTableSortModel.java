@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.table;
 
-import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 
@@ -25,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
-  private static final Comparator<?> LEXICAL_COMPARATOR = Text.getSpaceAwareCollator();
+  private static final Comparator<?> TO_STRING_COMPARATOR = new ToStringComparator();
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
@@ -112,14 +111,11 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    */
   protected Comparator<?> initializeColumnComparator(final C columnIdentifier) {
     final Class<?> columnClass = getColumnClass(columnIdentifier);
-    if (columnClass.equals(String.class)) {
-      return LEXICAL_COMPARATOR;
-    }
     if (Comparable.class.isAssignableFrom(columnClass)) {
       return COMPARABLE_COMPARATOR;
     }
 
-    return LEXICAL_COMPARATOR;
+    return TO_STRING_COMPARATOR;
   }
 
   private void setSortOrder(final C columnIdentifier, final SortOrder sortOrder, final boolean addColumnToSort) {
@@ -201,6 +197,13 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       }
 
       return 0;
+    }
+  }
+
+  private static final class ToStringComparator implements Comparator<Object> {
+    @Override
+    public int compare(final Object o1, final Object o2) {
+      return o1.toString().compareTo(o2.toString());
     }
   }
 
