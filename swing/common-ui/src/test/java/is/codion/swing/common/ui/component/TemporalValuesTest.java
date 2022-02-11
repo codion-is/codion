@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -205,15 +206,14 @@ public class TemporalValuesTest {
   private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
 
     @Override
-    public Optional<LocalDate> getLocalDate(final String dialogTitle, final JComponent dialogOwner,
-                                            final LocalDate startDate) {
+    public <T extends Temporal> Optional<T> getTemporal(final Class<T> temporalClass, final JComponent dialogOwner,
+                                                        final T initialValue) {
       return Optional.empty();
     }
 
     @Override
-    public Optional<LocalDateTime> getLocalDateTime(final String dialogTitle, final JComponent dialogOwner,
-                                                    final LocalDateTime startDateTime) {
-      return Optional.empty();
+    public <T extends Temporal> boolean supports(final Class<T> temporalClass) {
+      return false;
     }
   }
 }
