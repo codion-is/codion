@@ -84,6 +84,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedConditionState = State.state();
+  private final Value<Boolean> singleValuePanelValue = Value.value();
 
   private JDialog dialog;
 
@@ -530,15 +531,23 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void singleValuePanel(final JComponent boundField) {
-    inputPanel.removeAll();
-    inputPanel.add(boundField, BorderLayout.CENTER);
+    if (singleValuePanelValue.isNull() || !singleValuePanelValue.get()) {
+      inputPanel.removeAll();
+      inputPanel.add(boundField, BorderLayout.CENTER);
+      singleValuePanelValue.set(true);
+      boundField.requestFocusInWindow();
+    }
   }
 
   private void rangePanel(final JComponent lowerBoundField, final JComponent upperBoundField) {
-    inputPanel.removeAll();
-    inputPanel.add(Components.panel(new GridLayout(1, 2))
-            .add(lowerBoundField, upperBoundField)
-            .build(), BorderLayout.CENTER);
+    if (singleValuePanelValue.isNull() || singleValuePanelValue.get()) {
+      inputPanel.removeAll();
+      inputPanel.add(Components.panel(new GridLayout(1, 2))
+              .add(lowerBoundField, upperBoundField)
+              .build(), BorderLayout.CENTER);
+      singleValuePanelValue.set(false);
+      lowerBoundField.requestFocusInWindow();
+    }
   }
 
   private final class OperatorBoxPopupWidthListener extends ComponentAdapter {
