@@ -138,8 +138,10 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     /**
      * Retrieves a Temporal value from the user by displaying a calendar in a dialog.
+     * @param temporalClass the temporal class
      * @param dialogOwner the dialog owner
      * @param initialValue the initial, if null the current date/time is used
+     * @param <T> the temporal type
      * @return a Temporal value from the user, {@link Optional#empty()} in case the user cancels
      */
     <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner, T initialValue);
