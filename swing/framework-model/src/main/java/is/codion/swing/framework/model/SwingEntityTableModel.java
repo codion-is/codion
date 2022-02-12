@@ -171,6 +171,19 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   /**
    * Instantiates a new DefaultEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the db provider
+   * @param sortModel the sort model
+   * @param tableConditionModel the table condition model
+   */
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
+                               final TableSortModel<Entity, Attribute<?>> sortModel,
+                               final EntityTableConditionModel tableConditionModel) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), sortModel, tableConditionModel);
+  }
+
+  /**
+   * Instantiates a new DefaultEntityTableModel.
    * @param editModel the edit model
    * @param sortModel the sort model
    */
