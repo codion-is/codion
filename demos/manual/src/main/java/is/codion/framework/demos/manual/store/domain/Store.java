@@ -79,14 +79,19 @@ public final class Store extends DefaultDomain {
     define(Customer.TYPE,
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.FIRST_NAME, "First name")
-                    .nullable(false).maximumLength(40),
+                    .nullable(false)
+                    .maximumLength(40),
             columnProperty(Customer.LAST_NAME, "Last name")
-                    .nullable(false).maximumLength(40),
+                    .nullable(false)
+                    .maximumLength(40),
             columnProperty(Customer.EMAIL, "Email"),
             columnProperty(Customer.IS_ACTIVE, "Is active")
-                    .columnHasDefaultValue().defaultValue(true))
+                    .columnHasDefaultValue()
+                    .defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
+            // tag::customerStringFactory[]
             .stringFactory(new CustomerToString())
+            // end::customerStringFactory[]
             .caption("Customer");
     // end::customer[]
   }
@@ -96,11 +101,14 @@ public final class Store extends DefaultDomain {
     define(Address.TYPE,
             primaryKeyProperty(Address.ID),
             columnProperty(Address.STREET, "Street")
-                    .nullable(false).maximumLength(120),
+                    .nullable(false)
+                    .maximumLength(120),
             columnProperty(Address.CITY, "City")
-                    .nullable(false).maximumLength(50),
+                    .nullable(false)
+                    .maximumLength(50),
             columnProperty(Address.VALID, "Valid")
-                    .columnHasDefaultValue().nullable(false))
+                    .columnHasDefaultValue()
+                    .nullable(false))
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))
             .keyGenerator(identity())
