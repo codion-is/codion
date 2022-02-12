@@ -7770,3 +7770,4 @@
   EntityApplicationPanel.startApplication() rollback recent changes
   ProgressWorkerDialogBuilder, now uses the same method names as ProgressWorker.Builder
   Multiple constructor parameters replaced with a Builder instance where applicable
+  SwingEntityTableModel, one additional constructor overload added
