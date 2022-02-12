@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.textfield.TextFields;
 import javax.swing.Action;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -23,6 +24,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private final Class<T> valueClass;
 
   private Action action;
+  private ActionListener actionListener;
   private boolean selectAllOnFocusGained;
   private Supplier<Collection<T>> valueSupplier;
   private Format format;
@@ -37,6 +39,13 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   @Override
   public final B action(final Action action) {
     this.action = requireNonNull(action);
+
+    return transferFocusOnEnter(false);
+  }
+
+  @Override
+  public final B actionListener(final ActionListener actionListener) {
+    this.actionListener = actionListener;
 
     return transferFocusOnEnter(false);
   }
@@ -76,6 +85,9 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
     if (action != null) {
       textField.setAction(action);
+    }
+    if (actionListener != null) {
+      textField.addActionListener(actionListener);
     }
     if (selectAllOnFocusGained) {
       TextFields.selectAllOnFocusGained(textField);

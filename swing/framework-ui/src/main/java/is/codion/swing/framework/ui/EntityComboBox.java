@@ -10,13 +10,14 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -36,9 +37,8 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * Instantiates a new EntityComboBox
    * @param model the SwingEntityComboBoxModel
    */
-  public EntityComboBox(final SwingEntityComboBoxModel model) {
+  EntityComboBox(final SwingEntityComboBoxModel model) {
     super(model);
-    setComponentPopupMenu(initializePopupMenu());
   }
 
   @Override
@@ -63,7 +63,9 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return an EntityComboBox for filtering this combo box
    */
   public EntityComboBox createForeignKeyFilterComboBox(final ForeignKey foreignKey) {
-    return Completion.maximumMatch(new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey))));
+    return builder(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey)))
+            .completionMode(Completion.Mode.MAXIMUM_MATCH)
+            .build();
   }
 
   /**
@@ -122,13 +124,14 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
             .build();
   }
 
-  private JPopupMenu initializePopupMenu() {
-    final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(Control.builder(((EntityComboBoxModel) getModel())::forceRefresh)
-            .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
-            .build());
-
-    return popupMenu;
+  /**
+   * Instantiates a new {@link EntityComboBox} builder
+   * @param comboBoxModel the combo box model
+   * @param <B> the builder type
+   * @return a builder for a {@link EntityComboBox}
+   */
+  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(final SwingEntityComboBoxModel comboBoxModel) {
+    return new DefaultBuilder<>(comboBoxModel);
   }
 
   private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
@@ -140,5 +143,20 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
               .onOk(() -> getModel().setForeignKeyFilterEntities(foreignKey, current))
               .show();
     };
+  }
+
+  private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
+
+    private DefaultBuilder(final SwingEntityComboBoxModel comboBoxModel) {
+      super(comboBoxModel, null);
+      popupMenuControl(Control.builder(comboBoxModel::forceRefresh)
+              .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
+              .build());
+    }
+
+    @Override
+    protected EntityComboBox createComboBox() {
+      return new EntityComboBox((SwingEntityComboBoxModel) comboBoxModel);
+    }
   }
 }

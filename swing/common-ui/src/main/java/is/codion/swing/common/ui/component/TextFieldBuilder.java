@@ -8,6 +8,7 @@ import is.codion.common.value.PropertyValue;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -34,6 +35,13 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @return this builder instance
    */
   B action(Action action);
+
+  /**
+   * Note that this disables {@link #transferFocusOnEnter(boolean)}.
+   * @param actionListener the action listener
+   * @return this builder instance
+   */
+  B actionListener(ActionListener actionListener);
 
   /**
    * Makes the text field select all when it gains focus

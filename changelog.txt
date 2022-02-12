@@ -7737,3 +7737,5 @@
   ProgressWorkerDialogBuilder, now uses the same method names as ProgressWorker.Builder
   Multiple constructor parameters replaced with a Builder instance where applicable
   SwingEntityTableModel, one additional constructor overload added
+  TextFieldBuilder.actionListener() added
+  EntityComboBox.builder() added, replaces public constructor
