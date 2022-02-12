@@ -33,7 +33,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
   protected DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
-    this.comboBoxModel = comboBoxModel;
+    this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(getPreferredTextFieldHeight());
   }
 

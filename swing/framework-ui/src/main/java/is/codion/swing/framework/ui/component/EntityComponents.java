@@ -118,7 +118,7 @@ public class EntityComponents {
                                                                                                                                     final SwingEntityComboBoxModel comboBoxModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return (ComboBoxBuilder<Entity, EntityComboBox, B>) new DefaultForeignKeyComboBoxBuilder<>(comboBoxModel)
+    return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)
             .toolTipText(foreignKeyProperty.getDescription());
   }
 

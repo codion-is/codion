@@ -13,15 +13,14 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.swing.common.ui.Sizes;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.component.ComponentValues;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -41,118 +40,117 @@ public final class ClientUI {
     // create a EditModel based on the artist entity
     SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-    // create a field for entering an artist name
-    JTextField nameField = new JTextField(10);
-
     // create a String Value based on the artist name in the edit model
-    Value<String> editModelNameValue = editModel.value(Artist.NAME);
+    Value<String> artistNameEditModelValue = editModel.value(Artist.NAME);
 
-    // create a String Value based on the text field
-    Value<String> textFieldNameValue = ComponentValues.textComponent(nameField);
+    // create a textfield value for entering an artist name
+    ComponentValue<String, JTextField> artistNameTextFieldValue =
+            Components.textField()
+                    .columns(10)
+                    // link the text field to the edit model value
+                    .linkedValue(artistNameEditModelValue)
+                    // add an insert action to the text field
+                    // so that we can insert by pressing Enter
+                    .action(Control.actionControl(actionEvent -> {
+                      try {
+                        // insert the entity
+                        editModel.insert();
 
-    // link the two values
-    textFieldNameValue.link(editModelNameValue);
-
-    // add an insert action to the name field
-    // so that we can insert by pressing Enter
-    nameField.addActionListener(Control.control(() -> {
-      try {
-        // insert the entity
-        editModel.insert();
-
-        // clear the edit model after a successful insert
-        editModel.setDefaultValues();
-      }
-      catch (DatabaseException | ValidationException e) {
-        JOptionPane.showMessageDialog(nameField, e.getMessage(),
-                "Insert error", JOptionPane.ERROR_MESSAGE);
-      }
-    }));
+                        // clear the edit model after a successful insert
+                        editModel.setDefaultValues();
+                      }
+                      catch (DatabaseException | ValidationException e) {
+                        JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
+                                e.getMessage(), "Insert error", JOptionPane.ERROR_MESSAGE);
+                      }
+                    }))
+                    .buildComponentValue();
 
     // show a message after insert
     editModel.addAfterInsertListener(insertedEntities ->
-            JOptionPane.showMessageDialog(nameField,
+            JOptionPane.showMessageDialog(artistNameTextFieldValue.getComponent(),
                     "Inserted: " + insertedEntities.get(0)));
 
-    JPanel artistPanel = new JPanel(gridLayout(2, 1));
-    artistPanel.add(new JLabel("Artist name"));
-    artistPanel.add(nameField);
+    JPanel artistPanel = Components.panel(gridLayout(2, 1))
+            .add(new JLabel("Artist name"))
+            .add(artistNameTextFieldValue.getComponent())
+            .border(BorderFactory.createEmptyBorder(10, 10, 10, 10))
+            .build();
 
-    // uncomment the below line to display the panel
-//    Dialogs.displayInDialog(null, artistPanel, "Artist");
+    // uncomment the below lines to display the panel
+//    Dialogs.componentDialog(artistPanel)
+//            .title("Artist")
+//            .show();
   }
 
   static void albumPanel(final EntityConnectionProvider connectionProvider) {
     // create a EditModel based on the album entity
     SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connectionProvider);
 
-    // create a combobox for selecting the album artist
-    // based on a combobox model supplied by the edit model
-    final SwingEntityComboBoxModel artistComboBoxModel = editModel.getForeignKeyComboBoxModel(Album.ARTIST_FK);
-    EntityComboBox artistComboBox = new EntityComboBox(artistComboBoxModel);
-
-    // limit the combo box width, due to long artist names
-    Sizes.setPreferredWidth(artistComboBox, 240);
-
-    // move focus with Enter key
-    TransferFocusOnEnter.enable(artistComboBox);
-
-    // populate the combo box model
-    artistComboBoxModel.refresh();
-
-    // create an Entity Value based on the album artist in the edit model
+    // create an Entity value based on the album artist in the edit model
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
 
-    // create an Entity Value based on the combobox
-    Value<Entity> comboBoxArtistValue = ComponentValues.comboBox(artistComboBox);
+    SwingEntityComboBoxModel artistComboBoxModel = editModel.getForeignKeyComboBoxModel(Album.ARTIST_FK);
 
-    // link the two values
-    comboBoxArtistValue.link(editModelArtistValue);
-
-    // create a field for entering an album title
-    JTextField titleField = new JTextField(10);
+    // create a combobox value for selecting the album artist
+    // based on a combobox model supplied by the edit model
+    ComponentValue<Entity, EntityComboBox> artistComboBoxValue =
+            EntityComboBox.builder(artistComboBoxModel)
+                    // limit the combo box width, due to long artist names
+                    .preferredWidth(240)
+                    // move focus with Enter key
+                    .transferFocusOnEnter(true)
+                    // populate the combo box model when shown
+                    .onSetVisible(comboBox -> comboBox.getModel().refresh())
+                    // link the combo box to the edit model value
+                    .linkedValue(editModelArtistValue)
+                    .buildComponentValue();
 
     // create a String Value based on the album title in the edit model
     Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
-    // create a String Value based on the text field
-    Value<String> textFieldTitleValue = ComponentValues.textComponent(titleField);
+    // create a String value based on a JTextfield
+    ComponentValue<String, JTextField> titleTextFieldValue =
+            Components.textField()
+                    .columns(10)
+                    // link the text field to the edit model value
+                    .linkedValue(editModelTitleValue)
+                    // add an insert action to the title field
+                    // so that we can insert by pressing Enter
+                    .action(Control.actionControl(actionEvent -> {
+                      try {
+                        editModel.insert();
 
-    // link the two values
-    textFieldTitleValue.link(editModelTitleValue);
+                        // clear the edit model after a successful insert
+                        editModel.setDefaultValues();
 
-    // add an insert action to the title field
-    // so that we can insert by pressing Enter
-    titleField.addActionListener(Control.control(() -> {
-      try {
-        editModel.insert();
-
-        // clear the edit model after a successful insert
-        editModel.setDefaultValues();
-
-        // and set the focus on the combo box
-        artistComboBox.requestFocusInWindow();
-      }
-      catch (DatabaseException | ValidationException e) {
-        JOptionPane.showMessageDialog(titleField, e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-      }
-    }));
+                        // and set the focus on the combo box
+                        artistComboBoxValue.getComponent().requestFocusInWindow();
+                      }
+                      catch (DatabaseException | ValidationException e) {
+                        JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
+                                e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                      }
+                    }))
+                    .buildComponentValue();
 
     // show a message after insert
     editModel.addAfterInsertListener(insertedEntities ->
-            JOptionPane.showMessageDialog(titleField,
+            JOptionPane.showMessageDialog(titleTextFieldValue.getComponent(),
                     "Inserted: " + insertedEntities.get(0)));
 
     JPanel albumPanel = Components.panel(gridLayout(4, 1))
             .add(new JLabel("Artist"))
-            .add(artistComboBox)
+            .add(artistComboBoxValue.getComponent())
             .add(new JLabel("Title"))
-            .add(titleField)
+            .add(titleTextFieldValue.getComponent())
+            .border(BorderFactory.createEmptyBorder(10, 10, 10, 10))
             .build();
 
-    // uncomment the below line to display the panel
-//    Dialogs.displayInDialog(null, albumPanel, "Album");
+    // uncomment the below lines to display the panel
+//    Dialogs.componentDialog(albumPanel)
+//            .title("Album")
+//            .show();
   }
 
   public static void main(final String[] args) {
