@@ -71,6 +71,8 @@ final class SelectQueries {
     private Integer limit;
     private Integer offset;
 
+    private boolean columnsClauseFromSelectQuery = false;
+
     private Builder(final EntityDefinition definition) {
       this.definition = definition;
     }
@@ -81,7 +83,9 @@ final class SelectQueries {
 
     Builder selectCondition(final SelectCondition condition) {
       entitySelectQuery();
-      setColumns(condition);
+      if (!columnsClauseFromSelectQuery) {
+        setColumns(condition);
+      }
       where(condition);
       groupBy(definition.getGroupByClause());
       having(definition.getHavingClause());
@@ -102,7 +106,14 @@ final class SelectQueries {
     Builder entitySelectQuery() {
       final SelectQuery selectQuery = definition.getSelectQuery();
       if (selectQuery != null) {
-        columns(selectQuery.getColumns() == null ? getAllColumnsClause() : selectQuery.getColumns());
+        if (selectQuery.getColumns() != null) {
+          columns(selectQuery.getColumns());
+          selectedProperties = getSelectableProperties();
+          columnsClauseFromSelectQuery = true;
+        }
+        else {
+          columns(getAllColumnsClause());
+        }
         from(selectQuery.getFrom());
         where(selectQuery.getWhere());
         orderBy(selectQuery.getOrderBy() == null ? getOrderByClause(definition.getOrderBy()) : selectQuery.getOrderBy());

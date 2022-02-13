@@ -8,7 +8,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.TestDomain.Query;
 import is.codion.framework.db.local.TestDomain.QueryFromClause;
-import is.codion.framework.db.local.TestDomain.QueryWhereClause;
+import is.codion.framework.db.local.TestDomain.QueryFromWhereColumnsClause;
 import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
@@ -29,12 +29,12 @@ public final class SelectQueriesTest {
     builder.columns("empno");
     assertEquals("select empno\nfrom scott.emp\norder by ename", builder.build());
 
-    builder = queries.builder(testDomain.getEntities().getDefinition(QueryWhereClause.TYPE))
+    builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromWhereColumnsClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select empno, ename\nfrom scott.emp\nwhere deptno > 10\norder by ename desc", builder.build());
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename desc", builder.build());
 
     builder.orderBy("ename");
-    assertEquals("select empno, ename\nfrom scott.emp\nwhere deptno > 10\norder by ename", builder.build());
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename", builder.build());
 
     builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromClause.TYPE))
             .entitySelectQuery();
@@ -43,19 +43,20 @@ public final class SelectQueriesTest {
 
   @Test
   void selectCondition() {
-    SelectQueries.Builder builder = queries.builder(testDomain.getEntities().getDefinition(QueryWhereClause.TYPE))
+    SelectQueries.Builder builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromWhereColumnsClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select empno, ename\nfrom scott.emp\nwhere deptno > 10\norder by ename desc", builder.build());
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename desc", builder.build());
 
-    final SelectCondition condition = Conditions.where(QueryWhereClause.ENAME)
+    final SelectCondition condition = Conditions.where(QueryFromWhereColumnsClause.ENAME)
             .equalTo("SCOTT")
             .toSelectCondition()
-            .selectAttributes(QueryWhereClause.ENAME)
+            .selectAttributes(QueryFromWhereColumnsClause.ENAME)
             .orderBy(OrderBy.orderBy()
-                    .descending(QueryWhereClause.EMPNO));
-    builder = queries.builder(testDomain.getEntities().getDefinition(QueryWhereClause.TYPE))
+                    .descending(QueryFromWhereColumnsClause.EMPNO));
+    builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromWhereColumnsClause.TYPE))
             .selectCondition(condition);
 
-    assertEquals("select ename\nfrom scott.emp\nwhere deptno > 10\nand ename = ?\norder by empno desc", builder.build());
+    //select condition should not affect columns when the columns are hardcoded in the entity query
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\nand ename = ?\norder by empno desc", builder.build());
   }
 }

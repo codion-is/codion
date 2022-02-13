@@ -131,7 +131,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
 
   @Override
   public Collection<C> getHiddenColumns() {
-    return unmodifiableCollection(hiddenColumns.keySet());
+    return unmodifiableCollection(new HashSet<>(hiddenColumns.keySet()));
   }
 
   @Override
