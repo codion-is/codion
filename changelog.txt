@@ -7744,3 +7744,4 @@
   SwingEntityEditModel.initializeComboBoxModels() added, to be called when initializing the application model, to prevent refreshing during UI initialization
   EntityEditComponentPanel.createComboBox() and createForeignKeyComboBox() now only refreshes on set visible if the combo box models are cleared, as in, not initialized
   EntityApplicationPanel.ApplicationStarter removed, now uses Dialogs.progressWorkerDialog() properly, initializing the model in a background thread and initializing the UI on the EDT
+  SwingFilteredTableColumnModel.getHiddenColumns() now returns a new Set instance, preventing the possibility of a concurrent modification
