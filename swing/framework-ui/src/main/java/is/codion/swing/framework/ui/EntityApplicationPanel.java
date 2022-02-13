@@ -1205,18 +1205,33 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                 final boolean includeMainMenu, final boolean displayProgressDialog,
                                 final EntityConnectionProvider connectionProvider) {
     setVersionProperty();
-    final ApplicationStarter applicationStarter = new ApplicationStarter(connectionProvider);
+    final long initializationStarted = System.currentTimeMillis();
     if (displayProgressDialog) {
-      Dialogs.progressWorkerDialog(applicationStarter)
+      Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
               .title(applicationName)
               .icon(applicationIcon)
               .westPanel(initializeStartupIconPanel(applicationIcon))
-              .onResult(() -> applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu)))
+              .onResult(applicationModel -> startApplication(applicationModel, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
+              .onException(exception -> displayException(exception, null))
               .execute();
     }
     else {
-      applicationStarter.perform();
-      applicationStartedEvent.onEvent(prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu));
+      startApplication(initializeApplicationModel(connectionProvider), frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted);
+    }
+  }
+
+  private void startApplication(final M applicationModel, final Dimension frameSize, final boolean maximizeFrame,
+                                final boolean displayFrame, final boolean includeMainMenu, final long initializationStarted) {
+    try {
+      this.applicationModel = applicationModel;
+      initializePanel();
+      final JFrame frame = prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu);
+      applicationStartedEvent.onEvent(frame);
+      LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+    }
+    catch (Exception exception) {
+      displayException(exception, null);
+      throw new CancelException();
     }
   }
 
@@ -1552,38 +1567,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         connectionProvider.setUser(user);
       }
       connectionProvider.getConnection();//throws exception if the server is not reachable
-    }
-  }
-
-  private final class ApplicationStarter implements Control.Command {
-
-    private final EntityConnectionProvider connectionProvider;
-
-    private ApplicationStarter(final EntityConnectionProvider connectionProvider) {
-      this.connectionProvider = connectionProvider;
-    }
-
-    @Override
-    public void perform() {
-      try {
-        final long initializationStarted = System.currentTimeMillis();
-        applicationModel = initializeApplicationModel(connectionProvider);
-        if (SwingUtilities.isEventDispatchThread()) {
-          initializePanel();
-        }
-        else {
-          SwingUtilities.invokeAndWait(EntityApplicationPanel.this::initializePanel);
-        }
-        LOG.info(getFrameTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
-      }
-      catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-        throw new CancelException();
-      }
-      catch (final Exception exception) {
-        displayException(exception, null);
-        throw new CancelException();
-      }
     }
   }
 }

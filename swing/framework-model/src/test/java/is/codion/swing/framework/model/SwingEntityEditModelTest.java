@@ -92,4 +92,12 @@ public class SwingEntityEditModelTest {
     assertSame(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)
             .getEntity(blake.getPrimaryKey()).orElse(null), blake);
   }
+
+  @Test
+  void initializeComboBoxModels() {
+    employeeEditModel.initializeComboBoxModels(TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_MGR_FK, TestDomain.EMP_JOB);
+    assertFalse(employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB).isCleared());
+    assertFalse(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).isCleared());
+    assertFalse(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK).isCleared());
+  }
 }
