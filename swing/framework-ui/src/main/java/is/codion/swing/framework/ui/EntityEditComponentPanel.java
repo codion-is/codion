@@ -40,6 +40,7 @@ import is.codion.swing.framework.ui.component.ForeignKeyFieldBuilder;
 import is.codion.swing.framework.ui.component.ForeignKeySearchFieldBuilder;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -664,7 +665,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     comboBoxModel.addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel)
-            .onSetVisible(comboBox -> comboBoxModel.refresh()));
+            .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
   }
 
   /**
@@ -678,7 +679,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     comboBoxModel.addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
-            .onSetVisible(comboBox -> comboBoxModel.refresh()));
+            .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
   }
 
   /**
@@ -688,7 +689,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    */
   protected final ForeignKeySearchFieldBuilder createForeignKeySearchField(final ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
-            getEditModel().getForeignKeySearchModel(foreignKey))
+                    getEditModel().getForeignKeySearchModel(foreignKey))
             .columns(defaultTextFieldColumns));
   }
 
@@ -795,5 +796,15 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     }
 
     return label;
+  }
+
+  private static void refreshIfCleared(final JComboBox<?> comboBox) {
+    final ComboBoxModel<?> model = comboBox.getModel();
+    if (model instanceof FilteredComboBoxModel) {
+      final FilteredComboBoxModel<?> comboBoxModel = (FilteredComboBoxModel<?>) model;
+      if (comboBoxModel.isCleared()) {
+        comboBoxModel.refresh();
+      }
+    }
   }
 }

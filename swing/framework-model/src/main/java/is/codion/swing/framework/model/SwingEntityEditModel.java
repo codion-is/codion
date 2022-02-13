@@ -66,6 +66,27 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
+   * Creates and refreshes combo box models for the given attributes. Doing this avoids refreshing the
+   * data on the EDT when the actual combo boxes are initialized.
+   * In case of {@link ForeignKey} a foreign key combo box model and in
+   * case of a {@link Attribute} a attribute combo box model.
+   * @param attributes the attributes for which to initialize combo box models
+   * @see #createComboBoxModel(Attribute)
+   * @see #createForeignKeyComboBoxModel(ForeignKey)
+   */
+  public final void initializeComboBoxModels(final Attribute<?>... attributes) {
+    requireNonNull(attributes);
+    for (final Attribute<?> attribute : attributes) {
+      if (attribute instanceof ForeignKey) {
+        getForeignKeyComboBoxModel((ForeignKey) attribute).refresh();
+      }
+      else {
+        getComboBoxModel(attribute).refresh();
+      }
+    }
+  }
+
+  /**
    * Refreshes all foreign key combobox models
    */
   public final void refreshForeignKeyComboBoxModels() {
