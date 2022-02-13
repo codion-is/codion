@@ -73,7 +73,7 @@ public final class TestDomain extends DefaultDomain {
       }
     });
     query();
-    queryWhereClause();
+    queryFromWhereColumnsClause();
     queryFromClause();
     queryFromWhereClause();
   }
@@ -374,21 +374,21 @@ public final class TestDomain extends DefaultDomain {
                     .build());
   }
 
-  public interface QueryWhereClause {
+  public interface QueryFromWhereColumnsClause {
     EntityType TYPE = DOMAIN.entityType("query_where");
 
     Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
     Attribute<String> ENAME = TYPE.stringAttribute("ename");
   }
 
-  private void queryWhereClause() {
-    define(QueryWhereClause.TYPE,
-            columnProperty(QueryWhereClause.EMPNO),
-            columnProperty(QueryWhereClause.ENAME))
-            .orderBy(OrderBy.orderBy().descending(QueryWhereClause.ENAME))
-            .selectQuery(SelectQuery.builder("scott.emp")
-                    .columns("empno, ename")
-                    .where("deptno > 10")
+  private void queryFromWhereColumnsClause() {
+    define(QueryFromWhereColumnsClause.TYPE,
+            columnProperty(QueryFromWhereColumnsClause.EMPNO),
+            columnProperty(QueryFromWhereColumnsClause.ENAME))
+            .orderBy(OrderBy.orderBy().descending(QueryFromWhereColumnsClause.ENAME))
+            .selectQuery(SelectQuery.builder("scott.emp e")
+                    .columns("e.empno, e.ename")
+                    .where("e.deptno > 10")
                     .build());
   }
 

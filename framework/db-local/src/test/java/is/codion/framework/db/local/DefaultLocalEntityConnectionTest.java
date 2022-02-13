@@ -953,8 +953,8 @@ public class DefaultLocalEntityConnectionTest {
   void selectQuery() throws DatabaseException {
     connection.select(condition(Query.TYPE));
     connection.select(condition(Query.TYPE).toSelectCondition().forUpdate());
-    connection.select(condition(QueryWhereClause.TYPE));
-    connection.select(condition(QueryWhereClause.TYPE).toSelectCondition().forUpdate());
+    connection.select(condition(QueryFromWhereColumnsClause.TYPE));
+    connection.select(condition(QueryFromWhereColumnsClause.TYPE).toSelectCondition().forUpdate());
     connection.select(condition(QueryFromClause.TYPE));
     connection.select(condition(QueryFromClause.TYPE).toSelectCondition().forUpdate());
     connection.select(condition(QueryFromWhereClause.TYPE));
