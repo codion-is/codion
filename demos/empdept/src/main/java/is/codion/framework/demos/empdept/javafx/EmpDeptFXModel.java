@@ -24,6 +24,8 @@ public final class EmpDeptFXModel extends FXEntityApplicationModel {
             new FXEntityListModel(Employee.TYPE, getConnectionProvider()));
     departmentModel.addDetailModel(employeeModel);
 
+    departmentModel.getTableModel().refresh();
+
     addEntityModel(departmentModel);
   }
 }

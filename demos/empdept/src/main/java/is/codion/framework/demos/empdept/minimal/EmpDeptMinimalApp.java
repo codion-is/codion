@@ -136,6 +136,9 @@ public final class EmpDeptMinimalApp {
 
     public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
       super(Employee.TYPE, connectionProvider);
+      //initialize the combo box models now, otherwise it
+      //happens on the EDT later when the combo boxes are created
+      initializeComboBoxModels(Employee.MGR_FK, Employee.DEPT_FK);
     }
 
     /**
@@ -148,7 +151,6 @@ public final class EmpDeptMinimalApp {
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
                 Conditions.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
-        comboBoxModel.refresh();
       }
 
       return comboBoxModel;
@@ -274,7 +276,7 @@ public final class EmpDeptMinimalApp {
     //the remote connection settings
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDept.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    Clients.SERVER_HOST_NAME.set("codion.no-ip.org");
+    Clients.SERVER_HOST_NAME.set("codion.is");
     //we're using Secure Sockets Layer so that we need to specify a truststore
     Clients.TRUSTSTORE.set("resources/config/truststore.jks");
     System.setProperty("java.security.policy", "resources/config/codion_demos.policy");
