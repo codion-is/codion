@@ -49,8 +49,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             new DepartmentTablePanel(departmentModel.getTableModel()));
     departmentPanel.addDetailPanel(employeePanelBuilder);
 
-    departmentModel.getTableModel().refresh();
-
     return Collections.singletonList(departmentPanel);
   }
   // end::initializeEntityPanels[]
@@ -110,6 +108,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
       super(connectionProvider);
       final SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
       departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
+      departmentModel.getTableModel().refresh();
       addEntityModel(departmentModel);
     }
   }

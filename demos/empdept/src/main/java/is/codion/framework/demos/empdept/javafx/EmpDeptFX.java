@@ -34,13 +34,11 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
     final EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.getEditModel()),
             new EntityTableView(departmentModel.getTableModel()));
-    departmentModel.getTableModel().refresh();
 
     final FXEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
     final EntityView employeeView = new EntityView(employeeModel,
             new EmployeeEditView(employeeModel.getEditModel()),
             new EntityTableView(employeeModel.getTableModel()));
-    employeeModel.getTableModel().refresh();
 
     departmentView.addDetailView(employeeView);
 
