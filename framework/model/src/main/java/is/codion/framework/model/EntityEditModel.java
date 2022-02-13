@@ -52,9 +52,9 @@ public interface EntityEditModel {
   /**
    * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
-  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents", false);
+  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents", true);
 
   /**
    * Specifies whether edit models set the master foreign key to null when initialized with a null foreign key value via {@link #initialize(ForeignKey, Entity)}<br>

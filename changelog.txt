@@ -7739,3 +7739,5 @@
   SwingEntityTableModel, one additional constructor overload added
   TextFieldBuilder.actionListener() added
   EntityComboBox.builder() added, replaces public constructor
+  EntityPanel.setIncludeDetailPanelTabPane() renamed to setIncludeDetailTabPane()
+  EntityEditModel.POST_EDIT_EVENTS now true by default

@@ -256,7 +256,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * if true and detail panels are available then the detail panel tab pane should be included
    */
-  private boolean includeDetailPanelTabPane = true;
+  private boolean includeDetailTabPane = true;
 
   /**
    * if true and detail panels are available the controls to hide and show detail panels are included
@@ -702,17 +702,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @return true if the detail panel tab pane should be included
    */
-  public final boolean isIncludeDetailPanelTabPane() {
-    return includeDetailPanelTabPane;
+  public final boolean isIncludeDetailTabPane() {
+    return includeDetailTabPane;
   }
 
   /**
-   * @param includeDetailPanelTabPane true if the detail panel tab pane should be included
+   * @param includeDetailTabPane true if the detail panel tab pane should be included
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setIncludeDetailPanelTabPane(final boolean includeDetailPanelTabPane) {
+  public final void setIncludeDetailTabPane(final boolean includeDetailTabPane) {
     checkIfInitialized();
-    this.includeDetailPanelTabPane = includeDetailPanelTabPane;
+    this.includeDetailTabPane = includeDetailTabPane;
   }
 
   /**
@@ -1036,7 +1036,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     }
     setLayout(Layouts.borderLayout());
-    if (!includeDetailPanelTabPane || detailEntityPanels.isEmpty()) {
+    if (!includeDetailTabPane || detailEntityPanels.isEmpty()) {
       horizontalSplitPane = null;
       detailPanelTabbedPane = null;
       add(editControlTablePanel, BorderLayout.CENTER);
@@ -1370,7 +1370,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   private Control initializeTableDoubleClickAction() {
     return Control.control(() -> {
-      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
+      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
         if (containsEditPanel() && getEditPanelState() == HIDDEN) {
           setEditPanelState(WINDOW);
         }

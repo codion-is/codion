@@ -15,7 +15,7 @@ public final class CustomerPanel extends EntityPanel {
 
     final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
     final EntityPanel invoicePanel = new EntityPanel(invoiceModel, new InvoiceEditPanel(invoiceModel.getEditModel()));
-    invoicePanel.setIncludeDetailPanelTabPane(false);
+    invoicePanel.setIncludeDetailTabPane(false);
     invoicePanel.setShowDetailPanelControls(false);
 
     final SwingEntityModel invoiceLineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
