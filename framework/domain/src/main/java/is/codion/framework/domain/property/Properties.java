@@ -54,7 +54,7 @@ public final class Properties {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B>  primaryKeyProperty(final Attribute<T> attribute) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(final Attribute<T> attribute) {
     return primaryKeyProperty(attribute, null);
   }
 
@@ -67,7 +67,7 @@ public final class Properties {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B>  primaryKeyProperty(final Attribute<T> attribute, final String caption) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(final Attribute<T> attribute, final String caption) {
     return (ColumnProperty.Builder<T, B>) columnProperty(attribute, caption).primaryKeyIndex(0);
   }
 
