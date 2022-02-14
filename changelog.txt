@@ -7746,3 +7746,4 @@
   EntityApplicationPanel.ApplicationStarter removed, now uses Dialogs.progressWorkerDialog() properly, initializing the model in a background thread and initializing the UI on the EDT
   SwingFilteredTableColumnModel.getHiddenColumns() now returns a new Set instance, preventing the possibility of a concurrent modification
   SelectQueries bug fixed, hard coded columns in SelectQuery were overwritten
+  EntityApplicationPanel.setUncaughtExceptionHandler() bug fixed, focus owner is not always a JComponent, could be a Window for example
