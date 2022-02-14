@@ -30,7 +30,7 @@ public class SwingTableSelectionModelTest {
       }
 
       @Override
-      protected Comparable<String> getComparable(final String row, final Integer columnIdentifier) {
+      protected Object getColumnValue(final String row, final Integer columnIdentifier) {
         return row;
       }
     };

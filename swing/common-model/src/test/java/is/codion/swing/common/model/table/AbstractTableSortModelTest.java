@@ -82,7 +82,7 @@ public class AbstractTableSortModelTest {
       }
 
       @Override
-      protected Comparable getComparable(final ArrayList row, final Integer columnIdentifier) {
+      protected Object getColumnValue(final ArrayList row, final Integer columnIdentifier) {
         return row.toString();
       }
     };
@@ -128,7 +128,7 @@ public class AbstractTableSortModelTest {
     }
 
     @Override
-    protected Comparable<? extends Object> getComparable(final Row row, final Integer columnIdentifier) {
+    protected Object getColumnValue(final Row row, final Integer columnIdentifier) {
       switch (columnIdentifier) {
         case 0:
           return row.firstValue;

@@ -7784,3 +7784,4 @@
   Components.textField() bug fixed, return type changed from B to the actual builder type
   AbstractComponentBuilder, if the linked value is set via the constructor we consider it locked, so it can't be subsequently changed
   EntityComboBox.textFieldSelector() and integerFieldSelector() now return a builder for further field configuration
+  AbstractTableSortModel.getComparable() replaced with getColumnValue()

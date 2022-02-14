@@ -416,7 +416,7 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    protected Comparable<?> getComparable(final UserInfo row, final Integer columnIdentifier) {
+    protected Object getColumnValue(final UserInfo row, final Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return row.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return row.getClientTypeId();

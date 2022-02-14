@@ -21,7 +21,7 @@ final class DefinitionSortModel extends AbstractTableSortModel<DefinitionRow, In
   }
 
   @Override
-  protected Comparable<?> getComparable(final DefinitionRow row, final Integer columnIdentifier) {
+  protected Object getColumnValue(final DefinitionRow row, final Integer columnIdentifier) {
     switch (columnIdentifier) {
       case DefinitionTableModel.DOMAIN:
         return row.domain.getDomainType().getName();

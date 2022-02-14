@@ -7,6 +7,7 @@ import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Comparator;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
@@ -53,7 +54,8 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .numberFormatGrouping(true),
             // tag::columnClass[]
             columnProperty(City.LOCATION, "Location")
-                    .columnClass(String.class, new LocationConverter()))
+                    .columnClass(String.class, new LocationConverter())
+                    .comparator(new LocationComparator()))
             // end::columnClass[]
             // tag::sequence[]
             .keyGenerator(sequence("world.city_seq"))
@@ -272,4 +274,16 @@ public final class WorldImpl extends DefaultDomain implements World {
     }
   }
   // end::converter[]
+
+  private static final class LocationComparator implements Comparator<Location> {
+    @Override
+    public int compare(final Location l1, final Location l2) {
+      final int result = Double.compare(l1.latitude(), l2.latitude());
+      if (result == 0) {
+        return Double.compare(l1.longitude(), l2.longitude());
+      }
+
+      return result;
+    }
+  }
 }

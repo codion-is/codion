@@ -96,12 +96,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   /**
-   * Returns a Comparable instance for the given row and columnIdentifier, used when sorting
+   * Returns a value the given row and columnIdentifier, used for sorting
    * @param row the object representing a given row
    * @param columnIdentifier the column identifier
-   * @return a Comparable for the given row and column
+   * @return a value for the given row and column
    */
-  protected abstract Comparable<?> getComparable(R row, C columnIdentifier);
+  protected abstract Object getColumnValue(R row, C columnIdentifier);
 
   /**
    * Initializes a comparator used when sorting by the give column,
@@ -175,8 +175,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortOrder sortOrder) {
-      final Comparable<?> valueOne = getComparable(rowOne, columnIdentifier);
-      final Comparable<?> valueTwo = getComparable(rowTwo, columnIdentifier);
+      final Object valueOne = getColumnValue(rowOne, columnIdentifier);
+      final Object valueTwo = getColumnValue(rowTwo, columnIdentifier);
       final int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {

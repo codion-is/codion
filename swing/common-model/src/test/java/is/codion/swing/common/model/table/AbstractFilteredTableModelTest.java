@@ -57,7 +57,7 @@ public final class AbstractFilteredTableModelTest {
         }
 
         @Override
-        protected Comparable<String> getComparable(final List<String> row, final Integer columnIdentifier) {
+        protected Object getColumnValue(final List<String> row, final Integer columnIdentifier) {
           return row.get(columnIdentifier);
         }
 
@@ -152,7 +152,7 @@ public final class AbstractFilteredTableModelTest {
     assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
             new AbstractTableSortModel<String, Integer>() {
               @Override
-              protected Comparable<?> getComparable(final String row, final Integer columnIdentifier) {
+              protected Object getColumnValue(final String row, final Integer columnIdentifier) {
                 return null;
               }
 
@@ -344,7 +344,7 @@ public final class AbstractFilteredTableModelTest {
               }
 
               @Override
-              protected Comparable<? extends Object> getComparable(final Row row, final Integer columnIdentifier) {
+              protected Object getColumnValue(final Row row, final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return row.id;
                 }
