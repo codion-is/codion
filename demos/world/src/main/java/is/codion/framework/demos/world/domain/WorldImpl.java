@@ -5,10 +5,8 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Comparator;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
@@ -275,16 +273,4 @@ public final class WorldImpl extends DefaultDomain implements World {
     }
   }
   // end::converter[]
-
-  private static final class LocationComparator implements Comparator<Location>, Serializable {
-    @Override
-    public int compare(final Location l1, final Location l2) {
-      final int result = Double.compare(l1.latitude(), l2.latitude());
-      if (result == 0) {
-        return Double.compare(l1.longitude(), l2.longitude());
-      }
-
-      return result;
-    }
-  }
 }
