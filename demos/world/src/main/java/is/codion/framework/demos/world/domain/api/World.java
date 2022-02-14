@@ -13,6 +13,7 @@ import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.DerivedProperty.SourceValues;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
 import static is.codion.common.Util.notNull;
@@ -255,4 +256,17 @@ public interface World {
     }
   }
   // end::derivedPropertyProvider[]
+
+  final class LocationComparator implements Comparator<Location>, Serializable {
+
+    @Override
+    public int compare(final Location l1, final Location l2) {
+      final int result = Double.compare(l1.latitude(), l2.latitude());
+      if (result == 0) {
+        return Double.compare(l1.longitude(), l2.longitude());
+      }
+
+      return result;
+    }
+  }
 }
