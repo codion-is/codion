@@ -307,7 +307,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> B textField() {
+  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
     return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class, null);
   }
 
@@ -316,7 +316,7 @@ public final class Components {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> B textField(final Value<String> linkedValue) {
+  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(final Value<String> linkedValue) {
     return (B) new DefaultTextFieldBuilder<String, JTextField, B>(String.class, linkedValue);
   }
 
@@ -327,7 +327,7 @@ public final class Components {
    * @param valueClass the value class
    * @return a builder for a component
    */
-  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textField(final Class<T> valueClass) {
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(final Class<T> valueClass) {
     return textField(valueClass, null);
   }
 
@@ -339,8 +339,8 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> B textField(final Class<T> valueClass,
-                                                                                           final Value<T> linkedValue) {
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(final Class<T> valueClass,
+                                                                                                                   final Value<T> linkedValue) {
     if (valueClass.equals(Integer.class)) {
       return (B) integerField((Value<Integer>) linkedValue);
     }
