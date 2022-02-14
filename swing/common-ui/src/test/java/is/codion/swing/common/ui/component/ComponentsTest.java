@@ -590,4 +590,12 @@ public final class ComponentsTest {
     builder.initialValue(1);
     assertEquals("Value", component.getClientProperty("Key"));
   }
+
+  @Test
+  void valueLocked() {
+    assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
+            .linkedValue(Value.value()));
+    assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
+            .linkedValueObserver(Value.value()));
+  }
 }

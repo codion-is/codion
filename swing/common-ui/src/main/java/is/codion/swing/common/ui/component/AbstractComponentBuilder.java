@@ -75,15 +75,23 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private T initialValue;
   private Consumer<C> onSetVisible;
 
+  /**
+   * When a linked value is set via the constructor, it is locked and cannot be changed.
+   */
+  private final boolean linkedValueLocked;
+
   protected AbstractComponentBuilder() {
     this(null);
   }
 
   /**
+   * Note that when a linked value is set via the constructor,
+   * it is considered locked and cannot be changed.
    * @param linkedValue the linked value, may be null
    */
   protected AbstractComponentBuilder(final Value<T> linkedValue) {
     this.linkedValue = linkedValue;
+    this.linkedValueLocked = linkedValue != null;
   }
 
   @Override
@@ -281,6 +289,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B linkedValue(final Value<T> linkedValue) {
+    if (linkedValueLocked) {
+      throw new IllegalStateException("The value for this component builder has already been set");
+    }
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
     }
@@ -290,6 +301,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B linkedValueObserver(final ValueObserver<T> linkedValueObserver) {
+    if (linkedValueLocked) {
+      throw new IllegalStateException("The value for this component builder has already been set");
+    }
     if (linkedValue != null) {
       throw new IllegalStateException("linkedValue has already been set");
     }
