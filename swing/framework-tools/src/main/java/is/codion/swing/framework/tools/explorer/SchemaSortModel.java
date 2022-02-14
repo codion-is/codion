@@ -23,7 +23,7 @@ final class SchemaSortModel extends AbstractTableSortModel<Schema, Integer> {
   }
 
   @Override
-  protected Comparable<?> getComparable(final Schema row, final Integer columnIdentifier) {
+  protected Object getColumnValue(final Schema row, final Integer columnIdentifier) {
     switch (columnIdentifier) {
       case SchemaTableModel.SCHEMA:
         return row.getName();

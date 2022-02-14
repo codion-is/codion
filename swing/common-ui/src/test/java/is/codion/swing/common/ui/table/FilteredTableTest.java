@@ -120,7 +120,7 @@ public class FilteredTableTest {
     }
 
     @Override
-    protected Comparable<String> getComparable(final List<String> row, final Integer columnIdentifier) {
+    protected Object getColumnValue(final List<String> row, final Integer columnIdentifier) {
       return row.get(columnIdentifier);
     }
   }

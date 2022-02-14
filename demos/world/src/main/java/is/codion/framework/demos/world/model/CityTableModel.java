@@ -8,13 +8,10 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Location;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.model.SwingEntityTableSortModel;
 
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
@@ -44,7 +41,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   private final State citiesWithoutLocationSelectedState = State.state();
 
   CityTableModel(EntityConnectionProvider connectionProvider) {
-    super(City.TYPE, connectionProvider, new CityTableSortModel(connectionProvider.getEntities()));
+    super(City.TYPE, connectionProvider);
     getSelectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
     getSelectionModel().addSelectionChangedListener(this::updateCitiesWithoutLocationSelected);
     addRefreshListener(this::refreshChartDataset);
@@ -112,23 +109,5 @@ public final class CityTableModel extends SwingEntityTableModel {
   private void updateCitiesWithoutLocationSelected() {
     citiesWithoutLocationSelectedState.set(getSelectionModel().getSelectedItems().stream()
             .anyMatch(city -> city.isNull(City.LOCATION)));
-  }
-
-  private static final class CityTableSortModel extends SwingEntityTableSortModel {
-
-    private CityTableSortModel(Entities entities) {
-      super(entities);
-    }
-
-    @Override
-    protected Comparable<?> getComparable(Entity entity, Attribute<?> attribute) {
-      if (attribute.equals(City.LOCATION)) {
-        return entity.getOptional(attribute)
-                .map(Object::toString)
-                .orElse(null);
-      }
-
-      return super.getComparable(entity, attribute);
-    }
   }
 }
