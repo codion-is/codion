@@ -56,7 +56,7 @@ public class EntityComboBoxTest {
     final Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 3);
     comboBoxModel.setSelectedEntityByKey(jonesKey);
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    final IntegerField empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID);
+    final IntegerField empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID).build();
     assertEquals(3, empIdValue.getInteger());
     final Key blakeKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 5);
     comboBoxModel.setSelectedEntityByKey(blakeKey);

@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
+import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -58,70 +59,76 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   }
 
   /**
-   * Creates a EntityComboBox for filtering this combo box via a foreign key
+   * Creates a {@link ComboBoxBuilder} returning a combo box for filtering this combo box via a foreign key
    * @param foreignKey the foreign key on which to filter
-   * @return an EntityComboBox for filtering this combo box
+   * @param <B> the builder type
+   * @return a {@link ComboBoxBuilder} for a foreign key filter combo box
    */
-  public EntityComboBox createForeignKeyFilterComboBox(final ForeignKey foreignKey) {
-    return builder(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey)))
-            .completionMode(Completion.Mode.MAXIMUM_MATCH)
-            .build();
+  public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyFilterComboBox(
+          final ForeignKey foreignKey) {
+    return (B) builder(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey)))
+            .completionMode(Completion.Mode.MAXIMUM_MATCH);
   }
 
   /**
-   * Creates a {@link IntegerField} which value is bound to the selected value in this combo box
+   * Creates a {@link TextFieldBuilder} returning a {@link IntegerField} which value is bound to the selected value in this combo box
    * @param attribute the attribute
-   * @return a {@link IntegerField} bound to the selected value
+   * @param <B> the builder type
+   * @return a {@link IntegerField} builder bound to the selected value
    */
-  public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
+  public <B extends TextFieldBuilder<Integer, IntegerField, B>> TextFieldBuilder<Integer, IntegerField, B> integerFieldSelector(
+          final Attribute<Integer> attribute) {
     requireNonNull(attribute);
-    return Components.integerField(getModel().selectorValue(attribute))
+    return (B) Components.integerField(getModel().selectorValue(attribute))
             .columns(2)
-            .selectAllOnFocusGained(true)
-            .build();
+            .selectAllOnFocusGained(true);
   }
 
   /**
-   * Creates a {@link IntegerField} which value is bound to the selected value in this combo box
-   * @param attribute the attribute
-   * @param finder responsible for finding the item to select by value
-   * @return a {@link IntegerField} bound to the selected value
-   */
-  public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
-    requireNonNull(attribute);
-    requireNonNull(finder);
-    return Components.integerField(getModel().selectorValue(attribute, finder))
-            .columns(2)
-            .selectAllOnFocusGained(true)
-            .build();
-  }
-
-  /**
-   * Creates a {@link JTextField} which value is bound to the selected value in this combo box
-   * @param attribute the attribute
-   * @return a {@link JTextField} bound to the selected value
-   */
-  public JTextField textFieldSelector(final Attribute<String> attribute) {
-    requireNonNull(attribute);
-    return Components.textField(getModel().selectorValue(attribute))
-            .columns(2)
-            .selectAllOnFocusGained(true)
-            .build();
-  }
-
-  /**
-   * Creates a {@link JTextField} which value is bound to the selected value in this combo box
+   * Creates a {@link TextFieldBuilder} returning a {@link IntegerField} which value is bound to the selected value in this combo box
    * @param attribute the attribute
    * @param finder responsible for finding the item to select by value
-   * @return a {@link JTextField} bound to the selected value
+   * @param <B> the builder type
+   * @return a {@link IntegerField} builder bound to the selected value
    */
-  public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
+  public <B extends TextFieldBuilder<Integer, IntegerField, B>> TextFieldBuilder<Integer, IntegerField, B> integerFieldSelector(
+          final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);
-    return Components.textField(getModel().selectorValue(attribute, finder))
+    return (B) Components.integerField(getModel().selectorValue(attribute, finder))
             .columns(2)
-            .selectAllOnFocusGained(true)
-            .build();
+            .selectAllOnFocusGained(true);
+  }
+
+  /**
+   * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
+   * @param attribute the attribute
+   * @param <B> the builder type
+   * @return a {@link JTextField} builder bound to the selected value
+   */
+  public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textFieldSelector(
+          final Attribute<String> attribute) {
+    requireNonNull(attribute);
+    return (B) Components.textField(getModel().selectorValue(attribute))
+            .columns(2)
+            .selectAllOnFocusGained(true);
+  }
+
+  /**
+   * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
+   * @param attribute the attribute
+   * @param finder responsible for finding the item to select by value
+   * @param <B> the builder type
+   * @return a {@link JTextField} builder bound to the selected value
+   */
+  public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textFieldSelector(
+          final Attribute<String> attribute,
+          final EntityComboBoxModel.Finder<String> finder) {
+    requireNonNull(attribute);
+    requireNonNull(finder);
+    return (B) Components.textField(getModel().selectorValue(attribute, finder))
+            .columns(2)
+            .selectAllOnFocusGained(true);
   }
 
   /**
@@ -137,7 +144,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
     return () -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
-      Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey))
+      Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
               .owner(this)
               .title(MESSAGES.getString("filter_by"))
               .onOk(() -> getModel().setForeignKeyFilterEntities(foreignKey, current))
