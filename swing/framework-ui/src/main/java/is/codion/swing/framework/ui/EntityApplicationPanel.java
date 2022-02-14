@@ -1229,7 +1229,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       applicationStartedEvent.onEvent(frame);
       LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     }
-    catch (Exception exception) {
+    catch (final Exception exception) {
       displayException(exception, null);
       throw new CancelException();
     }
@@ -1287,7 +1287,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   private void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
-      JComponent focusOwner = (JComponent) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+      Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
       if (focusOwner == null) {
         focusOwner = EntityApplicationPanel.this;
       }
