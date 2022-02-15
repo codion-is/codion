@@ -57,14 +57,14 @@ final class CountryEditPanel extends EntityEditPanel {
             .editPanelInitializer(this::initializeCapitalEditPanel)
             .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
+    CountryEditModel editModel = (CountryEditModel) getEditModel();
     DoubleField averageCityPopulationField = Components.doubleField()
+            .linkedValueObserver(editModel.getAverageCityPopulationValue())
             .maximumFractionDigits(2)
             .groupingUsed(true)
             .focusable(false)
             .editable(false)
-            .linkedValueObserver(((CountryEditModel) getEditModel()).getAverageCityPopulationValue())
-            .buildComponentValue()
-            .getComponent();
+            .build();
 
     setLayout(gridLayout(4, 5));
 

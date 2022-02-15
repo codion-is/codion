@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -138,7 +139,19 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a builder for a {@link EntityComboBox}
    */
   public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(final SwingEntityComboBoxModel comboBoxModel) {
-    return new DefaultBuilder<>(comboBoxModel);
+    return builder(comboBoxModel, null);
+  }
+
+  /**
+   * Instantiates a new {@link EntityComboBox} builder
+   * @param comboBoxModel the combo box model
+   * @param linkedValue the linked value
+   * @param <B> the builder type
+   * @return a builder for a {@link EntityComboBox}
+   */
+  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(final SwingEntityComboBoxModel comboBoxModel,
+                                                                                                                          final Value<Entity> linkedValue) {
+    return new DefaultBuilder<>(comboBoxModel, linkedValue);
   }
 
   private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
@@ -154,8 +167,8 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
 
-    private DefaultBuilder(final SwingEntityComboBoxModel comboBoxModel) {
-      super(comboBoxModel, null);
+    private DefaultBuilder(final SwingEntityComboBoxModel comboBoxModel, final Value<Entity> linkedValue) {
+      super(comboBoxModel, linkedValue);
       popupMenuControl(Control.builder(comboBoxModel::forceRefresh)
               .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
               .build());

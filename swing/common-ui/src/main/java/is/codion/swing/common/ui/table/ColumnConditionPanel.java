@@ -347,47 +347,47 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
         return checkBox((Value<Boolean>) value)
                 .nullable(true)
                 .horizontalAlignment(CENTER)
-                .buildComponentValue().getComponent();
+                .build();
       }
       if (typeClass.equals(Integer.class)) {
         return integerField((Value<Integer>) value)
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(Double.class)) {
         return doubleField((Value<Double>) value)
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(BigDecimal.class)) {
         return bigDecimalField((Value<BigDecimal>) value)
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(Long.class)) {
         return longField((Value<Long>) value)
                 .format(columnConditionModel.getFormat())
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(LocalTime.class)) {
         return localTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalTime>) value)
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(LocalDate.class)) {
         return localDateField(columnConditionModel.getDateTimePattern(), (Value<LocalDate>) value)
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         return localDateTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalDateTime>) value)
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(OffsetDateTime.class)) {
         return offsetDateTimeField(columnConditionModel.getDateTimePattern(), (Value<OffsetDateTime>) value)
-                .buildComponentValue().getComponent();
+                .build();
       }
       else if (typeClass.equals(String.class)) {
         return textField((Value<String>) value)
-                .buildComponentValue().getComponent();
+                .build();
       }
 
       throw new IllegalArgumentException("Unsupported type: " + typeClass);
