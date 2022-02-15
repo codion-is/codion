@@ -27,7 +27,7 @@ public final class ProgressDialog extends JDialog {
   private final JProgressBar progressBar;
 
   ProgressDialog(final DefaultProgressDialogBuilder builder, final Window dialogOwner) {
-    super(dialogOwner, ModalityType.APPLICATION_MODAL);
+    super(dialogOwner, dialogOwner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
     setTitle(builder.title);
     if (builder.icon != null) {
       setIconImage(builder.icon.getImage());
