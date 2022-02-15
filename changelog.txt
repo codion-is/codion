@@ -7762,3 +7762,4 @@
   Property.Builder.minimumValue() and maximumValue() replaced with range()
   EntityComboBox.builder() overloaded with Value parameter
   Replaced ComponentBuilder.buildComponentValue() with build() where applicable
+  EntityInputComponents.getComponentBuilders() renamed getComponents()

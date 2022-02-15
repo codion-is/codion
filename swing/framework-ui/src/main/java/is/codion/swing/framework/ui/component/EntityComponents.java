@@ -45,7 +45,8 @@ import java.time.temporal.Temporal;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A factory for {@link is.codion.swing.common.ui.component.ComponentBuilder}.
+ * A factory for {@link is.codion.swing.common.ui.component.ComponentBuilder} instances
+ * based on properties for a given entity definition.
  */
 public class EntityComponents {
 
@@ -173,7 +174,8 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
+  public final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final Attribute<T> attribute,
+                                                                                                                       final ComboBoxModel<T> comboBoxModel) {
     final Property<T> property = entityDefinition.getProperty(attribute);
 
     return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
