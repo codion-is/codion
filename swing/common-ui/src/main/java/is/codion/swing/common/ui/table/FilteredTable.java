@@ -101,6 +101,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private static final String SELECT = "select";
+  private static final String SELECT_COLUMNS = "select_columns";
   private static final String RESET = "reset";
   private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
@@ -310,7 +311,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
             .owner(this)
-            .title(MESSAGES.getString(SELECT))
+            .title(MESSAGES.getString(SELECT_COLUMNS))
             .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
             .onOk(selectColumnsPanel::applyChanges)
             .show();

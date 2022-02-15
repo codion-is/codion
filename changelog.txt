@@ -7752,3 +7752,4 @@
   EntityComboBox.textFieldSelector() and integerFieldSelector() now return a builder for further field configuration
   AbstractTableSortModel.getComparable() replaced with getColumnValue()
   ColumnPacker now translates Types.BIT to Boolean
+  FilteredTable, added title caption to column selection dialog
