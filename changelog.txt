@@ -7753,3 +7753,4 @@
   AbstractTableSortModel.getComparable() replaced with getColumnValue()
   ColumnPacker now translates Types.BIT to Boolean
   FilteredTable, added title caption to column selection dialog
+  EntityApplicationPanel, Tools -> Log Level menu item now radio button based, instead of displaying a dialog
