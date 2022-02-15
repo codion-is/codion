@@ -129,13 +129,8 @@ public final class PropertiesTest {
   }
 
   @Test
-  void setMinimumValueNonNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).minimumValue(5));
-  }
-
-  @Test
-  void setMaximumValueNonNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).maximumValue(5));
+  void setRangeNonNumerical() {
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).range(5, 6));
   }
 
   @Test
@@ -146,10 +141,7 @@ public final class PropertiesTest {
   @Test
   void minimumMaximumValue() {
     final ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
-    builder.minimumValue(5);
-    assertThrows(IllegalArgumentException.class, () -> builder.maximumValue(4));
-    builder.maximumValue(6);
-    assertThrows(IllegalArgumentException.class, () -> builder.minimumValue(7));
+    assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
   }
 
   @Test

@@ -28,8 +28,7 @@ import java.util.stream.Collectors;
  * based on the specified max length.
  * This Validator can be extended to provide further validation.
  * @see Property.Builder#nullable(boolean)
- * @see Property.Builder#minimumValue(double)
- * @see Property.Builder#maximumValue(double)
+ * @see Property.Builder#range(double, double)
  * @see Property.Builder#maximumLength(int)
  */
 public class DefaultEntityValidator implements EntityValidator, Serializable {

@@ -156,9 +156,9 @@ public final class TestDomain extends DefaultDomain {
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(),
             columnProperty(Employee.SALARY, Employee.SALARY.getName())
-                    .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
+                    .nullable(false).range(1000, 10000).maximumFractionDigits(2),
             columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
-                    .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
+                    .range(100, 2000).maximumFractionDigits(2),
             columnProperty(Employee.MGR),
             foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.getName())
                     //not really soft, just for testing purposes

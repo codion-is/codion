@@ -491,26 +491,15 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B maximumValue(final double maximumValue) {
+    public final B range(final double minimumValue, final double maximumValue) {
       if (!property.attribute.isNumerical()) {
-        throw new IllegalStateException("maximumValue is only applicable to numerical properties: " + property.attribute);
+        throw new IllegalStateException("range is only applicable to numerical properties");
       }
-      if (property.minimumValue != null && property.minimumValue > maximumValue) {
-        throw new IllegalArgumentException("maximumValue must be larger than minimum value: " + property.attribute);
-      }
-      property.maximumValue = maximumValue;
-      return (B) this;
-    }
-
-    @Override
-    public final B minimumValue(final double minimumValue) {
-      if (!property.attribute.isNumerical()) {
-        throw new IllegalStateException("minimumValue is only applicable to numerical properties");
-      }
-      if (property.maximumValue != null && property.maximumValue < minimumValue) {
-        throw new IllegalArgumentException("minimumValue must be smaller than maximum value: " + property.attribute);
+      if (maximumValue < minimumValue) {
+        throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + property.attribute);
       }
       property.minimumValue = minimumValue;
+      property.maximumValue = maximumValue;
       return (B) this;
     }
 
