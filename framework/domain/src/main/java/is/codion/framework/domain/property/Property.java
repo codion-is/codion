@@ -310,18 +310,12 @@ public interface Property<T> {
     B hidden(boolean hidden);
 
     /**
-     * Sets the maximum allowed value for this property, only applicable to numerical properties
-     * @param maximumValue the maximum allowed value
-     * @return this instance
-     */
-    B maximumValue(double maximumValue);
-
-    /**
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
+     * @param maximumValue the maximum allowed value for this property
      * @return this instance
      */
-    B minimumValue(double minimumValue);
+    B range(double minimumValue, double maximumValue);
 
     /**
      * Sets the maximum fraction digits to show for this property, only applicable to properties based on decimal types.

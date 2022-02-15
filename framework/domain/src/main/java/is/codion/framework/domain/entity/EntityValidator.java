@@ -78,8 +78,7 @@ public interface EntityValidator {
    * @param property the property
    * @param <T> the value type
    * @throws RangeValidationException in case the value of the given property is outside the legal range
-   * @see Property.Builder#maximumValue(double)
-   * @see Property.Builder#minimumValue(double)
+   * @see Property.Builder#range(double, double)
    */
   <T extends Number> void performRangeValidation(Entity entity, Property<T> property) throws RangeValidationException;
 
