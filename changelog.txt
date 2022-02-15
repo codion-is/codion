@@ -7785,3 +7785,6 @@
   AbstractComponentBuilder, if the linked value is set via the constructor we consider it locked, so it can't be subsequently changed
   EntityComboBox.textFieldSelector() and integerFieldSelector() now return a builder for further field configuration
   AbstractTableSortModel.getComparable() replaced with getColumnValue()
+  ColumnPacker now translates Types.BIT to Boolean
+  FilteredTable, added title caption to column selection dialog
+  EntityApplicationPanel, Tools -> Log Level menu item now radio button based, instead of displaying a dialog

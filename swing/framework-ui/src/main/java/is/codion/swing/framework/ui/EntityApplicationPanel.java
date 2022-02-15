@@ -92,6 +92,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -110,8 +111,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         extends JPanel implements DialogExceptionHandler, HierarchyPanel {
 
   private static final String CODION_CLIENT_VERSION = "codion.client.version";
-  private static final String SET_LOG_LEVEL = "set_log_level";
-  private static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
+  private static final String LOG_LEVEL = "log_level";
+  private static final String LOG_LEVEL_DESC = "log_level_desc";
   private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
   private static final String HELP = "help";
   private static final String ABOUT = "about";
@@ -193,6 +194,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final Map<EntityPanel.Builder, EntityPanel> persistentEntityPanels = new HashMap<>();
 
+  private final Map<Object, State> logLevelStates;
+
   private final String applicationName;
   private final ImageIcon applicationIcon;
 
@@ -223,6 +226,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
+    this.logLevelStates = initializeLogLevelStates();
     //initialize button captions, not in a static initializer since applications may set the locale in main()
     UiManagerDefaults.initialize();
     setUncaughtExceptionHandler();
@@ -335,8 +339,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     model.setSelectedItem(loggerProxy.getLogLevel());
     Dialogs.okCancelDialog(new JComboBox<>(model))
             .owner(this)
-            .title(resourceBundle.getString(SET_LOG_LEVEL))
-            .onOk(() -> loggerProxy.setLogLevel(model.getSelectedItem()))
+            .title(resourceBundle.getString(LOG_LEVEL))
+            .onOk(() -> logLevelStates.get(model.getSelectedItem()).set(true))
             .show();
   }
 
@@ -639,11 +643,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the Controls specifying the items in the 'Tools' menu
    */
   protected Controls getToolsControls() {
-    return Controls.builder()
+    final Controls.Builder toolsControlsBuilder = Controls.builder()
             .caption(resourceBundle.getString("tools"))
-            .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0))
-            .control(getSettingsControls())
-            .build();
+            .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0));
+    if (!logLevelStates.isEmpty()) {
+      toolsControlsBuilder.control(createLogLevelControl());
+    }
+
+    return toolsControlsBuilder.build();
   }
 
   /**
@@ -692,10 +699,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for setting the log level
    */
   protected final Control createLogLevelControl() {
-    return Control.builder(this::setLogLevel)
-            .caption(resourceBundle.getString(SET_LOG_LEVEL))
-            .description(resourceBundle.getString(SET_LOG_LEVEL_DESC))
+    final Controls logLevelControls = Controls.builder()
+            .caption(resourceBundle.getString(LOG_LEVEL))
+            .description(resourceBundle.getString(LOG_LEVEL_DESC))
             .build();
+    logLevelStates.forEach((logLevel, state) -> logLevelControls.add(ToggleControl.builder(state)
+            .caption(logLevel.toString())
+            .build()));
+
+    return logLevelControls;
   }
 
   /**
@@ -1385,6 +1397,28 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.debug("Invalid UUID authentication token");
       return null;
     }
+  }
+
+  private static Map<Object, State> initializeLogLevelStates() {
+    final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
+    if (loggerProxy == null) {
+      return Collections.emptyMap();
+    }
+    final Object currentLogLevel = loggerProxy.getLogLevel();
+    final Map<Object, State> levelStateMap = new LinkedHashMap<>();
+    final State.Group logLevelStateGroup = State.group();
+    for (final Object logLevel : loggerProxy.getLogLevels()) {
+      final State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
+      logLevelStateGroup.addState(logLevelState);
+      logLevelState.addDataListener(enabled -> {
+        if (enabled) {
+          loggerProxy.setLogLevel(logLevel);
+        }
+      });
+      levelStateMap.put(logLevel, logLevelState);
+    }
+
+    return Collections.unmodifiableMap(levelStateMap);
   }
 
   private static JScrollPane initializeTree(final TreeModel treeModel) {
