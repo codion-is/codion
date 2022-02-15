@@ -84,6 +84,7 @@ final class ColumnPacker implements ResultPacker<Column> {
         return String.class;
       case Types.BLOB:
         return byte[].class;
+      case Types.BIT:
       case Types.BOOLEAN:
         return Boolean.class;
       default://unsupported data type
