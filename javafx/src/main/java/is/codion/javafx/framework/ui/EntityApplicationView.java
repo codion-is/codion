@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A root application View.
@@ -87,24 +88,24 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return null, since {@link EntityApplicationView} does not have a parent view
    */
   @Override
-  public final ViewTreeNode<EntityView> getParentView() {
-    return null;
+  public final Optional<ViewTreeNode<EntityView>> getParentView() {
+    return Optional.empty();
   }
 
   /**
    * @return null, since {@link EntityApplicationView} does not have a previous sibling view
    */
   @Override
-  public final EntityView getPreviousSiblingView() {
-    return null;
+  public final Optional<EntityView> getPreviousSiblingView() {
+    return Optional.empty();
   }
 
   /**
    * @return null, since {@link EntityApplicationView} does not have a next sibling view
    */
   @Override
-  public final EntityView getNextSiblingView() {
-    return null;
+  public final Optional<EntityView> getNextSiblingView() {
+    return Optional.empty();
   }
 
   /**
