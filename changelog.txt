@@ -7794,3 +7794,6 @@
   AbstractServer.getConnection() now throws IllegalArgumentException in case no client connection is found
   ViewTreeNode now uses Optional
   Property.Builder.minimumValue() and maximumValue() replaced with range()
+  EntityComboBox.builder() overloaded with Value parameter
+  Replaced ComponentBuilder.buildComponentValue() with build() where applicable
+  EntityInputComponents.getComponentBuilders() renamed getComponents()

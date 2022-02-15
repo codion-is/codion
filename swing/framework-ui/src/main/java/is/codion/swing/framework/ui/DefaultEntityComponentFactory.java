@@ -35,7 +35,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
     if (attribute.isTemporal()) {
       final ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
-              inputComponents.getComponentBuilders().temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
+              inputComponents.getComponents().temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
       componentValue.set((Temporal) initialValue);
 
       return (ComponentValue<T, C>) componentValue;
@@ -57,7 +57,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<T, C>) inputComponents.getComponentBuilders().foreignKeyComboBox(foreignKey, comboBoxModel)
+      return (ComponentValue<T, C>) inputComponents.getComponents().foreignKeyComboBox(foreignKey, comboBoxModel)
               .onSetVisible(comboBox -> comboBoxModel.refresh())
               .buildComponentValue();
     }
@@ -65,6 +65,6 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
-    return (ComponentValue<T, C>) inputComponents.getComponentBuilders().foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
+    return (ComponentValue<T, C>) inputComponents.getComponents().foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
   }
 }

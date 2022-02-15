@@ -83,7 +83,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
     final ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel instanceof ForeignKeyConditionModel) {
-      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityInputComponents.getComponentBuilders());
+      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityInputComponents.getComponents());
     }
     else {
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityInputComponents, conditionModel.getColumnIdentifier());

@@ -23,7 +23,7 @@ import java.time.OffsetDateTime;
  */
 public final class EntityInputComponents {
 
-  private final EntityComponents builders;
+  private final EntityComponents components;
 
   /**
    * Instantiates a new EntityInputComponents, for creating input
@@ -31,14 +31,14 @@ public final class EntityInputComponents {
    * @param entityDefinition the definition of the entity
    */
   public EntityInputComponents(final EntityDefinition entityDefinition) {
-    this.builders = new EntityComponents(entityDefinition);
+    this.components = new EntityComponents(entityDefinition);
   }
 
   /**
    * @return the {@link EntityComponents} instance.
    */
-  public EntityComponents getComponentBuilders() {
-    return builders;
+  public EntityComponents getComponents() {
+    return components;
   }
 
   /**
@@ -65,60 +65,59 @@ public final class EntityInputComponents {
     if (attribute instanceof ForeignKey) {
       throw new IllegalArgumentException("ForeignKeys are not supported");
     }
-    final Property<T> property = builders.getEntityDefinition().getProperty(attribute);
+    final Property<T> property = components.getEntityDefinition().getProperty(attribute);
     if (property instanceof ItemProperty) {
-      return (ComponentValue<T, C>) builders.itemComboBox(attribute)
+      return (ComponentValue<T, C>) components.itemComboBox(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalTime()) {
-      return (ComponentValue<T, C>) builders.localTimeField((Attribute<LocalTime>) attribute)
+      return (ComponentValue<T, C>) components.localTimeField((Attribute<LocalTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDate()) {
-      return (ComponentValue<T, C>) builders.localDateField((Attribute<LocalDate>) attribute)
+      return (ComponentValue<T, C>) components.localDateField((Attribute<LocalDate>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLocalDateTime()) {
-      return (ComponentValue<T, C>) builders.localDateTimeField((Attribute<LocalDateTime>) attribute)
+      return (ComponentValue<T, C>) components.localDateTimeField((Attribute<LocalDateTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isOffsetDateTime()) {
-      return (ComponentValue<T, C>) builders.offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
+      return (ComponentValue<T, C>) components.offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isString() || attribute.isCharacter()) {
-      return (ComponentValue<T, C>) builders.textField(attribute)
+      return (ComponentValue<T, C>) components.textField(attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isBoolean()) {
-      return (ComponentValue<T, C>) builders.checkBox((Attribute<Boolean>) attribute)
+      return (ComponentValue<T, C>) components.checkBox((Attribute<Boolean>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isInteger()) {
-      return (ComponentValue<T, C>) builders.integerField((Attribute<Integer>) attribute)
+      return (ComponentValue<T, C>) components.integerField((Attribute<Integer>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isLong()) {
-      return (ComponentValue<T, C>) builders.longField((Attribute<Long>) attribute)
+      return (ComponentValue<T, C>) components.longField((Attribute<Long>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
-
     }
     if (attribute.isDouble()) {
-      return (ComponentValue<T, C>) builders.doubleField((Attribute<Double>) attribute)
+      return (ComponentValue<T, C>) components.doubleField((Attribute<Double>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
     if (attribute.isBigDecimal()) {
-      return (ComponentValue<T, C>) builders.bigDecimalField((Attribute<BigDecimal>) attribute)
+      return (ComponentValue<T, C>) components.bigDecimalField((Attribute<BigDecimal>) attribute)
               .enabledState(enabledState)
               .buildComponentValue();
     }
