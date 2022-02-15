@@ -54,19 +54,13 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
   @Override
   public Object getLogLevel() {
-    if (loggerProxy != null) {
-      return loggerProxy.getLogLevel();
-    }
-
-    return null;
+    return loggerProxy.getLogLevel();
   }
 
   @Override
   public void setLogLevel(final Object level) {
     LOG.info("setLogLevel({})", level);
-    if (loggerProxy != null) {
-      loggerProxy.setLogLevel(level);
-    }
+    loggerProxy.setLogLevel(level);
   }
 
   @Override

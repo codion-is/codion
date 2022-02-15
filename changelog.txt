@@ -7756,3 +7756,4 @@
   EntityApplicationPanel, Tools -> Log Level menu item now radio button based, instead of displaying a dialog
   DefaultProgressWorkerDialogBuilder now closes progress dialog before handling exception
   ProgressDialog bug fixed, no longer modal when dialogOwner is null, was causing EntityApplicationPanel.startApplication() dialog to freeze when an exception happened during model initialization
+  LoggerProxy.loggerProxy() now returns LoggerProxy.NULL_PROXY no-op instance instead of null

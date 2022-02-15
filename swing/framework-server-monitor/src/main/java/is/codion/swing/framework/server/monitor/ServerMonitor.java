@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Collections.emptyList;
-
 /**
  * A ServerMonitor
  */
@@ -199,10 +197,6 @@ public final class ServerMonitor {
    * @return the available log levels
    */
   public List<Object> getLogLevels() {
-    if (loggerProxy == null) {
-      return emptyList();
-    }
-
     return loggerProxy.getLogLevels();
   }
 
