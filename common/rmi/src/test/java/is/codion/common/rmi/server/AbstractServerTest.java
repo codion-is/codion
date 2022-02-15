@@ -78,7 +78,7 @@ public class AbstractServerTest {
     assertEquals(connection, server.getConnection(connectionRequest.getClientId()));
     assertNotNull(server.getConnection(connectionRequest.getClientId()));
     server.disconnect(connectionRequest.getClientId());
-    assertNull(server.getConnection(connectionRequest.getClientId()));
+    assertThrows(IllegalArgumentException.class, () -> server.getConnection(connectionRequest.getClientId()));
     final ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
     assertNotNull(server.getServerInformation());

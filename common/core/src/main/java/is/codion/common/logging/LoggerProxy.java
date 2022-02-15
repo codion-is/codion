@@ -3,6 +3,7 @@
  */
 package is.codion.common.logging;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -11,6 +12,27 @@ import java.util.ServiceLoader;
  * A logging proxy facilitating the setting of log levels
  */
 public interface LoggerProxy {
+
+  /**
+   * The null logger proxy instance, zero functionality.
+   */
+  LoggerProxy NULL_PROXY = new LoggerProxy() {
+
+    private static final String NO_LOG_LEVEL = "NULL";
+
+    @Override
+    public Object getLogLevel() {
+      return NO_LOG_LEVEL;
+    }
+
+    @Override
+    public void setLogLevel(final Object logLevel) {/*no op*/}
+
+    @Override
+    public List<Object> getLogLevels() {
+      return Collections.emptyList();
+    }
+  };
 
   /**
    * @return the current log level
@@ -29,7 +51,7 @@ public interface LoggerProxy {
   List<Object> getLogLevels();
 
   /**
-   * @return the first available LoggerProxy implementation found, null if none is available
+   * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.
    */
   static LoggerProxy loggerProxy() {
     final ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
@@ -39,6 +61,6 @@ public interface LoggerProxy {
     }
 
     System.err.println("No LoggerProxy service implementation found");
-    return null;
+    return NULL_PROXY;
   }
 }

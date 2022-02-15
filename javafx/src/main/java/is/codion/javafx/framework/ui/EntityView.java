@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A Pane joining a {@link EntityEditView} and a {@link EntityTableView}.
@@ -127,45 +128,45 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   @Override
-  public final ViewTreeNode<EntityView> getParentView() {
-    return parentView;
+  public final Optional<ViewTreeNode<EntityView>> getParentView() {
+    return Optional.ofNullable(parentView);
   }
 
   @Override
-  public final EntityView getPreviousSiblingView() {
-    if (getParentView() == null) {
-      return null;
+  public final Optional<EntityView> getPreviousSiblingView() {
+    if (!getParentView().isPresent()) {
+      return Optional.empty();
     }
 
-    final List<EntityView> siblings = getParentView().getChildViews();
+    final List<EntityView> siblings = getParentView().get().getChildViews();
     if (siblings.contains(this)) {
       final int index = siblings.indexOf(this);
       if (index == 0) {
-        return siblings.get(siblings.size() - 1);
+        return Optional.ofNullable(siblings.get(siblings.size() - 1));
       }
 
-      return siblings.get(index - 1);
+      return Optional.ofNullable(siblings.get(index - 1));
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @Override
-  public final EntityView getNextSiblingView() {
-    if (getParentView() == null) {//no parent, no siblings
-      return null;
+  public final Optional<EntityView> getNextSiblingView() {
+    if (!getParentView().isPresent()) {//no parent, no siblings
+      return Optional.empty();
     }
-    final List<EntityView> siblings = getParentView().getChildViews();
+    final List<EntityView> siblings = getParentView().get().getChildViews();
     if (siblings.contains(this)) {
       final int index = siblings.indexOf(this);
       if (index == siblings.size() - 1) {
-        return siblings.get(0);
+        return Optional.ofNullable(siblings.get(0));
       }
 
-      return siblings.get(index + 1);
+      return Optional.ofNullable(siblings.get(index + 1));
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @Override
@@ -243,17 +244,11 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   private void navigateLeft() {
-    final EntityView leftSibling = getPreviousSiblingView();
-    if (leftSibling != null) {
-      leftSibling.activateView();
-    }
+    getPreviousSiblingView().ifPresent(EntityView::activateView);
   }
 
   private void navigateRight() {
-    final EntityView rightSibling = getNextSiblingView();
-    if (rightSibling != null) {
-      rightSibling.activateView();
-    }
+    getNextSiblingView().ifPresent(EntityView::activateView);
   }
 
   private void navigateUp() {

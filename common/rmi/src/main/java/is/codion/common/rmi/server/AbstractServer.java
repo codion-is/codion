@@ -114,7 +114,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   /**
    * @param clientId the client id
-   * @return the connection associated with the given client, null if none exists
+   * @return the connection associated with the given client
+   * @throws IllegalArgumentException in case no such client is connected
    */
   public final T getConnection(final UUID clientId) {
     final ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, CLIENT_ID));
@@ -122,7 +123,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       return clientConnection.getConnection();
     }
 
-    return null;
+    throw new IllegalArgumentException("Client not connected: " + clientId);
   }
 
   /**

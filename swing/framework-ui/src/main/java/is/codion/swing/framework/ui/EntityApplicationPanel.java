@@ -332,7 +332,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void setLogLevel() {
     final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
-    if (loggerProxy == null) {
+    if (loggerProxy == LoggerProxy.NULL_PROXY) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }
     final ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
@@ -1401,7 +1401,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static Map<Object, State> initializeLogLevelStates() {
     final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
-    if (loggerProxy == null) {
+    if (loggerProxy == LoggerProxy.NULL_PROXY) {
       return Collections.emptyMap();
     }
     final Object currentLogLevel = loggerProxy.getLogLevel();

@@ -247,12 +247,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return the client log for the given connection
    */
   final ClientLog getClientLog(final UUID clientId) {
-    final AbstractRemoteEntityConnection connection = getConnection(clientId);
-    if (connection != null) {
-      return connection.getClientLog();
-    }
-
-    throw new IllegalArgumentException("Client not connected: " + clientId);
+    return getConnection(clientId).getClientLog();
   }
 
   /**
@@ -260,12 +255,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return true if logging is enabled for the given client
    */
   final boolean isLoggingEnabled(final UUID clientId) {
-    final AbstractRemoteEntityConnection connection = getConnection(clientId);
-    if (connection != null) {
-      return connection.isLoggingEnabled();
-    }
-
-    return false;
+    return getConnection(clientId).isLoggingEnabled();
   }
 
   /**
@@ -273,10 +263,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param loggingEnabled the new logging status
    */
   final void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {
-    final AbstractRemoteEntityConnection connection = getConnection(clientId);
-    if (connection != null) {
-      connection.setLoggingEnabled(loggingEnabled);
-    }
+    getConnection(clientId).setLoggingEnabled(loggingEnabled);
   }
 
   /**

@@ -4,6 +4,7 @@
 package is.codion.javafx.framework.ui;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A View node for a tree structure, with a parent, siblings and children.
@@ -12,19 +13,19 @@ import java.util.List;
 public interface ViewTreeNode<T extends ViewTreeNode<T>> {
 
   /**
-   * @return the parent view or null if none exists
+   * @return the parent view or an empty Optional if none exists
    */
-  ViewTreeNode<T> getParentView();
+  Optional<ViewTreeNode<T>> getParentView();
 
   /**
-   * @return the previous sibling or null if none exists, wraps around
+   * @return the previous sibling or an empty Optional if none exists, wraps around
    */
-  T getPreviousSiblingView();
+  Optional<T> getPreviousSiblingView();
 
   /**
-   * @return the next sibling or null if none exists, wraps around
+   * @return the next sibling or an empty Optional if none exists, wraps around
    */
-  T getNextSiblingView();
+  Optional<T> getNextSiblingView();
 
   /**
    * @return a List containing the child views, empty if none exist

@@ -150,8 +150,8 @@ public class EntityServerTest {
     final RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
     admin.setLoggingEnabled(connectionRequestTwo.getClientId(), true);
     assertTrue(admin.isLoggingEnabled(connectionRequestOne.getClientId()));
-    assertFalse(admin.isLoggingEnabled(UUID.randomUUID()));
-    admin.setLoggingEnabled(UUID.randomUUID(), true);
+    assertThrows(IllegalArgumentException.class, () -> admin.isLoggingEnabled(UUID.randomUUID()));
+    assertThrows(IllegalArgumentException.class, () -> admin.setLoggingEnabled(UUID.randomUUID(), true));
     assertTrue(remoteConnectionTwo.isConnected());
     assertEquals(2, admin.getConnectionCount());
     assertEquals(2, admin.getClients().size());
