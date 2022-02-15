@@ -7757,3 +7757,4 @@
   DefaultProgressWorkerDialogBuilder now closes progress dialog before handling exception
   ProgressDialog bug fixed, no longer modal when dialogOwner is null, was causing EntityApplicationPanel.startApplication() dialog to freeze when an exception happened during model initialization
   LoggerProxy.loggerProxy() now returns LoggerProxy.NULL_PROXY no-op instance instead of null
+  AbstractServer.getConnection() now throws IllegalArgumentException in case no client connection is found
