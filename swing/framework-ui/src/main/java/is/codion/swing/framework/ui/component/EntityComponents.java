@@ -194,9 +194,8 @@ public class EntityComponents {
     }
     final Property<T> property = entityDefinition.getProperty(attribute);
 
-    return Components.temporalInputPanel(attribute.getTypeClass())
-            .toolTipText(property.getDescription())
-            .dateTimePattern(property.getDateTimePattern());
+    return Components.temporalInputPanel(attribute.getTypeClass(), property.getDateTimePattern())
+            .toolTipText(property.getDescription());
   }
 
   /**

@@ -33,12 +33,6 @@ public interface TemporalInputPanelBuilder<T extends Temporal> extends Component
   TemporalInputPanelBuilder<T> updateOn(UpdateOn updateOn);
 
   /**
-   * @param dateTimePattern the date time pattern, if applicable
-   * @return this builder instance
-   */
-  TemporalInputPanelBuilder<T> dateTimePattern(String dateTimePattern);
-
-  /**
    * @param calendarProvider the calendar provider to use for calendar input
    * @return this builder instance
    */
