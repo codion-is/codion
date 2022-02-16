@@ -211,8 +211,7 @@ public final class ComponentsTest {
   void temporalInputPanel() {
     final Value<LocalDate> value = Value.value(LocalDate.now());
     final ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            Components.temporalInputPanel(LocalDate.class)
-                    .dateTimePattern("dd-MM-yyyy")
+            Components.temporalInputPanel(LocalDate.class, "dd-MM-yyyy")
                     .columns(8)
                     .selectAllOnFocusGained(true)
                     .updateOn(UpdateOn.KEYSTROKE)

@@ -7763,3 +7763,6 @@
   EntityComboBox.builder() overloaded with Value parameter
   Replaced ComponentBuilder.buildComponentValue() with build() where applicable
   EntityInputComponents.getComponentBuilders() renamed getComponents()
+  Components refactored, requireNonNull() used for linkedValue parameters, related changes
+  TemporalInputPanelBuilder.dateTimePattern() removed, required parameter for DefaultTemporalInputPanelBuilder constructor
+  DefaultTemporalFieldBuilder now final, dateTimePattern and dateTimeFormatter fields final

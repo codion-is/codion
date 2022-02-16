@@ -11,7 +11,7 @@ import java.time.temporal.Temporal;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>>
+final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>>
         extends DefaultTextFieldBuilder<T, C, TemporalFieldBuilder<T, C>> implements TemporalFieldBuilder<T, C> {
 
   private final String dateTimePattern;
@@ -24,26 +24,25 @@ class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>
   }
 
   @Override
-  public final TemporalFieldBuilder<T, C> focusLostBehaviour(final int focusLostBehaviour) {
+  public TemporalFieldBuilder<T, C> focusLostBehaviour(final int focusLostBehaviour) {
     this.focusLostBehaviour = focusLostBehaviour;
     return this;
   }
 
   @Override
-  protected final C createTextField() {
-    return (C) TemporalField.builder((Class<Temporal>) getValueClass())
-            .dateTimePattern(dateTimePattern)
+  protected C createTextField() {
+    return (C) TemporalField.builder((Class<Temporal>) getValueClass(), dateTimePattern)
             .focusLostBehaviour(focusLostBehaviour)
             .build();
   }
 
   @Override
-  protected final ComponentValue<T, C> buildComponentValue(final C component) {
+  protected ComponentValue<T, C> buildComponentValue(final C component) {
     return (ComponentValue<T, C>) component.componentValue(updateOn);
   }
 
   @Override
-  protected final void setInitialValue(final C component, final T initialValue) {
+  protected void setInitialValue(final C component, final T initialValue) {
     component.setTemporal(initialValue);
   }
 }

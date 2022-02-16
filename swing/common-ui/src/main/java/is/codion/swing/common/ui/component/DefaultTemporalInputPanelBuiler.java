@@ -24,17 +24,17 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
         implements TemporalInputPanelBuilder<T> {
 
   private final Class<T> valueClass;
+  private final String dateTimePattern;
 
   private int columns;
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  private String dateTimePattern;
   private boolean selectAllOnFocusGained;
   private CalendarProvider calendarProvider = calendarProvider();
 
   DefaultTemporalInputPanelBuiler(final Class<T> valueClass, final String dateTimePattern, final Value<T> linkedValue) {
     super(linkedValue);
     this.valueClass = requireNonNull(valueClass);
-    this.dateTimePattern = dateTimePattern;
+    this.dateTimePattern = requireNonNull(dateTimePattern);
   }
 
   @Override
@@ -52,12 +52,6 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   @Override
   public TemporalInputPanelBuilder<T> updateOn(final UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
-    return this;
-  }
-
-  @Override
-  public TemporalInputPanelBuilder<T> dateTimePattern(final String dateTimePattern) {
-    this.dateTimePattern = requireNonNull(dateTimePattern);
     return this;
   }
 
