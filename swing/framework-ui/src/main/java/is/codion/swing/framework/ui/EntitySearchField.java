@@ -35,6 +35,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -136,6 +137,9 @@ public final class EntitySearchField extends JTextField {
       configureColors();
       searchHint.updateHint();
     }
+    if (selectionProvider != null) {
+      selectionProvider.updateUI();
+    }
   }
 
   /**
@@ -228,14 +232,6 @@ public final class EntitySearchField extends JTextField {
     return lookupEntities(entityType, connectionProvider, false, dialogParent, dialogTitle);
   }
 
-  private void selectEntities(final List<Entity> entities) {
-    Dialogs.okCancelDialog(selectionProvider.getSelectionComponent(entities))
-            .owner(this)
-            .title(MESSAGES.getString("select_entity"))
-            .okAction(selectionProvider.getSelectControl())
-            .show();
-  }
-
   private void linkToModel() {
     ComponentValues.textComponent(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
@@ -320,7 +316,7 @@ public final class EntitySearchField extends JTextField {
                 showEmptyResultMessage();
               }
               else {
-                selectEntities(queryResult);
+                selectionProvider.selectEntities(this, queryResult);
               }
             }
             selectAll();
@@ -340,9 +336,9 @@ public final class EntitySearchField extends JTextField {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
-            .owner(EntitySearchField.this)
-            .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
-            .show())
+                    .owner(EntitySearchField.this)
+                    .title(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+                    .show())
             .caption(FrameworkMessages.get(FrameworkMessages.SETTINGS))
             .build());
 
@@ -447,15 +443,16 @@ public final class EntitySearchField extends JTextField {
   }
 
   /**
-   * Provides a JComponent for selecting one or more of a given set of entities
+   * Provides a way for the user to select one or more of a given set of entities
    */
   public interface SelectionProvider {
 
     /**
-     * @param entities the entities to display in the component
-     * @return the component to display for selecting entities
+     * Displays a dialog for selecting from the given entities.
+     * @param dialogOwner the dialog owner
+     * @param entities the entities to select from
      */
-    JComponent getSelectionComponent(List<Entity> entities);
+    void selectEntities(JComponent dialogOwner, List<Entity> entities);
 
     /**
      * Sets the preferred size of the selection component.
@@ -464,10 +461,9 @@ public final class EntitySearchField extends JTextField {
     void setPreferredSize(Dimension preferredSize);
 
     /**
-     * @return a Control which sets the selected entities in the underlying {@link EntitySearchModel}
-     * and disposes the selection dialog
+     * Updates the UI of all the components used in this selection provider.
      */
-    Control getSelectControl();
+    void updateUI();
   }
 
   /**
@@ -475,7 +471,8 @@ public final class EntitySearchField extends JTextField {
    */
   public static class ListSelectionProvider implements SelectionProvider {
 
-    private final JList<Entity> list = new JList<>();
+    private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
+    private final JList<Entity> list = new JList<>(listModel);
     private final JScrollPane scrollPane = new JScrollPane(list);
     private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
@@ -505,13 +502,17 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final JComponent getSelectionComponent(final List<Entity> entities) {
-      requireNonNull(entities);
-      list.setListData(entities.toArray(new Entity[0]));
-      list.removeSelectionInterval(0, list.getModel().getSize());
+    public final void selectEntities(final JComponent dialogOwner, final List<Entity> entities) {
+      requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
-      return basePanel;
+      Dialogs.okCancelDialog(basePanel)
+              .owner(dialogOwner)
+              .title(MESSAGES.getString("select_entity"))
+              .okAction(selectControl)
+              .show();
+
+      listModel.removeAllElements();
     }
 
     @Override
@@ -520,8 +521,8 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final Control getSelectControl() {
-      return selectControl;
+    public final void updateUI() {
+      Utilities.updateUI(basePanel, list, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private Control.Command createSelectCommand(final EntitySearchModel searchModel) {
@@ -582,13 +583,17 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final JComponent getSelectionComponent(final List<Entity> entities) {
-      requireNonNull(entities);
-      table.getModel().clear();
-      table.getModel().addEntitiesAt(0, entities);
+    public final void selectEntities(final JComponent dialogOwner, final List<Entity> entities) {
+      table.getModel().addEntitiesAt(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
-      return basePanel;
+      Dialogs.okCancelDialog(basePanel)
+              .owner(dialogOwner)
+              .title(MESSAGES.getString("select_entity"))
+              .okAction(selectControl)
+              .show();
+
+      table.getModel().clear();
     }
 
     @Override
@@ -597,8 +602,8 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final Control getSelectControl() {
-      return selectControl;
+    public void updateUI() {
+      Utilities.updateUI(basePanel, table, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private Control.Command createSelectCommand(final EntitySearchModel searchModel, final SwingEntityTableModel tableModel) {
