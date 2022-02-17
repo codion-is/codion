@@ -10,16 +10,12 @@ import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JTextField;
 
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
-
 final class DefaultForeignKeyFieldBuilder extends AbstractComponentBuilder<Entity, JTextField, ForeignKeyFieldBuilder>
         implements ForeignKeyFieldBuilder {
 
   private int columns;
 
-  DefaultForeignKeyFieldBuilder() {
-    preferredHeight(getPreferredTextFieldHeight());
-  }
+  DefaultForeignKeyFieldBuilder() {}
 
   @Override
   public ForeignKeyFieldBuilder columns(final int columns) {
