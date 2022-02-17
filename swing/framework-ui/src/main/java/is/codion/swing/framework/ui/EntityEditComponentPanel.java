@@ -37,7 +37,6 @@ import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.ForeignKeyFieldBuilder;
-import is.codion.swing.framework.ui.component.ForeignKeySearchFieldBuilder;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -687,7 +686,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param foreignKey the foreign key for which to build a search field
    * @return a foreign key search field builder
    */
-  protected final ForeignKeySearchFieldBuilder createForeignKeySearchField(final ForeignKey foreignKey) {
+  protected final EntitySearchField.Builder createForeignKeySearchField(final ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     getEditModel().getForeignKeySearchModel(foreignKey))
             .columns(defaultTextFieldColumns));

@@ -31,6 +31,7 @@ import is.codion.swing.common.ui.component.TextInputPanelBuilder;
 import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
+import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
@@ -129,10 +130,10 @@ public class EntityComponents {
    * @param searchModel the search model
    * @return a builder
    */
-  public final ForeignKeySearchFieldBuilder foreignKeySearchField(final ForeignKey foreignKey, final EntitySearchModel searchModel) {
+  public final EntitySearchField.Builder foreignKeySearchField(final ForeignKey foreignKey, final EntitySearchModel searchModel) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return new DefaultForeignKeySearchFieldBuilder(searchModel)
+    return EntitySearchField.builder(searchModel)
             .toolTipText(foreignKeyProperty.getDescription() == null ? searchModel.getDescription() : foreignKeyProperty.getDescription());
   }
 
