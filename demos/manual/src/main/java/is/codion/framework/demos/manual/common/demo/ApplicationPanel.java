@@ -218,7 +218,6 @@ public final class ApplicationPanel extends JPanel {
             .build(inputPanel::add);
     checkBox(model.getBooleanValue())
             .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValue(model.getBooleanValue())
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);

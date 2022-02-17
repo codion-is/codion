@@ -66,4 +66,15 @@ public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends Comb
    * @return this builder instance
    */
   B maximumRowCount(int maximumRowCount);
+
+  /**
+   * When a JComboBox is editable, and a long item is selected, the caret is moved to the end, hiding
+   * the start of the selected item. Enabling this moves the caret to the front on selection, thereby
+   * showing the start of the selected item.
+   * This is enabled by default.
+   * @param moveCaretOnSelection if true the caret is moved to the front of the editor component on selection,
+   * displaying the start of the selected item, instead of the end
+   * @return this builder instance
+   */
+  B moveCaretOnSelection(boolean moveCaretOnSelection);
 }
