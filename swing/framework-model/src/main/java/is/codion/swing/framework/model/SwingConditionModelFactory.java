@@ -41,9 +41,7 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
    */
   protected SwingEntityComboBoxModel createComboBoxModel(final ForeignKey foreignKey) {
     final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
-    if (getForeignKeyProperty(foreignKey).isNullable()) {
-      comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
-    }
+    comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
 
     return comboBoxModel;
   }
