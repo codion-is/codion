@@ -164,28 +164,6 @@ public final class EntitySearchField extends JTextField {
   }
 
   /**
-   * @return true if focus should be transferred on Enter
-   */
-  public boolean isTransferFocusOnEnter() {
-    return transferFocusOnEnter;
-  }
-
-  /**
-   * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
-   */
-  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
-    this.transferFocusOnEnter = transferFocusOnEnter;
-    if (transferFocusOnEnter) {
-      createForwardEvent().enable(this);
-      createBackwardEvent().enable(this);
-    }
-    else {
-      createForwardEvent().disable(this);
-      createBackwardEvent().disable(this);
-    }
-  }
-
-  /**
    * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
    * in a dialog, using the default search attributes for the given entityType.
    * @param entityType the entityType of the entity to perform a search for
@@ -275,6 +253,18 @@ public final class EntitySearchField extends JTextField {
         searchHint.updateHint();
       }
     });
+  }
+
+  private void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+    this.transferFocusOnEnter = transferFocusOnEnter;
+    if (transferFocusOnEnter) {
+      createForwardEvent().enable(this);
+      createBackwardEvent().enable(this);
+    }
+    else {
+      createForwardEvent().disable(this);
+      createBackwardEvent().disable(this);
+    }
   }
 
   private KeyEvents.Builder createForwardEvent() {
