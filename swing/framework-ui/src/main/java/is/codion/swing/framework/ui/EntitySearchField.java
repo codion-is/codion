@@ -21,7 +21,9 @@ import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
@@ -31,6 +33,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.textfield.TextFieldHint;
+import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -68,10 +71,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.darker;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -85,6 +90,8 @@ import static java.util.Objects.requireNonNull;
  * selection based on the search model settings.
  *
  * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
+ *
+ * Use {@link EntitySearchField#builder(EntitySearchModel)} for a builder instance.
  *
  * @see EntitySearchModel
  * @see #setSelectionProvider(SelectionProvider)
@@ -109,11 +116,7 @@ public final class EntitySearchField extends JTextField {
   private boolean performingSearch = false;
   private boolean transferFocusOnEnter = false;
 
-  /**
-   * Initializes a new EntitySearchField.
-   * @param searchModel the search model on which to base this search field
-   */
-  public EntitySearchField(final EntitySearchModel searchModel) {
+  private EntitySearchField(final EntitySearchModel searchModel) {
     requireNonNull(searchModel, SEARCH_MODEL);
     this.model = searchModel;
     this.settingsPanel = new SettingsPanel(searchModel);
@@ -183,22 +186,6 @@ public final class EntitySearchField extends JTextField {
   }
 
   /**
-   * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}.
-   * @return a new ComponentValue
-   */
-  public ComponentValue<Entity, EntitySearchField> componentValueSingle() {
-    return new SearchFieldSingleValue(this);
-  }
-
-  /**
-   * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}.
-   * @return a new ComponentValue
-   */
-  public ComponentValue<List<Entity>, EntitySearchField> componentValueMultiple() {
-    return new SearchFieldMultipleValues(this);
-  }
-
-  /**
    * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
    * in a dialog, using the default search attributes for the given entityType.
    * @param entityType the entityType of the entity to perform a search for
@@ -230,6 +217,53 @@ public final class EntitySearchField extends JTextField {
   public static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String dialogTitle) {
     return lookupEntities(entityType, connectionProvider, false, dialogParent, dialogTitle);
+  }
+
+  /**
+   * Initializes a new {@link EntitySearchField.Builder}
+   * @param searchModel the search model on which to base the search field
+   * @return a new builder instance
+   */
+  public static Builder builder(final EntitySearchModel searchModel) {
+    return new DefaultEntitySearchFieldBuilder(requireNonNull(searchModel));
+  }
+
+  /**
+   * Builds a entity search field.
+   */
+  public interface Builder extends ComponentBuilder<Entity, EntitySearchField, Builder> {
+
+    /**
+     * @param columns the number of colums in the text field
+     * @return this builder instance
+     */
+    Builder columns(int columns);
+
+    /**
+     * Makes the field convert all lower case input to upper case
+     * @param upperCase if true the text component convert all lower case input to upper case
+     * @return this builder instance
+     */
+    Builder upperCase(boolean upperCase);
+
+    /**
+     * Makes the field convert all upper case input to lower case
+     * @param lowerCase if true the text component convert all upper case input to lower case
+     * @return this builder instance
+     */
+    Builder lowerCase(boolean lowerCase);
+
+    /**
+     * @param selectionProviderFactory the selection provider factory to use
+     * @return this builder instance
+     */
+    Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory);
+
+    /**
+     * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}, for multiple values.
+     * @return a new ComponentValue
+     */
+    ComponentValue<List<Entity>, EntitySearchField> buildComponentValueMultiple();
   }
 
   private void linkToModel() {
@@ -381,7 +415,9 @@ public final class EntitySearchField extends JTextField {
     final EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
 
-    return new EntitySearchField(searchModel).componentValueMultiple().showDialog(dialogParent, dialogTitle);
+    return EntitySearchField.builder(searchModel)
+            .buildComponentValueMultiple()
+            .showDialog(dialogParent, dialogTitle);
   }
 
   private static final class SettingsPanel extends JPanel {
@@ -670,6 +706,88 @@ public final class EntitySearchField extends JTextField {
         model.refreshSearchText();
         selectAll();
       }
+    }
+  }
+
+  private static final class DefaultEntitySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, Builder> implements Builder {
+
+    private final EntitySearchModel searchModel;
+
+    private int columns;
+    private boolean upperCase;
+    private boolean lowerCase;
+    private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
+
+    private DefaultEntitySearchFieldBuilder(final EntitySearchModel searchModel) {
+      this.searchModel = searchModel;
+    }
+
+    @Override
+    public Builder columns(final int columns) {
+      this.columns = columns;
+      return this;
+    }
+
+    @Override
+    public Builder upperCase(final boolean upperCase) {
+      if (upperCase && lowerCase) {
+        throw new IllegalArgumentException("Field is already lowercase");
+      }
+      this.upperCase = upperCase;
+      return this;
+    }
+
+    @Override
+    public Builder lowerCase(final boolean lowerCase) {
+      if (lowerCase && upperCase) {
+        throw new IllegalArgumentException("Field is already uppercase");
+      }
+      this.lowerCase = lowerCase;
+      return this;
+    }
+
+    @Override
+    public Builder selectionProviderFactory(final Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
+      this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
+      return this;
+    }
+
+    @Override
+    public ComponentValue<List<Entity>, EntitySearchField> buildComponentValueMultiple() {
+      return new SearchFieldMultipleValues(build());
+    }
+
+    @Override
+    protected EntitySearchField buildComponent() {
+      final EntitySearchField searchField = new EntitySearchField(searchModel);
+      searchField.setColumns(columns);
+      if (upperCase) {
+        TextFields.upperCase(searchField);
+      }
+      if (lowerCase) {
+        TextFields.lowerCase(searchField);
+      }
+      if (selectionProviderFactory != null) {
+        searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.getModel()));
+      }
+      selectAllOnFocusGained(searchField);
+
+      return searchField;
+    }
+
+    @Override
+    protected ComponentValue<Entity, EntitySearchField> buildComponentValue(final EntitySearchField component) {
+      return new SearchFieldSingleValue(component);
+    }
+
+    @Override
+    protected void setInitialValue(final EntitySearchField component, final Entity initialValue) {
+      component.getModel().setSelectedEntity(initialValue);
+    }
+
+    @Override
+    protected void setTransferFocusOnEnter(final EntitySearchField component) {
+      component.setTransferFocusOnEnter(true);
     }
   }
 }
