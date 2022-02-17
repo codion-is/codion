@@ -12,7 +12,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Arrays;
@@ -42,7 +41,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey, searchModel);
     }
 
-    final ColumnProperty<T> property = getColumnProperty(attribute);
+    final ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);;
     if (property.isAggregateColumn()) {
       return null;
     }
@@ -64,23 +63,6 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
    */
   protected final EntityDefinition getDefinition(final EntityType entityType) {
     return connectionProvider.getEntities().getDefinition(entityType);
-  }
-
-  /**
-   * @param <T> the attribute type
-   * @param attribute the attribute
-   * @return the ColumnProperty based on the given attribute
-   */
-  protected final <T> ColumnProperty<T> getColumnProperty(final Attribute<T> attribute) {
-    return connectionProvider.getEntities().getDefinition(attribute.getEntityType()).getColumnProperty(attribute);
-  }
-
-  /**
-   * @param foreignKey the foreign key
-   * @return the ForeignKeyProperty based on the given foreign key
-   */
-  protected final ForeignKeyProperty getForeignKeyProperty(final ForeignKey foreignKey) {
-    return connectionProvider.getEntities().getDefinition(foreignKey.getEntityType()).getForeignKeyProperty(foreignKey);
   }
 
   private static List<Operator> getOperators(final Attribute<?> attribute) {
