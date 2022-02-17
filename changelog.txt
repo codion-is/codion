@@ -7766,3 +7766,4 @@
   Components refactored, requireNonNull() used for linkedValue parameters, related changes
   TemporalInputPanelBuilder.dateTimePattern() removed, required parameter for DefaultTemporalInputPanelBuilder constructor
   DefaultTemporalFieldBuilder now final, dateTimePattern and dateTimeFormatter fields final
+  ComboBoxBuilder.moveCaretOnSelection() added, default true

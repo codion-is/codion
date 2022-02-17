@@ -13,6 +13,10 @@ import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import javax.swing.text.JTextComponent;
+import java.awt.Component;
 
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
@@ -30,6 +34,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   private boolean mouseWheelScrolling = false;
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
+  private boolean moveCaretOnSelection = true;
 
   protected DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
     super(linkedValue);
@@ -92,6 +97,12 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   @Override
+  public final B moveCaretOnSelection(final boolean moveCaretOnSelection) {
+    this.moveCaretOnSelection = moveCaretOnSelection;
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     final C comboBox = createComboBox();
     if (renderer != null) {
@@ -118,6 +129,10 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
+    final Component editorComponent = comboBox.getEditor().getEditorComponent();
+    if (comboBox.isEditable() && moveCaretOnSelection && editorComponent instanceof JTextComponent) {
+      comboBoxModel.addListDataListener(new MoveCaretListener((JTextComponent) editorComponent));
+    }
 
     return comboBox;
   }
@@ -140,5 +155,27 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
   protected C createComboBox() {
     return (C) new SteppedComboBox<>(comboBoxModel);
+  }
+
+  private static final class MoveCaretListener implements ListDataListener {
+
+    private final JTextComponent editorComponent;
+
+    private MoveCaretListener(final JTextComponent editorComponent) {
+      this.editorComponent = editorComponent;
+    }
+
+    @Override
+    public void intervalAdded(final ListDataEvent e) {}
+
+    @Override
+    public void intervalRemoved(final ListDataEvent e) {}
+
+    @Override
+    public void contentsChanged(final ListDataEvent e) {
+      if (e.getType() == ListDataEvent.CONTENTS_CHANGED) {
+        editorComponent.setCaretPosition(0);
+      }
+    }
   }
 }
