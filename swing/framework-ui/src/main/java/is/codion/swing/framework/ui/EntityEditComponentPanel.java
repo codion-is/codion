@@ -36,7 +36,6 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
-import is.codion.swing.framework.ui.component.ForeignKeyFieldBuilder;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -324,7 +323,6 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param defaultTextFieldColumns the default text field columns
    * @see #createTextField(Attribute)
    * @see #createForeignKeySearchField(ForeignKey)
-   * @see #createForeignKeyField(ForeignKey)
    * @see #createTextInputPanel(Attribute)
    */
   protected final void setDefaultTextFieldColumns(final int defaultTextFieldColumns) {
@@ -693,13 +691,12 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a builder for read-only foreign key fields.
-   * @param foreignKey the foreign key for which to build a field
-   * @return a foreign key field builder
+   * Creates a builder for a read-only foreign key label.
+   * @param foreignKey the foreign key for which to build a label
+   * @return a foreign key label builder
    */
-  protected final ForeignKeyFieldBuilder createForeignKeyField(final ForeignKey foreignKey) {
-    return setComponentBuilder(foreignKey, entityComponents.foreignKeyField(foreignKey)
-            .columns(defaultTextFieldColumns));
+  protected final LabelBuilder<Entity> createForeignKeyLabel(final ForeignKey foreignKey) {
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeyLabel(foreignKey));
   }
 
   /**
@@ -709,9 +706,9 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <T> the attribute type
    * @return a label builder for the given attribute
    */
-  protected final <T> LabelBuilder createLabel(final Attribute<T> attribute) {
+  protected final <T> LabelBuilder<T> createLabel(final Attribute<T> attribute) {
     final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    return Components.label(property.getCaption())
+    return (LabelBuilder<T>) Components.label(property.getCaption())
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
             .labelFor(getComponentInternal(attribute));
   }

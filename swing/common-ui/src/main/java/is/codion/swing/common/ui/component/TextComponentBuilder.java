@@ -25,12 +25,6 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   B updateOn(UpdateOn updateOn);
 
   /**
-   * @param columns the number of colums in the text component
-   * @return this builder instance
-   */
-  B columns(int columns);
-
-  /**
    * @param upperCase if true the text component convert all lower case input to upper case
    * @return this builder instance
    */

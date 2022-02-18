@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.textfield.TextFields.formattedTextComponentValue;
+import static is.codion.swing.common.ui.textfield.TextComponents.formattedTextComponentValue;
 
 /**
  * A factory for {@link ComponentValue}.

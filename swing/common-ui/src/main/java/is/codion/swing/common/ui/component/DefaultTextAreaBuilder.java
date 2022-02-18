@@ -4,19 +4,15 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.CaseDocumentFilter;
-import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
-import is.codion.swing.common.ui.textfield.StringLengthValidator;
 
 import javax.swing.JTextArea;
-import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, JTextArea, TextAreaBuilder>
-        implements TextAreaBuilder {
+final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, JTextArea, TextAreaBuilder> implements TextAreaBuilder {
 
+  private int columns;
   private int rows;
   private int tabSize;
   private boolean lineWrap = true;
@@ -37,7 +33,8 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   @Override
   public TextAreaBuilder rowsColumns(final int rows, final int columns) {
     this.rows = rows;
-    return columns(columns);
+    this.columns = columns;
+    return this;
   }
 
   @Override
@@ -71,7 +68,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   }
 
   @Override
-  protected JTextArea buildComponent() {
+  protected JTextArea createTextComponent() {
     final JTextArea textArea = new JTextArea(rows, columns);
     if (document != null) {
       textArea.setDocument(document);
@@ -79,26 +76,11 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
     else {
       document = textArea.getDocument();
     }
-    if (document instanceof AbstractDocument) {
-      final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
-      caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
-      if (upperCase) {
-        caseDocumentFilter.setDocumentCase(DocumentCase.UPPERCASE);
-      }
-      if (lowerCase) {
-        caseDocumentFilter.setDocumentCase(DocumentCase.LOWERCASE);
-      }
-      ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
-    }
     textArea.setAutoscrolls(autoscrolls);
     textArea.setLineWrap(lineWrap);
     textArea.setWrapStyleWord(wrapStyleWord);
-    textArea.setEditable(editable);
     if (tabSize > 0) {
       textArea.setTabSize(tabSize);
-    }
-    if (margin != null) {
-      textArea.setMargin(margin);
     }
 
     return textArea;

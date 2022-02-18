@@ -16,7 +16,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.MemoryUsageField;
-import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.textfield.TextComponents;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -188,7 +188,7 @@ public final class LoadTestPanel<T> extends JPanel {
     final JPanel userBase = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
-            .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
+            .fixedRowHeight(TextComponents.getPreferredTextFieldHeight())
             .build());
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
 
@@ -234,7 +234,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .description(add ? "Add application batch" : "Remove application batch")
             .build()
             .createButton();
-    button.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    button.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
     button.setMargin(new Insets(0, 0, 0, 0));
 
     return button;
@@ -327,7 +327,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return Components.panel(Layouts.flexibleGridLayout()
                     .rowsColumns(4, 2)
                     .fixRowHeights(true)
-                    .fixedRowHeight(TextFields.getPreferredTextFieldHeight())
+                    .fixedRowHeight(TextComponents.getPreferredTextFieldHeight())
                     .build())
             .add(new JLabel("Max. think time", SwingConstants.CENTER))
             .add(Components.integerSpinner(loadTestModel.getMaximumThinkTimeValue())

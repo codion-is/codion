@@ -548,10 +548,10 @@ public final class ComponentsTest {
   @Test
   void label() {
     final Value<String> textValue = Value.value("label");
-    final ComponentValue<String, JLabel> componentValue = Components.label(Logos.logoTransparent())
+    final ComponentValue<String, JLabel> componentValue = Components.label(textValue)
+            .icon(Logos.logoTransparent())
             .displayedMnemonic('l')
             .labelFor(new JButton())
-            .linkedValue(textValue)
             .buildComponentValue();
     assertEquals("label", componentValue.getComponent().getText());
     textValue.set("hello");
