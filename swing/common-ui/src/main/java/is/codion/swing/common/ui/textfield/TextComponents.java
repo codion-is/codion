@@ -61,7 +61,7 @@ public final class TextComponents {
       else if (documentFilter instanceof CaseDocumentFilter) {
         final CaseDocumentFilter caseDocumentFilter = (CaseDocumentFilter) documentFilter;
         final Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.getValidators().stream()
-                .filter(validator -> validator instanceof StringLengthValidator)
+                .filter(StringLengthValidator.class::isInstance)
                 .map(StringLengthValidator.class::cast)
                 .findFirst();
         if (lengthValidator.isPresent()) {
