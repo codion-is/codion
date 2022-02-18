@@ -6,6 +6,9 @@ package is.codion.swing.common.ui.textfield;
 import is.codion.common.value.Value;
 
 import javax.swing.text.DocumentFilter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,6 +28,13 @@ public class ValidationDocumentFilter<T> extends DocumentFilter {
    */
   public final void addValidator(final Value.Validator<T> validator) {
     validators.add(requireNonNull(validator, "validator"));
+  }
+
+  /**
+   * @return an unmodifiable view of the document validators
+   */
+  public final Collection<Value.Validator<T>> getValidators() {
+    return Collections.unmodifiableSet(new HashSet<>(validators));
   }
 
   /**

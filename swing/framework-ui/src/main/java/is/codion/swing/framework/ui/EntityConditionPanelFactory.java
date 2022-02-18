@@ -16,7 +16,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
-import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.textfield.TextComponents;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
@@ -109,7 +109,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public JComponent createEqualField() {
-      return Sizes.setPreferredHeight(createForeignKeyField(), TextFields.getPreferredTextFieldHeight());
+      return Sizes.setPreferredHeight(createForeignKeyField(), TextComponents.getPreferredTextFieldHeight());
     }
 
     @Override

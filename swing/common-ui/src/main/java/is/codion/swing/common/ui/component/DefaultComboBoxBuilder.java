@@ -18,7 +18,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
 
-import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
+import static is.codion.swing.common.ui.textfield.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
 public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>

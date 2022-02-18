@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.SizedDocument;
-import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.textfield.TextComponents;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
@@ -23,6 +23,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   private final Class<T> valueClass;
 
+  private int columns;
   private Action action;
   private ActionListener actionListener;
   private boolean selectAllOnFocusGained;
@@ -33,7 +34,19 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   DefaultTextFieldBuilder(final Class<T> valueClass, final Value<T> linkedValue) {
     super(linkedValue);
     this.valueClass = requireNonNull(valueClass);
-    columns(DEFAULT_TEXT_FIELD_COLUMNS.get());
+    if (valueClass.equals(Character.class)) {
+      maximumLength(1);
+      columns(1);
+    }
+    else {
+      columns(DEFAULT_TEXT_FIELD_COLUMNS.get());
+    }
+  }
+
+  @Override
+  public final B columns(final int columns) {
+    this.columns = columns;
+    return (B) this;
   }
 
   @Override
@@ -75,14 +88,13 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  protected final C buildComponent() {
-    final C textField = createTextField();
-    textField.setEditable(editable);
+  protected C createTextComponent() {
+    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
+      throw new IllegalArgumentException("TextFieldBuilder only supports String and Character");
+    }
+    final C textField = (C) new JTextField(new SizedDocument(), "", 1);
     textField.setColumns(columns);
     textField.setHorizontalAlignment(horizontalAlignment);
-    if (margin != null) {
-      textField.setMargin(margin);
-    }
     if (action != null) {
       textField.setAction(action);
     }
@@ -90,13 +102,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
       textField.addActionListener(actionListener);
     }
     if (selectAllOnFocusGained) {
-      TextFields.selectAllOnFocusGained(textField);
-    }
-    if (upperCase) {
-      TextFields.upperCase(textField);
-    }
-    if (lowerCase) {
-      TextFields.lowerCase(textField);
+      TextComponents.selectAllOnFocusGained(textField);
     }
     if (valueSupplier != null) {
       Dialogs.addLookupDialog(textField, valueSupplier);
@@ -125,35 +131,11 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
   }
 
-  /**
-   * Creates the text field built by this builder.
-   * @return a JTextField or subclass
-   */
-  protected C createTextField() {
-    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
-      throw new IllegalArgumentException("TextFieldBuilder only supports String and Character");
-    }
-    if (valueClass.equals(String.class)) {
-      return (C) initializeStringField();
-    }
-
-    return (C) new JTextField(new SizedDocument(1), "", 1);
-  }
-
   protected final Class<T> getValueClass() {
     return valueClass;
   }
 
   protected final Format getFormat() {
     return format;
-  }
-
-  private JTextField initializeStringField() {
-    final SizedDocument sizedDocument = new SizedDocument();
-    if (maximumLength > 0) {
-      sizedDocument.setMaximumLength(maximumLength);
-    }
-
-    return new JTextField(sizedDocument, "", 0);
   }
 }

@@ -7,7 +7,7 @@ import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.textfield.TextComponents;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -192,17 +192,17 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     chartConfig.add(Components.checkBox(model.getCollectSnapshotStatisticsState())
             .caption("Snapshot")
-            .maximumSize(TextFields.getPreferredTextFieldSize())
+            .maximumSize(TextComponents.getPreferredTextFieldSize())
             .build());
 
     chartConfig.add(Components.checkBox(model.getCollectCheckOutTimesState())
             .caption("Check out times")
-            .maximumSize(TextFields.getPreferredTextFieldSize())
+            .maximumSize(TextComponents.getPreferredTextFieldSize())
             .build());
 
     chartConfig.add(Components.button(control(model::clearInPoolStatistics))
             .caption("Clear")
-            .maximumSize(TextFields.getPreferredTextFieldSize())
+            .maximumSize(TextComponents.getPreferredTextFieldSize())
             .build());
 
     final JPanel southPanel = new JPanel(Layouts.borderLayout());

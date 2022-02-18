@@ -30,6 +30,12 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
           "is.codion.swing.common.ui.TextFieldBuilder.defaultTextFieldColumns", 12);
 
   /**
+   * @param columns the number of colums in the text component
+   * @return this builder instance
+   */
+  B columns(int columns);
+
+  /**
    * Note that this disables {@link #transferFocusOnEnter(boolean)}.
    * @param action the action to associate with the text field
    * @return this builder instance

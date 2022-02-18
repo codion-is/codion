@@ -44,7 +44,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       calendarButton = new JButton(Control.builder(this::displayCalendar)
               .caption("...")
               .build());
-      calendarButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+      calendarButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
       add(calendarButton, BorderLayout.EAST);
     }
     else {

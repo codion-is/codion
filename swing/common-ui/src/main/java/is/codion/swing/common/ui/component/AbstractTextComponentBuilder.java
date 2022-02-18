@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.textfield.TextComponents;
 
 import javax.swing.text.JTextComponent;
 import java.awt.Insets;
@@ -13,13 +14,13 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
         extends AbstractComponentBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
 
-  protected boolean editable = true;
   protected UpdateOn updateOn = UpdateOn.KEYSTROKE;
-  protected int columns;
-  protected boolean upperCase;
-  protected boolean lowerCase;
-  protected int maximumLength = -1;
-  protected Insets margin;
+
+  private boolean editable = true;
+  private boolean upperCase;
+  private boolean lowerCase;
+  private int maximumLength = -1;
+  private Insets margin;
 
   protected AbstractTextComponentBuilder(final Value<T> linkedValue) {
     super(linkedValue);
@@ -34,12 +35,6 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   @Override
   public final B updateOn(final UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
-    return (B) this;
-  }
-
-  @Override
-  public final B columns(final int columns) {
-    this.columns = columns;
     return (B) this;
   }
 
@@ -72,4 +67,30 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     this.margin = margin;
     return (B) this;
   }
+
+  @Override
+  protected final C buildComponent() {
+    final C textComponent = createTextComponent();
+    textComponent.setEditable(editable);
+    if (margin != null) {
+      textComponent.setMargin(margin);
+    }
+    if (upperCase) {
+      TextComponents.upperCase(textComponent.getDocument());
+    }
+    if (lowerCase) {
+      TextComponents.lowerCase(textComponent.getDocument());
+    }
+    if (maximumLength > 0) {
+      TextComponents.maximumLength(textComponent.getDocument(), maximumLength);
+    }
+
+    return textComponent;
+  }
+
+  /**
+   * Creates the text component built by this builder.
+   * @return a JTextComponent or subclass
+   */
+  protected abstract C createTextComponent();
 }

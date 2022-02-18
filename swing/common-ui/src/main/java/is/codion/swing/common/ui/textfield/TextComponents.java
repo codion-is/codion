@@ -8,20 +8,23 @@ import is.codion.swing.common.ui.component.UpdateOn;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
 
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.PlainDocument;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.Format;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility class for TextFields.
+ * A utility class for JTextComponents.
  */
-public final class TextFields {
+public final class TextComponents {
 
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.
@@ -36,42 +39,57 @@ public final class TextFields {
    */
   private static JTextField textField;
 
-  private TextFields() {}
+  private TextComponents() {}
 
   /**
-   * Makes {@code textComponent} convert all lower case input to upper case
-   * @param textComponent the text component
-   * @param <T> the component type
-   * @return the text component
+   * Sets the maximum length for the given document, supports {@link SizedDocument} and {@link AbstractDocument}
+   * @param document the document
+   * @param maximumLength the maximum string length
    */
-  public static <T extends JTextComponent> T upperCase(final T textComponent) {
-    requireNonNull(textComponent, TEXT_COMPONENT);
-    if (textComponent.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textComponent.getDocument()).getDocumentFilter().setDocumentCase(DocumentCase.UPPERCASE);
+  public static void maximumLength(final Document document, final int maximumLength) {
+    requireNonNull(document);
+    if (document instanceof SizedDocument) {
+      ((SizedDocument) document).setMaximumLength(maximumLength);
     }
-    else {
-      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(CaseDocumentFilter.caseDocumentFilter(DocumentCase.UPPERCASE));
+    else if (document instanceof AbstractDocument) {
+      final DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
+      if (documentFilter == null) {
+        final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
+        caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
+        ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
+      }
+      else if (documentFilter instanceof CaseDocumentFilter) {
+        final CaseDocumentFilter caseDocumentFilter = (CaseDocumentFilter) documentFilter;
+        final Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.getValidators().stream()
+                .filter(validator -> validator instanceof StringLengthValidator)
+                .map(StringLengthValidator.class::cast)
+                .findFirst();
+        if (lengthValidator.isPresent()) {
+          lengthValidator.get().setMaximumLength(maximumLength);
+        }
+        else {
+          caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
+        }
+      }
     }
-
-    return textComponent;
   }
 
   /**
-   * Makes {@code textComponent} convert all upper case input to lower case
-   * @param textComponent the text component
-   * @param <T> the component type
-   * @return the text component
+   * Makes the given document convert all lower case input to upper case,
+   * supports {@link SizedDocument} and {@link AbstractDocument}
+   * @param document the document
    */
-  public static <T extends JTextComponent> T lowerCase(final T textComponent) {
-    requireNonNull(textComponent, TEXT_COMPONENT);
-    if (textComponent.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textComponent.getDocument()).getDocumentFilter().setDocumentCase(DocumentCase.LOWERCASE);
-    }
-    else {
-      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(CaseDocumentFilter.caseDocumentFilter(DocumentCase.LOWERCASE));
-    }
+  public static void upperCase(final Document document) {
+    documentCase(document, DocumentCase.UPPERCASE);
+  }
 
-    return textComponent;
+  /**
+   * Makes the given document convert all upper case input to lower case,
+   * supports {@link SizedDocument} and {@link AbstractDocument}
+   * @param document the document
+   */
+  public static void lowerCase(final Document document) {
+    documentCase(document, DocumentCase.LOWERCASE);
   }
 
   /**
@@ -171,6 +189,24 @@ public final class TextFields {
                                                                                                  final Format format,
                                                                                                  final UpdateOn updateOn) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOn);
+  }
+
+  private static void documentCase(final Document document, final DocumentCase documentCase) {
+    requireNonNull(document);
+    if (document instanceof SizedDocument) {
+      ((SizedDocument) document).getDocumentFilter().setDocumentCase(documentCase);
+    }
+    else if (document instanceof AbstractDocument) {
+      final DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
+      if (documentFilter == null) {
+        final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
+        caseDocumentFilter.setDocumentCase(documentCase);
+        ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
+      }
+      else if (documentFilter instanceof CaseDocumentFilter) {
+        ((CaseDocumentFilter) documentFilter).setDocumentCase(documentCase);
+      }
+    }
   }
 
   private static final class SelectAllListener extends FocusAdapter {

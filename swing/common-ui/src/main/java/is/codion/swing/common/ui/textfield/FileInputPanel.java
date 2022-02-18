@@ -30,7 +30,7 @@ public final class FileInputPanel extends JPanel {
         browseFile();
       }
     });
-    browseButton.setPreferredSize(TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    browseButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
     add(browseButton, BorderLayout.EAST);
   }
 

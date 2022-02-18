@@ -32,8 +32,8 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
+import is.codion.swing.common.ui.textfield.TextComponents;
 import is.codion.swing.common.ui.textfield.TextFieldHint;
-import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -76,7 +76,7 @@ import java.util.function.Function;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.darker;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
+import static is.codion.swing.common.ui.textfield.TextComponents.selectAllOnFocusGained;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -752,10 +752,10 @@ public final class EntitySearchField extends JTextField {
       final EntitySearchField searchField = new EntitySearchField(searchModel);
       searchField.setColumns(columns);
       if (upperCase) {
-        TextFields.upperCase(searchField);
+        TextComponents.upperCase(searchField.getDocument());
       }
       if (lowerCase) {
-        TextFields.lowerCase(searchField);
+        TextComponents.lowerCase(searchField.getDocument());
       }
       if (selectionProviderFactory != null) {
         searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.getModel()));

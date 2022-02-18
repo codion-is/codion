@@ -7772,3 +7772,6 @@
   EntitySearchField.SelectionProvider.updateUI() added, called in updateUI(), SelectionProvider simplified somewhat and implementations refactored
   ForeignKeySearchFieldBuilder moved to EntitySearchField.Builder
   EntitySearchField.set/isTransferFocusOnEnter() removed, available via builder
+  AbstractTextComponentBuilder, DefaultTextFieldBuilder and DefaultTextAreaBuilder refactored
+  TextFields renamed to TextComponents, upperCase() and lowerCase() parameter now Document, maximumLength() added
+  ValidationDocumentFilter.getValidators() added

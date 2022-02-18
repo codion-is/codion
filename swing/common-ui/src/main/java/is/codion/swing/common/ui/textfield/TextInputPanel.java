@@ -43,7 +43,7 @@ public final class TextInputPanel extends JPanel {
     this.dialogTitle = builder.dialogTitle;
     this.textField = builder.textField;
     this.textAreaSize = builder.textAreaSize;
-    this.button = createButton(builder.buttonFocusable, TextFields.DIMENSION_TEXT_FIELD_SQUARE);
+    this.button = createButton(builder.buttonFocusable, TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
     this.caption = builder.caption;
     this.maximumLength = builder.maximumLength;
     initializeUI();
