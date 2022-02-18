@@ -21,7 +21,8 @@ public enum FrameworkIkons implements Ikon {
   EDIT("fr-edit", '\uf184'),
   SUMMARY("fr-summary", '\u03a3'),
   EDIT_PANEL("fr-edit-panel", '\uf168'),
-  DEPENDENCIES("fr-dependencies", '\uf1ad');
+  DEPENDENCIES("fr-dependencies", '\uf1ad'),
+  LOGO("fr-logo", '\uf208');
 
   private final String description;
   private final char code;
