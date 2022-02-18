@@ -231,14 +231,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       this.dateTimeParser = initializeDateTimeParser(temporalClass);
     }
 
-    private DefaultBuilder(final Class<T> temporalClass, final String dateTimePattern,
-                           final DateTimeParser<T> dateTimeParser) {
-      this.temporalClass = requireNonNull(temporalClass);
-      this.dateTimePattern = requireNonNull(dateTimePattern);
-      this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
-      this.dateTimeParser = requireNonNull(dateTimeParser);
-    }
-
     @Override
     public Builder<T> dateTimeParser(final DateTimeParser<T> dateTimeParser) {
       this.dateTimeParser = requireNonNull(dateTimeParser);

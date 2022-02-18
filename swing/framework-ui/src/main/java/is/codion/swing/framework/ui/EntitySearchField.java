@@ -114,7 +114,6 @@ public final class EntitySearchField extends JTextField {
   private Color backgroundColor;
   private Color invalidBackgroundColor;
   private boolean performingSearch = false;
-  private boolean transferFocusOnEnter = false;
 
   private EntitySearchField(final EntitySearchModel searchModel) {
     requireNonNull(searchModel, SEARCH_MODEL);
@@ -255,31 +254,18 @@ public final class EntitySearchField extends JTextField {
     });
   }
 
-  private void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
-    this.transferFocusOnEnter = transferFocusOnEnter;
-    if (transferFocusOnEnter) {
-      createForwardEvent().enable(this);
-      createBackwardEvent().enable(this);
-    }
-    else {
-      createForwardEvent().disable(this);
-      createBackwardEvent().disable(this);
-    }
-  }
-
-  private KeyEvents.Builder createForwardEvent() {
-    return KeyEvents.builder(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
-            .action(transferFocusAction);
-  }
-
-  private KeyEvents.Builder createBackwardEvent() {
-    return KeyEvents.builder(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_FOCUSED)
-            .modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .onKeyPressed()
-            .action(transferFocusBackwardAction);
+  private void transferFocusOnEnter() {
+    KeyEvents.builder(KeyEvent.VK_ENTER)
+              .condition(JComponent.WHEN_FOCUSED)
+              .onKeyPressed()
+              .action(transferFocusAction)
+              .enable(this);
+      KeyEvents.builder(KeyEvent.VK_ENTER)
+              .condition(JComponent.WHEN_FOCUSED)
+              .modifiers(InputEvent.SHIFT_DOWN_MASK)
+              .onKeyPressed()
+              .action(transferFocusBackwardAction)
+              .enable(this);
   }
 
   private FocusListener initializeFocusListener() {
@@ -777,7 +763,7 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     protected void setTransferFocusOnEnter(final EntitySearchField component) {
-      component.setTransferFocusOnEnter(true);
+      component.transferFocusOnEnter();
     }
   }
 }

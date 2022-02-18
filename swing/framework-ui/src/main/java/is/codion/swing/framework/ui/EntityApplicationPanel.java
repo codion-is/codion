@@ -1230,7 +1230,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
               .title(applicationName)
               .icon(getApplicationIcon())
               .westPanel(initializeStartupIconPanel(getApplicationIcon()))
-              .onResult(applicationModel -> startApplication(applicationModel, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
+              .onResult(model -> startApplication(model, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
               .onException(exception -> displayException(exception, null))
               .execute();
     }

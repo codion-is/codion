@@ -41,7 +41,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey, searchModel);
     }
 
-    final ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);;
+    final ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);
     if (property.isAggregateColumn()) {
       return null;
     }
