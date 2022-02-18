@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,7 +23,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
 
   private static final Map<Ikon, FontImageIcon> ICONS = new HashMap<>();
-  private static final ImageIcon REFRESH_REQUIRED = imageIcon(FontIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()));
+  private static final Map<Integer, FontImageIcon> LOGOS = new HashMap<>();
+  private static final ImageIcon REFRESH_REQUIRED = FontImageIcon.imageIcon(FontIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()));
 
   static {
     UIManager.addPropertyChangeListener(evt -> {
@@ -30,6 +32,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
         ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
       }
     });
+    ICONS.put(FrameworkIkons.LOGO, FontImageIcon.of(FrameworkIkons.LOGO));
     ICONS.put(FrameworkIkons.FILTER, FontImageIcon.of(FrameworkIkons.FILTER));
     ICONS.put(FrameworkIkons.ADD, FontImageIcon.of(FrameworkIkons.ADD));
     ICONS.put(FrameworkIkons.DELETE, FontImageIcon.of(FrameworkIkons.DELETE));
@@ -48,6 +51,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     ICON_COLOR.addDataListener(color -> {
       if (color != null) {
         ICONS.values().forEach(icon -> icon.setColor(color));
+        LOGOS.values().forEach(logo -> logo.setColor(color));
       }
     });
   }
@@ -137,17 +141,22 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     return ICONS.get(FrameworkIkons.DEPENDENCIES).imageIcon;
   }
 
-  /**
-   * Creates a {@link ImageIcon} from the given icon.
-   * @param icon the icon
-   * @return a ImageIcon based on the given icon
-   */
-  private static ImageIcon imageIcon(final Icon icon) {
-    requireNonNull(icon, "icon");
-    final BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-    icon.paintIcon(null, image.getGraphics(), 0, 0);
+  @Override
+  public ImageIcon logo() {
+    return ICONS.get(FrameworkIkons.LOGO).imageIcon;
+  }
 
-    return new ImageIcon(image);
+  @Override
+  public ImageIcon logo(final int size) {
+    return LOGOS.computeIfAbsent(size, k -> new FontImageIcon(FrameworkIkons.LOGO, size,
+            fontIcon -> {
+              //hack to get the logo centered on the image
+              final int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
+              final BufferedImage image = new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconWidth(), BufferedImage.TYPE_INT_ARGB);
+              fontIcon.paintIcon(null, image.getGraphics(), 0, -yOffset);
+
+              return new ImageIcon(image);
+            })).imageIcon;
   }
 
   private static final class FontImageIcon {
@@ -156,8 +165,13 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     private final ImageIcon imageIcon;
 
     private FontImageIcon(final Ikon ikon) {
-      this.fontIcon = FontIcon.of(ikon, ICON_SIZE.get(), ICON_COLOR.get());
-      this.imageIcon = imageIcon(fontIcon);
+      this(ikon, ICON_SIZE.get(), FontImageIcon::imageIcon);
+    }
+
+    private FontImageIcon(final Ikon ikon, final int size,
+                          final Function<FontIcon, ImageIcon> toImageIcon) {
+      this.fontIcon = FontIcon.of(ikon, size, ICON_COLOR.get());
+      this.imageIcon = toImageIcon.apply(fontIcon);
     }
 
     private void setColor(final Color color) {
@@ -167,6 +181,14 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
     private static FontImageIcon of(final Ikon ikon) {
       return new FontImageIcon(ikon);
+    }
+
+    private static ImageIcon imageIcon(final Icon icon) {
+      requireNonNull(icon, "icon");
+      final BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+      icon.paintIcon(null, image.getGraphics(), 0, 0);
+
+      return new ImageIcon(image);
     }
   }
 }

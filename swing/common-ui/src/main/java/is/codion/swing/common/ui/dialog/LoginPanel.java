@@ -29,7 +29,9 @@ import javax.swing.SwingConstants;
 import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
@@ -127,24 +129,21 @@ final class LoginPanel extends JPanel {
     if (southComponent != null) {
       credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
     }
-
-    final JPanel centerPanel = Components.panel(Layouts.flowLayout(FlowLayout.CENTER))
-            .border(BorderFactory.createEmptyBorder(20, 10, 20, 20))
-            .add(credentialsBasePanel)
-            .build();
-    setLayout(new BorderLayout(0, 0));
-    add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().isEmpty()) {
       Utilities.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
       Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
+    final GridBagConstraints constraints = new GridBagConstraints();
+    final int insets = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    constraints.insets = new Insets(insets, insets, insets, insets);
+    setLayout(new GridBagLayout());
     if (icon != null) {
-      final JLabel label = new JLabel(icon, SwingConstants.CENTER);
-      label.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 10));
-      add(label, BorderLayout.WEST);
+      add(new JLabel(icon, SwingConstants.CENTER), constraints);
     }
+    add(credentialsPanel, constraints);
+    setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
   }
 
   private void onOkPressed() {

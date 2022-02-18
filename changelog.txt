@@ -7811,3 +7811,6 @@
   ValidationDocumentFilter.getValidators() added
   LabelBuilder now with a type parameter, DefaultLabelBuilder refactored
   ForeignKeyFieldBuilder removed, EntityComponents.foreignKeyField() renamed foreignKeyLabel(), now returns LabelBuilder
+  FrameworkIcons.logo() and logo(size) added, based on FrameworkIcons.ICON_COLOR, logo character added to ttf font, svg logo added
+  LoginPanel redesigned a bit
+  EntityApplicationPanel.applicationIcon not initializes to the default one until required, after Look & Feel is set

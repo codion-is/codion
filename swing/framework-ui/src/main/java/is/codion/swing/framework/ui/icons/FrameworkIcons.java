@@ -122,6 +122,17 @@ public interface FrameworkIcons extends Logos {
   ImageIcon dependencies();
 
   /**
+   * @return the logo icon.
+   */
+  ImageIcon logo();
+
+  /**
+   * @param size the logo size
+   * @return a logo icon
+   */
+  ImageIcon logo(int size);
+
+  /**
    * @return a {@link FrameworkIcons} implementation of the type specified by
    * {@link FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}.
    * @throws IllegalArgumentException in case no such implementation is found

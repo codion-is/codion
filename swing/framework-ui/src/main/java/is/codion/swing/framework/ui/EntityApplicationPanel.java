@@ -44,6 +44,7 @@ import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.panel.HierarchyPanel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,6 +175,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
 
+  private static final int DEFAULT_LOGO_SIZE = 68;
+
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
   private final ResourceBundle resourceBundle = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
 
@@ -197,7 +200,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final Map<Object, State> logLevelStates;
 
   private final String applicationName;
-  private final ImageIcon applicationIcon;
+
+  private ImageIcon applicationIcon;
 
   /**
    * @param applicationName the application name
@@ -222,7 +226,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public EntityApplicationPanel(final String applicationName, final ImageIcon applicationIcon, final Supplier<JFrame> frameProvider) {
     this.frameProvider = frameProvider;
     this.applicationName = applicationName == null ? "" : applicationName;
-    this.applicationIcon = applicationIcon == null ? Logos.logoTransparent() : applicationIcon;
+    this.applicationIcon = applicationIcon;
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
@@ -284,9 +288,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the application icon, if any
+   * @return the application icon, the default logo icon if none has been specified
+   * @see FrameworkIcons#logo(int)
    */
   public final ImageIcon getApplicationIcon() {
+    if (applicationIcon == null) {
+      applicationIcon = FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE);
+    }
+
     return applicationIcon;
   }
 
@@ -1073,9 +1082,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                       final boolean mainMenu) {
     final JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    if (applicationIcon != null) {
-      frame.setIconImage(applicationIcon.getImage());
-    }
+    frame.setIconImage(getApplicationIcon().getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -1149,7 +1156,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
             .validator(loginValidator)
             .title(loginDialogTitle)
-            .icon(applicationIcon)
+            .icon(getApplicationIcon())
             .show();
     if (nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
@@ -1221,8 +1228,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (displayProgressDialog) {
       Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
               .title(applicationName)
-              .icon(applicationIcon)
-              .westPanel(initializeStartupIconPanel(applicationIcon))
+              .icon(getApplicationIcon())
+              .westPanel(initializeStartupIconPanel(getApplicationIcon()))
               .onResult(applicationModel -> startApplication(applicationModel, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
               .onException(exception -> displayException(exception, null))
               .execute();
