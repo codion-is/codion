@@ -26,6 +26,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -253,12 +254,12 @@ public final class EntityComponentsTest {
   }
 
   @Test
-  void createForeignKeyField() {
-    final ComponentValue<Entity, JTextField> componentValue =
-            inputComponents.foreignKeyField(TestDomain.DETAIL_MASTER_FK)
+  void createForeignKeyLabel() {
+    final ComponentValue<Entity, JLabel> componentValue =
+            inputComponents.foreignKeyLabel(TestDomain.DETAIL_MASTER_FK)
                     .linkedValue(editModel.value(TestDomain.DETAIL_MASTER_FK))
-                    .columns(10).buildComponentValue();
-    final JTextField field = componentValue.getComponent();
+                    .buildComponentValue();
+    final JLabel field = componentValue.getComponent();
     final Entity entity = editModel.getEntities().builder(TestDomain.T_MASTER).with(TestDomain.MASTER_NAME, "name").build();
     editModel.put(TestDomain.DETAIL_MASTER_FK, entity);
     assertEquals("name", field.getText());

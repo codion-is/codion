@@ -92,8 +92,8 @@ public final class EntityEditPanels {
                       .build();
 
       //readOnly
-      JTextField textField =
-              createForeignKeyField(Demo.FOREIGN_KEY)
+      JLabel label =
+              createForeignKeyLabel(Demo.FOREIGN_KEY)
                       .build();
       // end::foreignKeyValue[]
     }

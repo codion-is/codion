@@ -13,8 +13,9 @@ import javax.swing.SwingConstants;
 
 /**
  * A builder for JLabel.
+ * @param <T> the type to display in the label (using value.toString() or "" for null).
  */
-public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuilder> {
+public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilder<T>> {
 
   /**
    * Specifies the default horizontal alignment used in labels<br>
@@ -28,29 +29,29 @@ public interface LabelBuilder extends ComponentBuilder<String, JLabel, LabelBuil
    * @param horizontalAlignment the horizontal text alignment
    * @return this builder instance
    */
-  LabelBuilder horizontalAlignment(int horizontalAlignment);
+  LabelBuilder<T> horizontalAlignment(int horizontalAlignment);
 
   /**
    * @param displayedMnemonic the label mnemonic
    * @return this builder instance
    */
-  LabelBuilder displayedMnemonic(int displayedMnemonic);
+  LabelBuilder<T> displayedMnemonic(int displayedMnemonic);
 
   /**
    * @param component the component to associate with this label
    * @return this builder instance
    */
-  LabelBuilder labelFor(JComponent component);
+  LabelBuilder<T> labelFor(JComponent component);
 
   /**
    * @param icon the label icon
    * @return this builder instance
    */
-  LabelBuilder icon(Icon icon);
+  LabelBuilder<T> icon(Icon icon);
 
   /**
    * @param iconTextGap the icon text gap
    * @return this builder instance
    */
-  LabelBuilder iconTextGap(int iconTextGap);
+  LabelBuilder<T> iconTextGap(int iconTextGap);
 }

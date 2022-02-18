@@ -668,34 +668,37 @@ public final class Components {
   }
 
   /**
+   * @param <T> the type to display in the label (using value.toString() or "" for null).
    * @return a label builder
    */
-  public static LabelBuilder label() {
-    return new DefaultLabelBuilder(null, null);
+  public static <T> LabelBuilder<T> label() {
+    return new DefaultLabelBuilder<>((String) null);
   }
 
   /**
+   * @param <T> the type to display in the label (using value.toString() or "" for null).
    * @param linkedValueObserver the value observer to link to the label text
    * @return a label builder
    */
-  public static LabelBuilder label(final ValueObserver<String> linkedValueObserver) {
-    return new DefaultLabelBuilder(null, requireNonNull(linkedValueObserver));
+  public static <T> LabelBuilder<T> label(final ValueObserver<T> linkedValueObserver) {
+    return new DefaultLabelBuilder<>(linkedValueObserver);
   }
 
   /**
+   * @param <T> the type to display in the label (using value.toString() or "" for null).
    * @param icon the label icon
    * @return a label builder
    */
-  public static LabelBuilder label(final Icon icon) {
-    return new DefaultLabelBuilder(icon);
+  public static <T> LabelBuilder<T> label(final Icon icon) {
+    return new DefaultLabelBuilder<>(icon);
   }
 
   /**
    * @param text the label text
    * @return a label builder
    */
-  public static LabelBuilder label(final String text) {
-    return new DefaultLabelBuilder(text, null);
+  public static LabelBuilder<String> label(final String text) {
+    return new DefaultLabelBuilder<>(text);
   }
 
   /**

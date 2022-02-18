@@ -7775,3 +7775,5 @@
   AbstractTextComponentBuilder, DefaultTextFieldBuilder and DefaultTextAreaBuilder refactored
   TextFields renamed to TextComponents, upperCase() and lowerCase() parameter now Document, maximumLength() added
   ValidationDocumentFilter.getValidators() added
+  LabelBuilder now with a type parameter, DefaultLabelBuilder refactored
+  ForeignKeyFieldBuilder removed, EntityComponents.foreignKeyField() renamed foreignKeyLabel(), now returns LabelBuilder

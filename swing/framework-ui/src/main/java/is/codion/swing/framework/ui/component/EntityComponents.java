@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.LabelBuilder;
 import is.codion.swing.common.ui.component.LongFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
@@ -142,10 +143,10 @@ public class EntityComponents {
    * @param foreignKey the foreign key
    * @return a builder
    */
-  public final ForeignKeyFieldBuilder foreignKeyField(final ForeignKey foreignKey) {
+  public final LabelBuilder<Entity> foreignKeyLabel(final ForeignKey foreignKey) {
     final ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
-    return new DefaultForeignKeyFieldBuilder()
+    return Components.<Entity>label()
             .toolTipText(foreignKeyProperty.getDescription());
   }
 
