@@ -382,6 +382,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
     }
+    buildEvent.onEvent(component);
+    if (onBuild != null) {
+      onBuild.accept(component);
+    }
     if (initialValue != null) {
       setInitialValue(component, initialValue);
     }
@@ -393,10 +397,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (linkedValueObserver != null) {
       buildComponentValue().link(linkedValueObserver);
-    }
-    buildEvent.onEvent(component);
-    if (onBuild != null) {
-      onBuild.accept(component);
     }
 
     return component;
