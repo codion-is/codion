@@ -139,7 +139,6 @@ public interface LookAndFeelProvider {
   /**
    * Allows the user the select between all available Look and Feels.
    * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
   static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner) {
@@ -150,7 +149,6 @@ public interface LookAndFeelProvider {
   /**
    * Allows the user the select between all available Look and Feels.
    * @param dialogOwner the dialog owner
-   * @param dialogTitle the dialog title
    * @param changeDuringSelection true if the Look and Feel should change dynamically when choosing
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
@@ -199,7 +197,7 @@ public interface LookAndFeelProvider {
   }
 
   /**
-   * Creates a {@link Control} for selecting the Look & Feel.
+   * Creates a {@link Control} for selecting the Look and Feel.
    * @param dialogOwner the dialog owner
    * @return a look and feel selection control
    */
@@ -208,7 +206,7 @@ public interface LookAndFeelProvider {
   }
 
   /**
-   * Creates a {@link Control} for selecting the Look & Feel.
+   * Creates a {@link Control} for selecting the Look and Feel.
    * @param dialogOwner the dialog owner
    * @param userPreferencePropertyName the name of the property to use when saving the selected look and feel as a user preference
    * @return a look and feel selection control
