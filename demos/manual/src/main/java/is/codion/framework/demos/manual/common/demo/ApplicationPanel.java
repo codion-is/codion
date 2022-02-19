@@ -56,6 +56,7 @@ public final class ApplicationPanel extends JPanel {
 
     checkBox(inputEnabledState)
             .caption("Enable input fields")
+            .mnemonic('E')
             .transferFocusOnEnter(true)
             .build(settingsPanel::add);
 
