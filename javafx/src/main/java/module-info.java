@@ -3,7 +3,7 @@
  */
 module is.codion.javafx.framework {
   requires org.slf4j;
-  requires static org.json;
+  requires org.json;
   requires transitive javafx.graphics;
   requires transitive javafx.controls;
   requires transitive is.codion.framework.model;

@@ -1,6 +1,6 @@
 module is.codion.swing.framework.model {
   requires org.slf4j;
-  requires static org.json;
+  requires org.json;
   requires transitive is.codion.framework.model;
   requires transitive is.codion.swing.common.model;
 
