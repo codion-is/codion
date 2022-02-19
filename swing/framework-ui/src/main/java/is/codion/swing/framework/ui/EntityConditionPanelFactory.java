@@ -12,7 +12,6 @@ import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
@@ -20,7 +19,6 @@ import is.codion.swing.common.ui.textfield.TextComponents;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
-import is.codion.swing.framework.ui.component.EntityInputComponents;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   private static final Logger LOG = LoggerFactory.getLogger(EntityConditionPanelFactory.class);
 
   private final EntityTableConditionModel tableConditionModel;
-  private final EntityInputComponents entityInputComponents;
+  private final EntityComponents entityComponents;
 
   /**
    * Instantiates a new {@link EntityConditionPanelFactory}
@@ -50,7 +48,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    */
   public EntityConditionPanelFactory(final EntityTableConditionModel tableConditionModel) {
     this.tableConditionModel = requireNonNull(tableConditionModel);
-    this.entityInputComponents = new EntityInputComponents(tableConditionModel.getEntityDefinition());
+    this.entityComponents = new EntityComponents(tableConditionModel.getEntityDefinition());
   }
 
   @Override
@@ -74,7 +72,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   }
 
   /**
-   * Initializes a ColumnConditionPanel for the given model
+   * Initializes a ColumnConditionPanel for the given model, returns null
    * @param <C> the column identifier type
    * @param <T> the column value type
    * @param conditionModel the {@link ColumnConditionModel} for which to create a condition panel
@@ -83,15 +81,18 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
     final ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel instanceof ForeignKeyConditionModel) {
-      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityInputComponents.getComponents());
+      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityComponents);
+    }
+    else if (entityComponents.inputComponentSupported(conditionModel.getColumnIdentifier())) {
+      boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityComponents, conditionModel.getColumnIdentifier());
     }
     else {
-      boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityInputComponents, conditionModel.getColumnIdentifier());
+      return null;
     }
     try {
       return new ColumnConditionPanel<>(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory);
     }
-    catch (final IllegalArgumentException e) {
+    catch (final Exception e) {
       LOG.error("Unable to create AttributeConditionPanel for attribute: " + conditionModel.getColumnIdentifier(), e);
       return null;
     }
@@ -141,11 +142,11 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   private static final class AttributeBoundFieldFactory<C extends Attribute<T>, T> implements ColumnConditionPanel.BoundFieldFactory {
 
     private final ColumnConditionModel<C, T> conditionModel;
-    private final EntityInputComponents inputComponents;
+    private final EntityComponents inputComponents;
     private final Attribute<T> attribute;
 
     private AttributeBoundFieldFactory(final ColumnConditionModel<C, T> conditionModel,
-                                       final EntityInputComponents inputComponents,
+                                       final EntityComponents inputComponents,
                                        final Attribute<T> attribute) {
       this.conditionModel = requireNonNull(conditionModel);
       this.inputComponents = inputComponents;
@@ -154,10 +155,10 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public JComponent createEqualField() {
-      final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
-      componentValue.link(conditionModel.getEqualValueSet().value());
-
-      return configureComponent(componentValue.getComponent());
+      return inputComponents.inputComponent(attribute)
+              .linkedValue(conditionModel.getEqualValueSet().value())
+              .onBuild(AttributeBoundFieldFactory::configureComponent)
+              .build();
     }
 
     @Override
@@ -166,10 +167,10 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
         return null;//no upper bound field required for booleans
       }
 
-      final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
-      componentValue.link(conditionModel.getUpperBoundValue());
-
-      return configureComponent(componentValue.getComponent());
+      return inputComponents.inputComponent(attribute)
+              .linkedValue(conditionModel.getUpperBoundValue())
+              .onBuild(AttributeBoundFieldFactory::configureComponent)
+              .build();
     }
 
     @Override
@@ -178,10 +179,10 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
         return null;//no lower bound field required for booleans
       }
 
-      final ComponentValue<T, JComponent> componentValue = inputComponents.createInputComponent(attribute);
-      componentValue.link(conditionModel.getLowerBoundValue());
-
-      return configureComponent(componentValue.getComponent());
+      return inputComponents.inputComponent(attribute)
+              .linkedValue(conditionModel.getLowerBoundValue())
+              .onBuild(AttributeBoundFieldFactory::configureComponent)
+              .build();
     }
 
     private static JComponent configureComponent(final JComponent component) {

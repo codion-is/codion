@@ -10,6 +10,7 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -293,5 +294,14 @@ public final class EntityComponentsTest {
     final ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));
+  }
+
+  @Test
+  void inputComponent() {
+    final EntityDefinition definition = CONNECTION_PROVIDER.getEntities().getDefinition(TestDomain.T_DETAIL);
+    definition.getColumnProperties()
+            .forEach(property -> inputComponents.inputComponent(property.getAttribute()).build());
+
+    assertThrows(IllegalArgumentException.class, () -> inputComponents.inputComponent(TestDomain.DETAIL_MASTER_FK));
   }
 }

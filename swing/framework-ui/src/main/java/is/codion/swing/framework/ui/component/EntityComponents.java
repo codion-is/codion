@@ -17,6 +17,7 @@ import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.ButtonBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
 import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
@@ -35,6 +36,7 @@ import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import java.math.BigDecimal;
@@ -66,6 +68,81 @@ public class EntityComponents {
    */
   public final EntityDefinition getEntityDefinition() {
     return entityDefinition;
+  }
+
+  /**
+   * @param attribute the attribute
+   * @return true if {@link #inputComponent(Attribute)} supports the given attribute
+   */
+  public boolean inputComponentSupported(final Attribute<?> attribute) {
+    requireNonNull(attribute);
+    if (attribute instanceof ForeignKey) {
+      return false;
+    }
+    final Property<?> property = entityDefinition.getProperty(attribute);
+    if (property instanceof ItemProperty) {
+      return true;
+    }
+
+    return attribute.isLocalTime() ||
+            attribute.isLocalDate() ||
+            attribute.isLocalDateTime() ||
+            attribute.isOffsetDateTime() ||
+            attribute.isString() ||
+            attribute.isCharacter() ||
+            attribute.isBoolean() ||
+            attribute.isInteger() ||
+            attribute.isLong() ||
+            attribute.isDouble() ||
+            attribute.isBigDecimal();
+  }
+
+  /**
+   * Creates a default input component for the given attribute.
+   * @param attribute the attribute for which to create the input component
+   * @param <T> the attribute type
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @return the component builder handling input for {@code attribute}
+   * @throws IllegalArgumentException in case the attribute type is not supported
+   */
+  public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> inputComponent(final Attribute<T> attribute) {
+    final Property<T> property = entityDefinition.getProperty(attribute);
+    if (property instanceof ItemProperty) {
+      return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
+    }
+    if (attribute.isLocalTime()) {
+      return (ComponentBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute);
+    }
+    if (attribute.isLocalDate()) {
+      return (ComponentBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute);
+    }
+    if (attribute.isLocalDateTime()) {
+      return (ComponentBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute);
+    }
+    if (attribute.isOffsetDateTime()) {
+      return (ComponentBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute);
+    }
+    if (attribute.isString() || attribute.isCharacter()) {
+      return (ComponentBuilder<T, C, B>) textField(attribute);
+    }
+    if (attribute.isBoolean()) {
+      return (ComponentBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
+    }
+    if (attribute.isInteger()) {
+      return (ComponentBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
+    }
+    if (attribute.isLong()) {
+      return (ComponentBuilder<T, C, B>) longField((Attribute<Long>) attribute);
+    }
+    if (attribute.isDouble()) {
+      return (ComponentBuilder<T, C, B>) doubleField((Attribute<Double>) attribute);
+    }
+    if (attribute.isBigDecimal()) {
+      return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
+    }
+
+    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.getTypeClass() + ")");
   }
 
   /**

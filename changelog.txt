@@ -7780,3 +7780,4 @@
   FrameworkIcons.logo() and logo(size) added, based on FrameworkIcons.ICON_COLOR, logo character added to ttf font, svg logo added
   LoginPanel redesigned a bit
   EntityApplicationPanel.applicationIcon not initializes to the default one until required, after Look & Feel is set
+  EntityInputComponents removed, EntityComponents.inputComponent() and inputComponentSupported() added, related changes
