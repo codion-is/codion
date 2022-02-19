@@ -29,6 +29,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.paint.Color;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -613,7 +614,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       final String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
-          final org.json.JSONObject preferences = new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
+          final JSONObject preferences = new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
           applyColumnPreferences(preferences);
           columns.sort(new ColumnOrder(preferences));
         }
@@ -624,12 +625,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private void applyColumnPreferences(final org.json.JSONObject preferences) {
+  private void applyColumnPreferences(final JSONObject preferences) {
     for (final AttributeTableColumn<?> column : initialColumns) {
       final Attribute<?> property = column.getAttribute();
       if (columns.contains(column)) {
         try {
-          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getName());
+          final JSONObject columnPreferences = preferences.getJSONObject(property.getName());
           column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             columns.remove(column);
@@ -642,18 +643,18 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private org.json.JSONObject createPreferences() throws Exception {
-    final org.json.JSONObject preferencesRoot = new org.json.JSONObject();
+  private JSONObject createPreferences() throws Exception {
+    final JSONObject preferencesRoot = new JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
 
-  private org.json.JSONObject createColumnPreferences() throws Exception {
-    final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
+  private JSONObject createColumnPreferences() throws Exception {
+    final JSONObject columnPreferencesRoot = new JSONObject();
     for (final AttributeTableColumn<?> column : initialColumns) {
       final Attribute<?> property = column.getAttribute();
-      final org.json.JSONObject columnObject = new org.json.JSONObject();
+      final JSONObject columnObject = new JSONObject();
       final boolean visible = columns.contains(column);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
@@ -706,17 +707,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private static final class ColumnOrder implements Comparator<TableColumn<Entity, ?>> {
 
-    private final org.json.JSONObject preferences;
+    private final JSONObject preferences;
 
-    private ColumnOrder(final org.json.JSONObject preferences) {
+    private ColumnOrder(final JSONObject preferences) {
       this.preferences = preferences;
     }
 
     @Override
     public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
       try {
-        final org.json.JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().getName());
-        final org.json.JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().getName());
+        final JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().getName());
+        final JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().getName());
         Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
         if (firstIndex == null) {
           firstIndex = 0;

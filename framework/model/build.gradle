@@ -9,9 +9,9 @@ dependencies {
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-model-test')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    api "org.json:json:${jsonVersion}"
 
-    runtimeOnly "org.json:json:${jsonVersion}"
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"

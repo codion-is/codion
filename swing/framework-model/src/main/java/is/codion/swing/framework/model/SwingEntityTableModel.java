@@ -32,6 +32,7 @@ import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.model.table.TableSortModel;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -915,18 +916,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     return property instanceof ColumnProperty;
   }
 
-  private org.json.JSONObject createPreferences() throws Exception {
-    final org.json.JSONObject preferencesRoot = new org.json.JSONObject();
+  private JSONObject createPreferences() throws Exception {
+    final JSONObject preferencesRoot = new JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
 
-  private org.json.JSONObject createColumnPreferences() throws Exception {
-    final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
+  private JSONObject createColumnPreferences() throws Exception {
+    final JSONObject columnPreferencesRoot = new JSONObject();
     for (final TableColumn column : getColumnModel().getAllColumns()) {
       final Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
-      final org.json.JSONObject columnObject = new org.json.JSONObject();
+      final JSONObject columnObject = new JSONObject();
       final boolean visible = getColumnModel().isColumnVisible(attribute);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
@@ -942,7 +943,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
       final String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
-          applyColumnPreferences(new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
+          applyColumnPreferences(new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
         }
       }
       catch (final Exception e) {
@@ -951,13 +952,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
   }
 
-  private void applyColumnPreferences(final org.json.JSONObject preferences) {
+  private void applyColumnPreferences(final JSONObject preferences) {
     final SwingFilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
     for (final TableColumn column : Collections.list(columnModel.getColumns())) {
       final Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       if (columnModel.containsColumn(attribute)) {
         try {
-          final org.json.JSONObject columnPreferences = preferences.getJSONObject(attribute.getName());
+          final JSONObject columnPreferences = preferences.getJSONObject(attribute.getName());
           column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             final int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
