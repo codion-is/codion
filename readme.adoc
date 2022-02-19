@@ -62,6 +62,8 @@ Here is a screenshot of the Chinook demo client (included in the project), a rat
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
+Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
+
 And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic client functionality] (keep your music on, it's silent).
 
 == Domain model
@@ -305,6 +307,8 @@ public class StoreDemo {
 ...and the result, all in all around 150 lines of code.
 
 image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
+
+Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
 
 == Database access
 
