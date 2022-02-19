@@ -313,7 +313,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B initialValue(final T initialValue) {
-    this.initialValue = requireNonNull(initialValue);
+    this.initialValue = initialValue;
     return (B) this;
   }
 

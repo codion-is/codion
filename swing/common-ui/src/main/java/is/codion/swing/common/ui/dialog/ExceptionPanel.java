@@ -189,12 +189,12 @@ final class ExceptionPanel extends JPanel {
             .build();
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .onKeyPressed()
+            .onKeyReleased()
             .action(closeControl)
             .enable(this);
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .onKeyPressed()
+            .onKeyReleased()
             .action(closeControl)
             .enable(this);
 

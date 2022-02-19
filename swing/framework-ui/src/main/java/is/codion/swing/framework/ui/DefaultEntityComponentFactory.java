@@ -11,7 +11,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.textfield.TemporalInputPanel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.component.EntityInputComponents;
+import is.codion.swing.framework.ui.component.EntityComponents;
 
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
@@ -32,10 +32,10 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
 
-    final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
+    final EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
     if (attribute.isTemporal()) {
       final ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
-              inputComponents.getComponents().temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
+              inputComponents.temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
       componentValue.set((Temporal) initialValue);
 
       return (ComponentValue<T, C>) componentValue;
@@ -44,20 +44,19 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return (ComponentValue<T, C>) fileInputPanel();
     }
 
-    final ComponentValue<T, C> componentValue = inputComponents.createInputComponent(attribute);
-    componentValue.set(initialValue);
-
-    return componentValue;
+    return (ComponentValue<T, C>) inputComponents.inputComponent(attribute)
+            .initialValue(initialValue)
+            .buildComponentValue();
   }
 
   private ComponentValue<T, C> createForeignKeyComponentValue(final ForeignKey foreignKey, final SwingEntityEditModel editModel,
                                                               final Entity initialValue) {
-    final EntityInputComponents inputComponents = new EntityInputComponents(editModel.getEntityDefinition());
+    final EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
-      return (ComponentValue<T, C>) inputComponents.getComponents().foreignKeyComboBox(foreignKey, comboBoxModel)
+      return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
               .onSetVisible(comboBox -> comboBoxModel.refresh())
               .buildComponentValue();
     }
@@ -65,6 +64,6 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
-    return (ComponentValue<T, C>) inputComponents.getComponents().foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
+    return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
   }
 }

@@ -12,7 +12,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.component.EntityInputComponents;
+import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,12 +26,12 @@ public class SearchValueLinkTest {
           DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final EntityEditModel model = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-  private final EntityInputComponents inputComponents = new EntityInputComponents(model.getEntityDefinition());
+  private final EntityComponents inputComponents = new EntityComponents(model.getEntityDefinition());
 
   @Test
   void test() throws Exception {
     final ComponentValue<Entity, EntitySearchField> componentValue =
-            inputComponents.getComponents().foreignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
+            inputComponents.foreignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
             model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();
     componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
     final EntitySearchModel searchModel = componentValue.getComponent().getModel();

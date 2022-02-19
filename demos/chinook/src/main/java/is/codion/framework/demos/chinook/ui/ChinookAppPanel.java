@@ -129,20 +129,20 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   private void selectLanguage() {
     final String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     final JRadioButton enButton = new JRadioButton("English", language.equals(LANGUAGE_EN));
-    final JRadioButton isButton = new JRadioButton("Íslenska", language.equals(LANGUAGE_IS));
+    final JRadioButton isButton = new JRadioButton("\u00cdslenska", language.equals(LANGUAGE_IS));
     final ButtonGroup langButtonGroup = new ButtonGroup();
     langButtonGroup.add(enButton);
     langButtonGroup.add(isButton);
     final JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
     buttonPanel.add(enButton);
     buttonPanel.add(isButton);
-    showMessageDialog(this, buttonPanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
+    showMessageDialog(this, buttonPanel, "Language/Tungum\u00e1l", JOptionPane.QUESTION_MESSAGE);
     final String newLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
     if (!language.equals(newLanguage)) {
       UserPreferences.putUserPreference(LANGUAGE_PREFERENCES_KEY, newLanguage);
       showMessageDialog(this,
               "Language has been changed, restart the application to apply the changes.\n\n" +
-                      "Tungumáli hefur verið breytt, endurræstu kerfið til að virkja breytingarnar.");
+                      "Tungum\u00e1li hefur veri\u00f0 breytt, endurr\u00e6stu kerfi\u00f0 til að virkja breytingarnar.");
     }
   }
 

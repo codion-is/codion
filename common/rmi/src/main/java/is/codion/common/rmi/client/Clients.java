@@ -66,7 +66,7 @@ public final class Clients {
    * Reads the trust store and password specified by the 'codion.client.trustStore' and 'codion.client.trustStorePassword'
    * system properties and if one exists, either in the filesystem or on the classpath, combines it with the default
    * system truststore, writes the combined truststore to a temporary file and sets 'javax.net.ssl.trustStore'
-   * so that it points to that file and the 'javax.net.ssl.trustStorePassword' to the client given password.
+   * so that it points to that file and 'javax.net.ssl.trustStorePassword' to the given password.
    * If no truststore is specified or the file is not found, this method has no effect.
    * @throws IllegalArgumentException in case a truststore is specified but no password
    * @see Clients#TRUSTSTORE
@@ -75,7 +75,7 @@ public final class Clients {
   public static void resolveTrustStore() {
     final String trustStorePath = TRUSTSTORE.get();
     if (nullOrEmpty(trustStorePath)) {
-      LOG.debug("No client trust store specified via {}", TRUSTSTORE.getPropertyName());
+      LOG.debug("No client truststore specified via {}", TRUSTSTORE.getPropertyName());
       return;
     }
     final String password = TRUSTSTORE_PASSWORD.getOrThrow();
@@ -94,7 +94,7 @@ public final class Clients {
             .orElseThrow(() -> new RuntimeException("No TrustManager available after combining truststores"));
     final KeyStore store = KeyStoreUtils.createTrustStore(trustManager);
     try {
-      final File file = File.createTempFile("compinedTrustStore", "tmp");
+      final File file = File.createTempFile("combinedTrustStore", "tmp");
       file.deleteOnExit();
       try (final OutputStream outputStream = new FileOutputStream(file)) {
         store.store(outputStream, password.toCharArray());
