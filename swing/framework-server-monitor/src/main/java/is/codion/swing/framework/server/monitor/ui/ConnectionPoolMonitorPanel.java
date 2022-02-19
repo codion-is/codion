@@ -130,8 +130,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void setColors(final JFreeChart chart) {
-    chart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    chart.setBackgroundPaint(this.getBackground());
+    ChartUtil.linkColors(this, chart);
   }
 
   private void bindEvents() {

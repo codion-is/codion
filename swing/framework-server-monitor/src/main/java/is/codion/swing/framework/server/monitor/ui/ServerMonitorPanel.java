@@ -30,7 +30,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -257,8 +256,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void setColors(final JFreeChart chart) {
-    chart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    chart.setBackgroundPaint(this.getBackground());
+    ChartUtil.linkColors(this, chart);
   }
 
   private void resetZoom() {

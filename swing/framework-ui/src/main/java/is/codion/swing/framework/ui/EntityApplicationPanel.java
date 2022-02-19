@@ -102,6 +102,7 @@ import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.selectLookAndFeelControl;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -114,7 +115,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String CODION_CLIENT_VERSION = "codion.client.version";
   private static final String LOG_LEVEL = "log_level";
   private static final String LOG_LEVEL_DESC = "log_level_desc";
-  private static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
   private static final String HELP = "help";
   private static final String ABOUT = "about";
   private static final String ALWAYS_ON_TOP = "always_on_top";
@@ -373,18 +373,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
             .modal(false)
             .show();
-  }
-
-  /**
-   * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
-   * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
-   * @see LookAndFeelProvider#getLookAndFeelProvider(String)
-   * @see LookAndFeelProvider#selectLookAndFeel(JComponent, String)
-   * @see LookAndFeelProvider#CHANGE_DURING_SELECTION
-   */
-  public final void selectLookAndFeel() {
-    LookAndFeelProvider.selectLookAndFeel(this, resourceBundle.getString(SELECT_LOOK_AND_FEEL))
-            .ifPresent(provider -> UserPreferences.putUserPreference(applicationLookAndFeelProperty, provider.getName()));
   }
 
   /**
@@ -747,12 +735,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
+   * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
+   * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
+   * @see LookAndFeelProvider#getLookAndFeelProvider(String)
+   * @see LookAndFeelProvider#selectLookAndFeel(JComponent)
+   * @see LookAndFeelProvider#CHANGE_DURING_SELECTION
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
-    return Control.builder(this::selectLookAndFeel)
-            .caption(resourceBundle.getString(SELECT_LOOK_AND_FEEL))
-            .build();
+    return selectLookAndFeelControl(this, applicationLookAndFeelProperty);
   }
 
   /**
