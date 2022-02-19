@@ -9,7 +9,7 @@ dependencies {
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-model-test')
 
-    api "org.json:json:${jsonVersion}"
+    implementation "org.json:json:${jsonVersion}"
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
