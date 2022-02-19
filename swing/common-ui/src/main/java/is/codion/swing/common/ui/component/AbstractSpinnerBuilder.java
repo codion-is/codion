@@ -7,6 +7,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.spinner.SpinnerMouseWheelListener;
 
+import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
@@ -66,16 +67,11 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
-  protected JSpinner buildComponent() {
-    final JSpinner spinner = new JSpinner(spinnerModel);
-    JTextField editorField = null;
-    if (spinner.getEditor() instanceof JSpinner.NumberEditor) {
-      editorField = ((JSpinner.NumberEditor) spinner.getEditor()).getTextField();
-    }
-    else if (spinner.getEditor() instanceof JSpinner.DefaultEditor) {
-      editorField = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
-    }
-    if (editorField != null) {
+  protected final JSpinner buildComponent() {
+    final JSpinner spinner = createSpinner();
+    final JComponent editor = spinner.getEditor();
+    if (editor instanceof JSpinner.DefaultEditor) {
+      final JTextField editorField = ((JSpinner.DefaultEditor) editor).getTextField();
       if (!editable) {
         editorField.setEditable(false);
       }
@@ -105,5 +101,9 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   protected final void setTransferFocusOnEnter(final JSpinner component) {
     super.setTransferFocusOnEnter(component);
     TransferFocusOnEnter.enable(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
+  }
+
+  protected JSpinner createSpinner() {
+    return new JSpinner(spinnerModel);
   }
 }

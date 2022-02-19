@@ -8,7 +8,6 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
@@ -416,11 +415,6 @@ public final class CalendarPanel extends JPanel {
     final JSpinner hourSpinner = createHourSpinner();
     final JSpinner minuteSpinner = createMinuteSpinner();
 
-    ComponentValues.integerSpinner(yearSpinner).link(yearValue);
-    ComponentValues.<Month>itemSpinner(monthSpinner).link(monthValue);
-    ComponentValues.integerSpinner(hourSpinner).link(hourValue);
-    ComponentValues.integerSpinner(minuteSpinner).link(minuteValue);
-
     final JPanel yearMonthHourMinutePanel = new JPanel(flexibleGridLayout(1, 0));
     yearMonthHourMinutePanel.add(monthSpinner);
     yearMonthHourMinutePanel.add(yearSpinner);
@@ -604,24 +598,27 @@ public final class CalendarPanel extends JPanel {
     monthValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
   }
 
-  private static JSpinner createYearSpinner() {
-    return Components.integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1))
+  private JSpinner createYearSpinner() {
+    return Components.integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1), yearValue)
             .mouseWheelScrolling(true)
-            .onBuild(CalendarPanel::setYearSpinnerEditor)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .columns(YEAR_COLUMNS)
+            .editable(false)
+            .groupingUsed(false)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
             .build();
   }
 
-  private static JSpinner createMonthSpinner(final JSpinner yearSpinner) {
+  private JSpinner createMonthSpinner(final JSpinner yearSpinner) {
     final List<Item<Month>> monthItems = createMonthItems();
-    final JSpinner monthSpinner = Components.itemSpinner(new SpinnerListModel(monthItems))
+    final JSpinner monthSpinner = Components.itemSpinner(new SpinnerListModel(monthItems), monthValue)
             .mouseWheelScrolling(true)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .editable(false)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
             .build();
     final JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
     monthTextField.setFont(((JSpinner.DefaultEditor) yearSpinner.getEditor()).getTextField().getFont());
-    monthTextField.setEditable(false);
-    monthTextField.setHorizontalAlignment(SwingConstants.CENTER);
     monthItems.stream()
             .mapToInt(item -> item.getCaption().length())
             .max()
@@ -630,37 +627,26 @@ public final class CalendarPanel extends JPanel {
     return monthSpinner;
   }
 
-  private static JSpinner createHourSpinner() {
-    return Components.integerSpinner(new SpinnerNumberModel(0, 0, 23, 1))
+  private JSpinner createHourSpinner() {
+    return Components.integerSpinner(new SpinnerNumberModel(0, 0, 23, 1), hourValue)
             .mouseWheelScrolling(true)
-            .onBuild(CalendarPanel::setTimeSpinnerEditor)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .columns(TIME_COLUMNS)
+            .editable(false)
+            .decimalFormatPattern("00")
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
             .build();
   }
 
-  private static JSpinner createMinuteSpinner() {
-    return Components.integerSpinner(new SpinnerNumberModel(0, 0, 59, 1))
+  private JSpinner createMinuteSpinner() {
+    return Components.integerSpinner(new SpinnerNumberModel(0, 0, 59, 1), minuteValue)
             .mouseWheelScrolling(true)
-            .onBuild(CalendarPanel::setTimeSpinnerEditor)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .columns(TIME_COLUMNS)
+            .editable(false)
+            .decimalFormatPattern("00")
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
             .build();
-  }
-
-  private static void setYearSpinnerEditor(final JSpinner spinner) {
-    final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner);
-    editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-    editor.getTextField().setColumns(YEAR_COLUMNS);
-    editor.getTextField().setEditable(false);
-    editor.getFormat().setGroupingUsed(false);
-    spinner.setEditor(editor);
-  }
-
-  private static void setTimeSpinnerEditor(final JSpinner spinner) {
-    final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "00");
-    editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-    editor.getTextField().setColumns(TIME_COLUMNS);
-    editor.getTextField().setEditable(false);
-    spinner.setEditor(editor);
   }
 
   private static JSpinner removeCtrlLeftRightArrowKeyEvents(final JSpinner spinner) {

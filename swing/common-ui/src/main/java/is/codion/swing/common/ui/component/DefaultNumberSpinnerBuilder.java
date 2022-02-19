@@ -18,6 +18,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   private T minimum;
   private T maximum;
   private T stepSize;
+  private boolean groupingUsed = true;
+  private String decimalFormatPattern;
 
   DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass,
                               final Value<T> linkedValue) {
@@ -47,19 +49,15 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   }
 
   @Override
-  protected JSpinner buildComponent() {
-    final SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) spinnerModel;
-    if (minimum != null) {
-      spinnerNumberModel.setMinimum((Comparable<T>) minimum);
-    }
-    if (maximum != null) {
-      spinnerNumberModel.setMaximum((Comparable<T>) maximum);
-    }
-    if (stepSize != null) {
-      spinnerNumberModel.setStepSize(stepSize);
-    }
+  public NumberSpinnerBuilder<T> groupingUsed(final boolean groupingUsed) {
+    this.groupingUsed = groupingUsed;
+    return this;
+  }
 
-    return super.buildComponent();
+  @Override
+  public NumberSpinnerBuilder<T> decimalFormatPattern(final String decimalFormatPattern) {
+    this.decimalFormatPattern = requireNonNull(decimalFormatPattern);
+    return this;
   }
 
   @Override
@@ -72,5 +70,26 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
     }
 
     throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
+  }
+
+  @Override
+  protected JSpinner createSpinner() {
+    final SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) spinnerModel;
+    if (minimum != null) {
+      spinnerNumberModel.setMinimum((Comparable<T>) minimum);
+    }
+    if (maximum != null) {
+      spinnerNumberModel.setMaximum((Comparable<T>) maximum);
+    }
+    if (stepSize != null) {
+      spinnerNumberModel.setStepSize(stepSize);
+    }
+    final JSpinner spinner = super.createSpinner();
+    final JSpinner.NumberEditor numberEditor = decimalFormatPattern == null ?
+            new JSpinner.NumberEditor(spinner) : new JSpinner.NumberEditor(spinner, decimalFormatPattern);
+    numberEditor.getFormat().setGroupingUsed(groupingUsed);
+    spinner.setEditor(numberEditor);
+
+    return spinner;
   }
 }
