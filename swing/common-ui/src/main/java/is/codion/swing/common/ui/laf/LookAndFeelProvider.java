@@ -5,11 +5,13 @@ package is.codion.swing.common.ui.laf;
 
 import is.codion.common.Configuration;
 import is.codion.common.item.Item;
+import is.codion.common.model.UserPreferences;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
 
@@ -139,8 +142,19 @@ public interface LookAndFeelProvider {
    * @param dialogTitle the dialog title
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
-  static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final String dialogTitle) {
-    final boolean changeDuringSelection = CHANGE_DURING_SELECTION.get();
+  static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner) {
+    return selectLookAndFeel(dialogOwner, CHANGE_DURING_SELECTION.get());
+  }
+
+
+  /**
+   * Allows the user the select between all available Look and Feels.
+   * @param dialogOwner the dialog owner
+   * @param dialogTitle the dialog title
+   * @param changeDuringSelection true if the Look and Feel should change dynamically when choosing
+   * @return the selected look and feel provider, an empty Optional if cancelled
+   */
+  static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final boolean changeDuringSelection) {
     final List<Item<LookAndFeelProvider>> items = new ArrayList<>();
     final Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
     final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
@@ -163,6 +177,10 @@ public interface LookAndFeelProvider {
             .completionMode(Completion.Mode.NONE)
             .mouseWheelScrolling(true)
             .build();
+
+    final ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+    final String dialogTitle = resourceBundle.getString("select_look_and_feel");
+
     final int option = JOptionPane.showOptionDialog(dialogOwner, comboBox, dialogTitle,
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
     final LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
@@ -178,6 +196,44 @@ public interface LookAndFeelProvider {
     }
 
     return Optional.empty();
+  }
+
+  /**
+   * Creates a {@link Control} for selecting the Look & Feel.
+   * @param dialogOwner the dialog owner
+   * @return a look and feel selection control
+   */
+  static Control selectLookAndFeelControl(final JComponent dialogOwner) {
+    return selectLookAndFeelControl(dialogOwner, null);
+  }
+
+  /**
+   * Creates a {@link Control} for selecting the Look & Feel.
+   * @param dialogOwner the dialog owner
+   * @param userPreferencePropertyName the name of the property to use when saving the selected look and feel as a user preference
+   * @return a look and feel selection control
+   */
+  static Control selectLookAndFeelControl(final JComponent dialogOwner, final String userPreferencePropertyName) {
+    final ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+    final String caption = resourceBundle.getString("select_look_and_feel");
+
+    return Control.builder(() -> selectLookAndFeel(dialogOwner)
+                    .ifPresent(provider -> {
+                      if (userPreferencePropertyName != null) {
+                        UserPreferences.putUserPreference(userPreferencePropertyName, provider.getName());
+                      }
+                    }))
+            .caption(caption)
+            .build();
+  }
+
+  /**
+   * Returns the look and feel specified by the given user preference or the system look and feel if no preference value is found.
+   * @param userPreferencePropertyName the name of the user preference look and feel property
+   * @return the look and feel specified by user preference or the default system look and feel
+   */
+  static String getDefaultLookAndFeelName(final String userPreferencePropertyName) {
+    return UserPreferences.getUserPreference(userPreferencePropertyName, getSystemLookAndFeelClassName());
   }
 
   /**

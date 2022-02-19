@@ -13,11 +13,14 @@ import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.textfield.MemoryUsageField;
 import is.codion.swing.common.ui.textfield.TextComponents;
 
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -39,7 +42,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -47,8 +49,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.List;
 
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -70,6 +74,14 @@ public final class LoadTestPanel<T> extends JPanel {
   private final JPanel scenarioBase = new JPanel(Layouts.gridLayout(0, 1));
   private final JPanel pluginPanel;
   private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
+
+  static {
+    LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);
+    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
+            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
+    LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))
+                .ifPresent(LookAndFeelProvider::enable);
+  }
 
   /**
    * Constructs a new LoadTestPanel.
@@ -105,6 +117,7 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public JFrame showFrame() {
     final JFrame frame = new JFrame();
+    frame.setJMenuBar(initializeMainMenuControls().createMenuBar());
     frame.setIconImage(Logos.logoTransparent().getImage());
     final String title = "Codion - " + loadTestModel.getTitle();
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -122,6 +135,15 @@ public final class LoadTestPanel<T> extends JPanel {
     frame.setVisible(true);
 
     return frame;
+  }
+
+  private Controls initializeMainMenuControls() {
+    return Controls.builder()
+            .control(Controls.builder()
+                    .caption("View")
+                    .mnemonic('V')
+                    .control(selectLookAndFeelControl(this, LoadTestPanel.class.getName())))
+            .build();
   }
 
   private void initializeUI() {
@@ -396,8 +418,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private void setColors(final JFreeChart chart) {
-    chart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    chart.setBackgroundPaint(this.getBackground());
+    ChartUtil.linkColors(this, chart);
   }
 
   private abstract static class ExceptionsAction extends AbstractAction {

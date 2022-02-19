@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
-import java.awt.Color;
 
 import static is.codion.swing.common.ui.control.Control.control;
 
@@ -41,9 +40,8 @@ public final class DatabaseMonitorPanel extends JPanel {
    */
   public DatabaseMonitorPanel(final DatabaseMonitor model) {
     this.model = model;
-    queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
-    queriesPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
-    queriesPerSecondChart.setBackgroundPaint(this.getBackground());
+    this.queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
+    ChartUtil.linkColors(this, queriesPerSecondChart);
     initializeUI();
   }
 

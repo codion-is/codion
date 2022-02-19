@@ -13,6 +13,7 @@ dependencies {
 
     implementation project(':codion-framework-server')
 
+    implementation "com.formdev:flatlaf-intellij-themes:${flatLafVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     implementation "org.jfree:jcommon:${jcommonVersion}"

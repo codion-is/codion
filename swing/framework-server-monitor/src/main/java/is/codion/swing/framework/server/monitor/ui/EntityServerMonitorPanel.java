@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.textfield.MemoryUsageField;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +37,15 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
+
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -159,6 +162,7 @@ public final class EntityServerMonitorPanel extends JPanel {
                     .control(initializeRefreshControl())
                     .control(initializeUpateIntervalControl())
                     .separator()
+                    .control(selectLookAndFeelControl(this, EntityServerMonitorPanel.class.getName()))
                     .control(initializeAlwaysOnTopControl()))
             .control(Controls.builder()
                     .caption("Tools")
@@ -251,9 +255,13 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static void main(final String[] arguments) {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
+    LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);
+    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
+            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {
       try {
-        UIManager.setLookAndFeel(LookAndFeelProvider.getSystemLookAndFeelClassName());
+        LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))
+                .ifPresent(LookAndFeelProvider::enable);
         new EntityServerMonitorPanel().showFrame();
       }
       catch (final Exception exception) {
