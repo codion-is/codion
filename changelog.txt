@@ -7781,3 +7781,4 @@
   LoginPanel redesigned a bit
   EntityApplicationPanel.applicationIcon not initializes to the default one until required, after Look & Feel is set
   EntityInputComponents removed, EntityComponents.inputComponent() and inputComponentSupported() added, related changes
+  Dialogs, use onKeyReleased when disposing dialogs on key press (esc for example) in order to prevent closing the underlying dialog as well (closing login exception with esc closed the login dialog as well)
