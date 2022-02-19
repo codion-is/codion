@@ -56,5 +56,6 @@ final class ChartPanels {
       legend.setBackgroundPaint(backgroundColor);
       legend.setItemPaint(textFieldForeground);
     }
+    chart.getTitle().setPaint(textFieldForeground);
   }
 }

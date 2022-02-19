@@ -7820,3 +7820,4 @@
   LookAndFeelProvider.createSelectLookAndFeelControl() added, used in EntityApplicationPanel
   EntityServerMonitor, added look and feel selection, related refactoring and chart UI fixes
   LoadTestPanel, added look and feel selection
+  ColumnConditionPanel bug fixed, updateUI() did not include buttonPanel

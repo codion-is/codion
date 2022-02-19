@@ -130,7 +130,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
-            equalField, lowerBoundField, upperBoundField, controlPanel, inputPanel);
+            equalField, lowerBoundField, upperBoundField, buttonPanel, controlPanel, inputPanel);
   }
 
   /**
