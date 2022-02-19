@@ -25,4 +25,16 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
    * @return this builder instance
    */
   NumberSpinnerBuilder<T> stepSize(T stepSize);
+
+  /**
+   * @param groupingUsed true if number format grouping should be used
+   * @return this builder instance
+   */
+  NumberSpinnerBuilder<T> groupingUsed(boolean groupingUsed);
+
+  /**
+   * @param decimalFormatPattern the decimal format pattern
+   * @return this builder instance
+   */
+  NumberSpinnerBuilder<T> decimalFormatPattern(String decimalFormatPattern);
 }

@@ -597,4 +597,26 @@ public final class ComponentsTest {
     assertThrows(IllegalStateException.class, () -> Components.textField(Value.value())
             .linkedValueObserver(Value.value()));
   }
+
+  @Test
+  void validatorInvalidValue() {
+    final Value.Validator<String> validator = value -> {
+      if ("test".equals(value)) {
+        throw new IllegalArgumentException();
+      }
+    };
+    assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
+            .initialValue("test")
+            .validator(validator)
+            .build());
+
+    final Value<String> stringValue = Value.value("test");
+    assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class, stringValue)
+            .validator(validator)
+            .build());
+    assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
+            .linkedValueObserver(stringValue.getObserver())
+            .validator(validator)
+            .build());
+  }
 }

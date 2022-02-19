@@ -145,7 +145,6 @@ public interface LookAndFeelProvider {
     return selectLookAndFeel(dialogOwner, CHANGE_DURING_SELECTION.get());
   }
 
-
   /**
    * Allows the user the select between all available Look and Feels.
    * @param dialogOwner the dialog owner
