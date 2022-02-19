@@ -7821,3 +7821,4 @@
   EntityServerMonitor, added look and feel selection, related refactoring and chart UI fixes
   LoadTestPanel, added look and feel selection
   ColumnConditionPanel bug fixed, updateUI() did not include buttonPanel
+  org.json no longer an api dependency of framework.model module, implementation instead, no need to make this part of the public api

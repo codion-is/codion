@@ -10,6 +10,7 @@ dependencies {
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
     implementation 'org.jxmapviewer:jxmapviewer2:2.6'
+    implementation "org.json:json:${jsonVersion}"
 
     testImplementation project(':codion-framework-domain-test')
     testImplementation project(':codion-swing-framework-ui-test')

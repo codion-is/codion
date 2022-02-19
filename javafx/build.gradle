@@ -14,6 +14,8 @@ dependencies {
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-model-test')
 
+    implementation "org.json:json:${jsonVersion}"
+
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
