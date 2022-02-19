@@ -7789,3 +7789,4 @@
   ColumnConditionPanel bug fixed, updateUI() did not include buttonPanel
   org.json no longer an api dependency of framework.model module, implementation instead, no need to make this part of the public api
   AbstractComponentBuilder.build() bug fixed, now fires build event and calls onBuild before values are linked, since these may configure the value presentation, case in point, year spinner in CalendarPanel sets the number format in a build event listener, so number format grouping was enabled when first shown
+  AbstractComponentBuilder.validator() now accepts multiple validators, now added before initial value is set or values are linked, to prevent invalid initialization

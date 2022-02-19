@@ -48,6 +48,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private final List<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
   private final List<KeyListener> keyListeners = new ArrayList<>();
   private final List<ComponentListener> componentListeners = new ArrayList<>();
+  private final List<Value.Validator<T>> validators = new ArrayList<>();
 
   private C component;
   private ComponentValue<T, C> componentValue;
@@ -71,7 +72,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private JPopupMenu popupMenu;
   private Value<T> linkedValue;
   private ValueObserver<T> linkedValueObserver;
-  private Value.Validator<T> validator;
   private T initialValue;
   private Consumer<C> onSetVisible;
 
@@ -229,7 +229,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B validator(final Value.Validator<T> validator) {
-    this.validator = validator;
+    this.validators.add(requireNonNull(validator));
     return (B) this;
   }
 
@@ -386,11 +386,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (onBuild != null) {
       onBuild.accept(component);
     }
+    validators.forEach(validator -> buildComponentValue().addValidator(validator));
     if (initialValue != null) {
       setInitialValue(component, initialValue);
-    }
-    if (validator != null) {
-      buildComponentValue().addValidator(validator);
     }
     if (linkedValue != null) {
       buildComponentValue().link(linkedValue);
