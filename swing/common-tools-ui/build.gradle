@@ -4,4 +4,6 @@ dependencies {
 
     api project(':codion-swing-common-tools')
     implementation project(':codion-swing-common-ui')
+
+    implementation "com.formdev:flatlaf-intellij-themes:${flatLafVersion}"
 }

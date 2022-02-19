@@ -7785,3 +7785,4 @@
   org.json now an api dependency of framework.model module
   LookAndFeelProvider.createSelectLookAndFeelControl() added, used in EntityApplicationPanel
   EntityServerMonitor, added look and feel selection, related refactoring and chart UI fixes
+  LoadTestPanel, added look and feel selection
