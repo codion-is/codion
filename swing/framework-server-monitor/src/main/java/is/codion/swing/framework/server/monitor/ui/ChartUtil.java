@@ -5,6 +5,7 @@ package is.codion.swing.framework.server.monitor.ui;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.title.TextTitle;
 
 import javax.swing.JComponent;
 import javax.swing.UIManager;
@@ -22,7 +23,10 @@ final class ChartUtil {
 
   private static void setColors(final JComponent parent, final JFreeChart chart) {
     final Color textFieldForeground = UIManager.getColor("TextField.foreground");
-    chart.getTitle().setPaint(textFieldForeground);
+    final TextTitle title = chart.getTitle();
+    if (title != null) {
+      title.setPaint(textFieldForeground);
+    }
     chart.setBackgroundPaint(parent.getBackground());
     chart.getLegend().setBackgroundPaint(parent.getBackground());
     chart.getLegend().setItemPaint(textFieldForeground);
