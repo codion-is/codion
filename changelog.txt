@@ -7793,3 +7793,4 @@
   NumberSpinnerBuilder.groupingUsed() and decimalFormatPattern() added, AbstractSpinnerBuilder.createSpinner() method added, overridden in DefaultNumberSpinnerBuilder to set the editor
   ColumnConditionPanel.BoundFieldFactory.createLowerBoundField() and createUpperBoundField() now return Optional
   DefaultPropertyValue now extends AbstractValue, related refactoring
+  ComponentBuilder.componentOrientation() renamed orientation()

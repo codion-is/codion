@@ -500,7 +500,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .mouseWheelScrolling(true)
-            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(operators.size())
             .onBuild(comboBox -> addComponentListener(new OperatorBoxPopupWidthListener()))
             .build();
