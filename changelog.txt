@@ -7792,3 +7792,4 @@
   AbstractComponentBuilder.validator() now accepts multiple validators, now added before initial value is set or values are linked, to prevent invalid initialization
   NumberSpinnerBuilder.groupingUsed() and decimalFormatPattern() added, AbstractSpinnerBuilder.createSpinner() method added, overridden in DefaultNumberSpinnerBuilder to set the editor
   ColumnConditionPanel.BoundFieldFactory.createLowerBoundField() and createUpperBoundField() now return Optional
+  DefaultPropertyValue now extends AbstractValue, related refactoring

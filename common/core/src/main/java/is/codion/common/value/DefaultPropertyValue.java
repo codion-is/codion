@@ -3,24 +3,20 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
+import is.codion.common.Util;
 import is.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultPropertyValue<T> implements PropertyValue<T> {
+final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
-  private final EventObserver<T> changeEvent;
+  private final EventObserver<T> changeObserver;
   private final String propertyName;
   private final Class<T> valueClass;
   private final Object valueOwner;
@@ -33,13 +29,14 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<T> valueClass,
                        final EventObserver<T> changeObserver) {
+    super(requireNonNull(valueClass).isPrimitive() ? Util.getPrimitiveDefaultValue(valueClass) : null);
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }
     this.propertyName = propertyName;
     this.valueClass = requireNonNull(valueClass, "valueClass");
     this.valueOwner = requireNonNull(valueOwner, "valueOwner");
-    this.changeEvent = requireNonNull(changeObserver);
+    this.changeObserver = requireNonNull(changeObserver);
     this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
     this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass()).orElse(null);
   }
@@ -48,43 +45,6 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
   public T get() {
     try {
       return (T) getMethod.invoke(valueOwner);
-    }
-    catch (final RuntimeException re) {
-      throw re;
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public ValueObserver<T> getObserver() {
-    synchronized (changeEvent) {
-      if (observer == null) {
-        observer = new DefaultValueObserver<>(this);
-      }
-
-      return observer;
-    }
-  }
-
-  @Override
-  public Optional<T> toOptional() {
-    if (isNullable()) {
-      return Optional.ofNullable(get());
-    }
-
-    return Optional.of(get());
-  }
-
-  @Override
-  public void set(final T value) {
-    if (setMethod == null) {
-      throw new IllegalStateException("Set method for property not found: " + propertyName);
-    }
-    validators.forEach(validator -> validator.validate(value));
-    try {
-      setMethod.invoke(valueOwner, value);
     }
     catch (final RuntimeException re) {
       throw re;
@@ -116,79 +76,24 @@ final class DefaultPropertyValue<T> implements PropertyValue<T> {
   }
 
   @Override
-  public boolean isNull() {
-    return isNullable() && get() == null;
-  }
-
-  @Override
-  public boolean isNotNull() {
-    return !isNull();
-  }
-
-  @Override
-  public boolean isNullable() {
-    return !valueClass.isPrimitive();
-  }
-
-  @Override
-  public boolean equalTo(final T value) {
-    return Objects.equals(get(), value);
-  }
-
-  @Override
-  public void onEvent(final T data) {
-    set(data);
-  }
-
-  @Override
-  public void addListener(final EventListener listener) {
-    changeEvent.addListener(listener);
-  }
-
-  @Override
-  public void removeListener(final EventListener listener) {
-    changeEvent.removeListener(listener);
-  }
-
-  @Override
-  public void addDataListener(final EventDataListener<T> listener) {
-    changeEvent.addDataListener(listener);
-  }
-
-  @Override
-  public void removeDataListener(final EventDataListener<T> listener) {
-    changeEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public void link(final Value<T> originalValue) {
-    if (linkedValues.contains(requireNonNull(originalValue, "originalValue"))) {
-      throw new IllegalArgumentException("Values are already linked");
+  protected void setValue(final T value) {
+    if (setMethod == null) {
+      throw new IllegalStateException("Set method for property not found: " + propertyName);
     }
-    new ValueLink<>(this, originalValue);
-    linkedValues.add(originalValue);
+    try {
+      setMethod.invoke(valueOwner, value);
+    }
+    catch (final RuntimeException re) {
+      throw re;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
-  public void link(final ValueObserver<T> originalValueObserver) {
-    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
-    originalValueObserver.addDataListener(this::set);
-  }
-
-  @Override
-  public Set<Value<T>> getLinkedValues() {
-    return unmodifiableSet(linkedValues);
-  }
-
-  @Override
-  public void addValidator(final Validator<T> validator) {
-    requireNonNull(validator, "validator").validate(get());
-    validators.add(validator);
-  }
-
-  @Override
-  public Collection<Validator<T>> getValidators() {
-    return unmodifiableSet(validators);
+  protected EventObserver<T> getChangeObserver() {
+    return changeObserver;
   }
 
   static Optional<Method> getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {

@@ -6,6 +6,7 @@ package is.codion.common.value;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -106,22 +107,22 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final void addListener(final EventListener listener) {
-    changeEvent.addListener(listener);
+    getChangeObserver().addListener(listener);
   }
 
   @Override
   public final void removeListener(final EventListener listener) {
-    changeEvent.removeListener(listener);
+    getChangeObserver().removeListener(listener);
   }
 
   @Override
   public final void addDataListener(final EventDataListener<T> listener) {
-    changeEvent.addDataListener(listener);
+    getChangeObserver().addDataListener(listener);
   }
 
   @Override
   public final void removeDataListener(final EventDataListener<T> listener) {
-    changeEvent.removeDataListener(listener);
+    getChangeObserver().removeDataListener(listener);
   }
 
   @Override
@@ -160,6 +161,13 @@ public abstract class AbstractValue<T> implements Value<T> {
    * @param value the value
    */
   protected abstract void setValue(final T value);
+
+  /**
+   * @return the change observer to use when adding listeners to this value
+   */
+  protected EventObserver<T> getChangeObserver() {
+    return changeEvent.getObserver();
+  }
 
   /**
    * Fires the change event for this value, using the current value, indicating that

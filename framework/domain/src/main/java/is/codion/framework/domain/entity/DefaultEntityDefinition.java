@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Text;
+import is.codion.common.Util;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -54,19 +55,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static final String ATTRIBUTE = "attribute";
   private static final String ATTRIBUTES = "attributes";
   private static final String FOREIGN_KEY = "foreignKey";
-
-  private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPE_MAP;
-
-  static {
-    PRIMITIVE_BOXED_TYPE_MAP = new HashMap<>();
-    PRIMITIVE_BOXED_TYPE_MAP.put(Boolean.TYPE, Boolean.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Byte.TYPE, Byte.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Short.TYPE, Short.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Integer.TYPE, Integer.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Long.TYPE, Long.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Float.TYPE, Float.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Double.TYPE, Double.class);
-  }
 
   /**
    * The domain name
@@ -771,7 +759,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getMethodReturnType(final Method method) {
     final Class<?> returnType = method.getReturnType();
     if (returnType.isPrimitive()) {
-      return PRIMITIVE_BOXED_TYPE_MAP.get(returnType);
+      return Util.getPrimitiveBoxedType(returnType);
     }
 
     return returnType;
@@ -794,7 +782,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getSetterParameterType(final Method method) {
     final Class<?> parameterType = method.getParameterTypes()[0];
     if (parameterType.isPrimitive()) {
-      return PRIMITIVE_BOXED_TYPE_MAP.get(parameterType);
+      return Util.getPrimitiveBoxedType(parameterType);
     }
 
     return parameterType;

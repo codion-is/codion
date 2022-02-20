@@ -218,7 +218,7 @@ public class ValuesTest {
   @Test
   void setReadOnlyPropertyValue() {
     final Value<Integer> modelValue = Value.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
-    assertThrows(IllegalStateException.class, () -> modelValue.set(42));
+    assertThrows(IllegalStateException.class, () -> modelValue.set(43));
   }
 
   @Test
