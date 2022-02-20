@@ -203,6 +203,7 @@ public final class Util {
   }
 
   /**
+   * @param <T> the type
    * @param primitiveType the primitive type
    * @return the default value for the given typ
    * @throws IllegalArgumentException in case primitiveType is not a primitive
@@ -217,15 +218,16 @@ public final class Util {
   }
 
   /**
+   * @param <T> the type
    * @param primitiveType the primitive type
    * @return the boxed type
    * @throws IllegalArgumentException in case primitiveType is not a primitive
    */
-  public static Class<?> getPrimitiveBoxedType(final Class<?> primitiveType) {
+  public static <T> Class<T> getPrimitiveBoxedType(final Class<T> primitiveType) {
     if (!requireNonNull(primitiveType).isPrimitive()) {
       throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
     }
 
-    return PRIMITIVE_BOXED_TYPE_MAP.get(requireNonNull(primitiveType));
+    return (Class<T>) PRIMITIVE_BOXED_TYPE_MAP.get(requireNonNull(primitiveType));
   }
 }
