@@ -6,16 +6,12 @@ package is.codion.swing.framework.ui.icons;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.swing.FontIcon;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-
-import static java.util.Objects.requireNonNull;
 
 public final class DefaultFrameworkIcons implements FrameworkIcons {
 
@@ -24,7 +20,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
   private static final Map<Ikon, FontImageIcon> ICONS = new HashMap<>();
   private static final Map<Integer, FontImageIcon> LOGOS = new HashMap<>();
-  private static final ImageIcon REFRESH_REQUIRED = FontImageIcon.imageIcon(FontIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()));
+  private static final ImageIcon REFRESH_REQUIRED = FontImageIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()).imageIcon;
 
   static {
     UIManager.addPropertyChangeListener(evt -> {
@@ -148,47 +144,51 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
   @Override
   public ImageIcon logo(final int size) {
-    return LOGOS.computeIfAbsent(size, k -> new FontImageIcon(FrameworkIkons.LOGO, size,
-            fontIcon -> {
-              //hack to get the logo centered on the image
-              final int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
-              final BufferedImage image = new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconWidth(), BufferedImage.TYPE_INT_ARGB);
-              fontIcon.paintIcon(null, image.getGraphics(), 0, -yOffset);
+    return LOGOS.computeIfAbsent(size, k -> new FontImageIcon(FrameworkIkons.LOGO, size, ICON_COLOR.get()) {
+      @Override
+      protected ImageIcon createImageIcon() {
+        return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconWidth(), BufferedImage.TYPE_INT_ARGB));
+      }
 
-              return new ImageIcon(image);
-            })).imageIcon;
+      @Override
+      protected void paintIcon() {
+        final int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
+
+        fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
+      }
+    }).imageIcon;
   }
 
-  private static final class FontImageIcon {
+  private static class FontImageIcon {
 
-    private final FontIcon fontIcon;
-    private final ImageIcon imageIcon;
+    protected final FontIcon fontIcon;
+    protected final ImageIcon imageIcon;
 
-    private FontImageIcon(final Ikon ikon) {
-      this(ikon, ICON_SIZE.get(), FontImageIcon::imageIcon);
+    private FontImageIcon(final Ikon ikon, final int size, final Color color) {
+      fontIcon = FontIcon.of(ikon, size, color);
+      imageIcon = createImageIcon();
+      paintIcon();
     }
 
-    private FontImageIcon(final Ikon ikon, final int size,
-                          final Function<FontIcon, ImageIcon> toImageIcon) {
-      this.fontIcon = FontIcon.of(ikon, size, ICON_COLOR.get());
-      this.imageIcon = toImageIcon.apply(fontIcon);
+    protected ImageIcon createImageIcon() {
+      return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB));
+    }
+
+    protected void paintIcon() {
+      fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, 0);
     }
 
     private void setColor(final Color color) {
       fontIcon.setIconColor(color);
-      fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, 0);
+      paintIcon();
     }
 
     private static FontImageIcon of(final Ikon ikon) {
-      return new FontImageIcon(ikon);
+      return of(ikon, ICON_SIZE.get(), ICON_COLOR.get());
     }
 
-    private static ImageIcon imageIcon(final Icon icon) {
-      requireNonNull(icon, "icon");
-      final BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-      icon.paintIcon(null, image.getGraphics(), 0, 0);
-
-      return new ImageIcon(image);
+    private static FontImageIcon of(final Ikon ikon, final int size, final Color color) {
+      return new FontImageIcon(ikon, size, color);
     }
   }
 }
