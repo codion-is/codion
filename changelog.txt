@@ -7829,3 +7829,5 @@
   DefaultPropertyValue now extends AbstractValue, related refactoring
   ComponentBuilder.componentOrientation() renamed orientation()
   Value.unlink() and removeValidator() added and implemented
+  EntityApplicationPanel, no longer includes Refresh All, View Dependencies and Application Tree in the View menu
+  EntityApplicationPanel, about panel now uses icon logo

@@ -39,7 +39,6 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
-import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.panel.HierarchyPanel;
@@ -512,6 +511,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Dialogs.componentDialog(getAboutPanel())
             .owner(this)
             .title(resourceBundle.getString(ABOUT))
+            .resizable(false)
             .show();
   }
 
@@ -657,10 +657,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.VIEW))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
-            .control(createRefreshAllControl())
             .separator()
-            .control(createViewApplicationTreeControl())
-            .control(createViewDependencyTree())
             .control(createSelectLookAndFeelControl())
             .control(createSelectFontSizeControl())
             .separator()
@@ -788,7 +785,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
     final String versionString = Version.getVersionAndMetadataString();
-    panel.add(new JLabel(Logos.logoTransparent()), BorderLayout.WEST);
+    panel.add(new JLabel(FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
     final Version version = getClientVersion();
     final JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
     versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
