@@ -59,4 +59,16 @@ public final class UtilTest {
 
     assertFalse(Util.nullOrEmpty(map));
   }
+
+  @Test
+  void primitives() {
+    assertEquals(0d, Util.getPrimitiveDefaultValue(Double.TYPE));
+    assertEquals(0, Util.getPrimitiveDefaultValue(Integer.TYPE));
+
+    assertEquals(Double.class, Util.getPrimitiveBoxedType(Double.TYPE));
+    assertEquals(Integer.class, Util.getPrimitiveBoxedType(Integer.TYPE));
+
+    assertThrows(IllegalArgumentException.class, () -> Util.getPrimitiveDefaultValue(Double.class));
+    assertThrows(IllegalArgumentException.class, () -> Util.getPrimitiveDefaultValue(Integer.class));
+  }
 }

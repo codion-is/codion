@@ -7,9 +7,7 @@ import is.codion.common.Util;
 import is.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -18,14 +16,9 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
 
   private final EventObserver<T> changeObserver;
   private final String propertyName;
-  private final Class<T> valueClass;
   private final Object valueOwner;
   private final Method getMethod;
   private final Method setMethod;
-  private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
-  private final Set<Value<T>> linkedValues = new LinkedHashSet<>();
-
-  private ValueObserver<T> observer;
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<T> valueClass,
                        final EventObserver<T> changeObserver) {
@@ -33,10 +26,9 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }
-    this.propertyName = propertyName;
-    this.valueClass = requireNonNull(valueClass, "valueClass");
-    this.valueOwner = requireNonNull(valueOwner, "valueOwner");
     this.changeObserver = requireNonNull(changeObserver);
+    this.propertyName = propertyName;
+    this.valueOwner = requireNonNull(valueOwner, "valueOwner");
     this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
     this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass()).orElse(null);
   }
