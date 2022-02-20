@@ -28,6 +28,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -114,13 +115,13 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     }
 
     @Override
-    public JComponent createUpperBoundField() {
-      return null;
+    public Optional<JComponent> createUpperBoundField() {
+      return Optional.empty();
     }
 
     @Override
-    public JComponent createLowerBoundField() {
-      return null;
+    public Optional<JComponent> createLowerBoundField() {
+      return Optional.empty();
     }
 
     private JComponent createForeignKeyField() {
@@ -162,27 +163,27 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     }
 
     @Override
-    public JComponent createUpperBoundField() {
+    public Optional<JComponent> createUpperBoundField() {
       if (conditionModel.getTypeClass().equals(Boolean.class)) {
-        return null;//no upper bound field required for booleans
+        return Optional.empty();//no upper bound field required for booleans
       }
 
-      return inputComponents.inputComponent(attribute)
+      return Optional.of(inputComponents.inputComponent(attribute)
               .linkedValue(conditionModel.getUpperBoundValue())
               .onBuild(AttributeBoundFieldFactory::configureComponent)
-              .build();
+              .build());
     }
 
     @Override
-    public JComponent createLowerBoundField() {
+    public Optional<JComponent> createLowerBoundField() {
       if (conditionModel.getTypeClass().equals(Boolean.class)) {
-        return null;//no lower bound field required for booleans
+        return Optional.empty();//no lower bound field required for booleans
       }
 
-      return inputComponents.inputComponent(attribute)
+      return Optional.of(inputComponents.inputComponent(attribute)
               .linkedValue(conditionModel.getLowerBoundValue())
               .onBuild(AttributeBoundFieldFactory::configureComponent)
-              .build();
+              .build());
     }
 
     private static JComponent configureComponent(final JComponent component) {
