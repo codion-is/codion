@@ -3,6 +3,8 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.event.EventListener;
+
 import java.util.Set;
 
 /**
@@ -13,6 +15,12 @@ final class ValueLink<T> {
 
   private final Value<T> linkedValue;
   private final Value<T> originalValue;
+
+  private final EventListener updateLinkedValueListener = this::updateLinkedValue;
+  private final EventListener updateOriginalValueListener = this::updateOriginalValue;
+
+  private final LinkedValidator<T> linkedValidator;
+  private final LinkedValidator<T> originalValidator;
 
   /**
    * True while the linked value is being updated
@@ -33,10 +41,22 @@ final class ValueLink<T> {
     preventLinkCycle(linkedValue, originalValue);
     this.linkedValue = linkedValue;
     this.originalValue = originalValue;
+    this.linkedValidator = new LinkedValidator<>(linkedValue);
+    this.originalValidator = new LinkedValidator<>(originalValue);
+    this.linkedValidator.excluded = originalValidator;
+    this.originalValidator.excluded = linkedValidator;
     linkedValue.set(originalValue.get());
-    originalValue.addListener(this::updateLinkedValue);
-    linkedValue.addListener(this::updateOriginalValue);
-    combineValidators(linkedValue, originalValue);
+    originalValue.addListener(updateLinkedValueListener);
+    linkedValue.addListener(updateOriginalValueListener);
+    originalValue.addValidator(linkedValidator);
+    linkedValue.addValidator(originalValidator);
+  }
+
+  void unlink() {
+    linkedValue.removeListener(updateOriginalValueListener);
+    originalValue.removeListener(updateLinkedValueListener);
+    linkedValue.removeValidator(originalValidator);
+    originalValue.removeValidator(linkedValidator);
   }
 
   private void updateOriginalValue() {
@@ -73,15 +93,6 @@ final class ValueLink<T> {
         isUpdatingLinked = false;
       }
     }
-  }
-
-  private void combineValidators(final Value<T> linkedValue, final Value<T> originalValue) {
-    final LinkedValidator<T> originalValidators = new LinkedValidator<>(originalValue);
-    final LinkedValidator<T> linkedValidators = new LinkedValidator<>(linkedValue);
-    originalValidators.excluded = linkedValidators;
-    linkedValidators.excluded = originalValidators;
-    linkedValue.addValidator(originalValidators);
-    originalValue.addValidator(linkedValidators);
   }
 
   private static <T> void preventLinkCycle(final Value<T> linkedValue, final Value<T> originalValue) {

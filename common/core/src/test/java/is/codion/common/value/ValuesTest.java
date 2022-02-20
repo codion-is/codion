@@ -383,4 +383,47 @@ public class ValuesTest {
 
     assertEquals(3, listeningValue.get());
   }
+
+  @Test
+  void unlink() {
+    final Value<Integer> value = Value.value(0, 0);
+    value.addValidator(integer -> {
+      if (integer > 2) {
+        throw new IllegalArgumentException();
+      }
+    });
+    final Value<Integer> originalValue = Value.value(1);
+
+    value.link(originalValue);
+    assertEquals(originalValue.get(), value.get());
+
+    assertThrows(IllegalArgumentException.class, () -> originalValue.set(3));
+
+    value.unlink(originalValue);
+
+    originalValue.set(3);
+    assertNotEquals(originalValue.get(), value.get());
+    assertEquals(1, value.get());
+
+    assertThrows(IllegalArgumentException.class, () -> value.unlink(originalValue));
+
+    final ValueObserver<Integer> originalValueObserver = originalValue.getObserver();
+
+    assertThrows(IllegalArgumentException.class, () -> value.link(originalValueObserver));
+
+    originalValue.set(2);
+
+    value.link(originalValueObserver);
+    assertEquals(originalValue.get(), value.get());
+
+    assertThrows(IllegalArgumentException.class, () -> originalValue.set(3));
+
+    value.unlink(originalValueObserver);
+    value.unlink(originalValueObserver);
+
+    originalValue.set(3);
+
+    assertNotEquals(originalValue.get(), value.get());
+    assertEquals(2, value.get());
+  }
 }

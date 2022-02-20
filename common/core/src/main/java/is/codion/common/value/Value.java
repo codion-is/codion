@@ -34,8 +34,16 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * so that changes in one are reflected in the other.
    * Note that after a call to this method this value is the same as {@code originalValue}.
    * @param originalValue the original value to link this value to
+   * @throws IllegalArgumentException in case the values are already linked
    */
   void link(Value<T> originalValue);
+
+  /**
+   * Unlinks this value from the given original value
+   * @param originalValue the original value to unlink from this one
+   * @throws IllegalArgumentException in case the values are not linked
+   */
+  void unlink(Value<T> originalValue);
 
   /**
    * Creates a unidirectional link between this value and the given original value observer,
@@ -44,6 +52,12 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param originalValueObserver the original value to link this value to
    */
   void link(ValueObserver<T> originalValueObserver);
+
+  /**
+   * Unlinks this value from the given original value observer
+   * @param originalValueObserver
+   */
+  void unlink(ValueObserver<T> originalValueObserver);
 
   /**
    * @return an unmodifiable set containing the values that have been linked to this value
@@ -57,6 +71,12 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @throws IllegalArgumentException in case the current value is invalid according to the validator
    */
   void addValidator(Validator<T> validator);
+
+  /**
+   * Removes the given validator from this value
+   * @param validator the validator
+   */
+  void removeValidator(Validator<T> validator);
 
   /**
    * @return the validators

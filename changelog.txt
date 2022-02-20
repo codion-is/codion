@@ -7794,3 +7794,4 @@
   ColumnConditionPanel.BoundFieldFactory.createLowerBoundField() and createUpperBoundField() now return Optional
   DefaultPropertyValue now extends AbstractValue, related refactoring
   ComponentBuilder.componentOrientation() renamed orientation()
+  Value.unlink() and removeValidator() added and implemented
