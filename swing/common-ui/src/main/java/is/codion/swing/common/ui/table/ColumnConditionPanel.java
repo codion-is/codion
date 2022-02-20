@@ -42,6 +42,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
@@ -112,8 +113,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     final boolean modelLocked = conditionModel.isLocked();
     conditionModel.setLocked(false);//otherwise, the validator checking the locked state kicks in during value linking
     this.equalField = boundFieldFactory.createEqualField();
-    this.upperBoundField = boundFieldFactory.createUpperBoundField();
-    this.lowerBoundField = boundFieldFactory.createLowerBoundField();
+    this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
+    this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
     this.operatorCombo = initializeOperatorComboBox(conditionModel.getOperators());
     this.toggleEnabledButton = radioButton(conditionModel.getEnabledState())
             .horizontalAlignment(CENTER)
@@ -291,24 +292,27 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   /**
-   * Provides an equal, upper and lower bound input fields for a ColumnConditionPanel
+   * Provides equal, upper and lower bound input fields for a ColumnConditionPanel
    */
   public interface BoundFieldFactory {
 
     /**
      * @return the equal value field
+     * @throws IllegalArgumentException in case the bound type is not supported
      */
     JComponent createEqualField();
 
     /**
-     * @return an upper bound input field
+     * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
+     * @throws IllegalArgumentException in case the bound type is not supported
      */
-    JComponent createUpperBoundField();
+    Optional<JComponent> createUpperBoundField();
 
     /**
-     * @return a lower bound input field
+     * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
+     * @throws IllegalArgumentException in case the bound type is not supported
      */
-    JComponent createLowerBoundField();
+    Optional<JComponent> createLowerBoundField();
   }
 
   private static final class DefaultBoundFieldFactory<T> implements BoundFieldFactory {
@@ -324,21 +328,21 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     @Override
-    public JComponent createUpperBoundField() {
+    public Optional<JComponent> createUpperBoundField() {
       if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
-        return null;//no lower bound field required for boolean values
+        return Optional.empty();//no lower bound field required for boolean values
       }
 
-      return createField(columnConditionModel.getUpperBoundValue());
+      return Optional.of(createField(columnConditionModel.getUpperBoundValue()));
     }
 
     @Override
-    public JComponent createLowerBoundField() {
+    public Optional<JComponent> createLowerBoundField() {
       if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
-        return null;//no lower bound field required for boolean values
+        return Optional.empty();//no lower bound field required for boolean values
       }
 
-      return createField(columnConditionModel.getLowerBoundValue());
+      return Optional.of(createField(columnConditionModel.getLowerBoundValue()));
     }
 
     private JComponent createField(final Value<?> value) {
@@ -496,7 +500,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .mouseWheelScrolling(true)
-            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(operators.size())
             .onBuild(comboBox -> addComponentListener(new OperatorBoxPopupWidthListener()))
             .build();

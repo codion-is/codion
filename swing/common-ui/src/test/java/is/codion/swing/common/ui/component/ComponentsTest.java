@@ -367,7 +367,7 @@ public final class ComponentsTest {
     final ComponentValue<String, SteppedComboBox<String>> componentValue = Components.comboBox(boxModel)
             .completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
             .editable(true)
-            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(5)
             .linkedValue(value)
             .mouseWheelScrollingWithWrapAround(true)

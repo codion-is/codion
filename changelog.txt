@@ -7825,3 +7825,7 @@
   AbstractComponentBuilder.build() bug fixed, now fires build event and calls onBuild before values are linked, since these may configure the value presentation, case in point, year spinner in CalendarPanel sets the number format in a build event listener, so number format grouping was enabled when first shown
   AbstractComponentBuilder.validator() now accepts multiple validators, now added before initial value is set or values are linked, to prevent invalid initialization
   NumberSpinnerBuilder.groupingUsed() and decimalFormatPattern() added, AbstractSpinnerBuilder.createSpinner() method added, overridden in DefaultNumberSpinnerBuilder to set the editor
+  ColumnConditionPanel.BoundFieldFactory.createLowerBoundField() and createUpperBoundField() now return Optional
+  DefaultPropertyValue now extends AbstractValue, related refactoring
+  ComponentBuilder.componentOrientation() renamed orientation()
+  Value.unlink() and removeValidator() added and implemented

@@ -69,8 +69,18 @@ class DefaultState implements State {
   }
 
   @Override
+  public final void unlink(final Value<Boolean> originalValue) {
+    this.value.unlink(originalValue);
+  }
+
+  @Override
   public final void link(final ValueObserver<Boolean> originalValueObserver) {
     this.value.link(originalValueObserver);
+  }
+
+  @Override
+  public final void unlink(final ValueObserver<Boolean> originalValueObserver) {
+    this.value.unlink(originalValueObserver);
   }
 
   @Override
@@ -81,6 +91,11 @@ class DefaultState implements State {
   @Override
   public final void addValidator(final Validator<Boolean> validator) {
     this.value.addValidator(validator);
+  }
+
+  @Override
+  public final void removeValidator(final Validator<Boolean> validator) {
+    this.value.removeValidator(validator);
   }
 
   @Override

@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.Util;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -40,26 +41,6 @@ final class DefaultEntity implements Entity, Serializable {
   private static final long serialVersionUID = 1;
 
   private static final String ATTRIBUTE = "attribute";
-
-  private static final Map<Class<?>, Object> DEFAULT_PRIMITIVE_VALUES;
-  private static boolean defaultBoolean;
-  private static byte defaultByte;
-  private static short defaultShort;
-  private static int defaultInt;
-  private static long defaultLong;
-  private static float defaultFloat;
-  private static double defaultDouble;
-
-  static {
-    DEFAULT_PRIMITIVE_VALUES = new HashMap<>();
-    DEFAULT_PRIMITIVE_VALUES.put(Boolean.TYPE, defaultBoolean);
-    DEFAULT_PRIMITIVE_VALUES.put(Byte.TYPE, defaultByte);
-    DEFAULT_PRIMITIVE_VALUES.put(Short.TYPE, defaultShort);
-    DEFAULT_PRIMITIVE_VALUES.put(Integer.TYPE, defaultInt);
-    DEFAULT_PRIMITIVE_VALUES.put(Long.TYPE, defaultLong);
-    DEFAULT_PRIMITIVE_VALUES.put(Float.TYPE, defaultFloat);
-    DEFAULT_PRIMITIVE_VALUES.put(Double.TYPE, defaultDouble);
-  }
 
   /**
    * Holds the values contained in this entity.
@@ -944,7 +925,7 @@ final class DefaultEntity implements Entity, Serializable {
         return Optional.ofNullable(value);
       }
       if (value == null && getterReturnType.isPrimitive()) {
-        return getDefaultPrimitiveValue(getterReturnType);
+        return Util.getPrimitiveDefaultValue(getterReturnType);
       }
 
       return value;
@@ -954,15 +935,6 @@ final class DefaultEntity implements Entity, Serializable {
       entity.put((Attribute<Object>) attribute, value);
 
       return null;
-    }
-
-    private static Object getDefaultPrimitiveValue(final Class<?> typeClass) {
-      final Object value = DEFAULT_PRIMITIVE_VALUES.get(typeClass);
-      if (value == null) {
-        throw new IllegalArgumentException("Not a primitive type: " + typeClass);
-      }
-
-      return value;
     }
   }
 }

@@ -6,9 +6,12 @@ package is.codion.common.value;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +33,8 @@ public abstract class AbstractValue<T> implements Value<T> {
   private final T nullValue;
   private final boolean notifyOnSet;
   private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
-  private final Set<Value<T>> linkedValues = new LinkedHashSet<>();
+  private final Map<Value<T>, ValueLink<T>> linkedValues = new LinkedHashMap<>(0);
+  private final EventDataListener<T> originalValueListener = this::set;
 
   private ValueObserver<T> observer;
 
@@ -106,48 +110,65 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final void addListener(final EventListener listener) {
-    changeEvent.addListener(listener);
+    getChangeObserver().addListener(listener);
   }
 
   @Override
   public final void removeListener(final EventListener listener) {
-    changeEvent.removeListener(listener);
+    getChangeObserver().removeListener(listener);
   }
 
   @Override
   public final void addDataListener(final EventDataListener<T> listener) {
-    changeEvent.addDataListener(listener);
+    getChangeObserver().addDataListener(listener);
   }
 
   @Override
   public final void removeDataListener(final EventDataListener<T> listener) {
-    changeEvent.removeDataListener(listener);
+    getChangeObserver().removeDataListener(listener);
   }
 
   @Override
   public final void link(final Value<T> originalValue) {
-    if (linkedValues.contains(requireNonNull(originalValue, "originalValue"))) {
+    if (linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
       throw new IllegalArgumentException("Values are already linked");
     }
-    new ValueLink<>(this, originalValue);
-    linkedValues.add(originalValue);
+    linkedValues.put(originalValue, new ValueLink<>(this, originalValue));
+  }
+
+  @Override
+  public final void unlink(final Value<T> originalValue) {
+    if (!linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
+      throw new IllegalArgumentException("Values are not linked");
+    }
+    linkedValues.remove(originalValue).unlink();
   }
 
   @Override
   public final void link(final ValueObserver<T> originalValueObserver) {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
-    originalValueObserver.addDataListener(this::set);
+    originalValueObserver.addDataListener(originalValueListener);
+  }
+
+  @Override
+  public final void unlink(final ValueObserver<T> originalValueObserver) {
+    requireNonNull(originalValueObserver).removeDataListener(originalValueListener);
   }
 
   @Override
   public final Set<Value<T>> getLinkedValues() {
-    return unmodifiableSet(linkedValues);
+    return unmodifiableSet(linkedValues.keySet());
   }
 
   @Override
   public final void addValidator(final Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
     validators.add(validator);
+  }
+
+  @Override
+  public final void removeValidator(final Validator<T> validator) {
+    validators.remove(requireNonNull(validator));
   }
 
   @Override
@@ -160,6 +181,13 @@ public abstract class AbstractValue<T> implements Value<T> {
    * @param value the value
    */
   protected abstract void setValue(final T value);
+
+  /**
+   * @return the change observer to use when adding listeners to this value
+   */
+  protected EventObserver<T> getChangeObserver() {
+    return changeEvent.getObserver();
+  }
 
   /**
    * Fires the change event for this value, using the current value, indicating that
