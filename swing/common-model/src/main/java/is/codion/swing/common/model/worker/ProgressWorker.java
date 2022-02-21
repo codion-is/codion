@@ -249,43 +249,43 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public Builder<T, V> onStarted(final Runnable onStarted) {
-      this.onStarted = onStarted;
+      this.onStarted = requireNonNull(onStarted);
       return this;
     }
 
     @Override
     public Builder<T, V> onFinished(final Runnable onFinished) {
-      this.onFinished = onFinished;
+      this.onFinished = requireNonNull(onFinished);
       return this;
     }
 
     @Override
     public Builder<T, V> onResult(final Consumer<T> onResult) {
-      this.onResult = onResult;
+      this.onResult = requireNonNull(onResult);
       return this;
     }
 
     @Override
     public Builder<T, V> onProgress(final Consumer<Integer> onProgress) {
-      this.onProgress = onProgress;
+      this.onProgress = requireNonNull(onProgress);
       return this;
     }
 
     @Override
     public Builder<T, V> onPublish(final Consumer<List<V>> onPublish) {
-      this.onPublish = onPublish;
+      this.onPublish = requireNonNull(onPublish);
       return this;
     }
 
     @Override
     public Builder<T, V> onException(final Consumer<Throwable> onException) {
-      this.onException = onException;
+      this.onException = requireNonNull(onException);
       return this;
     }
 
     @Override
     public Builder<T, V> onInterrupted(final Runnable onInterrupted) {
-      this.onInterrupted = onInterrupted;
+      this.onInterrupted = requireNonNull(onInterrupted);
       return this;
     }
 

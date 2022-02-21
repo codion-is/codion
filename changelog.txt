@@ -7799,3 +7799,4 @@
   EntityApplicationPanel, about panel now uses icon logo
   DefaultFrameworkIcons.FontImageIcon, bug fixed, sized logo icon did not survive look and feel change, refactored
   AbstractNumberFieldBuilder and DefaultTemporalFieldBuilder bug fixed, field was not getting configured by DefaultTextFieldBuilder, DefaultTextFieldBuilder.createTextField() added and overridden
+  ProgressWorker.DefaultBuilder, requireNonNull() added
