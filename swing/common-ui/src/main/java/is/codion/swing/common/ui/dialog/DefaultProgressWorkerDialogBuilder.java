@@ -131,6 +131,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
                 onResult.accept(result);
               }
             })
+            .onInterrupted(() -> closeDialog(progressDialog))
             .onException(exception -> {
               closeDialog(progressDialog);
               handleException(exception);
