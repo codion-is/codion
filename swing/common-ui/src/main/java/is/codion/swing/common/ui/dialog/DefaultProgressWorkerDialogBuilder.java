@@ -124,13 +124,14 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .onStarted(() -> progressDialog.setVisible(true))
             .onProgress(progressDialog::setProgress)
             .onPublish(chunks -> progressDialog.setMessage(getMessage(chunks)))
-            .onFinished(() -> closeDialog(progressDialog))
+            .onDone(() -> closeDialog(progressDialog))
             .onResult(result -> {
               closeDialog(progressDialog);
               if (onResult != null) {
                 onResult.accept(result);
               }
             })
+            .onInterrupted(() -> closeDialog(progressDialog))
             .onException(exception -> {
               closeDialog(progressDialog);
               handleException(exception);

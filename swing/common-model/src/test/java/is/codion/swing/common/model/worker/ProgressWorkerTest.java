@@ -25,7 +25,7 @@ public final class ProgressWorkerTest {
     ProgressWorker.builder(task)
             .onProgress(progressValue::set)
             .onPublish(chunks -> messageValue.set(chunks.get(0)))
-            .onFinished(() -> {
+            .onDone(() -> {
               assertEquals(100, progressValue.get());
               assertEquals("Done", messageValue.get());
             })

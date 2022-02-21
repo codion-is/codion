@@ -7833,3 +7833,7 @@
   EntityApplicationPanel, about panel now uses icon logo
   DefaultFrameworkIcons.FontImageIcon, bug fixed, sized logo icon did not survive look and feel change, refactored
   AbstractNumberFieldBuilder and DefaultTemporalFieldBuilder bug fixed, field was not getting configured by DefaultTextFieldBuilder, DefaultTextFieldBuilder.createTextField() added and overridden
+  ProgressWorker.DefaultBuilder, requireNonNull() added
+  DefaultProgressWorkerDialogBuilder bug fixed, now closes dialog when interrupted
+  ProgressWorker.Builder.onFinished() renamed onDone()
+  ProgressWorker, only calls onStarted if the task is not done running, otherwise onDone could be called before onStarted, which is worse than onStarted not being called at all
