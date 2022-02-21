@@ -30,7 +30,7 @@ final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalFi
   }
 
   @Override
-  protected C createTextComponent() {
+  protected C createTextField() {
     return (C) TemporalField.builder((Class<Temporal>) getValueClass(), dateTimePattern)
             .focusLostBehaviour(focusLostBehaviour)
             .build();

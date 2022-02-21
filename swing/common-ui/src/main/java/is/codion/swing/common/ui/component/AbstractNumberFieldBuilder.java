@@ -45,7 +45,7 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   }
 
   @Override
-  protected final C createTextComponent() {
+  protected final C createTextField() {
     final NumberFormat format = cloneFormat((NumberFormat) getFormat());
     final C numberField = createNumberField(format);
     if (minimumValue != null && maximumValue != null) {
