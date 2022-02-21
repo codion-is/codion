@@ -88,11 +88,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  protected C createTextComponent() {
-    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
-      throw new IllegalArgumentException("TextFieldBuilder only supports String and Character");
-    }
-    final C textField = (C) new JTextField(new SizedDocument(), "", 1);
+  protected final C createTextComponent() {
+    final C textField = createTextField();
     textField.setColumns(columns);
     textField.setHorizontalAlignment(horizontalAlignment);
     if (action != null) {
@@ -109,6 +106,17 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
 
     return textField;
+  }
+
+  /**
+   * @return the {@link javax.swing.text.JTextComponent} built by this builder.
+   */
+  protected C createTextField() {
+    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
+      throw new IllegalArgumentException("DefaultTextFieldBuilder only supports String and Character");
+    }
+
+    return (C) new JTextField(new SizedDocument(), "", 1);
   }
 
   @Override
