@@ -7802,3 +7802,4 @@
   ProgressWorker.DefaultBuilder, requireNonNull() added
   DefaultProgressWorkerDialogBuilder bug fixed, now closes dialog when interrupted
   ProgressWorker.Builder.onFinished() renamed onDone()
+  ProgressWorker, only calls onStarted if the task is not done running, otherwise onDone could be called before onStarted, which is worse than onStarted not being called at all

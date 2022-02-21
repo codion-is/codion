@@ -102,7 +102,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
       final Object newValue = changeEvent.getNewValue();
       if (StateValue.STARTED.equals(newValue)) {
-        onStarted.run();
+        if (!isDone()) {
+          onStarted.run();
+        }
       }
       else if (StateValue.DONE.equals(newValue)) {
         onDone.run();
@@ -166,6 +168,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Builder<T, V> {
 
     /**
+     * Note that this is <i><b>NOT</b></i> called if the task is already done running when the
+     * {@link javax.swing.SwingWorker.StateValue#STARTED} change event is propagated.
      * @param onStarted called on the EDT when the worker starts
      * @return this builder instance
      */
