@@ -7801,3 +7801,4 @@
   AbstractNumberFieldBuilder and DefaultTemporalFieldBuilder bug fixed, field was not getting configured by DefaultTextFieldBuilder, DefaultTextFieldBuilder.createTextField() added and overridden
   ProgressWorker.DefaultBuilder, requireNonNull() added
   DefaultProgressWorkerDialogBuilder bug fixed, now closes dialog when interrupted
+  ProgressWorker.Builder.onFinished() renamed onDone()

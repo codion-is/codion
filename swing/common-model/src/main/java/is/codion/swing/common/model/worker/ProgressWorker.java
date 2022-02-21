@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * <pre>
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
- *   .onFinished(this::closeDialog)
+ *   .onDone(this::closeDialog)
  *   .onResult(this::handleResult)
  *   .onProgress(this::displayProgress)
  *   .onPublish(this::publishMessage)
@@ -35,7 +35,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   private final ProgressTask<T, V> task;
   private final Runnable onStarted;
-  private final Runnable onFinished;
+  private final Runnable onDone;
   private final Consumer<T> onResult;
   private final Consumer<Integer> onProgress;
   private final Consumer<List<V>> onPublish;
@@ -45,7 +45,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private ProgressWorker(final DefaultBuilder<T, V> builder) {
     this.task = builder.task;
     this.onStarted = builder.onStarted;
-    this.onFinished = builder.onFinished;
+    this.onDone = builder.onDone;
     this.onResult = builder.onResult;
     this.onProgress = builder.onProgress;
     this.onPublish = builder.onPublish;
@@ -105,7 +105,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
         onStarted.run();
       }
       else if (StateValue.DONE.equals(newValue)) {
-        onFinished.run();
+        onDone.run();
       }
     }
     else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
@@ -172,10 +172,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     Builder<T, V> onStarted(Runnable onStarted);
 
     /**
-     * @param onFinished called on the EDT when the task finishes, successfully or not, before the result is processed
+     * @param onDone called on the EDT when the task is done running, successfully or not, before the result is processed
      * @return this builder instance
      */
-    Builder<T, V> onFinished(Runnable onFinished);
+    Builder<T, V> onDone(Runnable onDone);
 
     /**
      * @param onResult called on the EDT when the result of a successful run is available
@@ -236,7 +236,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     private final ProgressTask<T, V> task;
 
     private Runnable onStarted = () -> {};
-    private Runnable onFinished = () -> {};
+    private Runnable onDone = () -> {};
     private Consumer<T> onResult = result -> {};
     private Consumer<Integer> onProgress = progress -> {};
     private Consumer<List<V>> onPublish = chunks -> {};
@@ -254,8 +254,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
 
     @Override
-    public Builder<T, V> onFinished(final Runnable onFinished) {
-      this.onFinished = requireNonNull(onFinished);
+    public Builder<T, V> onDone(final Runnable onDone) {
+      this.onDone = requireNonNull(onDone);
       return this;
     }
 
