@@ -7837,3 +7837,4 @@
   DefaultProgressWorkerDialogBuilder bug fixed, now closes dialog when interrupted
   ProgressWorker.Builder.onFinished() renamed onDone()
   ProgressWorker, only calls onStarted if the task is not done running, otherwise onDone could be called before onStarted, which is worse than onStarted not being called at all
+  Dialogs, always use onKeyPressed for dialog actions, whether ok or cancel, trying to prevent key events triggering actions in more than one dialog, exception during login for example

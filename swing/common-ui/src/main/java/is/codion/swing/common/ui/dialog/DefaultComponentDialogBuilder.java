@@ -155,7 +155,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
       if (disposeOnEscape) {
         KeyEvents.builder(KeyEvent.VK_ESCAPE)
                 .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .onKeyReleased()
+                .onKeyPressed()
                 .action(new DisposeDialogOnEscapeAction(dialog, confirmCloseListener))
                 .enable(dialog.getRootPane());
       }
