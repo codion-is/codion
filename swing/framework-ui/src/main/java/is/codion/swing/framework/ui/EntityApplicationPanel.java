@@ -657,7 +657,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.VIEW))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
-            .separator()
             .control(createSelectLookAndFeelControl())
             .control(createSelectFontSizeControl())
             .separator()
