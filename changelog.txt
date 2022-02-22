@@ -7806,3 +7806,4 @@
   Dialogs, always use onKeyPressed for dialog actions, whether ok or cancel, trying to prevent key events triggering actions in more than one dialog, exception during login for example
   DefaultTextFieldHint, now moves the cursor to index 0 when hint is shown, so that the beginning of the hint is visible in small text fields
   Messages, moved three i18n strings to more specific resource bundles, fixed a resource bundle with an incorrect name
+  DefaultComboBoxBuilder.moveCaretOnSelection() bug fixed, did not survive look and feel change for some reason, now restricted to FilteredComboBoxModel, since it uses its selection listener

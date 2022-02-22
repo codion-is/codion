@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.event.EventDataListener;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
@@ -13,8 +15,6 @@ import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
 
@@ -129,9 +129,8 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    final Component editorComponent = comboBox.getEditor().getEditorComponent();
-    if (comboBox.isEditable() && moveCaretOnSelection && editorComponent instanceof JTextComponent) {
-      comboBoxModel.addListDataListener(new MoveCaretListener((JTextComponent) editorComponent));
+    if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
+      ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
 
     return comboBox;
@@ -157,24 +156,19 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
     return (C) new SteppedComboBox<>(comboBoxModel);
   }
 
-  private static final class MoveCaretListener implements ListDataListener {
+  private static final class MoveCaretListener<T> implements EventDataListener<T> {
 
-    private final JTextComponent editorComponent;
+    private final SteppedComboBox<?> comboBox;
 
-    private MoveCaretListener(final JTextComponent editorComponent) {
-      this.editorComponent = editorComponent;
+    private MoveCaretListener(final SteppedComboBox<T> comboBox) {
+      this.comboBox = comboBox;
     }
 
     @Override
-    public void intervalAdded(final ListDataEvent e) {}
-
-    @Override
-    public void intervalRemoved(final ListDataEvent e) {}
-
-    @Override
-    public void contentsChanged(final ListDataEvent e) {
-      if (e.getType() == ListDataEvent.CONTENTS_CHANGED) {
-        editorComponent.setCaretPosition(0);
+    public void onEvent(final Object selectedItem) {
+      final Component editorComponent = comboBox.getEditor().getEditorComponent();
+      if (selectedItem != null && editorComponent instanceof JTextComponent) {
+        ((JTextComponent) editorComponent).setCaretPosition(0);
       }
     }
   }
