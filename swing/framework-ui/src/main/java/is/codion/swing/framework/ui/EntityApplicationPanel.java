@@ -117,7 +117,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String HELP = "help";
   private static final String ABOUT = "about";
   private static final String ALWAYS_ON_TOP = "always_on_top";
-  private static final String CLIENT_VERSION = "client_version";
+  private static final String APPLICATION_VERSION = "application_version";
   private static final String CODION_VERSION = "codion_version";
   private static final String MEMORY_USAGE = "memory_usage";
 
@@ -657,7 +657,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.VIEW))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
-            .separator()
             .control(createSelectLookAndFeelControl())
             .control(createSelectFontSizeControl())
             .separator()
@@ -790,7 +789,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
     versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     if (version != null) {
-      versionMemoryPanel.add(new JLabel(resourceBundle.getString(CLIENT_VERSION) + ":"));
+      versionMemoryPanel.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"));
       versionMemoryPanel.add(new JLabel(version.toString()));
     }
     versionMemoryPanel.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"));

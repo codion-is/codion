@@ -142,7 +142,7 @@ final class LoginPanel extends JPanel {
     if (icon != null) {
       add(new JLabel(icon, SwingConstants.CENTER), constraints);
     }
-    add(credentialsPanel, constraints);
+    add(credentialsBasePanel, constraints);
     setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
   }
 
