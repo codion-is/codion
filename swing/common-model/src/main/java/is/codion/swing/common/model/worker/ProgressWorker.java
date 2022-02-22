@@ -169,8 +169,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     /**
      * Note that this is <i><b>NOT</b></i> called if the task is already done running when the
-     * {@link javax.swing.SwingWorker.StateValue#STARTED} change event is propagated.
-     * @param onStarted called on the EDT when the worker starts
+     * {@link javax.swing.SwingWorker.StateValue#STARTED} change event is processed.
+     * @param onStarted called on the EDT when the worker starts, if the task isn't done running already
      * @return this builder instance
      */
     Builder<T, V> onStarted(Runnable onStarted);
