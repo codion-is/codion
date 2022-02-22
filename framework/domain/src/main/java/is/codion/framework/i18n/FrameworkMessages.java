@@ -66,6 +66,7 @@ public final class FrameworkMessages {
   public static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
   public static final String SETTINGS = "settings";
+  public static final String SELECT_INPUT_FIELD = "select_input_field";
 
   private FrameworkMessages() {}
 

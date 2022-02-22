@@ -3,13 +3,13 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.i18n.Messages;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
@@ -263,7 +263,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
-                    .title(Messages.get(Messages.SELECT_INPUT_FIELD))
+                    .title(FrameworkMessages.get(FrameworkMessages.SELECT_INPUT_FIELD))
                     .selectSingle();
     optionalProperty.ifPresent(property -> requestComponentFocus(property.getAttribute()));
   }

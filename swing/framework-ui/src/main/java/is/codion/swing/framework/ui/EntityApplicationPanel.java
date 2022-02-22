@@ -1304,7 +1304,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void bindEventsInternal() {
     applicationModel.getConnectionValidObserver().addDataListener(connectionValid -> SwingUtilities.invokeLater(() ->
-            setParentWindowTitle(connectionValid ? getFrameTitle() : (getFrameTitle() + " - " + Messages.get(Messages.NOT_CONNECTED)))));
+            setParentWindowTitle(connectionValid ? getFrameTitle() : (getFrameTitle() + " - " + resourceBundle.getString("not_connected")))));
     alwaysOnTopState.addDataListener(alwaysOnTop -> {
       final Window parent = getParentWindow();
       if (parent != null) {

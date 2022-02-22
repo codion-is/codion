@@ -528,15 +528,15 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private TextFieldHint initializeSearchFieldHint() {
-    final TextFieldHint textFieldHint = TextFieldHint.create(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
+    final TextFieldHint searchFieldHint = TextFieldHint.create(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
     searchField.getDocument().addDocumentListener((DocumentAdapter) e -> {
-      if (!textFieldHint.isHintVisible()) {
+      if (!searchFieldHint.isHintVisible()) {
         performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
                 lastSearchResultCoordinate.getRow(), true, searchField.getText());
       }
     });
 
-    return textFieldHint;
+    return searchFieldHint;
   }
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
