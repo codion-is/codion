@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
@@ -21,6 +22,8 @@ import static java.util.Objects.requireNonNull;
  * A default DialogExceptionHandler implementation
  */
 public final class DefaultDialogExceptionHandler implements DialogExceptionHandler {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultDialogExceptionHandler.class.getName());
 
   private static final DefaultDialogExceptionHandler INSTANCE = new DefaultDialogExceptionHandler();
   private static final int MAXIMUM_MESSAGE_LENGTH = 50;
@@ -77,7 +80,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
 
   private static String getMessageTitle(final Throwable e) {
     if (e instanceof FileNotFoundException) {
-      return Messages.get(Messages.FILE_NOT_FOUND);
+      return MESSAGES.getString("file_not_found");
     }
 
     return Messages.get(Messages.ERROR);

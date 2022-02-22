@@ -24,10 +24,7 @@ public final class Messages {
   public static final String LOGIN = "login";
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
-  public static final String FILE_NOT_FOUND = "file_not_found";
-  public static final String SELECT_INPUT_FIELD = "select_input_field";
   public static final String SEARCH_FIELD_HINT = "search_field_hint";
-  public static final String NOT_CONNECTED = "not_connected";
 
   private Messages() {}
 

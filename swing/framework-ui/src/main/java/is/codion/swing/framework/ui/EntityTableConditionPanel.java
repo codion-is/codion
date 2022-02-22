@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.i18n.Messages;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -98,7 +97,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
         Properties.sort(conditionProperties);
         Dialogs.selectionDialog(conditionProperties)
                 .owner(this)
-                .title(Messages.get(Messages.SELECT_INPUT_FIELD))
+                .title(FrameworkMessages.get(FrameworkMessages.SELECT_INPUT_FIELD))
                 .selectSingle()
                 .ifPresent(property -> getConditionPanel(property.getAttribute()).requestInputFocus());
       }
