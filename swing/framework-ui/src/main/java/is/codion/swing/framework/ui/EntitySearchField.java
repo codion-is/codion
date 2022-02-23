@@ -51,7 +51,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.LookAndFeel;
 import javax.swing.SortOrder;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
@@ -290,8 +289,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void configureColors() {
-    final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
-    this.backgroundColor = lookAndFeel.getDefaults().getColor("TextField.background");
+    this.backgroundColor = UIManager.getColor("TextField.background");
     this.invalidBackgroundColor = darker(backgroundColor);
     updateColors();
   }

@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 
 import javax.swing.JComponent;
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
@@ -174,9 +173,8 @@ public final class EntityComponentValidators {
     }
 
     private void configureColors() {
-      final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
-      this.backgroundColor = lookAndFeel.getDefaults().getColor("TextField.background");
-      this.inactiveBackgroundColor = lookAndFeel.getDefaults().getColor("TextField.inactiveBackground");
+      this.backgroundColor = UIManager.getColor("TextField.background");
+      this.inactiveBackgroundColor = UIManager.getColor("TextField.inactiveBackground");
       this.invalidBackgroundColor = darker(backgroundColor);
       validate();
     }
