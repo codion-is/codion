@@ -32,6 +32,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -1488,7 +1489,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return Windows.frameBuilder(editControlPanel)
               .relativeTo(this)
               .title(caption)
-              .onClosed(() -> setEditPanelState(HIDDEN))
+              .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+              .onClosed(windowEvent -> setEditPanelState(HIDDEN))
               .build();
     }
     else {
@@ -1506,7 +1508,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (DISPLAY_PANELS_IN_FRAME.get()) {
       return Windows.frameBuilder(detailPanelTabbedPane)
               .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
-              .onClosed(() -> {
+              .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+              .onClosed(windowEvent -> {
                 //the frame can be closed when embedding the panel, don't hide if that's the case
                 if (getDetailPanelState() != EMBEDDED) {
                   setDetailPanelState(HIDDEN);

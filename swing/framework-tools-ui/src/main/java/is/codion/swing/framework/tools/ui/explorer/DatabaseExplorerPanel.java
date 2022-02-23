@@ -18,7 +18,6 @@ import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
 import is.codion.swing.framework.tools.explorer.DefinitionRow;
 import is.codion.swing.framework.tools.metadata.Schema;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,8 +28,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -76,19 +73,13 @@ public final class DatabaseExplorerPanel extends JPanel {
   }
 
   public void showFrame() {
-    final JFrame frame = new JFrame("Codion Database Explorer");
-    frame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        model.close();
-      }
-    });
-    frame.setIconImage(Logos.logoTransparent().getImage());
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.add(this);
-    frame.pack();
-    Windows.centerWindow(frame);
-    frame.setVisible(true);
+    Windows.frameBuilder(this)
+            .title("Codion Database Explorer")
+            .icon(Logos.logoTransparent())
+            .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
+            .onClosing(windowEvent -> model.close())
+            .centerFrame(true)
+            .show();
   }
 
   private void populateSchema(final MouseEvent event) {
