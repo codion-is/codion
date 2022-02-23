@@ -5,6 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Serializer;
 import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.item.Item;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.domain.property.Properties.*;
@@ -212,5 +215,11 @@ public final class PropertiesTest {
 
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("i18n"))
                     .captionResourceKey("invalid_key"));
+  }
+
+  @Test
+  void itemProperty() {
+    final List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
+    assertThrows(IllegalArgumentException.class, () -> Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items));
   }
 }

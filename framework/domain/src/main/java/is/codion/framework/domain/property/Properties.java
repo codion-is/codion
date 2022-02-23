@@ -224,6 +224,7 @@ public final class Properties {
    * @param <T> the attribute value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
+   * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(final Attribute<T> attribute, final List<Item<T>> validItems) {
     return itemProperty(attribute, null, validItems);
@@ -237,6 +238,7 @@ public final class Properties {
    * @param <T> the attribute value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
+   * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(final Attribute<T> attribute, final String caption,
                                                                                                       final List<Item<T>> validItems) {
