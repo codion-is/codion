@@ -238,7 +238,7 @@ public final class Windows {
     private Dimension size;
     private boolean resizable = true;
     private JComponent relativeTo;
-    private int defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE;
+    private int defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE;
     private JMenuBar menuBar;
     private int extendedState = Frame.NORMAL;
     private boolean centerFrame;

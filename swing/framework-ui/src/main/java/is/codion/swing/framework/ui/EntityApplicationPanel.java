@@ -892,6 +892,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         Windows.frameBuilder(entityPanel)
                 .relativeTo(this)
                 .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+                .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(() -> {
                   entityPanel.getModel().savePreferences();
                   entityPanel.savePreferences();
