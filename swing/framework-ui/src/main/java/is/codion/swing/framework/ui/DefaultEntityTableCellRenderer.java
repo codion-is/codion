@@ -13,7 +13,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -191,9 +190,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     private void configure() {
-      final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
-      foregroundColor = lookAndFeel.getDefaults().getColor("Table.foreground");
-      backgroundColor = lookAndFeel.getDefaults().getColor("Table.background");
+      foregroundColor = UIManager.getColor("Table.foreground");
+      backgroundColor = UIManager.getColor("Table.background");
       backgroundColorSearch = darker(backgroundColor, DARKENING_FACTOR);
       backgroundColorDoubleSearch = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);

@@ -241,6 +241,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane summaryScrollPane;
 
+  private final JPanel southPanel = new JPanel(new BorderLayout());
+
   /**
    * Base panel for the table, condition and summary panels
    */
@@ -333,7 +335,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane);
+    Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane, southPanel);
     if (refreshToolBar != null) {
       Utilities.updateUI(refreshToolBar, (JComponent) refreshToolBar.getComponent(0));
     }
@@ -1050,7 +1052,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     southCenterSplitPane.setResizeWeight(0.35);
     southCenterSplitPane.setTopComponent(table.getSearchField());
     southCenterSplitPane.setBottomComponent(statusMessageLabel);
-    final JPanel southPanel = new JPanel(new BorderLayout());
     southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
     final JToolBar southToolBar = initializeSouthToolBar();

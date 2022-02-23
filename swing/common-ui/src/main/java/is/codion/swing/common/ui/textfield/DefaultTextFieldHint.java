@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.textfield;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
@@ -84,9 +83,8 @@ final class DefaultTextFieldHint implements TextFieldHint {
   }
 
   private void configureColors() {
-    final LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
-    final Color foreground = lookAndFeel.getDefaults().getColor("TextField.foreground");
-    final Color background = lookAndFeel.getDefaults().getColor("TextField.background");
+    final Color foreground = UIManager.getColor("TextField.foreground");
+    final Color background = UIManager.getColor("TextField.background");
     foregroundColor = foreground;
     hintForegroundColor = getHintForegroundColor(background, foreground);
     updateColor();
