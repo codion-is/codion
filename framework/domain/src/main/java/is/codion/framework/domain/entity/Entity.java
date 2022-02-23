@@ -70,17 +70,19 @@ public interface Entity extends Comparable<Entity> {
    * This method returns a String representation of the value associated with the given attribute,
    * if the associated property has a format it is used.
    * @param attribute the attribute for which to retrieve the value
+   * @param <T> the value type
    * @return a String representation of the value associated with {@code attribute}
    */
-  String toString(Attribute<?> attribute);
+  <T> String toString(Attribute<T> attribute);
 
   /**
    * This method returns a String representation of the value associated with the given property,
    * if the associated property has a format it is used.
    * @param property the property for which to retrieve the value
+   * @param <T> the value type
    * @return a String representation of the value associated with {@code property}
    */
-  String toString(Property<?> property);
+  <T> String toString(Property<T> property);
 
   /**
    * Reverts the value associated with the given attribute to its original value.

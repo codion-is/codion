@@ -383,6 +383,18 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
+   * Copies the contents of the selected cell to the clipboard.
+   */
+  public void copySelectedCell() {
+    final int selectedRow = getSelectedRow();
+    final int selectedColumn = getSelectedColumn();
+    if (selectedRow >= 0 && selectedColumn >= 0) {
+      final Object value = getValueAt(selectedRow, selectedColumn);
+      Utilities.setClipboard(value == null ? "" : value.toString());
+    }
+  }
+
+  /**
    * @return a control for showing the column selection dialog
    */
   public Control createSelectColumnsControl() {

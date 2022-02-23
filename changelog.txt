@@ -7847,3 +7847,9 @@
   Unnecessary calls to LookAndFeel.getDefaults() replaced with UIManager.get(), this was causing a major performance hit when changing look and feel
   Windows.FrameBuilder.defaultCloseOperation() now defaults to WindowConstants.HIDE_ON_CLOSE, as it's the default value in a JFrame instance
   Windows.FrameBuilder.onClosing() and windowListener() added, FrameBuilder used throughout
+  FilteredTable.copySelectedCell() added
+  EntityTablePanel, CTRL-ALT C now copies the selected cell value to the clipboard
+  DefaultEntity, SwingEntityTableModel, special handling for ItemProperty removed, not necessary
+  Entity.toString(attribute) and toString(property), added type parameter
+  DefaultItemProperty.getCaption() removed, no longer used
+  DefaultItemProperty now validates the item values, throwing an exception in case of duplicates

@@ -8,8 +8,10 @@ import is.codion.framework.domain.entity.Attribute;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements ItemProperty<T> {
 
@@ -24,6 +26,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
    */
   DefaultItemProperty(final Attribute<T> attribute, final String caption, final List<Item<T>> items) {
     super(attribute, caption);
+    validateItems(items);
     this.items = unmodifiableList(items);
   }
 
@@ -37,13 +40,6 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     return items;
   }
 
-  @Override
-  public String getCaption(final T value) {
-    final Item<T> item = findItem(value);
-
-    return item == null ? "" : item.getCaption();
-  }
-
   private Item<T> findItem(final T value) {
     for (int i = 0; i < items.size(); i++) {
       final Item<T> item = items.get(i);
@@ -53,5 +49,14 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     }
 
     return null;
+  }
+
+  private static <T> void validateItems(final List<Item<T>> items) {
+    if (requireNonNull(items).size() != items.stream()
+            .map(Item::getValue)
+            .collect(Collectors.toSet())
+            .size()) {
+      throw new IllegalArgumentException("Item contains duplicate values: " + items);
+    }
   }
 }
