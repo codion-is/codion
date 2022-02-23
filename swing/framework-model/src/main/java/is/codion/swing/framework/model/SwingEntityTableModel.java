@@ -21,7 +21,6 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
@@ -702,14 +701,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @throws NullPointerException in case entity or attribute is null
    */
   protected Object getValue(final Entity entity, final Attribute<?> attribute) {
-    requireNonNull(entity, "entity");
-    requireNonNull(attribute, "attribute");
-    final Property<?> property = getEntityDefinition().getProperty(attribute);
-    if (property instanceof ItemProperty) {
-      return entity.toString(property);
-    }
-
-    return entity.get(attribute);
+    return requireNonNull(entity, "entity").get(attribute);
   }
 
   /**

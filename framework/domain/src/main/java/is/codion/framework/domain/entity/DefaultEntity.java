@@ -184,20 +184,16 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public String toString(final Attribute<?> attribute) {
+  public <T> String toString(final Attribute<T> attribute) {
     return toString(definition.getProperty(attribute));
   }
 
   @Override
-  public String toString(final Property<?> property) {
-    if (!getEntityType().equals(property.getEntityType())) {
+  public <T> String toString(final Property<T> property) {
+    if (!getEntityType().equals(requireNonNull(property).getEntityType())) {
       throw new IllegalArgumentException("Property " + property + " is not part of entity " + getEntityType());
     }
-    final Property<Object> objectProperty = (Property<Object>) property;
-    if (property instanceof ItemProperty) {
-      return ((ItemProperty<Object>) property).getCaption(get(objectProperty));
-    }
-    final Attribute<?> attribute = property.getAttribute();
+    final Attribute<T> attribute = property.getAttribute();
     if (attribute instanceof ForeignKey && !isLoaded(((ForeignKey) attribute))) {
       final Key referencedKey = getReferencedKey((ForeignKey) attribute);
       if (referencedKey != null) {
@@ -205,7 +201,7 @@ final class DefaultEntity implements Entity, Serializable {
       }
     }
 
-    return objectProperty.formatValue(get(objectProperty));
+    return property.formatValue(get(property));
   }
 
   @Override

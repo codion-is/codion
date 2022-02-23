@@ -223,16 +223,16 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       return cellColor == null ? foregroundColor : cellColor;
     }
 
-    private Color getConditionEnabledColor(final int row, final boolean propertyConditionEnabled,
-                                           final boolean propertyFilterEnabled, final Color cellColor) {
-      final boolean doubleSearch = propertyConditionEnabled && propertyFilterEnabled;
+    private Color getConditionEnabledColor(final int row, final boolean conditionEnabled,
+                                           final boolean filterEnabled, final Color cellColor) {
+      final boolean conditionAndFilterEnabled = conditionEnabled && filterEnabled;
       if (cellColor != null) {
         return darker(cellColor, DARKENING_FACTOR);
       }
       else {
         return row % 2 == 0 ?
-                (doubleSearch ? backgroundColorDoubleSearch : backgroundColorSearch) :
-                (doubleSearch ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
+                (conditionAndFilterEnabled ? backgroundColorDoubleSearch : backgroundColorSearch) :
+                (conditionAndFilterEnabled ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
       }
     }
   }

@@ -7815,3 +7815,6 @@
   Windows.FrameBuilder.onClosing() and windowListener() added, FrameBuilder used throughout
   FilteredTable.copySelectedCell() added
   EntityTablePanel, CTRL-ALT C now copies the selected cell value to the clipboard
+  DefaultEntity, SwingEntityTableModel, special handling for ItemProperty removed, not necessary
+  Entity.toString(attribute) and toString(property), added type parameter
+  DefaultItemProperty.getCaption() removed, no longer used
