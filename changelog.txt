@@ -7809,3 +7809,4 @@
   DefaultComboBoxBuilder.moveCaretOnSelection() bug fixed, did not survive look and feel change for some reason, now restricted to FilteredComboBoxModel, since it uses its selection listener
   EntityApplicationPanel, about dialog, Client Version now Application Version
   LoginPanel bug fixed, did not display southComponent
+  DefaultComboBoxBuilder, DefaultItemComboBoxBuilder, DefaultSliderBuilder, AbstractSpinnerBuilder, mouseWheelScrolling now enabled by default

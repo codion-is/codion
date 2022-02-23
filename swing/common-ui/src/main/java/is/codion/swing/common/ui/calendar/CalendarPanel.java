@@ -600,7 +600,6 @@ public final class CalendarPanel extends JPanel {
 
   private JSpinner createYearSpinner() {
     return Components.integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1), yearValue)
-            .mouseWheelScrolling(true)
             .horizontalAlignment(SwingConstants.CENTER)
             .columns(YEAR_COLUMNS)
             .editable(false)
@@ -612,7 +611,6 @@ public final class CalendarPanel extends JPanel {
   private JSpinner createMonthSpinner(final JSpinner yearSpinner) {
     final List<Item<Month>> monthItems = createMonthItems();
     final JSpinner monthSpinner = Components.itemSpinner(new SpinnerListModel(monthItems), monthValue)
-            .mouseWheelScrolling(true)
             .horizontalAlignment(SwingConstants.CENTER)
             .editable(false)
             .onBuild(CalendarPanel::removeCtrlLeftRightArrowKeyEvents)
@@ -629,7 +627,6 @@ public final class CalendarPanel extends JPanel {
 
   private JSpinner createHourSpinner() {
     return Components.integerSpinner(new SpinnerNumberModel(0, 0, 23, 1), hourValue)
-            .mouseWheelScrolling(true)
             .horizontalAlignment(SwingConstants.CENTER)
             .columns(TIME_COLUMNS)
             .editable(false)
@@ -640,7 +637,6 @@ public final class CalendarPanel extends JPanel {
 
   private JSpinner createMinuteSpinner() {
     return Components.integerSpinner(new SpinnerNumberModel(0, 0, 59, 1), minuteValue)
-            .mouseWheelScrolling(true)
             .horizontalAlignment(SwingConstants.CENTER)
             .columns(TIME_COLUMNS)
             .editable(false)

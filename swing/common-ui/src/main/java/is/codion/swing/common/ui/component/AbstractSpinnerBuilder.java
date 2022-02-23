@@ -21,7 +21,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 
   private boolean editable = true;
   private int columns = 0;
-  private boolean mouseWheelScrolling = false;
+  private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingReversed = false;
   private int horizontalAlignment = -1;
 
