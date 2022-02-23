@@ -1224,7 +1224,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final Control createCopyCellControl() {
-    return Control.builder(this::copySelectedCell)
+    return Control.builder(table::copySelectedCell)
             .caption(FrameworkMessages.get(FrameworkMessages.COPY_CELL))
             .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
             .build();
@@ -1348,11 +1348,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private void copySelectedCell() {
-    final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-    Utilities.setClipboard(value == null ? "" : value.toString());
-  }
-
   private void copyTableAsDelimitedString() {
     Utilities.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
   }
@@ -1457,6 +1452,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void bindEvents() {
+    KeyEvents.builder(KeyEvent.VK_C)
+            .action(Control.control(table::copySelectedCell))
+            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+            .enable(table);
     if (includeDeleteSelectedControl()) {
       KeyEvents.builder(KeyEvent.VK_DELETE)
               .action(createDeleteSelectedControl())
