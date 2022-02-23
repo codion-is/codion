@@ -31,7 +31,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   private ListCellRenderer<T> renderer;
   private ComboBoxEditor editor;
   private int popupWidth;
-  private boolean mouseWheelScrolling = false;
+  private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
   private boolean moveCaretOnSelection = true;
