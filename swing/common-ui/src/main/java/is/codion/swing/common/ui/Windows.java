@@ -19,6 +19,10 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -180,13 +184,19 @@ public final class Windows {
      * @param onOpened called when the frame has been opened
      * @return this builder instance
      */
-    FrameBuilder onOpened(Runnable onOpened);
+    FrameBuilder onOpened(Consumer<WindowEvent> onOpened);
 
     /**
      * @param onClosed called when the frame has been closed
      * @return this builder instance
      */
-    FrameBuilder onClosed(Runnable onClosed);
+    FrameBuilder onClosed(Consumer<WindowEvent> onClosed);
+
+    /**
+     * @param onClosing called when the frame is about to be closed
+     * @return this builder instance
+     */
+    FrameBuilder onClosing(Consumer<WindowEvent> onClosing);
 
     /**
      * Default {@link WindowConstants#DISPOSE_ON_CLOSE}.
@@ -216,6 +226,12 @@ public final class Windows {
     FrameBuilder centerFrame(boolean centerFrame);
 
     /**
+     * @param windowListener a window listener
+     * @return this builder instance
+     */
+    FrameBuilder windowListener(WindowListener windowListener);
+
+    /**
      * @return a JFrame based on this builder
      */
     JFrame build();
@@ -230,11 +246,13 @@ public final class Windows {
   private static final class DefaultFrameBuilder implements FrameBuilder {
 
     private final JComponent component;
+    private final List<WindowListener> windowListeners = new ArrayList<>(0);
 
     private ImageIcon icon;
     private String title;
-    private Runnable onClosed;
-    private Runnable onOpened;
+    private Consumer<WindowEvent> onClosing;
+    private Consumer<WindowEvent> onClosed;
+    private Consumer<WindowEvent> onOpened;
     private Dimension size;
     private boolean resizable = true;
     private JComponent relativeTo;
@@ -284,14 +302,20 @@ public final class Windows {
     }
 
     @Override
-    public FrameBuilder onOpened(final Runnable onOpened) {
+    public FrameBuilder onOpened(final Consumer<WindowEvent> onOpened) {
       this.onOpened = onOpened;
       return this;
     }
 
     @Override
-    public FrameBuilder onClosed(final Runnable onClosed) {
+    public FrameBuilder onClosed(final Consumer<WindowEvent> onClosed) {
       this.onClosed = onClosed;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder onClosing(final Consumer<WindowEvent> onClosing) {
+      this.onClosing = onClosing;
       return this;
     }
 
@@ -310,6 +334,12 @@ public final class Windows {
     @Override
     public FrameBuilder centerFrame(final boolean centerFrame) {
       this.centerFrame = centerFrame;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder windowListener(final WindowListener windowListener) {
+      this.windowListeners.add(requireNonNull(windowListener));
       return this;
     }
 
@@ -343,22 +373,10 @@ public final class Windows {
         centerWindow(frame);
       }
       frame.setExtendedState(extendedState);
-      if (onClosed != null) {
-        frame.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowClosed(final WindowEvent e) {
-            onClosed.run();
-          }
-        });
+      if (onClosing != null || onClosed != null || onOpened != null) {
+        frame.addWindowListener(new FrameListener(onClosing, onClosed, onOpened));
       }
-      if (onOpened != null) {
-        frame.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowOpened(final WindowEvent e) {
-            onOpened.run();
-          }
-        });
-      }
+      windowListeners.forEach(frame::addWindowListener);
 
       return frame;
     }
@@ -369,6 +387,40 @@ public final class Windows {
       frame.setVisible(true);
 
       return frame;
+    }
+  }
+
+  private static final class FrameListener extends WindowAdapter {
+
+    private final Consumer<WindowEvent> onClosing;
+    private final Consumer<WindowEvent> onClosed;
+    private final Consumer<WindowEvent> onOpened;
+
+    private FrameListener(final Consumer<WindowEvent> onClosing, final Consumer<WindowEvent> onClosed, final Consumer<WindowEvent> onOpened) {
+      this.onClosing = onClosing;
+      this.onClosed = onClosed;
+      this.onOpened = onOpened;
+    }
+
+    @Override
+    public void windowOpened(final WindowEvent e) {
+      if (onOpened != null) {
+        onOpened.accept(e);
+      }
+    }
+
+    @Override
+    public void windowClosing(final WindowEvent e) {
+      if (onClosing != null) {
+        onClosing.accept(e);
+      }
+    }
+
+    @Override
+    public void windowClosed(final WindowEvent e) {
+      if (onClosed != null) {
+        onClosed.accept(e);
+      }
     }
   }
 }

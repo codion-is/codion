@@ -47,8 +47,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,7 +78,7 @@ public final class LoadTestPanel<T> extends JPanel {
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))
-                .ifPresent(LookAndFeelProvider::enable);
+            .ifPresent(LookAndFeelProvider::enable);
   }
 
   /**
@@ -116,25 +114,19 @@ public final class LoadTestPanel<T> extends JPanel {
    * @return the frame
    */
   public JFrame showFrame() {
-    final JFrame frame = new JFrame();
-    frame.setJMenuBar(initializeMainMenuControls().createMenuBar());
-    frame.setIconImage(Logos.logoTransparent().getImage());
-    final String title = "Codion - " + loadTestModel.getTitle();
-    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    frame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        frame.setTitle(title + " - Closing...");
-        loadTestModel.shutdown();
-      }
-    });
-    frame.setTitle(title);
-    frame.getContentPane().add(this);
-    Windows.resizeWindow(frame, DEFAULT_SCREEN_SIZE_RATIO);
-    Windows.centerWindow(frame);
-    frame.setVisible(true);
-
-    return frame;
+    return Windows.frameBuilder(this)
+            .icon(Logos.logoTransparent())
+            .menuBar(initializeMainMenuControls().createMenuBar())
+            .title("Codion - " + loadTestModel.getTitle())
+            .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+            .onClosing(windowEvent -> {
+              final JFrame frame = (JFrame) windowEvent.getWindow();
+              frame.setTitle(frame.getTitle() + " - Closing...");
+              loadTestModel.shutdown();
+            })
+            .size(Windows.getScreenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
+            .centerFrame(true)
+            .show();
   }
 
   private Controls initializeMainMenuControls() {

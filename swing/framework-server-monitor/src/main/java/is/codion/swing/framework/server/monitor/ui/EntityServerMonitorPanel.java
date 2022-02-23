@@ -115,16 +115,14 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   public void showFrame() {
-    monitorFrame = new JFrame();
-    monitorFrame.setIconImage(Logos.logoRed().getImage());
-    monitorFrame.setJMenuBar(initializeMainMenuControls().createMenuBar());
-    monitorFrame.setTitle("Codion Server Monitor");
-    monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    monitorFrame.getContentPane().add(this);
-    monitorFrame.setAlwaysOnTop(alwaysOnTopState.get());
-    Windows.resizeWindow(monitorFrame, SCREEN_SIZE_RATIO);
-    Windows.centerWindow(monitorFrame);
-    monitorFrame.setVisible(true);
+    monitorFrame = Windows.frameBuilder(this)
+            .icon(Logos.logoRed())
+            .menuBar(initializeMainMenuControls().createMenuBar())
+            .title("Codion Server Monitor")
+            .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
+            .size(Windows.getScreenSizeRatio(SCREEN_SIZE_RATIO))
+            .centerFrame(true)
+            .show();
   }
 
   public static synchronized void setJDKDir(final JComponent dialogParent) {

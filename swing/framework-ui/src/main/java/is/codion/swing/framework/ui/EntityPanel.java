@@ -1490,7 +1490,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .relativeTo(this)
               .title(caption)
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-              .onClosed(() -> setEditPanelState(HIDDEN))
+              .onClosed(windowEvent -> setEditPanelState(HIDDEN))
               .build();
     }
     else {
@@ -1509,7 +1509,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return Windows.frameBuilder(detailPanelTabbedPane)
               .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-              .onClosed(() -> {
+              .onClosed(windowEvent -> {
                 //the frame can be closed when embedding the panel, don't hide if that's the case
                 if (getDetailPanelState() != EMBEDDED) {
                   setDetailPanelState(HIDDEN);
