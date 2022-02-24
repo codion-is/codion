@@ -300,7 +300,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #displayException(Throwable, Window)
    */
   public void onException(final Throwable exception) {
-    displayException(exception, Windows.getParentWindow(this));
+    displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   @Override

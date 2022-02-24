@@ -30,7 +30,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
     if (this.owner != null) {
       throw new IllegalStateException("owner has alrady been set");
     }
-    this.owner = owner == null ? null : Windows.getParentWindow(owner);
+    this.owner = owner == null ? null : Windows.getParentWindow(owner).orElse(null);
     return (B) this;
   }
 

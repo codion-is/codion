@@ -90,7 +90,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     final DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
     final JList<T> list = new JList<>(listModel);
-    final DisposeDialogAction okAction = new DisposeDialogAction(() -> Windows.getParentDialog(list), null);
+    final DisposeDialogAction okAction = new DisposeDialogAction(() -> Windows.getParentDialog(list).orElse(null), null);
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }

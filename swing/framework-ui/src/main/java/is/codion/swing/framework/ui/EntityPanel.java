@@ -579,12 +579,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final Optional<HierarchyPanel> getParentPanel() {
-    HierarchyPanel parentPanel = masterPanel;
-    if (parentPanel == null) {
-      parentPanel = Utilities.getParentOfType(this, HierarchyPanel.class);
+    if (masterPanel == null) {
+      return Utilities.getParentOfType(this, HierarchyPanel.class);
     }
 
-    return Optional.ofNullable(parentPanel);
+    return Optional.of(masterPanel);
   }
 
   @Override
@@ -679,7 +678,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see DefaultDialogExceptionHandler
    */
   public final void displayException(final Throwable exception) {
-    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this));
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   /**
@@ -1443,16 +1442,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the detail panels in a window
    */
   private void showDetailWindow() {
-    final Window parent = Windows.getParentWindow(this);
-    final Dimension parentSize = parent.getSize();
-    final Dimension size = getDetailWindowSize(parentSize);
-    final Point parentLocation = parent.getLocation();
-    final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
-            parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET);
-    detailPanelWindow = createDetailPanelWindow();
-    detailPanelWindow.setSize(size);
-    detailPanelWindow.setLocation(location);
-    detailPanelWindow.setVisible(true);
+    Windows.getParentWindow(this).ifPresent(parent -> {
+      final Dimension parentSize = parent.getSize();
+      final Dimension size = getDetailWindowSize(parentSize);
+      final Point parentLocation = parent.getLocation();
+      final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
+              parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET);
+      detailPanelWindow = createDetailPanelWindow();
+      detailPanelWindow.setSize(size);
+      detailPanelWindow.setLocation(location);
+      detailPanelWindow.setVisible(true);
+    });
   }
 
   /**
@@ -1650,15 +1650,16 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
-      final EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class);
+      final EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class).orElse(null);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
       }
       else {
-        final EntityPanel parent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class);
-        if (parent != null && parent.getEditPanel() != null) {
-          parent.getEditPanel().setActive(true);
-        }
+        Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class).ifPresent(parent -> {
+          if (parent.getEditPanel() != null) {
+            parent.getEditPanel().setActive(true);
+          }
+        });
       }
     }
   }

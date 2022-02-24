@@ -803,7 +803,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enable(this);
     getEditModel().getRefreshingObserver().addDataListener(this::onRefreshingChanged);
     getEditModel().addConfirmSetEntityObserver(confirmationState -> {
-      final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this),
+      final int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this).orElse(null),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);

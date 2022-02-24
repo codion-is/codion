@@ -324,7 +324,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(final int row, final int column) {
-    final JViewport viewport = Utilities.getParentOfType(this, JViewport.class);
+    final JViewport viewport = Utilities.getParentOfType(this, JViewport.class).orElse(null);
     if (viewport == null) {
       return false;
     }
@@ -341,11 +341,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param columnIdentifier the column identifier
    */
   public void scrollToColumn(final C columnIdentifier) {
-    final JViewport viewport = Utilities.getParentOfType(this, JViewport.class);
-    if (viewport != null) {
-      scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
-              getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER);
-    }
+    Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport ->
+            scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
+                    getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
   }
 
   /**
@@ -356,8 +354,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void scrollToCoordinate(final int row, final int column, final CenterOnScroll centerOnScroll) {
     requireNonNull(centerOnScroll);
-    final JViewport viewport = Utilities.getParentOfType(this, JViewport.class);
-    if (viewport != null) {
+    Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport -> {
       final Rectangle cellRectangle = getCellRect(row, column, true);
       final Rectangle viewRectangle = viewport.getViewRect();
       cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
@@ -379,7 +376,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         cellRectangle.translate(x, y);
       }
       viewport.scrollRectToVisible(cellRectangle);
-    }
+    });
   }
 
   /**

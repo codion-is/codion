@@ -45,8 +45,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   DefaultOkCancelDialogBuilder(final JComponent component) {
     this.component = requireNonNull(component);
-    this.okAction = Control.control(() -> Windows.getParentDialog(component).dispose());
-    this.cancelAction = Control.control(() -> Windows.getParentDialog(component).dispose());
+    this.okAction = Control.control(() -> Windows.getParentDialog(component).ifPresent(JDialog::dispose));
+    this.cancelAction = Control.control(() -> Windows.getParentDialog(component).ifPresent(JDialog::dispose));
   }
 
   @Override
@@ -162,7 +162,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private Control performAndCloseControl(final Runnable command) {
     return Control.control(() -> {
       command.run();
-      Windows.getParentDialog(component).dispose();
+      Windows.getParentDialog(component).ifPresent(JDialog::dispose);
     });
   }
 }
