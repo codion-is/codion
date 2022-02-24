@@ -837,7 +837,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see #displayException(Throwable, Window)
    */
   public void onException(final Throwable exception) {
-    displayException(exception, getParentWindow(this));
+    displayException(exception, getParentWindow(this).orElse(null));
   }
 
   @Override
@@ -931,7 +931,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (final DatabaseException e) {
-      DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent));
+      DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent).orElse(null));
     }
   }
 

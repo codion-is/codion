@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import static java.util.Arrays.stream;
@@ -345,10 +346,10 @@ public final class Utilities {
    * @param <T> the type of parent to find
    * @param component the component
    * @param clazz the class of the parent to find
-   * @return the parent of the given component of the given type, null if none is found
+   * @return the parent of the given component of the given type, an empty Optional if none is found
    */
-  public static <T> T getParentOfType(final Component component, final Class<T> clazz) {
-    return (T) SwingUtilities.getAncestorOfClass(clazz, component);
+  public static <T> Optional<T> getParentOfType(final Component component, final Class<T> clazz) {
+    return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
   }
 
   private static void updateUI(final JComponent component) {

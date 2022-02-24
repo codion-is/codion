@@ -42,6 +42,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -330,7 +331,7 @@ public final class EntitySearchField extends JTextField {
             selectAll();
           }
           catch (final Exception e) {
-            DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(this));
+            DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(this).orElse(null));
           }
         }
       }
@@ -538,7 +539,7 @@ public final class EntitySearchField extends JTextField {
     private Control.Command createSelectCommand(final EntitySearchModel searchModel) {
       return () -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
-        Windows.getParentDialog(list).dispose();
+        Windows.getParentDialog(list).ifPresent(JDialog::dispose);
       };
     }
   }
@@ -619,7 +620,7 @@ public final class EntitySearchField extends JTextField {
     private Control.Command createSelectCommand(final EntitySearchModel searchModel, final SwingEntityTableModel tableModel) {
       return () -> {
         searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        Windows.getParentDialog(table).dispose();
+        Windows.getParentDialog(table).ifPresent(JDialog::dispose);
       };
     }
   }

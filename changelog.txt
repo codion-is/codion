@@ -7820,3 +7820,4 @@
   DefaultItemProperty.getCaption() removed, no longer used
   DefaultItemProperty now validates the item values, throwing an exception in case of duplicates
   TemporalInputPanel, input field no longer requests focus when calendar is closed, INSERT triggers calendar
+  Utilities.getParentOfType(), Windows.getParentFrame(), Windows.getParentDialog() and Windows.getParentWindow() now return Optional

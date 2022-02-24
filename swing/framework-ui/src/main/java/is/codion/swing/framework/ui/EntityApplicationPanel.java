@@ -273,9 +273,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the parent window of this panel, if one exists, null otherwise
+   * @return the parent window of this panel, if one exists, an empty Optional otherwise
    */
-  public final Window getParentWindow() {
+  public final Optional<Window> getParentWindow() {
     return Windows.getParentWindow(this);
   }
 
@@ -487,10 +487,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     catch (final Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
     }
-    final Window parent = getParentWindow();
-    if (parent != null) {
-      parent.dispose();
-    }
+    getParentWindow().ifPresent(Window::dispose);
     System.exit(0);
   }
 
@@ -886,7 +883,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       final EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Windows.getParentWindow(entityPanel).toFront();
+        Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
       else {
         Windows.frameBuilder(entityPanel)
@@ -924,14 +921,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       final EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Windows.getParentWindow(entityPanel).toFront();
+        Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
       else {
         final String dialogTitle = panelBuilder.getCaption() == null ?
                 applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() :
                 panelBuilder.getCaption();
         Dialogs.componentDialog(entityPanel)
-                .owner(getParentWindow())
+                .owner(getParentWindow().orElse(null))
                 .title(dialogTitle)
                 .onClosed(e -> {
                   entityPanel.getModel().savePreferences();
@@ -1298,19 +1295,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       if (focusOwner == null) {
         focusOwner = EntityApplicationPanel.this;
       }
-      displayException(exception, Windows.getParentWindow(focusOwner));
+      displayException(exception, Windows.getParentWindow(focusOwner).orElse(null));
     });
   }
 
   private void bindEventsInternal() {
     applicationModel.getConnectionValidObserver().addDataListener(connectionValid -> SwingUtilities.invokeLater(() ->
             setParentWindowTitle(connectionValid ? getFrameTitle() : (getFrameTitle() + " - " + resourceBundle.getString("not_connected")))));
-    alwaysOnTopState.addDataListener(alwaysOnTop -> {
-      final Window parent = getParentWindow();
-      if (parent != null) {
-        parent.setAlwaysOnTop(alwaysOnTop);
-      }
-    });
+    alwaysOnTopState.addDataListener(alwaysOnTop ->
+            getParentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
   }
 
   private void initializePanel() {
@@ -1344,7 +1337,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void setParentWindowTitle(final String title) {
-    final Window parentWindow = Windows.getParentWindow(this);
+    final Window parentWindow = Windows.getParentWindow(this).orElse(null);
     if (parentWindow instanceof JFrame) {
       ((JFrame) parentWindow).setTitle(title);
     }

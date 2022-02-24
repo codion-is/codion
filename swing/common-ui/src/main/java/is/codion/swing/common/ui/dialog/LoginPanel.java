@@ -20,6 +20,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -174,11 +175,11 @@ final class LoginPanel extends JPanel {
   private void onValidationFailure(final Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
-    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this));
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   private void closeDialog() {
-    Windows.getParentDialog(this).dispose();
+    Windows.getParentDialog(this).ifPresent(JDialog::dispose);
   }
 
   private static final class SelectAllListener extends FocusAdapter {

@@ -519,12 +519,12 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       return;
     }
 
-    final JDialog dialogParent = Windows.getParentDialog(parent);
+    final JDialog dialogParent = Windows.getParentDialog(parent).orElse(null);
     if (dialogParent != null) {
       dialog = new JDialog(dialogParent, title, false);
     }
     else {
-      dialog = new JDialog(Windows.getParentFrame(parent), title, false);
+      dialog = new JDialog(Windows.getParentFrame(parent).orElse(null), title, false);
     }
 
     dialog.getContentPane().add(this);
