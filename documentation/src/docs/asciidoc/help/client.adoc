@@ -128,6 +128,8 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 2+|Table panel
 
 |kbd:[Del]|Delete selected
+|kbd:[Ctrl + C]|Copy selected rows to clipboard
+|kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
 |kbd:[Shift + Alt + &#x2190;/&#x2192;]|Move selected column left/right
 |kbd:[Ctrl + &#x002B;/&#x2212;]|Increase/decrease selected column size
 |kbd:[Ctrl + G]|Show popup menu
@@ -152,6 +154,14 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |kbd:[&#x2191;]|Find previous
 |kbd:[Shift + &#x2191;]|Find and select previous
 |kbd:[Esc]|Cancel and move focus to table
+|===
+
+[cols="1,3"]
+|===
+2+|Date/time field
+
+|kbd:[Insert]|Display calendar
+
 |===
 
 [cols="1,3"]

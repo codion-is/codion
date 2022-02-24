@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentValue;
@@ -15,6 +16,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 
@@ -41,9 +43,13 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     this.calendarProvider = requireNonNull(calendarProvider, "calendarProvider");
     add(temporalField, BorderLayout.CENTER);
     if (calendarProvider.supports(temporalField.getTemporalClass())) {
-      calendarButton = new JButton(Control.builder(this::displayCalendar)
+      final Control displayCalendarControl = Control.builder(this::displayCalendar)
               .caption("...")
-              .build());
+              .build();
+      KeyEvents.builder(KeyEvent.VK_INSERT)
+              .action(displayCalendarControl)
+              .enable(temporalField);
+      calendarButton = new JButton(displayCalendarControl);
       calendarButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
       add(calendarButton, BorderLayout.EAST);
     }
@@ -156,10 +162,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   private void displayCalendar() {
     calendarProvider.getTemporal(inputField.getTemporalClass(), inputField, getTemporal())
-            .ifPresent(temporal -> {
-              inputField.setTemporal(temporal);
-              inputField.requestFocusInWindow();
-            });
+            .ifPresent(inputField::setTemporal);
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
