@@ -126,7 +126,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       handleResponse(execute(createRequest("close")));
       closed = true;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -137,7 +137,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("isTransactionOpen")));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -148,10 +148,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       handleResponse(execute(createRequest("beginTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -162,10 +162,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       handleResponse(execute(createRequest("rollbackTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -176,10 +176,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       handleResponse(execute(createRequest("commitTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -196,10 +196,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("function", asList(functionType, argument))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -216,10 +216,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       handleResponse(execute(createRequest("procedure", asList(procedureType, argument))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -236,10 +236,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("insert", entities)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -256,10 +256,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("update", entities)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -271,10 +271,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("updateByCondition", condition)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -291,10 +291,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       handleResponse(execute(createRequest("deleteByKey", keys)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -306,10 +306,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("delete", condition)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -326,10 +326,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("values", asList(attribute, condition))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -347,7 +347,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public Entity selectSingle(final Condition condition) throws DatabaseException {
-    final List<Entity> selected = select(condition);
+    List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -364,10 +364,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("selectByKey", keys)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -379,10 +379,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("select", condition)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -404,10 +404,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("dependencies", entities)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -419,10 +419,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("count", condition)));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -434,10 +434,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("report", Arrays.asList(reportType, reportParameters))));
     }
-    catch (final ReportException | DatabaseException e) {
+    catch (ReportException | DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -452,10 +452,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       handleResponse(execute(createRequest("writeBlob", Arrays.asList(primaryKey, blobAttribute, blobData))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -468,10 +468,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("readBlob", Arrays.asList(primaryKey, blobAttribute))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -481,10 +481,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     try {
       return handleResponse(execute(createRequest("getEntities")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -525,7 +525,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
     @Override
     public Thread newThread(final Runnable runnable) {
-      final Thread thread = new Thread(runnable);
+      Thread thread = new Thread(runnable);
       thread.setDaemon(true);
 
       return thread;
